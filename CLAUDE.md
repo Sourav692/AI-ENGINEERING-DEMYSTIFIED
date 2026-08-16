@@ -6,23 +6,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 13 numbered phases, each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far:** Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 10, 12 (partially). Phases 6, 9, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
+**Built so far:** Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially). Phases 6, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
 ## Roadmap Structure
 
 ```
-01_Theory_and_Foundations/               ✅ Partially built — Hugging Face ecosystem built; math/ML intuition, transformer architecture, fine-tuning & RL planned
+01_Theory_and_Foundations/               ✅ Partially built — Hugging Face ecosystem, fine-tuning foundations, coding essentials built; math/ML intuition, transformer architecture, RLHF/DPO/LoRA planned
 02_LangChain_Fundamentals_and_Prompting/ ✅ Built — LangChain basics (5 modules) + prompt engineering; context engineering planned
 03_LangGraph_Fundamentals/               ✅ Built — LangGraph mechanics only (state, graphs, routing, tools, platform capabilities)
-04_Retrieval_and_RAG/                    ✅ Built — foundational RAG theory + LangGraph/LangChain implementations
+04_Retrieval_and_RAG/                    ✅ Built — foundational RAG theory + LangGraph/LangChain/LlamaIndex implementations
 05_AI_Agent_Fundamentals/                ✅ Built — all agent-building content, both frameworks
 06_Agent_SDKs_First_Party/               🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK
 07_Advanced_Agentic_Systems/             ✅ Built — memory, multi-agent orchestration, deep agents, evaluation (RAG/agent/LLM-as-judge)
 08_Advanced_RAG/                         ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned; needs Phases 5 & 7 first
-09_Agent_Protocols/                      🚧 Planned — MCP, ACP, A2A
-10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI and AutoGen built (9+8 project sets); DSPy, PydanticAI planned
+09_Agent_Protocols/                      ✅ Partially built — MCP built; ACP, A2A planned
+10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI, AutoGen, DSPy built; PydanticAI + orchestration overview planned
 11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
 13_Projects/                             ✅ Built — 10 projects: LangGraph/LangChain/RAG capstones + 7 more standalone full-stack apps
@@ -39,7 +39,9 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `Model_Landscape_and_Hugging_Face/` | Hugging Face Hub setup, Transformers, Diffusers, audio/video models, Gradio (21 notebooks) |
-| `Math_and_ML_Intuition/`, `Transformer_Architecture/`, `Fine_Tuning_and_RL/` | 🚧 Planned |
+| `Fine_Tuning_and_RL/` | SFT / data prep / training / eval (DeepLearning.AI labs) + Llama 2 AutoTrain; `02_Techniques/` (RLHF/DPO/LoRA) 🚧 Planned |
+| `Coding_Essentials_for_Agents/` | Python, files/DBs, Flask APIs, raw LLM API calls, threading/GIL, asyncio |
+| `Math_and_ML_Intuition/`, `Transformer_Architecture/` | 🚧 Planned |
 
 ### Phase 2 — `02_LangChain_Fundamentals_and_Prompting/` — internal tracks
 
@@ -67,6 +69,7 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 | `Multimodal_and_Document_Intelligence/` | Multimodal RAG |
 | `RAG_with_LangGraph/`         | Basic agentic RAG (2 notebooks) |
 | `RAG_with_LangChain/`         | RAG essentials, comprehensive, filtered search, indexing API (4 notebooks) |
+| `RAG_with_LlamaIndex/`        | Chainlit ReAct RAG chatbot over Wikipedia |
 
 Also `shared_data/` at this phase's root — supporting PDFs/data referenced by several notebooks via relative paths inherited from the source repo (`RAG_Demystified`); not re-verified for exact path resolution after the move.
 
@@ -77,6 +80,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `LangChain_Tools_and_Agents/` | Tool calling, tool-calling agents, agents, + `03_Applied_Projects/` (16 applied builds) |
 | `AI_Agents_with_LangGraph/`   | Full real-world agent builds (11) |
 | `Workflow_and_Agent_Patterns/` | Named agentic design patterns — tool use, planning, reflection, router, prompt chaining, evaluator-optimizer, orchestrator-worker, advanced cognitive patterns (8 pattern subfolders, ~27 notebooks) |
+| `Building_Agents_From_Scratch/` | OpenAI API + `agentic_patterns` package (no LangGraph) |
 
 ### Phase 7 — `07_Advanced_Agentic_Systems/` — internal tracks
 
@@ -95,7 +99,14 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `Comprehensive_RAG_Techniques/` | The NirDiamant `RAG_Techniques` anthology (~35 notebooks, kept whole — see its `README_ROADMAP.md`) |
 | `GraphRAG/`                   | Full knowledge-graph + RAG course |
 | `CacheRAG/`                   | 🚧 Planned |
-| `building-adaptive-rag/`, `mcp_a2a_agentic_rag/` | Standalone apps — the latter uses MCP + A2A protocols but stayed RAG-first here rather than moving to Phase 9 |
+| `building-adaptive-rag/`, `mcp_a2a_agentic_rag/` | Standalone apps — MCP+A2A agentic RAG kept RAG-first here; a copy also lives under Phase 9 `MCP/` |
+
+### Phase 9 — `09_Agent_Protocols/` — internal tracks
+
+| Track | Content |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `MCP/` | Foundations (Anthropic + Educative), building servers (Educative Mastering + Databricks Apps), building clients (MCP Essential), applications (Udemy MCP Mastery), plus `mcp_a2a_agentic_rag/` |
+| `ACP/`, `A2A/` | 🚧 Planned |
 
 ### Phase 12 — `12_Production_and_Observability/` — internal tracks
 
@@ -109,9 +120,10 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `CrewAI/`                     | `01_Foundations/Some_Simple_Agents/` (8 nb) + `04_Applications/` (9 project sets) |
-| `AutoGen/`                    | `01_Foundations/Some_Simple_Agents/` (3 nb) + `04_Applications/` (7 project sets) |
-| `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned |
+| `CrewAI/`                     | `01_Foundations/` (basics + 8 simple agents + comprehensive tutorial), `02_Core_Capabilities/` (Flows), `03_Multi_Agent_Patterns/`, `04_Applications/` (9 project sets) |
+| `AutoGen/`                    | Foundations (3 nb) + core labs (conversable/sequential/tools/code/multimodal) + group/swarm patterns + 8 application project sets |
+| `DSPy/`                       | `context-engineering-dspy/` levels 1–5 (kept whole) |
+| `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned |
 
 ### Phase 13 — `13_Projects/`
 

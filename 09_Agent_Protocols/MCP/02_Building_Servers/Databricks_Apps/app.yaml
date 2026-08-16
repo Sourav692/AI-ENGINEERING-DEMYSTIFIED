@@ -1,0 +1,4 @@
+command: ["uv", "run", "custom_server.py"]
+env:
+  - name: 'WAREHOUSE_ID'
+    value: '4b9b953939869799'

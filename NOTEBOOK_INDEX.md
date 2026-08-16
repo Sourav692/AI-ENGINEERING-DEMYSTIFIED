@@ -2,11 +2,11 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
-This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 10, 12 (partially).** Phases 6, 9, 11 are scaffolded placeholders with no content yet.
+This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6, 11 are scaffolded placeholders with no content yet.
 
 # Phase 1 — Theory & Foundations (`01_Theory_and_Foundations/`)
 
-Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/`, `Fine_Tuning_and_RL/` — 🚧 Planned.
+Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/` — 🚧 Planned. `Coding_Essentials_for_Agents/` is built.
 
 ## `Model_Landscape_and_Hugging_Face/`
 
@@ -19,6 +19,41 @@ Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/`, 
 | `04_Audio_Models/` | `00-Audio-Data.ipynb`, `01-Audio-Classification.ipynb`, `02-Audio-Transcription.ipynb`, `03-Audio-Generation.ipynb` | Waveforms, AST, ASR/diarization, EnCodec |
 | `05_Gradio/` | `01-Gradio-Introduction.ipynb` … `07-Styling-and-Themes.ipynb` (7 nb) | Gradio UIs for HF models |
 | `06_Pretrained_Models/` | `Accessing_Pre_Trained_Models.ipynb` | Loading pretrained models from the Hub |
+
+## `Fine_Tuning_and_RL/`
+
+`02_Techniques/` (RLHF, DPO, LoRA/QLoRA) — 🚧 Planned.
+
+### `01_Foundations/`
+
+| Module | Notebook | Topic |
+|---|---|---|
+| `01_Why_Finetune/` | `01_Why_finetuning_lab_student.ipynb` | Why finetune vs prompting |
+| `02_Where_Finetuning_Fits/` | `02_Where_finetuning_fits_in_lab_student.ipynb` | Where finetuning sits in an LLM stack |
+| `03_Instruction_Tuning/` | `03_Instruction_tuning_lab_student.ipynb` | Instruction / SFT |
+| `04_Data_Preparation/` | `04_Data_preparation_lab_student.ipynb` | Dataset prep |
+| `05_Training/` | `05_Training_lab_student.ipynb` | Training loop |
+| `06_Evaluation/` | `06_Evaluation_lab_student.ipynb` | Evaluate and iterate |
+| `Other/` | `01_Why_finetuning.ipynb` … `06_Evaluation.ipynb` | Shorter lecture-style companions to each lab |
+
+### `03_Applications/`
+
+| Notebook | Topic |
+|---|---|
+| `3_ways_Fine_Tuning_LLAMA_2_with_autotrain.ipynb` | Llama 2 fine-tuning with Hugging Face AutoTrain |
+
+## `Coding_Essentials_for_Agents/`
+
+Python prerequisites for agent work (not LangChain, not Hugging Face Hub). From `Coding_Essential_For_Agents`.
+
+| Module | Content |
+|---|---|
+| `01_Introduction_to_Python/` | 6 notebooks — variables, operators, conditionals, loops, functions, PEP 8 / PEP 257 |
+| `02_Files_and_Databases/` | NumPy, Pandas, Matplotlib, SQLite, MySQL, PostgreSQL notebooks + `docs/` datasets |
+| `03_Working_with_APIs/` | Flask hands-on (templates/static) + Stock Market API notebook |
+| `04_Working_with_LLMs/` | OpenAI/Gemini APIs, Hugging Face Inference APIs, local Transformers |
+| `05_Threading_and_Multiprocessing/` | 12 scripts — threads, processes, GIL, locks, queues |
+| `06_Asyncio/` | 10 scripts — `async`/`await`, workers, race conditions, deadlocks |
 
 # Phase 2 — LangChain Fundamentals & Prompting (`02_LangChain_Fundamentals_and_Prompting/`)
 
@@ -158,6 +193,10 @@ Also `shared_data/` at the phase root — supporting PDFs/data referenced by sev
 
 Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
 
+## `RAG_with_LlamaIndex/`
+
+Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipages.py`, `utils.py`). From `LlamaIndex_Demystified`. Distinct from Phase 8 NirDiamant `*_with_llamaindex.ipynb` notebooks.
+
 # Phase 5 — AI Agent Fundamentals (`05_AI_Agent_Fundamentals/`)
 
 ## `LangChain_Tools_and_Agents/`
@@ -198,6 +237,17 @@ Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
 | `11_Advanced_Cognitive_Patterns/` | `01`–`12` | PEV, blackboard, episodic+semantic memory, tree-of-thoughts, mental loop, meta-controller, graph, ensemble, dry-run, RLHF, cellular automata, reflexive-metacognitive |
 
 Also `Design_Patterns_Reference.md` + `images/`, `Reference_link_Workflow_Patterns.md`.
+
+## `Building_Agents_From_Scratch/`
+
+From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not LangGraph (`Workflow_and_Agent_Patterns/`).
+
+| Item | Topic |
+|---|---|
+| `1. Reflection Pattern.ipynb` … `4. Multiagent Pattern.ipynb` | From-scratch reflection, tool use, planning, multi-agent |
+| `5. Building a Real Wold AI Agent From Scratch.ipynb` | End-to-end from-scratch agent |
+| `Agentic Patterns/` | `src/agentic_patterns/` package + matching notebooks |
+| `images/` | Diagrams |
 
 # Phase 6 — Agent SDKs (First-Party) (`06_Agent_SDKs_First_Party/`) — 🚧 Planned
 
@@ -301,11 +351,23 @@ The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-
 
 ## Additional apps in this phase
 
-`building-adaptive-rag/` — standalone adaptive-RAG app. `mcp_a2a_agentic_rag/` — agentic RAG app built on MCP + A2A protocols (kept RAG-first here rather than split into Phase 9, per user decision).
+`building-adaptive-rag/` — standalone adaptive-RAG app. `mcp_a2a_agentic_rag/` — agentic RAG app built on MCP + A2A protocols (original RAG-first copy still here; a copy also sits under Phase 9's `MCP/`).
 
-# Phase 9 — Agent Protocols (`09_Agent_Protocols/`) — 🚧 Planned
+# Phase 9 — Agent Protocols (`09_Agent_Protocols/`)
 
-`MCP/` (4 subfolders), `ACP/` (3 subfolders), `A2A/` (3 subfolders)
+`ACP/`, `A2A/` — 🚧 Planned.
+
+## `MCP/`
+
+| Path | Content |
+|---|---|
+| `01_Foundations/Anthropic_Rich_Context/` | Anthropic *Build Rich-Context AI Apps with MCP* (L3–L9) |
+| `01_Foundations/Educative_MCP_Fundamentals/` | Wikipedia research assistant (base / resources / prompts) |
+| `02_Building_Servers/Educative_Mastering_MCP/` | Single-server, resources, multi-server |
+| `02_Building_Servers/Databricks_Apps/` | FastMCP server on Databricks Apps |
+| `03_Building_Clients/MCP_Essential/` | Own server+client, multi-server client, SSE, streamable HTTP |
+| `04_Applications/Udemy_MCP_Mastery/` | Claude Desktop, data-analysis servers, MCP+RAG, LangGraph research assistant, EC2 deploy |
+| `mcp_a2a_agentic_rag/` | MCP + A2A agentic RAG app |
 
 # Phase 10 — Alternative Agent Frameworks (`10_Alternative_Agent_Frameworks/`)
 
@@ -313,7 +375,11 @@ The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-
 
 | Track | Content |
 |---|---|
+| `01_Foundations/01_Basics/` | `stateful_culinary_assistant.ipynb` — single-agent, task context chaining |
 | `01_Foundations/Some_Simple_Agents/` | 8 nb — fitness tracker, travel advisor, image generation, book recommendation, data analyst, fraud detection, employee onboarding, document summarization |
+| `01_Foundations/04_Comprehensive/` | `complete_tutorial.ipynb` — stateful + multi-agent + flows |
+| `02_Core_Capabilities/` | `workflow_with_flows.ipynb` — CrewAI Flow routers/listeners |
+| `03_Multi_Agent_Patterns/` | `research_assistant.ipynb`, `logistics_analysis.ipynb` |
 | `04_Applications/` | Education assistant, mock interviewer, social media agent, research/write article, customer support automation, outreach campaign, event planning, financial analysis collaboration, job application tailoring (9 project sets) |
 
 ## `AutoGen/`
@@ -321,9 +387,15 @@ The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-
 | Track | Content |
 |---|---|
 | `01_Foundations/Some_Simple_Agents/` | Building agents with AutoGen, research assistant, coding agent |
-| `04_Applications/` | Smart content generation, smart health assistant, financial portfolio manager, agentic RAG for eCommerce, stock market analysis agent, Notion MCP agent, Data Analyzer GPT (7 project sets) |
+| `02_Core_Capabilities/` | Conversable agents, sequential chat, tool use, code execution, AG2 multimodality (`Autogen_Demystified`) |
+| `03_Multi_Agent_Patterns/` | Group / Stateflow / nested, swarm orchestration (`Autogen_Demystified`) |
+| `04_Applications/` | Previous 7 project sets + `Auto_EDA/` (multi-agent EDA from `AI-Agents-Essentials`) |
 
-## `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` — 🚧 Planned
+## `DSPy/`
+
+`context-engineering-dspy/` kept whole (levels 1–5: atomic prompts, multi-interaction, evaluation, tools, RAG). From `DSPy_Demystified`. RAG levels stay here, not Phase 4/8. Phase 2 `Context_Engineering/` remains planned (LangChain-style context assembly).
+
+## `PydanticAI/`, `Orchestration_Frameworks_Overview/` — 🚧 Planned
 
 # Phase 11 — Claude Code & AI Coding Tools (`11_Claude_Code_and_AI_Coding_Tools/`) — 🚧 Planned
 
@@ -418,6 +490,14 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 - **2026-08-17 — `Agents_Evaluation_Demystified-main` merged in**, filling Phase 7's remaining `Agent_Evaluation/` and `LLM_as_Judge/` placeholders and extending `RAG_Evaluation/`. Split by topic, not dumped wholesale: DeepLearning.AI + Arize labs stayed whole under `Agent_Evaluation/DeepLearningAI_Arize/` (Lab 2 tracing included — shared parquet/helpers, dominant identity is agent eval); CrewAI travel-planner + DeepEval task-completion tests → `Agent_Evaluation/CrewAI_Travel_Planner/` (not Phase 10); DeepEval metric drills + RAGAS → `RAG_Evaluation/`; first DeepEval G-Eval script → `LLM_as_Judge/`. Skipped the source's `Evaluating RAG Systems/` folder after hash/size compare: 3 notebooks identical to ones already merged from `RAG_Demystified`, 2 older unexecuted copies of the same retriever/generator notebooks. Discarded root scaffolding, `img/`, `.deepeval` telemetry, `data/tmp` docx, Excel lockfile. Phase 7's four tracks are now all built.
 
 - **2026-08-17 — `Huggingface_Demystified-main` merged in**, filling Phase 1's `Model_Landscape_and_Hugging_Face/` placeholder (the other three Phase 1 tracks stay planned). Bootcamp modules mapped to `00_Setup/` … `05_Gradio/` (folder names underscored to match repo convention; notebook/asset names unchanged so relative `cat.png` / `interview.mp3` paths still resolve). The one-notebook "Mastering Generative AI with LLMs" course became `06_Pretrained_Models/`. Gradio stayed in this track (HF demo surface), not Phase 12. Not fine-tuning and not transformer-architecture theory — those remain the empty `Fine_Tuning_and_RL/` and `Transformer_Architecture/` tracks. Discarded root scaffolding and `.gitkeep`. Phase 1 went from fully-planned to partially-built.
+
+- **2026-08-17 — `Finetuning_Demystified-main` merged in**, filling Phase 1's `Fine_Tuning_and_RL/` scaffolding. DeepLearning.AI *Finetuning Large Language Models* labs 1–6 (+ `Other/` lecture notebooks, `images/`, per-lesson `llama.py`/`utilities.py`/`lamini_docs.jsonl`) went into `01_Foundations/` as one sequence so relative image/helper paths stay intact. Lesson 6 evaluation stayed here rather than Phase 7 — it's eval of a fine-tuned LLM, not agent/RAG harnesses. `3_ways_Fine_Tuning_LLAMA_2_with_autotrain.ipynb` → `03_Applications/`. `02_Techniques/` (RLHF/DPO/LoRA) still empty. Discarded root scaffolding/LICENSE (repo already licensed).
+
+- **2026-08-17 — `MCP_Demystified-main` merged in**, filling Phase 9's `MCP/` track (ACP/A2A stay planned). Split by the existing 01_Foundations / 02_Building_Servers / 03_Building_Clients / 04_Applications skeleton, but each *course* stayed whole: Anthropic L3–L9 + Educative fundamentals → foundations; Educative Mastering + Databricks Apps server → building servers; MCP Essential (four client/transport labs) → building clients; Udemy MCP Mastery (intro through RAG/LangGraph/EC2) → applications. Discarded root scaffolding, `UDEMY/.gitkeep`, and a Databricks `.databricks` sync snapshot. Did not touch the existing `mcp_a2a_agentic_rag/` copies (Phase 8 original + Phase 9 copy). Phase 9 went from fully-planned to partially-built.
+
+- **2026-08-17 — `CrewAI_Demystified` merged in** (cloned from GitHub; not dropped as a local folder). Filled CrewAI's empty `02_Core_Capabilities/` (Flows) and `03_Multi_Agent_Patterns/` (research + logistics crews), and extended `01_Foundations/` with `01_Basics/` + `04_Comprehensive/`. No overlap with `Some_Simple_Agents/` notebook names. `helpers/utils.py` was byte-identical to the root `helpers` package — skipped. `.claude/skills/` were near-duplicates of skills already in `.claude/skills-candidates/` (`format-notebook`, `virtual-env-setup`) — skipped rather than restaged. Discarded root scaffolding.
+
+- **2026-08-17 — five GitHub repos merged:** `Coding_Essential_For_Agents` → Phase 1 `Coding_Essentials_for_Agents/` (Python through asyncio; Module 4 is raw LLM API calls, not LangChain/HF Hub). `LlamaIndex_Demystified` → Phase 4 `RAG_with_LlamaIndex/` (Chainlit Wikipedia RAG; distinct from Phase 8 NirDiamant LlamaIndex notebooks). `Autogen_Demystified` → AutoGen `02_Core_Capabilities/` + `03_Multi_Agent_Patterns/` (code-execution lab kept alongside the larger existing `coding_agent` project — different size/scope). `DSPy_Demystified` → Phase 10 `DSPy/context-engineering-dspy/` kept whole. `AI-Agents-Essentials` was split: from-scratch OpenAI patterns → Phase 5 `Building_Agents_From_Scratch/`; unique Auto-EDA app → AutoGen `04_Applications/Auto_EDA/`. **Skipped as conceptual duplicates of content already in Phases 2/3/4/5/8/10:** LangChain basics/chains/LCEL/simple-agent; LangGraph stateful apps + research assistant; LangGraph agentic RAG; AutoGen intro building-agents / research-assistant / demo / calculator tool-use / GroupChat `4.1` (covered by Autogen_Demystified Group/Stateflow). Discarded root scaffolding and leftover clone `_incoming/`.
 
 **Still open:**
 - Several notebooks don't open with a proper `# Title` markdown cell (mid-document subheading instead) — pre-existing, not fixed, would require editing notebook content.

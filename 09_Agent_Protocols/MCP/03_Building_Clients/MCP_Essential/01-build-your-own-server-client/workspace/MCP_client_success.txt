@@ -1,0 +1,1 @@
+I successfully created an MCP client with the Gemini API and connected it to my MCP server

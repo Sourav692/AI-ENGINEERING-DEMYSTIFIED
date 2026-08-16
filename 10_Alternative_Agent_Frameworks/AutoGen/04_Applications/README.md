@@ -13,6 +13,7 @@ Hands-on projects built with [Microsoft AutoGen](https://github.com/microsoft/au
 | 4 | [Agentic RAG for eCommerce](#4-agentic-rag-for-ecommerce) | RAG with ChromaDB vector search for product and order retrieval |
 | 5 | [Stock Market Analysis Agent](#5-stock-market-analysis-agent) | Full-stack Streamlit app with finance tools (yfinance, SMA, EMA, RSI) |
 | 6 | [Notion MCP Agent with Autogen](#6-notion-mcp-agent-with-autogen) | MCP integration with Notion API, Flask deployment with ngrok |
+| 7 | [Auto_EDA](Auto_EDA/) | Multi-agent exploratory data analysis (`AI-Agents-Essentials`) |
 
 ---
 

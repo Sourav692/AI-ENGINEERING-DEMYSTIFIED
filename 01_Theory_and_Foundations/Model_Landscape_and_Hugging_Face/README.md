@@ -14,4 +14,4 @@ Hands-on Hugging Face ecosystem: Hub setup, Transformers pipelines/LLMs, Diffuse
 | `05_Gradio/` | Interfaces, layout, events, ML integration, theming |
 | `06_Pretrained_Models/` | Accessing pretrained models from the Hub |
 
-This is the HF *ecosystem* track. Transformer *architecture* theory stays in `Transformer_Architecture/` (still planned). Fine-tuning stays in `Fine_Tuning_and_RL/` (still planned).
+This is the HF *ecosystem* track. Transformer *architecture* theory stays in `Transformer_Architecture/` (still planned). Fine-tuning lives in `Fine_Tuning_and_RL/`.

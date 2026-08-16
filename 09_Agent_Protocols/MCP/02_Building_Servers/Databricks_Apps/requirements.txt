@@ -1,0 +1,7 @@
+fastmcp
+yfinance
+pandas
+databricks-sql-connector
+python-dotenv
+databricks-sdk
+uv

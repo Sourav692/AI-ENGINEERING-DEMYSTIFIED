@@ -1,0 +1,31 @@
+# Coding Essentials for Agents - Requirements
+# ============================================
+
+# Data Science & Analysis (Module 2)
+numpy>=1.26.0
+pandas>=2.0.0
+matplotlib>=3.8.0
+
+# Database Connectors (Module 2)
+pymysql>=1.1.0
+mysql-connector-python>=8.0.0
+psycopg2-binary>=2.9.0
+sqlalchemy>=2.0.0
+
+# Web Framework (Module 3)
+flask>=3.0.0
+
+# LLM APIs & Tools (Module 4)
+openai>=1.0.0
+google-generativeai>=0.3.0
+
+# Hugging Face & Local LLMs (Module 4)
+huggingface_hub>=0.20.0
+transformers>=4.44.0
+accelerate>=0.34.0
+torch>=2.0.0
+
+# Jupyter Notebook Support
+jupyter>=1.0.0
+ipython>=8.0.0
+

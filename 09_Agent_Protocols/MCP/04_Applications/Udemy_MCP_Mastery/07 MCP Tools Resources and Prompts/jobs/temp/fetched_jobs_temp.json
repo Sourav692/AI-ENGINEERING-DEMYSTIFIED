@@ -1,0 +1,934 @@
+[
+  {
+    "job_id": "GTMX2CW_J1BDi-ehAAAAAA==",
+    "job_title": "Full Stack Developer - Recent Grad (Health Tech Startup)   \ud83d\ude80",
+    "employer_name": "1Phi Inc",
+    "employer_logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSY-B4fvD42JooQMG9leltxoFbVaPGme2TgExq&s=0",
+    "employer_website": null,
+    "job_publisher": "LinkedIn",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://www.linkedin.com/jobs/view/full-stack-developer-recent-grad-health-tech-startup-%F0%9F%9A%80-at-1phi-inc-4320191236?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": false,
+    "apply_options": [
+      {
+        "publisher": "LinkedIn",
+        "apply_link": "https://www.linkedin.com/jobs/view/full-stack-developer-recent-grad-health-tech-startup-%F0%9F%9A%80-at-1phi-inc-4320191236?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "\u2764\ufe0f Want to make a tangible difference in the future of healthcare?\n\n\u2764\ufe0f Love applying the latest technologies to solve tough problems?\n\n\u2764\ufe0f Looking for a fulfilling career with plenty of learning and growth?\n\nAbout 1Phi \ud83e\udd29\n\n1Phi is building a first of its kind AI-powered healthcare navigator, called 1Sage, that lets patients find the treatment options with the best clinical outcomes for their unique situation. It continuously monitors and trains on billions of medical records across over 100 million patients nationwide and over 1 million doctors and medical facilities. Patients simply chat with 1Sage, indicating their circumstances and needs. The more information they provide, the better the insights.\n\n1Phi stands for 1st Principles Healthcare Institute, a name that reflects our commitment to R&D and taking an unorthodox approach to solving intractable and persistent industry challenges. As a Public Benefit Corporation, we\u2019re grounded in decades of experience with payer financial models, government policy, provider incentives, and patient empowerment. By deploying artificial intelligence across data assets previously available only to industry insiders, 1Phi is uniquely positioned to bring patients the knowledge to make decisions in their own best interest.\n\nYou would be joining an early stage startup team of engineers, healthcare experts and dreamers. You\u2019ll help define the culture, the tech stack, and the future of our industry. Tight-knit team. Zero bureaucracy. Project ownership. Room to experiment. Accelerated growth.\n\nRequirements \ud83e\udd13\n\nWhat You\u2019ll Do\n\u2022 Build our first production-ready full stack application, evolving our prototype (built on an LLM chat bot design pattern) into a scalable, secure platform.\n\u2022 Own the full stack: front-end user interface, back-end APIs, and integrations across data and AI components. Build interactive inline UI widgets, including tables, forms and maps.\n\u2022 Collaborate with the data engineer (pipelines, claims data) and AI engineer (model training, inference, streaming LLM responses) to connect the pieces into a seamless patient experience.\n\u2022 Design and implement secure workflows for patients to input health history and receive treatment options and provider recommendations.\n\u2022 Establish coding standards, testing practices, CI/CD, and technical architecture for the team to grow on.\n\nYou're a fit if:\n\u2022 BS or MS in Computer Science, Mathematics, Data Science or other STEM field.\n\u2022 At least one significant successful project in production (outside of classroom) that you can demonstrate.\n\u2022 Experience with full stack development with modern frameworks (React/Vue + Node.js/Python, or similar).\n\u2022 Experience with APIs, authentication/authorization, and integrating third-party services.\n\u2022 Comfortable working with databases (SQL/NoSQL).\n\u2022 Thrive in early-stage chaos and high-impact roles, rather than climbing the corporate ladder or incremental changes.\n\nEven better if:\n\u2022 Experience with rapid deployment tools (Vercel, Netlify, etc.) for quick feature testing.\n\u2022 Experience with cloud vendors: AWS, GCP, or Azure.\n\u2022 Hands on with AI/LLM tools, such as Cursor.AI and Claude Code.\n\u2022 Familiarity with WebSockets, streaming APIs, realtime voice/WebRTC\n\u2022 DevOps / infra-as-code familiarity.\n\nSalary: $55k-$95k depending on experience and skills\n\nLocation: Chicago office \ud83c\udfe2 (Not remote)\n\nHiring Process \ud83d\ude0e\n\nAt 1Phi, we believe hiring should be fair, transparent, and collaborative. We work hard to find the best mix of respecting the candidates time, while also giving our team an efficient way to learn if a candidate is a good fit. Since we also strive to simulate the work environment throughout the process, we encourage you to use all the AI/LLM tools and outside resources at your disposal. During the process, if you ever feel that you are being asked for an onerous amount of work, please do not proceed. The best candidates are those who enjoy the process, regardless of the outcome.\n\nHere\u2019s the entire process: Apply with email \u2192 Project demo call (15 mins) \u2192 Skills challenge (1-3 hrs) \u2192 Interviews (2 hours) \u2192 Meet the Team Day and micro-project (1 day) \u2192 Offer \u2192 Trial period (1-3 weeks)\n\nBenefits \ud83e\udd11\n\u2022 Health insurance\n\u2022 Generous vacation policy + company holidays\n\u2022 401K + profit share contributions\n\u2022 Quarterly evals and performance bonus (~10% at start, ~20% after 4 years)\n\nHow to Apply \ud83d\ude07\n\nSend us your resume and any relevant links (LinkedIn, GitHub, portfolio site, etc.) to careers+linkedin@1phi.com with the subject: \u201cRecent Grad Full Stack Developer\u201d. Include a description of your most successful project, pointing out how it demonstrates your abilities and resourcefulness in terms of this job description. Indicate whether you need visa sponsorship. (We can sponsor existing H1B holders. OPT candidates must have 2.5+ years remaining on visa.)",
+    "job_is_remote": false,
+    "job_posted_at": "2 days ago",
+    "job_posted_at_timestamp": 1761868800,
+    "job_posted_at_datetime_utc": "2025-10-31T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "paid_time_off",
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3DGTMX2CW_J1BDi-ehAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_salary": null,
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": null,
+    "job_highlights": {
+      "Qualifications": [
+        "BS or MS in Computer Science, Mathematics, Data Science or other STEM field",
+        "At least one significant successful project in production (outside of classroom) that you can demonstrate",
+        "Experience with full stack development with modern frameworks (React/Vue + Node.js/Python, or similar)",
+        "Experience with APIs, authentication/authorization, and integrating third-party services",
+        "Comfortable working with databases (SQL/NoSQL)",
+        "Thrive in early-stage chaos and high-impact roles, rather than climbing the corporate ladder or incremental changes",
+        "Experience with rapid deployment tools (Vercel, Netlify, etc.) for quick feature testing",
+        "Experience with cloud vendors: AWS, GCP, or Azure",
+        "Hands on with AI/LLM tools, such as Cursor.AI and Claude Code",
+        "Familiarity with WebSockets, streaming APIs, realtime voice/WebRTC",
+        "DevOps / infra-as-code familiarity",
+        "to careers+linkedin@1phi.com with the subject: \u201cRecent Grad Full Stack Developer\u201d",
+        "OPT candidates must have 2.5+ years remaining on visa.)"
+      ],
+      "Benefits": [
+        "Salary: $55k-$95k depending on experience and skills",
+        "Benefits \ud83e\udd11",
+        "Health insurance",
+        "Generous vacation policy + company holidays",
+        "401K + profit share contributions",
+        "Quarterly evals and performance bonus (~10% at start, ~20% after 4 years)"
+      ],
+      "Responsibilities": [
+        "You\u2019ll help define the culture, the tech stack, and the future of our industry",
+        "Build our first production-ready full stack application, evolving our prototype (built on an LLM chat bot design pattern) into a scalable, secure platform",
+        "Own the full stack: front-end user interface, back-end APIs, and integrations across data and AI components",
+        "Build interactive inline UI widgets, including tables, forms and maps",
+        "Collaborate with the data engineer (pipelines, claims data) and AI engineer (model training, inference, streaming LLM responses) to connect the pieces into a seamless patient experience",
+        "Design and implement secure workflows for patients to input health history and receive treatment options and provider recommendations",
+        "Establish coding standards, testing practices, CI/CD, and technical architecture for the team to grow on"
+      ]
+    },
+    "job_onet_soc": "15113300",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "IAuGMJHD9KVtx4ipAAAAAA==",
+    "job_title": "Software Developer - Java / Python (Chicago)",
+    "employer_name": "Hire Orbitt",
+    "employer_logo": null,
+    "employer_website": "https://www.hireorbitt.com",
+    "job_publisher": "Indeed",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://www.indeed.com/viewjob?jk=7d4214eb66c3d0b2&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": true,
+    "apply_options": [
+      {
+        "publisher": "Indeed",
+        "apply_link": "https://www.indeed.com/viewjob?jk=7d4214eb66c3d0b2&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Glassdoor",
+        "apply_link": "https://www.glassdoor.com/job-listing/software-developer-java-python-chicago-hire-orbitt-JV_IC1128808_KO0,38_KE39,50.htm?jl=1009923731587&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "SimplyHired",
+        "apply_link": "https://www.simplyhired.com/job/Jo57AHTCCvIiJXgVazxhOqNF5V8-t3sCz2QisgWnYUdG08lNGPZ2zA?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Jobilize",
+        "apply_link": "https://www.jobilize.com/job/us-il-chicago-us_west-software-developer-java-jee-frameworks_l2-expedite?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Job Title: Software Developer - Java / Python (Chicago)\n\nLocation: Chicago (Hybrid 3 Days a week)\n\nCompany: Financial Services\n\nPay: $120 000 \u2013 $160 000\n\nExperience level: 3 \u2013 7 years\n\nPosition Overview:\n\nWe are looking for a highly motivated developer (Java and Python) with an excitement for solving complex problems. The developer must be able to work in a team environment and provide input to resolve technical problems. Experience in an Agile based programming environment is a plus, the developer will be asked to provide estimates for assigned work. Excitement for technology and development is a must.\n\nThe following are the required skill sets:\n- Java Development\n- Python\n- Database Experience - SQL\n- Object-oriented programming\n\nThe following are the desired skill sets:\n- Experience in Agile Development Methodology\n- Java Enterprise Development\n- JBoss Platform experience\n- Drools\n- Spring\n- Hibernate\n- Maven\n- Web Services\n- Oracle\n- JUnit\n\nJob Type: Full-time\n\nPay: $120,000.00 - $160,000.00 per year\n\nBenefits:\n\u2022 401(k)\n\u2022 Dental insurance\n\u2022 Health insurance\n\u2022 Vision insurance\n\nWork Location: In person",
+    "job_is_remote": false,
+    "job_posted_at": "3 days ago",
+    "job_posted_at_timestamp": 1761782400,
+    "job_posted_at_datetime_utc": "2025-10-30T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "dental_coverage",
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3DIAuGMJHD9KVtx4ipAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_min_salary": 120000,
+    "job_max_salary": 160000,
+    "job_salary_period": "YEAR",
+    "job_highlights": {
+      "Qualifications": [
+        "Experience level: 3 \u2013 7 years",
+        "We are looking for a highly motivated developer (Java and Python) with an excitement for solving complex problems",
+        "The developer must be able to work in a team environment and provide input to resolve technical problems",
+        "Excitement for technology and development is a must",
+        "Java Development",
+        "Python",
+        "Database Experience - SQL",
+        "Object-oriented programming"
+      ],
+      "Benefits": [
+        "Pay: $120 000 \u2013 $160 000",
+        "Pay: $120,000.00 - $160,000.00 per year",
+        "401(k)",
+        "Dental insurance",
+        "Health insurance",
+        "Vision insurance"
+      ],
+      "Responsibilities": [
+        "Experience in an Agile based programming environment is a plus, the developer will be asked to provide estimates for assigned work"
+      ]
+    },
+    "job_onet_soc": "15113200",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "s7H6uSkvs3oTsMkiAAAAAA==",
+    "job_title": "Full-Stack / App Developer (Client-Facing)",
+    "employer_name": "bld.ai",
+    "employer_logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtgUbKGOu5Cvo_sPHcMZHVQcI7SQHuWW5MT5SR&s=0",
+    "employer_website": "https://www.bld.ai",
+    "job_publisher": "LinkedIn",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://www.linkedin.com/jobs/view/full-stack-app-developer-client-facing-at-bld-ai-4333017797?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": false,
+    "apply_options": [
+      {
+        "publisher": "LinkedIn",
+        "apply_link": "https://www.linkedin.com/jobs/view/full-stack-app-developer-client-facing-at-bld-ai-4333017797?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "BeBee",
+        "apply_link": "https://us.bebee.com/job/1a8ebf2fa73cf1f3ead98a482849bee3?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "RemoteAmbition",
+        "apply_link": "https://remoteambition.com/jobs/7f09a0b2-376c-4c73-ac13-c1627317ac8a?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Location: USA (Houston, Chicago, or Bay Area, CA)\n\nCompensation: 110\u2013125K USD + commission\n\nRole Summary\n\nWe\u2019re looking for an application developer who thrives at the intersection of software engineering and client delivery. You\u2019ll design, build, and deploy production-grade applications\u2014often integrating AI or data-driven components\u2014and work closely with enterprise clients on-site (~50% travel). You\u2019ll collaborate with our AI and data science teams to bring robust, user-ready systems to life.\n\nRequirements\n\u2022 \u2060 \u20604\u20137 years of experience in full-stack or application development.\n\u2022 \u2060 \u2060Strong proficiency in Python, JavaScript/TypeScript, and modern frameworks (e.g., React, FastAPI, Node.js, or Flask).\n\u2022 \u2060 \u2060Experience deploying to cloud environments (AWS, GCP, or Azure).\n\u2022 \u2060 \u2060Ability to translate business requirements into maintainable, scalable code.\n\u2022 \u2060 \u2060Excellent client-facing communication and collaboration skills.\n\u2022 \u2060 \u2060Willingness to travel up to 50% for on-site work with U.S. clients.\n\nIdeal Profile\n\nA hands-on builder with a consulting mindset\u2014comfortable both coding independently and representing the team in client environments. Prior experience in AI product development, data-intensive systems, or enterprise integrations is a plus.",
+    "job_is_remote": false,
+    "job_posted_at": "3 days ago",
+    "job_posted_at_timestamp": 1761782400,
+    "job_posted_at_datetime_utc": "2025-10-30T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": null,
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3Ds7H6uSkvs3oTsMkiAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_min_salary": 110000,
+    "job_max_salary": 125000,
+    "job_salary_period": "YEAR",
+    "job_highlights": {
+      "Qualifications": [
+        "\u2060 \u20604\u20137 years of experience in full-stack or application development",
+        "\u2060 \u2060Strong proficiency in Python, JavaScript/TypeScript, and modern frameworks (e.g., React, FastAPI, Node.js, or Flask)",
+        "\u2060 \u2060Experience deploying to cloud environments (AWS, GCP, or Azure)",
+        "\u2060 \u2060Ability to translate business requirements into maintainable, scalable code",
+        "\u2060 \u2060Excellent client-facing communication and collaboration skills",
+        "\u2060 \u2060Willingness to travel up to 50% for on-site work with U.S. clients",
+        "A hands-on builder with a consulting mindset\u2014comfortable both coding independently and representing the team in client environments"
+      ],
+      "Responsibilities": [
+        "We\u2019re looking for an application developer who thrives at the intersection of software engineering and client delivery",
+        "You\u2019ll design, build, and deploy production-grade applications\u2014often integrating AI or data-driven components\u2014and work closely with enterprise clients on-site (~50% travel)",
+        "You\u2019ll collaborate with our AI and data science teams to bring robust, user-ready systems to life"
+      ]
+    },
+    "job_onet_soc": "15113200",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "iwQ9D4cyzQ30WTA_AAAAAA==",
+    "job_title": "\"Java Full Stack Developer\"",
+    "employer_name": "TOPSYSIT",
+    "employer_logo": null,
+    "employer_website": null,
+    "job_publisher": "Dice",
+    "job_employment_type": "Contractor",
+    "job_employment_types": [
+      "CONTRACTOR"
+    ],
+    "job_apply_link": "https://www.dice.com/job-detail/56b15c91-651a-42f8-8b83-27cb56487a22?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": true,
+    "apply_options": [
+      {
+        "publisher": "Dice",
+        "apply_link": "https://www.dice.com/job-detail/56b15c91-651a-42f8-8b83-27cb56487a22?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      }
+    ],
+    "job_description": "Java Full Stack Developer\nLocation: Chicago, IL (Hybrid)\nDuration: Long Term\n\nW2 Role Only\n\nRequired: Azure, React.js, Angular, Micro services\nNeed 10 to 15 years of experience candidates with Finance/ Banking experience.\n\nRequired Skills and Experience\n\nBackend Technologies: Proficiency in Java, Spring, Spring Boot, and Restful API development. Frontend Technologies: Strong experience with React.js, HTML, CSS, and JavaScript/TypeScript. Micro services Architecture: Hands-on experience designing and implementing scalable microservices. Cloud Computing: Working knowledge of Azure Cloud (App Services, Azure DevOps, etc.). Database: Experience with relational (e.g., MySQL, PostgreSQL) and/or NoSQL databases. CI/CD: Familiarity with tools like Jenkins, Git, or Azure DevOps for automated builds and deployments. Version Control: Proficiency with Git or similar version control systems. Agile Methodologies: Understanding of Scrum or Kanban processes.\n\nPreferred Qualifications\nExperience with containerization technologies like Docker and orchestration using Kubernetes. Knowledge of secure coding practices and application security. Experience with monitoring and logging tools (e.g., ELK stack, Prometheus, Grafana). Familiarity with messaging systems (e.g., RabbitMQ, Kafka).",
+    "job_is_remote": false,
+    "job_posted_at": "3 days ago",
+    "job_posted_at_timestamp": 1761782400,
+    "job_posted_at_datetime_utc": "2025-10-30T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": null,
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3DiwQ9D4cyzQ30WTA_AAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_salary": null,
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": null,
+    "job_highlights": {
+      "Qualifications": [
+        "Required: Azure, React.js, Angular, Micro services",
+        "Need 10 to 15 years of experience candidates with Finance/ Banking experience",
+        "Required Skills and Experience",
+        "Backend Technologies: Proficiency in Java, Spring, Spring Boot, and Restful API development",
+        "Frontend Technologies: Strong experience with React.js, HTML, CSS, and JavaScript/TypeScript",
+        "Micro services Architecture: Hands-on experience designing and implementing scalable microservices",
+        "Cloud Computing: Working knowledge of Azure Cloud (App Services, Azure DevOps, etc.). Database: Experience with relational (e.g., MySQL, PostgreSQL) and/or NoSQL databases",
+        "CI/CD: Familiarity with tools like Jenkins, Git, or Azure DevOps for automated builds and deployments",
+        "Version Control: Proficiency with Git or similar version control systems",
+        "Agile Methodologies: Understanding of Scrum or Kanban processes",
+        "Experience with containerization technologies like Docker and orchestration using Kubernetes",
+        "Knowledge of secure coding practices and application security",
+        "Experience with monitoring and logging tools (e.g., ELK stack, Prometheus, Grafana)",
+        "Familiarity with messaging systems (e.g., RabbitMQ, Kafka)"
+      ]
+    },
+    "job_onet_soc": "15113200",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "m_zU85DfjOv_rQdiAAAAAA==",
+    "job_title": "Java Full Stack developer",
+    "employer_name": "AKKODIS",
+    "employer_logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQI3s0sHT28bVZgfRC4C1JcNBba1uguisJHfVc&s=0",
+    "employer_website": null,
+    "job_publisher": "Akkodis",
+    "job_employment_type": "Contractor",
+    "job_employment_types": [
+      "CONTRACTOR"
+    ],
+    "job_apply_link": "https://www.akkodis.com/en-us/careers/jobs/java-full-stack-developer-chicago-/us_en_6_971601_1601398?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": false,
+    "apply_options": [
+      {
+        "publisher": "Akkodis",
+        "apply_link": "https://www.akkodis.com/en-us/careers/jobs/java-full-stack-developer-chicago-/us_en_6_971601_1601398?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Dice",
+        "apply_link": "https://www.dice.com/job-detail/38f474eb-1870-4f0e-bde7-c90ec8cd2a2e?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Indeed",
+        "apply_link": "https://www.indeed.com/viewjob?jk=0e87a01f0dcab718&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Glassdoor",
+        "apply_link": "https://www.glassdoor.com/job-listing/java-full-stack-developer-flex-employee-services-JV_IC1128808_KO0,25_KE26,48.htm?jl=1009847519113&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "ZipRecruiter",
+        "apply_link": "https://www.ziprecruiter.com/c/Seven-Seven-Software/Job/Full-Stack-Java-Developer/-in-Chicago,IL?jid=bbac5a2a4d273b74&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "IT Recruiters For Tech Jobs Itrecruiters.technology",
+        "apply_link": "https://www.itrecruiters.technology/job/full-stack-java-developer-interview-now/?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Iitjobs",
+        "apply_link": "https://www.iitjobs.com/job/java-full-stack-developer-chicago-il-usa-nirvana-enterprises-101148?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "OPTnation",
+        "apply_link": "https://www.optnation.com/java-full-stack-developer-job-in-chicago-il-view-jobid-34290?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Akkodis is seeking a Java Full Stack developer for a Contract with a client in Chicago, IL(Hybrid). Candidates must have strong hands-on experience with Azure DevOps, CI/CD pipelines, and modern front-end technologies.\n\nRate Range: $53/hour to $56/hour; The rate may be negotiable based on experience, education, geographic location, and other factors.\n\nJava Full Stack developer job responsibilities include:\n\u2022 Develop and maintain full-stack applications using ReactJS for the front end and Java with Spring Boot for the back end.\n\u2022 Design and implement microservices architecture, ensuring scalability and performance across distributed systems.\n\u2022 Integrate REST APIs and manage event-driven systems using technologies like Apache Kafka and JMS.\n\u2022 Deploy applications using CI/CD pipelines with tools such as Azure DevOps, Jenkins, and Concourse.\n\u2022 Collaborate with cross-functional teams to perform code reviews, troubleshoot production issues, and ensure adherence to ITIL processes.\n\u2022 Continuously improve application performance and reliability, leveraging DevOps practices and cloud platforms like Azure.\n\nRequired Qualifications:\n\u2022 Bachelor\u2019s degree in computer science, Engineering, or a related field.\n\u2022 Minimum 5 years of experience in full-stack development using Java and ReactJS.\n\u2022 Strong expertise in building microservices with Spring Boot and integrating REST APIs.\n\u2022 Hands-on experience with CI/CD tools and cloud platforms, preferably Azure, along with DevOps automation skills.\n\nIf you are interested in this role, then please click APPLY NOW. For other opportunities available at Akkodis, or any questions, feel free to contact me at Shashank.Tewari@akkodisgroup.com.\n\nPay Details: $53.00 to $56.00 per hour\n\nBenefit offerings available for our associates include medical, dental, vision, life insurance, short-term disability, additional voluntary benefits, EAP program, commuter benefits and a 401K plan. Our benefit offerings provide employees the flexibility to choose the type of coverage that meets their individual needs. In addition, our associates may be eligible for paid leave including Paid Sick Leave or any other paid leave required by Federal, State, or local law, as well as Holiday pay where applicable.\n\nEqual Opportunity Employer/Veterans/Disabled\n\nMilitary connected talent encouraged to apply\n\nTo read our Candidate Privacy Information Statement, which explains how we will use your information, please navigate to https://www-uat.modis.com/en-us/candidate-privacy\n\nThe Company will consider qualified applicants with arrest and conviction records in accordance with federal, state, and local laws and/or security clearance requirements, including, as applicable:\n\u2022 The California Fair Chance Act\n\u2022 Los Angeles City Fair Chance Ordinance\n\u2022 Los Angeles County Fair Chance Ordinance for Employers\n\u2022 San Francisco Fair Chance Ordinance\n\nMassachusetts Candidates Only: It is unlawful in Massachusetts to require or administer a lie detector test as a condition of employment or continued employment. An employer who violates this law shall be subject to criminal penalties and civil liability.",
+    "job_is_remote": false,
+    "job_posted_at": "3 days ago",
+    "job_posted_at_timestamp": 1761782400,
+    "job_posted_at_datetime_utc": "2025-10-30T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "dental_coverage",
+      "paid_time_off",
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3Dm_zU85DfjOv_rQdiAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_min_salary": 53,
+    "job_max_salary": 56,
+    "job_salary_period": "HOUR",
+    "job_highlights": {
+      "Qualifications": [
+        "Candidates must have strong hands-on experience with Azure DevOps, CI/CD pipelines, and modern front-end technologies",
+        "Bachelor\u2019s degree in computer science, Engineering, or a related field",
+        "Minimum 5 years of experience in full-stack development using Java and ReactJS",
+        "Strong expertise in building microservices with Spring Boot and integrating REST APIs",
+        "Hands-on experience with CI/CD tools and cloud platforms, preferably Azure, along with DevOps automation skills"
+      ],
+      "Benefits": [
+        "Rate Range: $53/hour to $56/hour; The rate may be negotiable based on experience, education, geographic location, and other factors",
+        "Pay Details: $53.00 to $56.00 per hour",
+        "Benefit offerings available for our associates include medical, dental, vision, life insurance, short-term disability, additional voluntary benefits, EAP program, commuter benefits and a 401K plan",
+        "Our benefit offerings provide employees the flexibility to choose the type of coverage that meets their individual needs",
+        "In addition, our associates may be eligible for paid leave including Paid Sick Leave or any other paid leave required by Federal, State, or local law, as well as Holiday pay where applicable"
+      ],
+      "Responsibilities": [
+        "Develop and maintain full-stack applications using ReactJS for the front end and Java with Spring Boot for the back end",
+        "Design and implement microservices architecture, ensuring scalability and performance across distributed systems",
+        "Integrate REST APIs and manage event-driven systems using technologies like Apache Kafka and JMS",
+        "Deploy applications using CI/CD pipelines with tools such as Azure DevOps, Jenkins, and Concourse",
+        "Collaborate with cross-functional teams to perform code reviews, troubleshoot production issues, and ensure adherence to ITIL processes",
+        "Continuously improve application performance and reliability, leveraging DevOps practices and cloud platforms like Azure"
+      ]
+    },
+    "job_onet_soc": "15113200",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "yQk-04j60XyMfmGaAAAAAA==",
+    "job_title": "Frontend Web Developer",
+    "employer_name": "accentedge, LLC",
+    "employer_logo": null,
+    "employer_website": "https://www.accentedge.digital",
+    "job_publisher": "Indeed",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://www.indeed.com/viewjob?jk=6e149a6506fe0eba&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": true,
+    "apply_options": [
+      {
+        "publisher": "Indeed",
+        "apply_link": "https://www.indeed.com/viewjob?jk=6e149a6506fe0eba&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "ZipRecruiter",
+        "apply_link": "https://www.ziprecruiter.com/c/accentedge,-LLC/Job/Frontend-Web-Developer/-in-Chicago,IL?jid=fec737dc8fbc7f2a&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Glassdoor",
+        "apply_link": "https://www.glassdoor.com/job-listing/frontend-web-developer-accentedge-llc-JV_IC1128808_KO0,22_KE23,37.htm?jl=1009885132648&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "LinkedIn",
+        "apply_link": "https://www.linkedin.com/jobs/view/frontend-web-developer-at-accentedge-4305164413?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "SimplyHired",
+        "apply_link": "https://www.simplyhired.com/job/I0BpjbqGSyRfrXzNujpUtTvMf7HXDGixHoLYA4gJxBQbvTr3VDOTmQ?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Monster",
+        "apply_link": "https://www.monster.com/job-openings/frontend-web-developer-chicago-il--8cd5a402-1226-4674-8a1f-a377cc2e0e9c?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Ladders",
+        "apply_link": "https://www.theladders.com/job/frontend-web-developer-accentedge-llc-chicago-il_83515666?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "BeBee",
+        "apply_link": "https://us.bebee.com/job/01b16852f3beb64455b38c341f7d4fd9?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Join us at accentedge as a Frontend Web Developer, where you'll be at the forefront of crafting engaging user interfaces that deliver exceptional user experiences. In this role, you will leverage your expertise in modern web technologies and design principles to transform ideas and prototypes into fully functional web applications.\n\nKey Responsibilities:\n\u2022 Develop responsive and visually appealing web applications using HTML, CSS, and JavaScript.\n\u2022 Collaborate with UI/UX designers to implement and optimize designs according to best practices and user-centric methodologies.\n\u2022 Work with RESTful APIs and third-party services to integrate dynamic content into applications.\n\u2022 Ensure cross-browser compatibility and optimize applications for different devices and screen sizes.\n\u2022 Implement performance and responsiveness enhancements to improve user experience.\n\u2022 Participate in code reviews and maintain high standards of code quality and best practices.\n\u2022 Stay current with emerging technologies and trends in frontend development and propose new tools and techniques that can improve product delivery.\n\u2022 Contribute to team efforts in agile development cycles and collaborate effectively with backend developers.\n\nRequirements\n\u2022 Experience: Minimum of 3 years of professional experience in frontend web development.\n\u2022 Technical Skills: Proficiency in HTML5, CSS3, and JavaScript (ES6+), as well as familiarity with frameworks like React, Vue.js, or Angular.\n\u2022 Responsive Design: Strong understanding of responsive design principles and mobile-first approaches.\n\u2022 Version Control: Proficient in using version control systems, particularly Git.\n\u2022 Performance Optimization: Experience with performance optimization techniques such as lazy loading, code splitting, and caching strategies.\n\u2022 Cross-browser Compatibility: Knowledge of best practices to ensure compatibility across various browsers and devices.\n\u2022 Testing & Debugging: Familiarity with modern debugging and testing techniques, including unit and integration testing.\n\u2022 Soft Skills: Strong communication, problem-solving abilities, and a collaborative mindset.\n\nPreferred Qualifications:\n\u2022 Experience with CSS preprocessors like SASS or LESS.\n\u2022 Understanding of web accessibility standards (WCAG) and practices.\n\u2022 Familiarity with build tools such as Webpack, Gulp, or similar task runners.\n\u2022 Bachelor\u2019s degree in Computer Science, Web Development, or a related field.\n\nBenefits\n\u2022 Join a forward-looking team at the forefront of digital transformation.\n\u2022 Work on high-impact, large-scale WordPress projects that challenge your expertise.\n\u2022 Competitive compensation and benefits package.\n\u2022 Flexible work arrangements and a collaborative, innovative work culture.",
+    "job_is_remote": false,
+    "job_posted_at": null,
+    "job_posted_at_timestamp": null,
+    "job_posted_at_datetime_utc": null,
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3DyQk-04j60XyMfmGaAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_salary": null,
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": null,
+    "job_highlights": {
+      "Qualifications": [
+        "Experience: Minimum of 3 years of professional experience in frontend web development",
+        "Technical Skills: Proficiency in HTML5, CSS3, and JavaScript (ES6+), as well as familiarity with frameworks like React, Vue.js, or Angular",
+        "Responsive Design: Strong understanding of responsive design principles and mobile-first approaches",
+        "Version Control: Proficient in using version control systems, particularly Git",
+        "Performance Optimization: Experience with performance optimization techniques such as lazy loading, code splitting, and caching strategies",
+        "Cross-browser Compatibility: Knowledge of best practices to ensure compatibility across various browsers and devices",
+        "Testing & Debugging: Familiarity with modern debugging and testing techniques, including unit and integration testing",
+        "Soft Skills: Strong communication, problem-solving abilities, and a collaborative mindset"
+      ],
+      "Benefits": [
+        "Join a forward-looking team at the forefront of digital transformation",
+        "Work on high-impact, large-scale WordPress projects that challenge your expertise",
+        "Competitive compensation and benefits package",
+        "Flexible work arrangements and a collaborative, innovative work culture"
+      ],
+      "Responsibilities": [
+        "In this role, you will leverage your expertise in modern web technologies and design principles to transform ideas and prototypes into fully functional web applications",
+        "Develop responsive and visually appealing web applications using HTML, CSS, and JavaScript",
+        "Collaborate with UI/UX designers to implement and optimize designs according to best practices and user-centric methodologies",
+        "Work with RESTful APIs and third-party services to integrate dynamic content into applications",
+        "Ensure cross-browser compatibility and optimize applications for different devices and screen sizes",
+        "Implement performance and responsiveness enhancements to improve user experience",
+        "Participate in code reviews and maintain high standards of code quality and best practices",
+        "Stay current with emerging technologies and trends in frontend development and propose new tools and techniques that can improve product delivery",
+        "Contribute to team efforts in agile development cycles and collaborate effectively with backend developers"
+      ]
+    },
+    "job_onet_soc": "15113400",
+    "job_onet_job_zone": "3"
+  },
+  {
+    "job_id": "v8HhvZ52gud7oqnCAAAAAA==",
+    "job_title": "Full-Stack Web Developer",
+    "employer_name": "Publicis Groupe Holdings B.V",
+    "employer_logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4VJavZxIeck1yAgfhGKSC63GyCP231KcRHsNh&s=0",
+    "employer_website": "https://careers.publicisgroupe.com",
+    "job_publisher": "Publicis Groupe Holdings B.V Careers",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://careers.publicisgroupe.com/jobs/121515?lang=en-us&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": false,
+    "apply_options": [
+      {
+        "publisher": "Publicis Groupe Holdings B.V Careers",
+        "apply_link": "https://careers.publicisgroupe.com/jobs/121515?lang=en-us&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "ZipRecruiter",
+        "apply_link": "https://www.ziprecruiter.com/c/Publicis-Groupe-Holdings-B.V/Job/Full-Stack-Web-Developer/-in-Chicago,IL?jid=0f0411294116499c&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Ladders",
+        "apply_link": "https://www.theladders.com/job/full-stack-web-developer-starcom-mediavest-group-germany-gmbh-chicago-il_83726094?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Jobilize",
+        "apply_link": "https://www.jobilize.com/job/us-il-chicago-full-stack-web-developer-epsilon-hiring-now-job-immediately?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Overview\n\nHow You\u2019ll Make an Impact\n\nAs a Full Stack Developer on the Automation & Infrastructure team, you\u2019ll design and develop innovative, custom tools that streamline workflows and solve real business challenges. You\u2019ll collaborate closely with project managers, operations teams, and internal partners to understand requirements and translate them into practical, data-driven solutions. You will contribute to all stages of the development lifecycle, from design and implementation to deployment and support. The ideal candidate will be committed to delivering scalable solutions, collaborative problem solving, and delivering high-quality, impactful applications that support internal teams.\n\nWhat You\u2019ll Achieve\n\u2022 Build and maintain modern, responsive applications using TypeScript and leading web frameworks.\n\u2022 Develop secure, well-structured RESTful APIs with Node.js and frameworks such as Express and NestJS.\n\u2022 Deliver end-to-end solutions that are reliable, maintainable, and aligned with business priorities.\n\u2022 Write clean, performant, and maintainable code that adheres to standard processes.\n\u2022 Contribute to deployment processes, system monitoring, and ongoing application support.\n\u2022 Explore opportunities to integrate AI/ML services where they can improve efficiency or user experience\n\nWho You Are\n\u2022 What you\u2019ll bring with you:\n\u2022 Bachelor\u2019s degree in Computer Science or related field, or equivalent experience.\n\u2022 2+ years of experience in full-stack web development.\n\u2022 Strong proficiency in TypeScript and a modern frontend framework (e.g., Angular, React, Vue).\n\u2022 Experience with Node.js and backend JavaScript frameworks (e.g., Express, NestJS).\n\u2022 Solid background in building data-driven web applications and integrating APIs.\n\u2022 Skilled in UI/UX design with experience developing intuitive interfaces using modern libraries and custom components.\n\u2022 Proficient with Git and collaborative development workflows.\n\u2022 Working knowledge of relational databases and SQL (PostgreSQL, MySQL, etc.).\n\u2022 Comfortable developing and deploying in Linux-based environments.\n\u2022 Strong troubleshooting skills with a creative problem-solving approach.\n\u2022 Ability to manage multiple competing priorities across diverse products and environments.\n\u2022 Excellent verbal and written communication skills\n\u2022 Detail-oriented, self-motivated, and an effective collaborator across teams.\n\u2022 Why you might stand out from other talent:\n\u2022 Experience with Docker, scripting languages (e.g., Bash, Python, PHP), or containerized deployments.\n\u2022 Exposure to AI/ML concepts and hands-on experience integrating AI services or APIs (e.g., OpenAI, Hugging Face, Azure Cognitive Services, AWS AI tools).\n\u2022 Familiarity with modern DevOps practices, including CI/CD\n\u2022 Demonstrated ability to design scalable, maintainable solutions with a focus on performance and sustainability.\n\u2022 A passion for building creative, impactful tools and a track record of delivering solutions that improve workflows or user experience.\n\nClick here to view how Epsilon transforms marketing with 1 View, 1 Vision, 1 Voice.\n\nBase Salary: $62,250 \u2013 $103,750\n\nActual compensation within the range will be dependent upon, but not limited to the individual\u2019s skills, experience, qualifications, location and application employment laws. The salary pay range is subject to change and may be modified at any time.\n\nAdditional Information\n\nWhen You Join Us, We\u2019ll Create Something EPIC Together\nEpsilon is a global data, technology and services company that powers the marketing and advertising ecosystem. For decades, we\u2019ve provided marketers from the world\u2019s leading brands the data, technology and services they need to engage consumers with 1 View, 1 Vision and 1 Voice. 1 View of their universe of potential buyers. 1 Vision for engaging each individual. And 1 Voice to harmonize engagement across paid, owned and earned channels.\n\nEpsilon\u2019s comprehensive portfolio of capabilities across our suite of digital media, messaging and loyalty solutions bridge the divide between marketing and advertising technology. We process 400+ billion consumer actions each day using advanced AI and hold many patents of proprietary technology, including real-time modeling languages and consumer privacy advancements. Thanks to the work of every employee, Epsilon has been consistently recognized as industry-leading by Forrester, Adweek and the MRC. Epsilon is a global company with more than 9,000 employees around the world.\n\nEpsilon has a core set of 5 values that define our culture and guide us to create value for our clients, our people and consumers. We are seeking candidates that align with our company values, demonstrate them and make them meaningful in their day-to-day work:\n\u2022 Act with integrity. We are transparent and have the courage to do the right thing.\n\u2022 Work together to win together. We believe collaboration is the catalyst that unlocks our full potential.\n\u2022 Innovate with purpose. We shape the market with big ideas that drive big outcomes.\n\u2022 Respect all voices. We embrace differences and foster a culture of connection and belonging.\n\u2022 Empower with accountability. We trust each other to own and deliver on common goals.\n\nBecause You Matter\n\nAs an Epsilon employee, you deserve perks and benefits that put you, your family and your finances first. Our benefits encompass a wide range of offerings, including but not limited to the following:\n\u2022 Time to Recharge: Flexible time off (FTO), 15 paid holidays\n\u2022 Time to Recover: Paid sick time\n\u2022 Family Well-Being: Parental/new child leave, childcare & elder care assistance, adoption assistance\n\u2022 Extra Perks: Comprehensive health coverage, 401(k), tuition assistance, commuter benefits, professional development, employee recognition, charitable donation matching, health coaching and counseling\n\nEpsilon benefits are subject to eligibility requirements and other terms.\n\nEpsilon is an Equal Opportunity Employer. Epsilon\u2019s policy is not to discriminate against any applicant or employee based on actual or perceived race, age, sex or gender (including pregnancy), marital status, national origin, ancestry, citizenship status, mental or physical disability, religion, creed, color, sexual orientation, gender identity or expression (including transgender status), veteran status, genetic information, or any other characteristic protected by applicable federal, state or local law. Epsilon also prohibits harassment of applicants and employees based on any of these protected categories. Epsilon will provide accommodations to applicants needing accommodations to complete the application process. Please reach out to LeaveofAbsence@epsilon.com to request an accommodation.\n\nFor San Francisco Bay and Los Angeles Areas: Epsilon will consider for employment qualified applicants with criminal histories in a manner consistent with the City of Los Angeles\u2019 Fair Chance Initiative for Hiring Ordinance and San Francisco Police Code Sections 4901-4919, commonly referred to as the San Francisco Fair Chance Ordinance. Applicants with criminal histories are welcome to apply.\n\n#LI-AM1",
+    "job_is_remote": false,
+    "job_posted_at": "1 month ago",
+    "job_posted_at_timestamp": 1759363200,
+    "job_posted_at_datetime_utc": "2025-10-02T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "paid_time_off",
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3Dv8HhvZ52gud7oqnCAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_salary": null,
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": null,
+    "job_highlights": {
+      "Qualifications": [
+        "Bachelor\u2019s degree in Computer Science or related field, or equivalent experience",
+        "2+ years of experience in full-stack web development",
+        "Strong proficiency in TypeScript and a modern frontend framework (e.g., Angular, React, Vue)",
+        "Experience with Node.js and backend JavaScript frameworks (e.g., Express, NestJS)",
+        "Solid background in building data-driven web applications and integrating APIs",
+        "Skilled in UI/UX design with experience developing intuitive interfaces using modern libraries and custom components",
+        "Proficient with Git and collaborative development workflows",
+        "Working knowledge of relational databases and SQL (PostgreSQL, MySQL, etc.)",
+        "Comfortable developing and deploying in Linux-based environments",
+        "Strong troubleshooting skills with a creative problem-solving approach",
+        "Ability to manage multiple competing priorities across diverse products and environments",
+        "Excellent verbal and written communication skills",
+        "Detail-oriented, self-motivated, and an effective collaborator across teams",
+        "Why you might stand out from other talent:",
+        "Experience with Docker, scripting languages (e.g., Bash, Python, PHP), or containerized deployments",
+        "Exposure to AI/ML concepts and hands-on experience integrating AI services or APIs (e.g., OpenAI, Hugging Face, Azure Cognitive Services, AWS AI tools)",
+        "Familiarity with modern DevOps practices, including CI/CD",
+        "Demonstrated ability to design scalable, maintainable solutions with a focus on performance and sustainability",
+        "A passion for building creative, impactful tools and a track record of delivering solutions that improve workflows or user experience"
+      ],
+      "Benefits": [
+        "Base Salary: $62,250 \u2013 $103,750",
+        "Actual compensation within the range will be dependent upon, but not limited to the individual\u2019s skills, experience, qualifications, location and application employment laws",
+        "The salary pay range is subject to change and may be modified at any time",
+        "And 1 Voice to harmonize engagement across paid, owned and earned channels",
+        "Empower with accountability",
+        "Our benefits encompass a wide range of offerings, including but not limited to the following:",
+        "Time to Recharge: Flexible time off (FTO), 15 paid holidays",
+        "Time to Recover: Paid sick time",
+        "Family Well-Being: Parental/new child leave, childcare & elder care assistance, adoption assistance",
+        "Extra Perks: Comprehensive health coverage, 401(k), tuition assistance, commuter benefits, professional development, employee recognition, charitable donation matching, health coaching and counseling",
+        "Epsilon benefits are subject to eligibility requirements and other terms"
+      ],
+      "Responsibilities": [
+        "As a Full Stack Developer on the Automation & Infrastructure team, you\u2019ll design and develop innovative, custom tools that streamline workflows and solve real business challenges",
+        "You\u2019ll collaborate closely with project managers, operations teams, and internal partners to understand requirements and translate them into practical, data-driven solutions",
+        "You will contribute to all stages of the development lifecycle, from design and implementation to deployment and support",
+        "The ideal candidate will be committed to delivering scalable solutions, collaborative problem solving, and delivering high-quality, impactful applications that support internal teams",
+        "Build and maintain modern, responsive applications using TypeScript and leading web frameworks",
+        "Develop secure, well-structured RESTful APIs with Node.js and frameworks such as Express and NestJS",
+        "Deliver end-to-end solutions that are reliable, maintainable, and aligned with business priorities",
+        "Write clean, performant, and maintainable code that adheres to standard processes",
+        "Contribute to deployment processes, system monitoring, and ongoing application support",
+        "Explore opportunities to integrate AI/ML services where they can improve efficiency or user experience",
+        "1 Vision for engaging each individual"
+      ]
+    },
+    "job_onet_soc": "15113300",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "nihj23YdLF2O5XnBAAAAAA==",
+    "job_title": "Full Stack Node.js/Angular/Mobile Developer",
+    "employer_name": "Adtalem",
+    "employer_logo": null,
+    "employer_website": "https://www.adtalem.com",
+    "job_publisher": "Adtalem Careers - Adtalem Global Education",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://careers.adtalem.com/job/full-stack-node-js-angular-mobile-developer-in-chicago-il-jid-4629?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": false,
+    "apply_options": [
+      {
+        "publisher": "Adtalem Careers - Adtalem Global Education",
+        "apply_link": "https://careers.adtalem.com/job/full-stack-node-js-angular-mobile-developer-in-chicago-il-jid-4629?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Smart Recruiters Jobs",
+        "apply_link": "https://jobs.smartrecruiters.com/AdtalemGlobalEducation/744000080037270-full-stack-node-js-angular-mobile-developer?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Indeed",
+        "apply_link": "https://www.indeed.com/viewjob?jk=cc1a5ee77c1d075f&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Glassdoor",
+        "apply_link": "https://www.glassdoor.com/job-listing/full-stack-node-js-angular-mobile-developer-adtalem-global-education-JV_IC1128808_KO0,43_KE44,68.htm?jl=1009866406148&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Edtech.com",
+        "apply_link": "https://www.edtech.com/jobs/full-stack-nodejsangularmobile-developer-3517?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "ZipRecruiter",
+        "apply_link": "https://www.ziprecruiter.com/c/Roy-Talman-&-Associates/Job/Python-React-Full-Stack-Developer/-in-Chicago,IL?jid=7f6b6ae7c0ab7912&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "LinkedIn",
+        "apply_link": "https://www.linkedin.com/jobs/view/full-stack-node-js-angular-mobile-developer-at-adtalem-global-education-4293974844?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Iitjobs",
+        "apply_link": "https://www.iitjobs.com/job/full-stack-developer-chicago-il-usa-ztek-consulting-inc-87275?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Company Description\n\nAdtalem Global Education is a national leader in post-secondary education and leading provider of professional talent to the healthcare industry. Adtalem educates and empowers students with the knowledge and skills to become leaders in their communities and make a lasting impact on public health, well-being and beyond. Through equitable access to education, environments that nurture student success, and a focus on expanding and diversifying the talent pipeline in healthcare, Adtalem is building a brighter future for communities and the world.\n\nAdtalem is the parent organization of American University of the Caribbean School of Medicine, Chamberlain University, Ross University School of Medicine, Ross University School of Veterinary Medicine and Walden University.\n\nIn our U.S. locations, we operate on a hybrid work model with a four-day in-office schedule, Monday\u2013Thursday. This in-office time fosters creativity, innovation, communication, and stronger team relationships, supporting both individual and organizational success.\n\nVisit Adtalem.com for more information and follow us on LinkedIn and Instagram.\n\nJob Description\n\nThe position will lead the implementation, maintenance, performance tuning, and capacity management for all organizational software systems as directed by management and senior staff.\n\u2022 Deep expertise and hands-on experience with web applications, frameworks, and programming languages such as AngularJS, Node.js, HTML, CSS, JavaScript, jQuery, and API Development\n\u2022 Experience building Microservices\n\u2022 Deep knowledge of Front-end frameworks such as Bootstrap, React, and AngularJS\n\u2022 Experience in working with cloud native applications using public cloud (Google Cloud preferred)\n\u2022 Experience working with Azure environment, DevOps\n\u2022 Proficiency in JavaScript, HTML5, CSS3, and responsive web design.\n\u2022 Experience with RESTful APIs and integration between mobile/web apps and backend services.\n\u2022 Familiarity with NoSQL (e.g., Firestore) or SQL (e.g., MySQL, PostgreSQL) databases.\n\u2022 Experience with mobile app deployment processes on App Store and Google Play.\n\u2022 Analyzes project needs/requirements and recommends solutions to enable enterprise integration.\n\u2022 Develops and implements software solutions, standards, processes, and security.\n\u2022 Collaborating with product managers, architects, QA and other stakeholders to gather and refine software requirements and developments.\n\u2022 Maintaining and enhancing existing software applications through bug fixes and feature enhancements.\n\u2022 Perform unit testing, assist in defining test plans, and create comprehensive documentation for architectural and code-level processes\n\u2022 Maintenance of applications, ensuring analytic levels are met, and managing interfaces and service levels will also be part of your duties\n\u2022 Keeping up to date with emerging technologies and industry trends to continuously improve software development practices.\n\u2022 Create architectural and code level documentation\n\u2022 Complies with all policies and standards.\n\nQualifications\n\u2022 Bachelor's Degree in Computer Science, Information Systems or related fields.\n\u2022 Five (5) plus years of progressive relevant industry experience.\n\u2022 Strong proficiency in one or more programming languages.\n\u2022 Proven leadership capabilities, with the ability to lead and inspire a team.\n\u2022 Excellent communication and interpersonal skills to collaborate effectively with stakeholders at all levels.\n\u2022 Strong analytical and problem-solving skills. Ability to identify and resolve complex technical issues, considering both short-term and long-term implications.\n\u2022 Experience in designing scalable and robust software architectures. Familiarity with cloud platforms, distributed systems, and microservices architecture is advantageous.\n\u2022 Solid understanding and experience with Agile methodologies, such as Scrum or Kanban. Ability to work in a fast-paced, iterative development environment.\n\u2022 Knowledge of software testing methodologies and experience in writing testable code. Familiarity with automated testing frameworks and tools is a plus.\n\nAdditional Information\n\nIn support of the pay transparency laws enacted across the country, the expected salary range for this position is between $74064.94 and $130001.91. Actual pay will be adjusted based on job-related factors permitted by law, such as experience and training; geographic location; licensure and certifications; market factors; departmental budgets; and responsibility. Our Talent Acquisition Team will be happy to answer any questions you may have, and we look forward to learning more about your salary requirements. The position qualifies for the below benefits.\n\nAdtalem offers a robust suite of benefits including:\n\u2022 Health, dental, vision, life and disability insurance\n\u2022 401k Retirement Program + 6% employer match\n\u2022 Participation in Adtalem\u2019s Flexible Time Off (FTO) Policy\n\u2022 12 Paid Holidays\n\nFor more information related to our benefits please visit: https://careers.adtalem.com/benefits.\n\nYou are also eligible to participate in an annual incentive program, subject to the rules governing the program, whereby an award, if any, depends on various factors, including, without limitation, individual and organizational performance.\n\nEqual Opportunity \u2013 Minority / Female / Disability / V / Gender Identity / Sexual Orientation",
+    "job_is_remote": false,
+    "job_posted_at": null,
+    "job_posted_at_timestamp": null,
+    "job_posted_at_datetime_utc": null,
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "dental_coverage",
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3Dnihj23YdLF2O5XnBAAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_salary": null,
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": null,
+    "job_highlights": {
+      "Qualifications": [
+        "Deep expertise and hands-on experience with web applications, frameworks, and programming languages such as AngularJS, Node.js, HTML, CSS, JavaScript, jQuery, and API Development",
+        "Experience building Microservices",
+        "Deep knowledge of Front-end frameworks such as Bootstrap, React, and AngularJS",
+        "Experience working with Azure environment, DevOps",
+        "Proficiency in JavaScript, HTML5, CSS3, and responsive web design",
+        "Experience with RESTful APIs and integration between mobile/web apps and backend services",
+        "Familiarity with NoSQL (e.g., Firestore) or SQL (e.g., MySQL, PostgreSQL) databases",
+        "Experience with mobile app deployment processes on App Store and Google Play",
+        "Bachelor's Degree in Computer Science, Information Systems or related fields",
+        "Five (5) plus years of progressive relevant industry experience",
+        "Strong proficiency in one or more programming languages",
+        "Proven leadership capabilities, with the ability to lead and inspire a team",
+        "Excellent communication and interpersonal skills to collaborate effectively with stakeholders at all levels",
+        "Strong analytical and problem-solving skills",
+        "Ability to identify and resolve complex technical issues, considering both short-term and long-term implications",
+        "Experience in designing scalable and robust software architectures",
+        "Familiarity with cloud platforms, distributed systems, and microservices architecture is advantageous",
+        "Solid understanding and experience with Agile methodologies, such as Scrum or Kanban",
+        "Ability to work in a fast-paced, iterative development environment",
+        "Knowledge of software testing methodologies and experience in writing testable code"
+      ],
+      "Benefits": [
+        "In support of the pay transparency laws enacted across the country, the expected salary range for this position is between $74064.94 and $130001.91",
+        "Actual pay will be adjusted based on job-related factors permitted by law, such as experience and training; geographic location; licensure and certifications; market factors; departmental budgets; and responsibility",
+        "Adtalem offers a robust suite of benefits including:",
+        "Health, dental, vision, life and disability insurance",
+        "401k Retirement Program + 6% employer match",
+        "Participation in Adtalem\u2019s Flexible Time Off (FTO) Policy",
+        "12 Paid Holidays",
+        "For more information related to our benefits please visit: https://careers.adtalem.com/benefits",
+        "You are also eligible to participate in an annual incentive program, subject to the rules governing the program, whereby an award, if any, depends on various factors, including, without limitation, individual and organizational performance"
+      ],
+      "Responsibilities": [
+        "The position will lead the implementation, maintenance, performance tuning, and capacity management for all organizational software systems as directed by management and senior staff",
+        "Analyzes project needs/requirements and recommends solutions to enable enterprise integration",
+        "Develops and implements software solutions, standards, processes, and security",
+        "Collaborating with product managers, architects, QA and other stakeholders to gather and refine software requirements and developments",
+        "Maintaining and enhancing existing software applications through bug fixes and feature enhancements",
+        "Perform unit testing, assist in defining test plans, and create comprehensive documentation for architectural and code-level processes",
+        "Maintenance of applications, ensuring analytic levels are met, and managing interfaces and service levels will also be part of your duties",
+        "Keeping up to date with emerging technologies and industry trends to continuously improve software development practices",
+        "Create architectural and code level documentation",
+        "Complies with all policies and standards"
+      ]
+    },
+    "job_onet_soc": "15113400",
+    "job_onet_job_zone": "3"
+  },
+  {
+    "job_id": "3LiFoBTbmneJq4K8AAAAAA==",
+    "job_title": ".Net Full Stack Developer",
+    "employer_name": "Purple Drive",
+    "employer_logo": null,
+    "employer_website": "https://www.purpledrive.com",
+    "job_publisher": "ZipRecruiter",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://www.ziprecruiter.com/c/Purple-Drive/Job/.Net-Full-Stack-Developer/-in-Chicago,IL?jid=a9826d48c7877720&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": true,
+    "apply_options": [
+      {
+        "publisher": "ZipRecruiter",
+        "apply_link": "https://www.ziprecruiter.com/c/Purple-Drive/Job/.Net-Full-Stack-Developer/-in-Chicago,IL?jid=a9826d48c7877720&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Jooble",
+        "apply_link": "https://jooble.org/jdp/-4230754797281269395?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Teal",
+        "apply_link": "https://www.tealhq.com/job/full-stack-net-developer_37ee6a36-5c38-4a42-9de2-f53aaee13bc6?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Monster",
+        "apply_link": "https://www.monster.com/job-openings/-net-full-stack-developer-il--b2251952-2fc0-4656-96e5-117af97e3a58?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Ladders",
+        "apply_link": "https://www.theladders.com/job/dot-net-full-stack-developer-purple-drive-technologies-chicago-il_83824233?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Talents By Vaia",
+        "apply_link": "https://talents.vaia.com/companies/charles-schwab/full-stack-net-developer-23942747/?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "WhatJobs",
+        "apply_link": "https://www.whatjobs.com/jobs/asp-net?id=2185555847&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "BeBee",
+        "apply_link": "https://us.bebee.com/job/89c449a5db599b94b888ab924898cc10?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Position Overview\n\n- We are seeking an experienced Sr Full Stack Developer with over 10 years of software engineering experience, including expertise in .NET and ReactJS UI development.\n- Experience in Oracle PLSSQL is must.\n- This role requires a strong background in designing and implementing scalable solutions, leading technical teams, and driving modernization initiatives.\n- Experience in the financial services industry is highly preferred.\n\nKey Responsibilities\n\n1. Technical Leadership Architecture - Lead the design, development, and implementation of full-stack solutions using .NET, Microservices, and React.js . - Define and enforce coding standards, best practices, and architectural patterns to ensure scalability and maintainability .\n2. Full Stack Development - Develop and maintain robust front-end applications using React.js (with hooks, state management, and modern tooling) and back-end services using .NET . - Build and integrate RESTful APIs and microservices, ensuring high performance and responsiveness . - Optimize database schemas and queries for relational (e.g., Oracle, SQL Server) and NoSQL databases (e.g., MongoDB) .\n3. Project Modernization Innovation - Analyze existing systems to identify opportunities for re-architecture and improvement . - Implement event-driven architectures using Kafka and cloud technologies (e.g., AWS, Azure, Kubernetes) . - Ensure solutions align with business goals, particularly in financial services.\n4. Team Mentorship Collaboration - Mentor junior and mid-level developers, conduct code reviews, and foster a culture of technical excellence . - Collaborate with cross-functional teams (product managers, UXUI designers, DevOps) to deliver high-quality software . - Act as a key technical resource and escalation point for complex issues .\n5. DevOps Quality Assurance - Implement CICD pipelines using tools like Jenkins, GitHub, Harness, and Docker . - Ensure code quality through testing frameworks (e.g., JUnit, Mockito, Jest) and secure coding practices . - Manage deployments and infrastructure using cloud platforms and containerization (e.g., Kubernetes) .",
+    "job_is_remote": false,
+    "job_posted_at": "4 days ago",
+    "job_posted_at_timestamp": 1761696000,
+    "job_posted_at_datetime_utc": "2025-10-29T00:00:00.000Z",
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": null,
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3D3LiFoBTbmneJq4K8AAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_salary": null,
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": null,
+    "job_highlights": {
+      "Qualifications": [
+        "We are seeking an experienced Sr Full Stack Developer with over 10 years of software engineering experience, including expertise in .NET and ReactJS UI development",
+        "Experience in Oracle PLSSQL is must",
+        "This role requires a strong background in designing and implementing scalable solutions, leading technical teams, and driving modernization initiatives"
+      ],
+      "Responsibilities": [
+        "Technical Leadership Architecture - Lead the design, development, and implementation of full-stack solutions using .NET, Microservices, and React.js ",
+        "Define and enforce coding standards, best practices, and architectural patterns to ensure scalability and maintainability ",
+        "Full Stack Development - Develop and maintain robust front-end applications using React.js (with hooks, state management, and modern tooling) and back-end services using .NET . - Build and integrate RESTful APIs and microservices, ensuring high performance and responsiveness ",
+        "Optimize database schemas and queries for relational (e.g., Oracle, SQL Server) and NoSQL databases (e.g., MongoDB) ",
+        "Project Modernization Innovation - Analyze existing systems to identify opportunities for re-architecture and improvement ",
+        "Implement event-driven architectures using Kafka and cloud technologies (e.g., AWS, Azure, Kubernetes) ",
+        "Ensure solutions align with business goals, particularly in financial services",
+        "Team Mentorship Collaboration - Mentor junior and mid-level developers, conduct code reviews, and foster a culture of technical excellence . - Collaborate with cross-functional teams (product managers, UXUI designers, DevOps) to deliver high-quality software ",
+        "Act as a key technical resource and escalation point for complex issues ",
+        "DevOps Quality Assurance - Implement CICD pipelines using tools like Jenkins, GitHub, Harness, and Docker ",
+        "Ensure code quality through testing frameworks (e.g., JUnit, Mockito, Jest) and secure coding practices ",
+        "Manage deployments and infrastructure using cloud platforms and containerization (e.g., Kubernetes) "
+      ]
+    },
+    "job_onet_soc": "15113200",
+    "job_onet_job_zone": "4"
+  },
+  {
+    "job_id": "gVKRqx6PKfVW81H_AAAAAA==",
+    "job_title": "Web Application Developer",
+    "employer_name": "Eagle Seven",
+    "employer_logo": null,
+    "employer_website": "https://www.eagleseven.com",
+    "job_publisher": "Indeed",
+    "job_employment_type": "Full-time",
+    "job_employment_types": [
+      "FULLTIME"
+    ],
+    "job_apply_link": "https://www.indeed.com/viewjob?jk=3968a0622237a791&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+    "job_apply_is_direct": true,
+    "apply_options": [
+      {
+        "publisher": "Indeed",
+        "apply_link": "https://www.indeed.com/viewjob?jk=3968a0622237a791&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "TalentDome - Infojini Consulting",
+        "apply_link": "https://talentdome.infojiniconsulting.com/careers/389ff815-e886-4181-9365-f069d11a25c5/In55994077/details?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Glassdoor",
+        "apply_link": "https://www.glassdoor.com/job-listing/web-application-developer-eagle-seven-JV_IC1128808_KO0,25_KE26,37.htm?jl=1009811582686&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "LinkedIn",
+        "apply_link": "https://www.linkedin.com/jobs/view/web-application-developer-at-eagle-seven-4266377047?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "SimplyHired",
+        "apply_link": "https://www.simplyhired.com/job/amxGGMCoazZ6MtFlmSPXVHuaYJYxXSsjlWHvPzkd7wMw5Oe5KStdDA?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Ladders",
+        "apply_link": "https://www.theladders.com/job/web-application-developer-eagle-seven-chicago-il_82361220?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      },
+      {
+        "publisher": "Monster",
+        "apply_link": "https://www.monster.com/job-openings/web-application-developer-il--d80b9a33-ec9e-4ee4-9f51-4de6a2b91bf5?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": true
+      },
+      {
+        "publisher": "Angular Jobs",
+        "apply_link": "https://angular-jobs.com/jobs/161667801-web-application-developer?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+        "is_direct": false
+      }
+    ],
+    "job_description": "Eagle Seven is seeking a Web Application Developer to work on our next generation desktop applications. The role will serve as a technical expert for all web development, firm wide architecture, and design. The successful candidate should have a strong sense of good software design, an eye for aesthetics, and an interest in finance/capital markets.\n\nPrimary Responsibilities include:\n\u2022 Provide architecture, design, and implementation for responsive applications across our trading, risk management, and research businesses\n\u2022 Develop and maintain key feature sets of the platform using industry proven design patterns, methods, and technologies\n\u2022 Focus on developing responsive and low latency components for large data set applications\n\u2022 Work with the quantitative research team to develop innovative and intuitive data visualization tools\n\u2022 Research and prototype new front-end technologies, tools, and visualization techniques\n\u2022 Facilitate testing and deployment of new features across multiple team\n\nRequirements\n\nSkills and Experience:\n\u2022 Bachelor\u2019s degree in Computer Science or related field\n\u2022 5+ years of experience developing interactive front-end web applications\n\u2022 Proven track record of full stack development including HTML5, CCS3, JavaScript, and TypeScript\n\u2022 Experience with frameworks such as React, Angular, Node.js, Material UI and Spring Boot\n\u2022 Experience with SciChart a strongly desired\n\u2022 Experience with OpenFin strongly desired\n\u2022 Experience with Postgres or other relational databases\n\u2022 Ability to work in a collaborative, nimble, and fast paced environment\n\u2022 Excellent communication skills, both written and verbal\n\u2022 Proven ability to manage multiple projects/priorities simultaneously\n\u2022 Trading industry experience preferred\n\nBenefits\n\nEagle Seven offers a competitive and comprehensive benefits package to all full-time employees.\n\u2022 Medical PPO and HMO coverage through BlueCross BlueShield\n\u2022 Company Contributions to a Health Savings Account (with enrollment into a High Deductible Health Plan)\n\u2022 Dental coverage through Principal\n\u2022 Vision coverage through VSP\n\u2022 401k Retirement Savings Plan with Employer Match\n\u2022 Company Paid Life Insurance\n\u2022 Company Paid Disability Insurance\n\u2022 Paid Time Off\n\u2022 Flexible Spending Account\n\u2022 Pre-tax Transit Benefits\n\u2022 Complimentary Lunch and Beverages\n\nThe minimum base salary for this role starts at $150,000. This role is eligible for a discretionary performance bonus as part of the total compensation package, in addition to the benefits listed above. Exact compensation offered may vary based on factors including, but not limited to, the candidate's experience, qualifications, and skill set.",
+    "job_is_remote": false,
+    "job_posted_at": null,
+    "job_posted_at_timestamp": null,
+    "job_posted_at_datetime_utc": null,
+    "job_location": "Chicago, IL",
+    "job_city": "Chicago",
+    "job_state": "Illinois",
+    "job_country": "US",
+    "job_latitude": 41.88325,
+    "job_longitude": -87.6323879,
+    "job_benefits": [
+      "paid_time_off",
+      "health_insurance"
+    ],
+    "job_google_link": "https://www.google.com/search?q=jobs&gl=us&hl=en&udm=8#vhid=vt%3D20/docid%3DgVKRqx6PKfVW81H_AAAAAA%3D%3D&vssid=jobs-detail-viewer",
+    "job_min_salary": null,
+    "job_max_salary": null,
+    "job_salary_period": "YEAR",
+    "job_highlights": {
+      "Qualifications": [
+        "Bachelor\u2019s degree in Computer Science or related field",
+        "5+ years of experience developing interactive front-end web applications",
+        "Proven track record of full stack development including HTML5, CCS3, JavaScript, and TypeScript",
+        "Experience with frameworks such as React, Angular, Node.js, Material UI and Spring Boot",
+        "Experience with Postgres or other relational databases",
+        "Ability to work in a collaborative, nimble, and fast paced environment",
+        "Excellent communication skills, both written and verbal",
+        "Proven ability to manage multiple projects/priorities simultaneously"
+      ],
+      "Benefits": [
+        "Eagle Seven offers a competitive and comprehensive benefits package to all full-time employees",
+        "Medical PPO and HMO coverage through BlueCross BlueShield",
+        "Company Contributions to a Health Savings Account (with enrollment into a High Deductible Health Plan)",
+        "Dental coverage through Principal",
+        "Vision coverage through VSP",
+        "401k Retirement Savings Plan with Employer Match",
+        "Company Paid Life Insurance",
+        "Company Paid Disability Insurance",
+        "Paid Time Off",
+        "Flexible Spending Account",
+        "Pre-tax Transit Benefits",
+        "Complimentary Lunch and Beverages",
+        "The minimum base salary for this role starts at $150,000",
+        "This role is eligible for a discretionary performance bonus as part of the total compensation package, in addition to the benefits listed above",
+        "Exact compensation offered may vary based on factors including, but not limited to, the candidate's experience, qualifications, and skill set"
+      ],
+      "Responsibilities": [
+        "The role will serve as a technical expert for all web development, firm wide architecture, and design",
+        "The successful candidate should have a strong sense of good software design, an eye for aesthetics, and an interest in finance/capital markets",
+        "Provide architecture, design, and implementation for responsive applications across our trading, risk management, and research businesses",
+        "Develop and maintain key feature sets of the platform using industry proven design patterns, methods, and technologies",
+        "Focus on developing responsive and low latency components for large data set applications",
+        "Work with the quantitative research team to develop innovative and intuitive data visualization tools",
+        "Research and prototype new front-end technologies, tools, and visualization techniques",
+        "Facilitate testing and deployment of new features across multiple team"
+      ]
+    },
+    "job_onet_soc": "15113400",
+    "job_onet_job_zone": "3"
+  }
+]

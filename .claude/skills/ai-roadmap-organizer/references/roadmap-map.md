@@ -38,6 +38,7 @@ Owns: **foundational** RAG — theory + straightforward framework implementation
 | `Multimodal_and_Document_Intelligence/` | ✅ Built (light) | Multimodal RAG (from `RAG_Demystified`) |
 | `RAG_with_LangGraph/` | ✅ Built | 2 nb — basic agentic RAG (simple + Databricks variant) |
 | `RAG_with_LangChain/` | ✅ Built | 4 nb — essentials, comprehensive, filtered search, indexing API |
+| `RAG_with_LlamaIndex/` | ✅ Built | Chainlit ReAct RAG over Wikipedia — from `LlamaIndex_Demystified`; not the Phase 8 NirDiamant LlamaIndex notebooks |
 
 Also `shared_data/` at this phase's root — a copy of `RAG_Demystified`'s shared `data/` folder, since several `RAG_Naive_to_Production/` notebooks reference it via relative paths. Path depth wasn't reconstructed exactly after the move (would require editing notebook content) — flag this if a notebook can't find its data file.
 
@@ -50,6 +51,7 @@ Owns: all agent-building content, both frameworks, in one place.
 | `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling + agents (from `LangChain_Demystified`'s modules 06 & 10), plus `03_Applied_Projects/` (16 nb, from `AgenticAI_Projects_Demystified`) |
 | `AI_Agents_with_LangGraph/` | ✅ Built | 11 real-world agent builds (8 original + 3 from `AgenticAI_Projects_Demystified` after 5 duplicates were skipped — see History §6) |
 | `Workflow_and_Agent_Patterns/` | ✅ Built | 8 pattern subfolders, ~27 notebooks |
+| `Building_Agents_From_Scratch/` | ✅ Built | OpenAI API + `agentic_patterns` package — from `AI-Agents-Essentials`; not a second LangGraph patterns track |
 
 ## Phase 6 — `06_Agent_SDKs_First_Party/` — 🚧 Planned
 
@@ -79,9 +81,14 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 
 Also two standalone apps merged from `RAG_Demystified`: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (an MCP+A2A agentic RAG app — kept RAG-first here rather than split to Phase 9, per user decision).
 
-## Phase 9 — `09_Agent_Protocols/` — 🚧 Planned
+## Phase 9 — `09_Agent_Protocols/` — ✅ Partially built
 
-`MCP/` (4 subfolders), `ACP/` (3 subfolders), `A2A/` (3 subfolders).
+Owns: interoperability protocols — MCP (model-to-tools/data), ACP, A2A (agent-to-agent). Not RAG (Phase 4/8), not agent-building (Phase 5).
+
+| Track | Status | Content |
+|---|---|---|
+| `MCP/` | ✅ Built | `01_Foundations/` (Anthropic rich-context course + Educative fundamentals), `02_Building_Servers/` (Educative Mastering + Databricks Apps), `03_Building_Clients/` (MCP Essential labs), `04_Applications/` (Udemy MCP Mastery, kept whole). `mcp_a2a_agentic_rag/` also sits here (copy; original RAG-first copy remains in Phase 8). |
+| `ACP/`, `A2A/` | 🚧 Planned | |
 
 ## Phase 10 — `10_Alternative_Agent_Frameworks/` — ✅ Partially built
 
@@ -89,11 +96,12 @@ Frameworks to pick up *after* Phases 2/3/5 — each standalone. **If a new agent
 
 | Track | Status | Content |
 |---|---|---|
-| `CrewAI/` | ✅ Built | `01_Foundations/Some_Simple_Agents/` (8 nb) + `04_Applications/` (9 project sets) — from `AgenticAI_Projects_Demystified` |
-| `AutoGen/` | ✅ Built | `01_Foundations/Some_Simple_Agents/` (3 nb) + `04_Applications/` (7 project sets) — from `AgenticAI_Projects_Demystified` |
-| `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned | |
+| `CrewAI/` | ✅ Built | `01_Foundations/` (basics + 8 simple agents + comprehensive tutorial), `02_Core_Capabilities/` (Flows), `03_Multi_Agent_Patterns/` (research + logistics), `04_Applications/` (9 project sets) — from `AgenticAI_Projects_Demystified` + `CrewAI_Demystified` |
+| `AutoGen/` | ✅ Built | Foundations (3 nb) + `02_Core_Capabilities/` + `03_Multi_Agent_Patterns/` (from `Autogen_Demystified`) + `04_Applications/` (7 original project sets + Auto-EDA from `AI-Agents-Essentials`) |
+| `DSPy/` | ✅ Built | `context-engineering-dspy/` levels 1–5 kept whole (from `DSPy_Demystified`). Dominant identity is DSPy, not Phase 2 Context Engineering and not Phase 4/8 RAG. |
+| `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned | |
 
-Note: `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were removed from both `CrewAI/` and `AutoGen/`'s skeleton when real content arrived, since the source repo's projects split cleanly into Foundations/Applications only — don't recreate those two subfolders unless content actually needs them.
+Note: AutoGen `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were empty after `AgenticAI_Projects_Demystified`; they were filled from `Autogen_Demystified`. Don't treat AutoGen intro notebooks in other courses as a third foundations track if they duplicate `Some_Simple_Agents/`.
 
 ## Phase 11 — `11_Claude_Code_and_AI_Coding_Tools/` — 🚧 Planned
 
@@ -108,7 +116,8 @@ Owns: math/ML intuition, transformer *architecture*, the model landscape & Huggi
 | `Model_Landscape_and_Hugging_Face/` | ✅ Built | Hub setup, Transformers pipelines/LLMs, Diffusers, video & audio models, Gradio UIs, pretrained Hub models — from `Huggingface_Demystified`. Gradio stays here (HF demo surface), not Phase 12. |
 | `Math_and_ML_Intuition/` | 🚧 Planned | |
 | `Transformer_Architecture/` | 🚧 Planned | Architecture theory — distinct from the HF Transformers *library* notebooks above |
-| `Fine_Tuning_and_RL/` | 🚧 Planned | Scaffolding only (`01_Foundations/`/`02_Techniques/`/`03_Applications/`) |
+| `Fine_Tuning_and_RL/` | ✅ Partially built | `01_Foundations/` = DeepLearning.AI finetuning labs 1–6 (kept whole for `images/`/`llama.py`/`lamini_docs.jsonl`); `03_Applications/` = Llama 2 AutoTrain notebook; `02_Techniques/` (RLHF/DPO/LoRA) still 🚧 planned. Finetune-model evaluation stayed in lesson 6 here, not Phase 7. |
+| `Coding_Essentials_for_Agents/` | ✅ Built | Python through asyncio — from `Coding_Essential_For_Agents`. Not agent-building (Phase 5) and not Phase 12 DevOps. |
 
 ## Phase 12 — `12_Production_and_Observability/` — ✅ Partially built
 
@@ -151,3 +160,11 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 7. **2026-08-17 — `Agents_Evaluation_Demystified` merged in; Phase 7 evaluation track completed.** Filled `Agent_Evaluation/` and `LLM_as_Judge/` (previously planned) and extended `RAG_Evaluation/` with DeepEval drills + RAGAS. Confirmed the source's `Evaluating RAG Systems/` was a duplicate of content already placed from `RAG_Demystified` (hash compare: 3 identical, 2 older copies) and skipped it. The DeepLearning.AI + Arize 5-lab sequence was kept whole under `Agent_Evaluation/DeepLearningAI_Arize/` even though Lab 2 is tracing — same "shared internals, place by dominant identity" rule as `Comprehensive_RAG_Techniques/`. CrewAI travel-planner eval went to agent eval, not Phase 10. Phase 7 is now fully built (all four tracks have real content).
 
 8. **2026-08-17 — `Huggingface_Demystified` merged in; Phase 1 got its first real content.** Filled `Model_Landscape_and_Hugging_Face/` only. Gradio stayed with HF (demo surface for Hub models) rather than Phase 12. Transformer *library* notebooks stayed here; transformer *architecture* theory remains the empty `Transformer_Architecture/` track. Fine-tuning remains `Fine_Tuning_and_RL/`. Phase 1 went from fully-planned to partially-built.
+
+9. **2026-08-17 — `Finetuning_Demystified` merged in; filled Phase 1 `Fine_Tuning_and_RL/` scaffolding.** Mapped into the existing `01_Foundations/` / `03_Applications/` folders rather than a new top-level track. Kept the DeepLearning.AI 6-lab sequence whole under foundations (shared images/helpers). AutoTrain Llama 2 notebook → applications. No RLHF/DPO/LoRA in the source, so `02_Techniques/` stayed planned. Finetune evaluation (lab 6) did not go to Phase 7.
+
+10. **2026-08-17 — `MCP_Demystified` merged in; Phase 9 MCP track filled.** Used the protocol track's existing 01–04 shape. Each source *course* stayed intact (Anthropic `mcp_project/` copies, Udemy Chroma DBs, Essential multi-server layouts). Udemy RAG/LangGraph modules stayed in Phase 9 because they're MCP-hosted apps, not a second RAG phase. Databricks `.databricks` snapshot discarded. Did not merge or delete the pre-existing `mcp_a2a_agentic_rag/` copies.
+
+11. **2026-08-17 — `CrewAI_Demystified` merged in; CrewAI 02/03 folders now have real content.** Cloned from GitHub. Basics + comprehensive tutorial → `01_Foundations/`; Flows → `02_Core_Capabilities/`; research/logistics crews → `03_Multi_Agent_Patterns/`. Root `helpers/` was identical to this repo's package — not copied. Skills were near-duplicates of `skills-candidates/` — not restaged. This is the exception to "don't recreate CrewAI 02/03" from history §6.
+
+12. **2026-08-17 — five repos (`Coding_Essential_For_Agents`, `LlamaIndex_Demystified`, `Autogen_Demystified`, `DSPy_Demystified`, `AI-Agents-Essentials`).** Coding prerequisites became a new Phase 1 track (topic is programming, not agents). LlamaIndex RAG is a Phase 4 sibling of LangChain/LangGraph RAG, not a Phase 13 capstone. DSPy context-engineering stayed in Phase 10 as one collection (including its RAG level). AutoGen 02/03 filled from `Autogen_Demystified`. `AI-Agents-Essentials` was split: unique from-scratch OpenAI patterns → Phase 5; unique Auto-EDA → AutoGen applications; LangChain/LCEL/LangGraph/agentic-RAG/intro-Autogen notebooks skipped as duplicates of Phases 2/3/4/5/8/10.

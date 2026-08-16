@@ -35,7 +35,7 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 | 6 | [Agent SDKs (First-Party)](#other-phases-planned) | 🚧 Planned |
 | 7 | [Advanced Agentic Systems](#phase-7--advanced-agentic-systems) | ✅ Built |
 | 8 | [Advanced RAG](#phase-8--advanced-rag) *(needs Phases 5 & 7 first)* | ✅ Built |
-| 9 | [Agent Protocols](#other-phases-planned) *(MCP, ACP, A2A)* | 🚧 Planned |
+| 9 | [Agent Protocols](#phase-9--agent-protocols) *(MCP, ACP, A2A)* | ✅ Partially built |
 | 10 | [Alternative Agent Frameworks](#phase-10--alternative-agent-frameworks) *(DSPy, CrewAI, PydanticAI, AutoGen)* | ✅ Partially built |
 | 11 | [Claude Code & AI Coding Tools](#other-phases-planned) | 🚧 Planned |
 | 12 | [Production & Observability](#phase-12--production--observability) | ✅ Partially built |
@@ -88,7 +88,8 @@ TAVILY_API_KEY=...          # Web search notebooks
 | `Model_Landscape_and_Hugging_Face/` | ✅ Built | Hub setup, Transformers, Diffusers, audio/video, Gradio, pretrained models from the Hub |
 | `Math_and_ML_Intuition/` | 🚧 Planned | Math/ML intuition for LLMs |
 | `Transformer_Architecture/` | 🚧 Planned | Attention, positional encoding, transformer internals |
-| `Fine_Tuning_and_RL/` | 🚧 Planned | SFT, LoRA/QLoRA, RLHF, DPO, dataset prep |
+| `Fine_Tuning_and_RL/` | ✅ Partially built | SFT / data prep / training / eval (DeepLearning.AI); Llama 2 AutoTrain; RLHF/DPO/LoRA planned |
+| `Coding_Essentials_for_Agents/` | ✅ Built | Python, files/DBs, Flask APIs, raw LLM API calls, threading/GIL, asyncio |
 
 ## Phase 2 — LangChain Fundamentals & Prompting
 
@@ -153,6 +154,7 @@ Foundational RAG only — theory plus each framework's basic implementation. Not
 | `Multimodal_and_Document_Intelligence/` | ✅ Built (light) | Multimodal RAG |
 | `RAG_with_LangGraph/` | ✅ Built | Basic agentic RAG (2 nb) |
 | `RAG_with_LangChain/` | ✅ Built | RAG essentials, comprehensive, filtered search, indexing API (4 nb) |
+| `RAG_with_LlamaIndex/` | ✅ Built | Chainlit ReAct RAG chatbot over Wikipedia |
 
 Also `shared_data/` — supporting PDFs/data referenced by several notebooks in this phase.
 
@@ -169,6 +171,7 @@ All agent-building content, across both frameworks, in one phase.
 | `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling, tool-calling agents, OpenAI tool calling, agents, + 16 applied projects |
 | `AI_Agents_with_LangGraph/` | ✅ Built | 11 real-world agent builds (research, financial, hotel reservations, software engineering, and more) |
 | `Workflow_and_Agent_Patterns/` | ✅ Built | 8 pattern subfolders, ~27 notebooks — tool use, planning, reflection, router, prompt chaining, evaluator-optimizer, orchestrator-worker, advanced cognitive patterns |
+| `Building_Agents_From_Scratch/` | ✅ Built | OpenAI API + `agentic_patterns` package (no LangGraph) |
 
 Also includes `Design_Patterns_Reference.md` — a taxonomy write-up with diagrams.
 
@@ -263,15 +266,26 @@ cd 13_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor 
 
 ---
 
+## Phase 9 — Agent Protocols
+
+> *How models reach tools and data (MCP), then how agents talk to each other (ACP, A2A).*
+
+| Track | Status | Scope |
+|---|---|---|
+| `MCP/` | ✅ Built | Anthropic + Educative foundations, servers, clients, Udemy MCP Mastery apps, Databricks Apps server |
+| `ACP/` | 🚧 Planned | Agent Communication Protocol |
+| `A2A/` | 🚧 Planned | Agent2Agent Protocol |
+
 ## Phase 10 — Alternative Agent Frameworks
 
 > *Frameworks to pick up after the LangGraph/LangChain core path (Phases 3 & 5).*
 
 | Track | Status | Scope |
 |---|---|---|
-| `CrewAI/` | ✅ Built | 9 project sets — foundations + education assistant, mock interviewer, social media agent, research/write article, customer support automation, outreach campaign, event planning, financial analysis, job application tailoring |
-| `AutoGen/` | ✅ Built | 8 project sets — foundations + content generation, health assistant, portfolio manager, agentic RAG for eCommerce, stock analysis, Notion MCP agent, Data Analyzer GPT |
-| `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned | |
+| `CrewAI/` | ✅ Built | Foundations (basics, 8 simple agents, comprehensive tutorial), Flows, multi-agent patterns, 9 application project sets |
+| `AutoGen/` | ✅ Built | Foundations, conversable/sequential/tool/code/multimodal labs, group/swarm patterns, 8 application project sets (incl. Auto-EDA) |
+| `DSPy/` | ✅ Built | Context-engineering course with DSPy (levels 1–5, kept whole) |
+| `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned | |
 
 ---
 
@@ -280,7 +294,6 @@ cd 13_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor 
 Everything below has a scope-describing `README.md` and (for framework/protocol phases) a first level of subfolders — but **no actual notebooks or code exist yet**.
 
 - **Phase 6 — Agent SDKs (First-Party)**: `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`
-- **Phase 9 — Agent Protocols**: `MCP/`, `ACP/`, `A2A/`
 - **Phase 11 — Claude Code & AI Coding Tools**: `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
 
 ---
@@ -294,7 +307,8 @@ AI ENGINEERING/
 │   ├── Model_Landscape_and_Hugging_Face/     00_Setup/ … 06_Pretrained_Models/
 │   ├── Math_and_ML_Intuition/                🚧 Planned
 │   ├── Transformer_Architecture/             🚧 Planned
-│   └── Fine_Tuning_and_RL/                   🚧 Planned
+│   ├── Fine_Tuning_and_RL/                   01_Foundations/ + 03_Applications/ built; 02_Techniques/ planned
+│   └── Coding_Essentials_for_Agents/         01 … 06 (Python through asyncio)
 ├── 02_LangChain_Fundamentals_and_Prompting/ ✅ Built
 │   ├── LangChain_Fundamentals/               01_Getting_Started/ … 05_Summarization/
 │   └── Prompt_and_Context_Engineering/
@@ -311,11 +325,13 @@ AI ENGINEERING/
 │   ├── Multimodal_and_Document_Intelligence/
 │   ├── RAG_with_LangGraph/
 │   ├── RAG_with_LangChain/
+│   ├── RAG_with_LlamaIndex/
 │   └── shared_data/
 ├── 05_AI_Agent_Fundamentals/                ✅ Built
 │   ├── LangChain_Tools_and_Agents/            01_Tools_and_Functions/, 02_Agents/, 03_Applied_Projects/
 │   ├── AI_Agents_with_LangGraph/              01 … 11 (research, financial, hotel, software-eng builds)
-│   └── Workflow_and_Agent_Patterns/
+│   ├── Workflow_and_Agent_Patterns/
+│   └── Building_Agents_From_Scratch/
 ├── 06_Agent_SDKs_First_Party/                🚧 Planned
 ├── 07_Advanced_Agentic_Systems/              ✅ Built
 │   ├── Memory_and_State/                      LangGraph/, LangChain/
@@ -329,11 +345,15 @@ AI ENGINEERING/
 │   ├── CacheRAG/                              🚧 Planned
 │   ├── building-adaptive-rag/
 │   └── mcp_a2a_agentic_rag/
-├── 09_Agent_Protocols/                       🚧 Planned — MCP/, ACP/, A2A/
+├── 09_Agent_Protocols/                       ✅ Partially built
+│   ├── MCP/                                   01_Foundations/ … 04_Applications/, mcp_a2a_agentic_rag/
+│   ├── ACP/                                   🚧 Planned
+│   └── A2A/                                   🚧 Planned
 ├── 10_Alternative_Agent_Frameworks/          ✅ Partially built
-│   ├── CrewAI/                                01_Foundations/, 04_Applications/ (9 project sets)
-│   ├── AutoGen/                                01_Foundations/, 04_Applications/ (8 project sets)
-│   └── DSPy/, PydanticAI/, Orchestration_Frameworks_Overview/  🚧 Planned
+│   ├── CrewAI/                                01_Foundations/, 02_Core_Capabilities/, 03_Multi_Agent_Patterns/, 04_Applications/
+│   ├── AutoGen/                                01_Foundations/, 02_Core_Capabilities/, 03_Multi_Agent_Patterns/, 04_Applications/
+│   ├── DSPy/                                   context-engineering-dspy/ (levels 1–5)
+│   └── PydanticAI/, Orchestration_Frameworks_Overview/  🚧 Planned
 ├── 11_Claude_Code_and_AI_Coding_Tools/       🚧 Planned
 ├── 12_Production_and_Observability/          ✅ Partially built
 │   ├── DevOps_and_Deployment/                 🚧 Planned

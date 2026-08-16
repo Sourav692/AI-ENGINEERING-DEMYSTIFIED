@@ -6,8 +6,8 @@ Framework-specific tracks to pick up after the LangGraph/LangChain core path (Ph
 
 | Track | Status | Scope |
 |---|---|---|
-| `DSPy/` | 🚧 Planned | Programmatic prompt optimization framework |
-| `CrewAI/` | ✅ Built | Role-based multi-agent framework — 9 project sets |
+| `DSPy/` | ✅ Built | Context-engineering course with DSPy (levels 1–5, kept whole) |
+| `CrewAI/` | ✅ Built | Role-based multi-agent framework — foundations, Flows, multi-agent patterns, 9 application project sets |
 | `PydanticAI/` | 🚧 Planned | Pydantic-based agent framework |
-| `AutoGen/` | ✅ Built | Microsoft's multi-agent conversation framework — 8 project sets |
+| `AutoGen/` | ✅ Built | Foundations, conversable/sequential/tool/code/multimodal labs, group/swarm patterns, 8 application project sets |
 | `Orchestration_Frameworks_Overview/` | 🚧 Planned | Comparison across all agent frameworks in this phase and Phase 5 |

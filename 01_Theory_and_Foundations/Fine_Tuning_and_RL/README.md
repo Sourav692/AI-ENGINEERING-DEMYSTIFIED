@@ -1,11 +1,11 @@
-# Chapter 16 — Fine-Tuning
+# Fine-Tuning & RL
 
-**Status:** 🚧 Planned — no content yet.
+**Status:** ✅ Partially built.
 
-Cross-cutting competency — applies across every framework section above, not tied to one.
+SFT, data prep, training, and evaluation from DeepLearning.AI's *Finetuning Large Language Models* (Lamini / Sharon Zhou), plus a Llama 2 AutoTrain application notebook. Merged from `Finetuning_Demystified`. Evaluation of a fine-tuned model stays here (lesson 6 of that course), not Phase 7's agent/RAG eval harnesses.
 
-| Subfolder | Scope |
-|---|---|
-| `01_Foundations/` | SFT basics, dataset prep, LoRA/QLoRA |
-| `02_Techniques/` | RLHF, DPO, other PEFT methods |
-| `03_Applications/` | Fine-tuning for specific tasks/domains |
+| Subfolder | Status | Scope |
+|---|---|---|
+| `01_Foundations/` | ✅ Built | Why/where to finetune, instruction tuning, data prep, training, evaluation |
+| `02_Techniques/` | 🚧 Planned | RLHF, DPO, LoRA/QLoRA / other PEFT — no content in this source |
+| `03_Applications/` | ✅ Built (light) | Llama 2 fine-tuning with Hugging Face AutoTrain |
