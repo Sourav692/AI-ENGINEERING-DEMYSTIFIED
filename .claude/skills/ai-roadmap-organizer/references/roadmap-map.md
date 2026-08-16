@@ -55,7 +55,7 @@ Owns: all agent-building content, both frameworks, in one place.
 
 Promoted to its own top-level phase (was a track inside the old combined LangGraph phase). `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`.
 
-## Phase 7 — `07_Advanced_Agentic_Systems/` — ✅ Partially built (3 of 4 tracks built)
+## Phase 7 — `07_Advanced_Agentic_Systems/` — ✅ Built
 
 Owns: composing agents into systems — memory, orchestration, harnesses, evaluation.
 
@@ -64,7 +64,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | `Memory_and_State/` | ✅ Built | `LangGraph/` + `LangChain/` (from `LangChain_Demystified`'s module 05) — both frameworks' memory content consolidated here, not left in their fundamentals phases |
 | `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + swarm |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | The `deepagents` multi-agent framework — own `CLAUDE.md`, `app/`, `examples/`, `skills/`, `docs/`. **This directory (specifically its `app/` subfolder) has hit a Windows file lock 3 separate times** across different restructurings — always drain-contents-then-remove-shell, never assume `mv`/`git mv` will just work on it. |
-| `Evaluation_and_Eval_Harnesses/` | ✅ Partially built | `RAG_Evaluation/` built (retriever/generator/end-to-end metrics, LLM-as-judge G-Eval — from `RAG_Demystified`); `Agent_Evaluation/`, `LLM_as_Judge/` still 🚧 planned |
+| `Evaluation_and_Eval_Harnesses/` | ✅ Built | `RAG_Evaluation/` (retriever/generator/end-to-end metrics, LLM-as-judge G-Eval from `RAG_Demystified`; DeepEval metric drills + RAGAS from `Agents_Evaluation_Demystified`); `Agent_Evaluation/` (DeepLearning.AI + Arize labs kept whole, plus CrewAI travel-planner eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
 
 ## Phase 8 — `08_Advanced_RAG/` — ✅ Built
 
@@ -140,3 +140,5 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
    - **Windows/Git-Bash `mv` can silently misbehave** with multi-source globs (`mv "$SRC"/* "$DEST/"`) when `$DEST` doesn't exist or under certain path-quoting conditions — in this merge it briefly renamed an *existing, unrelated* destination folder (`RAG_with_LangGraph_Advanced/`) to `AgenticRAG` mid-command instead of erroring cleanly. No data was lost (caught via notebook-count verification before/after), but the fix required manually diagning what happened. Prefer the item-by-item `for item in "$SRC"/*; do mv "$item" "$DEST/$(basename "$item")"; done` loop over `mv "$SRC"/* "$DEST/"` when moving multiple items into an existing directory — it's what already reliably works around the Windows directory-lock issue too (see Phase 7 above), so just use it as the default move pattern in this repo rather than reaching for the shortcut form.
 
 6. **2026-08-17 — `AgenticAI_Projects_Demystified` merged in; check for duplicates BEFORE mapping content, not after.** This repo turned out to share an author/ecosystem with `Agentic_Design_Pattern_Demystified` (merged much earlier) — 5 of its "Projects with LangGraph" folders were byte-identical or near-identical to notebooks already in `AI_Agents_with_LangGraph/`. Caught this by comparing file sizes (`ls -la`) between the new source folder and the existing destination *before* doing any moves, for every project whose name looked familiar. **New standing practice: whenever a merged-in repo has project/notebook names that echo anything already in `NOTEBOOK_INDEX.md`, diff file sizes (or content) before merging — don't assume a name match means duplicate, and don't assume a name match means safe-to-merge either; check.** This merge also filled Phase 10 (Alternative Agent Frameworks) from fully-planned to partially-built in one step (`CrewAI/` + `AutoGen/`) — first time a phase jumped straight from empty to built rather than growing incrementally.
+
+7. **2026-08-17 — `Agents_Evaluation_Demystified` merged in; Phase 7 evaluation track completed.** Filled `Agent_Evaluation/` and `LLM_as_Judge/` (previously planned) and extended `RAG_Evaluation/` with DeepEval drills + RAGAS. Confirmed the source's `Evaluating RAG Systems/` was a duplicate of content already placed from `RAG_Demystified` (hash compare: 3 identical, 2 older copies) and skipped it. The DeepLearning.AI + Arize 5-lab sequence was kept whole under `Agent_Evaluation/DeepLearningAI_Arize/` even though Lab 2 is tracing — same "shared internals, place by dominant identity" rule as `Comprehensive_RAG_Techniques/`. CrewAI travel-planner eval went to agent eval, not Phase 10. Phase 7 is now fully built (all four tracks have real content).

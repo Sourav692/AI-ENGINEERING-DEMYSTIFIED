@@ -33,7 +33,7 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 | 4 | [Retrieval & RAG](#phase-4--retrieval--rag) *(foundational)* | ✅ Built |
 | 5 | [AI Agent Fundamentals](#phase-5--ai-agent-fundamentals) | ✅ Built |
 | 6 | [Agent SDKs (First-Party)](#other-phases-planned) | 🚧 Planned |
-| 7 | [Advanced Agentic Systems](#phase-7--advanced-agentic-systems) | ✅ Partially built |
+| 7 | [Advanced Agentic Systems](#phase-7--advanced-agentic-systems) | ✅ Built |
 | 8 | [Advanced RAG](#phase-8--advanced-rag) *(needs Phases 5 & 7 first)* | ✅ Built |
 | 9 | [Agent Protocols](#other-phases-planned) *(MCP, ACP, A2A)* | 🚧 Planned |
 | 10 | [Alternative Agent Frameworks](#phase-10--alternative-agent-frameworks) *(DSPy, CrewAI, PydanticAI, AutoGen)* | ✅ Partially built |
@@ -172,7 +172,7 @@ Also includes `Design_Patterns_Reference.md` — a taxonomy write-up with diagra
 | `Memory_and_State/` | ✅ Built | `LangGraph/` (memory & threads + PostgreSQL long-term memory) + `LangChain/` (chat message memory, multi-user in-memory & SQL persistent storage) |
 | `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + peer-to-peer/swarm multi-agent architecture |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | `deepagents`-based multi-agent orchestration — see below |
-| `Evaluation_and_Eval_Harnesses/` | ✅ Partially built | `RAG_Evaluation/` built (retriever/generator/end-to-end metrics, LLM-as-judge); `Agent_Evaluation/`, `LLM_as_Judge/` planned |
+| `Evaluation_and_Eval_Harnesses/` | ✅ Built | `RAG_Evaluation/` (metrics + DeepEval drills + RAGAS); `Agent_Evaluation/` (Arize labs + CrewAI eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
 
 ### `Deep_Agents_and_Harness_Engineering/`
 
@@ -303,11 +303,11 @@ AI ENGINEERING/
 │   ├── AI_Agents_with_LangGraph/              01 … 11 (research, financial, hotel, software-eng builds)
 │   └── Workflow_and_Agent_Patterns/
 ├── 06_Agent_SDKs_First_Party/                🚧 Planned
-├── 07_Advanced_Agentic_Systems/              ✅ Partially built
+├── 07_Advanced_Agentic_Systems/              ✅ Built
 │   ├── Memory_and_State/                      LangGraph/, LangChain/
 │   ├── Multi_Agent_Orchestration/
 │   ├── Deep_Agents_and_Harness_Engineering/
-│   └── Evaluation_and_Eval_Harnesses/         RAG_Evaluation/ built, Agent_Evaluation/+LLM_as_Judge/ planned
+│   └── Evaluation_and_Eval_Harnesses/         RAG_Evaluation/, Agent_Evaluation/, LLM_as_Judge/
 ├── 08_Advanced_RAG/                          ✅ Built
 │   ├── RAG_with_LangGraph_Advanced/
 │   ├── Comprehensive_RAG_Techniques/

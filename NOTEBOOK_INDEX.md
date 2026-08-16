@@ -2,7 +2,7 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
-This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 10, 12 (partially).** Phases 1, 6, 9, 11 are scaffolded placeholders with no content yet.
+This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 10, 12 (partially).** Phases 1, 6, 9, 11 are scaffolded placeholders with no content yet.
 
 # Phase 2 — LangChain Fundamentals & Prompting (`02_LangChain_Fundamentals_and_Prompting/`)
 
@@ -223,17 +223,37 @@ Not notebooks — Python scripts + a `deepagents`-based multi-agent system:
 
 ## `Evaluation_and_Eval_Harnesses/`
 
-`Agent_Evaluation/`, `LLM_as_Judge/` — 🚧 Planned.
+### `Agent_Evaluation/`
 
-`RAG_Evaluation/` — ✅ Built:
+| Path | Content |
+|---|---|
+| `DeepLearningAI_Arize/Lab 1 - Building your Agent/L3.ipynb` | Build the sales-agent used as the eval target |
+| `DeepLearningAI_Arize/Lab 2 - Tracing your Agent/L5.ipynb` | Tracing (kept with this course, not Phase 12) |
+| `DeepLearningAI_Arize/Lab 3 - Adding Router & Skill Evaluations/L7.ipynb` | Router & skill evaluations |
+| `DeepLearningAI_Arize/Lab 4 - Adding Trajectory Evaluations/L9.ipynb` | Trajectory evaluations |
+| `DeepLearningAI_Arize/Lab 5 - Adding Structure to your Evaluations/L11.ipynb` | Structured evaluation harness |
+| `DeepLearningAI_Arize/Appendix - Resources, Tips and Help/Appendix.ipynb` | Course appendix |
+| `CrewAI_Travel_Planner/` | CrewAI travel-planner app + DeepEval `TaskCompletionMetric` tests (`evaluate_endtoend_test.py`) |
 
-| Notebook | Topic |
+### `RAG_Evaluation/`
+
+| Path | Topic |
 |---|---|
 | `1.Retriever_Evaluation_Metrics.ipynb` | Retriever evaluation metrics |
 | `2.Generator_Evaluation_Metrics.ipynb` | Generator evaluation metrics |
 | `3.Custom_LLM_as_a_Judge _(G-Eval).ipynb` | Custom LLM-as-judge (G-Eval) |
 | `4. End_to_End_RAG_System_Evaluation.ipynb` | End-to-end RAG evaluation |
 | `Build_RAG_Pipeline_with_Source.ipynb` | Supporting pipeline |
+| `DeepEval_Metrics/Contextual_Precision.ipynb` | DeepEval contextual precision drill |
+| `DeepEval_Metrics/Contexual_Recall.ipynb` | DeepEval contextual recall drill (source filename spelling kept) |
+| `DeepEval_Metrics/Contextual_Relevancy.ipynb` | DeepEval contextual relevancy drill |
+| `RAGAS/` | RAGAS scripts (`Faithfulness.py`, `ContextRecall.py`, `Evaluate_RAG.py`, …) + `fastapi_rag_bot/` eval target |
+
+### `LLM_as_Judge/`
+
+| Path | Topic |
+|---|---|
+| `DeepEval_GEval/test_firstdeepeval.py` | Minimal DeepEval G-Eval correctness judge |
 
 # Phase 8 — Advanced RAG (`08_Advanced_RAG/`)
 
@@ -378,6 +398,8 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 - **2026-08-17 — `Vector_Database_and_Embedding_Demystified-main` merged in** (4 notebooks + a PDF) — added directly into Phase 4's existing `Embeddings_and_Vector_Databases/` track, no new sections needed. Two notebooks overlapped conceptually with existing content and were suffixed `_Alt`; two were genuinely new (embedding-model comparison, hybrid search + reranking). Root scaffolding (`README.md`, `.gitignore`) discarded per established precedent.
 
 - **2026-08-17 — `AgenticAI_Projects_Demystified-main` merged in** (the largest merge yet — 66 new notebooks, plus 10 new full-stack apps). Before merging, checked for overlap with content already in the repo and found 5 project folders under "Projects with LangGraph" (`Customer_Support_Router_RAG`, `Multi_Agent_Research_Summarization`, `Planning_Agent_Deep_Research`, `Reflective_Code_Generation_Agent`, `Reflective_Dynamic_Planning_Agent`, `Supervisor_Multi_Agent_Financial_Research`) were byte-identical or near-identical duplicates of notebooks already merged in from `Agentic_Design_Pattern_Demystified` — skipped rather than re-added. Genuinely new content: `AI_Agents_with_LangGraph/` gained 3 more builds (09–11); `LangChain_Tools_and_Agents/` gained a 16-item `03_Applied_Projects/` track; **Phase 10 (Alternative Agent Frameworks) went from fully-planned to partially-built** — `CrewAI/` and `AutoGen/` each filled from empty 4-folder skeletons using a Foundations/Applications split (simple-agent notebooks → `01_Foundations/`, everything else → `04_Applications/`, per user decision — `02_Core_Capabilities/`/`03_Multi_Agent_Patterns/` stayed empty since the source content didn't split into those categories); Phase 13 grew from 3 to 10 projects (a new `ShopUNow_Agentic_RAG_Capstone/` plus 6 more standalone full-stack apps, kept flat per user decision rather than grouped under a parent folder). Discarded: a duplicate `Capstone Project.zip` (redundant with the unzipped folder beside it), root scaffolding, and two `.claude/skills/` confirmed byte-identical to ones already staged at `.claude/skills-candidates/` from the `LangChain_Demystified` merge. Added 2 more JS frontends to `pyproject.toml`'s ruff excludes (CrewAI's simple-agents app, the voice-RAG project's frontend). A repo-wide hardcoded-secret sweep of the new content found nothing (checked provider key formats, `CONFIG_LIST.json`, and note/cred-style filenames).
+
+- **2026-08-17 — `Agents_Evaluation_Demystified-main` merged in**, filling Phase 7's remaining `Agent_Evaluation/` and `LLM_as_Judge/` placeholders and extending `RAG_Evaluation/`. Split by topic, not dumped wholesale: DeepLearning.AI + Arize labs stayed whole under `Agent_Evaluation/DeepLearningAI_Arize/` (Lab 2 tracing included — shared parquet/helpers, dominant identity is agent eval); CrewAI travel-planner + DeepEval task-completion tests → `Agent_Evaluation/CrewAI_Travel_Planner/` (not Phase 10); DeepEval metric drills + RAGAS → `RAG_Evaluation/`; first DeepEval G-Eval script → `LLM_as_Judge/`. Skipped the source's `Evaluating RAG Systems/` folder after hash/size compare: 3 notebooks identical to ones already merged from `RAG_Demystified`, 2 older unexecuted copies of the same retriever/generator notebooks. Discarded root scaffolding, `img/`, `.deepeval` telemetry, `data/tmp` docx, Excel lockfile. Phase 7's four tracks are now all built.
 
 **Still open:**
 - Several notebooks don't open with a proper `# Title` markdown cell (mid-document subheading instead) — pre-existing, not fixed, would require editing notebook content.

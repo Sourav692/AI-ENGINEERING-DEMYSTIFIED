@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 13 numbered phases, each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far:** Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 10, 12 (partially). Phases 1, 6, 9, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
+**Built so far:** Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 10, 12 (partially). Phases 1, 6, 9, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
@@ -19,7 +19,7 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
 04_Retrieval_and_RAG/                    ✅ Built — foundational RAG theory + LangGraph/LangChain implementations
 05_AI_Agent_Fundamentals/                ✅ Built — all agent-building content, both frameworks
 06_Agent_SDKs_First_Party/               🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK
-07_Advanced_Agentic_Systems/             ✅ Partially built — memory, multi-agent orchestration, deep agents built; agent/general eval planned
+07_Advanced_Agentic_Systems/             ✅ Built — memory, multi-agent orchestration, deep agents, evaluation (RAG/agent/LLM-as-judge)
 08_Advanced_RAG/                         ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned; needs Phases 5 & 7 first
 09_Agent_Protocols/                      🚧 Planned — MCP, ACP, A2A
 10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI and AutoGen built (9+8 project sets); DSPy, PydanticAI planned
@@ -78,7 +78,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `Memory_and_State/`           | `LangGraph/` (memory & threads, long-term PostgreSQL memory) + `LangChain/` (chat/conversation memory, multi-user SQL persistence) |
 | `Multi_Agent_Orchestration/`  | Supervisor pattern, multi-agent swarm architecture |
 | `Deep_Agents_and_Harness_Engineering/` | Multi-agent orchestration via `deepagents` — see its own `CLAUDE.md` |
-| `Evaluation_and_Eval_Harnesses/` | `RAG_Evaluation/` built (retriever/generator/end-to-end metrics, LLM-as-judge); `Agent_Evaluation/`, `LLM_as_Judge/` 🚧 planned |
+| `Evaluation_and_Eval_Harnesses/` | `RAG_Evaluation/` (retriever/generator/end-to-end metrics, DeepEval drills, RAGAS, LLM-as-judge G-Eval); `Agent_Evaluation/` (DeepLearning.AI + Arize labs, CrewAI travel-planner eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
 
 ### Phase 8 — `08_Advanced_RAG/` — internal tracks
 
