@@ -1,0 +1,8 @@
+https://github.com/pigna90/ai-mock-interviewer/blob/main/ai_mock_interviewer/interview_practice_system.py
+
+https://github.com/MSMITH71910/Interative_Interview_Coach/blob/main/interactive_interview_coach.py
+
+
+https://github.com/SelahattinNazli/AI_Mock_Interviewer_with_CrewAI
+
+https://github.com/Mangaleshwaran2002/CareerCrafter

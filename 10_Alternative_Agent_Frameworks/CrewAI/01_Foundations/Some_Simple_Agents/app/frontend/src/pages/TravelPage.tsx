@@ -1,0 +1,73 @@
+import { useState } from 'react'
+import StreamOutput from '../components/StreamOutput'
+
+const INPUT_CLS = 'w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-indigo-500'
+const LABEL_CLS = 'block text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1'
+
+export default function TravelPage() {
+  const [names, setNames] = useState('Alice, Robert, Charlie')
+  const [city, setCity] = useState('Berlin')
+  const [destination, setDestination] = useState('Rome')
+  const [stream, setStream] = useState<ReadableStream<Uint8Array> | null>(null)
+  const [finalResult, setFinalResult] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setFinalResult('')
+    setStream(null)
+
+    const res = await fetch('/api/travel/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        names: names.split(',').map((s) => s.trim()).filter(Boolean),
+        city,
+        destination,
+      }),
+    })
+    setStream(res.body)
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="text-2xl font-bold mb-1">Travel Advisor</h1>
+      <p className="text-gray-500 text-sm mb-6">Generate a validated group vacation plan using CrewAI Flows.</p>
+
+      <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+        <div>
+          <label className={LABEL_CLS}>Traveler Names (comma-separated)</label>
+          <input value={names} onChange={(e) => setNames(e.target.value)} className={INPUT_CLS} placeholder="Alice, Bob, Charlie" />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>Departure City</label>
+          <input value={city} onChange={(e) => setCity(e.target.value)} className={INPUT_CLS} placeholder="Berlin" />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>Destination</label>
+          <input value={destination} onChange={(e) => setDestination(e.target.value)} className={INPUT_CLS} placeholder="Rome" />
+        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-5 py-2 rounded text-sm font-semibold"
+        >
+          {loading ? 'Planning...' : 'Plan Trip'}
+        </button>
+      </form>
+
+      <StreamOutput
+        stream={stream}
+        onFinal={(text) => { setFinalResult(text); setLoading(false) }}
+        onDone={() => setLoading(false)}
+      />
+
+      {finalResult && (
+        <div className="mt-4 p-4 bg-gray-900 border border-gray-700 rounded-lg text-sm whitespace-pre-wrap text-gray-200">
+          {finalResult}
+        </div>
+      )}
+    </div>
+  )
+}

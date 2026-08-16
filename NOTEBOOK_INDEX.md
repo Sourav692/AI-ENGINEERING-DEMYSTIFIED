@@ -2,7 +2,7 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
-This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 12 (partially).** Phases 1, 6, 9, 10, 11 are scaffolded placeholders with no content yet.
+This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 10, 12 (partially).** Phases 1, 6, 9, 11 are scaffolded placeholders with no content yet.
 
 # Phase 2 — LangChain Fundamentals & Prompting (`02_LangChain_Fundamentals_and_Prompting/`)
 
@@ -150,6 +150,7 @@ Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
 |---|---|---|
 | 1 | `01_Tools_and_Functions/` | Tool calling, tool-calling agents, OpenAI tool calling (4 nb) |
 | 2 | `02_Agents/` | Agents (1 nb) |
+| 3 | `03_Applied_Projects/` | 16 applied projects — see `03_Applied_Projects/README.md` for the full list (research assistant, multi-user conversational research, text-to-SQL, financial analyst, travel assistant, and 11 short exercises) |
 
 ## `AI_Agents_with_LangGraph/`
 
@@ -163,6 +164,9 @@ Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
 | 6 | `06_Reflective_Dynamic_Planning_Agent/` | Reflective dynamic planning agent |
 | 7 | `07_Supervisor_Multi_Agent_Financial_Research/` | Supervisor-pattern multi-agent financial research system |
 | 8 | `08_Web_Research_Agent_ReAct_Alt.ipynb` | Alternate ReAct-pattern web research agent |
+| 9 | `09_Financial_Analyst_Tool_Use_Agent/` | Tool-use financial analyst agent |
+| 10 | `10_Hotel_Reservations_Multi_Agent_System/` | Full-stack hotel reservations multi-agent system |
+| 11 | `11_Software_Engineering_Multi_Agent_System/` | Full-stack software-engineering multi-agent system |
 
 ## `Workflow_and_Agent_Patterns/`
 
@@ -267,9 +271,23 @@ The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-
 
 `MCP/` (4 subfolders), `ACP/` (3 subfolders), `A2A/` (3 subfolders)
 
-# Phase 10 — Alternative Agent Frameworks (`10_Alternative_Agent_Frameworks/`) — 🚧 Planned
+# Phase 10 — Alternative Agent Frameworks (`10_Alternative_Agent_Frameworks/`)
 
-`DSPy/`, `CrewAI/` (4 subfolders), `PydanticAI/`, `AutoGen/` (4 subfolders), `Orchestration_Frameworks_Overview/`
+## `CrewAI/`
+
+| Track | Content |
+|---|---|
+| `01_Foundations/Some_Simple_Agents/` | 8 nb — fitness tracker, travel advisor, image generation, book recommendation, data analyst, fraud detection, employee onboarding, document summarization |
+| `04_Applications/` | Education assistant, mock interviewer, social media agent, research/write article, customer support automation, outreach campaign, event planning, financial analysis collaboration, job application tailoring (9 project sets) |
+
+## `AutoGen/`
+
+| Track | Content |
+|---|---|
+| `01_Foundations/Some_Simple_Agents/` | Building agents with AutoGen, research assistant, coding agent |
+| `04_Applications/` | Smart content generation, smart health assistant, financial portfolio manager, agentic RAG for eCommerce, stock market analysis agent, Notion MCP agent, Data Analyzer GPT (7 project sets) |
+
+## `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` — 🚧 Planned
 
 # Phase 11 — Claude Code & AI Coding Tools (`11_Claude_Code_and_AI_Coding_Tools/`) — 🚧 Planned
 
@@ -321,6 +339,14 @@ Not notebooks — LangChain deployed as microservices: Docker, k8s-style manifes
 
 Also `data/` and `final_project/` (a built Chroma DB from the source repo).
 
+## `ShopUNow_Agentic_RAG_Capstone/`
+
+Not notebooks-only — `01_create_vector_databases.ipynb`, `02_agentic_rag_system.ipynb`, plus `data/` (7 domain JSON datasets), `ShopUNow_Agentic_RAG_Architecture.pptx`, `WALKTHROUGH.md`, `sample_data.py`.
+
+## Six more full-stack apps
+
+`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` — each a standalone deployable app (own `README.md`, dependencies, and in most cases Docker/deployment config). See `13_Projects/README.md` for a one-line summary of each.
+
 # Planned Phases (no content yet)
 
 | Phase | Folder |
@@ -328,7 +354,6 @@ Also `data/` and `final_project/` (a built Chroma DB from the source repo).
 | 1 | `01_Theory_and_Foundations/` *(optional)* |
 | 6 | `06_Agent_SDKs_First_Party/` |
 | 9 | `09_Agent_Protocols/` |
-| 10 | `10_Alternative_Agent_Frameworks/` |
 | 11 | `11_Claude_Code_and_AI_Coding_Tools/` |
 
 ## Archive (`archive/`)
@@ -351,6 +376,8 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 - **2026-08-17 — `RAG_Demystified-main` merged in**, filling every remaining Phase 4/7/8 placeholder that used to be empty. Split across 3 phases by the same one-topic-one-phase rule: `1. Introduction/` → Phase 4's `Introduction_to_RAG/`; `2. Concepts/4. Embedding...` → Phase 4's `Embeddings_and_Vector_Databases/` (filled the placeholder); `2. Concepts/{2,3,5,6,7,8,9}` (loading/chunking/hybrid-search/query-enhancement/parent-doc-retrieval/postprocessing/building-RAG-systems) → Phase 4's `RAG_Naive_to_Production/` (filled); `2. Concepts/10. Multi-Modal RAG` → Phase 4's `Multimodal_and_Document_Intelligence/` (filled); `2. Concepts/11. Evaluating RAG Systems` → Phase 7's `Evaluation_and_Eval_Harnesses/RAG_Evaluation/` (filled); `6. Graph_RAG` → Phase 8's `GraphRAG/` (filled); `7. Agentic_RAG/Agentic RAG Systems with LangGraph` → extended Phase 8's existing `RAG_with_LangGraph_Advanced/`; `5. Projects` → Phase 13's new `RAG_Systems_Projects/`. Two judgment calls made with the user: `4. Advanced RAG` (despite its name) is query-transformation content requiring no agent knowledge, so it went to Phase 4 as `Query_Transformation_Techniques/` rather than Phase 8; and `3. rag_technniques` (the well-known NirDiamant `RAG_Techniques` collection) was kept whole as Phase 8's `Comprehensive_RAG_Techniques/` rather than split, since its ~35 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths that splitting would have broken. Two standalone apps from `7. Agentic_RAG` (`building-adaptive-rag/`, `mcp_a2a_agentic_rag/` — the latter using MCP+A2A protocols) stayed in Phase 8 rather than moving to Phase 9 or 13, per user decision. A shared root `data/` folder (referenced by several notebooks via relative paths) was brought along as `04_Retrieval_and_RAG/shared_data/` — exact relative-path depth wasn't reconstructed after the move, since fixing that would mean editing notebook content, out of scope for a reorganization. During the move, a Windows/Git-Bash `mv` quirk briefly renamed the existing `RAG_with_LangGraph_Advanced/` folder to `AgenticRAG` mid-operation (no data lost, caught immediately via notebook-count verification and fixed). Total notebook count went from 132 to 249 (117 added), verified exactly matching before executing docs updates.
 
 - **2026-08-17 — `Vector_Database_and_Embedding_Demystified-main` merged in** (4 notebooks + a PDF) — added directly into Phase 4's existing `Embeddings_and_Vector_Databases/` track, no new sections needed. Two notebooks overlapped conceptually with existing content and were suffixed `_Alt`; two were genuinely new (embedding-model comparison, hybrid search + reranking). Root scaffolding (`README.md`, `.gitignore`) discarded per established precedent.
+
+- **2026-08-17 — `AgenticAI_Projects_Demystified-main` merged in** (the largest merge yet — 66 new notebooks, plus 10 new full-stack apps). Before merging, checked for overlap with content already in the repo and found 5 project folders under "Projects with LangGraph" (`Customer_Support_Router_RAG`, `Multi_Agent_Research_Summarization`, `Planning_Agent_Deep_Research`, `Reflective_Code_Generation_Agent`, `Reflective_Dynamic_Planning_Agent`, `Supervisor_Multi_Agent_Financial_Research`) were byte-identical or near-identical duplicates of notebooks already merged in from `Agentic_Design_Pattern_Demystified` — skipped rather than re-added. Genuinely new content: `AI_Agents_with_LangGraph/` gained 3 more builds (09–11); `LangChain_Tools_and_Agents/` gained a 16-item `03_Applied_Projects/` track; **Phase 10 (Alternative Agent Frameworks) went from fully-planned to partially-built** — `CrewAI/` and `AutoGen/` each filled from empty 4-folder skeletons using a Foundations/Applications split (simple-agent notebooks → `01_Foundations/`, everything else → `04_Applications/`, per user decision — `02_Core_Capabilities/`/`03_Multi_Agent_Patterns/` stayed empty since the source content didn't split into those categories); Phase 13 grew from 3 to 10 projects (a new `ShopUNow_Agentic_RAG_Capstone/` plus 6 more standalone full-stack apps, kept flat per user decision rather than grouped under a parent folder). Discarded: a duplicate `Capstone Project.zip` (redundant with the unzipped folder beside it), root scaffolding, and two `.claude/skills/` confirmed byte-identical to ones already staged at `.claude/skills-candidates/` from the `LangChain_Demystified` merge. Added 2 more JS frontends to `pyproject.toml`'s ruff excludes (CrewAI's simple-agents app, the voice-RAG project's frontend). A repo-wide hardcoded-secret sweep of the new content found nothing (checked provider key formats, `CONFIG_LIST.json`, and note/cred-style filenames).
 
 **Still open:**
 - Several notebooks don't open with a proper `# Title` markdown cell (mid-document subheading instead) — pre-existing, not fixed, would require editing notebook content.

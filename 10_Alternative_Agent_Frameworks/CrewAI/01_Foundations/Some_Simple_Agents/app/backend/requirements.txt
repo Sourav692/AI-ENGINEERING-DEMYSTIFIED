@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+crewai[tools]
+litellm
+mem0ai
+python-dotenv
+requests
+nest_asyncio

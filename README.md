@@ -36,7 +36,7 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 | 7 | [Advanced Agentic Systems](#phase-7--advanced-agentic-systems) | ✅ Partially built |
 | 8 | [Advanced RAG](#phase-8--advanced-rag) *(needs Phases 5 & 7 first)* | ✅ Built |
 | 9 | [Agent Protocols](#other-phases-planned) *(MCP, ACP, A2A)* | 🚧 Planned |
-| 10 | [Alternative Agent Frameworks](#other-phases-planned) *(DSPy, CrewAI, PydanticAI, AutoGen)* | 🚧 Planned |
+| 10 | [Alternative Agent Frameworks](#phase-10--alternative-agent-frameworks) *(DSPy, CrewAI, PydanticAI, AutoGen)* | ✅ Partially built |
 | 11 | [Claude Code & AI Coding Tools](#other-phases-planned) | 🚧 Planned |
 | 12 | [Production & Observability](#phase-12--production--observability) | ✅ Partially built |
 | 13 | [Projects](#phase-13--projects) | ✅ Built |
@@ -155,8 +155,8 @@ All agent-building content, across both frameworks, in one phase.
 
 | Track | Status | Scope |
 |---|---|---|
-| `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling, tool-calling agents, OpenAI tool calling, agents |
-| `AI_Agents_with_LangGraph/` | ✅ Built | 8 real-world agent builds |
+| `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling, tool-calling agents, OpenAI tool calling, agents, + 16 applied projects |
+| `AI_Agents_with_LangGraph/` | ✅ Built | 11 real-world agent builds (research, financial, hotel reservations, software engineering, and more) |
 | `Workflow_and_Agent_Patterns/` | ✅ Built | 8 pattern subfolders, ~27 notebooks — tool use, planning, reflection, router, prompt chaining, evaluator-optimizer, orchestrator-worker, advanced cognitive patterns |
 
 Also includes `Design_Patterns_Reference.md` — a taxonomy write-up with diagrams.
@@ -240,6 +240,8 @@ Also two standalone apps: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (M
 | `LangGraph_Fullstack_Capstone/` | ✅ Built | FastAPI + Angular + PostgreSQL with human-in-the-loop workflows, unit tests, Streamlit apps |
 | `LangChain_Microservices_Capstone/` | ✅ Built | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
 | `RAG_Systems_Projects/` | ✅ Built | 7 applied RAG capstones — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
+| `ShopUNow_Agentic_RAG_Capstone/` | ✅ Built | Vector DB + agentic RAG e-commerce capstone |
+| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` | ✅ Built | 6 more standalone full-stack apps |
 
 ```bash
 # LangGraph capstone
@@ -250,6 +252,18 @@ cd 13_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor 
 
 ---
 
+## Phase 10 — Alternative Agent Frameworks
+
+> *Frameworks to pick up after the LangGraph/LangChain core path (Phases 3 & 5).*
+
+| Track | Status | Scope |
+|---|---|---|
+| `CrewAI/` | ✅ Built | 9 project sets — foundations + education assistant, mock interviewer, social media agent, research/write article, customer support automation, outreach campaign, event planning, financial analysis, job application tailoring |
+| `AutoGen/` | ✅ Built | 8 project sets — foundations + content generation, health assistant, portfolio manager, agentic RAG for eCommerce, stock analysis, Notion MCP agent, Data Analyzer GPT |
+| `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned | |
+
+---
+
 # Other Phases (Planned)
 
 Everything below has a scope-describing `README.md` and (for framework/protocol phases) a first level of subfolders — but **no actual notebooks or code exist yet**.
@@ -257,7 +271,6 @@ Everything below has a scope-describing `README.md` and (for framework/protocol 
 - **Phase 1 — Theory & Foundations** *(optional, compressible)*: `Math_and_ML_Intuition/`, `Transformer_Architecture/`, `Model_Landscape_and_Hugging_Face/`, `Fine_Tuning_and_RL/`
 - **Phase 6 — Agent SDKs (First-Party)**: `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`
 - **Phase 9 — Agent Protocols**: `MCP/`, `ACP/`, `A2A/`
-- **Phase 10 — Alternative Agent Frameworks**: `DSPy/`, `CrewAI/`, `PydanticAI/`, `AutoGen/`, `Orchestration_Frameworks_Overview/`
 - **Phase 11 — Claude Code & AI Coding Tools**: `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
 
 ---
@@ -286,8 +299,8 @@ AI ENGINEERING/
 │   ├── RAG_with_LangChain/
 │   └── shared_data/
 ├── 05_AI_Agent_Fundamentals/                ✅ Built
-│   ├── LangChain_Tools_and_Agents/
-│   ├── AI_Agents_with_LangGraph/
+│   ├── LangChain_Tools_and_Agents/            01_Tools_and_Functions/, 02_Agents/, 03_Applied_Projects/
+│   ├── AI_Agents_with_LangGraph/              01 … 11 (research, financial, hotel, software-eng builds)
 │   └── Workflow_and_Agent_Patterns/
 ├── 06_Agent_SDKs_First_Party/                🚧 Planned
 ├── 07_Advanced_Agentic_Systems/              ✅ Partially built
@@ -303,17 +316,24 @@ AI ENGINEERING/
 │   ├── building-adaptive-rag/
 │   └── mcp_a2a_agentic_rag/
 ├── 09_Agent_Protocols/                       🚧 Planned — MCP/, ACP/, A2A/
-├── 10_Alternative_Agent_Frameworks/          🚧 Planned
+├── 10_Alternative_Agent_Frameworks/          ✅ Partially built
+│   ├── CrewAI/                                01_Foundations/, 04_Applications/ (9 project sets)
+│   ├── AutoGen/                                01_Foundations/, 04_Applications/ (8 project sets)
+│   └── DSPy/, PydanticAI/, Orchestration_Frameworks_Overview/  🚧 Planned
 ├── 11_Claude_Code_and_AI_Coding_Tools/       🚧 Planned
 ├── 12_Production_and_Observability/          ✅ Partially built
 │   ├── DevOps_and_Deployment/                 🚧 Planned
 │   ├── LLMOps_and_AI_Infrastructure/           Tracing_and_Observability/, Caching_and_Performance/, Cost_Monitoring/
 │   ├── Security_and_Compliance/               🚧 Planned
 │   └── Safety_and_Alignment/
-├── 13_Projects/                              ✅ Built
+├── 13_Projects/                              ✅ Built (10 projects)
 │   ├── LangGraph_Fullstack_Capstone/
 │   ├── LangChain_Microservices_Capstone/
-│   └── RAG_Systems_Projects/
+│   ├── RAG_Systems_Projects/
+│   ├── ShopUNow_Agentic_RAG_Capstone/
+│   └── AI_Powered_Customer_Support/, Automated_Candidate_Interview_Evaluation_System/,
+│       End_to_End_Medical_Chatbot/, Pipecat_QuickStart/, Realtime_Source_Code_Analyzer/,
+│       Realtime_Voice_AI_Agent_with_RAG/
 ├── helpers/                                  Shared LLM/embedding factory (used by built LangGraph phases)
 ├── docs/                                     Static HTML tutorial microsite (LangGraph mechanics chapters)
 └── archive/                                  Retired notebooks

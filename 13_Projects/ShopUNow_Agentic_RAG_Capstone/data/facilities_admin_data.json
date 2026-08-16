@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: How do I book a meeting room or conference hall at ShopUNow offices?\nAnswer: Meeting rooms can be booked through the ShopUNow Facilities Portal at https://facilities.shopunow.com or via the Outlook calendar integration. Search by office location, floor, capacity (4-seater, 8-seater, boardroom), and available time slots. Bookings can be made up to 2 weeks in advance. No-show bookings (not checked in within 15 minutes) are auto-released. For large events or town halls requiring the auditorium, email facilities@shopunow.com at least 5 business days in advance.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I request a new employee ID card or replace a lost one?\nAnswer: For new joiners, ID cards are issued on Day 1 during onboarding by the Facilities team. If your ID card is lost, damaged, or stolen, raise a request on the Facilities Portal under 'ID Card' > 'Replacement'. A temporary access pass will be issued within 2 hours. The replacement permanent ID card takes 3-5 business days. There is a replacement fee of INR 200 deducted from salary. Report stolen cards immediately to security@shopunow.com.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: What are the office working hours at ShopUNow?\nAnswer: Standard office working hours at ShopUNow corporate offices are 9:30 AM to 6:30 PM, Monday to Friday. Flexible timing is available with core hours between 10:30 AM and 4:30 PM — you can start anytime between 8:30 AM and 10:30 AM. Warehouse and store employees follow shift-based schedules as communicated by their managers. Office access is available 24/7 with valid ID card for employees who need to work late.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I report a maintenance issue in the office (AC, lights, plumbing, etc.)?\nAnswer: Report maintenance issues on the Facilities Portal under 'Maintenance Request'. Select the issue type (electrical, plumbing, HVAC, furniture, cleaning), office location, and floor. Attach a photo if possible. Priority issues like water leaks, electrical hazards, or broken lifts are addressed within 2 hours. Routine maintenance (flickering lights, AC temperature, loose furniture) is addressed within 1 business day. For emergencies, call the facilities helpline at ext. 4444.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: Is there a cafeteria or pantry facility in ShopUNow offices?\nAnswer: Yes, all ShopUNow corporate offices have a subsidized cafeteria managed by a third-party vendor. Breakfast (8:30-10:00 AM), lunch (12:30-2:00 PM), and evening snacks (4:30-5:30 PM) are served daily. Meals are subsidized at 50% by the company. Each floor also has a pantry with complimentary tea, coffee, water dispensers, and a microwave. The cafeteria menu is published weekly on the Facilities Portal. Special dietary requests can be submitted to cafeteria@shopunow.com.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I get a parking spot at the ShopUNow office?\nAnswer: Parking is available on a first-come-first-served basis at most ShopUNow offices. For regular parking allocation, apply through the Facilities Portal under 'Parking' > 'Monthly Pass'. Monthly parking passes cost INR 500 for two-wheelers and INR 1,500 for four-wheelers, deducted from salary. Visitor parking can be pre-booked by employees for their guests. EV charging stations are available in the basement at select offices.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I request office supplies like stationery, notebooks, or printer cartridges?\nAnswer: Office supplies can be ordered through the Facilities Portal under 'Stationery & Supplies'. Select items from the approved catalog — pens, notepads, staplers, sticky notes, printer paper, toner cartridges, etc. Orders placed before 2 PM are delivered to your desk by next business day. Each department has a monthly stationery budget. Bulk or non-standard items require manager approval. For urgent needs, visit the Admin desk on the ground floor.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: What is the process for requesting office furniture or ergonomic equipment?\nAnswer: All employees are provided standard workstation furniture (desk, chair, monitor stand). If you need ergonomic equipment like a standing desk, ergonomic chair, footrest, or wrist rest, submit a request on the Facilities Portal under 'Furniture & Ergonomics'. Requests supported by a medical certificate are prioritized and fulfilled within 5 business days. Standard ergonomic assessments are conducted by the Facilities team quarterly — you can sign up on the portal.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I arrange for visitor access to the ShopUNow office?\nAnswer: Pre-register your visitor on the Facilities Portal under 'Visitor Management' at least 24 hours in advance. Provide the visitor's name, company, purpose of visit, and date/time. The visitor will receive an SMS with a QR code for entry. On arrival, visitors must present the QR code at reception and collect a visitor badge. Visitors must be escorted by the host employee at all times. Visitor access is limited to common areas and designated meeting rooms.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: Does ShopUNow provide transport or cab facilities for employees?\nAnswer: ShopUNow provides subsidized cab service for employees working late (after 8:30 PM) or early morning shifts (before 7:00 AM). Book through the 'ShopUNow Rides' app or Facilities Portal at least 2 hours before your required pickup time. The company covers 80% of the fare within a 25 km radius. For regular commute, ShopUNow partners with shuttle bus services on select routes — check route availability on the Facilities Portal under 'Transport'.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: What fire safety and emergency evacuation procedures should I know?\nAnswer: ShopUNow conducts mandatory fire drills every quarter. Emergency exits are marked with green signs on every floor. In case of fire: (1) Do NOT use elevators, (2) Proceed to the nearest emergency exit, (3) Assemble at the designated muster point in the parking area, (4) Report to your floor warden for headcount. Fire extinguishers are located at every stairwell and pantry. Emergency contact: Security Control Room ext. 9999. New employees receive fire safety training during onboarding week.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I request a seating change or relocation to a different floor?\nAnswer: Seating arrangements are managed by the Facilities team in coordination with department heads. To request a change, raise a ticket on the Facilities Portal under 'Seating' > 'Relocation Request'. Provide the reason (team restructuring, noise concerns, project-based seating, etc.) and preferred location. Requests are reviewed weekly and accommodated based on availability. Department-level relocations are coordinated with HR and respective managers.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: Is there a gym or wellness facility at ShopUNow offices?\nAnswer: Select ShopUNow offices (Mumbai HQ, Bangalore Tech Park, Delhi NCR) have an on-site fitness center with gym equipment, yoga room, and shower facilities. Access is free for all employees — register at the gym reception with your employee ID. Operating hours are 6:30 AM to 9:30 PM. Yoga and meditation sessions are conducted Tuesdays and Thursdays at 7:00 AM. Other offices have tie-ups with nearby gyms at discounted corporate rates — check the Facilities Portal for details.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: How do I dispose of old electronics or e-waste at the office?\nAnswer: ShopUNow follows responsible e-waste disposal practices. Do NOT throw electronic items (old keyboards, mice, chargers, batteries, cables) in regular dustbins. Drop them in the designated e-waste bins located near the IT asset counter on the ground floor. For large items (old monitors, printers), raise a ticket on the Facilities Portal under 'E-Waste Disposal'. The Facilities team coordinates quarterly e-waste drives with certified recyclers.",
+    "category": "Facilities & Admin"
+  },
+  {
+    "doc": "Question: What should I do if I find a lost item or lose something in the office?\nAnswer: If you find a lost item, please hand it over to the reception desk or Security office on the ground floor. If you've lost something, check with reception first or raise a request on the Facilities Portal under 'Lost & Found'. Describe the item, last known location, and date. The security team will check CCTV footage if needed. Found items are held for 30 days. Unclaimed items after 30 days are donated to charity. You'll receive an email notification if your item is found.",
+    "category": "Facilities & Admin"
+  }
+]

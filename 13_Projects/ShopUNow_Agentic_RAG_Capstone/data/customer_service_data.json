@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: How can I track my order from ShopUNow?\nAnswer: You can track your order by logging into your ShopUNow account at www.shopunow.com and navigating to 'My Orders'. Click on the specific order to see real-time tracking updates including dispatch, in-transit, out-for-delivery, and delivered status. You will also receive SMS and email notifications at each stage. For any tracking concerns, contact our support at support@shopunow.com or call 1800-SHOP-NOW.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: What is ShopUNow's return and refund policy?\nAnswer: ShopUNow offers a 30-day easy return policy for most products. Clothing and accessories can be returned within 30 days if unused with original tags. DIY tools and books can be returned within 15 days if unopened and in original packaging. Toys can be returned within 15 days if defective. To initiate a return, go to 'My Orders' > select the item > 'Return/Replace'. Refunds are processed within 5-7 business days to your original payment method.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: How do I cancel an order that has already been placed?\nAnswer: You can cancel your order before it is shipped by going to 'My Orders' on the ShopUNow website or app, selecting the order, and clicking 'Cancel Order'. If the order has already been shipped, you can refuse delivery or initiate a return once delivered. Cancellation refunds are processed within 3-5 business days. For prepaid orders, the amount is refunded to your original payment method. For COD orders, no charge is applied.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: I received a damaged or defective product. What should I do?\nAnswer: We apologize for the inconvenience. Please report the issue within 48 hours of delivery by going to 'My Orders' > select the item > 'Report Issue' > 'Damaged/Defective'. Upload photos of the damaged product and packaging. Our team will verify and arrange a free replacement or full refund within 2 business days. You can also reach us at support@shopunow.com with your order ID and photos.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: What payment methods does ShopUNow accept?\nAnswer: ShopUNow accepts a wide range of payment methods including: Credit/Debit Cards (Visa, Mastercard, RuPay, Amex), Net Banking (all major banks), UPI (Google Pay, PhonePe, Paytm), ShopUNow Wallet, EMI options (no-cost EMI on select products), and Cash on Delivery (COD) for orders up to INR 10,000. Gift cards and ShopUNow reward points can also be used at checkout.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: How do I apply a promo code or discount coupon at checkout?\nAnswer: During checkout on the ShopUNow website or app, you will see an 'Apply Coupon' field on the payment page. Enter your promo code and click 'Apply'. The discount will be reflected in the order summary. Note that only one coupon can be applied per order, and coupons cannot be combined with ongoing sale prices unless specified. Check 'Offers' section on the homepage for latest active coupons.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: Does ShopUNow offer free shipping?\nAnswer: Yes! ShopUNow offers free standard shipping on all orders above INR 499. Orders below INR 499 have a flat shipping charge of INR 49. Express delivery (1-2 business days) is available at INR 99 for metro cities and INR 149 for other locations. ShopUNow Premium members enjoy free express shipping on all orders with no minimum purchase requirement.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: How long does delivery take for ShopUNow orders?\nAnswer: Standard delivery takes 4-7 business days depending on your location. Metro cities (Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Kolkata) typically receive orders in 3-5 business days. Express delivery is available for 1-2 business day delivery in metro cities. Remote locations may take up to 10 business days. Delivery timelines are shown at checkout based on your pincode.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: How do I create an account on ShopUNow?\nAnswer: Visit www.shopunow.com and click 'Sign Up' in the top right corner. You can register using your email address, mobile number, or sign up directly with your Google or Facebook account. Enter your name, email, mobile number, and create a password. Verify your account via the OTP sent to your mobile number. Once verified, you can start shopping and enjoy member-exclusive deals.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: How do I contact ShopUNow customer support?\nAnswer: You can reach ShopUNow customer support through multiple channels: (1) Phone: Call 1800-SHOP-NOW (toll-free, available 8 AM - 10 PM, 7 days a week), (2) Email: support@shopunow.com (response within 24 hours), (3) Live Chat: Available on the website and app during business hours, (4) WhatsApp: Message us at +91-9876543210, (5) Social Media: DM us on Twitter @ShopUNow_Help or Facebook @ShopUNow.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: Can I exchange a product for a different size or color?\nAnswer: Yes, exchanges are available for clothing and accessories within 30 days of delivery. Go to 'My Orders' > select the item > 'Exchange'. Choose the new size or color from available options. The exchange pickup and delivery is free of charge. If the desired size/color is out of stock, you can opt for a full refund instead. Exchange deliveries typically arrive within 5-7 business days.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: How does ShopUNow's loyalty rewards program work?\nAnswer: ShopUNow Rewards is our loyalty program where you earn 1 reward point for every INR 10 spent. Points can be redeemed at checkout — 100 points = INR 10 discount. You automatically earn Silver status (2x points) after spending INR 10,000 in a year, Gold (3x points) after INR 25,000, and Platinum (5x points) after INR 50,000. Points expire after 12 months of inactivity. Check your points balance in 'My Account' > 'Rewards'.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: Is it safe to shop on ShopUNow? How is my data protected?\nAnswer: Absolutely! ShopUNow uses 256-bit SSL encryption for all transactions. We are PCI-DSS compliant and never store your full card details on our servers. All payment processing is handled through certified payment gateways. Your personal data is protected under our privacy policy in compliance with applicable data protection regulations. We never share your data with third parties without consent.",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: I received the wrong product in my order. What should I do?\nAnswer: We're sorry about the mix-up. Please report this within 48 hours by going to 'My Orders' > select the item > 'Report Issue' > 'Wrong Product Received'. Upload a photo of the product you received. We will arrange a free pickup of the wrong product and deliver the correct item within 3-5 business days. If the correct product is unavailable, we'll issue a full refund. No need to worry — we've got you covered!",
+    "category": "Customer Service"
+  },
+  {
+    "doc": "Question: Does ShopUNow offer gift wrapping or personalized messages?\nAnswer: Yes! Gift wrapping is available for INR 49 per item. During checkout, select 'Add Gift Wrap' next to the item. You can also include a personalized message of up to 150 characters on a gift card included in the package. Gift-wrapped orders do not include the price tag or invoice. For bulk gifting (corporate orders of 10+ items), contact corporategifts@shopunow.com for special rates.",
+    "category": "Customer Service"
+  }
+]

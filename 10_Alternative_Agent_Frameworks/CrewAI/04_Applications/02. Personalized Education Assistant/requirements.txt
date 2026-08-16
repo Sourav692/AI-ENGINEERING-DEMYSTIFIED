@@ -1,0 +1,8 @@
+# Personalized Education Assistant - Dependencies
+# Based on imports from education_assistant.ipynb
+
+crewai
+crewai_tools
+pydantic
+python-dotenv
+ipython

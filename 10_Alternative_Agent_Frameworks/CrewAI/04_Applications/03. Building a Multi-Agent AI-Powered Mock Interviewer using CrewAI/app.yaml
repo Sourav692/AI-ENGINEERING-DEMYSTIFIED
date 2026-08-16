@@ -1,0 +1,19 @@
+# Databricks Apps configuration for AI Mock Interviewer
+command:
+  - streamlit
+  - run
+  - chatbot_ui.py
+  - --server.port
+  - "8501"
+  - --server.address
+  - "0.0.0.0"
+  - --server.headless
+  - "true"
+
+env:
+  # These will be populated from Databricks secrets or app configuration
+  - name: OPENAI_API_KEY
+    valueFrom: "{{secrets/ai-mock-interviewer/openai-api-key}}"
+  - name: SERPER_API_KEY
+    valueFrom: "{{secrets/ai-mock-interviewer/serper-api-key}}"
+

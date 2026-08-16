@@ -93,6 +93,8 @@ extend-exclude = [
     "13_Projects/LangGraph_Fullstack_Capstone/fullstackapp/frontend",
     "13_Projects/LangChain_Microservices_Capstone/frontend",
     "07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/app/frontend",
+    "10_Alternative_Agent_Frameworks/CrewAI/01_Foundations/Some_Simple_Agents/app/frontend",
+    "13_Projects/Realtime_Voice_AI_Agent_with_RAG/Codes/rag_voice_ai_agent-deployment_live/frontend",
 ]
 
 [tool.ruff.lint]

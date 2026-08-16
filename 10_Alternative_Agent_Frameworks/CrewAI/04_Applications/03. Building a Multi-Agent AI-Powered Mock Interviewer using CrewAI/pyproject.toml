@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ai_mock_interviewer"
+version = "0.1.0"
+description = "AI Mock Interviewer based on CrewAI"
+authors = ["Name <email>"]
+
+[tool.poetry.dependencies]
+python = "^3.13.11"
+crewai = {extras = ["tools"], version = "^0.114.0"}
+streamlit = "^1.44.1"
+streamlit-mic-recorder = "^0.0.8"
+speechrecognition = "^3.14.2"
+openai-whisper = "^20240930"
+
+[tool.poetry.group.dev.dependencies]
+ruff = ">=0.9.3"
+pdbp = "^1.6.1"
+
+[tool.ruff]
+extend = "ruff.toml"

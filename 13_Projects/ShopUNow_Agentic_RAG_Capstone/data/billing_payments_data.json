@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: My payment was deducted but the order was not confirmed. What should I do?\nAnswer: Sometimes payments take a few minutes to be verified. Please wait 30 minutes and check your order status under 'My Orders'. If the order still shows as 'Payment Pending' or is not visible, the amount will be auto-refunded to your original payment method within 5-7 business days. If the refund is not received after 7 days, contact us at billing@shopunow.com with your transaction reference number, bank statement screenshot, and order ID (if available).",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: How do I get a GST invoice for my ShopUNow purchase?\nAnswer: To receive a GST invoice, add your GSTIN during checkout in the 'Business/GST Details' section. The GST invoice will be generated automatically and available for download under 'My Orders' > select order > 'Download Invoice'. If you forgot to add GSTIN during checkout, raise a request within 48 hours at billing@shopunow.com with your order ID and GSTIN. Please note that GST invoices cannot be generated after the return window has closed.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: What EMI options are available on ShopUNow?\nAnswer: ShopUNow offers EMI on orders above INR 3,000. Options include: (1) No-Cost EMI on select products (3, 6, or 9 months) with participating bank credit cards, (2) Standard EMI (3-24 months) on all major bank credit cards with applicable interest, (3) Bajaj Finserv EMI Card for cardless EMI, (4) ShopUNow Pay Later — buy now and pay in 3 interest-free installments. EMI options are displayed on the product page and at checkout.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: How do I check the status of my refund?\nAnswer: To check your refund status, go to 'My Orders' > select the returned/cancelled order > 'Refund Status'. The timeline depends on the payment method: UPI refunds take 1-3 business days, credit/debit card refunds take 5-7 business days, net banking refunds take 3-5 business days, and wallet refunds are instant. You'll receive an email and SMS when the refund is initiated and when it's credited. For delays beyond the stated timeline, contact billing@shopunow.com.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: Can I change the payment method after placing an order?\nAnswer: Payment method cannot be changed after an order is confirmed and paid. However, for Cash on Delivery (COD) orders that haven't been shipped yet, you can switch to prepaid by going to 'My Orders' > 'Pay Now' within 24 hours. If you need to change the payment method, you can cancel the order (before shipment) and place a new one with the preferred payment method. No cancellation charges apply for prepaid orders.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: How does ShopUNow Wallet work and how do I add money to it?\nAnswer: ShopUNow Wallet is a prepaid digital wallet for faster checkouts. Add money via UPI, net banking, or debit card — minimum INR 100, maximum balance INR 10,000. Wallet balance is used automatically at checkout (you can uncheck it). Refunds for wallet-paid orders are credited instantly to the wallet. Promotional cashback is also credited to the wallet. Wallet balance cannot be transferred to a bank account. Manage your wallet under 'My Account' > 'ShopUNow Wallet'.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: I was charged twice for the same order. How do I get a resolution?\nAnswer: Double charges sometimes occur due to payment gateway glitches. Do not worry — duplicate charges are automatically detected and refunded within 3-5 business days. If the duplicate charge is not reversed within 5 days, email billing@shopunow.com with: (1) Order ID, (2) Transaction reference numbers for both charges, (3) Bank statement showing the double debit. Our billing team will escalate it with the payment gateway and resolve within 48 hours.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: How do I redeem a ShopUNow gift card?\nAnswer: To redeem a gift card, go to checkout and click 'Apply Gift Card'. Enter the 16-digit gift card code and the 4-digit PIN (found on the back of physical cards or in the email for e-gift cards). The balance will be applied to your order. If the order value exceeds the gift card balance, pay the remaining amount using another payment method. Gift cards are valid for 12 months from the date of purchase. Check balance at 'My Account' > 'Gift Cards'.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: Does ShopUNow charge any convenience fee for Cash on Delivery (COD)?\nAnswer: ShopUNow charges a nominal COD handling fee of INR 29 per order. This fee covers the operational cost of cash collection at your doorstep. The COD fee is displayed at checkout before you confirm the order. COD is available for orders up to INR 10,000. For higher-value orders, please use prepaid payment methods. ShopUNow Premium members are exempt from the COD convenience fee.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: How do I download my purchase invoice or receipt?\nAnswer: Invoices are auto-generated for all orders. Go to 'My Orders' > select the order > click 'Download Invoice' to get a PDF copy. The invoice includes order details, item-wise pricing, applicable taxes, shipping charges, and discounts applied. For GST-registered businesses, the invoice includes GSTIN details. Invoices are also sent to your registered email within 24 hours of order confirmation. For consolidated invoices (multiple orders), contact billing@shopunow.com.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: What should I do if my promo code or discount is not being applied at checkout?\nAnswer: If your promo code isn't working, check the following: (1) Ensure the code hasn't expired — check the validity dates, (2) Verify minimum order value requirements are met, (3) Check if the code is applicable to the items in your cart (some codes exclude sale items or specific categories), (4) Confirm the code hasn't been already used (single-use codes). If everything checks out and it still doesn't work, take a screenshot and email offers@shopunow.com with the code details. Our team will assist within 24 hours.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: Can I get a price adjustment if an item I purchased goes on sale within a few days?\nAnswer: ShopUNow offers a 7-day Price Protection Guarantee. If the price of an item you purchased drops within 7 days of your order date, you can claim the difference. Go to 'My Orders' > select the order > 'Price Match Request'. The price difference will be credited to your ShopUNow Wallet within 3 business days. This applies only to items sold by ShopUNow directly (not marketplace sellers) and excludes flash sales and clearance events.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: How do I set up auto-pay for my ShopUNow subscription boxes?\nAnswer: For subscription services (BookBox, KidBox, StyleBox, DIY Maker Box), you can set up auto-pay during subscription signup. We support auto-pay via credit/debit card and UPI autopay mandate. Go to 'My Account' > 'Subscriptions' > 'Payment Settings' to manage your auto-pay method. You'll receive a reminder email 3 days before each charge. You can pause, cancel, or change payment method anytime before the next billing date.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: Is there a way to split payment across multiple methods?\nAnswer: Yes! ShopUNow supports split payments. At checkout, you can combine: (1) ShopUNow Wallet balance + card/UPI, (2) Gift Card balance + card/UPI, (3) Reward Points + any payment method. However, you cannot split between two credit/debit cards or two UPI IDs in a single transaction. The wallet and gift card balance is deducted first, and the remaining amount is charged to your selected payment method.",
+    "category": "Billing & Payments"
+  },
+  {
+    "doc": "Question: What is ShopUNow Pay Later and how do I sign up?\nAnswer: ShopUNow Pay Later allows you to buy now and pay in 3 interest-free monthly installments with no additional charges. To sign up, go to 'My Account' > 'ShopUNow Pay Later' and complete a quick KYC verification (PAN card + Aadhaar). Approval is instant for most users with a credit limit up to INR 20,000. Once approved, select 'ShopUNow Pay Later' at checkout. Payments are auto-debited from your linked bank account on the 5th of each month. Late payments attract a fee of INR 100 per installment.",
+    "category": "Billing & Payments"
+  }
+]

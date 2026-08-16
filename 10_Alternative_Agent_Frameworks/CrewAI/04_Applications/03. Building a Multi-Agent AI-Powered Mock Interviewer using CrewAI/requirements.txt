@@ -1,0 +1,7 @@
+# Core dependencies for AI Mock Interviewer
+crewai[tools]>=0.114.0
+streamlit>=1.44.1
+streamlit-mic-recorder>=0.0.8
+openai-whisper>=20240930
+pydantic>=2.0.0
+

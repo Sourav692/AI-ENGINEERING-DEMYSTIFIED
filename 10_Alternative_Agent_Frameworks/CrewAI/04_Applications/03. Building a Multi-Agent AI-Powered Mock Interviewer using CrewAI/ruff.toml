@@ -1,0 +1,20 @@
+# Basic linting rules
+select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "PL", "RUF"]
+
+# Exclude directories
+exclude = [
+    ".git",
+    ".ruff_cache",
+    ".venv",
+    "__pypackages__",
+    "build",
+    "dist",
+    "migrations",
+    "node_modules",
+]
+
+# Python version
+target-version = "py310"
+
+# Line length
+line-length = 88 

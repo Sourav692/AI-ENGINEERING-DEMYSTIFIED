@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: How many paid leaves am I entitled to per year at ShopUNow?\nAnswer: Full-time employees at ShopUNow are entitled to 24 paid leaves per year, which includes 12 casual leaves, 6 sick leaves, and 6 earned leaves. Leaves are credited at the beginning of each calendar year. Unused earned leaves can be carried forward up to a maximum of 30 days.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What is the process to apply for maternity or paternity leave?\nAnswer: Maternity leave at ShopUNow is 26 weeks for the first two children as per the Maternity Benefit Act. Paternity leave is 2 weeks. You need to apply through the HRMS portal at least 8 weeks before your expected due date, attach the relevant medical certificate, and get approval from your reporting manager. HR will confirm the leave dates within 3 business days.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: When is the salary credited each month?\nAnswer: Salaries at ShopUNow are credited on the last working day of each month. If the last working day falls on a bank holiday, the salary is credited on the preceding working day. Your payslip is available on the HRMS portal within 2 days of salary credit.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: How do I update my bank account details for salary transfer?\nAnswer: To update your bank account details, log into the HRMS portal and navigate to 'My Profile' > 'Bank Details'. Upload a cancelled cheque or bank statement as verification. The change request will be reviewed by the payroll team and updated within 5 business days. You will receive a confirmation email once the update is processed.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What is the performance appraisal cycle at ShopUNow?\nAnswer: ShopUNow follows an annual performance appraisal cycle. The cycle runs from April to March. Self-appraisals are due by April 15th, manager reviews by April 30th, and calibration meetings happen in May. Final ratings and increments are communicated by June 15th. Mid-year reviews happen in October for goal tracking and feedback.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: How can I enroll in the company health insurance plan?\nAnswer: All full-time employees are automatically enrolled in the group health insurance plan covering self, spouse, and up to 2 dependent children. The base coverage is INR 5 lakhs. You can opt for a top-up plan of INR 10 lakhs or INR 15 lakhs at a subsidized premium deducted from your salary. Enrollment for top-up plans opens every January. Contact hr-benefits@shopunow.com for details.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What is the work-from-home policy at ShopUNow?\nAnswer: ShopUNow follows a hybrid work model. Corporate office employees can work from home up to 2 days per week (Wednesday and Friday are designated WFH days). Store and warehouse employees are required to be on-site. WFH requests beyond the standard policy require manager approval and HR notification through the HRMS portal.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: How do I submit my investment proofs for tax declaration?\nAnswer: Investment proofs for tax declaration must be submitted through the HRMS portal under 'Tax Declaration' section between January 1st and January 31st each year. Upload scanned copies of receipts for LIC premiums, PPF deposits, home loan certificates, rent receipts, and other eligible deductions under Section 80C, 80D, and HRA. The payroll team will adjust TDS from February salary onwards.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What is the notice period for resignation at ShopUNow?\nAnswer: The standard notice period at ShopUNow is 60 days for all confirmed employees. During the probation period, the notice period is 30 days. You can request early release by applying for notice period buyout, which requires approval from your department head and HR. The buyout amount is calculated based on your gross salary for the remaining notice period days.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: Does ShopUNow offer any employee referral bonus?\nAnswer: Yes, ShopUNow has an active Employee Referral Program. Referral bonuses range from INR 10,000 to INR 50,000 depending on the role level. The bonus is paid in two installments — 50% after the referred candidate completes 3 months and 50% after 6 months. Refer candidates through the 'Referrals' section on the HRMS portal.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: How do I apply for an internal job transfer to another department?\nAnswer: Internal job postings are listed on the HRMS portal under 'Internal Opportunities'. You must have completed at least 12 months in your current role to be eligible. Apply through the portal and inform your current manager. HR will coordinate the interview process with the hiring department. Transfer decisions are communicated within 3 weeks of application.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What are the company holidays for this year?\nAnswer: ShopUNow observes 12 fixed company holidays per year including Republic Day, Independence Day, Gandhi Jayanti, Diwali (2 days), Christmas, New Year, Holi, Eid, Good Friday, and 2 regional holidays based on your office location. The complete holiday calendar is published on the HRMS portal at the start of each year and also sent via email.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: How can I access my previous months' payslips?\nAnswer: You can access all your payslips from the HRMS portal. Navigate to 'Payroll' > 'Payslips' and select the month and year. Payslips are available for download in PDF format for the current and all previous financial years of your employment. If you face any issues, contact payroll@shopunow.com.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What training and development programs does ShopUNow offer?\nAnswer: ShopUNow offers multiple L&D initiatives including: ShopUNow Academy (online courses on retail, leadership, and tech skills), quarterly skill workshops, an annual learning budget of INR 25,000 per employee for external certifications, and a mentorship program. Browse available programs on the HRMS portal under 'Learning & Development' or contact ld@shopunow.com.",
+    "category": "HR"
+  },
+  {
+    "doc": "Question: What is the policy for reporting workplace harassment or grievances?\nAnswer: ShopUNow has a zero-tolerance policy for workplace harassment. You can report incidents through the following channels: (1) Email the Internal Complaints Committee at icc@shopunow.com, (2) Use the anonymous grievance form on the HRMS portal, or (3) Speak directly to your HR Business Partner. All complaints are investigated confidentially within 10 working days. The company strictly follows the POSH Act guidelines.",
+    "category": "HR"
+  }
+]

@@ -1,0 +1,74 @@
+# Databricks Asset Bundles configuration for AI Mock Interviewer
+# Documentation: https://docs.databricks.com/en/dev-tools/bundles/index.html
+
+bundle:
+  name: ai-mock-interviewer
+
+# Define workspace targets (development, staging, production)
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      # Replace with your Databricks workspace URL
+      host: https://<your-workspace>.cloud.databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://<your-workspace>.cloud.databricks.com
+      # Root path for production deployments
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/prod
+
+# App resources
+resources:
+  apps:
+    ai_mock_interviewer:
+      name: ai-mock-interviewer
+      description: "AI Mock Interviewer - A multi-agent interview practice system powered by CrewAI"
+      
+      # Source code configuration
+      source_code_path: .
+      
+      # App configuration
+      config:
+        command:
+          - streamlit
+          - run
+          - chatbot_ui.py
+          - --server.port=8501
+          - --server.address=0.0.0.0
+          - --server.headless=true
+          - --browser.gatherUsageStats=false
+        
+        # Environment variables from Databricks Secrets
+        env:
+          - name: OPENAI_API_KEY
+            value_from: "{{secrets/ai-mock-interviewer/openai-api-key}}"
+          - name: SERPER_API_KEY
+            value_from: "{{secrets/ai-mock-interviewer/serper-api-key}}"
+          # Optional: Use Databricks-hosted models instead
+          # - name: OPENAI_API_BASE
+          #   value: "${workspace.host}/serving-endpoints"
+        
+        # Resource configuration
+        resources:
+          # Memory and CPU allocation (adjust based on your needs)
+          memory: "4Gi"
+          cpu: "2"
+
+# Files to include/exclude
+include:
+  - "*.py"
+  - "requirements.txt"
+  - "app.yaml"
+
+sync:
+  exclude:
+    - ".venv/"
+    - "__pycache__/"
+    - "*.pyc"
+    - ".git/"
+    - "uv.lock"
+    - "poetry.lock"
+

@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: How can I track my ShopUNow delivery in real-time?\nAnswer: Once your order is shipped, you'll receive a tracking link via SMS and email. You can also track from 'My Orders' > select order > 'Track Package'. Real-time tracking shows the package journey through dispatch, in-transit, out-for-delivery, and delivered stages. For orders with our logistics partner ShopUNow Express, you get live map tracking when the delivery executive is within 5 km of your location. Tracking updates refresh every 30 minutes.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Can I change my delivery address after placing an order?\nAnswer: Address changes are possible only before the order is shipped. Go to 'My Orders' > select the order > 'Modify Address'. Once the order status changes to 'Shipped', the address cannot be modified. In that case, you can request the delivery executive to hold the package at the nearest hub by calling the number provided in your tracking SMS. Alternatively, refuse delivery and place a new order with the correct address.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: What happens if I'm not available at the time of delivery?\nAnswer: If you're not available, the delivery executive will attempt to call you. If unreachable, the package will be reattempted the next business day. ShopUNow makes a total of 3 delivery attempts. After 3 failed attempts, the package is returned to the warehouse and a full refund is initiated. You can also use 'Safe Drop' (leave at door) or designate an alternate recipient in your delivery preferences under 'My Account' > 'Address Book'.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Does ShopUNow offer same-day or next-day delivery?\nAnswer: Yes! ShopUNow Express offers: (1) Same-Day Delivery — available in 6 metro cities (Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Kolkata) for orders placed before 12 PM on eligible items marked with 'Same-Day' badge. Cost: INR 149. (2) Next-Day Delivery — available in 20+ cities for orders placed before 6 PM. Cost: INR 99. ShopUNow Premium members get free next-day delivery on all eligible orders.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: My order shows 'Delivered' but I haven't received it. What should I do?\nAnswer: We're sorry about this. First, check with family members, neighbors, or your building security/reception as the package may have been handed to them. Check for a 'Safe Drop' photo in your tracking details. If still not found, report the issue within 48 hours through 'My Orders' > 'Report Issue' > 'Not Received'. Our logistics team will investigate with the delivery partner and resolve within 72 hours — either reship the item or issue a full refund.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Can I schedule a specific delivery date and time slot?\nAnswer: Yes, ShopUNow offers scheduled delivery in select cities. During checkout, choose 'Schedule Delivery' and pick your preferred date (up to 7 days out) and time slot: Morning (9 AM - 12 PM), Afternoon (12 PM - 3 PM), Evening (3 PM - 6 PM), or Night (6 PM - 9 PM). Scheduled delivery is available for a nominal fee of INR 29. ShopUNow Premium members can schedule deliveries for free.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Does ShopUNow deliver to PO Boxes or APO/military addresses?\nAnswer: ShopUNow delivers to all valid Indian postal addresses including PO Boxes. For defense and military cantonments, delivery depends on the specific location's accessibility to our logistics partners. Enter your pincode on the product page to check serviceability. Remote and island locations (Andaman & Nicobar, Lakshadweep) may have extended delivery timelines of 12-15 business days and limited COD availability.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: How is my package packed to ensure it arrives safely?\nAnswer: ShopUNow uses secure, multi-layer packaging. Fragile items (DIY tools, toys) are wrapped in bubble wrap and placed in corrugated boxes with foam cushioning. Clothing is packed in moisture-resistant poly bags inside shipping boxes. Books have rigid cardboard mailers to prevent bending. All packages are sealed with tamper-evident tape. If you receive a package that appears tampered with, do not accept it and report immediately through the app.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Can I have multiple items from one order delivered to different addresses?\nAnswer: Currently, each order is delivered to a single address. If you need items shipped to different addresses, please place separate orders for each address. However, if your order contains items from different sellers or warehouses, they may arrive as separate shipments on different dates — each with its own tracking number. All shipments will be delivered to the same address specified during checkout.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: What are the shipping charges for different delivery options?\nAnswer: ShopUNow shipping charges are as follows: (1) Standard Delivery (4-7 days): FREE for orders above INR 499, INR 49 for orders below INR 499, (2) Express Delivery (1-2 days): INR 99 for metro cities, INR 149 for non-metro, (3) Same-Day Delivery: INR 149 (metro cities only), (4) Scheduled Delivery: INR 29 surcharge on top of standard/express rates. ShopUNow Premium members get free standard and express delivery on all orders.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Can I pick up my order from a ShopUNow store instead of home delivery?\nAnswer: Yes! ShopUNow offers 'Click & Collect' — order online and pick up from your nearest ShopUNow store for free. Select 'Store Pickup' during checkout and choose your preferred store. You'll receive a notification when your order is ready (usually within 4-24 hours). Bring your order confirmation email/SMS and a valid ID for pickup. Orders are held at the store for 7 days. After 7 days, uncollected orders are returned and refunded.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: How do I return a product? Will ShopUNow arrange the pickup?\nAnswer: To return a product, go to 'My Orders' > select the item > 'Return'. Choose your reason, and select a pickup date and time slot. ShopUNow arranges free reverse pickup from your address — our logistics partner will come to collect the item. Pack the product in its original packaging with all accessories and tags. You'll receive a confirmation once the item is picked up and another when the refund is initiated after quality check.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: My package is stuck in transit for many days. What can I do?\nAnswer: If your package tracking hasn't updated for more than 48 hours, go to 'My Orders' > 'Track Package' > 'Report Delay'. Our logistics team will investigate with the delivery partner. Common reasons for delays include: weather disruptions, address-related issues, customs (for inter-state large shipments), or local delivery backlogs. You'll receive an updated ETA within 24 hours of reporting. If the package is lost in transit, we'll reship or refund within 5 business days.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: Does ShopUNow use eco-friendly packaging for deliveries?\nAnswer: Yes, ShopUNow is committed to sustainable shipping. We use: (1) 100% recyclable corrugated boxes, (2) Paper-based tape instead of plastic tape, (3) Biodegradable bubble wrap and corn-starch packing peanuts, (4) Minimal packaging — right-sized boxes to reduce waste. We've eliminated single-use plastic from 95% of our shipments. Customers can opt for 'Minimal Packaging' at checkout to receive items with reduced packaging where safe to do so.",
+    "category": "Shipping & Delivery"
+  },
+  {
+    "doc": "Question: How does ShopUNow handle delivery of large or heavy items like furniture or DIY equipment?\nAnswer: Large and heavy items (above 10 kg or oversized) are delivered through our specialized logistics partners. Delivery includes: (1) Ground-floor doorstep delivery is standard and free, (2) In-room placement and basic assembly is available for INR 299 in select cities, (3) Delivery is scheduled by appointment — you'll receive a call to confirm date and 4-hour time window. Large item deliveries typically take 7-10 business days. Track large shipments separately under 'My Orders' > 'Large Items'.",
+    "category": "Shipping & Delivery"
+  }
+]

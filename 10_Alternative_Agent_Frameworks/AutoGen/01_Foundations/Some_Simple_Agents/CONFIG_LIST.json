@@ -1,0 +1,11 @@
+[
+    {
+    "model": "llama-3.3-70b-versatile",
+    "api_type": "groq"
+    },
+    {
+      "model": "openai/gpt-oss-120b",
+      "api_type": "groq"
+    }
+  ]
+

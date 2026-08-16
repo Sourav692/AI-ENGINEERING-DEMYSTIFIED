@@ -1,25 +1,19 @@
-# Chapter 4: Agents — How Do I Build Real Agents?
+# AI Agents with LangGraph
 
-> Build complete agents that solve real-world problems.
+**Status:** ✅ Built.
 
-## What You'll Learn
+| # | Notebook / Folder | Topic |
+|---|---|---|
+| 1 | `01_Research_Assistant_Chatbot.ipynb` | Web-search research assistant with Tavily |
+| 2 | `02_Competitive_Intelligence_Agent.ipynb` | Business intelligence agent with structured output |
+| 3 | `03_Multi_Agent_Research_Summarization/` | Multi-agent research + summarization pipeline |
+| 4 | `04_Planning_Agent_Deep_Research/` | Planning-pattern deep research agent |
+| 5 | `05_Reflective_Code_Generation_Agent/` | Reflective, self-correcting code generation agent |
+| 6 | `06_Reflective_Dynamic_Planning_Agent/` | Reflective dynamic planning agent |
+| 7 | `07_Supervisor_Multi_Agent_Financial_Research/` | Supervisor-pattern multi-agent financial research |
+| 8 | `08_Web_Research_Agent_ReAct_Alt.ipynb` | Alternate ReAct-pattern web research agent |
+| 9 | `09_Financial_Analyst_Tool_Use_Agent/` | Tool-use financial analyst agent |
+| 10 | `10_Hotel_Reservations_Multi_Agent_System/` | Full-stack hotel reservations multi-agent system |
+| 11 | `11_Software_Engineering_Multi_Agent_System/` | Full-stack software-engineering multi-agent system |
 
-- Build a **research assistant** that searches the web, synthesizes findings, and maintains context
-- Create a **competitive intelligence agent** with domain-specific prompting and structured output
-
-## Prerequisites
-
-- [Chapter 1: Foundations](../01_Foundations/) and [Chapter 2: Core Capabilities](../02_Core_Capabilities/) completed
-- [Chapter 3: RAG](../03_RAG/) recommended
-- API keys: OpenAI or Groq (required), Tavily (for web search)
-
-## Notebooks
-
-| # | Notebook | What You'll Build | Key Concepts |
-|---|---|---|---|
-| 1 | [Research Assistant Chatbot](01_Research_Assistant_Chatbot.ipynb) | Web-search research assistant | Tavily search, multi-turn memory, source synthesis |
-| 2 | [Competitive Intelligence Agent](02_Competitive_Intelligence_Agent.ipynb) | Business intelligence agent | Domain-specific prompting, structured output |
-
-## What's Next?
-
-You can build functional agents. Move to **[Chapter 5: Agentic Design Patterns](../05_Agentic_Design_Patterns/)** to learn the patterns that make agents truly powerful.
+Notebooks 9–11 merged from `AgenticAI_Projects_Demystified`; 5 other project folders from that same repo (matching 3–7 above) were confirmed byte-identical duplicates and skipped.

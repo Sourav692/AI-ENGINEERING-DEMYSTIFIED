@@ -47,8 +47,8 @@ Owns: all agent-building content, both frameworks, in one place.
 
 | Track | Status | Content |
 |---|---|---|
-| `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling + agents (from `LangChain_Demystified`'s modules 06 & 10) |
-| `AI_Agents_with_LangGraph/` | ✅ Built | 8 real-world agent builds |
+| `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling + agents (from `LangChain_Demystified`'s modules 06 & 10), plus `03_Applied_Projects/` (16 nb, from `AgenticAI_Projects_Demystified`) |
+| `AI_Agents_with_LangGraph/` | ✅ Built | 11 real-world agent builds (8 original + 3 from `AgenticAI_Projects_Demystified` after 5 duplicates were skipped — see History §6) |
 | `Workflow_and_Agent_Patterns/` | ✅ Built | 8 pattern subfolders, ~27 notebooks |
 
 ## Phase 6 — `06_Agent_SDKs_First_Party/` — 🚧 Planned
@@ -83,9 +83,17 @@ Also two standalone apps merged from `RAG_Demystified`: `building-adaptive-rag/`
 
 `MCP/` (4 subfolders), `ACP/` (3 subfolders), `A2A/` (3 subfolders).
 
-## Phase 10 — `10_Alternative_Agent_Frameworks/` — 🚧 Planned
+## Phase 10 — `10_Alternative_Agent_Frameworks/` — ✅ Partially built
 
-Frameworks to pick up *after* Phases 2/3/5 — each standalone. `DSPy/`, `CrewAI/`, `PydanticAI/`, `AutoGen/`, `Orchestration_Frameworks_Overview/`. **If a new agent framework shows up and doesn't obviously belong to an earlier phase, this is very likely where it goes.**
+Frameworks to pick up *after* Phases 2/3/5 — each standalone. **If a new agent framework shows up and doesn't obviously belong to an earlier phase, this is very likely where it goes.**
+
+| Track | Status | Content |
+|---|---|---|
+| `CrewAI/` | ✅ Built | `01_Foundations/Some_Simple_Agents/` (8 nb) + `04_Applications/` (9 project sets) — from `AgenticAI_Projects_Demystified` |
+| `AutoGen/` | ✅ Built | `01_Foundations/Some_Simple_Agents/` (3 nb) + `04_Applications/` (7 project sets) — from `AgenticAI_Projects_Demystified` |
+| `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned | |
+
+Note: `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were removed from both `CrewAI/` and `AutoGen/`'s skeleton when real content arrived, since the source repo's projects split cleanly into Foundations/Applications only — don't recreate those two subfolders unless content actually needs them.
 
 ## Phase 11 — `11_Claude_Code_and_AI_Coding_Tools/` — 🚧 Planned
 
@@ -105,9 +113,9 @@ Owns: deployment, LLMOps, observability, security, safety.
 | `Safety_and_Alignment/` | ✅ Partially built | Content moderation (from module 09) |
 | `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned | |
 
-## Phase 13 — `13_Projects/` — ✅ Built
+## Phase 13 — `13_Projects/` — ✅ Built (10 projects)
 
-Capstone/integration projects. `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module). More capstones get added here as new phases produce content worth integrating.
+Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 more standalone full-stack apps (`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` — all from `AgenticAI_Projects_Demystified`). More capstones get added here as new phases produce content worth integrating.
 
 ## `archive/`, `docs/`, root scaffolding
 
@@ -130,3 +138,5 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 5. **2026-08-17 — `RAG_Demystified` merged in, no restructuring needed.** The 13-phase, one-topic-per-phase model held up: every one of the ~350 source files had an obvious home, and the merge filled 5 previously-empty placeholders (`Embeddings_and_Vector_Databases/`, `RAG_Naive_to_Production/`, `Multimodal_and_Document_Intelligence/`, `RAG_Evaluation/`, `GraphRAG/`) rather than requiring new phases. Confirms the structure is stable for RAG-topic content specifically — take that as a signal the model is working, not as license to skip checking `roadmap-map.md` before the next merge. Two new patterns worth remembering:
    - **Source folders with shared internal dependencies** (a `helper_functions.py`/`data/`/`images/` used by dozens of notebooks via relative paths) should move as one intact unit, not be split notebook-by-notebook even when individual notebooks would otherwise belong in different phases by topic. `Comprehensive_RAG_Techniques/` in Phase 8 is the reference example — it contains some basic-level notebooks that would "belong" in Phase 4 by strict topic rules, but splitting them out would break the shared imports. When this tension comes up, prefer keeping the collection whole and place it by its own dominant identity, and say so explicitly in its README.
    - **Windows/Git-Bash `mv` can silently misbehave** with multi-source globs (`mv "$SRC"/* "$DEST/"`) when `$DEST` doesn't exist or under certain path-quoting conditions — in this merge it briefly renamed an *existing, unrelated* destination folder (`RAG_with_LangGraph_Advanced/`) to `AgenticRAG` mid-command instead of erroring cleanly. No data was lost (caught via notebook-count verification before/after), but the fix required manually diagning what happened. Prefer the item-by-item `for item in "$SRC"/*; do mv "$item" "$DEST/$(basename "$item")"; done` loop over `mv "$SRC"/* "$DEST/"` when moving multiple items into an existing directory — it's what already reliably works around the Windows directory-lock issue too (see Phase 7 above), so just use it as the default move pattern in this repo rather than reaching for the shortcut form.
+
+6. **2026-08-17 — `AgenticAI_Projects_Demystified` merged in; check for duplicates BEFORE mapping content, not after.** This repo turned out to share an author/ecosystem with `Agentic_Design_Pattern_Demystified` (merged much earlier) — 5 of its "Projects with LangGraph" folders were byte-identical or near-identical to notebooks already in `AI_Agents_with_LangGraph/`. Caught this by comparing file sizes (`ls -la`) between the new source folder and the existing destination *before* doing any moves, for every project whose name looked familiar. **New standing practice: whenever a merged-in repo has project/notebook names that echo anything already in `NOTEBOOK_INDEX.md`, diff file sizes (or content) before merging — don't assume a name match means duplicate, and don't assume a name match means safe-to-merge either; check.** This merge also filled Phase 10 (Alternative Agent Frameworks) from fully-planned to partially-built in one step (`CrewAI/` + `AutoGen/`) — first time a phase jumped straight from empty to built rather than growing incrementally.

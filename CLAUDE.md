@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 13 numbered phases, each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far:** Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 12 (partially). Phases 1, 6, 9, 10, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
+**Built so far:** Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 10, 12 (partially). Phases 1, 6, 9, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
@@ -22,10 +22,10 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
 07_Advanced_Agentic_Systems/             ✅ Partially built — memory, multi-agent orchestration, deep agents built; agent/general eval planned
 08_Advanced_RAG/                         ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned; needs Phases 5 & 7 first
 09_Agent_Protocols/                      🚧 Planned — MCP, ACP, A2A
-10_Alternative_Agent_Frameworks/         🚧 Planned — DSPy, CrewAI, PydanticAI, AutoGen
+10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI and AutoGen built (9+8 project sets); DSPy, PydanticAI planned
 11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
-13_Projects/                             ✅ Built — LangGraph fullstack capstone, LangChain microservices capstone, RAG systems projects
+13_Projects/                             ✅ Built — 10 projects: LangGraph/LangChain/RAG capstones + 7 more standalone full-stack apps
 archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
 docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
 ```
@@ -67,8 +67,8 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `LangChain_Tools_and_Agents/` | Tool calling, tool-calling agents, agents |
-| `AI_Agents_with_LangGraph/`   | Full real-world agent builds (8) |
+| `LangChain_Tools_and_Agents/` | Tool calling, tool-calling agents, agents, + `03_Applied_Projects/` (16 applied builds) |
+| `AI_Agents_with_LangGraph/`   | Full real-world agent builds (11) |
 | `Workflow_and_Agent_Patterns/` | Named agentic design patterns — tool use, planning, reflection, router, prompt chaining, evaluator-optimizer, orchestrator-worker, advanced cognitive patterns (8 pattern subfolders, ~27 notebooks) |
 
 ### Phase 7 — `07_Advanced_Agentic_Systems/` — internal tracks
@@ -98,6 +98,14 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `Safety_and_Alignment/`       | Content moderation |
 | `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned |
 
+### Phase 10 — `10_Alternative_Agent_Frameworks/` — internal tracks
+
+| Track | Content |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `CrewAI/`                     | `01_Foundations/Some_Simple_Agents/` (8 nb) + `04_Applications/` (9 project sets) |
+| `AutoGen/`                    | `01_Foundations/Some_Simple_Agents/` (3 nb) + `04_Applications/` (7 project sets) |
+| `DSPy/`, `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned |
+
 ### Phase 13 — `13_Projects/`
 
 | Project | Content |
@@ -105,6 +113,8 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `LangGraph_Fullstack_Capstone/` | Full-stack app (FastAPI + Angular + Postgres), unit tests, Streamlit apps |
 | `LangChain_Microservices_Capstone/` | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
 | `RAG_Systems_Projects/`       | 7 applied RAG capstone notebooks — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
+| `ShopUNow_Agentic_RAG_Capstone/` | Vector DB + agentic RAG e-commerce capstone |
+| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` | 6 more standalone full-stack apps |
 
 ## Environment Setup
 
@@ -197,4 +207,4 @@ ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), 
 
 - Python >= 3.11 required (target 3.12 for venv)
 - Directory names use numeric prefixes without spaces for phases (e.g., `05_AI_Agent_Fundamentals/`), with descriptive track/topic names nested inside (e.g., `.../AI_Agents_with_LangGraph/`) — no need to quote these paths
-- No linting was configured before this pass; `ruff` is now wired into `[tool.ruff]` in `pyproject.toml` (line length 100, target py311, rules `E,F,I,UP`) and excludes `archive/` and three JS frontends (`13_Projects/LangGraph_Fullstack_Capstone/fullstackapp/frontend`, `13_Projects/LangChain_Microservices_Capstone/frontend`, `07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/app/frontend`)
+- No linting was configured before this pass; `ruff` is now wired into `[tool.ruff]` in `pyproject.toml` (line length 100, target py311, rules `E,F,I,UP`) and excludes `archive/` and five JS frontends (`13_Projects/LangGraph_Fullstack_Capstone/fullstackapp/frontend`, `13_Projects/LangChain_Microservices_Capstone/frontend`, `07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/app/frontend`, `10_Alternative_Agent_Frameworks/CrewAI/01_Foundations/Some_Simple_Agents/app/frontend`, `13_Projects/Realtime_Voice_AI_Agent_with_RAG/Codes/rag_voice_ai_agent-deployment_live/frontend`)

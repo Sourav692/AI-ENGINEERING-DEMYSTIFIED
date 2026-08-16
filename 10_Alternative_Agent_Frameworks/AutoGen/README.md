@@ -1,12 +1,12 @@
-# Chapter 10 — AutoGen
+# AutoGen
 
-**Status:** 🚧 Planned — no content yet.
+**Status:** ✅ Built.
 
-Microsoft's multi-agent conversation framework — conversable agents, group chat, code execution.
+Merged from `AgenticAI_Projects_Demystified`'s "Projects with Autogen".
 
-| Subfolder | Scope |
+| Track | Content |
 |---|---|
-| `01_Foundations/` | Conversable agents, group chat |
-| `02_Core_Capabilities/` | Tool use, code execution, human-in-the-loop |
-| `03_Multi_Agent_Patterns/` | Multi-agent conversation patterns |
-| `04_Applications/` | Real-world builds |
+| `01_Foundations/Some_Simple_Agents/` | Building agents with AutoGen, a research assistant, a coding agent |
+| `04_Applications/` | Smart content generation, smart health assistant, financial portfolio manager, agentic RAG for eCommerce, stock market analysis agent, Notion MCP agent, Data Analyzer GPT |
+
+`02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` don't have dedicated content yet — the source repo's projects didn't split neatly into those categories.

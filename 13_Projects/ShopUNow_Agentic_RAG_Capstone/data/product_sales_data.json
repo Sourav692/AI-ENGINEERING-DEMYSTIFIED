@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: What types of products does ShopUNow sell?\nAnswer: ShopUNow is a retail company offering a wide range of products across four major categories: (1) Clothing — men's, women's, and kids' apparel including ethnic wear, casual wear, formal wear, and sportswear, (2) DIY (Do It Yourself) — tools, home improvement kits, craft supplies, and garden equipment, (3) Books — fiction, non-fiction, academic, children's books, and e-books, (4) Toys — educational toys, board games, action figures, outdoor play equipment, and STEM kits.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Are the products on ShopUNow original and authentic?\nAnswer: Yes, ShopUNow guarantees 100% authentic and original products. We source directly from brands and authorized distributors. Every product on our platform comes with an authenticity guarantee. If you ever receive a product that you suspect is not genuine, report it immediately through 'My Orders' and we will investigate, arrange a return, and issue a full refund. Look for the 'ShopUNow Assured' badge for verified products.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: How often does ShopUNow have sales or discount events?\nAnswer: ShopUNow runs several major sale events throughout the year: ShopUNow Republic Day Sale (January), Summer Splash Sale (April-May), Monsoon Madness (July), Back to School Sale (August), The Big ShopUNow Festive Sale (October - our biggest sale during Diwali), Black Friday Sale (November), and Year-End Clearance (December). Flash sales happen every weekend. Subscribe to our newsletter and enable app notifications to never miss a deal!",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Can I buy products in bulk or wholesale from ShopUNow?\nAnswer: Yes, ShopUNow offers a B2B bulk ordering program called 'ShopUNow Business'. Businesses can register at business.shopunow.com to access wholesale pricing, bulk discounts (10-30% off depending on quantity), GST invoicing, and dedicated account management. Minimum bulk order is 25 units per SKU. For corporate gifting needs, contact corporatesales@shopunow.com or call our B2B helpline at 1800-SHOP-B2B.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Does ShopUNow have physical retail stores I can visit?\nAnswer: Yes! ShopUNow operates 150+ retail stores across India in major cities including Mumbai, Delhi NCR, Bangalore, Chennai, Hyderabad, Kolkata, Pune, and Ahmedabad. Our stores carry curated selections from all categories. Use the 'Store Locator' on our website or app to find the nearest store, check store hours, and see available inventory. Many stores also offer 'Buy Online, Pick Up In-Store' (BOPIS) service.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: How can I check if a product is available in my size or preferred color?\nAnswer: On each product page, available sizes and colors are displayed with real-time stock information. If your preferred size or color shows 'Out of Stock', click the 'Notify Me' button and enter your email. We'll alert you as soon as it's restocked. You can also check availability at nearby physical stores using the 'Check In-Store Availability' option on the product page.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Does ShopUNow offer any warranty on DIY tools and electronics?\nAnswer: Yes, all DIY tools and electronic products sold on ShopUNow come with the manufacturer's warranty. Warranty periods vary by product — typically 1 year for power tools, 6 months for hand tools, and 1-2 years for electronic accessories. Warranty details are mentioned on each product page under 'Warranty Information'. To claim warranty, contact the brand's service center or raise a ticket on ShopUNow with your order ID and proof of purchase.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Can I pre-order upcoming or out-of-stock products?\nAnswer: Yes, ShopUNow offers a pre-order option for select upcoming product launches and popular items that are temporarily out of stock. Look for the 'Pre-Order' button on the product page. A small booking amount (typically 10-20% of the price) is charged at the time of pre-order, and the remaining is charged upon dispatch. Pre-order items are shipped on the specified launch or restock date shown on the product page.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: How do I find the right size when shopping for clothing online?\nAnswer: Each clothing product on ShopUNow includes a detailed 'Size Guide' with measurements in inches and centimeters. Click the 'Size Guide' link on the product page for brand-specific size charts. We also offer a 'Virtual Fit' tool powered by AI — upload your measurements and get personalized size recommendations. If you're between sizes, we recommend choosing the larger size. Easy exchanges are available if the fit isn't right.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: What age groups are ShopUNow's toys suitable for?\nAnswer: ShopUNow offers toys for all age groups with clear age recommendations on each product: (1) 0-2 years: soft toys, sensory toys, rattles, (2) 3-5 years: building blocks, art kits, picture books, (3) 6-8 years: board games, STEM kits, outdoor play sets, (4) 9-12 years: science kits, model building, strategy games, (5) 13+ years: complex puzzles, robotics kits, hobby tools. Each product page displays the recommended age range and safety certifications.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Does ShopUNow sell eco-friendly or sustainable products?\nAnswer: Yes! ShopUNow has a dedicated 'Green ShopUNow' collection featuring eco-friendly products across all categories. This includes organic cotton clothing, sustainable fashion brands, eco-friendly DIY supplies, recycled paper books, and non-toxic wooden toys. Look for the green leaf icon on product listings. We also use recyclable packaging for all shipments and offer a packaging return program at our physical stores.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Can I write and read product reviews on ShopUNow?\nAnswer: Absolutely! After receiving your order, you'll get an email prompting you to review the product. You can rate from 1-5 stars, write a text review, and upload photos. Reviews from verified purchasers are marked with a 'Verified Purchase' badge. All reviews are moderated for appropriateness. Top reviewers earn ShopUNow Rewards points. Browse reviews on any product page under the 'Ratings & Reviews' section.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Does ShopUNow offer any subscription boxes?\nAnswer: Yes! ShopUNow offers curated subscription boxes: (1) 'BookBox' — 2 books monthly based on your genre preferences (INR 599/month), (2) 'KidBox' — age-appropriate toys and activities monthly (INR 999/month), (3) 'StyleBox' — 3-5 clothing items curated by stylists (INR 1,999/month with free returns), (4) 'DIY Maker Box' — monthly project kits (INR 799/month). Subscribe at www.shopunow.com/subscriptions. First month is 50% off for all boxes!",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: How do I find products on sale or with discounts?\nAnswer: There are several ways to find deals on ShopUNow: (1) Visit the 'Deals of the Day' section on the homepage for daily discounts up to 70% off, (2) Check the 'Clearance' section for end-of-season sales, (3) Use price filters and sort by 'Discount: High to Low' in any category, (4) Enable push notifications for flash sale alerts, (5) Follow us on social media for exclusive coupon codes. ShopUNow Premium members get early access to all sales.",
+    "category": "Product & Sales"
+  },
+  {
+    "doc": "Question: Does ShopUNow ship internationally?\nAnswer: Currently, ShopUNow ships across all pincodes within India including remote areas. International shipping is available to select countries — UAE, USA, UK, Canada, Singapore, and Australia — through our 'ShopUNow Global' service. International orders have a flat shipping rate of INR 1,500 (or equivalent) for orders under INR 5,000 and free shipping above INR 5,000. Delivery takes 7-15 business days. Custom duties, if applicable, are borne by the customer.",
+    "category": "Product & Sales"
+  }
+]

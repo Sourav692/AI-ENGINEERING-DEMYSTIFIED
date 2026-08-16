@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Coach</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="setup-screen">
+        <h1>AI Interview Prep</h1>
+        <p class="subtitle">Enter the job role you want to practice for.</p>
+        <input type="text" id="jobRole" placeholder="e.g. AI Engineer, Product Manager" value="AI Engineer">
+        <button onclick="startInterview()">Start Interview</button>
+    </div>
+
+    <div id="chat-screen">
+        <div id="header">
+            <h2 id="role-display">Interview</h2>
+            <span id="status">● Live</span>
+        </div>
+        
+        <div id="messages">
+            </div>
+
+        <div id="input-area">
+            <input type="text" id="msgInput" placeholder="Type your answer..." disabled>
+            <button onclick="sendMsg()" id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

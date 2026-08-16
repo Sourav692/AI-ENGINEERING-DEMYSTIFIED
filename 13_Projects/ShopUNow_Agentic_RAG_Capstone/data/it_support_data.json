@@ -1,0 +1,62 @@
+[
+  {
+    "doc": "Question: How do I reset my ShopUNow email password?\nAnswer: To reset your email password, go to https://password.shopunow.com and click 'Forgot Password'. Enter your employee ID and registered mobile number to receive an OTP. After verification, you can set a new password. Passwords must be at least 12 characters with uppercase, lowercase, numbers, and special characters. If you are locked out, raise a ticket on the IT helpdesk portal or call ext. 5555.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I connect to the company VPN for remote work?\nAnswer: Download the FortiClient VPN application from the IT self-service portal at https://itportal.shopunow.com/downloads. Install it and configure the VPN server address as vpn.shopunow.com. Use your employee ID and network password to connect. For first-time setup, you need to enroll in Multi-Factor Authentication (MFA) through the Authenticator app. Detailed setup guides are available on the IT portal.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: My laptop is running very slow. What should I do?\nAnswer: First, try restarting your laptop and closing unnecessary applications. Clear your browser cache and temporary files. Ensure your system is up-to-date by running Windows Update or macOS Software Update. If the issue persists, raise a ticket on the IT helpdesk portal under 'Hardware Issues' > 'Performance'. The IT team will run remote diagnostics or schedule an in-person check within 24 hours.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I request a new software installation on my work laptop?\nAnswer: Submit a software request through the IT self-service portal under 'Software Requests'. Provide the software name, version, business justification, and manager approval. Standard approved software (MS Office, Slack, Zoom, etc.) is auto-provisioned within 4 hours. Non-standard software requires IT security review and takes 3-5 business days for approval.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I set up my company email on my mobile phone?\nAnswer: ShopUNow uses Microsoft 365 for email. On your mobile device, download the Microsoft Outlook app from the App Store or Google Play. Open the app, enter your work email (employeeid@shopunow.com), and authenticate using your network credentials and MFA. The company MDM (Mobile Device Management) policy will be applied automatically. Personal email apps are not supported for security reasons.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: I accidentally deleted an important file. Can it be recovered?\nAnswer: If the file was stored on OneDrive or SharePoint, check the Recycle Bin within the respective application — deleted files are retained for 93 days. For files on your local machine, check the system Recycle Bin. If the file was permanently deleted, raise an urgent IT ticket with the file path and approximate deletion time. Our backup system retains data for 30 days and recovery takes 24-48 hours.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I access the company Wi-Fi at ShopUNow offices?\nAnswer: Connect to the Wi-Fi network named 'ShopUNow-Corp' using your employee ID and network password. For guest access (visitors or personal devices), connect to 'ShopUNow-Guest' and register through the captive portal using your employee ID as the sponsor. Guest access is limited to internet only and expires after 8 hours. Store locations use the 'ShopUNow-Store' network.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I raise an IT support ticket?\nAnswer: You can raise IT support tickets through three channels: (1) IT Self-Service Portal at https://itportal.shopunow.com — log in with your employee ID, (2) Email ithelp@shopunow.com with a detailed description, or (3) Call the IT helpdesk at ext. 5555 for urgent issues. Tickets are categorized by priority — Critical (1 hour SLA), High (4 hours), Medium (1 business day), Low (3 business days).",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I get access to shared drives and team folders?\nAnswer: Access to shared drives is managed through your department's access groups. Your manager can request access for you by raising a ticket on the IT portal under 'Access Management' > 'Shared Drives'. Provide the drive or folder path and the level of access needed (read-only or read-write). Access is provisioned within 4 hours after manager approval.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: What should I do if I suspect a phishing email?\nAnswer: Do NOT click any links or download attachments from the suspicious email. Forward the email as an attachment to security@shopunow.com. Then mark the email as phishing in Outlook by clicking 'Report Message' > 'Phishing'. The IT security team will analyze the email and take necessary action. If you accidentally clicked a link, immediately change your password and report it as a critical IT ticket.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I request a replacement for my damaged laptop or peripherals?\nAnswer: Raise a ticket on the IT portal under 'Hardware Requests' > 'Replacement'. Attach photos of the damage and provide a brief description. Your manager's approval is required for replacements. Standard peripherals (keyboard, mouse, headset) are replaced within 2 business days. Laptop replacements take 5-7 business days. The damaged equipment must be returned to the IT asset team.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How can I access ShopUNow systems while traveling internationally?\nAnswer: Before traveling, inform IT by raising a travel request on the IT portal at least 5 days in advance with your destination country and travel dates. Some countries require special VPN configurations due to local internet restrictions. Ensure MFA is set up on your mobile device before departure. Use only the company VPN for accessing internal systems. Avoid connecting to public Wi-Fi without VPN.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I set up multi-factor authentication (MFA)?\nAnswer: MFA is mandatory for all ShopUNow employees. Download the Microsoft Authenticator app on your phone. Go to https://aka.ms/mfasetup, sign in with your work credentials, and follow the prompts to scan the QR code with the Authenticator app. You can also set up a backup phone number for SMS verification. MFA setup must be completed within your first week of joining.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: Can I use my personal USB drive on the company laptop?\nAnswer: No, personal USB drives are blocked by the company's endpoint security policy to prevent data leakage and malware risks. If you need to transfer files, use OneDrive, SharePoint, or the company's approved file transfer tool. For exceptional cases requiring USB access (e.g., vendor demos), raise a security exception request on the IT portal with business justification and manager approval.",
+    "category": "IT Support"
+  },
+  {
+    "doc": "Question: How do I book a conference room with video conferencing equipment?\nAnswer: Conference rooms are booked through Microsoft Outlook calendar. Create a new meeting, click 'Add Room', and search for available rooms by location and capacity. Rooms with video conferencing are tagged with 'VC' in the name (e.g., 'Mumbai-Floor3-VC-01'). The Zoom/Teams equipment in VC rooms starts automatically when a meeting is scheduled. For technical issues during meetings, call the IT helpdesk at ext. 5555.",
+    "category": "IT Support"
+  }
+]

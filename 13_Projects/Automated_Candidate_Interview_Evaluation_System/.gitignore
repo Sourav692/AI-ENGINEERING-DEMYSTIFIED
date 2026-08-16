@@ -1,0 +1,40 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment variables
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# uv lock (regenerated from pyproject.toml)
+uv.lock
+
+# Cursor / Claude agent artifacts
+.cursor/
+.claude/
+.codex/
+mcps/
+agent-transcripts/
+terminals/
