@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 1: Foundations — LangGraph Demystified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="chapter.css" />
+  <style>:root { --chapter-accent: var(--accent-cyan); --chapter-accent-dim: var(--accent-cyan-dim); --chapter-glow: rgba(0, 212, 255, 0.06); }</style>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo"><div class="nav-logo-icon"></div> LangGraph Demystified</a>
+      <ul class="nav-links">
+        <li><a href="index.html#chapters">All Chapters</a></li>
+        <li><a href="chapter-2.html">Next Chapter &rarr;</a></li>
+      </ul>
+      <a href="https://github.com/Sourav692/LangGraph-Demystified" class="nav-cta" target="_blank">View on GitHub</a>
+      <button class="mobile-toggle" aria-label="Toggle menu">&#9776;</button>
+    </div>
+  </nav>
+
+  <section class="chapter-hero">
+    <div class="container">
+      <div class="chapter-hero-inner">
+        <div class="chapter-hero-text">
+          <div class="chapter-breadcrumb">
+            <a href="index.html">Home</a> <span class="sep">/</span>
+            <a href="index.html#chapters">Chapters</a> <span class="sep">/</span>
+            <span style="color: var(--text-secondary)">Chapter 1</span>
+          </div>
+          <span class="chapter-num-badge" style="color: var(--chapter-accent); background: var(--chapter-accent-dim);">Chapter 01 &middot; Beginner</span>
+          <h1>Foundations</h1>
+          <p class="chapter-hero-desc">Master the building blocks of LangGraph &mdash; state management, graph construction, conditional routing, tool integration, the ReAct agent pattern, and Pydantic validation. 11 hands-on notebooks that take you from zero to your first working agent.</p>
+        </div>
+        <div class="chapter-ring-wrap">
+          <div class="ring-container" id="chapterRing" data-chapter="ch1" data-total="11">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54" />
+              <circle class="ring-progress" cx="60" cy="60" r="54" stroke="var(--chapter-accent)" stroke-dasharray="339.29" stroke-dashoffset="339.29" />
+            </svg>
+            <div class="ring-pct" id="chapterPct">0%</div>
+          </div>
+          <span class="ring-label">Complete</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="topics-section">
+    <div class="container" id="topicsContainer"></div>
+  </section>
+
+  <section class="chapter-nav">
+    <div class="container">
+      <div class="chapter-nav-inner">
+        <div></div>
+        <a href="chapter-2.html" class="chapter-nav-link next">
+          <span class="chapter-nav-dir">Next Chapter &rarr;</span>
+          <span class="chapter-nav-title">Core Capabilities</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-text">&copy; 2024&ndash;2026 Sourav Banerjee &middot; MIT License</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/Sourav692/LangGraph-Demystified" target="_blank">GitHub</a></li>
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="progress.js"></script>
+  <script>
+    const REPO = 'https://github.com/Sourav692/LangGraph-Demystified/blob/main/01_Foundations';
+    const COLAB = 'https://colab.research.google.com/github/Sourav692/LangGraph-Demystified/blob/main/01_Foundations';
+    const GH_ICON = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`;
+    const COLAB_ICON = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 7.5C4.5 5.84 5.84 4.5 7.5 4.5h1C10.16 4.5 11.5 5.84 11.5 7.5v1c0 1.66-1.34 3-3 3h-1c-1.66 0-3-1.34-3-3v-1z" opacity="0.5"/><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm2-0.5a.5.5 0 00-.5.5v8a.5.5 0 00.5.5h8a.5.5 0 00.5-.5V4a.5.5 0 00-.5-.5H4z"/></svg>`;
+
+    const topics = [
+      {
+        id: 'ch1-01', num: '01',
+        title: 'State and Graph Basics',
+        overview: 'Learn the fundamental building blocks of LangGraph \u2014 how to define state schemas using TypedDict, create nodes as Python functions, connect them with edges, and use reducer functions to control how state updates are merged.',
+        pointers: [
+          'StateGraph and graph-based orchestration',
+          'TypedDict for defining state schemas',
+          'Nodes as Python functions that process state',
+          'Edges defining execution order between nodes',
+          'Reducer functions for merging state updates',
+          'Cyclic workflows and conditional branching',
+        ],
+        tags: ['StateGraph', 'TypedDict', 'Reducers'],
+        notebook: '01_State_and_Graph_Basics.ipynb',
+      },
+      {
+        id: 'ch1-02', num: '02',
+        title: 'MessageState',
+        overview: 'Use the pre-built MessagesState class that provides a messages field with the add_messages reducer already configured. Build multi-node workflows that chain user, AI, and counter nodes while mixing message and non-message state.',
+        pointers: [
+          'MessagesState as pre-built base class',
+          'add_messages reducer (append vs. replace)',
+          'Extending MessagesState with custom fields',
+          'Multi-node sequential workflows',
+          'Turn-based conversation tracking',
+          'Default reducers vs. custom reducers',
+        ],
+        tags: ['MessagesState', 'add_messages', 'Workflows'],
+        notebook: '02_MessageState.ipynb',
+      },
+      {
+        id: 'ch1-03', num: '03',
+        title: 'Conditional Routing',
+        overview: 'Implement dynamic routing based on state evaluation. Learn routing functions, decision nodes, multi-branch workflows, error handling paths, and retry logic through conditional edges.',
+        pointers: [
+          'Normal edges vs. conditional edges',
+          'Routing functions examining state',
+          'add_conditional_edges syntax',
+          'Multi-branch decision workflows',
+          'Error handling and fallback paths',
+          'Retry logic and loops via routing',
+        ],
+        tags: ['Conditional Edges', 'Routing', 'Branching'],
+        notebook: '03_Conditional_Routing.ipynb',
+      },
+      {
+        id: 'ch1-04', num: '04',
+        title: 'LLM-Powered Chatbot',
+        overview: 'Integrate LLMs into LangGraph nodes and build a complete conversational chatbot. Covers conversation history management, HumanMessage/AIMessage types, and both synchronous and streaming execution modes.',
+        pointers: [
+          'Integrating LLMs into graph nodes',
+          'Conversation history with add_messages',
+          'HumanMessage and AIMessage types',
+          'graph.invoke() for synchronous execution',
+          'graph.stream() with values and updates modes',
+          'No built-in memory between invocations',
+        ],
+        tags: ['Chat Models', 'Streaming', 'Messages'],
+        notebook: '04_LLM_Powered_Chatbot.ipynb',
+      },
+      {
+        id: 'ch1-05', num: '05',
+        title: 'Augmented LLM with Tools',
+        overview: 'Extend LLMs with external tool capabilities. Create tools with @tool decorator, bind them to LLMs, and use ToolNode for execution \u2014 learning the limitation that tool results don\u2019t automatically feed back to the LLM.',
+        pointers: [
+          '@tool decorator for defining tools',
+          'Tool descriptions guiding LLM decisions',
+          'bind_tools() attaching tools to LLMs',
+          'ToolNode for executing tool calls',
+          'tools_condition for routing on tool_calls',
+          'Tavily Search as an external tool',
+        ],
+        tags: ['@tool', 'bind_tools', 'ToolNode'],
+        notebook: '05_Augmented_LLM_with_Tools.ipynb',
+      },
+      {
+        id: 'ch1-06', num: '06',
+        title: 'ReAct Agent',
+        overview: 'Build your first true AI agent with a feedback loop. The key difference from augmented LLMs: tool results are routed back to the LLM for synthesis, enabling multi-step reasoning and goal-oriented behavior.',
+        pointers: [
+          'Agent vs. Augmented LLM: the feedback loop',
+          'Routing tool results back to the LLM',
+          'Message accumulation across LLM calls',
+          'ToolMessage type for tool results',
+          'Multiple tool calls in sequence',
+          'ReAct pattern: Reasoning + Acting',
+        ],
+        tags: ['ReAct', 'Feedback Loop', 'Agent'],
+        notebook: '06_ReAct_Agent.ipynb',
+      },
+      {
+        id: 'ch1-07', num: '07',
+        title: 'Four Ways to Define State',
+        overview: 'Compare four approaches to defining graph state \u2014 plain dictionaries, TypedDict, dataclasses, and Pydantic BaseModel \u2014 evaluating type safety, validation, reducer support, and default values for each.',
+        pointers: [
+          'Dictionary state: schema-free, no safety',
+          'TypedDict: lightweight typing + reducers',
+          'Dataclass: default values + type hints',
+          'Pydantic BaseModel: full validation + Field()',
+          'Custom reducers via Annotated',
+          'Comparison of all four approaches',
+        ],
+        tags: ['TypedDict', 'Dataclass', 'Pydantic', 'Dict'],
+        notebook: '07_Different_Graph_States.ipynb',
+      },
+      {
+        id: 'ch1-08', num: '08',
+        title: 'Pydantic State Validation',
+        overview: 'Deep comparison of TypedDict vs Pydantic BaseModel as state schemas. TypedDict has no runtime enforcement; Pydantic fails fast at graph entry with ValidationError, making it the better choice for production graphs.',
+        pointers: [
+          'TypedDict: type hints only, no runtime checks',
+          'Pydantic: automatic validation at invoke()',
+          'Fail-fast with ValidationError at entry',
+          'Immutable Pydantic state objects',
+          'Attribute-style vs. dict-style access',
+          'add_messages working identically in both',
+        ],
+        tags: ['Pydantic', 'Validation', 'TypedDict'],
+        notebook: '08_Pydantic_State_Validation.ipynb',
+      },
+      {
+        id: 'ch1-09', num: '09',
+        title: 'Node Patterns',
+        overview: 'Three node argument patterns: plain nodes receiving only state, config-aware nodes accessing RunnableConfig metadata, and runtime context nodes injecting external dependencies via typed Runtime schemas.',
+        pointers: [
+          'Plain nodes with state-only arguments',
+          'Config-aware nodes with RunnableConfig',
+          'Runtime context for dependency injection',
+          'Runtime[Schema] for type-safe context',
+          'ContextSchema as TypedDict',
+          'Separating state from external dependencies',
+        ],
+        tags: ['Node Patterns', 'RunnableConfig', 'Runtime'],
+        notebook: '09_Node_Patterns.ipynb',
+      },
+      {
+        id: 'ch1-10', num: '10',
+        title: 'Runtime Context',
+        overview: 'Pass external runtime data like database connections and API keys without storing them in graph state. Covers context schemas with optional defaults and per-invocation overrides.',
+        pointers: [
+          'Runtime context for DB, API, config injection',
+          '@dataclass for context schema',
+          'Required vs. optional context fields',
+          'context_schema parameter in StateGraph',
+          'Passing context at invoke() time',
+          'Per-invocation context overrides',
+        ],
+        tags: ['Runtime', 'Context', 'Dependency Injection'],
+        notebook: '10_Runtime_Context.ipynb',
+      },
+      {
+        id: 'ch1-11', num: '11',
+        title: 'Command Objects',
+        overview: 'Use Command objects to combine state updates and routing in a single return value. Eliminates the need for separate conditional edges and explicit routing logic, simplifying graph wiring.',
+        pointers: [
+          'Command combining update + goto',
+          'Command.update for partial state changes',
+          'Command.goto for routing to next node',
+          'Literal type hints for compile-time safety',
+          'No add_conditional_edges needed',
+          'Auto-termination at END from action nodes',
+        ],
+        tags: ['Command', 'Routing', 'Simplified Wiring'],
+        notebook: '11_Command_Objects.ipynb',
+      },
+    ];
+
+    const container = document.getElementById('topicsContainer');
+    let html = '<div class="section-group"><div class="section-group-title">Notebooks &middot; 11 Topics</div>';
+    topics.forEach(t => {
+      const status = getTopicStatus(t.id);
+      html += `
+        <div class="topic-row-expanded topic-${status} animate-on-scroll">
+          <div class="topic-top-row">
+            <div class="topic-number">${t.num}</div>
+            <div class="topic-info">
+              <div class="topic-title">${t.title}</div>
+              <div class="topic-tags">${t.tags.map(tag => `<span class="topic-tag">${tag}</span>`).join('')}</div>
+            </div>
+            ${renderStatusBadge(t.id)}
+          </div>
+          <div class="topic-overview">${t.overview}</div>
+          <ul class="topic-pointers">
+            ${t.pointers.map(p => `<li>${p}</li>`).join('')}
+          </ul>
+          <div class="topic-footer">
+            <a href="${COLAB}/${t.notebook}" target="_blank" class="topic-link topic-link-colab">
+              ${COLAB_ICON} Open in Colab
+            </a>
+            <a href="${REPO}/${t.notebook}" target="_blank" class="topic-link">
+              ${GH_ICON} GitHub
+            </a>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+    updateChapterRing();
+  </script>
+</body>
+</html>

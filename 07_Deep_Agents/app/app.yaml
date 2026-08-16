@@ -1,0 +1,38 @@
+# Databricks App configuration.
+# Deployed via the bundle in /databricks.yml (target = dev|staging|prod).
+
+command:
+  - uvicorn
+  - deep_agent.main:app
+  - --app-dir
+  - backend/src
+  - --host
+  - 0.0.0.0
+  - --port
+  - "8000"
+
+env:
+  - name: TAVILY_API_KEY
+    valueFrom: tavily-api-key
+  - name: DATABRICKS_HOST
+    valueFrom: DATABRICKS_HOST
+  - name: DATABRICKS_TOKEN
+    valueFrom: DATABRICKS_TOKEN
+  - name: LAKEBASE_INSTANCE_NAME
+    value: deep-agent-memory
+  - name: LAKEBASE_DATABASE
+    value: databricks_postgres
+
+resources:
+  - name: lakebase-memory
+    description: "Lakebase Postgres for long-term memory"
+    database:
+      instance_name: deep-agent-memory
+      database_name: databricks_postgres
+      permission: CAN_CONNECT_AND_CREATE
+  - name: tavily-api-key
+    description: "Tavily web search API key"
+    secret:
+      scope: deep-agent
+      key: tavily-api-key
+      permission: READ

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LangGraph Demystified — Zero to Expert</title>
+  <meta name="description" content="A progressive, hands-on tutorial for building production-grade AI agents using LangGraph. 36+ notebooks, 7 chapters, from foundations to multi-agent orchestration." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="chapter.css" />
+  <style>
+    /* ============ HERO ============ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 100px;
+      overflow: hidden;
+    }
+
+    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-bg canvas { width: 100%; height: 100%; }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(0, 212, 255, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 70%),
+        linear-gradient(to bottom, transparent 60%, var(--bg-primary) 100%);
+      z-index: 1;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 720px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--space-unit) * 1);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent-cyan);
+      background: var(--accent-cyan-dim);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 100px;
+      padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 2);
+      margin-bottom: calc(var(--space-unit) * 4);
+      letter-spacing: 0.05em;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      margin-bottom: calc(var(--space-unit) * 3);
+      letter-spacing: -0.025em;
+    }
+
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-violet) 50%, var(--accent-rose) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: calc(var(--space-unit) * 5);
+      max-width: 560px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--space-unit) * 2);
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: calc(var(--space-unit) * 6);
+      margin-top: calc(var(--space-unit) * 8);
+      padding-top: calc(var(--space-unit) * 4);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .hero-stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ============ CHAPTERS ============ */
+    .chapters { padding: calc(var(--space-unit) * 16) 0; }
+    .chapters-header { text-align: center; margin-bottom: calc(var(--space-unit) * 10); }
+    .chapters-header .section-subtitle { margin: 0 auto; }
+
+    .chapter-timeline { position: relative; }
+    .chapter-timeline::before {
+      content: '';
+      position: absolute;
+      left: 28px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-violet) 30%, var(--accent-emerald) 60%, var(--accent-amber) 80%, var(--accent-rose));
+      opacity: 0.3;
+    }
+
+    .chapter-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: calc(var(--space-unit) * 4);
+      margin-bottom: calc(var(--space-unit) * 5);
+    }
+
+    .chapter-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: calc(var(--space-unit) * 3);
+    }
+
+    .chapter-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 3px solid;
+      background: var(--bg-primary);
+      z-index: 1;
+    }
+
+    .chapter-body {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: calc(var(--space-unit) * 4);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .chapter-body:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(4px);
+    }
+
+    .chapter-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: calc(var(--space-unit) * 2);
+      margin-bottom: calc(var(--space-unit) * 2);
+    }
+
+    .chapter-header-left {
+      display: flex;
+      align-items: flex-start;
+      gap: calc(var(--space-unit) * 2);
+      flex: 1;
+    }
+
+    .chapter-number {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: calc(var(--space-unit) * 0.5);
+    }
+
+    .chapter-title { font-size: 1.35rem; font-weight: 700; line-height: 1.3; }
+
+    .chapter-difficulty {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .chapter-description {
+      color: var(--text-secondary);
+      font-size: 0.925rem;
+      line-height: 1.7;
+      margin-bottom: calc(var(--space-unit) * 3);
+    }
+
+    .chapter-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .chapter-topics { display: flex; flex-wrap: wrap; gap: calc(var(--space-unit) * 1); flex: 1; }
+
+    .chapter-topic {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    /* Chapter color variants */
+    .chapter-card[data-chapter="1"] .chapter-dot { border-color: var(--accent-cyan); }
+    .chapter-card[data-chapter="1"] .chapter-number { color: var(--accent-cyan); }
+    .chapter-card[data-chapter="1"] .chapter-difficulty { color: var(--accent-cyan); background: var(--accent-cyan-dim); }
+
+    .chapter-card[data-chapter="2"] .chapter-dot { border-color: var(--accent-violet); }
+    .chapter-card[data-chapter="2"] .chapter-number { color: var(--accent-violet); }
+    .chapter-card[data-chapter="2"] .chapter-difficulty { color: var(--accent-violet); background: var(--accent-violet-dim); }
+
+    .chapter-card[data-chapter="3"] .chapter-dot { border-color: var(--accent-emerald); }
+    .chapter-card[data-chapter="3"] .chapter-number { color: var(--accent-emerald); }
+    .chapter-card[data-chapter="3"] .chapter-difficulty { color: var(--accent-emerald); background: var(--accent-emerald-dim); }
+
+    .chapter-card[data-chapter="4"] .chapter-dot { border-color: var(--accent-emerald); }
+    .chapter-card[data-chapter="4"] .chapter-number { color: var(--accent-emerald); }
+    .chapter-card[data-chapter="4"] .chapter-difficulty { color: var(--accent-emerald); background: var(--accent-emerald-dim); }
+
+    .chapter-card[data-chapter="5"] .chapter-dot { border-color: var(--accent-amber); }
+    .chapter-card[data-chapter="5"] .chapter-number { color: var(--accent-amber); }
+    .chapter-card[data-chapter="5"] .chapter-difficulty { color: var(--accent-amber); background: var(--accent-amber-dim); }
+
+    .chapter-card[data-chapter="6"] .chapter-dot { border-color: var(--accent-amber); }
+    .chapter-card[data-chapter="6"] .chapter-number { color: var(--accent-amber); }
+    .chapter-card[data-chapter="6"] .chapter-difficulty { color: var(--accent-amber); background: var(--accent-amber-dim); }
+
+    .chapter-card[data-chapter="7"] .chapter-dot { border-color: var(--accent-rose); }
+    .chapter-card[data-chapter="7"] .chapter-number { color: var(--accent-rose); }
+    .chapter-card[data-chapter="7"] .chapter-difficulty { color: var(--accent-rose); background: var(--accent-rose-dim); }
+
+    /* ============ PATTERNS ============ */
+    .patterns { padding: calc(var(--space-unit) * 16) 0; background: var(--bg-secondary); }
+    .patterns-header { margin-bottom: calc(var(--space-unit) * 8); }
+    .patterns-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: calc(var(--space-unit) * 3); }
+
+    .pattern-card {
+      padding: calc(var(--space-unit) * 4);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pattern-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--pattern-color, var(--accent-cyan));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .pattern-card:hover { border-color: rgba(255, 255, 255, 0.1); transform: translateY(-4px); }
+    .pattern-card:hover::before { opacity: 1; }
+
+    .pattern-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: calc(var(--space-unit) * 2.5);
+    }
+
+    .pattern-name { font-size: 1.05rem; font-weight: 600; margin-bottom: calc(var(--space-unit) * 1); }
+    .pattern-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ============ PRODUCTION ============ */
+    .production { padding: calc(var(--space-unit) * 16) 0; }
+    .production-header { margin-bottom: calc(var(--space-unit) * 8); }
+    .production-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: calc(var(--space-unit) * 3); }
+
+    .prod-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .prod-card:hover { border-color: rgba(255, 255, 255, 0.1); transform: translateY(-3px); }
+
+    .prod-card-visual {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .prod-card-visual .code-block {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+      padding: calc(var(--space-unit) * 3);
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
+
+    .prod-card-visual .code-block .kw { color: var(--accent-violet); }
+    .prod-card-visual .code-block .fn { color: var(--accent-cyan); }
+    .prod-card-visual .code-block .str { color: var(--accent-emerald); }
+    .prod-card-visual .code-block .comment { color: var(--text-muted); opacity: 0.5; }
+
+    .prod-card-content { padding: calc(var(--space-unit) * 3); }
+    .prod-card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: calc(var(--space-unit) * 1); }
+    .prod-card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: calc(var(--space-unit) * 2); }
+
+    .prod-card-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+    .prod-card-stack span {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    /* ============ QUICKSTART ============ */
+    .quickstart { padding: calc(var(--space-unit) * 16) 0; background: var(--bg-secondary); }
+    .quickstart-header { margin-bottom: calc(var(--space-unit) * 8); }
+    .quickstart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: calc(var(--space-unit) * 3); }
+
+    .qs-step {
+      position: relative;
+      padding: calc(var(--space-unit) * 4);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+    }
+
+    .qs-step-number {
+      font-family: var(--font-mono);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.04);
+      position: absolute;
+      top: 12px; right: 16px;
+    }
+
+    .qs-step-title { font-size: 1rem; font-weight: 600; margin-bottom: calc(var(--space-unit) * 1.5); }
+
+    .qs-step-code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-sm);
+      padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* ============ AUDIENCE ============ */
+    .audience { padding: calc(var(--space-unit) * 16) 0; }
+    .audience-header { text-align: center; margin-bottom: calc(var(--space-unit) * 8); }
+    .audience-header .section-subtitle { margin: 0 auto; }
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: calc(var(--space-unit) * 2.5);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .audience-card {
+      text-align: center;
+      padding: calc(var(--space-unit) * 4) calc(var(--space-unit) * 3);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s;
+    }
+
+    .audience-card:hover { border-color: var(--accent-cyan); background: var(--bg-card-hover); }
+    .audience-emoji { font-size: 2rem; margin-bottom: calc(var(--space-unit) * 2); }
+    .audience-role { font-size: 0.95rem; font-weight: 600; margin-bottom: calc(var(--space-unit) * 1); }
+    .audience-start { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan); }
+
+    /* ============ CTA ============ */
+    .cta-section { padding: calc(var(--space-unit) * 16) 0; text-align: center; position: relative; overflow: hidden; }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section .section-title { max-width: 600px; margin: 0 auto calc(var(--space-unit) * 2); }
+    .cta-section .section-subtitle { max-width: 500px; margin: 0 auto calc(var(--space-unit) * 5); }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 768px) {
+      .hero-stats { gap: calc(var(--space-unit) * 4); flex-wrap: wrap; }
+      .chapter-timeline::before { left: 14px; }
+      .chapter-card { grid-template-columns: 30px 1fr; gap: calc(var(--space-unit) * 2); }
+      .chapter-dot { width: 14px; height: 14px; }
+      .chapter-header { flex-direction: column; }
+      .chapter-footer { flex-direction: column; align-items: flex-start; }
+      .production-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon"></div>
+        LangGraph Demystified
+      </a>
+      <ul class="nav-links">
+        <li><a href="#chapters">Chapters</a></li>
+        <li><a href="#patterns">Patterns</a></li>
+        <li><a href="#production">Production</a></li>
+        <li><a href="#quickstart">Get Started</a></li>
+      </ul>
+      <a href="https://github.com/Sourav692/LangGraph-Demystified" class="nav-cta" target="_blank">View on GitHub</a>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"><canvas id="heroCanvas"></canvas></div>
+    <div class="hero-gradient"></div>
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Open Source &middot; MIT Licensed
+      </div>
+      <h1>Build AI Agents<br /><span class="gradient-text">From Zero to Expert</span></h1>
+      <p class="hero-description">A progressive, hands-on curriculum for mastering LangGraph &mdash; from state machines and simple chatbots to production-grade multi-agent orchestration systems.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/codespaces/new?repo=Sourav692/LangGraph-Demystified" class="btn-primary" target="_blank"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Open in Codespace</a>
+        <a href="https://github.com/Sourav692/LangGraph-Demystified" class="btn-secondary" target="_blank"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> GitHub</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-value">36+</div><div class="hero-stat-label">Notebooks</div></div>
+        <div><div class="hero-stat-value">7</div><div class="hero-stat-label">Chapters</div></div>
+        <div><div class="hero-stat-value">9</div><div class="hero-stat-label">Design Patterns</div></div>
+        <div><div class="hero-stat-value">3</div><div class="hero-stat-label">Production Apps</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEARNING PATH ============ -->
+  <section class="chapters" id="chapters">
+    <div class="container">
+      <div class="chapters-header animate-on-scroll">
+        <span class="section-label">Learning Path</span>
+        <h2 class="section-title">Seven Chapters. Zero to Expert.</h2>
+        <p class="section-subtitle">Each chapter builds on the last. Click any chapter to see its notebooks and track your progress.</p>
+      </div>
+
+      <div class="chapter-timeline">
+
+        <!-- Chapter 1 -->
+        <a href="chapter-1.html" class="chapter-card animate-on-scroll" data-chapter="1">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 01</div>
+                  <div class="chapter-title">Foundations</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Beginner</span>
+            </div>
+            <p class="chapter-description">Master the building blocks &mdash; state management, graph construction, conditional routing, tool integration, and the ReAct agent pattern.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">StateGraph</span>
+                <span class="chapter-topic">MessageState</span>
+                <span class="chapter-topic">Routing</span>
+                <span class="chapter-topic">Tools</span>
+                <span class="chapter-topic">ReAct</span>
+                <span class="chapter-topic">Pydantic</span>
+              </div>
+              <div data-chapter-ring="ch1" data-total="11" data-color="var(--accent-cyan)"></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Chapter 2 -->
+        <a href="chapter-2.html" class="chapter-card animate-on-scroll" data-chapter="2">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 02</div>
+                  <div class="chapter-title">Core Capabilities</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Beginner+</span>
+            </div>
+            <p class="chapter-description">Platform features that turn basic agents into production-ready systems. Memory, HITL, subgraphs, async streaming.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">Memory</span>
+                <span class="chapter-topic">HITL</span>
+                <span class="chapter-topic">Subgraphs</span>
+                <span class="chapter-topic">Async</span>
+                <span class="chapter-topic">Retries</span>
+              </div>
+              <div data-chapter-ring="ch2" data-total="10" data-color="var(--accent-violet)"></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Chapter 3 -->
+        <a href="chapter-3.html" class="chapter-card animate-on-scroll" data-chapter="3">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 03</div>
+                  <div class="chapter-title">Retrieval-Augmented Generation</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Intermediate</span>
+            </div>
+            <p class="chapter-description">From basic PDF Q&amp;A with Chroma to advanced patterns with query rewriting, relevance grading, and RAG-as-a-composable-tool.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">ChromaDB</span>
+                <span class="chapter-topic">Query Rewriting</span>
+                <span class="chapter-topic">Relevance Grading</span>
+                <span class="chapter-topic">RAG as Tool</span>
+              </div>
+              <div data-chapter-ring="ch3" data-total="3" data-color="var(--accent-emerald)"></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Chapter 4 -->
+        <a href="chapter-4.html" class="chapter-card animate-on-scroll" data-chapter="4">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 04</div>
+                  <div class="chapter-title">Real-World Agents</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Intermediate</span>
+            </div>
+            <p class="chapter-description">Agents that solve actual problems. Research assistant with Tavily, competitive intelligence with structured output.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">Research</span>
+                <span class="chapter-topic">Web Search</span>
+                <span class="chapter-topic">Competitive Intel</span>
+              </div>
+              <div data-chapter-ring="ch4" data-total="2" data-color="var(--accent-emerald)"></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Chapter 5 -->
+        <a href="chapter-5.html" class="chapter-card animate-on-scroll" data-chapter="5">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 05</div>
+                  <div class="chapter-title">Agentic Design Patterns</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Advanced</span>
+            </div>
+            <p class="chapter-description">The architectural playbook &mdash; tool orchestration, planning, reflection, agent templates, and long-term memory.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">Tool Use</span>
+                <span class="chapter-topic">Planning</span>
+                <span class="chapter-topic">Reflection</span>
+                <span class="chapter-topic">Memory</span>
+              </div>
+              <div data-chapter-ring="ch5" data-total="7" data-color="var(--accent-amber)"></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Chapter 6 -->
+        <a href="chapter-6.html" class="chapter-card animate-on-scroll" data-chapter="6">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 06</div>
+                  <div class="chapter-title">Production</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Advanced</span>
+            </div>
+            <p class="chapter-description">Ship it. Full-stack app, unit tests with pytest, Streamlit apps for entity extraction and knowledge graphs.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">FastAPI</span>
+                <span class="chapter-topic">Angular</span>
+                <span class="chapter-topic">Docker</span>
+                <span class="chapter-topic">Streamlit</span>
+                <span class="chapter-topic">pytest</span>
+              </div>
+              <div data-chapter-ring="ch6" data-total="5" data-color="var(--accent-amber)"></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Chapter 7 -->
+        <a href="chapter-7.html" class="chapter-card animate-on-scroll" data-chapter="7">
+          <div class="chapter-node"><div class="chapter-dot"></div></div>
+          <div class="chapter-body">
+            <div class="chapter-header">
+              <div class="chapter-header-left">
+                <div>
+                  <div class="chapter-number">Chapter 07</div>
+                  <div class="chapter-title">Deep Agents</div>
+                </div>
+              </div>
+              <span class="chapter-difficulty">Expert</span>
+            </div>
+            <p class="chapter-description">Build a code reviewer agent using the DeepAgents framework with sandbox execution capabilities.</p>
+            <div class="chapter-footer">
+              <div class="chapter-topics">
+                <span class="chapter-topic">Code Review</span>
+                <span class="chapter-topic">DeepAgents</span>
+                <span class="chapter-topic">Sandbox</span>
+              </div>
+              <div data-chapter-ring="ch7" data-total="1" data-color="var(--accent-rose)"></div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PATTERNS ============ -->
+  <section class="patterns" id="patterns">
+    <div class="container">
+      <div class="patterns-header animate-on-scroll">
+        <span class="section-label">Design Patterns</span>
+        <h2 class="section-title">The Agentic Playbook</h2>
+        <p class="section-subtitle">Nine architectural patterns that power modern AI agent systems, each taught with runnable code.</p>
+      </div>
+      <div class="patterns-grid">
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-cyan);"><div class="pattern-icon" style="background: var(--accent-cyan-dim); color: var(--accent-cyan);">&#x2699;</div><div class="pattern-name">ReAct</div><p class="pattern-desc">Reason, Act, Observe. The foundational loop where LLMs think, execute a tool, and refine based on the result.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-violet);"><div class="pattern-icon" style="background: var(--accent-violet-dim); color: var(--accent-violet);">&#x1F527;</div><div class="pattern-name">Tool Use</div><p class="pattern-desc">Direct tool calling vs ReAct-based orchestration &mdash; when to use each and the tradeoffs involved.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-emerald);"><div class="pattern-icon" style="background: var(--accent-emerald-dim); color: var(--accent-emerald);">&#x1F4DA;</div><div class="pattern-name">RAG</div><p class="pattern-desc">Retrieval as standalone pipeline and composable tool. Query rewriting, relevance grading, enterprise vector search.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-amber);"><div class="pattern-icon" style="background: var(--accent-amber-dim); color: var(--accent-amber);">&#x1F4CB;</div><div class="pattern-name">Planning</div><p class="pattern-desc">Parallel step execution and map-reduce via the Send API. Agents that plan before they act.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-rose);"><div class="pattern-icon" style="background: var(--accent-rose-dim); color: var(--accent-rose);">&#x1F52E;</div><div class="pattern-name">Reflection</div><p class="pattern-desc">Self-evaluation and iterative improvement. Agents that review and refine until quality thresholds are met.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-cyan);"><div class="pattern-icon" style="background: var(--accent-cyan-dim); color: var(--accent-cyan);">&#x1F9E0;</div><div class="pattern-name">Long-Term Memory</div><p class="pattern-desc">Persistent state across sessions with PostgreSQL. Agents that remember between conversations.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-violet);"><div class="pattern-icon" style="background: var(--accent-violet-dim); color: var(--accent-violet);">&#x1F465;</div><div class="pattern-name">Multi-Agent</div><p class="pattern-desc">Supervisor agents orchestrating specialized sub-agents with distinct skills and execution environments.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-emerald);"><div class="pattern-icon" style="background: var(--accent-emerald-dim); color: var(--accent-emerald);">&#x1F6D1;</div><div class="pattern-name">Human-in-the-Loop</div><p class="pattern-desc">Approval gates, interrupt-and-resume, state modification, and dynamic breakpoints.</p></div>
+        <div class="pattern-card animate-on-scroll" style="--pattern-color: var(--accent-amber);"><div class="pattern-icon" style="background: var(--accent-amber-dim); color: var(--accent-amber);">&#x1F310;</div><div class="pattern-name">Subgraphs</div><p class="pattern-desc">Composable, modular graph architectures from reusable, independently testable sub-workflows.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTION ============ -->
+  <section class="production" id="production">
+    <div class="container">
+      <div class="production-header animate-on-scroll">
+        <span class="section-label">Ship It</span>
+        <h2 class="section-title">Production-Ready Projects</h2>
+        <p class="section-subtitle">Not just notebooks. Full applications with backends, frontends, tests, and deployment configs.</p>
+      </div>
+      <div class="production-grid">
+        <a href="chapter-6.html" class="prod-card animate-on-scroll">
+          <div class="prod-card-visual" style="background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(139,92,246,0.05));">
+            <div class="code-block"><span class="comment"># Full-Stack Agent App</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> workflows <span class="kw">import</span> (
+    <span class="fn">human_workflow</span>,
+    <span class="fn">news_workflow</span>,
+    <span class="fn">market_value</span>,
+)
+app = <span class="fn">FastAPI</span>()
+
+<span class="kw">@app</span>.<span class="fn">post</span>(<span class="str">"/agent/run"</span>)
+<span class="kw">async def</span> <span class="fn">run_agent</span>(req):</div>
+          </div>
+          <div class="prod-card-content">
+            <h3 class="prod-card-title">Full-Stack Agent Application</h3>
+            <p class="prod-card-desc">Complete app with LangGraph workflows for news, market analysis, and human-approval pipelines.</p>
+            <div class="prod-card-stack"><span>FastAPI</span><span>Angular</span><span>PostgreSQL</span><span>Docker</span></div>
+          </div>
+        </a>
+        <a href="chapter-6.html" class="prod-card animate-on-scroll">
+          <div class="prod-card-visual" style="background: linear-gradient(135deg, rgba(52,211,153,0.05), rgba(0,212,255,0.05));">
+            <div class="code-block"><span class="comment"># Entity Extraction App</span>
+<span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">from</span> src <span class="kw">import</span> (
+    <span class="fn">entity_extractor</span>,
+    <span class="fn">display_manager</span>,
+)
+doc = st.<span class="fn">file_uploader</span>(
+    <span class="str">"Upload a document"</span>
+)
+entities = <span class="fn">extract</span>(doc)
+<span class="fn">display_results</span>(entities)</div>
+          </div>
+          <div class="prod-card-content">
+            <h3 class="prod-card-title">Document Entity Extractor</h3>
+            <p class="prod-card-desc">Upload documents, extract structured entities with few-shot prompting.</p>
+            <div class="prod-card-stack"><span>Streamlit</span><span>LangChain</span><span>Few-Shot</span></div>
+          </div>
+        </a>
+        <a href="chapter-6.html" class="prod-card animate-on-scroll">
+          <div class="prod-card-visual" style="background: linear-gradient(135deg, rgba(139,92,246,0.05), rgba(244,114,182,0.05));">
+            <div class="code-block"><span class="comment"># Knowledge Graph Builder</span>
+<span class="kw">from</span> src <span class="kw">import</span> (
+    <span class="fn">graph_builder</span>,
+    <span class="fn">visualizer</span>,
+    <span class="fn">query_processor</span>,
+)
+text = <span class="fn">load_document</span>(path)
+kg = <span class="fn">build_graph</span>(text)
+<span class="fn">visualize</span>(kg)
+answer = <span class="fn">query</span>(
+    kg, <span class="str">"Who founded...?"</span>)</div>
+          </div>
+          <div class="prod-card-content">
+            <h3 class="prod-card-title">Knowledge Graph Explorer</h3>
+            <p class="prod-card-desc">Transform text into interactive knowledge graphs. Query with natural language.</p>
+            <div class="prod-card-stack"><span>Streamlit</span><span>LangExtract</span><span>Graph Viz</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AUDIENCE ============ -->
+  <section class="audience">
+    <div class="container">
+      <div class="audience-header animate-on-scroll">
+        <span class="section-label">Where to Start</span>
+        <h2 class="section-title">Pick Your Starting Point</h2>
+        <p class="section-subtitle">Whether you're writing your first Python script or architecting enterprise AI &mdash; there's a chapter for you.</p>
+      </div>
+      <div class="audience-grid">
+        <a href="chapter-1.html" class="audience-card animate-on-scroll"><div class="audience-emoji">&#x1F331;</div><div class="audience-role">Complete Beginner</div><div class="audience-start">Start &rarr; Chapter 1</div></a>
+        <a href="chapter-3.html" class="audience-card animate-on-scroll"><div class="audience-emoji">&#x1F916;</div><div class="audience-role">Know Python + LLMs</div><div class="audience-start">Start &rarr; Chapter 3</div></a>
+        <a href="chapter-5.html" class="audience-card animate-on-scroll"><div class="audience-emoji">&#x26A1;</div><div class="audience-role">Built Basic Agents</div><div class="audience-start">Start &rarr; Chapter 5</div></a>
+        <a href="chapter-6.html" class="audience-card animate-on-scroll"><div class="audience-emoji">&#x1F680;</div><div class="audience-role">Ready for Production</div><div class="audience-start">Start &rarr; Chapter 6</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUICKSTART ============ -->
+  <section class="quickstart" id="quickstart">
+    <div class="container">
+      <div class="quickstart-header animate-on-scroll">
+        <span class="section-label">Get Started</span>
+        <h2 class="section-title">Up and Running in 60 Seconds</h2>
+        <p class="section-subtitle" style="margin-top: calc(var(--space-unit) * 2);">Launch a free GitHub Codespace &mdash; zero local setup. Python 3.12, dependencies, and Jupyter pre-installed.</p>
+      </div>
+      <div style="text-align: center; margin-bottom: calc(var(--space-unit) * 6);" class="animate-on-scroll">
+        <a href="https://github.com/codespaces/new?repo=Sourav692/LangGraph-Demystified" class="btn-primary" target="_blank" style="font-size: 1.05rem; padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 5);">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
+          Launch Codespace (Free)
+        </a>
+      </div>
+      <div class="quickstart-grid">
+        <div class="qs-step animate-on-scroll"><div class="qs-step-number">01</div><h3 class="qs-step-title">Open Codespace</h3><div class="qs-step-code"><span style="color:var(--text-muted)"># Click the button above, or:</span>
+<span style="color:var(--text-muted)"># GitHub repo &rarr; Code &rarr;</span>
+<span style="color:var(--text-muted)"># Codespaces &rarr; Create</span>
+<span style="color:var(--text-muted)"># Deps install automatically</span></div></div>
+        <div class="qs-step animate-on-scroll"><div class="qs-step-number">02</div><h3 class="qs-step-title">Add API Keys</h3><div class="qs-step-code"><span style="color:var(--text-muted)"># Create .env in terminal</span>
+OPENAI_API_KEY=sk-...
+TAVILY_API_KEY=tvly-...
+GROQ_API_KEY=gsk-...</div></div>
+        <div class="qs-step animate-on-scroll"><div class="qs-step-number">03</div><h3 class="qs-step-title">Launch Jupyter</h3><div class="qs-step-code">jupyter lab
+<span style="color:var(--text-muted)"># Opens in browser tab</span>
+<span style="color:var(--text-muted)"># Open 01_Foundations/</span>
+<span style="color:var(--text-muted)"># 01_State_and_Graph_Basics</span></div></div>
+        <div class="qs-step animate-on-scroll"><div class="qs-step-number">&darr;</div><h3 class="qs-step-title">Or Run Locally</h3><div class="qs-step-code">git clone https://github.com/\
+  Sourav692/LangGraph-Demystified
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install -e ".[dev]"</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-section">
+    <div class="container">
+      <span class="section-label">Open Source</span>
+      <h2 class="section-title">Ready to Build Intelligent Agents?</h2>
+      <p class="section-subtitle">Launch a free Codespace. Open your first notebook. The path from zero to expert starts with a single graph.</p>
+      <div class="hero-actions" style="justify-content: center;">
+        <a href="https://github.com/codespaces/new?repo=Sourav692/LangGraph-Demystified" class="btn-primary" target="_blank"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg> Launch Codespace</a>
+        <a href="https://github.com/Sourav692/LangGraph-Demystified" class="btn-secondary" target="_blank"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Star on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-text">&copy; 2024&ndash;2026 Sourav Banerjee &middot; MIT License</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/Sourav692/LangGraph-Demystified" target="_blank">GitHub</a></li>
+        <li><a href="https://github.com/Sourav692/LangGraph-Demystified/issues" target="_blank">Issues</a></li>
+        <li><a href="https://github.com/Sourav692/LangGraph-Demystified/blob/main/LICENSE" target="_blank">License</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="progress.js"></script>
+  <script>
+    // Hero canvas
+    (function () {
+      const canvas = document.getElementById('heroCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h, nodes = [], mouse = { x: -1000, y: -1000 };
+      const NODE_COUNT = 50, CONNECT_DIST = 160;
+      function resize() { w = canvas.width = canvas.parentElement.offsetWidth; h = canvas.height = canvas.parentElement.offsetHeight; }
+      function createNodes() { nodes = []; for (let i = 0; i < NODE_COUNT; i++) nodes.push({ x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4, r: Math.random()*2+1.5, color: ['#00d4ff','#8b5cf6','#34d399','#fbbf24'][Math.floor(Math.random()*4)] }); }
+      function draw() {
+        ctx.clearRect(0,0,w,h);
+        for (let i=0;i<nodes.length;i++) for (let j=i+1;j<nodes.length;j++) { const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,dist=Math.sqrt(dx*dx+dy*dy); if(dist<CONNECT_DIST){const a=(1-dist/CONNECT_DIST)*0.12;ctx.strokeStyle=`rgba(0,212,255,${a})`;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke();}}
+        for(const n of nodes){const dx=mouse.x-n.x,dy=mouse.y-n.y,dist=Math.sqrt(dx*dx+dy*dy),glow=dist<200?(1-dist/200)*0.5:0;ctx.beginPath();ctx.arc(n.x,n.y,n.r+glow*3,0,Math.PI*2);ctx.fillStyle=n.color;ctx.globalAlpha=0.6+glow;ctx.fill();ctx.globalAlpha=1;n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>w)n.vx*=-1;if(n.y<0||n.y>h)n.vy*=-1;}
+        requestAnimationFrame(draw);
+      }
+      window.addEventListener('resize',resize);
+      canvas.parentElement.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});
+      resize(); createNodes(); draw();
+    })();
+  </script>
+</body>
+</html>

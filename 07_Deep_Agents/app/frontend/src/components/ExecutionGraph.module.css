@@ -1,0 +1,173 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  flex-shrink: 0;
+}
+
+.headerIcon {
+  font-size: 13px;
+  color: var(--accent-dim);
+}
+
+.headerLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.live {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-border);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.nodeList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--space-3) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--space-4);
+}
+
+.empty p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+  opacity: 0.6;
+}
+
+/* Node row with connector line */
+.node {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px 8px;
+  margin-left: 6px;
+  border-left: 2px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  position: relative;
+  transition: all 0.2s var(--ease-out);
+}
+
+/* First node no top border */
+.node:first-child {
+  border-left-color: transparent;
+  padding-top: 0;
+}
+
+/* Last node */
+.node:last-child {
+  border-left-color: transparent;
+}
+
+/* Connector dot on left */
+.node::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 2px solid var(--border-strong);
+  transition: all 0.2s var(--ease-out);
+}
+
+/* Type colors for the connector dot */
+.node.start::before { border-color: var(--accent); }
+.node.agent::before { border-color: var(--agent-active); }
+.node.tool::before { border-color: var(--warning); }
+.node.end::before { border-color: var(--memory); }
+
+/* Connector line colors by type */
+.node.start { border-left-color: var(--accent-border); }
+.node.agent { border-left-color: rgba(52, 211, 153, 0.2); }
+.node.tool { border-left-color: rgba(251, 191, 36, 0.15); }
+.node.end { border-left-color: transparent; }
+
+/* Status styles */
+.node.active {
+  color: var(--text-primary);
+}
+
+.node.active::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow-strong);
+}
+
+.node.complete {
+  color: var(--text-secondary);
+}
+
+.node.complete::before {
+  background: var(--bg-surface);
+}
+
+.icon {
+  font-size: 10px;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+}
+
+.start .icon { color: var(--accent); }
+.agent .icon { color: var(--agent-active); }
+.tool .icon { color: var(--warning); }
+.end .icon { color: var(--memory); }
+
+.label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Active dot indicator */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: pulse-glow 1.2s ease-in-out infinite;
+}
+
+.check {
+  font-size: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0.5;
+}

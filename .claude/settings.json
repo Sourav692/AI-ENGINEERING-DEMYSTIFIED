@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/Users/sourav.banerjee/Documents/Codebases/2. AI_Engineering/LangGraph_Demystified/.venv/bin/python\" -c \"from fpdf import FPDF; print\\('fpdf2 available'\\)\")",
+      "Bash(\"/Users/sourav.banerjee/Documents/Codebases/2. AI_Engineering/LangGraph_Demystified/.venv/bin/python\" -c \"from reportlab.lib.pagesizes import letter; print\\('reportlab available'\\)\")",
+      "Bash(uv pip *)",
+      "Bash(.venv/bin/python 03_RAG/docs/generate_techflow_pdfs.py)",
+      "Bash(python3 -c ' *)",
+      "Skill(stitch-design)",
+      "Skill(stitch-design:*)",
+      "Bash(open \"/Users/sourav.banerjee/Documents/Codebases/2. AI_Engineering/LangGraph_Demystified/docs/index.html\")",
+      "Bash(python3)",
+      "Bash(open \"/Users/sourav.banerjee/Documents/Codebases/2. AI_Engineering/LangGraph_Demystified/docs/chapter-1.html\")",
+      "Bash(python3 -c \"import deepagents; print\\(deepagents.__file__\\)\")",
+      "Bash(rm -rf frontend)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(python -c ' *)"
+    ]
+  },
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
+  }
+}

@@ -1,0 +1,45 @@
+.app {
+  display: grid;
+  grid-template-columns: 272px 1fr auto;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+/* Left panel: threads + execution graph */
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Subtle grid texture on the base */
+.app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--border-subtle) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient glow behind the chat area — shifts with interaction */
+.app::after {
+  content: '';
+  position: fixed;
+  top: 30%;
+  left: 45%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  filter: blur(80px);
+  animation: gradient-shift 8s ease-in-out infinite;
+}

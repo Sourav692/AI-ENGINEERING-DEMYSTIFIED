@@ -1,0 +1,377 @@
+.panel {
+  width: 52px;
+  min-width: 52px;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: width 0.35s var(--ease-out), min-width 0.35s var(--ease-out);
+  overflow: hidden;
+  z-index: 2;
+  position: relative;
+}
+
+.panel.open {
+  width: 320px;
+  min-width: 320px;
+}
+
+/* === Toggle rail === */
+.toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--memory);
+  transition: color 0.15s;
+  position: relative;
+}
+
+.toggle:hover {
+  color: var(--memory-bright);
+}
+
+.toggleIconWrap {
+  position: relative;
+  line-height: 0;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--memory);
+  color: var(--text-inverse);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.toggleLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.panel.open .toggleLabel {
+  writing-mode: horizontal-tb;
+}
+
+/* === Content area === */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slide-in-right 0.3s var(--ease-out);
+}
+
+/* === Header === */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.addBtn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.addBtn:hover {
+  background: var(--bg-hover);
+  color: var(--memory);
+  border-color: var(--memory-border);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--memory);
+}
+
+.countPill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--memory-glow);
+  border: 1px solid var(--memory-border);
+  color: var(--memory);
+}
+
+.refreshBtn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.refreshBtn:hover {
+  background: var(--bg-hover);
+  color: var(--memory);
+  border-color: var(--memory-border);
+}
+
+/* === Add memory form === */
+.addForm {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  animation: slide-up 0.15s var(--ease-out);
+}
+
+.addInput {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  resize: none;
+  line-height: 1.5;
+}
+
+.addInput::placeholder {
+  color: var(--text-muted);
+}
+
+.addInput:focus {
+  outline: none;
+  border-color: var(--memory-border);
+  box-shadow: 0 0 0 2px var(--memory-glow);
+}
+
+.addFormRow {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.addSelect {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+}
+
+.addSelect:focus {
+  outline: none;
+  border-color: var(--memory-border);
+}
+
+.addSaveBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: var(--space-1) var(--space-3);
+  border: none;
+  border-radius: var(--radius-xs);
+  background: var(--memory);
+  color: var(--text-inverse);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.addSaveBtn:hover:not(:disabled) {
+  background: var(--memory-bright);
+}
+
+.addSaveBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* === Empty state === */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-4);
+  text-align: center;
+}
+
+.emptyOrb {
+  opacity: 0.5;
+}
+
+.emptyText {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.emptyHint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 220px;
+}
+
+/* === Memory list === */
+.memoryList {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* === Category group === */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+}
+
+.catIcon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.catName {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.catCount {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* === Memory item === */
+.memoryItem {
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--text-muted);
+  animation: slide-up 0.2s var(--ease-out) both;
+  transition: background 0.15s;
+}
+
+.memoryItem:hover {
+  background: var(--bg-elevated);
+}
+
+.memContent {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.memMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-1);
+}
+
+.memTime {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.deleteBtn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  opacity: 0;
+}
+
+.memoryItem:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: var(--error-glow);
+  color: var(--error);
+}
+
+.deleteBtn:disabled {
+  opacity: 0.3;
+}
+
+.deleting {
+  font-size: 10px;
+}

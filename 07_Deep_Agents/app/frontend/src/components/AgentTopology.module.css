@@ -1,0 +1,235 @@
+.topology {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-strong);
+  overflow: visible;
+  z-index: 10;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Orchestrator hub */
+.hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.hubCore {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 2px solid var(--text-muted);
+  position: relative;
+  transition: all 0.4s var(--ease-out);
+}
+
+.hubCore::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  transition: all 0.4s var(--ease-out);
+}
+
+.hubActive .hubCore {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow-strong);
+}
+
+/* Sonar ripple — expanding ring from orchestrator hub */
+.hubActive .hubCore::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: sonar-ripple 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.hubActive .hubCore::after {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow-strong);
+}
+
+.hubLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+
+.hubActive .hubLabel {
+  color: var(--accent);
+}
+
+/* Spine connector */
+.spine {
+  width: 32px;
+  height: 2px;
+  background: var(--border-strong);
+  border-radius: 1px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.spineTracer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.tracing {
+  transform: translateX(0) !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 40%,
+    var(--accent-bright) 50%,
+    var(--accent) 60%,
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  animation: energy-pulse 1.2s linear infinite;
+}
+
+/* Agent nodes container */
+.nodes {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+/* Individual agent node */
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+  flex-shrink: 0;
+  transition: transform 0.2s var(--ease-out);
+  position: relative;
+}
+
+.node:hover {
+  transform: translateY(-2px);
+}
+
+.nodeRing {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 2px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease-out);
+  position: relative;
+}
+
+.nodeIcon {
+  font-size: 15px;
+  color: var(--text-secondary);
+  transition: all 0.3s;
+  line-height: 1;
+}
+
+.nodeLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* Active state — the memorable glow */
+.nodeActive .nodeRing {
+  border-color: var(--agent-active);
+  background: var(--agent-pulse);
+  animation: node-activate 1.5s ease-out infinite;
+  box-shadow: 0 0 16px var(--agent-glow);
+}
+
+.nodeActive .nodeIcon {
+  color: var(--agent-active);
+  filter: drop-shadow(0 0 4px var(--agent-glow));
+}
+
+.nodeActive .nodeLabel {
+  color: var(--agent-active);
+  font-weight: 700;
+}
+
+/* Hover */
+.node:hover .nodeRing {
+  border-color: var(--accent);
+  background: var(--bg-elevated);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.node:hover .nodeIcon {
+  color: var(--accent);
+}
+
+.node:hover .nodeLabel {
+  color: var(--accent);
+}
+
+/* Tooltip — positioned below the node */
+.tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  box-shadow: var(--shadow-elevated);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s var(--ease-out), transform 0.15s var(--ease-out);
+  z-index: 100;
+}
+
+/* Arrow pointing up */
+.tooltip::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: var(--bg-elevated);
+  border-left: 1px solid var(--border-strong);
+  border-top: 1px solid var(--border-strong);
+}
+
+.node:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

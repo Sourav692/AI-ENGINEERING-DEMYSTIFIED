@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 5: Agentic Design Patterns — LangGraph Demystified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="chapter.css" />
+  <style>:root { --chapter-accent: var(--accent-amber); --chapter-accent-dim: var(--accent-amber-dim); --chapter-glow: rgba(251, 191, 36, 0.06); }</style>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo"><div class="nav-logo-icon"></div> LangGraph Demystified</a>
+      <ul class="nav-links">
+        <li><a href="index.html#chapters">All Chapters</a></li>
+        <li><a href="chapter-4.html">&larr; Previous</a></li>
+        <li><a href="chapter-6.html">Next &rarr;</a></li>
+      </ul>
+      <a href="https://github.com/Sourav692/LangGraph-Demystified" class="nav-cta" target="_blank">View on GitHub</a>
+      <button class="mobile-toggle" aria-label="Toggle menu">&#9776;</button>
+    </div>
+  </nav>
+
+  <section class="chapter-hero">
+    <div class="container">
+      <div class="chapter-hero-inner">
+        <div class="chapter-hero-text">
+          <div class="chapter-breadcrumb">
+            <a href="index.html">Home</a> <span class="sep">/</span>
+            <a href="index.html#chapters">Chapters</a> <span class="sep">/</span>
+            <span style="color: var(--text-secondary)">Chapter 5</span>
+          </div>
+          <span class="chapter-num-badge" style="color: var(--chapter-accent); background: var(--chapter-accent-dim);">Chapter 05 &middot; Advanced</span>
+          <h1>Agentic Design Patterns</h1>
+          <p class="chapter-hero-desc">The architectural playbook. Learn the canonical patterns that power sophisticated AI systems &mdash; advanced tool orchestration, parallel planning with the Send API, reflection, reusable agent templates, and persistent long-term memory.</p>
+        </div>
+        <div class="chapter-ring-wrap">
+          <div class="ring-container" id="chapterRing" data-chapter="ch5" data-total="7">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54" />
+              <circle class="ring-progress" cx="60" cy="60" r="54" stroke="var(--chapter-accent)" stroke-dasharray="339.29" stroke-dashoffset="339.29" />
+            </svg>
+            <div class="ring-pct" id="chapterPct">0%</div>
+          </div>
+          <span class="ring-label">Complete</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="topics-section">
+    <div class="container" id="topicsContainer"></div>
+  </section>
+
+  <section class="chapter-nav">
+    <div class="container">
+      <div class="chapter-nav-inner">
+        <a href="chapter-4.html" class="chapter-nav-link prev">
+          <span class="chapter-nav-dir">&larr; Previous Chapter</span>
+          <span class="chapter-nav-title">Real-World Agents</span>
+        </a>
+        <a href="chapter-6.html" class="chapter-nav-link next">
+          <span class="chapter-nav-dir">Next Chapter &rarr;</span>
+          <span class="chapter-nav-title">Production</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-text">&copy; 2024&ndash;2026 Sourav Banerjee &middot; MIT License</span>
+      <ul class="footer-links"><li><a href="https://github.com/Sourav692/LangGraph-Demystified" target="_blank">GitHub</a></li><li><a href="index.html">Home</a></li></ul>
+    </div>
+  </footer>
+
+  <script src="progress.js"></script>
+  <script>
+    const REPO = 'https://github.com/Sourav692/LangGraph-Demystified/blob/main/05_Agentic_Design_Patterns';
+    const COLAB = 'https://colab.research.google.com/github/Sourav692/LangGraph-Demystified/blob/main/05_Agentic_Design_Patterns';
+    const GH_ICON = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`;
+    const COLAB_ICON = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 7.5C4.5 5.84 5.84 4.5 7.5 4.5h1C10.16 4.5 11.5 5.84 11.5 7.5v1c0 1.66-1.34 3-3 3h-1c-1.66 0-3-1.34-3-3v-1z" opacity="0.5"/><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm2-0.5a.5.5 0 00-.5.5v8a.5.5 0 00.5.5h8a.5.5 0 00.5-.5V4a.5.5 0 00-.5-.5H4z"/></svg>`;
+
+    const sections = [
+      { title: 'Tool Use', topics: [
+        {
+          id: 'ch5-01', num: '01',
+          title: 'Tool Use in Agentic Systems',
+          overview: 'Build an LLM agent that integrates mathematical tools with LangGraph. Learn how agents decide when to use tools vs. relying on LLM capabilities, with system prompts for tool guidance and message trimming for token management.',
+          pointers: [
+            'Math tool definition with @tool decorator and binding',
+            'System prompts guiding when to use tools',
+            'StateGraph with ToolNode and tools_condition routing',
+            'Message trimming with trim_messages for token limits',
+            'Tool-use loop: input \u2192 LLM \u2192 tool \u2192 synthesis',
+            'State management with add_messages reducer',
+          ],
+          tags: ['Tool Patterns', 'Token Trim', 'Math Tools'],
+          notebook: '01_Tool_Use/01_Tool_Use_Agentic_Systems.ipynb',
+        },
+        {
+          id: 'ch5-02', num: '02',
+          title: 'Tool Calling vs ReAct',
+          overview: 'Contrast two agentic patterns: function calling with structured JSON output vs. ReAct reasoning-action patterns. Practical implementation of both with multi-tool orchestration handling parallel invocations.',
+          pointers: [
+            'Function calling: structured JSON tool calls',
+            'with_structured_output for enforced schemas',
+            'create_tool_calling_agent prebuilt pattern',
+            'AgentExecutor managing the agent loop',
+            'ReAct: explicit reasoning \u2192 action \u2192 observation',
+            'Multi-tool parallel orchestration (weather + calc)',
+          ],
+          tags: ['Tool Calling', 'ReAct', 'AgentExecutor'],
+          notebook: '01_Tool_Use/02_Tool_Calling_vs_ReAct.ipynb',
+        },
+      ]},
+      { title: 'Planning', topics: [
+        {
+          id: 'ch5-03', num: '03',
+          title: 'Parallel Steps Execution',
+          overview: 'Progressive tutorial on parallel execution using fan-out/fan-in patterns. From linear workflows to asymmetric parallel paths and real-world parallel search synthesis with Wikipedia and web search.',
+          pointers: [
+            'Linear workflow baseline (A\u2192B\u2192C\u2192D)',
+            'Annotated[list, operator.add] for parallel state',
+            'Fan-out: single node to multiple parallel targets',
+            'Fan-in: synchronize all parallel sources',
+            'Asymmetric paths with list syntax edge notation',
+            'Real-world: parallel Wikipedia + web search synthesis',
+          ],
+          tags: ['Fan-Out', 'Fan-In', 'Parallel Search'],
+          notebook: '02_Planning/01_Parallel_Steps_Execution.ipynb',
+        },
+        {
+          id: 'ch5-04', num: '04',
+          title: 'Map-Reduce with Send API',
+          overview: 'The Map-Reduce pattern using LangGraph\u2019s Send construct for dynamic parallel execution. Variable task decomposition determined at runtime with Pydantic models for structured output validation.',
+          pointers: [
+            'Map phase: decompose into sub-tasks in parallel',
+            'Send("node", {state}) for dynamic parallelization',
+            'Pydantic models enforcing schema from LLM output',
+            'Reducer function aggregating parallel answers',
+            'Conditional edges returning lists of Send objects',
+            'Pipeline: plan \u2192 distribute \u2192 execute \u2192 compile',
+          ],
+          tags: ['Map-Reduce', 'Send API', 'Pydantic'],
+          notebook: '02_Planning/02_Map_Reduce_with_Send_API.ipynb',
+        },
+        {
+          id: 'ch5-05', num: '05',
+          title: 'Send API Deep Dive',
+          overview: 'Focused demonstration of the Send API for map-reduce operations. Shows how private state is isolated per parallel worker and results are automatically aggregated back to overall state via matching field names.',
+          pointers: [
+            'Send(node_name, private_state) syntax',
+            'OverallState vs. ResearchState separation',
+            'Private state isolation per worker',
+            'Auto-merge via matching field names',
+            'Conditional edge returning Send list',
+            'Subtopic generation \u2192 parallel research \u2192 compile',
+          ],
+          tags: ['Send', 'Private State', 'Auto-Merge'],
+          notebook: '02_Planning/02_send.ipynb',
+        },
+      ]},
+      { title: 'Agent Patterns', topics: [
+        {
+          id: 'ch5-06', num: '06',
+          title: 'Agent Patterns',
+          overview: 'A practical news article processing workflow combining multiple specialized agents with human-in-the-loop checkpointing. Demonstrates agent composition, postability grading, conditional routing, and state enrichment through agent chaining.',
+          pointers: [
+            'Agent composition: specialized single-purpose agents',
+            'Postability grading with structured Pydantic output',
+            'Conditional routing via news_chef decider function',
+            'State enrichment through progressive agent chaining',
+            'MemorySaver checkpointing for human intervention',
+            'State inspection and modification at interrupt points',
+          ],
+          tags: ['Agent Composition', 'Grading', 'Checkpointing'],
+          notebook: '04_Agent_Patterns/01_Agent_Patterns.ipynb',
+        },
+      ]},
+      { title: 'Long-Term Memory', topics: [
+        {
+          id: 'ch5-07', num: '07',
+          title: 'Long-Term Memory',
+          overview: 'Implement persistent memory using InMemoryStore and PostgresStore. Agents recall and act on user-specific information across multiple conversation threads with namespace-based organization.',
+          pointers: [
+            'InMemoryStore: store.put() and store.search()',
+            'Namespace-based organization (user_id, context)',
+            'Memory injection into agent system prompts',
+            'Automatic memory capture from conversations',
+            'PostgresStore for production durability',
+            'Cross-thread memory sharing via same user_id',
+          ],
+          tags: ['InMemoryStore', 'PostgresStore', 'Cross-Thread'],
+          notebook: '05_Long_Term_Memory/01_Long_Term_Memory.ipynb',
+        },
+      ]},
+    ];
+
+    const container = document.getElementById('topicsContainer');
+    let html = '';
+    sections.forEach(sec => {
+      html += `<div class="section-group"><div class="section-group-title">${sec.title} &middot; ${sec.topics.length} ${sec.topics.length === 1 ? 'Topic' : 'Topics'}</div>`;
+      sec.topics.forEach(t => {
+        const status = getTopicStatus(t.id);
+        html += `
+          <div class="topic-row-expanded topic-${status} animate-on-scroll">
+            <div class="topic-top-row">
+              <div class="topic-number">${t.num}</div>
+              <div class="topic-info">
+                <div class="topic-title">${t.title}</div>
+                <div class="topic-tags">${t.tags.map(tag => `<span class="topic-tag">${tag}</span>`).join('')}</div>
+              </div>
+              ${renderStatusBadge(t.id)}
+            </div>
+            <div class="topic-overview">${t.overview}</div>
+            <ul class="topic-pointers">${t.pointers.map(p => `<li>${p}</li>`).join('')}</ul>
+            <div class="topic-footer">
+              <div></div>
+              <a href="${COLAB}/${t.notebook}" target="_blank" class="topic-link topic-link-colab">${COLAB_ICON} Open in Colab</a>
+              <a href="${REPO}/${t.notebook}" target="_blank" class="topic-link">${GH_ICON} GitHub</a>
+            </div>
+          </div>`;
+      });
+      html += '</div>';
+    });
+    container.innerHTML = html;
+    updateChapterRing();
+  </script>
+</body>
+</html>
