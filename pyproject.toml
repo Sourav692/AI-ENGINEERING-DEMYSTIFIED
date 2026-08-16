@@ -88,7 +88,12 @@ packages = ["helpers"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["archive", "06_Production/fullstackapp/frontend"]
+extend-exclude = [
+    "archive",
+    "13_Projects/LangGraph_Fullstack_Capstone/fullstackapp/frontend",
+    "13_Projects/LangChain_Microservices_Capstone/frontend",
+    "07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/app/frontend",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]

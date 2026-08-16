@@ -1,37 +1,118 @@
 # Roadmap Map
 
-This file is the skill's memory of the roadmap's actual shape. **Update it every time a top-level section is created or changes status** — same discipline as `NOTEBOOK_INDEX.md`. It has two parts: sections that exist on disk today, and sections the user has named as coming but hasn't started yet. Both are living lists — add, edit, or remove entries as reality changes. Don't let this file drift from disk.
+This file is the skill's memory of the roadmap's actual shape. **Update it every time a phase or track is created, renamed, or changes status** — same discipline as `NOTEBOOK_INDEX.md`. Don't let it drift from disk.
 
-## Existing sections (on disk)
+The repo is 13 numbered phases, each owning **exactly one topic** — this is the hard-won rule (see History below): earlier structures let the same topic (RAG, agents, memory, observability) live in 2–3 different phases at once, which is what made the roadmap feel confusing. **Never create a second home for a topic that already has one.** Where a topic has framework-specific implementations, they're sibling tracks *inside* the one phase that owns it (e.g. Phase 4 has `RAG_with_LangGraph/` and `RAG_with_LangChain/` side by side, not split across two phases).
 
-### `01_Foundations/` through `07_Deep_Agents/` — LangGraph
-The first and so far only fully-built-out framework section. Internal shape: `01_Foundations` (core graph/state/routing mechanics, flat numbered notebooks) → `02_Core_Capabilities` (platform features — memory, HITL, subgraphs, streaming, retries — each in its own numbered subfolder) → `03_RAG` → `04_Agents` (full real-world agent builds) → `05_Agentic_Design_Patterns` (named patterns, each its own numbered subfolder) → `06_Production` (deployable apps/tests, not notebooks) → `07_Deep_Agents` (the `deepagents` multi-agent framework specifically, vendored in, keeps its own `CLAUDE.md`).
+## Phase 2 — `02_LangChain_Fundamentals_and_Prompting/` — ✅ Built
 
-This progression (fundamentals → core capabilities → applied → patterns → production) is a reasonable template for other framework sections but was designed around LangGraph's own shape — don't assume every future framework needs exactly these six stages.
+Owns: LangChain's core building blocks + prompting. Does NOT own: RAG, tool-use/agents, memory, LangSmith/observability, deployment — each of those moved to the phase that owns that topic.
 
-### `archive/`
-Retired/superseded notebooks. Frozen — don't add to it proactively.
+| Track | Status | Content |
+|---|---|---|
+| `LangChain_Fundamentals/` | ✅ Built | `01_Getting_Started` … `05_Summarization` — trimmed to true fundamentals |
+| `Prompt_and_Context_Engineering/Prompt_Engineering/` | ✅ Built | Regrouped by technique from `Prompt-Engineering-Demystified` |
+| `Prompt_and_Context_Engineering/Context_Engineering/` | 🚧 Planned | |
 
-### `docs/` (root)
-Static HTML tutorial microsite mirroring the LangGraph chapters. Framework-specific; a new framework section publishing its own microsite pages would extend this, not replace it — ask the user how they want new sections represented here, if at all.
+## Phase 3 — `03_LangGraph_Fundamentals/` — ✅ Built
 
-### Root scaffolding
-`helpers/` (shared LangGraph/LLM factory code), `pyproject.toml`/`requirements.txt`/`uv.lock`/`databricks.yml` (root env, currently scoped to what LangGraph content needs), `README.md`/`CLAUDE.md`/`NOTEBOOK_INDEX.md`, `links.md`, `LICENSE`. As other frameworks arrive with their own dependencies, decide per-section whether they share the root env or get a self-contained `requirements.txt` (precedent: `02_Core_Capabilities/01_Memory/memory/` is self-contained within LangGraph already) — don't assume, ask.
+Owns: LangGraph mechanics only. Does NOT own: RAG, agent builds, design patterns — those moved to Phases 4/5/8.
 
-## Anticipated sections (named by the user, not yet created)
+| Track | Status | Content |
+|---|---|---|
+| `01_Foundations/` | ✅ Built | State/graph basics through Command objects (11 nb) |
+| `02_Core_Capabilities/` | ✅ Built | Routing, HITL, advanced state, subgraphs, async/streaming, retries. Memory moved to Phase 7. |
 
-These don't have folders yet. When the first real file for one of these shows up, treat it as that section's first content — propose creating the top-level folder (next number in sequence) rather than treating the item as ambiguous or forcing it into an existing LangGraph chapter.
+Note: `02_Routing/` contains 3 "Agentic RAG System" notebooks. By the topic-ownership rule these arguably belong in Phase 4 or 8, but the user explicitly chose to keep them here since they're this phase's only routing-mechanics demo — a deliberate exception, not an oversight. Don't move them without asking.
 
-- **LangChain** — likely its own foundations→application progression, distinct from LangGraph despite shared lineage (different abstraction, different idioms).
-- **CrewAI** — role-based multi-agent framework; expect crew/agent/task-definition content, possibly its own "patterns" analog to `05_Agentic_Design_Patterns`.
-- **AutoGen** — Microsoft's multi-agent conversation framework.
-- **MCP** (Model Context Protocol) — a protocol, not a framework; likely server/client implementation notebooks rather than a foundations→production learning arc. May not need the six-stage template at all.
-- **ADK** — Google's Agent Development Kit.
-- **OpenAI SDK** — OpenAI's Agents SDK / Responses API-based agent building.
-- **Google SDK** — Google's general AI SDK (separate from ADK — clarify with the user which is which when content for both starts arriving, since the names overlap).
-- **A2A** (Agent-to-Agent protocol) — another protocol section, likely small and focused like MCP.
-- **Fine-Tuning** — cross-cutting competency, not tied to one framework.
-- **Evaluation & Observability** — cross-cutting competency: LLM-as-judge, tracing, eval harnesses, monitoring. Applies across every framework section above.
-- **Projects** — capstone/integration work combining multiple frameworks. Ask the user whether this should be numbered into the main sequence or kept as a parallel, unnumbered area (like `archive/`) — its placement wasn't decided as of the last update to this file.
+## Phase 4 — `04_Retrieval_and_RAG/` — ✅ Partially built
 
-When any of the above gets its first real content, move its entry up into "Existing sections," fill in its actual internal shape once one exists, and give it a number continuing from the current highest top-level number on disk.
+Owns: **foundational** RAG — theory + straightforward framework implementations, nothing that requires already knowing agents. Advanced/agentic RAG is Phase 8's job, not this one's.
+
+| Track | Status | Content |
+|---|---|---|
+| `RAG_with_LangGraph/` | ✅ Built | 2 nb — basic agentic RAG (simple + Databricks variant) |
+| `RAG_with_LangChain/` | ✅ Built | 4 nb — essentials, comprehensive, filtered search, indexing API |
+| `Embeddings_and_Vector_Databases/`, `RAG_Naive_to_Production/`, `Multimodal_and_Document_Intelligence/` | 🚧 Planned | Theory |
+
+## Phase 5 — `05_AI_Agent_Fundamentals/` — ✅ Built
+
+Owns: all agent-building content, both frameworks, in one place.
+
+| Track | Status | Content |
+|---|---|---|
+| `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling + agents (from `LangChain_Demystified`'s modules 06 & 10) |
+| `AI_Agents_with_LangGraph/` | ✅ Built | 8 real-world agent builds |
+| `Workflow_and_Agent_Patterns/` | ✅ Built | 8 pattern subfolders, ~27 notebooks |
+
+## Phase 6 — `06_Agent_SDKs_First_Party/` — 🚧 Planned
+
+Promoted to its own top-level phase (was a track inside the old combined LangGraph phase). `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`.
+
+## Phase 7 — `07_Advanced_Agentic_Systems/` — ✅ Partially built (3 of 4 tracks built)
+
+Owns: composing agents into systems — memory, orchestration, harnesses, evaluation.
+
+| Track | Status | Content |
+|---|---|---|
+| `Memory_and_State/` | ✅ Built | `LangGraph/` + `LangChain/` (from `LangChain_Demystified`'s module 05) — both frameworks' memory content consolidated here, not left in their fundamentals phases |
+| `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + swarm |
+| `Deep_Agents_and_Harness_Engineering/` | ✅ Built | The `deepagents` multi-agent framework — own `CLAUDE.md`, `app/`, `examples/`, `skills/`, `docs/`. **This directory (specifically its `app/` subfolder) has hit a Windows file lock 3 separate times** across different restructurings — always drain-contents-then-remove-shell, never assume `mv`/`git mv` will just work on it. |
+| `Evaluation_and_Eval_Harnesses/` | 🚧 Planned | `Agent_Evaluation/`, `RAG_Evaluation/`, `LLM_as_Judge/` |
+
+## Phase 8 — `08_Advanced_RAG/` — ✅ Partially built
+
+**Deliberately sequenced after Phases 5 and 7**, not bundled into Phase 4 — agentic/self-correcting RAG and GraphRAG genuinely require already knowing agents and advanced agentic systems. This was an explicit user correction mid-restructuring; don't merge this back into Phase 4 even though the topic is "RAG" in both — the ownership split here is by *prerequisite*, not by keyword.
+
+| Track | Status | Content |
+|---|---|---|
+| `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval (grading/rewriting) + RAG-as-tool (agentic RAG) — split out of what used to be a single `RAG_with_LangGraph/` track |
+| `CacheRAG/`, `GraphRAG/` | 🚧 Planned | |
+
+## Phase 9 — `09_Agent_Protocols/` — 🚧 Planned
+
+`MCP/` (4 subfolders), `ACP/` (3 subfolders), `A2A/` (3 subfolders).
+
+## Phase 10 — `10_Alternative_Agent_Frameworks/` — 🚧 Planned
+
+Frameworks to pick up *after* Phases 2/3/5 — each standalone. `DSPy/`, `CrewAI/`, `PydanticAI/`, `AutoGen/`, `Orchestration_Frameworks_Overview/`. **If a new agent framework shows up and doesn't obviously belong to an earlier phase, this is very likely where it goes.**
+
+## Phase 11 — `11_Claude_Code_and_AI_Coding_Tools/` — 🚧 Planned
+
+`Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`.
+
+## Phase 1 — `01_Theory_and_Foundations/` — 🚧 Planned (optional/compressible)
+
+Math/ML intuition, transformer architecture, model landscape & Hugging Face, `Fine_Tuning_and_RL/`.
+
+## Phase 12 — `12_Production_and_Observability/` — ✅ Partially built
+
+Owns: deployment, LLMOps, observability, security, safety.
+
+| Track | Status | Content |
+|---|---|---|
+| `LLMOps_and_AI_Infrastructure/` | ✅ Partially built | `Tracing_and_Observability/` (LangSmith built, LangFuse planned sibling, callbacks), `Caching_and_Performance/`, `Cost_Monitoring/` — all split out of `LangChain_Demystified`'s module 09 + 11 |
+| `Safety_and_Alignment/` | ✅ Partially built | Content moderation (from module 09) |
+| `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned | |
+
+## Phase 13 — `13_Projects/` — ✅ Built
+
+Capstone/integration projects. `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12). More capstones get added here as new phases produce content worth integrating.
+
+## `archive/`, `docs/`, root scaffolding
+
+- `archive/` — retired/superseded notebooks, frozen, don't add to it proactively.
+- `docs/` — static HTML tutorial microsite, mirrors Phase 3's LangGraph-mechanics chapters + a few others; internal links point at current phase paths, keep in sync if those move again.
+- `helpers/`, `pyproject.toml`/`requirements.txt`/`uv.lock`/`databricks.yml`, `README.md`/`CLAUDE.md`/`NOTEBOOK_INDEX.md`, `links.md`, `LICENSE` — root scaffolding. `pyproject.toml`'s ruff `extend-exclude` hardcodes 3 JS frontend paths (LangGraph capstone, LangChain capstone, deep-agents app) — add a 4th if another JS app shows up.
+- `.claude/skills-candidates/` — reusable Claude Code skills recovered from merged-in repos, not auto-loaded, awaiting the user's review. Add to this (don't silently merge into `.claude/skills/` or delete) whenever a merged repo has its own genuinely reusable skills.
+
+## History: how we got to 13 phases (read before proposing another big restructuring)
+
+1. LangGraph's 7 chapters sat loose at the repo root while other frameworks would've gotten named folders — inconsistent.
+2. Fixed by nesting LangGraph under one `01_LangGraph/` parent — framework-per-folder pattern.
+3. Replaced entirely with a **learning-phase** model (after the user pointed at `aie-learning-tracker.vercel.app`) — but each phase mixed multiple topics together (e.g. one phase held LangGraph mechanics AND RAG AND agents AND patterns all at once), which under the surface just relocated the duplication problem instead of solving it.
+4. **This restructuring — the fix that stuck:** merging in `LangChain_Demystified` and `Prompt-Engineering-Demystified` exposed that RAG, agents, memory, and observability each had 2–3 different homes across phases (once for LangGraph's version, once buried inside a LangChain lump, sometimes a third empty "theory" placeholder too). The user's diagnosis, in their own words: "the structure seems little confusing... with duplicate RAG, and other module entries." Fixed by enforcing **one phase per topic**, splitting former multi-topic phases into single-topic ones (the old combined "LangGraph + Core Agent Concepts" phase became three: LangGraph Fundamentals, half of Retrieval & RAG, and half of AI Agent Fundamentals), and consolidating each framework's scattered coverage of a topic into that topic's one phase. Two further corrections during this pass, both worth remembering as precedent:
+   - The user pushed back on an early version of this fix that tried to move RAG *out* of the agent-building phase entirely into a pure-theory phase — correctly pointing out that would put applied RAG *before* its framework prerequisite in the numbered sequence. Resolution: foundational RAG stays coupled to its framework (Phase 4), only the advanced/agentic variant — which has a *different* prerequisite (agents) — gets its own later phase (8).
+   - Evaluation and Production/Observability didn't have real internal shape until concrete content (LangSmith, caching, cost monitoring, moderation) arrived — they were single flat placeholders. Real content forced them to grow actual subtopics (`Tracing_and_Observability/`, `Caching_and_Performance/`, `Cost_Monitoring/` inside Phase 12; `Agent_Evaluation/`/`RAG_Evaluation/`/`LLM_as_Judge/` inside Phase 7's Evaluation track).
+
+If a fifth restructuring ever seems warranted, that's fine to raise — but re-read this history first, and specifically check whether the proposed change would reintroduce topic duplication across phases. That's the mistake this file exists to prevent repeating.

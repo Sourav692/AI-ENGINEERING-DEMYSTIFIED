@@ -1,0 +1,1 @@
+[AI Enhancement with Knowledge Graphs - Mastering RAG Systems](https://www.coursera.org/learn/packt-ai-enhancement-with-knowledge-graphs-mastering-rag-systems-lnmqm/home/welcome "AI Enhancement with Knowledge Graphs - Mastering RAG Systems - Home Page. Opens in new tab.")

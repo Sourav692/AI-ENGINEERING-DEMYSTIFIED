@@ -1,0 +1,403 @@
+ArticleTitle	Question	Answer	DifficultyFromQuestioner	DifficultyFromAnswerer	ArticleFile
+Abraham_Lincoln	Was Abraham Lincoln the sixteenth President of the United States?	yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Was Abraham Lincoln the sixteenth President of the United States?	Yes.	easy	easy	S08_set3_a4
+Abraham_Lincoln	Did Lincoln sign the National Banking Act of 1863?	yes	easy	medium	S08_set3_a4
+Abraham_Lincoln	Did Lincoln sign the National Banking Act of 1863?	Yes.	easy	easy	S08_set3_a4
+Abraham_Lincoln	Did his mother die of pneumonia?	no	easy	medium	S08_set3_a4
+Abraham_Lincoln	Did his mother die of pneumonia?	No.	easy	easy	S08_set3_a4
+Abraham_Lincoln	How many long was Lincoln's formal education?	18 months	medium	easy	S08_set3_a4
+Abraham_Lincoln	How many long was Lincoln's formal education?	18 months.	medium	medium	S08_set3_a4
+Abraham_Lincoln	When did Lincoln begin his political career?	1832	medium	easy	S08_set3_a4
+Abraham_Lincoln	When did Lincoln begin his political career?	1832.	medium	medium	S08_set3_a4
+Abraham_Lincoln	What did The Legal Tender Act of 1862 establish?	the United States Note, the first paper currency in United States history	medium	easy	S08_set3_a4
+Abraham_Lincoln	What did The Legal Tender Act of 1862 establish?	The United States Note, the first paper currency in United States history.	medium	medium	S08_set3_a4
+Abraham_Lincoln	Who suggested Lincoln grow a beard?	11-year-old Grace Bedell	hard	medium	S08_set3_a4
+Abraham_Lincoln	Who suggested Lincoln grow a beard?	Grace Bedell.	hard	medium	S08_set3_a4
+Abraham_Lincoln	When did the Gettysburg address argue that America was born?	1776	hard	hard	S08_set3_a4
+Abraham_Lincoln	When did the Gettysburg address argue that America was born?	1776.	hard	hard	S08_set3_a4
+Abraham_Lincoln	Did Lincoln beat John C. Breckinridge in the 1860 election?	yes	hard	medium	S08_set3_a4
+Abraham_Lincoln	Did Lincoln beat John C. Breckinridge in the 1860 election?	Yes.	hard	hard	S08_set3_a4
+Abraham_Lincoln	Was Abraham Lincoln the first President of the United States?	No	easy	easy	S08_set3_a4
+Abraham_Lincoln	Was Abraham Lincoln the first President of the United States?	No	easy	medium	S08_set3_a4
+Abraham_Lincoln	Did Lincoln start his political career in 1832?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Did Lincoln start his political career in 1832?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Did Lincoln ever represent Alton & Sangamon Railroad?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Did Lincoln ever represent Alton & Sangamon Railroad?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Which county was Lincoln born in?	Hardin County	medium	medium	S08_set3_a4
+Abraham_Lincoln	Which county was Lincoln born in?	Southeast Hardin County, Kentucky	medium	medium	S08_set3_a4
+Abraham_Lincoln	When did Lincoln first serve as President?	March 4, 1861	medium	hard	S08_set3_a4
+Abraham_Lincoln	When did Lincoln first serve as President?	March 4, 1861	medium	medium	S08_set3_a4
+Abraham_Lincoln	Who assassinated Lincoln?	John Wilkes Booth	medium	hard	S08_set3_a4
+Abraham_Lincoln	Who assassinated Lincoln?	John Wilkes Booth	medium	hard	S08_set3_a4
+Abraham_Lincoln	Did Lincoln win the election of 1860?	Yes	hard	hard	S08_set3_a4
+Abraham_Lincoln	Did Lincoln win the election of 1860?	Yes	hard	too hard	S08_set3_a4
+Abraham_Lincoln	Who was the general in charge at the Battle of Antietam?	General McClellan	hard	medium	S08_set3_a4
+Abraham_Lincoln	Who was the general in charge at the Battle of Antietam?	John Alexander McClernand	hard	medium	S08_set3_a4
+Abraham_Lincoln	Why did Lincoln issue the Emancipation Proclamation?	To free slaves 	hard	hard	S08_set3_a4
+Abraham_Lincoln	Why did Lincoln issue the Emancipation Proclamation?	The goal was to weaken the rebellion, which was led and controlled by slave owners.	hard	hard	S08_set3_a4
+Abraham_Lincoln	Do scholars rank lincoln among the top three presidents?	NULL	easy	NULL	S08_set3_a4
+Abraham_Lincoln	Do scholars rank lincoln among the top three presidents?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Did lincoln have 18 months of schooling?	NULL	easy	NULL	S08_set3_a4
+Abraham_Lincoln	Did lincoln have 18 months of schooling?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	Was Lincoln chosen as a presidential candidate in 1860?	NULL	easy	NULL	S08_set3_a4
+Abraham_Lincoln	Was Lincoln chosen as a presidential candidate in 1860?	Yes	easy	easy	S08_set3_a4
+Abraham_Lincoln	How old was Lincoln in 1816?	NULL	medium	NULL	S08_set3_a4
+Abraham_Lincoln	How old was Lincoln in 1816?	seven	medium	medium	S08_set3_a4
+Abraham_Lincoln	When was the first photgraph of lincoln taken?	NULL	medium	NULL	S08_set3_a4
+Abraham_Lincoln	When was the first photgraph of lincoln taken?	1846	medium	medium	S08_set3_a4
+Abraham_Lincoln	How long was Lincoln's legal Career?	NULL	medium	NULL	S08_set3_a4
+Abraham_Lincoln	How long was Lincoln's legal Career?	23 years	medium	medium	S08_set3_a4
+Abraham_Lincoln	What trail did Lincoln use a Farmers' Almanac in? 	NULL	hard	NULL	S08_set3_a4
+Abraham_Lincoln	What trail did Lincoln use a Farmers' Almanac in? 	he defended William "Duff" Armstrong	hard	hard	S08_set3_a4
+Abraham_Lincoln	Did Abraham Lincoln live in the Frontier?	NULL	hard	NULL	S08_set3_a4
+Abraham_Lincoln	Did Abraham Lincoln live in the Frontier?	Yes	hard	medium	S08_set3_a4
+Abraham_Lincoln	Did Lincoln's Wife's Family support slavery?	NULL	hard	NULL	S08_set3_a4
+Abraham_Lincoln	Did Lincoln's Wife's Family support slavery?	Yes	hard	medium	S08_set3_a4
+Alessandro_Volta	Volta became professor of physics in the Como high school in what year?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	What ac phaenomenis inde pendentibus?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	What may be called Volta's Law of the electrochemical series?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Is it true that volta became professor of physics?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Is it true that volta entered retirement in spain?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	When did he become professor?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	What did Alessandro Volta publish in 1800?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Is Volta buried in the city of Como?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Is the electrolyte sulphuric acid?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta		NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta		NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta		NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	NOTTTT  FOUND	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta		NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta		NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Are Count Volta 's original instruments and papers on display there ?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Is Volta buried in the city of Como ?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Was his 1800 paper written in French ?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Are Count Volta 's original instruments and papers on display there ?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Did he not realize that the frog 's leg served as both a conductor of electricity -LRB- we would now call it an electrolyte -RRB- and as a detector of electricity ?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	Does this not make the zinc rod the negative electrode and the copper rod the positive electrode ?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	What happened with $ its invention?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	HWhat happened at the electromotive force -LRB- emf -RRB- of a galvanic cell?	NULL	NULL	NULL	S08_set4_a10
+Alessandro_Volta	What happened in 1800?	NULL	NULL	NULL	S08_set4_a10
+Amedeo_Avogadro	What was an Italian savant?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	What was an Italian savant?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Who is most noted for his contributions to the theory of molarity and molecular weight?	Amedeo Avogadro	NULL	medium	S08_set4_a8
+Amedeo_Avogadro	Who is most noted for his contributions to the theory of molarity and molecular weight?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Who is most noted for his contributions to the theory of molarity and molecular weight?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Who graduated in ecclesiastical law at the early age of 20 and began to practice?	Amedeo Avogadro	NULL	medium	S08_set4_a8
+Amedeo_Avogadro	Who graduated in ecclesiastical law at the early age of 20 and began to practice?	blah	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Who graduated in ecclesiastical law at the early age of 20 and began to practice?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	When did he publish another memoria?	1821	NULL	medium	S08_set4_a8
+Amedeo_Avogadro	When did he publish another memoria?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	When did he publish another memoria?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	When did he become a professor?	1820	NULL	medium	S08_set4_a8
+Amedeo_Avogadro	When did he become a professor?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	When did he become a professor?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is it true that he became a professor in 1820?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Is it true that he became a professor in 1820?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is it true that he became a professor in 1820?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was Lorenzo Romano Amedeo Carlo Avogadro an Italian savant?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Was Lorenzo Romano Amedeo Carlo Avogadro an Italian savant?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was Lorenzo Romano Amedeo Carlo Avogadro an Italian savant?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was Amedeo Avogadro born in Turin August 9th 1776 to a noble ancient family of Piedmont, Italy?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Was Amedeo Avogadro born in Turin August 9th 1776 to a noble ancient family of Piedmont, Italy?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was Amedeo Avogadro born in Turin August 9th 1776 to a noble ancient family of Piedmont, Italy?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is he most noted for his contributions to the theory of molarity and molecular weight?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Is he most noted for his contributions to the theory of molarity and molecular weight?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is he most noted for his contributions to the theory of molarity and molecular weight?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro		NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro		NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro		NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro		NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro		NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro		NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Who confirm that he sponsored and helped some Sardinian plotters who were organising a revolution in that island , stopped at the very last moment by the concession of Charles Albert 's statute ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Who confirm that he sponsored and helped some Sardinian plotters who were organising a revolution in that island , stopped at the very last moment by the concession of Charles Albert 's statute ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	He is what?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	He is what?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	The unification of Italy did what?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was King Victor Emmanuel III there to pay homage to Avogadro ?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Was King Victor Emmanuel III there to pay homage to Avogadro ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was King Victor Emmanuel III there to pay homage to Avogadro ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is Avogadro 's number commonly used to compute the results of chemical reactions ?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Is Avogadro 's number commonly used to compute the results of chemical reactions ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is Avogadro 's number commonly used to compute the results of chemical reactions ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is it approximately 6.0221415 10 23 ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Is it approximately 6.0221415 10 23 ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Did the scientific community not reserve great attention to his theory ?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Did the scientific community not reserve great attention to his theory ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Did the scientific community not reserve great attention to his theory ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Does it not allow chemists to determine the exact amounts of substances produced in a given reaction ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Does it not allow chemists to determine the exact amounts of substances produced in a given reaction ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was King Victor Emmanuel III there to pay homage to Avogadro ?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Was King Victor Emmanuel III there to pay homage to Avogadro ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Was King Victor Emmanuel III there to pay homage to Avogadro ?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Can the title of this famous 1811 paper be roughly translated into english?	yes	NULL	easy	S08_set4_a8
+Amedeo_Avogadro	Can the title of this famous 1811 paper be roughly translated into english?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	Can the title of this famous 1811 paper be roughly translated into english?		NULL		S08_set4_a8
+Amedeo_Avogadro	What happened in french?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	What happened in french?		NULL	hard	S08_set4_a8
+Amedeo_Avogadro	What happened in 1833?	Avogadro had been recalled to Turin university	NULL	medium	S08_set4_a8
+Amedeo_Avogadro	What happened in 1833?	NULL	NULL	NULL	S08_set4_a8
+Amedeo_Avogadro	What happened in 1833?	blah blah blah	NULL	hard	S08_set4_a8
+Anders_Celsius	Who determined the dependence of the boiling of water with atmospheric pressure?	Anders Celsius	NULL	medium	S08_set4_a5
+Anders_Celsius	What is named after him?	The Celsius crater on the Moon	NULL	medium	S08_set4_a5
+Anders_Celsius	When did he publish a collection?	1733	NULL	easy	S08_set4_a5
+Anders_Celsius	Is it true that he published a collection in 1738?	No	NULL	easy	S08_set4_a5
+Anders_Celsius	Is it true that thermometer had 100 for the freezing point?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Was Celsius born in Uppsala in Sweden?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Was Anders Celsius (November 27, 1701 April 25, 1744) a Swedish astronomer?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Is The Celsius crater on the Moon named after him?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Who was the first to perform and publish careful experiments aiming at the definition of an international temperature scale on scientific grounds ?	Anders Celsius	NULL	medium	S08_set4_a5
+Anders_Celsius	The Celsius crater on the Moon is what?	named after him	NULL	medium	S08_set4_a5
+Anders_Celsius	Is the Celsius crater on the Moon named after him ?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Had his thermometer 100 for the freezing point of water and 0 for the boiling point ?	Yes it had	NULL	easy	S08_set4_a5
+Anders_Celsius	Was Celsius born in Uppsala in Sweden ?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Is the Celsius crater on the Moon named after him ?	Yes	NULL	easy	S08_set4_a5
+Anders_Celsius	Did he not determine the dependence of the boiling of water with atmospheric pressure -LRB- in excellent agreement with modern data -RRB- ?	Yes he did	NULL	easy	S08_set4_a5
+Anders_Celsius	What happened from 1730 to 1744?	He was professor of astronomy at Uppsala University	NULL	easy	S08_set4_a5
+Anders_Celsius	What happened in 1745?	The scale was reversed	NULL	medium	S08_set4_a5
+Calvin_Coolidge	Was Calvin Coolidge the twenty-ninth vice president?	no	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge the twenty-ninth vice president?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge born in Plymouth, Windsor County, Vermont?	yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge born in Plymouth, Windsor County, Vermont?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Did Coolidge graduate from Black River Academy?	yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Did Coolidge graduate from Black River Academy?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	When did he drop John from his name?	upon graduating from college	medium	medium	S08_set3_a9
+Calvin_Coolidge	When did he drop John from his name?	Upon graduating from college	medium	medium	S08_set3_a9
+Calvin_Coolidge	When did Coolidge meet and marry Grace Anna Goodhue?	1905	medium	medium	S08_set3_a9
+Calvin_Coolidge	When did Coolidge meet and marry Grace Anna Goodhue?	In 1905	medium	medium	S08_set3_a9
+Calvin_Coolidge	What period of rapid economic growth did the United States experience during Coolidge's presidency?	the Roaring Twenties	medium	medium	S08_set3_a9
+Calvin_Coolidge	What period of rapid economic growth did the United States experience during Coolidge's presidency?	the "Roaring Twenties"	medium	medium	S08_set3_a9
+Calvin_Coolidge	What did Coolidge do after graduating from Amherst?	Coolidge moved to Northampton, MassachuS08_setts	hard	medium	S08_set3_a9
+Calvin_Coolidge	What did Coolidge do after graduating from Amherst?	Coolidge moved to Northampton, MassachuS08_setts to take up the practice of law	hard	medium	S08_set3_a9
+Calvin_Coolidge	Of what state was Coolidge governor?	MassachuS08_setts	hard	medium	S08_set3_a9
+Calvin_Coolidge	Who appointed Harlan Fiske Stone to the Supreme Court?	Coolidge	hard	medium	S08_set3_a9
+Calvin_Coolidge	Who appointed Harlan Fiske Stone to the Supreme Court?	Coolidge	hard	hard	S08_set3_a9
+Calvin_Coolidge	Was Coolidge the thirteenth President of the United States?	No	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Coolidge the thirteenth President of the United States?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge Republican?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge Republican?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge a governor of MassachuS08_setts?	Yes	easy	medium	S08_set3_a9
+Calvin_Coolidge	Was Calvin Coolidge a governor of MassachuS08_setts?	Yes	easy	medium	S08_set3_a9
+Calvin_Coolidge	When was Coolidge born?	July 4 1872	medium	medium	S08_set3_a9
+Calvin_Coolidge	When was Coolidge born?	Plymouth, Windsor County, Vermont	medium	easy	S08_set3_a9
+Calvin_Coolidge	Where did Coolidge's grandfather had government offices?	Plymouth	medium	medium	S08_set3_a9
+Calvin_Coolidge	Where did Coolidge's grandfather had government offices?	The town of Plymouth Notch	medium	hard	S08_set3_a9
+Calvin_Coolidge	Which state were Coolidge born in?	Plymouth, Windsor County, Vermont	medium	medium	S08_set3_a9
+Calvin_Coolidge	Which state were Coolidge born in?	Vermont	medium	medium	S08_set3_a9
+Calvin_Coolidge	Is Calvin Jr. older than John Coolidge?	No	hard	hard	S08_set3_a9
+Calvin_Coolidge	Is Calvin Jr. older than John Coolidge?	No	hard	hard	S08_set3_a9
+Calvin_Coolidge	Did Coolidge get in Amherst College?	Yes	hard	medium	S08_set3_a9
+Calvin_Coolidge	Did Coolidge get in Amherst College?	Yes	hard	hard	S08_set3_a9
+Calvin_Coolidge	What caused Calvin Jr.'s death?	heart attack	hard	hard	S08_set3_a9
+Calvin_Coolidge	What caused Calvin Jr.'s death?	Heart attack	hard	easy	S08_set3_a9
+Calvin_Coolidge	Was John Calvin Coolidge Jr. was born in Las Vegas?	No	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was John Calvin Coolidge Jr. was born in Las Vegas?	no	easy	easy	S08_set3_a9
+Calvin_Coolidge	Was Coolidge opposed in the Republican nomination for Governor of MassachuS08_setts in 1918?	Yes	easy	medium	S08_set3_a9
+Calvin_Coolidge	Was Coolidge opposed in the Republican nomination for Governor of MassachuS08_setts in 1918?	no	easy	hard	S08_set3_a9
+Calvin_Coolidge	Did Coolidge meet and marry Grace Anna Goodhue?	Yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	Did Coolidge meet and marry Grace Anna Goodhue?	yes	easy	easy	S08_set3_a9
+Calvin_Coolidge	What year did Coolidge open his own law office?	1898	medium	medium	S08_set3_a9
+Calvin_Coolidge	What year did Coolidge open his own law office?	1898	medium	easy	S08_set3_a9
+Calvin_Coolidge	What fraternity was Coolidge a member of?	Phi Gamma Delta	medium	medium	S08_set3_a9
+Calvin_Coolidge	What fraternity was Coolidge a member of?	phi gamma delta	medium	medium	S08_set3_a9
+Calvin_Coolidge	In 1905 Coolidge met and married whom?	Grace Anna Goodhue	medium	medium	S08_set3_a9
+Calvin_Coolidge	In 1905 Coolidge met and married whom?	Grace Anna Goodhue	medium	medium	S08_set3_a9
+Calvin_Coolidge	Why did Coolidge not attend law school?	It was too expensive	hard	hard	S08_set3_a9
+Calvin_Coolidge	Why did Coolidge not attend law school?	cost	hard	too hard	S08_set3_a9
+Calvin_Coolidge	Have there been other US presidents that have visited Cuba?	No	hard	medium	S08_set3_a9
+Calvin_Coolidge	Have there been other US presidents that have visited Cuba?	no	hard	medium	S08_set3_a9
+Calvin_Coolidge	What years were Coolidge's two sons born in?	1906 and 1908	hard	medium	S08_set3_a9
+Calvin_Coolidge	What years were Coolidge's two sons born in?	1906 and 1908	hard	medium	S08_set3_a9
+Calvin_Coolidge	What thrust him into the national spotlight?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What to be born on the fourth of July?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Who was the elder of two children of John Calvin Sr and Victoria Coolidge?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Who or what placed as high as sixth in the voting?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Is it true that he appointed stone to the supreme court?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What do well - received and he have in common?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What did Coolidge address in 1924?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Was Coolidge more outspoken?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Was Coolidge admitted to the bar?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What emigrated from Cambridge?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What graduated from Black?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What Retrieved on May?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	He later what?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	They were what?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	The Republicans retained what?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge		NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge		NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Was 364 Stone later appointed Chief Justice by President Franklin D. Roosevelt ?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Did Coolidge not publish his autobiography in 1929 and write a syndicated newspaper column , `` Calvin Coolidge Says , '' from 1930 -- 1931 ?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Were the more well-known Coolidges , such as architect Charles Allerton Coolidge , and diplomat Archibald Cary Coolidge , descended from other branches of the family that had stayed in MassachuS08_setts ?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	Is the genius of the average the most convincing proof of $ his strength?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What happened from tuberculosis?	NULL	NULL	NULL	S08_set3_a9
+Calvin_Coolidge	What happened from black river academy , vermont?	NULL	NULL	NULL	S08_set3_a9
+Canada	Did France cede nearly all of its colonies in Europe in 1763?	Yes.	easy	easy	S08_set2_a8
+Canada	Did France cede nearly all of its colonies in Europe in 1763?	yes	easy	easy	S08_set2_a8
+Canada	Did France cede nearly all of its colonies in Europe in 1763?	NULL	easy	NULL	S08_set2_a8
+Canada	Is Canada a member of the OECD?	Yes.	easy	easy	S08_set2_a8
+Canada	Is Canada a member of the OECD?	yes	easy	easy	S08_set2_a8
+Canada	Is Canada a member of the OECD?	NULL	easy	NULL	S08_set2_a8
+Canada	Is Canada's official language Zulu?	No.	easy	easy	S08_set2_a8
+Canada	Is Canada's official language Zulu?	no	easy	easy	S08_set2_a8
+Canada	Is Canada's official language Zulu?	NULL	easy	NULL	S08_set2_a8
+Canada	What is one significant non-official language?	Chinese.	medium	medium	S08_set2_a8
+Canada	What is one significant non-official language?	Chinese	medium	medium	S08_set2_a8
+Canada	What is one significant non-official language?	NULL	medium	NULL	S08_set2_a8
+Canada	In addition to Port Royal, where else did Samuel de Champlain establish a S08_settlement?	Quebec City	medium	medium	S08_set2_a8
+Canada	In addition to Port Royal, where else did Samuel de Champlain establish a S08_settlement?	NULL	medium	NULL	S08_set2_a8
+Canada	What was the Consitution Act formerly called?	The British North America Act.	medium	hard	S08_set2_a8
+Canada	What was the Consitution Act formerly called?	British North America Act	medium	medium	S08_set2_a8
+Canada	What was the Consitution Act formerly called?	NULL	medium	NULL	S08_set2_a8
+Canada	Which countries established colonies in Canada?	France and Britain.	hard	hard	S08_set2_a8
+Canada	Which countries established colonies in Canada?	Fance and Britain	hard	hard	S08_set2_a8
+Canada	Which countries established colonies in Canada?	NULL	hard	NULL	S08_set2_a8
+Canada	How has Canada helped UN peacekeeping efforts?	During the Suez Crisis of 1956, Lester B. Pearson eased tensions by proposing the inception of the United Nations Peacekeeping Force. Canada has since served in 50 peacekeeping missions, including every UN peacekeeping effort until 1989	hard	medium	S08_set2_a8
+Canada	How has Canada helped UN peacekeeping efforts?	Canada has played a leading role in UN peacekeeping efforts. During the Suez Crisis of 1956, Lester B. Pearson eased tensions by proposing the inception of the United Nations Peacekeeping Force. Canada has since served in 50 peacekeeping missions, including every UN peacekeeping effort until 1989	hard	hard	S08_set2_a8
+Canada	How has Canada helped UN peacekeeping efforts?	NULL	hard	NULL	S08_set2_a8
+Canada	What percentage of the population don't speak English or French at home?	28%	hard	too hard	S08_set2_a8
+Canada	What percentage of the population don't speak English or French at home?	1.5%	hard	hard	S08_set2_a8
+Canada	What percentage of the population don't speak English or French at home?	NULL	hard	NULL	S08_set2_a8
+Canada	Is Canada bilingual?	Yes.	easy	easy	S08_set2_a8
+Canada	Is Canada bilingual?	Yes, it is.	easy	easy	S08_set2_a8
+Canada	Did Canadian soldiers win the Battle of Vimy Ridge in 1917?	Yes	easy	easy	S08_set2_a8
+Canada	Did Canadian soldiers win the Battle of Vimy Ridge in 1917?	No, it did not.	easy	hard	S08_set2_a8
+Canada	Is an official language of Canada German?	No.	easy	easy	S08_set2_a8
+Canada	Is an official language of Canada German?	No, it is not.	easy	easy	S08_set2_a8
+Canada	How many provinces and territories does Canada have?	A federation now comprising ten provinces and three territories	medium	medium	S08_set2_a8
+Canada	How many provinces and territories does Canada have?	Ten provinces and three territories	medium	medium	S08_set2_a8
+Canada	What is Canada's national unemployment rate?	While as of October 2007, Canada's national unemployment rate of 5.9% is its lowest in 33 years. Provincial unemployment rates vary from a low of 3.6% in Alberta to a high of 14.6% in Newfoundland and Labrador. 	medium	medium	S08_set2_a8
+Canada	What is Canada's national unemployment rate?	In October 2007, Canada's national unemployment rate is 5.9%.	medium	medium	S08_set2_a8
+Canada	Where is the most densely populated part of Canada?	The most densely populated part of the country is the Quebec City-Windsor Corridor along the Great Lakes and Saint Lawrence River in the southeast.	medium	medium	S08_set2_a8
+Canada	Where is the most densely populated part of Canada?	The most densely populated part of the country is the Quebec City-Windsor Corridor along the Great Lakes and Saint Lawrence River in the southeast.	medium	medium	S08_set2_a8
+Canada	What is the largest country in the world?	Canada is the second largest country in the world, after Russia, and largest on the continent.	hard	medium	S08_set2_a8
+Canada	What is the largest country in the world?	Russia.	hard	hard	S08_set2_a8
+Canada	What is the largest religious group in Canada?	According to 2001 census, 77.1% of Canadians identified as being Christians; of this, Catholics make up the largest group (43.6% of Canadians). The largest Protestant denomination is the United Church of Canada; about 16.5% of Canadians declare no religious affiliation, and the remaining 6.3% were affiliated with religions other than Christianity, of which the largest is Islam numbering 1.9%, followed by Judaism: 1.1%. 	hard	hard	S08_set2_a8
+Canada	What is the largest religious group in Canada?	Christian	hard	hard	S08_set2_a8
+Canada	When did Canada have one of the largest armed forces in the world?	1944.	hard	hard	S08_set2_a8
+Canada	When did Canada have one of the largest armed forces in the world?	World War II.	hard	hard	S08_set2_a8
+Canada	What have been inhabited for millennia by aboriginal peoples?	The lands	NULL	easy	S08_set2_a8
+Canada	European books and maps began referring to this region as Canada in what year?	1545	NULL	easy	S08_set2_a8
+Canada	What was Canada's most important industry until the 1800s?	The fur trade	NULL	easy	S08_set2_a8
+Canada	Is it true that it angered many residents of the thirteen colonies?	yes	NULL	easy	S08_set2_a8
+Canada	How do cuba and declining participation relate?	Canada maintains full relations with both.	NULL	easy	S08_set2_a8
+Canada	Is it true that provinces have a large degree of autonomy?	yes	NULL	easy	S08_set2_a8
+Canada	What did Canada adopt in 1965?	The Maple Leaf Flag	NULL	medium	S08_set2_a8
+Canada	What arrived in Britain?	The first Canadian Army units in WW II	NULL	easy	S08_set2_a8
+Canada	Are Canada 's two official languages English and French ?	yes	NULL	easy	S08_set2_a8
+Canada	Are Canada 's official national sports ice hockey ( winter ) and lacrosse ( summer ) ?	yes	NULL	easy	S08_set2_a8
+Canada	Is Canada a geographically vast and ethnically diverse country ?	yes	NULL	easy	S08_set2_a8
+Canada	Did Mainland Nova Scotia not come under British rule with the Treaty of Utrecht    (: ; ?	no!	NULL	easy	S08_set2_a8
+Canada	Did Cartier not use the word ` Canada ' to refer to not only that village , but the entire area subject to Donnacona , Chief at Stadacona ?	yes	NULL	easy	S08_set2_a8
+Canada	Did continental European immigrants not S08_settle the prairies ?	no	NULL	easy	S08_set2_a8
+Canada	Is it the world 's second largest country by total area?	yes	NULL	easy	S08_set2_a8
+Canada	What happened in 1867?	Canada was formed as a federal, semi-autonomous polity	NULL	easy	S08_set2_a8
+Egypt	Is Egypt bordered by the Gaza Strip?	yes	easy	easy	S08_set2_a6
+Egypt	Is Egypt bordered by the Gaza Strip?	Yes	easy	medium	S08_set2_a6
+Egypt	Is Egypt the most populated country in Africa?	no	easy	medium	S08_set2_a6
+Egypt	Is Egypt the most populated country in Africa?	No	easy	easy	S08_set2_a6
+Egypt	Does Egypt have political influence in the Middle East?	yes	easy	easy	S08_set2_a6
+Egypt	Does Egypt have political influence in the Middle East?	Yes	easy	medium	S08_set2_a6
+Egypt	When was the Six Day War?	1967	medium	easy	S08_set2_a6
+Egypt	When was the Six Day War?	1967	medium	medium	S08_set2_a6
+Egypt	What religions has Egypt outlawed?	All but Christianity, Islam, and Judaism	medium	hard	S08_set2_a6
+Egypt	What religions has Egypt outlawed?	all religions and belief except Islam, Christianity and Judaism	medium	medium	S08_set2_a6
+Egypt	What is the poulation of Egypt?	more than 78 million	medium	easy	S08_set2_a6
+Egypt	What is the poulation of Egypt?	78 million people	medium	hard	S08_set2_a6
+Egypt	Why does most of Egypt's population live near the Nile?	the only arable agricultural land is found there,	hard	medium	S08_set2_a6
+Egypt	Why does most of Egypt's population live near the Nile?	The only arable agricultural land is found there	hard	hard	S08_set2_a6
+Egypt	Are there a large number of Jews living in Egypt today?	no	hard	medium	S08_set2_a6
+Egypt	Are there a large number of Jews living in Egypt today?	No	hard	hard	S08_set2_a6
+Egypt	During what period was Akhenaten a Pharaoh?	The New Kingdom (c.1550&#8722;1070 BC) 	hard	hard	S08_set2_a6
+Egypt	During what period was Akhenaten a Pharaoh?	The New Kingdom	hard	hard	S08_set2_a6
+Egypt	Is Egypt in Asia?	No.	easy	easy	S08_set2_a6
+Egypt	Does Egypt receive the least rainfall in the world?	Yes.	easy	easy	S08_set2_a6
+Egypt	Does Egypt receive the least rainfall in the world?	Yes	easy	easy	S08_set2_a6
+Egypt	Does Egypt's foreign policy operates along moderate lines?	Yes.	easy	easy	S08_set2_a6
+Egypt	Does Egypt's foreign policy operates along moderate lines?	Yes	easy	easy	S08_set2_a6
+Egypt	Since when has Egypt been a republic?	June 18 1953.	medium	medium	S08_set2_a6
+Egypt	Since when has Egypt been a republic?	June 18 1953	medium	medium	S08_set2_a6
+Egypt	When were the Great Sphinx and the Pyramids of Giza built?	During the Old Kingdom.	medium	medium	S08_set2_a6
+Egypt	When were the Great Sphinx and the Pyramids of Giza built?	During the Old Kingdom	medium	medium	S08_set2_a6
+Egypt	What countries border Egypt?	Libya, Sudan, the Gaza Strip and Israel.	medium	hard	S08_set2_a6
+Egypt	What countries border Egypt?	Libya, Sudan, the Gaza Strip and Israel	medium	hard	S08_set2_a6
+Egypt	What is the estimated population of Egypt?	More than 78 million.	hard	hard	S08_set2_a6
+Egypt	What is the estimated population of Egypt?	78 million	hard	hard	S08_set2_a6
+Egypt	Does snow fall in Egypt?	Yes.	hard	hard	S08_set2_a6
+Egypt	Does snow fall in Egypt?	Yes	hard	hard	S08_set2_a6
+Egypt	When did organized agriculture appear in the Nile Valley?	6000 BC.	hard	medium	S08_set2_a6
+Egypt	When did organized agriculture appear in the Nile Valley?	About 6000 BC	hard	medium	S08_set2_a6
+Finland	Were the treaties signed in 1947 and 1948 with the Ukraine?	no	easy	easy	S08_set2_a4
+Finland	Were the treaties signed in 1947 and 1948 with the Ukraine?	No	easy	easy	S08_set2_a4
+Finland	Is Finnish a member of the Baltic-Finnic subgroup of the Uralic languages?	yes	easy	easy	S08_set2_a4
+Finland	Is Finnish a member of the Baltic-Finnic subgroup of the Uralic languages?	Yes	easy	easy	S08_set2_a4
+Finland	Is the most read newspaper in Finland Taloussanomat?	no	easy	easy	S08_set2_a4
+Finland	Is the most read newspaper in Finland Taloussanomat?	No	easy	easy	S08_set2_a4
+Finland	Which Russian army general conquered Finland in 1809?	Alexander I	medium	hard	S08_set2_a4
+Finland	Which Russian army general conquered Finland in 1809?	Alexander I	medium	medium	S08_set2_a4
+Finland	What is the life expectancy for men in Finland?	75 years	medium	medium	S08_set2_a4
+Finland	What is the life expectancy for men in Finland?	75 years	medium	medium	S08_set2_a4
+Finland	In what year were the "Games of the XV Olympiad" held?	1952	medium	medium	S08_set2_a4
+Finland	In what year were the "Games of the XV Olympiad" held?	1952	medium	medium	S08_set2_a4
+Finland	What body of water lies to the south of Finland?	the Gulf of Finland	hard	hard	S08_set2_a4
+Finland	What body of water lies to the south of Finland?	Archipelago Sea	hard	hard	S08_set2_a4
+Finland	Name an animal that is growing in number due to recent conservation efforts	Golden Eagle, Brown Bear, or Eurasian Lynx (Change imperative to interrogative)	hard	hard	S08_set2_a4
+Finland	Name an animal that is growing in number due to recent conservation efforts	Golden Eagle	hard	hard	S08_set2_a4
+Finland	Today, are there more cell phone subscriptions than people in Finland?	yes	hard	too hard	S08_set2_a4
+Finland	Today, are there more cell phone subscriptions than people in Finland?	Yes	hard	hard	S08_set2_a4
+Finland	Is Matti Vanhanen the Prime Minister of Finland?	yes	easy	easy	S08_set2_a4
+Finland	Is Matti Vanhanen the Prime Minister of Finland?	Yes	easy	easy	S08_set2_a4
+Finland	Is the capital city Oslo?	no	easy	easy	S08_set2_a4
+Finland	Is the capital city Oslo?	No	easy	easy	S08_set2_a4
+Finland	Does it have a border with Norway?	yes	easy	medium	S08_set2_a4
+Finland	Does it have a border with Norway?	Yes	easy	easy	S08_set2_a4
+Finland	What is the life expectancy for men?	75 years	medium	medium	S08_set2_a4
+Finland	What is the life expectancy for men?	75 years	medium	medium	S08_set2_a4
+Finland	What is the biggest city in Finland?	Greater Helsinki	medium	hard	S08_set2_a4
+Finland	What is the biggest city in Finland?	the cities of the Greater Helsinki metropolitan area	medium	hard	S08_set2_a4
+Finland	Who is the most popular rock group in Finland?	CMX	medium	medium	S08_set2_a4
+Finland	Who is the most popular rock group in Finland?	CMX	medium	hard	S08_set2_a4
+Finland	What is Finland's economy like?	a highly industrialised, free-market economy	hard	medium	S08_set2_a4
+Finland	Where is Finland located?	Northern Europe	hard	medium	S08_set2_a4
+Finland	Where is Finland located?	Northern Europe	hard	hard	S08_set2_a4
+Finland	What is the weather like in summer?	relatively warm	hard	medium	S08_set2_a4
+Finland	What is the weather like in summer?	relatively warm	hard	medium	S08_set2_a4
+Finland	Does salmon remain the favorite of fly rod enthusiasts?	Yes	easy	easy	S08_set2_a4
+Finland	Does salmon remain the favorite of fly rod enthusiasts?	Yes	easy	easy	S08_set2_a4
+Finland	Are there cathedrals scattered all across Finland?	Yes	easy	easy	S08_set2_a4
+Finland	Are there cathedrals scattered all across Finland?	Yes	easy	easy	S08_set2_a4
+Finland	According to Reader's Digest, is Finland best for living?	Yes	easy	easy	S08_set2_a4
+Finland	According to Reader's Digest, is Finland best for living?	Yes	easy	easy	S08_set2_a4
+Finland	When did the first verifiable written documents appear?	Twelfth Century	medium	medium	S08_set2_a4
+Finland	When did the first verifiable written documents appear?	 The first verifiable written documents appeared in the twelfth century. 	medium	medium	S08_set2_a4
+Finland	What is the capital city?	Helsinki	medium	medium	S08_set2_a4
+Finland	What is the capital city?	The capital city is Helsinki. 	medium	medium	S08_set2_a4
+Finland	What is the most extensively celebrated holiday?	Christmas	medium	medium	S08_set2_a4
+Finland	What is the most extensively celebrated holiday?	Christmas is the most extensively celebrated holiday.	medium	medium	S08_set2_a4
+Finland	Does a large proportion of the population speak Swedish as its mother tongue?	No	hard	hard	S08_set2_a4
+Finland	Do women live longer than men?	Yes	hard	hard	S08_set2_a4
+Finland	Do women live longer than men?	Yes	hard	hard	S08_set2_a4
+Finland	What is a country with which Finland is involved in an international conflict?	None	hard	hard	S08_set2_a4
+Finland	What is a country with which Finland is involved in an international conflict?	Finland is not involved in international conflicts or border disputes. 	hard	hard	S08_set2_a4
+Finland	What is Helsinki?	NULL	NULL	NULL	S08_set2_a4
+Finland	What is concentrated in the southern part of the country?	NULL	NULL	NULL	S08_set2_a4
+Finland	What is spoken natively by a 5.5 percent minority?	NULL	NULL	NULL	S08_set2_a4
+Finland	What do jari litmanen and sami hyypiä have in common?	NULL	NULL	NULL	S08_set2_a4
+Finland	Is it true that he composed finlandia in 1899?	NULL	NULL	NULL	S08_set2_a4
+Finland	Is it true that it has borders with sweden?	NULL	NULL	NULL	S08_set2_a4
+Finland	What did Finland join in 1995?	NULL	NULL	NULL	S08_set2_a4
+Finland	Is finnish culture indigenous?	NULL	NULL	NULL	S08_set2_a4
+Finland	Is finnish architecture famous?	NULL	NULL	NULL	S08_set2_a4
+Finland	What situated in Northern?	NULL	NULL	NULL	S08_set2_a4
+Finland	What arrived in Finland?	NULL	NULL	NULL	S08_set2_a4
+Finland	What ceded by Finland?	NULL	NULL	NULL	S08_set2_a4
+Finland	Lunch is what?	NULL	NULL	NULL	S08_set2_a4
+Finland	Who is the autonomous Åland Islands , where Finnish is not compulsory due to Swedish being the sole official language of the province . ?	NULL	NULL	NULL	S08_set2_a4
+Finland	The earliest people were what?	NULL	NULL	NULL	S08_set2_a4
+Finland	Are Various sporting events popular in Finland ?	NULL	NULL	NULL	S08_set2_a4
+Finland	Are all official holidays in Finland established by acts of Parliament ?	NULL	NULL	NULL	S08_set2_a4
+Finland	Are the people of Finland accustomed to technology and information services ?	NULL	NULL	NULL	S08_set2_a4
+Finland	Was one of the most productive composers of popular music Toivo Kärki , and the most famous singer Olavi Virta -LRB- 1915 -- 1972 -RRB- ?	NULL	NULL	NULL	S08_set2_a4
+Finland	Do 79 percent of the population not use the Internet ?	NULL	NULL	NULL	S08_set2_a4
+Finland	Did the relationship between the Grand Duchy and the Russian Empire not sour when the Russian government made moves to restrict Finnish autonomy ?	NULL	NULL	NULL	S08_set2_a4
+Finland	Is the capital city helsinki?	NULL	NULL	NULL	S08_set2_a4
+Finland	Is finland a democratic , parliamentary republic?	NULL	NULL	NULL	S08_set2_a4
