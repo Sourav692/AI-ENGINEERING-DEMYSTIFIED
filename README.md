@@ -27,7 +27,7 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 
 | # | Phase | Status |
 |---|---|---|
-| 1 | [Theory & Foundations](#other-phases-planned) *(optional, compressible)* | 🚧 Planned |
+| 1 | [Theory & Foundations](#phase-1--theory--foundations) *(optional, compressible)* | ✅ Partially built |
 | 2 | [LangChain Fundamentals & Prompting](#phase-2--langchain-fundamentals--prompting) | ✅ Built |
 | 3 | [LangGraph Fundamentals](#phase-3--langgraph-fundamentals) | ✅ Built |
 | 4 | [Retrieval & RAG](#phase-4--retrieval--rag) *(foundational)* | ✅ Built |
@@ -78,6 +78,17 @@ TAVILY_API_KEY=...          # Web search notebooks
 ---
 
 # Built Phases
+
+## Phase 1 — Theory & Foundations
+
+> *Optional internals: model landscape and the Hugging Face ecosystem. Skip or come back later if you want to start applied work sooner.*
+
+| Track | Status | Scope |
+|---|---|---|
+| `Model_Landscape_and_Hugging_Face/` | ✅ Built | Hub setup, Transformers, Diffusers, audio/video, Gradio, pretrained models from the Hub |
+| `Math_and_ML_Intuition/` | 🚧 Planned | Math/ML intuition for LLMs |
+| `Transformer_Architecture/` | 🚧 Planned | Attention, positional encoding, transformer internals |
+| `Fine_Tuning_and_RL/` | 🚧 Planned | SFT, LoRA/QLoRA, RLHF, DPO, dataset prep |
 
 ## Phase 2 — LangChain Fundamentals & Prompting
 
@@ -268,7 +279,6 @@ cd 13_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor 
 
 Everything below has a scope-describing `README.md` and (for framework/protocol phases) a first level of subfolders — but **no actual notebooks or code exist yet**.
 
-- **Phase 1 — Theory & Foundations** *(optional, compressible)*: `Math_and_ML_Intuition/`, `Transformer_Architecture/`, `Model_Landscape_and_Hugging_Face/`, `Fine_Tuning_and_RL/`
 - **Phase 6 — Agent SDKs (First-Party)**: `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`
 - **Phase 9 — Agent Protocols**: `MCP/`, `ACP/`, `A2A/`
 - **Phase 11 — Claude Code & AI Coding Tools**: `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
@@ -280,7 +290,11 @@ Everything below has a scope-describing `README.md` and (for framework/protocol 
 ```
 AI ENGINEERING/
 │
-├── 01_Theory_and_Foundations/               🚧 Planned (optional)
+├── 01_Theory_and_Foundations/               ✅ Partially built
+│   ├── Model_Landscape_and_Hugging_Face/     00_Setup/ … 06_Pretrained_Models/
+│   ├── Math_and_ML_Intuition/                🚧 Planned
+│   ├── Transformer_Architecture/             🚧 Planned
+│   └── Fine_Tuning_and_RL/                   🚧 Planned
 ├── 02_LangChain_Fundamentals_and_Prompting/ ✅ Built
 │   ├── LangChain_Fundamentals/               01_Getting_Started/ … 05_Summarization/
 │   └── Prompt_and_Context_Engineering/

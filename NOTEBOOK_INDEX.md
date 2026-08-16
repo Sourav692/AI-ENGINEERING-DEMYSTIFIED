@@ -2,7 +2,23 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
-This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 10, 12 (partially).** Phases 1, 6, 9, 11 are scaffolded placeholders with no content yet.
+This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 10, 12 (partially).** Phases 6, 9, 11 are scaffolded placeholders with no content yet.
+
+# Phase 1 — Theory & Foundations (`01_Theory_and_Foundations/`)
+
+Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/`, `Fine_Tuning_and_RL/` — 🚧 Planned.
+
+## `Model_Landscape_and_Hugging_Face/`
+
+| Module | Notebooks | Topic |
+|---|---|---|
+| `00_Setup/` | `00-HF-Setup.ipynb` | Hub login, tokens, cache |
+| `01_Transformers/` | `00-HF-Basics.ipynb`, `01-Pipelines-for-NLP-Tasks.ipynb`, `02-LLMs.ipynb` | Datasets, NLP pipelines, tokenization, causal LMs |
+| `02_Diffusers/` | `00-Understanding-Image-Data.ipynb`, `01-Understanding-Diffusion-Models.ipynb`, `02-AutoPipelines-Diffusers.ipynb` | Image data, DDPM / Stable Diffusion, AutoPipeline |
+| `03_Video_Models/` | `00-Stable-Video-Diffusion.ipynb`, `01-Image2VideoGen-XL.ipynb` | Image-to-video generation |
+| `04_Audio_Models/` | `00-Audio-Data.ipynb`, `01-Audio-Classification.ipynb`, `02-Audio-Transcription.ipynb`, `03-Audio-Generation.ipynb` | Waveforms, AST, ASR/diarization, EnCodec |
+| `05_Gradio/` | `01-Gradio-Introduction.ipynb` … `07-Styling-and-Themes.ipynb` (7 nb) | Gradio UIs for HF models |
+| `06_Pretrained_Models/` | `Accessing_Pre_Trained_Models.ipynb` | Loading pretrained models from the Hub |
 
 # Phase 2 — LangChain Fundamentals & Prompting (`02_LangChain_Fundamentals_and_Prompting/`)
 
@@ -400,6 +416,8 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 - **2026-08-17 — `AgenticAI_Projects_Demystified-main` merged in** (the largest merge yet — 66 new notebooks, plus 10 new full-stack apps). Before merging, checked for overlap with content already in the repo and found 5 project folders under "Projects with LangGraph" (`Customer_Support_Router_RAG`, `Multi_Agent_Research_Summarization`, `Planning_Agent_Deep_Research`, `Reflective_Code_Generation_Agent`, `Reflective_Dynamic_Planning_Agent`, `Supervisor_Multi_Agent_Financial_Research`) were byte-identical or near-identical duplicates of notebooks already merged in from `Agentic_Design_Pattern_Demystified` — skipped rather than re-added. Genuinely new content: `AI_Agents_with_LangGraph/` gained 3 more builds (09–11); `LangChain_Tools_and_Agents/` gained a 16-item `03_Applied_Projects/` track; **Phase 10 (Alternative Agent Frameworks) went from fully-planned to partially-built** — `CrewAI/` and `AutoGen/` each filled from empty 4-folder skeletons using a Foundations/Applications split (simple-agent notebooks → `01_Foundations/`, everything else → `04_Applications/`, per user decision — `02_Core_Capabilities/`/`03_Multi_Agent_Patterns/` stayed empty since the source content didn't split into those categories); Phase 13 grew from 3 to 10 projects (a new `ShopUNow_Agentic_RAG_Capstone/` plus 6 more standalone full-stack apps, kept flat per user decision rather than grouped under a parent folder). Discarded: a duplicate `Capstone Project.zip` (redundant with the unzipped folder beside it), root scaffolding, and two `.claude/skills/` confirmed byte-identical to ones already staged at `.claude/skills-candidates/` from the `LangChain_Demystified` merge. Added 2 more JS frontends to `pyproject.toml`'s ruff excludes (CrewAI's simple-agents app, the voice-RAG project's frontend). A repo-wide hardcoded-secret sweep of the new content found nothing (checked provider key formats, `CONFIG_LIST.json`, and note/cred-style filenames).
 
 - **2026-08-17 — `Agents_Evaluation_Demystified-main` merged in**, filling Phase 7's remaining `Agent_Evaluation/` and `LLM_as_Judge/` placeholders and extending `RAG_Evaluation/`. Split by topic, not dumped wholesale: DeepLearning.AI + Arize labs stayed whole under `Agent_Evaluation/DeepLearningAI_Arize/` (Lab 2 tracing included — shared parquet/helpers, dominant identity is agent eval); CrewAI travel-planner + DeepEval task-completion tests → `Agent_Evaluation/CrewAI_Travel_Planner/` (not Phase 10); DeepEval metric drills + RAGAS → `RAG_Evaluation/`; first DeepEval G-Eval script → `LLM_as_Judge/`. Skipped the source's `Evaluating RAG Systems/` folder after hash/size compare: 3 notebooks identical to ones already merged from `RAG_Demystified`, 2 older unexecuted copies of the same retriever/generator notebooks. Discarded root scaffolding, `img/`, `.deepeval` telemetry, `data/tmp` docx, Excel lockfile. Phase 7's four tracks are now all built.
+
+- **2026-08-17 — `Huggingface_Demystified-main` merged in**, filling Phase 1's `Model_Landscape_and_Hugging_Face/` placeholder (the other three Phase 1 tracks stay planned). Bootcamp modules mapped to `00_Setup/` … `05_Gradio/` (folder names underscored to match repo convention; notebook/asset names unchanged so relative `cat.png` / `interview.mp3` paths still resolve). The one-notebook "Mastering Generative AI with LLMs" course became `06_Pretrained_Models/`. Gradio stayed in this track (HF demo surface), not Phase 12. Not fine-tuning and not transformer-architecture theory — those remain the empty `Fine_Tuning_and_RL/` and `Transformer_Architecture/` tracks. Discarded root scaffolding and `.gitkeep`. Phase 1 went from fully-planned to partially-built.
 
 **Still open:**
 - Several notebooks don't open with a proper `# Title` markdown cell (mid-document subheading instead) — pre-existing, not fixed, would require editing notebook content.

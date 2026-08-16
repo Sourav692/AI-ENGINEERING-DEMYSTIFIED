@@ -99,9 +99,16 @@ Note: `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were removed from b
 
 `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`.
 
-## Phase 1 — `01_Theory_and_Foundations/` — 🚧 Planned (optional/compressible)
+## Phase 1 — `01_Theory_and_Foundations/` — ✅ Partially built (optional/compressible)
 
-Math/ML intuition, transformer architecture, model landscape & Hugging Face, `Fine_Tuning_and_RL/`.
+Owns: math/ML intuition, transformer *architecture*, the model landscape & Hugging Face *ecosystem*, fine-tuning & RL. Not LangChain (Phase 2), not RAG embeddings (Phase 4).
+
+| Track | Status | Content |
+|---|---|---|
+| `Model_Landscape_and_Hugging_Face/` | ✅ Built | Hub setup, Transformers pipelines/LLMs, Diffusers, video & audio models, Gradio UIs, pretrained Hub models — from `Huggingface_Demystified`. Gradio stays here (HF demo surface), not Phase 12. |
+| `Math_and_ML_Intuition/` | 🚧 Planned | |
+| `Transformer_Architecture/` | 🚧 Planned | Architecture theory — distinct from the HF Transformers *library* notebooks above |
+| `Fine_Tuning_and_RL/` | 🚧 Planned | Scaffolding only (`01_Foundations/`/`02_Techniques/`/`03_Applications/`) |
 
 ## Phase 12 — `12_Production_and_Observability/` — ✅ Partially built
 
@@ -142,3 +149,5 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 6. **2026-08-17 — `AgenticAI_Projects_Demystified` merged in; check for duplicates BEFORE mapping content, not after.** This repo turned out to share an author/ecosystem with `Agentic_Design_Pattern_Demystified` (merged much earlier) — 5 of its "Projects with LangGraph" folders were byte-identical or near-identical to notebooks already in `AI_Agents_with_LangGraph/`. Caught this by comparing file sizes (`ls -la`) between the new source folder and the existing destination *before* doing any moves, for every project whose name looked familiar. **New standing practice: whenever a merged-in repo has project/notebook names that echo anything already in `NOTEBOOK_INDEX.md`, diff file sizes (or content) before merging — don't assume a name match means duplicate, and don't assume a name match means safe-to-merge either; check.** This merge also filled Phase 10 (Alternative Agent Frameworks) from fully-planned to partially-built in one step (`CrewAI/` + `AutoGen/`) — first time a phase jumped straight from empty to built rather than growing incrementally.
 
 7. **2026-08-17 — `Agents_Evaluation_Demystified` merged in; Phase 7 evaluation track completed.** Filled `Agent_Evaluation/` and `LLM_as_Judge/` (previously planned) and extended `RAG_Evaluation/` with DeepEval drills + RAGAS. Confirmed the source's `Evaluating RAG Systems/` was a duplicate of content already placed from `RAG_Demystified` (hash compare: 3 identical, 2 older copies) and skipped it. The DeepLearning.AI + Arize 5-lab sequence was kept whole under `Agent_Evaluation/DeepLearningAI_Arize/` even though Lab 2 is tracing — same "shared internals, place by dominant identity" rule as `Comprehensive_RAG_Techniques/`. CrewAI travel-planner eval went to agent eval, not Phase 10. Phase 7 is now fully built (all four tracks have real content).
+
+8. **2026-08-17 — `Huggingface_Demystified` merged in; Phase 1 got its first real content.** Filled `Model_Landscape_and_Hugging_Face/` only. Gradio stayed with HF (demo surface for Hub models) rather than Phase 12. Transformer *library* notebooks stayed here; transformer *architecture* theory remains the empty `Transformer_Architecture/` track. Fine-tuning remains `Fine_Tuning_and_RL/`. Phase 1 went from fully-planned to partially-built.

@@ -6,14 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 13 numbered phases, each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far:** Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 10, 12 (partially). Phases 1, 6, 9, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
+**Built so far:** Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 10, 12 (partially). Phases 6, 9, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
 ## Roadmap Structure
 
 ```
-01_Theory_and_Foundations/               🚧 Planned (optional) — math/ML intuition, transformers, model landscape, fine-tuning & RL
+01_Theory_and_Foundations/               ✅ Partially built — Hugging Face ecosystem built; math/ML intuition, transformer architecture, fine-tuning & RL planned
 02_LangChain_Fundamentals_and_Prompting/ ✅ Built — LangChain basics (5 modules) + prompt engineering; context engineering planned
 03_LangGraph_Fundamentals/               ✅ Built — LangGraph mechanics only (state, graphs, routing, tools, platform capabilities)
 04_Retrieval_and_RAG/                    ✅ Built — foundational RAG theory + LangGraph/LangChain implementations
@@ -33,6 +33,13 @@ docs/                                    Static HTML tutorial microsite (LangGra
 **Why RAG and Advanced RAG are separate phases, not duplicated:** Phase 4 covers foundational RAG that doesn't require knowing agents. Phase 8 covers agentic/self-correcting RAG and CacheRAG/GraphRAG, which genuinely depend on Phase 5 (agents) and Phase 7 (advanced agentic systems) — so it's sequenced after both rather than bundled into Phase 4. This was a deliberate, explicit decision after the roadmap's structure went through three revisions in one day (see `NOTEBOOK_INDEX.md`'s Known Discrepancies) — don't re-merge these two phases.
 
 A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and should be consulted whenever new files/folders get dropped into this repo. A folder of not-yet-reviewed reusable Claude Code skills recovered from a merged-in repo lives at `.claude/skills-candidates/` — not auto-loaded, see its own `README.md`.
+
+### Phase 1 — `01_Theory_and_Foundations/` — internal tracks
+
+| Track | Content |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `Model_Landscape_and_Hugging_Face/` | Hugging Face Hub setup, Transformers, Diffusers, audio/video models, Gradio (21 notebooks) |
+| `Math_and_ML_Intuition/`, `Transformer_Architecture/`, `Fine_Tuning_and_RL/` | 🚧 Planned |
 
 ### Phase 2 — `02_LangChain_Fundamentals_and_Prompting/` — internal tracks
 
