@@ -16,3 +16,4 @@ large_tool_results/
 *.db
 *.db-shm    
 *.db-wal
+graphify-out
