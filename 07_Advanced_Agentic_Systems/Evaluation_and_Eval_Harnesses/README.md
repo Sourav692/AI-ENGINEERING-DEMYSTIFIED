@@ -1,9 +1,9 @@
 # Evaluation & Eval Harnesses
 
-**Status:** 🚧 Planned — no content yet.
+**Status:** ✅ Partially built.
 
-| Track | Scope |
-|---|---|
-| `Agent_Evaluation/` | Evaluating agent behavior, task success, trajectories |
-| `RAG_Evaluation/` | Retrieval/faithfulness metrics for RAG systems |
-| `LLM_as_Judge/` | Judge-model-based evaluation |
+| Track | Status | Scope |
+|---|---|---|
+| `Agent_Evaluation/` | 🚧 Planned | Evaluating agent behavior, task success, trajectories |
+| `RAG_Evaluation/` | ✅ Built | Retriever/generator/end-to-end RAG evaluation metrics, LLM-as-judge (G-Eval) |
+| `LLM_as_Judge/` | 🚧 Planned | General judge-model-based evaluation (RAG-specific judge content is in `RAG_Evaluation/` for now) |

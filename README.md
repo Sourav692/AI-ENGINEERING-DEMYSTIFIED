@@ -30,11 +30,11 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 | 1 | [Theory & Foundations](#other-phases-planned) *(optional, compressible)* | 🚧 Planned |
 | 2 | [LangChain Fundamentals & Prompting](#phase-2--langchain-fundamentals--prompting) | ✅ Built |
 | 3 | [LangGraph Fundamentals](#phase-3--langgraph-fundamentals) | ✅ Built |
-| 4 | [Retrieval & RAG](#phase-4--retrieval--rag) *(foundational)* | ✅ Partially built |
+| 4 | [Retrieval & RAG](#phase-4--retrieval--rag) *(foundational)* | ✅ Built |
 | 5 | [AI Agent Fundamentals](#phase-5--ai-agent-fundamentals) | ✅ Built |
 | 6 | [Agent SDKs (First-Party)](#other-phases-planned) | 🚧 Planned |
 | 7 | [Advanced Agentic Systems](#phase-7--advanced-agentic-systems) | ✅ Partially built |
-| 8 | [Advanced RAG](#phase-8--advanced-rag) *(needs Phases 5 & 7 first)* | ✅ Partially built |
+| 8 | [Advanced RAG](#phase-8--advanced-rag) *(needs Phases 5 & 7 first)* | ✅ Built |
 | 9 | [Agent Protocols](#other-phases-planned) *(MCP, ACP, A2A)* | 🚧 Planned |
 | 10 | [Alternative Agent Frameworks](#other-phases-planned) *(DSPy, CrewAI, PydanticAI, AutoGen)* | 🚧 Planned |
 | 11 | [Claude Code & AI Coding Tools](#other-phases-planned) | 🚧 Planned |
@@ -135,11 +135,15 @@ Foundational RAG only — theory plus each framework's basic implementation. Not
 
 | Track | Status | Scope |
 |---|---|---|
-| `Embeddings_and_Vector_Databases/` | 🚧 Planned | Embeddings, vector DBs, similarity search |
-| `RAG_Naive_to_Production/` | 🚧 Planned | Chunking strategies, naive retrieval → hybrid search, reranking, query rewriting, production concerns |
-| `Multimodal_and_Document_Intelligence/` | 🚧 Planned | Multimodal RAG, document parsing/layout intelligence |
+| `Introduction_to_RAG/` | ✅ Built | RAG overview, indexing, LangChain+RAG |
+| `Embeddings_and_Vector_Databases/` | ✅ Built | Embedding models, vector DB options (Chroma, FAISS, Pinecone, DataStax, others), retrievers |
+| `RAG_Naive_to_Production/` | ✅ Built | Loading data → chunking → hybrid search → query enhancement → parent-doc retrieval → postprocessing → full pipelines |
+| `Query_Transformation_Techniques/` | ✅ Built | Multi-query, RAG-Fusion, decomposition, HyDE, step-back prompting, routing, cross-encoder reranking |
+| `Multimodal_and_Document_Intelligence/` | ✅ Built (light) | Multimodal RAG |
 | `RAG_with_LangGraph/` | ✅ Built | Basic agentic RAG (2 nb) |
 | `RAG_with_LangChain/` | ✅ Built | RAG essentials, comprehensive, filtered search, indexing API (4 nb) |
+
+Also `shared_data/` — supporting PDFs/data referenced by several notebooks in this phase.
 
 ---
 
@@ -168,7 +172,7 @@ Also includes `Design_Patterns_Reference.md` — a taxonomy write-up with diagra
 | `Memory_and_State/` | ✅ Built | `LangGraph/` (memory & threads + PostgreSQL long-term memory) + `LangChain/` (chat message memory, multi-user in-memory & SQL persistent storage) |
 | `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + peer-to-peer/swarm multi-agent architecture |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | `deepagents`-based multi-agent orchestration — see below |
-| `Evaluation_and_Eval_Harnesses/` | 🚧 Planned | `Agent_Evaluation/`, `RAG_Evaluation/`, `LLM_as_Judge/` |
+| `Evaluation_and_Eval_Harnesses/` | ✅ Partially built | `RAG_Evaluation/` built (retriever/generator/end-to-end metrics, LLM-as-judge); `Agent_Evaluation/`, `LLM_as_Judge/` planned |
 
 ### `Deep_Agents_and_Harness_Engineering/`
 
@@ -205,9 +209,12 @@ Runs off the root environment — no separate install needed. A standalone deplo
 
 | Track | Status | Scope |
 |---|---|---|
-| `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval (grading/rewriting), RAG-as-tool (agentic RAG) |
+| `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
+| `Comprehensive_RAG_Techniques/` | ✅ Built | ~35-notebook anthology — CRAG, Self-RAG, RAPTOR, GraphRAG, fusion/adaptive retrieval, and more |
+| `GraphRAG/` | ✅ Built | Knowledge-graph-based retrieval — full KG+RAG course |
 | `CacheRAG/` | 🚧 Planned | Caching strategies for RAG |
-| `GraphRAG/` | 🚧 Planned | Knowledge-graph-based retrieval |
+
+Also two standalone apps: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (MCP + A2A agentic RAG).
 
 ---
 
@@ -232,6 +239,7 @@ Runs off the root environment — no separate install needed. A standalone deplo
 |---|---|---|
 | `LangGraph_Fullstack_Capstone/` | ✅ Built | FastAPI + Angular + PostgreSQL with human-in-the-loop workflows, unit tests, Streamlit apps |
 | `LangChain_Microservices_Capstone/` | ✅ Built | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
+| `RAG_Systems_Projects/` | ✅ Built | 7 applied RAG capstones — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
 
 ```bash
 # LangGraph capstone
@@ -268,12 +276,15 @@ AI ENGINEERING/
 ├── 03_LangGraph_Fundamentals/               ✅ Built
 │   ├── 01_Foundations/
 │   └── 02_Core_Capabilities/
-├── 04_Retrieval_and_RAG/                    ✅ Partially built
-│   ├── Embeddings_and_Vector_Databases/      🚧 Planned
-│   ├── RAG_Naive_to_Production/              🚧 Planned
-│   ├── Multimodal_and_Document_Intelligence/ 🚧 Planned
+├── 04_Retrieval_and_RAG/                    ✅ Built
+│   ├── Introduction_to_RAG/
+│   ├── Embeddings_and_Vector_Databases/
+│   ├── RAG_Naive_to_Production/
+│   ├── Query_Transformation_Techniques/
+│   ├── Multimodal_and_Document_Intelligence/
 │   ├── RAG_with_LangGraph/
-│   └── RAG_with_LangChain/
+│   ├── RAG_with_LangChain/
+│   └── shared_data/
 ├── 05_AI_Agent_Fundamentals/                ✅ Built
 │   ├── LangChain_Tools_and_Agents/
 │   ├── AI_Agents_with_LangGraph/
@@ -283,11 +294,14 @@ AI ENGINEERING/
 │   ├── Memory_and_State/                      LangGraph/, LangChain/
 │   ├── Multi_Agent_Orchestration/
 │   ├── Deep_Agents_and_Harness_Engineering/
-│   └── Evaluation_and_Eval_Harnesses/         🚧 Planned
-├── 08_Advanced_RAG/                          ✅ Partially built
+│   └── Evaluation_and_Eval_Harnesses/         RAG_Evaluation/ built, Agent_Evaluation/+LLM_as_Judge/ planned
+├── 08_Advanced_RAG/                          ✅ Built
 │   ├── RAG_with_LangGraph_Advanced/
+│   ├── Comprehensive_RAG_Techniques/
+│   ├── GraphRAG/
 │   ├── CacheRAG/                              🚧 Planned
-│   └── GraphRAG/                              🚧 Planned
+│   ├── building-adaptive-rag/
+│   └── mcp_a2a_agentic_rag/
 ├── 09_Agent_Protocols/                       🚧 Planned — MCP/, ACP/, A2A/
 ├── 10_Alternative_Agent_Frameworks/          🚧 Planned
 ├── 11_Claude_Code_and_AI_Coding_Tools/       🚧 Planned
@@ -298,7 +312,8 @@ AI ENGINEERING/
 │   └── Safety_and_Alignment/
 ├── 13_Projects/                              ✅ Built
 │   ├── LangGraph_Fullstack_Capstone/
-│   └── LangChain_Microservices_Capstone/
+│   ├── LangChain_Microservices_Capstone/
+│   └── RAG_Systems_Projects/
 ├── helpers/                                  Shared LLM/embedding factory (used by built LangGraph phases)
 ├── docs/                                     Static HTML tutorial microsite (LangGraph mechanics chapters)
 └── archive/                                  Retired notebooks

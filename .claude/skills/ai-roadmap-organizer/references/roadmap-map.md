@@ -25,15 +25,21 @@ Owns: LangGraph mechanics only. Does NOT own: RAG, agent builds, design patterns
 
 Note: `02_Routing/` contains 3 "Agentic RAG System" notebooks. By the topic-ownership rule these arguably belong in Phase 4 or 8, but the user explicitly chose to keep them here since they're this phase's only routing-mechanics demo — a deliberate exception, not an oversight. Don't move them without asking.
 
-## Phase 4 — `04_Retrieval_and_RAG/` — ✅ Partially built
+## Phase 4 — `04_Retrieval_and_RAG/` — ✅ Built
 
 Owns: **foundational** RAG — theory + straightforward framework implementations, nothing that requires already knowing agents. Advanced/agentic RAG is Phase 8's job, not this one's.
 
 | Track | Status | Content |
 |---|---|---|
+| `Introduction_to_RAG/` | ✅ Built | Overview, indexing, LangChain+RAG (from `RAG_Demystified`) |
+| `Embeddings_and_Vector_Databases/` | ✅ Built | Embedding models, vector DB options, retrievers (from `RAG_Demystified`); embedding comparison + hybrid search/reranking (from `Vector_Database_and_Embedding_Demystified`) |
+| `RAG_Naive_to_Production/` | ✅ Built | Loading → chunking → hybrid search → query enhancement → parent-doc retrieval → postprocessing → full pipelines (from `RAG_Demystified`) |
+| `Query_Transformation_Techniques/` | ✅ Built | Multi-query, RAG-Fusion, decomposition, HyDE, routing, reranking — from `RAG_Demystified`'s "Advanced RAG" module; despite that name it's foundational, no agent knowledge needed, so it landed here not Phase 8 |
+| `Multimodal_and_Document_Intelligence/` | ✅ Built (light) | Multimodal RAG (from `RAG_Demystified`) |
 | `RAG_with_LangGraph/` | ✅ Built | 2 nb — basic agentic RAG (simple + Databricks variant) |
 | `RAG_with_LangChain/` | ✅ Built | 4 nb — essentials, comprehensive, filtered search, indexing API |
-| `Embeddings_and_Vector_Databases/`, `RAG_Naive_to_Production/`, `Multimodal_and_Document_Intelligence/` | 🚧 Planned | Theory |
+
+Also `shared_data/` at this phase's root — a copy of `RAG_Demystified`'s shared `data/` folder, since several `RAG_Naive_to_Production/` notebooks reference it via relative paths. Path depth wasn't reconstructed exactly after the move (would require editing notebook content) — flag this if a notebook can't find its data file.
 
 ## Phase 5 — `05_AI_Agent_Fundamentals/` — ✅ Built
 
@@ -58,16 +64,20 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | `Memory_and_State/` | ✅ Built | `LangGraph/` + `LangChain/` (from `LangChain_Demystified`'s module 05) — both frameworks' memory content consolidated here, not left in their fundamentals phases |
 | `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + swarm |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | The `deepagents` multi-agent framework — own `CLAUDE.md`, `app/`, `examples/`, `skills/`, `docs/`. **This directory (specifically its `app/` subfolder) has hit a Windows file lock 3 separate times** across different restructurings — always drain-contents-then-remove-shell, never assume `mv`/`git mv` will just work on it. |
-| `Evaluation_and_Eval_Harnesses/` | 🚧 Planned | `Agent_Evaluation/`, `RAG_Evaluation/`, `LLM_as_Judge/` |
+| `Evaluation_and_Eval_Harnesses/` | ✅ Partially built | `RAG_Evaluation/` built (retriever/generator/end-to-end metrics, LLM-as-judge G-Eval — from `RAG_Demystified`); `Agent_Evaluation/`, `LLM_as_Judge/` still 🚧 planned |
 
-## Phase 8 — `08_Advanced_RAG/` — ✅ Partially built
+## Phase 8 — `08_Advanced_RAG/` — ✅ Built
 
 **Deliberately sequenced after Phases 5 and 7**, not bundled into Phase 4 — agentic/self-correcting RAG and GraphRAG genuinely require already knowing agents and advanced agentic systems. This was an explicit user correction mid-restructuring; don't merge this back into Phase 4 even though the topic is "RAG" in both — the ownership split here is by *prerequisite*, not by keyword.
 
 | Track | Status | Content |
 |---|---|---|
-| `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval (grading/rewriting) + RAG-as-tool (agentic RAG) — split out of what used to be a single `RAG_with_LangGraph/` track |
-| `CacheRAG/`, `GraphRAG/` | 🚧 Planned | |
+| `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval + RAG-as-tool (agentic RAG), extended with `RAG_Demystified`'s corrective/adaptive/healthcare-router agentic RAG notebooks |
+| `Comprehensive_RAG_Techniques/` | ✅ Built | The NirDiamant `RAG_Techniques` collection (~35 nb) — kept whole rather than split by notebook, since it shares `helper_functions.py`/`data/`/`images/` across the collection via relative paths. Placed here (not Phase 4) because its own identity is an *advanced*-techniques anthology even though some individual notebooks are basic. |
+| `GraphRAG/` | ✅ Built | Knowledge-graph + RAG course (from `RAG_Demystified`) |
+| `CacheRAG/` | 🚧 Planned | |
+
+Also two standalone apps merged from `RAG_Demystified`: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (an MCP+A2A agentic RAG app — kept RAG-first here rather than split to Phase 9, per user decision).
 
 ## Phase 9 — `09_Agent_Protocols/` — 🚧 Planned
 
@@ -97,7 +107,7 @@ Owns: deployment, LLMOps, observability, security, safety.
 
 ## Phase 13 — `13_Projects/` — ✅ Built
 
-Capstone/integration projects. `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12). More capstones get added here as new phases produce content worth integrating.
+Capstone/integration projects. `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module). More capstones get added here as new phases produce content worth integrating.
 
 ## `archive/`, `docs/`, root scaffolding
 
@@ -116,3 +126,7 @@ Capstone/integration projects. `LangGraph_Fullstack_Capstone/` + `LangChain_Micr
    - Evaluation and Production/Observability didn't have real internal shape until concrete content (LangSmith, caching, cost monitoring, moderation) arrived — they were single flat placeholders. Real content forced them to grow actual subtopics (`Tracing_and_Observability/`, `Caching_and_Performance/`, `Cost_Monitoring/` inside Phase 12; `Agent_Evaluation/`/`RAG_Evaluation/`/`LLM_as_Judge/` inside Phase 7's Evaluation track).
 
 If a fifth restructuring ever seems warranted, that's fine to raise — but re-read this history first, and specifically check whether the proposed change would reintroduce topic duplication across phases. That's the mistake this file exists to prevent repeating.
+
+5. **2026-08-17 — `RAG_Demystified` merged in, no restructuring needed.** The 13-phase, one-topic-per-phase model held up: every one of the ~350 source files had an obvious home, and the merge filled 5 previously-empty placeholders (`Embeddings_and_Vector_Databases/`, `RAG_Naive_to_Production/`, `Multimodal_and_Document_Intelligence/`, `RAG_Evaluation/`, `GraphRAG/`) rather than requiring new phases. Confirms the structure is stable for RAG-topic content specifically — take that as a signal the model is working, not as license to skip checking `roadmap-map.md` before the next merge. Two new patterns worth remembering:
+   - **Source folders with shared internal dependencies** (a `helper_functions.py`/`data/`/`images/` used by dozens of notebooks via relative paths) should move as one intact unit, not be split notebook-by-notebook even when individual notebooks would otherwise belong in different phases by topic. `Comprehensive_RAG_Techniques/` in Phase 8 is the reference example — it contains some basic-level notebooks that would "belong" in Phase 4 by strict topic rules, but splitting them out would break the shared imports. When this tension comes up, prefer keeping the collection whole and place it by its own dominant identity, and say so explicitly in its README.
+   - **Windows/Git-Bash `mv` can silently misbehave** with multi-source globs (`mv "$SRC"/* "$DEST/"`) when `$DEST` doesn't exist or under certain path-quoting conditions — in this merge it briefly renamed an *existing, unrelated* destination folder (`RAG_with_LangGraph_Advanced/`) to `AgenticRAG` mid-command instead of erroring cleanly. No data was lost (caught via notebook-count verification before/after), but the fix required manually diagning what happened. Prefer the item-by-item `for item in "$SRC"/*; do mv "$item" "$DEST/$(basename "$item")"; done` loop over `mv "$SRC"/* "$DEST/"` when moving multiple items into an existing directory — it's what already reliably works around the Windows directory-lock issue too (see Phase 7 above), so just use it as the default move pattern in this repo rather than reaching for the shortcut form.

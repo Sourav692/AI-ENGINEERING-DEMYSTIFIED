@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 13 numbered phases, each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far:** Phases 2, 3, 5, 13 (fully); Phases 4, 7, 8, 12 (partially). Phases 1, 6, 9, 10, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
+**Built so far:** Phases 2, 3, 4, 5, 8, 13 (fully); Phases 7, 12 (partially). Phases 1, 6, 9, 10, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
@@ -16,16 +16,16 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
 01_Theory_and_Foundations/               🚧 Planned (optional) — math/ML intuition, transformers, model landscape, fine-tuning & RL
 02_LangChain_Fundamentals_and_Prompting/ ✅ Built — LangChain basics (5 modules) + prompt engineering; context engineering planned
 03_LangGraph_Fundamentals/               ✅ Built — LangGraph mechanics only (state, graphs, routing, tools, platform capabilities)
-04_Retrieval_and_RAG/                    ✅ Partially built — foundational RAG, theory + basic LangGraph/LangChain implementations
+04_Retrieval_and_RAG/                    ✅ Built — foundational RAG theory + LangGraph/LangChain implementations
 05_AI_Agent_Fundamentals/                ✅ Built — all agent-building content, both frameworks
 06_Agent_SDKs_First_Party/               🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK
-07_Advanced_Agentic_Systems/             ✅ Partially built — memory, multi-agent orchestration, deep agents, evaluation (planned)
-08_Advanced_RAG/                         ✅ Partially built — agentic/self-correcting RAG, CacheRAG/GraphRAG (planned); needs Phases 5 & 7 first
+07_Advanced_Agentic_Systems/             ✅ Partially built — memory, multi-agent orchestration, deep agents built; agent/general eval planned
+08_Advanced_RAG/                         ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned; needs Phases 5 & 7 first
 09_Agent_Protocols/                      🚧 Planned — MCP, ACP, A2A
 10_Alternative_Agent_Frameworks/         🚧 Planned — DSPy, CrewAI, PydanticAI, AutoGen
 11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
-13_Projects/                             ✅ Built — LangGraph fullstack capstone + LangChain microservices capstone
+13_Projects/                             ✅ Built — LangGraph fullstack capstone, LangChain microservices capstone, RAG systems projects
 archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
 docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
 ```
@@ -53,9 +53,15 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `Introduction_to_RAG/`        | RAG overview, indexing, LangChain+RAG |
+| `Embeddings_and_Vector_Databases/` | Embedding models, vector DB options, retrievers |
+| `RAG_Naive_to_Production/`    | Loading → chunking → hybrid search → query enhancement → parent-doc retrieval → postprocessing → full pipelines |
+| `Query_Transformation_Techniques/` | Multi-query, RAG-Fusion, decomposition, HyDE, routing, reranking |
+| `Multimodal_and_Document_Intelligence/` | Multimodal RAG |
 | `RAG_with_LangGraph/`         | Basic agentic RAG (2 notebooks) |
 | `RAG_with_LangChain/`         | RAG essentials, comprehensive, filtered search, indexing API (4 notebooks) |
-| `Embeddings_and_Vector_Databases/`, `RAG_Naive_to_Production/`, `Multimodal_and_Document_Intelligence/` | 🚧 Planned (theory) |
+
+Also `shared_data/` at this phase's root — supporting PDFs/data referenced by several notebooks via relative paths inherited from the source repo (`RAG_Demystified`); not re-verified for exact path resolution after the move.
 
 ### Phase 5 — `05_AI_Agent_Fundamentals/` — internal tracks
 
@@ -72,14 +78,17 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 | `Memory_and_State/`           | `LangGraph/` (memory & threads, long-term PostgreSQL memory) + `LangChain/` (chat/conversation memory, multi-user SQL persistence) |
 | `Multi_Agent_Orchestration/`  | Supervisor pattern, multi-agent swarm architecture |
 | `Deep_Agents_and_Harness_Engineering/` | Multi-agent orchestration via `deepagents` — see its own `CLAUDE.md` |
-| `Evaluation_and_Eval_Harnesses/` | 🚧 Planned — `Agent_Evaluation/`, `RAG_Evaluation/`, `LLM_as_Judge/` |
+| `Evaluation_and_Eval_Harnesses/` | `RAG_Evaluation/` built (retriever/generator/end-to-end metrics, LLM-as-judge); `Agent_Evaluation/`, `LLM_as_Judge/` 🚧 planned |
 
 ### Phase 8 — `08_Advanced_RAG/` — internal tracks
 
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `RAG_with_LangGraph_Advanced/` | Self-correcting retrieval (grading/rewriting), RAG-as-tool (agentic RAG) |
-| `CacheRAG/`, `GraphRAG/`      | 🚧 Planned |
+| `RAG_with_LangGraph_Advanced/` | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
+| `Comprehensive_RAG_Techniques/` | The NirDiamant `RAG_Techniques` anthology (~35 notebooks, kept whole — see its `README_ROADMAP.md`) |
+| `GraphRAG/`                   | Full knowledge-graph + RAG course |
+| `CacheRAG/`                   | 🚧 Planned |
+| `building-adaptive-rag/`, `mcp_a2a_agentic_rag/` | Standalone apps — the latter uses MCP + A2A protocols but stayed RAG-first here rather than moving to Phase 9 |
 
 ### Phase 12 — `12_Production_and_Observability/` — internal tracks
 
@@ -95,6 +104,7 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `LangGraph_Fullstack_Capstone/` | Full-stack app (FastAPI + Angular + Postgres), unit tests, Streamlit apps |
 | `LangChain_Microservices_Capstone/` | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
+| `RAG_Systems_Projects/`       | 7 applied RAG capstone notebooks — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
 
 ## Environment Setup
 
@@ -162,7 +172,7 @@ from helpers import get_llm, get_embeddings
 
 Override: `get_llm(provider="openai", model="gpt-4o")`. Note `get_databricks_llm`'s own standalone default model is `databricks-gpt-5-2` — distinct from the macOS platform-default override above, which is applied by `get_llm()` specifically.
 
-LangGraph-phase notebooks route all LLM/embedding initialization through this factory — never instantiate `ChatOpenAI`/`ChatGroq`/`ChatDatabricks` directly there. `LangChain_Fundamentals/` and its descendants (Phases 2/4/5/7/12's LangChain tracks) instantiate clients directly instead — a pre-existing property of the merged-in source repo, not a convention violation to fix.
+LangGraph-phase notebooks route all LLM/embedding initialization through this factory — never instantiate `ChatOpenAI`/`ChatGroq`/`ChatDatabricks` directly there. `LangChain_Fundamentals/` and its descendants, and the `RAG_Demystified`-sourced content in Phases 4/7/8/13, instantiate clients directly instead — a pre-existing property of the merged-in source repos, not a convention violation to fix.
 
 ### Agentic Patterns Covered
 
@@ -172,6 +182,7 @@ ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), 
 
 - **Every phase/track marked 🚧 Planned above has no content** — folders and scope-describing `README.md`s exist, but no notebooks/code. Don't assume any file exists under them without checking.
 - Several LangGraph notebooks (e.g. `03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/01_HITL_Basics.ipynb`, `07_Advanced_Agentic_Systems/Memory_and_State/LangGraph/01_Memory/02_Memory_Optimizations.ipynb`) don't open with a proper `# Title` markdown cell — see `NOTEBOOK_INDEX.md`'s "Still open" section.
+- Some `RAG_Demystified`-sourced notebooks in `04_Retrieval_and_RAG/RAG_Naive_to_Production/` reference a shared `data/` folder via relative paths (`../../data/`-style) that may not resolve correctly post-move — a copy was brought along as `04_Retrieval_and_RAG/shared_data/`, but exact path depth wasn't reconstructed.
 
 ## Notebook Conventions
 
