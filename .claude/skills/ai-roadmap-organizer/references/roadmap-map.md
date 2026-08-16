@@ -76,6 +76,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 |---|---|---|
 | `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval + RAG-as-tool (agentic RAG), extended with `RAG_Demystified`'s corrective/adaptive/healthcare-router agentic RAG notebooks |
 | `Comprehensive_RAG_Techniques/` | ✅ Built | The NirDiamant `RAG_Techniques` collection (~35 nb) — kept whole rather than split by notebook, since it shares `helper_functions.py`/`data/`/`images/` across the collection via relative paths. Placed here (not Phase 4) because its own identity is an *advanced*-techniques anthology even though some individual notebooks are basic. |
+| `RAG_Ecosystem/` | ✅ Built | Fareed Khan single-notebook RAG stack (from `rag-ecosystem`). Kept whole; includes CRAG pointers + eval so it is not split into Phase 4/7. Distinct from NirDiamant. |
 | `GraphRAG/` | ✅ Built | Knowledge-graph + RAG course (from `RAG_Demystified`) |
 | `CacheRAG/` | 🚧 Planned | |
 
@@ -129,9 +130,9 @@ Owns: deployment, LLMOps, observability, security, safety.
 | `Safety_and_Alignment/` | ✅ Partially built | Content moderation (from module 09) |
 | `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned | |
 
-## Phase 13 — `13_Projects/` — ✅ Built (10 projects)
+## Phase 13 — `13_Projects/` — ✅ Built (12 projects)
 
-Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 more standalone full-stack apps (`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` — all from `AgenticAI_Projects_Demystified`). More capstones get added here as new phases produce content worth integrating.
+Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 apps from `AgenticAI_Projects_Demystified` + `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat) + `Resume_Genie/` (Streamlit + LangGraph career suite). More capstones get added here as new phases produce content worth integrating.
 
 ## `archive/`, `docs/`, root scaffolding
 
@@ -168,3 +169,13 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 11. **2026-08-17 — `CrewAI_Demystified` merged in; CrewAI 02/03 folders now have real content.** Cloned from GitHub. Basics + comprehensive tutorial → `01_Foundations/`; Flows → `02_Core_Capabilities/`; research/logistics crews → `03_Multi_Agent_Patterns/`. Root `helpers/` was identical to this repo's package — not copied. Skills were near-duplicates of `skills-candidates/` — not restaged. This is the exception to "don't recreate CrewAI 02/03" from history §6.
 
 12. **2026-08-17 — five repos (`Coding_Essential_For_Agents`, `LlamaIndex_Demystified`, `Autogen_Demystified`, `DSPy_Demystified`, `AI-Agents-Essentials`).** Coding prerequisites became a new Phase 1 track (topic is programming, not agents). LlamaIndex RAG is a Phase 4 sibling of LangChain/LangGraph RAG, not a Phase 13 capstone. DSPy context-engineering stayed in Phase 10 as one collection (including its RAG level). AutoGen 02/03 filled from `Autogen_Demystified`. `AI-Agents-Essentials` was split: unique from-scratch OpenAI patterns → Phase 5; unique Auto-EDA → AutoGen applications; LangChain/LCEL/LangGraph/agentic-RAG/intro-Autogen notebooks skipped as duplicates of Phases 2/3/4/5/8/10.
+
+13. **2026-08-17 — `End-to-End-Medical-Chatbot` GitHub repo was the same Phase 13 project, not a new one.** Hash compare: `data/Medical_book.pdf` identical. Merged unique extras (Databricks Apps + GitHub Actions, Docker, diagrams, `pyproject.toml`/`uv.lock`) into existing `13_Projects/End_to_End_Medical_Chatbot/` and updated app to Groq. Kept the local executed `research/demo.ipynb` and Apache `LICENSE`. Did not add a second project folder.
+
+14. **2026-08-17 — `Personalized-Holiday-Management-Agent` added as a new Phase 13 project.** FastAPI + AutoGen AgentChat holiday planner. Kept flat per Phase 13 convention; not filed under Phase 10 AutoGen (that's framework labs/apps from the AutoGen course, not this capstone). Distinct from CrewAI travel-advisor notebooks.
+
+15. **2026-08-17 — `rag-ecosystem` merged as Phase 8 `RAG_Ecosystem/`.** One notebook covering basics through CRAG pointers and RAGAS. Kept whole (can't split without editing). Not dumped into Phase 4 despite query-transform overlap, and eval sections not moved to Phase 7 — same "collection identity" rule as NirDiamant. Sibling track, not merged into `Comprehensive_RAG_Techniques/`.
+
+16. **2026-08-17 — `AI-Interview-Coach` was the existing Phase 13 interview app, not a new project.** Unique `architecture.excalidraw` merged in; local `app.py` kept (more complete than the GitHub copy).
+
+17. **2026-08-17 — `Resume-Genie` added as Phase 13 `Resume_Genie/`.** Streamlit + LangGraph career suite. Not CrewAI job-tailoring and not the AutoGen interview coach. GitHub source repo deleted after merge.

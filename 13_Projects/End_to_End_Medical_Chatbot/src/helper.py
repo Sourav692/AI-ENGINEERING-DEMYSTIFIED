@@ -5,6 +5,7 @@ from typing import List
 from langchain.schema import Document
 
 
+
 #Extract Data From the PDF File
 def load_pdf_file(data):
     loader= DirectoryLoader(data,
@@ -32,6 +33,8 @@ def filter_to_minimal_docs(docs: List[Document]) -> List[Document]:
             )
         )
     return minimal_docs
+
+
 
 
 #Split the Data into Text Chunks

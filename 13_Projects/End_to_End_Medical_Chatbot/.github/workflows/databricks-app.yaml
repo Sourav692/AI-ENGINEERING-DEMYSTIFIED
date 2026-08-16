@@ -1,0 +1,74 @@
+name: Deploy Medical Chatbot to Databricks Apps
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks configure --host "$DATABRICKS_HOST" --token "$DATABRICKS_TOKEN"
+
+      - name: Upload source files to Databricks Workspace
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          WORKSPACE_PATH: ${{ secrets.DATABRICKS_WORKSPACE_PATH }}
+        run: |
+          # Sync project files to Databricks Workspace (excluding local-only dirs)
+          databricks workspace import-dir . "$WORKSPACE_PATH" \
+            --overwrite \
+            --exclude-pattern "data/" \
+            --exclude-pattern "research/" \
+            --exclude-pattern ".venv/" \
+            --exclude-pattern ".git/" \
+            --exclude-pattern "__pycache__/" \
+            --exclude-pattern "*.pyc"
+
+      - name: Create Databricks App (if not exists)
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          APP_NAME: ${{ secrets.DATABRICKS_APP_NAME }}
+        run: |
+          databricks apps get "$APP_NAME" 2>/dev/null || \
+          databricks apps create "$APP_NAME" \
+            --description "RAG-based Medical Question Answering Chatbot"
+
+      - name: Deploy Databricks App
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          APP_NAME: ${{ secrets.DATABRICKS_APP_NAME }}
+          WORKSPACE_PATH: ${{ secrets.DATABRICKS_WORKSPACE_PATH }}
+        run: |
+          databricks apps deploy "$APP_NAME" \
+            --source-code-path "$WORKSPACE_PATH"
+
+      - name: Print App URL
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          APP_NAME: ${{ secrets.DATABRICKS_APP_NAME }}
+        run: |
+          databricks apps get "$APP_NAME" --output json | \
+            python3 -c "import sys, json; d=json.load(sys.stdin); print('✅ App URL:', d.get('url', '(see workspace)'))"

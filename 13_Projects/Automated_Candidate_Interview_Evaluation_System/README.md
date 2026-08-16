@@ -1,5 +1,7 @@
 # AI Interview Coach
 
+Phase 13 project at `13_Projects/Automated_Candidate_Interview_Evaluation_System/` (same app as GitHub `AI-Interview-Coach`).
+
 An AI-powered mock interview system that conducts realistic job interviews, collects your answers in real time, and delivers instant feedback from a virtual career coach — all in the browser.
 
 Three specialised agents collaborate via [AutoGen AgentChat](https://microsoft.github.io/autogen/stable/):

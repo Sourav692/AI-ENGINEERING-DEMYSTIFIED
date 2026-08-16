@@ -1,0 +1,25 @@
+[project]
+name = "resume-genie"
+version = "0.2.0"
+description = "AI-powered resume tools: checker, scorer, cover letter generator, and career coach — with agentic orchestration"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain_groq",
+    "langchain_community",
+    "langchain_core",
+    "langgraph",
+    "pypdf",
+    "python-dotenv",
+    "streamlit",
+    "pillow",
+]
+
+[tool.setuptools]
+packages = ["agent"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "jupyter",
+    "ipython",
+]

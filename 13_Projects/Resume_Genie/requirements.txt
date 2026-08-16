@@ -1,0 +1,8 @@
+langchain_groq
+langchain_community
+langchain_core
+langgraph
+pypdf
+python-dotenv
+streamlit
+pillow

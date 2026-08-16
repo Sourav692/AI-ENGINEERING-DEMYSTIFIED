@@ -1,0 +1,27 @@
+sudo apt update
+sudo apt-get update
+sudo apt upgrade -y
+sudo apt install git curl unzip tar make sudo vim wget -y
+git clone https://github.com/pik1989/Resume-Genie.git
+sudo apt install python3-pip
+
+'''
+sudo apt update
+sudo apt install python3-venv python3-full -y
+
+# 2. In your project folder
+cd ~/Cancer-Risk-Prediction
+
+# 3. Create a virtual environment (named .venv – the dot makes it hidden)
+python3 -m venv .venv
+
+# 4. Activate it
+source .venv/bin/activate
+'''
+
+pip3 install -r requirements.txt
+
+#Temporary running
+python3 -m streamlit run app.py
+#Permanent running
+nohup python3 -m streamlit run app.py &

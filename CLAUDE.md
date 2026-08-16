@@ -25,7 +25,7 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
 10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI, AutoGen, DSPy built; PydanticAI + orchestration overview planned
 11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
-13_Projects/                             ✅ Built — 10 projects: LangGraph/LangChain/RAG capstones + 7 more standalone full-stack apps
+13_Projects/                             ✅ Built — 12 projects: LangGraph/LangChain/RAG capstones + 9 more standalone full-stack apps
 archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
 docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
 ```
@@ -97,6 +97,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `RAG_with_LangGraph_Advanced/` | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
 | `Comprehensive_RAG_Techniques/` | The NirDiamant `RAG_Techniques` anthology (~35 notebooks, kept whole — see its `README_ROADMAP.md`) |
+| `RAG_Ecosystem/`              | Single-notebook RAG stack (basic → query transforms → RAPTOR/ColBERT → CRAG pointers → RAGAS) |
 | `GraphRAG/`                   | Full knowledge-graph + RAG course |
 | `CacheRAG/`                   | 🚧 Planned |
 | `building-adaptive-rag/`, `mcp_a2a_agentic_rag/` | Standalone apps — MCP+A2A agentic RAG kept RAG-first here; a copy also lives under Phase 9 `MCP/` |
@@ -133,7 +134,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `LangChain_Microservices_Capstone/` | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
 | `RAG_Systems_Projects/`       | 7 applied RAG capstone notebooks — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
 | `ShopUNow_Agentic_RAG_Capstone/` | Vector DB + agentic RAG e-commerce capstone |
-| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` | 6 more standalone full-stack apps |
+| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/`, `Resume_Genie/` | 8 more standalone full-stack apps |
 
 ## Environment Setup
 

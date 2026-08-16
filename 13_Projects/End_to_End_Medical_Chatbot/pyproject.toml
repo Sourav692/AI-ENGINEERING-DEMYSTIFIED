@@ -1,0 +1,32 @@
+[project]
+name = "medical-chatbot"
+version = "0.1.0"
+description = "End-to-End Medical Chatbot"
+authors = [
+    { name = "Sourav Banerjee", email = "sourav692@gmail.com" },
+]
+requires-python = ">=3.12"
+dependencies = [
+    "langchain==0.3.26",
+    "flask==3.1.1",
+    "sentence-transformers==4.1.0",
+    "pypdf==5.6.1",
+    "python-dotenv==1.1.0",
+    "langchain-pinecone==0.2.8",
+    "langchain-groq==0.3.2",
+    "langchain-community==0.3.26",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "jupyter",
+    "ipython",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = [".venv*", "research*"]

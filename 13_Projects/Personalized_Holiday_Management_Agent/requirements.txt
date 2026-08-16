@@ -1,0 +1,8 @@
+autogen-agentchat===0.5.7
+autogen-ext[openai]
+dotenv
+pydantic
+python-dotenv 
+fastapi
+uvicorn
+-e .

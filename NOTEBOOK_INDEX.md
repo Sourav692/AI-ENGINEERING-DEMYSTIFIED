@@ -339,6 +339,10 @@ Depends on Phases 5 & 7 — sequenced after both.
 
 The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-notebook — its ~35 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths). Ranges basic → advanced: simple RAG, CSV RAG, reliable RAG, proposition chunking, query transformations, HyDE, context enrichment, contextual compression, contextual chunk headers, CRAG, Self-RAG, RAPTOR, fusion retrieval, hierarchical indices, GraphRAG (incl. Microsoft GraphRAG, Milvus variant), adaptive retrieval, multimodal RAG (captioning, ColPali), reranking, explainable retrieval, relevant segment extraction, dartboard, document augmentation, retrieval with feedback loop — plus LlamaIndex variants of several. See `README_ROADMAP.md` for the full breakdown and why it wasn't split.
 
+## `RAG_Ecosystem/`
+
+Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosystem`. Kept whole. Covers basic RAG, query transforms (multi-query, RAG-Fusion, decomposition, step-back, HyDE), routing, RAPTOR/ColBERT, CRAG/Self-RAG pointers, DeepEval/RAGAS. Sibling of NirDiamant, not merged into it. Eval sections stay here rather than Phase 7 so the walkthrough isn't split.
+
 ## `GraphRAG/`
 
 | Path | Content |
@@ -451,9 +455,9 @@ Also `data/` and `final_project/` (a built Chroma DB from the source repo).
 
 Not notebooks-only — `01_create_vector_databases.ipynb`, `02_agentic_rag_system.ipynb`, plus `data/` (7 domain JSON datasets), `ShopUNow_Agentic_RAG_Architecture.pptx`, `WALKTHROUGH.md`, `sample_data.py`.
 
-## Six more full-stack apps
+## More full-stack apps
 
-`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` — each a standalone deployable app (own `README.md`, dependencies, and in most cases Docker/deployment config). See `13_Projects/README.md` for a one-line summary of each.
+`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/` (Flask + Pinecone RAG; Groq; Docker/AWS + Databricks Apps CI/CD; `diagrams/`), `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat holiday planner — not CrewAI travel advisor), `Resume_Genie/` (Streamlit + LangGraph career suite). Each is a standalone deployable app. See `13_Projects/README.md` for a one-line summary of each.
 
 # Planned Phases (no content yet)
 
@@ -498,6 +502,16 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 - **2026-08-17 — `CrewAI_Demystified` merged in** (cloned from GitHub; not dropped as a local folder). Filled CrewAI's empty `02_Core_Capabilities/` (Flows) and `03_Multi_Agent_Patterns/` (research + logistics crews), and extended `01_Foundations/` with `01_Basics/` + `04_Comprehensive/`. No overlap with `Some_Simple_Agents/` notebook names. `helpers/utils.py` was byte-identical to the root `helpers` package — skipped. `.claude/skills/` were near-duplicates of skills already in `.claude/skills-candidates/` (`format-notebook`, `virtual-env-setup`) — skipped rather than restaged. Discarded root scaffolding.
 
 - **2026-08-17 — five GitHub repos merged:** `Coding_Essential_For_Agents` → Phase 1 `Coding_Essentials_for_Agents/` (Python through asyncio; Module 4 is raw LLM API calls, not LangChain/HF Hub). `LlamaIndex_Demystified` → Phase 4 `RAG_with_LlamaIndex/` (Chainlit Wikipedia RAG; distinct from Phase 8 NirDiamant LlamaIndex notebooks). `Autogen_Demystified` → AutoGen `02_Core_Capabilities/` + `03_Multi_Agent_Patterns/` (code-execution lab kept alongside the larger existing `coding_agent` project — different size/scope). `DSPy_Demystified` → Phase 10 `DSPy/context-engineering-dspy/` kept whole. `AI-Agents-Essentials` was split: from-scratch OpenAI patterns → Phase 5 `Building_Agents_From_Scratch/`; unique Auto-EDA app → AutoGen `04_Applications/Auto_EDA/`. **Skipped as conceptual duplicates of content already in Phases 2/3/4/5/8/10:** LangChain basics/chains/LCEL/simple-agent; LangGraph stateful apps + research assistant; LangGraph agentic RAG; AutoGen intro building-agents / research-assistant / demo / calculator tool-use / GroupChat `4.1` (covered by Autogen_Demystified Group/Stateflow). Discarded root scaffolding and leftover clone `_incoming/`.
+
+- **2026-08-17 — `End-to-End-Medical-Chatbot` GitHub repo** was the same app already in Phase 13, not a new project. PDF identical. Unique extras (Databricks Apps + GitHub Actions, Docker, architecture diagrams, `pyproject.toml`/`uv.lock`) merged into `13_Projects/End_to_End_Medical_Chatbot/`; app updated to Groq. Kept local executed `research/demo.ipynb` and Apache `LICENSE`.
+
+- **2026-08-17 — `Personalized-Holiday-Management-Agent` merged in** as Phase 13 `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat). Not placed in Phase 10 AutoGen apps — capstone/integration project, kept flat. Distinct from CrewAI travel-advisor content.
+
+- **2026-08-17 — `rag-ecosystem` merged in** as Phase 8 `RAG_Ecosystem/` (`rag_ecosystem.ipynb`). One notebook spanning basic RAG → query transforms → RAPTOR/ColBERT → CRAG pointers → DeepEval/RAGAS. Kept whole. Not merged into NirDiamant `Comprehensive_RAG_Techniques/`. Query-transform and eval topics already exist in Phases 4 and 7 as separate notebooks; this is a different walkthrough, not a byte-duplicate.
+
+- **2026-08-17 — `AI-Interview-Coach` GitHub repo** was the same Phase 13 `Automated_Candidate_Interview_Evaluation_System/` (static files/README identical). Did not add a second project. Copied unique `architecture.excalidraw` and updated `demo.excalidraw`. Kept the local `app.py` (docstrings + FastAPI title; GitHub copy was a stripped version).
+
+- **2026-08-17 — `Resume-Genie` merged in** as Phase 13 `Resume_Genie/` (Streamlit + LangGraph career suite). Distinct from CrewAI job-application tailoring and the AutoGen interview coach. Skipped machine-specific `.claude/settings.json`.
 
 **Still open:**
 - Several notebooks don't open with a proper `# Title` markdown cell (mid-document subheading instead) — pre-existing, not fixed, would require editing notebook content.

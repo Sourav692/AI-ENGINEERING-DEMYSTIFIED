@@ -225,6 +225,7 @@ Runs off the root environment — no separate install needed. A standalone deplo
 |---|---|---|
 | `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
 | `Comprehensive_RAG_Techniques/` | ✅ Built | ~35-notebook anthology — CRAG, Self-RAG, RAPTOR, GraphRAG, fusion/adaptive retrieval, and more |
+| `RAG_Ecosystem/` | ✅ Built | Single-notebook walkthrough of the RAG stack (query transforms through eval) |
 | `GraphRAG/` | ✅ Built | Knowledge-graph-based retrieval — full KG+RAG course |
 | `CacheRAG/` | 🚧 Planned | Caching strategies for RAG |
 
@@ -255,7 +256,7 @@ Also two standalone apps: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (M
 | `LangChain_Microservices_Capstone/` | ✅ Built | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
 | `RAG_Systems_Projects/` | ✅ Built | 7 applied RAG capstones — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
 | `ShopUNow_Agentic_RAG_Capstone/` | ✅ Built | Vector DB + agentic RAG e-commerce capstone |
-| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/` | ✅ Built | 6 more standalone full-stack apps |
+| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/`, `Resume_Genie/` | ✅ Built | 8 more standalone full-stack apps |
 
 ```bash
 # LangGraph capstone
@@ -341,6 +342,7 @@ AI ENGINEERING/
 ├── 08_Advanced_RAG/                          ✅ Built
 │   ├── RAG_with_LangGraph_Advanced/
 │   ├── Comprehensive_RAG_Techniques/
+│   ├── RAG_Ecosystem/                         rag_ecosystem.ipynb
 │   ├── GraphRAG/
 │   ├── CacheRAG/                              🚧 Planned
 │   ├── building-adaptive-rag/
@@ -360,14 +362,15 @@ AI ENGINEERING/
 │   ├── LLMOps_and_AI_Infrastructure/           Tracing_and_Observability/, Caching_and_Performance/, Cost_Monitoring/
 │   ├── Security_and_Compliance/               🚧 Planned
 │   └── Safety_and_Alignment/
-├── 13_Projects/                              ✅ Built (10 projects)
+├── 13_Projects/                              ✅ Built (12 projects)
 │   ├── LangGraph_Fullstack_Capstone/
 │   ├── LangChain_Microservices_Capstone/
 │   ├── RAG_Systems_Projects/
 │   ├── ShopUNow_Agentic_RAG_Capstone/
 │   └── AI_Powered_Customer_Support/, Automated_Candidate_Interview_Evaluation_System/,
 │       End_to_End_Medical_Chatbot/, Pipecat_QuickStart/, Realtime_Source_Code_Analyzer/,
-│       Realtime_Voice_AI_Agent_with_RAG/
+│       Realtime_Voice_AI_Agent_with_RAG/, Personalized_Holiday_Management_Agent/,
+│       Resume_Genie/
 ├── helpers/                                  Shared LLM/embedding factory (used by built LangGraph phases)
 ├── docs/                                     Static HTML tutorial microsite (LangGraph mechanics chapters)
 └── archive/                                  Retired notebooks

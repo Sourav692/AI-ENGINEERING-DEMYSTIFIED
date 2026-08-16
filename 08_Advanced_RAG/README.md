@@ -8,6 +8,7 @@ Advanced retrieval patterns that depend on already knowing agents (Phase 5) and 
 |---|---|---|
 | `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
 | `Comprehensive_RAG_Techniques/` | ✅ Built | ~35-notebook anthology — CRAG, Self-RAG, RAPTOR, GraphRAG, fusion/adaptive retrieval, and more (see `README_ROADMAP.md`) |
+| `RAG_Ecosystem/` | ✅ Built | Single-notebook RAG stack walkthrough (Fareed Khan) — query transforms through CRAG pointers and RAGAS |
 | `GraphRAG/` | ✅ Built | Knowledge-graph-based retrieval — full KG+RAG course |
 | `CacheRAG/` | 🚧 Planned | Caching strategies for RAG |
 
