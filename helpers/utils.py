@@ -162,6 +162,23 @@ def get_databricks_llm(model_name: str = "databricks-gpt-5-2", temperature: floa
     )
 
 
+def get_databricks_gateway_llm(model_name: str = "system.ai.gemma-3-12b", temperature: float = 0):
+    """
+    Create and return a Chat LLM served through a Databricks AI Gateway route
+    (OpenAI-compatible `/ai-gateway/mlflow/v1` endpoint), via ChatOpenAI pointed
+    at that base_url.
+
+    Requires DATABRICKS_HOST and DATABRICKS_TOKEN environment variables to be set.
+    """
+    host = os.environ["DATABRICKS_HOST"].rstrip("/")
+    return ChatOpenAI(
+        model=model_name,
+        api_key=os.environ["DATABRICKS_TOKEN"],
+        base_url=f"{host}/ai-gateway/mlflow/v1",
+        temperature=temperature,
+    )
+
+
 # ============================================================================
 # EMBEDDING FACTORY FUNCTIONS
 # ============================================================================
@@ -231,14 +248,15 @@ def get_embeddings(
 import sys
 
 PLATFORM_DEFAULTS: dict[str, dict] = {
-    "win32":  {"factory": "groq",       "model": "openai/gpt-oss-120b"},
-    "darwin": {"factory": "databricks", "model": "databricks-claude-opus-4-6"},
+    "win32":  {"factory": "databricks_gateway", "model": "system.ai.gemma-3-12b"},
+    "darwin": {"factory": "databricks",         "model": "databricks-claude-opus-4-6"},
 }
 
 _FACTORIES = {
-    "openai":     get_openai_llm,
-    "groq":       get_groq_llm,
-    "databricks": get_databricks_llm,
+    "openai":             get_openai_llm,
+    "groq":               get_groq_llm,
+    "databricks":         get_databricks_llm,
+    "databricks_gateway": get_databricks_gateway_llm,
 }
 
 

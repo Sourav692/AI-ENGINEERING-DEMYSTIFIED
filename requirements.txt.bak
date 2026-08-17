@@ -1,0 +1,82 @@
+# ============================================================
+# LangGraph Demystified — Pinned Dependencies
+# ============================================================
+# This file mirrors pyproject.toml with pinned versions.
+# Use pyproject.toml as the source of truth for dependency management.
+# This file exists for environments that don't support pyproject.toml.
+# ============================================================
+
+# --- LangChain ecosystem ---
+langchain==1.2.7
+langchain-core==1.2.7
+langchain-openai==1.1.7
+langchain-community==0.4.1
+langchain-groq==1.1.1
+langchain-anthropic==1.3.1
+langchain-google-genai==4.2.0
+langchain-huggingface==1.2.0
+langchain-chroma==1.1.0
+langchain-tavily
+
+# --- LangGraph ---
+langgraph==1.0.7
+langgraph-checkpoint==4.0.0
+langgraph-checkpoint-sqlite==3.0.3
+langgraph-checkpoint-postgres==3.0.3
+
+# --- Databricks ---
+databricks-langchain==0.13.0
+databricks-sdk
+
+# --- Deep Agents (Chapter 5) ---
+deepagents>=0.5.0
+
+# --- API clients ---
+openai==2.15.0
+
+# --- Data handling and validation ---
+pydantic==2.12.5
+typing-extensions==4.15.0
+
+# --- Document processing ---
+pypdf>=4.0.0
+
+# --- Vector database ---
+chromadb>=0.4.0
+
+# --- Database ---
+sqlalchemy>=2.0.0
+
+# --- Web search ---
+tavily-python==0.7.19
+
+# --- Utilities ---
+python-dotenv==1.2.1
+tiktoken==0.12.0
+tqdm==4.67.1
+wikipedia==1.4.0
+ipython==9.9.0
+
+# --- Web scraping (Chapter 3 — Tool Use) ---
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+
+# --- Markdown processing ---
+markdown
+
+# --- Full-stack capstone app (Chapter 4) ---
+fastapi>=0.110.0
+uvicorn>=0.27.0
+psycopg[binary]>=3.1.0
+psycopg-pool>=3.1.0
+
+# --- Streamlit apps (Chapter 2) ---
+streamlit>=1.30.0
+streamlit-agraph>=0.0.45
+langextract
+
+# --- Development ---
+pytest==9.0.2
+pytest-asyncio==1.3.0
+jupyter==1.1.1
+ruff>=0.8.0

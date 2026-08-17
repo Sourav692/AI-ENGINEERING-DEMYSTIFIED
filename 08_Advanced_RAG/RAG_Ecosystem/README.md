@@ -1,4 +1,5 @@
 <!-- omit in toc -->
+
 # RAG Ecosystem
 
 Phase 8 track: one notebook walking the full RAG stack (basic RAG → query transforms → routing → RAPTOR/ColBERT → CRAG/Self-RAG pointers → DeepEval/RAGAS). Kept **whole** — splitting would mean editing the notebook. Not merged into `Comprehensive_RAG_Techniques/` (NirDiamant; different collection, no shared helpers). Overlaps Phase 4 query-transform *topics* and Phase 7 eval *topics* conceptually; this is a single end-to-end walkthrough including agentic self-correction, so it lives here.
@@ -27,7 +28,9 @@ and much more …
 My Table of content is divided into several sections. Take a look.
 
 <!-- omit in toc -->
+
 ## Table of Contents
+
 - [Understanding Basic RAG System](#understanding-basic-rag-system)
   - [Indexing Phase](#indexing-phase)
   - [Retrieval](#retrieval)
@@ -58,7 +61,6 @@ My Table of content is divided into several sections. Take a look.
   - [Another Powerful Alternative with `grouse`](#another-powerful-alternative-with-grouse)
   - [Evaluation with `RAGAS`](#evaluation-with-ragas)
 - [Summarizing Everything](#summarizing-everything)
-
 
 ---
 
@@ -100,7 +102,7 @@ Let’s build this simple pipeline from the ground up to see how each piece work
 
 ### Indexing Phase
 
-Before our RAG system can answer any questions, it needs knowledge to draw from. For this, we’ll use a `WebBaseLoader` to pull content directly from [Lilian Weng's excellent blog post](https://lilianweng.github.io/posts/2023-06-23-agent/) on LLM-powered agents.
+Before our RAG system can answer any questions, it needs knowledge to draw from. For this, we’ll use a `WebBaseLoader` to pull content directly from [Lilian Weng&#39;s excellent blog post](https://lilianweng.github.io/posts/2023-06-23-agent/) on LLM-powered agents.
 
 ![Indexing phase (Created by Fareed Khan)](https://miro.medium.com/v2/resize:fit:875/1*dnSg_QmGd4J030_bznvUPw.png)
 
@@ -181,6 +183,7 @@ docs = retriever.get_relevant_documents("What is Task Decomposition?")
 # Print the content of the first retrieved document
 print(docs[0].page_content)
 ```
+
 ```text
 #### OUTPUT ####
 Task decomposition can be done (1) by LLM with simple prompting like "Steps for XYZ.", "What are the subgoals for achieving XYZ?", (2) by using task-specific instructions; e.g. "Write a story outline." for writing a novel, or (3) with human inputs.
@@ -207,6 +210,7 @@ prompt = hub.pull("rlm/rag-prompt")
 # printing the prompt
 print(prompt)
 ```
+
 ```text
 #### OUTPUT ####
 input_variables=['context', 'question'] output_parser=StrOutputParser() partial_variables={} template='You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don\'t know the answer, just say that you don\'t know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:' template_format='f-string' validate_template=True
@@ -254,6 +258,7 @@ Now, let’s invoke the entire chain.
 response = rag_chain.invoke("What is Task Decomposition?")
 print(response)
 ```
+
 ```text
 #### OUTPUT ####
 Task decomposition is a technique used to break down large tasks into smaller, more manageable subgoals. This can be achieved by using a Large Language Model (LLM) with simple prompts, task-specific instructions, or human inputs. For example, Tree of Thoughts is a method that extends Chain of Thought by exploring multiple reasoning possibilities at each step, decomposing the problem into multiple thought steps and generating multiple thoughts per step in a tree structure.
@@ -348,6 +353,7 @@ generated_queries_list = generate_queries.invoke({"question": question})
 for i, q in enumerate(generated_queries_list):
     print(f"{i+1}. {q}")
 ```
+
 ```text
 #### OUTPUT ####
 1. How can LLM agents break down complex tasks?
@@ -376,6 +382,7 @@ retrieval_chain = generate_queries | retriever.map() | get_unique_union
 docs = retrieval_chain.invoke({"question": question})
 print(f"Total unique documents retrieved: {len(docs)}")
 ```
+
 ```text
 #### OUTPUT ####
 Total unique documents retrieved: 6
@@ -405,10 +412,12 @@ final_rag_chain = (
 
 final_rag_chain.invoke({"question": question})
 ```
+
 ```text
 #### OUTPUT ####
 Task decomposition for LLM agents involves breaking down large, complex tasks into smaller, more manageable sub-goals. This allows the agent to work through a problem systematically. Methods for decomposition include using the LLM itself with simple prompts (e.g., "Steps for XYZ."), applying task-specific instructions, or incorporating human inputs to guide the process.
 ```
+
 > This answer is more robust because it’s based on a wider pool of relevant documents.
 
 ### RAG-Fusion
@@ -469,6 +478,7 @@ docs = retrieval_chain_rag_fusion.invoke({"question": question})
 
 print(f"Total re-ranked documents retrieved: {len(docs)}")
 ```
+
 ```text
 #### OUTPUT ####
 Total re-ranked documents retrieved: 7
@@ -507,6 +517,7 @@ question = "What are the main components of an LLM-powered autonomous agent syst
 sub_questions = generate_queries_decomposition.invoke({"question": question})
 print(sub_questions)
 ```
+
 ```text
 #### OUTPUT ####
 ['1. What are the core components of a system that uses a large language model to power an autonomous agent?', '2. How is memory implemented in LLM-powered autonomous agents?', '3. What role does planning and task decomposition play in an autonomous agent system powered by LLMs?']
@@ -523,7 +534,7 @@ rag_results = []
 for sub_question in sub_questions:
     # Retrieve documents for each sub-question
     retrieved_docs = retriever.get_relevant_documents(sub_question)
-    
+  
     # Use our standard RAG chain to answer the sub-question
     answer = (prompt_rag | llm | StrOutputParser()).invoke({"context": retrieved_docs, "question": sub_question})
     rag_results.append(answer)
@@ -555,6 +566,7 @@ final_rag_chain = (
 
 final_rag_chain.invoke({"context": context, "question": question})
 ```
+
 ```text
 #### OUTPUT ####
 An LLM-powered autonomous agent system primarily consists of three core components: planning, memory, and tool use. Planning involves decomposing large tasks into smaller, manageable sub-goals. Memory allows the agent to learn from past actions and retain information, using both short-term and long-term storage. Finally, tool use enables the agent to interact with external environments to gather information and perform actions beyond its inherent capabilities. These components work in concert to allow the agent to reason, plan, and execute complex tasks autonomously.
@@ -625,6 +637,7 @@ step_back_question = generate_queries_step_back.invoke({"question": question})
 print(f"Original Question: {question}")
 print(f"Step-Back Question: {step_back_question}")
 ```
+
 ```text
 #### OUTPUT ####
 Original Question: What is task decomposition for LLM agents?
@@ -672,6 +685,7 @@ This is the output we get, when we run this step back prompt chain with our quer
 ```python
 print(response)
 ```
+
 ```text
 #### OUTPUT ####
 Task decomposition is a fundamental concept in software engineering where a complex problem is broken down into smaller, more manageable parts. In the context of LLM agents, this principle is applied to enable them to handle large tasks. By decomposing a task into sub-goals, the agent can plan and execute a series of simpler actions. This can be achieved through various methods, such as using the LLM itself to generate a step-by-step plan, following task-specific instructions, or by taking input from a human operator.
@@ -707,6 +721,7 @@ generate_docs_for_retrieval = (
 hypothetical_document = generate_docs_for_retrieval.invoke({"question": question})
 print(hypothetical_document)
 ```
+
 ```text
 #### OUTPUT ####
 Task decomposition in large language model (LLM) agents refers to the process of breaking down a complex, high-level task into a series of smaller, more manageable sub-tasks. This hierarchical approach is crucial for enabling agents to handle sophisticated goals that require multi-step reasoning and planning. The decomposition can be achieved through several mechanisms, including programmatic scripts, interaction with external tools, or recursive calls to the LLM itself with structured prompts. By dividing the problem space, the agent can focus on solving one sub-problem at a time, using the output of one step as the input for the next, thus creating a coherent and executable workflow.
@@ -723,6 +738,7 @@ retrieved_docs = retrieval_chain.invoke({"question": question})
 response = final_rag_chain.invoke({"context": retrieved_docs, "question": question})
 print(response)
 ```
+
 ```text
 #### OUTPUT ####
 Task decomposition for LLM agents involves breaking down a larger task into smaller, more manageable subgoals. This can be done using techniques like Chain of Thought (CoT), which prompts the model for step-by-step thinking, or Tree of Thoughts, which explores multiple reasoning paths. The decomposition can be driven by the LLM itself through simple prompting, by using task-specific instructions, or by incorporating human inputs.
@@ -812,6 +828,7 @@ result = router.invoke({"question": question})
 
 print(result)
 ```
+
 ```text
 #### OUTPUT ####
 datasource='python_docs'
@@ -840,6 +857,7 @@ final_destination = full_chain.invoke({"question": question})
 
 print(final_destination)
 ```
+
 ```text
 #### OUTPUT ####
 chain for python_docs
@@ -893,18 +911,18 @@ def prompt_router(input):
     """A function to route the input query to the most similar prompt template."""
     # 1. Embed the incoming user query
     query_embedding = embeddings.embed_query(input["query"])
-    
+  
     # 2. Compute the cosine similarity between the query and all prompt templates
     similarity = cosine_similarity([query_embedding], prompt_embeddings)[0]
-    
+  
     # 3. Find the index of the most similar prompt
     most_similar_index = similarity.argmax()
-    
+  
     # 4. Select the most similar prompt template
     chosen_prompt = prompt_templates[most_similar_index]
-    
+  
     print(f"DEBUG: Using {'MATH' if most_similar_index == 1 else 'PHYSICS'} template.")
-    
+  
     # 5. Return the chosen prompt object
     return PromptTemplate.from_template(chosen_prompt)
 ```
@@ -923,6 +941,7 @@ chain = (
 # Ask a physics question
 print(chain.invoke("What's a black hole"))
 ```
+
 ```text
 #### OUTPUT ####
 DEBUG: Using PHYSICS template.
@@ -950,6 +969,7 @@ docs = YoutubeLoader.from_youtube_url(
 # Print the metadata of the first document
 print(docs[0].metadata)
 ```
+
 ```text
 #### OUTPUT ####
 {'source': 'pbAd8O1Lvm4', 'title': 'Self-reflective RAG with LangGraph: Self-RAG and CRAG', 'description': 'Unknown', 'view_count': 11922, 'thumbnail_url': 'https://i.ytimg.com/vi/pbAd8O1Lvm4/hq720.jpg', 'publish_date': '2024-02-07 00:00:00', 'length': 1058, 'author': 'LangChain'}
@@ -966,10 +986,10 @@ class TutorialSearch(BaseModel):
 
     # The main query for a similarity search over the video's transcript.
     content_search: str = Field(..., description="Similarity search query applied to video transcripts.")
-    
+  
     # A more succinct query for searching just the video's title.
     title_search: str = Field(..., description="Alternate version of the content search query to apply to video titles.")
-    
+  
     # Optional metadata filters
     min_view_count: Optional[int] = Field(None, description="Minimum view count filter, inclusive.")
     max_view_count: Optional[int] = Field(None, description="Maximum view count filter, exclusive.")
@@ -1008,6 +1028,7 @@ Let’s test this with a few different questions to see its power.
 # Test 1: A simple query
 query_analyzer.invoke({"question": "rag from scratch"}).pretty_print()
 ```
+
 ```text
 #### OUTPUT ####
 content_search: rag from scratch
@@ -1022,6 +1043,7 @@ query_analyzer.invoke(
     {"question": "videos on chat langchain published in 2023"}
 ).pretty_print()
 ```
+
 ```text
 #### OUTPUT ####
 content_search: chat langchain
@@ -1040,6 +1062,7 @@ query_analyzer.invoke(
     }
 ).pretty_print()
 ```
+
 ```text
 #### OUTPUT ####
 content_search: multi-modal models agent
@@ -1087,6 +1110,7 @@ docs.extend(loader.load())
 
 print(f"Loaded {len(docs)} documents.")
 ```
+
 ```text
 #### OUTPUT ####
 Loaded 2 documents.
@@ -1115,6 +1139,7 @@ summaries = summary_chain.batch(docs, {"max_concurrency": 5})
 # Let's inspect the first summary
 print(summaries[0])
 ```
+
 ```text
 #### OUTPUT ####
 The document discusses building autonomous agents powered by Large Language Models (LLMs). It outlines the key components of such a system, including planning, memory, and tool use. The author explores challenges like the finite context length of LLMs, the difficulty in long-term planning, and the reliability of natural language interfaces. Case studies like AutoGPT and GPT-Engineer are presented as proof-of-concept examples, and the post concludes with a list of references to relevant research papers.
@@ -1172,6 +1197,7 @@ print(sub_docs[0].page_content)
 print("\n--- Metadata showing the link to the parent document ---")
 print(sub_docs[0].metadata)
 ```
+
 ```text
 #### OUTPUT ####
 --- Result from searching summaries ---
@@ -1191,6 +1217,7 @@ retrieved_docs = retriever.get_relevant_documents(query, n_results=1)
 print("\n--- The full document retrieved by the MultiVectorRetriever ---")
 print(retrieved_docs[0].page_content[0:500])
 ```
+
 ```text
 #### OUTPUT ####
 
@@ -1213,7 +1240,7 @@ FAQ
 emojisearch.app
 
       LLM Powered Autonomous Agents
-    
+  
 Date: June 23, 2023  |  Estimated Reading Time: 31 min  |  Author: Lilian Weng
 
 
@@ -1309,6 +1336,7 @@ The indexing process is more complex, as it’s creating embeddings for every to
 results = RAG.search(query="What animation studio did Miyazaki found?", k=3)
 print(results)
 ```
+
 ```text
 #### OUTPUT ####
 [{'content': 'In April 1984, Miyazaki opened his own office in Suginami Ward, naming it Nibariki.\\n\\n\\n=== Studio Ghibli ===\\n\\n\\n==== Early films (1985–1996) ====\\nIn June 1985, Miyazaki, Takahata, Tokuma and Suzuki founded the animation production company Studio Ghibli, with funding from Tokuma Shoten. Studio Ghibli\\'s first film, Laputa: Castle in the Sky (1986)...', 'score': 25.9036, 'rank': 1, 'document_id': '...', 'passage_id': 28}, 
@@ -1326,6 +1354,7 @@ colbert_retriever = RAG.as_langchain_retriever(k=3)
 retrieved_docs = colbert_retriever.invoke("What animation studio did Miyazaki found?")
 print(retrieved_docs[0].page_content)
 ```
+
 ```text
 #### OUTPUT ####
 In April 1984, Miyazaki opened his own office in Suginami Ward, naming it Nibariki.
@@ -1404,6 +1433,7 @@ for doc in compressed_docs:
     print(f"Relevance Score: {doc.metadata['relevance_score']:.4f}")
     print(f"Content: {doc.page_content[:150]}...\n")
 ```
+
 ```text
 #### OUTPUT ####
 --- Re-ranked and Compressed Documents ---
@@ -1502,7 +1532,7 @@ correctness_prompt = PromptTemplate(
 
     Evaluate the correctness of the generated answer compared to the ground truth.
     Score from 0 to 1, where 1 is perfectly correct and 0 is completely incorrect.
-    
+  
     Score:
     """
 )
@@ -1531,6 +1561,7 @@ score = evaluate_correctness(question, ground_truth, generated_answer)
 
 print(f"Correctness Score: {score}")
 ```
+
 ```text
 #### OUTPUT ####
 Correctness Score: 0.5
@@ -1555,13 +1586,13 @@ faithfulness_prompt = PromptTemplate(
     Evaluate if the generated answer to the question can be deduced from the context.
     Score of 0 or 1, where 1 is perfectly faithful *AND CAN BE DERIVED FROM THE CONTEXT* and 0 otherwise.
     You don't mind if the answer is correct; all you care about is if the answer can be deduced from the context.
-    
+  
     Example:
     Question: What is the capital of France and Spain?
     Context: Paris is the capital of France and Madrid is the capital of Spain.
     Generated Answer: Paris
     in this case the generated answer is faithful to the context so the score should be *1*.
-    
+  
     Example:
     Question: What is 2+2?
     Context: 4.
@@ -1594,6 +1625,7 @@ score = evaluate_faithfulness(question, context, generated_answer)
 
 print(f"Faithfulness Score: {score}")
 ```
+
 ```text
 #### OUTPUT ####
 Faithfulness Score: 0.0
@@ -1652,6 +1684,7 @@ evaluation_results = evaluate(
 
 print(evaluation_results)
 ```
+
 ```text
 #### OUTPUT ####
 ✨ Evaluation Results ✨
@@ -1687,6 +1720,7 @@ unfaithful_sample = EvaluationSample(
 result = evaluator.evaluate(eval_samples=[unfaithful_sample]).evaluations[0]
 print(f"Grouse Faithfulness Score (0 or 1): {result.faithfulness.faithfulness}")
 ```
+
 ```text
 #### OUTPUT ####
 Grouse Faithfulness Score (0 or 1): 0
@@ -1783,11 +1817,12 @@ result = evaluate(
 results_df = result.to_pandas()
 print(results_df)
 ```
-| | question | answer | contexts | ground_truth | faithfulness | answer_relevancy | context_recall | answer_correctness |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | What is the name of the three-headed dog... | The three-headed dog is named Fluffy. | [A massive, three-headed dog was guarding... | Fluffy | 1.0 | 0.998 | 1.0 | 1.0 |
-| **1** | Who gave Harry Potter his first broomstick? | Professor McGonagall gave Harry his... | [First years are not allowed brooms, but... | Professor McGonagall | 1.0 | 1.0 | 1.0 | 0.954 |
-| **2** | Which house did the Sorting Hat initially... | The Sorting Hat strongly considered... | [The Sorting Hat muttered in Harry's ear... | Slytherin | 1.0 | 0.985 | 1.0 | 1.0 |
+
+|             | question                                     | answer                                 | contexts                                     | ground_truth         | faithfulness | answer_relevancy | context_recall | answer_correctness |
+| :---------- | :------------------------------------------- | :------------------------------------- | :------------------------------------------- | :------------------- | :----------- | :--------------- | :------------- | :----------------- |
+| **0** | What is the name of the three-headed dog...  | The three-headed dog is named Fluffy.  | [A massive, three-headed dog was guarding... | Fluffy               | 1.0          | 0.998            | 1.0            | 1.0                |
+| **1** | Who gave Harry Potter his first broomstick?  | Professor McGonagall gave Harry his... | [First years are not allowed brooms, but...  | Professor McGonagall | 1.0          | 1.0              | 1.0            | 0.954              |
+| **2** | Which house did the Sorting Hat initially... | The Sorting Hat strongly considered... | [The Sorting Hat muttered in Harry's ear...  | Slytherin            | 1.0          | 0.985            | 1.0            | 1.0                |
 
 We can see that our system is highly faithful and retrieves relevant context well (`faithfulness` and `context_recall` are perfect). The answers are also highly relevant and correct, with only minor deviations.
 
