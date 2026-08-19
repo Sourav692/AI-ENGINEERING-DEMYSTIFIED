@@ -73,9 +73,16 @@ dev = [
     "jupyter>=1.1.1",
     "ruff>=0.8.0",
 ]
+# RAG/agent/LLM-as-judge evaluation (Phase 7)
+eval = [
+    "deepeval>=4.1.8",
+    "deepteam>=1.0.9",
+    "sentry-sdk>=2.68.0",  # deepteam imports this but doesn't declare it as a dependency
+    "ragas>=0.2.8",
+]
 # Install everything
 all = [
-    "langgraph_demystified[fullstack,apps,dev]",
+    "langgraph_demystified[fullstack,apps,dev,eval]",
 ]
 
 [build-system]

@@ -17,3 +17,8 @@ large_tool_results/
 *.db-shm    
 *.db-wal
 graphify-out
+.deepeval
+mlflow.db
+*.sqlite3
+my_db
+*log

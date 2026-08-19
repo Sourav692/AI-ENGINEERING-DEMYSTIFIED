@@ -1,0 +1,11 @@
+[project]
+name = "evals3-iii"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "deepteam==1.0.6",
+    "openai==2.24.0",
+    "python-dotenv==1.2.1",
+]
