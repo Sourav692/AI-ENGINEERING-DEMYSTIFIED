@@ -19,13 +19,11 @@ You can use [any chat model](https://python.langchain.com/docs/integrations/chat
 
 ??? "Install dependencies"
 
-    ```bash
-    pip install langchain_core langchain-anthropic langgraph
-    ```
+    ``bash     pip install langchain_core langchain-anthropic langgraph     ``
 
 Initialize an LLM
 
-API Reference: ChatAnthropic</a></i></sup>
+API Reference: ChatAnthropic
 
 ```python
 import os
@@ -42,10 +40,6 @@ _set_env("ANTHROPIC_API_KEY")
 
 llm = ChatAnthropic(model="claude-3-5-sonnet-latest")
 ```
-
-
-
-
 
 ## Building Blocks: The Augmented LLM
 
@@ -84,10 +78,6 @@ msg = llm_with_tools.invoke("What is 2 times 3?")
 msg.tool_calls
 ```
 
-
-
-
-
 ## Prompt chaining
 
 In prompt chaining, each LLM call processes the output of the previous one.
@@ -107,7 +97,6 @@ As noted in the Anthropic blog on `Building Effective Agents`:
     from langgraph.graph import StateGraph, START, END
     from IPython.display import Image, display
 
-
     # Graph state
     class State(TypedDict):
         topic: str
@@ -115,14 +104,12 @@ As noted in the Anthropic blog on `Building Effective Agents`:
         improved_joke: str
         final_joke: str
 
-
     # Nodes
     def generate_joke(state: State):
         """First LLM call to generate initial joke"""
 
         msg = llm.invoke(f"Write a short joke about {state['topic']}")
         return {"joke": msg.content}
-
 
     def check_punchline(state: State):
         """Gate function to check if the joke has a punchline"""
@@ -132,20 +119,17 @@ As noted in the Anthropic blog on `Building Effective Agents`:
             return "Pass"
         return "Fail"
 
-
     def improve_joke(state: State):
         """Second LLM call to improve the joke"""
 
         msg = llm.invoke(f"Make this joke funnier by adding wordplay: {state['joke']}")
         return {"improved_joke": msg.content}
 
-
     def polish_joke(state: State):
         """Third LLM call for final polish"""
 
         msg = llm.invoke(f"Add a surprising twist to this joke: {state['improved_joke']}")
         return {"final_joke": msg.content}
-
 
     # Build workflow
     workflow = StateGraph(State)
@@ -195,14 +179,10 @@ As noted in the Anthropic blog on `Building Effective Agents`:
 
     See our lesson on Prompt Chaining [here](https://github.com/langchain-ai/langchain-academy/blob/main/module-1/chain.ipynb).
 
-
-
-
 === "Functional API"
 
     ```python
     from langgraph.func import entrypoint, task
-
 
     # Tasks
     @task
@@ -210,7 +190,6 @@ As noted in the Anthropic blog on `Building Effective Agents`:
         """First LLM call to generate initial joke"""
         msg = llm.invoke(f"Write a short joke about {topic}")
         return msg.content
-
 
     def check_punchline(joke: str):
         """Gate function to check if the joke has a punchline"""
@@ -220,20 +199,17 @@ As noted in the Anthropic blog on `Building Effective Agents`:
 
         return "Pass"
 
-
     @task
     def improve_joke(joke: str):
         """Second LLM call to improve the joke"""
         msg = llm.invoke(f"Make this joke funnier by adding wordplay: {joke}")
         return msg.content
 
-
     @task
     def polish_joke(joke: str):
         """Third LLM call for final polish"""
         msg = llm.invoke(f"Add a surprising twist to this joke: {joke}")
         return msg.content
-
 
     @entrypoint()
     def prompt_chaining_workflow(topic: str):
@@ -253,9 +229,6 @@ As noted in the Anthropic blog on `Building Effective Agents`:
     **LangSmith Trace**
 
     https://smith.langchain.com/public/332fa4fc-b6ca-416e-baa3-161625e69163/r
-
-
-
 
 ## Parallelization
 
@@ -278,7 +251,6 @@ With parallelization, LLMs work simultaneously on a task:
         poem: str
         combined_output: str
 
-
     # Nodes
     def call_llm_1(state: State):
         """First LLM call to generate initial joke"""
@@ -286,20 +258,17 @@ With parallelization, LLMs work simultaneously on a task:
         msg = llm.invoke(f"Write a joke about {state['topic']}")
         return {"joke": msg.content}
 
-
     def call_llm_2(state: State):
         """Second LLM call to generate story"""
 
         msg = llm.invoke(f"Write a story about {state['topic']}")
         return {"story": msg.content}
 
-
     def call_llm_3(state: State):
         """Third LLM call to generate poem"""
 
         msg = llm.invoke(f"Write a poem about {state['topic']}")
         return {"poem": msg.content}
-
 
     def aggregator(state: State):
         """Combine the joke and story into a single output"""
@@ -309,7 +278,6 @@ With parallelization, LLMs work simultaneously on a task:
         combined += f"JOKE:\n{state['joke']}\n\n"
         combined += f"POEM:\n{state['poem']}"
         return {"combined_output": combined}
-
 
     # Build workflow
     parallel_builder = StateGraph(State)
@@ -352,9 +320,6 @@ With parallelization, LLMs work simultaneously on a task:
 
     See our lesson on parallelization [here](https://github.com/langchain-ai/langchain-academy/blob/main/module-1/simple-graph.ipynb).
 
-
-
-
 === "Functional API"
 
     ```python
@@ -364,20 +329,17 @@ With parallelization, LLMs work simultaneously on a task:
         msg = llm.invoke(f"Write a joke about {topic}")
         return msg.content
 
-
     @task
     def call_llm_2(topic: str):
         """Second LLM call to generate story"""
         msg = llm.invoke(f"Write a story about {topic}")
         return msg.content
 
-
     @task
     def call_llm_3(topic):
         """Third LLM call to generate poem"""
         msg = llm.invoke(f"Write a poem about {topic}")
         return msg.content
-
 
     @task
     def aggregator(topic, joke, story, poem):
@@ -388,7 +350,6 @@ With parallelization, LLMs work simultaneously on a task:
         combined += f"JOKE:\n{joke}\n\n"
         combined += f"POEM:\n{poem}"
         return combined
-
 
     # Build workflow
     @entrypoint()
@@ -410,9 +371,6 @@ With parallelization, LLMs work simultaneously on a task:
 
     https://smith.langchain.com/public/623d033f-e814-41e9-80b1-75e6abb67801/r
 
-
-
-
 ## Routing
 
 Routing classifies an input and directs it to a followup task. As noted in the Anthropic blog on `Building Effective Agents`:
@@ -429,24 +387,20 @@ Routing classifies an input and directs it to a followup task. As noted in the A
     from typing_extensions import Literal
     from langchain_core.messages import HumanMessage, SystemMessage
 
-
     # Schema for structured output to use as routing logic
     class Route(BaseModel):
         step: Literal["poem", "story", "joke"] = Field(
             None, description="The next step in the routing process"
         )
 
-
     # Augment the LLM with schema for structured output
     router = llm.with_structured_output(Route)
-
 
     # State
     class State(TypedDict):
         input: str
         decision: str
         output: str
-
 
     # Nodes
     def llm_call_1(state: State):
@@ -455,20 +409,17 @@ Routing classifies an input and directs it to a followup task. As noted in the A
         result = llm.invoke(state["input"])
         return {"output": result.content}
 
-
     def llm_call_2(state: State):
         """Write a joke"""
 
         result = llm.invoke(state["input"])
         return {"output": result.content}
 
-
     def llm_call_3(state: State):
         """Write a poem"""
 
         result = llm.invoke(state["input"])
         return {"output": result.content}
-
 
     def llm_call_router(state: State):
         """Route the input to the appropriate node"""
@@ -485,7 +436,6 @@ Routing classifies an input and directs it to a followup task. As noted in the A
 
         return {"decision": decision.step}
 
-
     # Conditional edge function to route to the appropriate node
     def route_decision(state: State):
         # Return the node name you want to visit next
@@ -495,7 +445,6 @@ Routing classifies an input and directs it to a followup task. As noted in the A
             return "llm_call_2"
         elif state["decision"] == "poem":
             return "llm_call_3"
-
 
     # Build workflow
     router_builder = StateGraph(State)
@@ -546,9 +495,6 @@ Routing classifies an input and directs it to a followup task. As noted in the A
 
     [Here](https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_adaptive_rag_local/) is RAG workflow that routes questions. See our video [here](https://www.youtube.com/watch?v=bq1Plo2RhYI).
 
-
-
-
 === "Functional API"
 
     ```python
@@ -556,17 +502,14 @@ Routing classifies an input and directs it to a followup task. As noted in the A
     from pydantic import BaseModel
     from langchain_core.messages import HumanMessage, SystemMessage
 
-
     # Schema for structured output to use as routing logic
     class Route(BaseModel):
         step: Literal["poem", "story", "joke"] = Field(
             None, description="The next step in the routing process"
         )
 
-
     # Augment the LLM with schema for structured output
     router = llm.with_structured_output(Route)
-
 
     @task
     def llm_call_1(input_: str):
@@ -574,20 +517,17 @@ Routing classifies an input and directs it to a followup task. As noted in the A
         result = llm.invoke(input_)
         return result.content
 
-
     @task
     def llm_call_2(input_: str):
         """Write a joke"""
         result = llm.invoke(input_)
         return result.content
 
-
     @task
     def llm_call_3(input_: str):
         """Write a poem"""
         result = llm.invoke(input_)
         return result.content
-
 
     def llm_call_router(input_: str):
         """Route the input to the appropriate node"""
@@ -601,7 +541,6 @@ Routing classifies an input and directs it to a followup task. As noted in the A
             ]
         )
         return decision.step
-
 
     # Create workflow
     @entrypoint()
@@ -626,9 +565,6 @@ Routing classifies an input and directs it to a followup task. As noted in the A
 
     https://smith.langchain.com/public/5e2eb979-82dd-402c-b1a0-a8cceaf2a28a/r
 
-
-
-
 ## Orchestrator-Worker
 
 With orchestrator-worker, an orchestrator breaks down a task and delegates each sub-task to workers. As noted in the Anthropic blog on `Building Effective Agents`:
@@ -645,7 +581,6 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
     from typing import Annotated, List
     import operator
 
-
     # Schema for structured output to use in planning
     class Section(BaseModel):
         name: str = Field(
@@ -655,12 +590,10 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
             description="Brief overview of the main topics and concepts to be covered in this section.",
         )
 
-
     class Sections(BaseModel):
         sections: List[Section] = Field(
             description="Sections of the report.",
         )
-
 
     # Augment the LLM with schema for structured output
     planner = llm.with_structured_output(Sections)
@@ -673,7 +606,6 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
     ```python
     from langgraph.types import Send
 
-
     # Graph state
     class State(TypedDict):
         topic: str  # Report topic
@@ -683,12 +615,10 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
         ]  # All workers write to this key in parallel
         final_report: str  # Final report
 
-
     # Worker state
     class WorkerState(TypedDict):
         section: Section
         completed_sections: Annotated[list, operator.add]
-
 
     # Nodes
     def orchestrator(state: State):
@@ -703,7 +633,6 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
         )
 
         return {"sections": report_sections.sections}
-
 
     def llm_call(state: WorkerState):
         """Worker writes a section of the report"""
@@ -723,7 +652,6 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
         # Write the updated section to completed sections
         return {"completed_sections": [section.content]}
 
-
     def synthesizer(state: State):
         """Synthesize full report from sections"""
 
@@ -735,14 +663,12 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
 
         return {"final_report": completed_report_sections}
 
-
     # Conditional edge function to create llm_call workers that each write a section of the report
     def assign_workers(state: State):
         """Assign a worker to each section in the plan"""
 
         # Kick off section writing in parallel via Send() API
         return [Send("llm_call", {"section": s}) for s in state["sections"]]
-
 
     # Build workflow
     orchestrator_worker_builder = StateGraph(State)
@@ -787,14 +713,10 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
 
     [Here](https://github.com/langchain-ai/report-mAIstro) is a project that uses orchestrator-worker for report planning and writing. See our video [here](https://www.youtube.com/watch?v=wSxZ7yFbbas).
 
-
-
-
 === "Functional API"
 
     ```python
     from typing import List
-
 
     # Schema for structured output to use in planning
     class Section(BaseModel):
@@ -805,16 +727,13 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
             description="Brief overview of the main topics and concepts to be covered in this section.",
         )
 
-
     class Sections(BaseModel):
         sections: List[Section] = Field(
             description="Sections of the report.",
         )
 
-
     # Augment the LLM with schema for structured output
     planner = llm.with_structured_output(Sections)
-
 
     @task
     def orchestrator(topic: str):
@@ -828,7 +747,6 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
         )
 
         return report_sections.sections
-
 
     @task
     def llm_call(section: Section):
@@ -847,13 +765,11 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
         # Write the updated section to completed sections
         return result.content
 
-
     @task
     def synthesizer(completed_sections: list[str]):
         """Synthesize full report from sections"""
         final_report = "\n\n---\n\n".join(completed_sections)
         return final_report
-
 
     @entrypoint()
     def orchestrator_worker(topic: str):
@@ -874,9 +790,6 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
 
     https://smith.langchain.com/public/75a636d0-6179-4a12-9836-e0aa571e87c5/r
 
-
-
-
 ## Evaluator-optimizer
 
 In the evaluator-optimizer workflow, one LLM call generates a response while another provides evaluation and feedback in a loop:
@@ -895,7 +808,6 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
         feedback: str
         funny_or_not: str
 
-
     # Schema for structured output to use in evaluation
     class Feedback(BaseModel):
         grade: Literal["funny", "not funny"] = Field(
@@ -905,10 +817,8 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
             description="If the joke is not funny, provide feedback on how to improve it.",
         )
 
-
     # Augment the LLM with schema for structured output
     evaluator = llm.with_structured_output(Feedback)
-
 
     # Nodes
     def llm_call_generator(state: State):
@@ -922,13 +832,11 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
             msg = llm.invoke(f"Write a joke about {state['topic']}")
         return {"joke": msg.content}
 
-
     def llm_call_evaluator(state: State):
         """LLM evaluates the joke"""
 
         grade = evaluator.invoke(f"Grade the joke {state['joke']}")
         return {"funny_or_not": grade.grade, "feedback": grade.feedback}
-
 
     # Conditional edge function to route back to joke generator or end based upon feedback from the evaluator
     def route_joke(state: State):
@@ -938,7 +846,6 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
             return "Accepted"
         elif state["funny_or_not"] == "not funny":
             return "Rejected + Feedback"
-
 
     # Build workflow
     optimizer_builder = StateGraph(State)
@@ -982,9 +889,6 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
 
     [Here](https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_adaptive_rag_local/) is a RAG workflow that grades answers for hallucinations or errors. See our video [here](https://www.youtube.com/watch?v=bq1Plo2RhYI).
 
-
-
-
 === "Functional API"
 
     ```python
@@ -997,10 +901,8 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
             description="If the joke is not funny, provide feedback on how to improve it.",
         )
 
-
     # Augment the LLM with schema for structured output
     evaluator = llm.with_structured_output(Feedback)
-
 
     # Nodes
     @task
@@ -1014,13 +916,11 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
             msg = llm.invoke(f"Write a joke about {topic}")
         return msg.content
 
-
     @task
     def llm_call_evaluator(joke: str):
         """LLM evaluates the joke"""
         feedback = evaluator.invoke(f"Grade the joke {joke}")
         return feedback
-
 
     @entrypoint()
     def optimizer_workflow(topic: str):
@@ -1043,9 +943,6 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
 
     https://smith.langchain.com/public/f66830be-4339-4a6b-8a93-389ce5ae27b4/r
 
-
-
-
 ## Agent
 
 Agents are typically implemented as an LLM performing actions (via tool-calling) based on environmental feedback in a loop. As noted in the Anthropic blog on `Building Effective Agents`:
@@ -1056,7 +953,7 @@ Agents are typically implemented as an LLM performing actions (via tool-calling)
 
 ![agent.png](./workflows/img/agent.png)
 
-API Reference: tool</a></i></sup>
+API Reference: tool
 
 ```python
 from langchain_core.tools import tool
@@ -1102,16 +999,11 @@ tools_by_name = {tool.name: tool for tool in tools}
 llm_with_tools = llm.bind_tools(tools)
 ```
 
-
-
-
-
 === "Graph API"
 
     ```python
     from langgraph.graph import MessagesState
     from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
-
 
     # Nodes
     def llm_call(state: MessagesState):
@@ -1130,7 +1022,6 @@ llm_with_tools = llm.bind_tools(tools)
             ]
         }
 
-
     def tool_node(state: dict):
         """Performs the tool call"""
 
@@ -1140,7 +1031,6 @@ llm_with_tools = llm.bind_tools(tools)
             observation = tool.invoke(tool_call["args"])
             result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
         return {"messages": result}
-
 
     # Conditional edge function to route to the tool node or end based upon whether the LLM made a tool call
     def should_continue(state: MessagesState) -> Literal["Action", END]:
@@ -1153,7 +1043,6 @@ llm_with_tools = llm.bind_tools(tools)
             return "Action"
         # Otherwise, we stop (reply to the user)
         return END
-
 
     # Build workflow
     agent_builder = StateGraph(MessagesState)
@@ -1202,9 +1091,6 @@ llm_with_tools = llm.bind_tools(tools)
 
     [Here](https://github.com/langchain-ai/memory-agent) is a project that uses a tool calling agent to create / store long-term memories.
 
-
-
-
 === "Functional API"
 
     ```python
@@ -1215,7 +1101,6 @@ llm_with_tools = llm.bind_tools(tools)
         BaseMessage,
         ToolCall,
     )
-
 
     @task
     def call_llm(messages: list[BaseMessage]):
@@ -1229,13 +1114,11 @@ llm_with_tools = llm.bind_tools(tools)
             + messages
         )
 
-
     @task
     def call_tool(tool_call: ToolCall):
         """Performs the tool call"""
         tool = tools_by_name[tool_call["name"]]
         return tool.invoke(tool_call)
-
 
     @entrypoint()
     def agent(messages: list[BaseMessage]):
@@ -1267,16 +1150,13 @@ llm_with_tools = llm.bind_tools(tools)
 
     https://smith.langchain.com/public/42ae8bf9-3935-4504-a081-8ddbcbfc8b2e/r
 
-
-
-
 #### Pre-built
 
 LangGraph also provides a **pre-built method** for creating an agent as defined above (using the [`create_react_agent`](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.chat_agent_executor.create_react_agent) function):
 
 https://langchain-ai.github.io/langgraph/how-tos/create-react-agent/
 
-API Reference: create_react_agent</a></i></sup>
+API Reference: create_react_agent
 
 ```python
 from langgraph.prebuilt import create_react_agent
@@ -1299,9 +1179,6 @@ for m in messages["messages"]:
 **LangSmith Trace**
 
 https://smith.langchain.com/public/abab6a44-29f6-4b97-8164-af77413e494d/r
-
-
-
 
 ## What LangGraph provides
 

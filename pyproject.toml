@@ -79,6 +79,7 @@ eval = [
     "deepteam>=1.0.9",
     "sentry-sdk>=2.68.0",  # deepteam imports this but doesn't declare it as a dependency
     "ragas>=0.2.8",
+    "mlflow>=3.15.1",
 ]
 # Install everything
 all = [

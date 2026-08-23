@@ -114,7 +114,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `LLMOps_and_AI_Infrastructure/` | `Tracing_and_Observability/` (LangSmith built, LangFuse planned, callbacks), `Caching_and_Performance/`, `Cost_Monitoring/` |
-| `Safety_and_Alignment/`       | Content moderation |
+| `Safety_and_Alignment/`       | Content moderation, red teaming (`deepteam`) |
 | `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned |
 
 ### Phase 10 — `10_Alternative_Agent_Frameworks/` — internal tracks
