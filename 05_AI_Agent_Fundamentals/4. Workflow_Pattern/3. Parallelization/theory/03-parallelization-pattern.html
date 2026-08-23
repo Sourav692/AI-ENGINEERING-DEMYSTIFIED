@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parallelization Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --paper:#eef0ec; --rail:#8a9186;
+    --wf:#3d5a80; --wf-soft:#e3eaf2;
+    --mono:'JetBrains Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Iowan Old Style',Georgia,serif;padding:28px 16px 60px;}
+  .wrap{max-width:800px;margin:0 auto;}
+  h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em;}
+  .sub{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;
+    letter-spacing:0.1em;color:var(--rail);margin-bottom:26px;}
+  .stage{position:relative;border:1.5px solid var(--ink);border-radius:4px;
+    background:#fff;padding:44px 20px 30px;min-height:300px;}
+  .badge{position:absolute;top:10px;right:14px;font-family:var(--mono);
+    font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rail);}
+  .cls{display:flex;justify-content:center;margin-bottom:8px;}
+  .node{font-family:var(--mono);font-size:0.76rem;padding:12px 18px;
+    border:1.5px solid var(--wf);border-radius:3px;background:var(--wf-soft);
+    color:var(--wf);cursor:pointer;transition:transform .15s;text-align:center;}
+  .node:hover{transform:translateY(-2px);}
+  .node.plain{border-color:var(--ink);background:#fff;color:var(--ink);font-weight:600;}
+  .connector{text-align:center;font-family:var(--mono);font-size:0.66rem;
+    color:var(--wf);opacity:.75;margin:2px 0;}
+  .row{display:flex;justify-content:center;gap:16px;margin:14px 0;flex-wrap:wrap;}
+  .down{text-align:center;font-size:1.1rem;color:var(--wf);opacity:.6;margin:4px 0;}
+  .caption{font-family:var(--mono);font-size:0.74rem;line-height:1.65;
+    background:var(--wf-soft);border-left:3px solid var(--wf);
+    padding:13px 16px;margin-top:20px;border-radius:0 3px 3px 0;min-height:70px;}
+  .caption b{display:block;font-size:0.8rem;margin-bottom:4px;
+    text-transform:uppercase;letter-spacing:0.06em;}
+  .props{width:100%;border-collapse:collapse;margin-top:26px;
+    font-family:var(--mono);font-size:0.72rem;}
+  .props td{border:1px solid #cfd3cb;padding:9px 10px;}
+  .props td:first-child{color:var(--rail);width:38%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Parallelization Pattern</h1>
+  <div class="sub">fixed fan-out, run concurrently, fixed fan-in to combine</div>
+
+  <div class="stage">
+    <div class="badge">FIXED BRANCH SET</div>
+    <div class="cls">
+      <div class="node" onclick="explain('input')">Input</div>
+    </div>
+    <div class="connector">fans out to all three branches at once</div>
+    <div class="row">
+      <div class="node" onclick="explain('tone')">Tone<br>review</div>
+      <div class="node" onclick="explain('factual')">Factual<br>review</div>
+      <div class="node" onclick="explain('grammar')">Grammar<br>review</div>
+    </div>
+    <div class="connector">all three always run, always combined the same way</div>
+    <div class="down">&#8595;</div>
+    <div class="cls">
+      <div class="node" onclick="explain('combine')">Combine</div>
+    </div>
+    <div class="down">&#8595;</div>
+    <div class="cls">
+      <div class="node plain" onclick="explain('output')">Output</div>
+    </div>
+  </div>
+
+  <div class="caption" id="cap">
+    <b>Parallelization</b>
+    Click any stage. The set of parallel branches is fixed at graph-build time &mdash; nothing decides at runtime to add a fourth branch or skip one.
+  </div>
+
+  <table class="props">
+    <tr><td>Who controls next step</td><td>Code &mdash; all branches always run, always combined the same way</td></tr>
+    <tr><td>Cost / latency</td><td>Higher token cost, lower wall-clock latency than sequential</td></tr>
+    <tr><td>Failure mode</td><td>One slow or failed branch blocks the combine step</td></tr>
+    <tr><td>Typical guardrail</td><td>Per-branch timeout; combine step tolerates partial failures</td></tr>
+  </table>
+</div>
+
+<script>
+const explanations = {
+  input: ["Input", "The document or task enters the graph and immediately fans out to every branch at once &mdash; there's no sequencing between them."],
+  tone: ["Tone review", "An independent LLM call scoped only to tone. It doesn't see or depend on what the other two branches produce."],
+  factual: ["Factual review", "Runs concurrently with Tone and Grammar, checking a different dimension of the same document independently."],
+  grammar: ["Grammar review", "The third independent check, also running at the same time as the other two &mdash; this is sectioning: splitting one task into independent parallel pieces."],
+  combine: ["Combine", "Once all three branches finish, a fixed combine step merges their outputs. This step always runs after all three &mdash; the fan-in point is structural, not a judgment call."],
+  output: ["Output", "The combined result is returned. The whole shape of this graph &mdash; three branches in, one combine out &mdash; never changes between runs."]
+};
+function explain(key){
+  const [title, text] = explanations[key];
+  document.getElementById('cap').innerHTML = `<b>${title}</b>${text}`;
+}
+</script>
+</body>
+</html>

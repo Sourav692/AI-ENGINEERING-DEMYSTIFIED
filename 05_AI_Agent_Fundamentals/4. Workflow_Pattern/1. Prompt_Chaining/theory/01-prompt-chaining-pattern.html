@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Prompt Chaining Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --paper:#eef0ec; --rail:#8a9186;
+    --wf:#3d5a80; --wf-soft:#e3eaf2;
+    --mono:'JetBrains Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Iowan Old Style',Georgia,serif;padding:28px 16px 60px;}
+  .wrap{max-width:800px;margin:0 auto;}
+  h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em;}
+  .sub{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;
+    letter-spacing:0.1em;color:var(--rail);margin-bottom:26px;}
+  .stage{position:relative;border:1.5px solid var(--ink);border-radius:4px;
+    background:#fff;padding:44px 20px 34px;min-height:220px;
+    display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;}
+  .badge{position:absolute;top:10px;right:14px;font-family:var(--mono);
+    font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rail);}
+  .node{font-family:var(--mono);font-size:0.76rem;padding:13px 16px;
+    border:1.5px solid var(--wf);border-radius:3px;background:var(--wf-soft);
+    color:var(--wf);cursor:pointer;transition:transform .15s;text-align:center;min-width:90px;}
+  .node:hover{transform:translateY(-2px);}
+  .node.plain{border-color:var(--ink);background:#fff;color:var(--ink);}
+  .arrow{font-size:1.1rem;color:var(--wf);opacity:.6;}
+  .caption{font-family:var(--mono);font-size:0.74rem;line-height:1.65;
+    background:var(--wf-soft);border-left:3px solid var(--wf);
+    padding:13px 16px;margin-top:20px;border-radius:0 3px 3px 0;min-height:70px;}
+  .caption b{display:block;font-size:0.8rem;margin-bottom:4px;
+    text-transform:uppercase;letter-spacing:0.06em;}
+  .props{width:100%;border-collapse:collapse;margin-top:26px;
+    font-family:var(--mono);font-size:0.72rem;}
+  .props td{border:1px solid #cfd3cb;padding:9px 10px;}
+  .props td:first-child{color:var(--rail);width:38%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prompt Chaining Pattern</h1>
+  <div class="sub">step 1 &rarr; step 2 &rarr; step 3 &mdash; the sequence never changes</div>
+
+  <div class="stage">
+    <div class="badge">FIXED PATH</div>
+    <div class="node" onclick="explain('step1')">Outline</div>
+    <div class="arrow">&#8594;</div>
+    <div class="node" onclick="explain('gate')" style="border-style:dashed;">gate check</div>
+    <div class="arrow">&#8594;</div>
+    <div class="node" onclick="explain('step2')">Draft</div>
+    <div class="arrow">&#8594;</div>
+    <div class="node" onclick="explain('step3')">Polish</div>
+    <div class="arrow">&#8594;</div>
+    <div class="node plain" onclick="explain('output')">Output</div>
+  </div>
+
+  <div class="caption" id="cap">
+    <b>Prompt Chaining</b>
+    Click any stage. Every arrow here is unconditional &mdash; the code decides the next step happens, not the model.
+  </div>
+
+  <table class="props">
+    <tr><td>Who controls next step</td><td>The developer's code &mdash; always step N+1</td></tr>
+    <tr><td>Cost / latency</td><td>Predictable &mdash; fixed number of calls</td></tr>
+    <tr><td>Failure mode</td><td>An early step's error propagates silently downstream</td></tr>
+    <tr><td>Typical guardrail</td><td>A programmatic check ("gate") between steps</td></tr>
+  </table>
+</div>
+
+<script>
+const explanations = {
+  step1: ["Outline", "The first LLM call turns raw input into a structured outline. This step always runs first &mdash; there's no branch that skips it."],
+  gate: ["Gate check", "A cheap, non-LLM check (e.g. is the outline non-empty?) runs between steps. This is a programmatic guard, not a model judgment &mdash; it exists to fail fast before spending tokens downstream."],
+  step2: ["Draft", "The outline is expanded into a full draft. This step's edge from Outline is unconditional (add_edge, not add_conditional_edges) &mdash; it always fires."],
+  step3: ["Polish", "The draft is tightened for the final audience. Like the previous steps, this always runs after Draft with no decision point."],
+  output: ["Output", "The chain ends because the code says so &mdash; the graph has no more edges from Polish, not because a model judged the task complete."]
+};
+function explain(key){
+  const [title, text] = explanations[key];
+  document.getElementById('cap').innerHTML = `<b>${title}</b>${text}`;
+}
+</script>
+</body>
+</html>
