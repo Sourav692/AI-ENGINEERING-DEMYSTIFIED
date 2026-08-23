@@ -223,12 +223,24 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 | 10 | `10_Hotel_Reservations_Multi_Agent_System/` | Full-stack hotel reservations multi-agent system |
 | 11 | `11_Software_Engineering_Multi_Agent_System/` | Full-stack software-engineering multi-agent system |
 
-## `Workflow_and_Agent_Patterns/`
+## `4. Workflow_Pattern/`
+
+Anthropic workflow primitives. Parallelization = **fixed** fan-out. Orchestrator–Worker = **runtime** fan-out via `Send`.
+
+| Section | Notebook | Topic |
+|---|---|---|
+| `1. Prompt_Chaining/` | `01_Prompt_Chaining.ipynb`, `02_Prompt_Chaining_Structured_Output.ipynb` | Sequential prompt-chaining |
+| `2. Routing/` | `1_routing.ipynb` (and/or `2-routing.ipynb`) | Router pattern |
+| `3. Parallelization/` | `01_Parallelization.ipynb`, `02_Parallel_Steps_Execution.ipynb`, `03_Parallelization_Alt.ipynb` | Fixed fan-out / fan-in |
+| `4. Orchestrator_Worker/` | `01_Orchestrator_Worker.ipynb`, `02_Orchestrator_Worker_with_Send_API.ipynb`, `03_Map_Reduce_with_Send_API.ipynb` | Dynamic workers + `Send` map-reduce |
+| `5. Evaluator_Optimizer/` | `5-Evaluator-optimizer.ipynb` | Evaluator-optimizer loop |
+
+## `5. Agent Pattern/` / `Workflow_and_Agent_Patterns/`
 
 | Section | Notebook | Topic |
 |---|---|---|
 | `01_Tool_Use/` | `01_Tool_Use_Agentic_Systems.ipynb`, `02_Tool_Calling_vs_ReAct.ipynb`, `03_Tool_Use_Alt.ipynb`, `04_ReAct_Alt.ipynb` | Tool-use strategies |
-| `02_Planning/` | `01_Parallel_Steps_Execution.ipynb`, `02_Map_Reduce_with_Send_API.ipynb`, `03_Parallelization_Alt.ipynb`, `04_Planning_Overview_Alt.ipynb` | Planning patterns |
+| `02_Planning/` | `01_Planning_ReAct_vs_Plan.ipynb`, `02_Planning_Decompose_Execute_Replan.ipynb` | Agent planning loops |
 | `03_Reflection/` | `01_Reflection_Agents.ipynb`, `02_Reflexion_Agents.ipynb`, `03/04_Reflection_Overview_Alt*.ipynb` | Reflection & Reflexion |
 | `06_Router/` | `01_Routing.ipynb` | Router pattern |
 | `07_Prompt_Chaining/` | `01_Prompt_Chaining.ipynb` | Sequential prompt-chaining |

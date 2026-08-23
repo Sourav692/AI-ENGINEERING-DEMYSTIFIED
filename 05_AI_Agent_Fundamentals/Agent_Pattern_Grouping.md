@@ -84,7 +84,7 @@ Fareed has no first-class prompt-chaining notebook.
 
 #### `4. Workflow_Pattern/4_orchestrator-worker/`
 
-No Fareed or Gulli notebook is titled orchestrator–worker (Anthropic primitive). Keep the local `4-orchestrator-worker.ipynb`. Closest upstream: Fareed [04_planning.ipynb](https://github.com/FareedKhan-dev/all-agentic-architectures/blob/main/notebooks/04_planning.ipynb) and [05_multi_agent.ipynb](https://github.com/FareedKhan-dev/all-agentic-architectures/blob/main/notebooks/05_multi_agent.ipynb) — those stay in B2 / Phase 7, not here.
+No Fareed or Gulli notebook is titled orchestrator–worker (Anthropic primitive). Keep the local `01_Orchestrator_Worker.ipynb`. Closest upstream: Fareed [04_planning.ipynb](https://github.com/FareedKhan-dev/all-agentic-architectures/blob/main/notebooks/04_planning.ipynb) and [05_multi_agent.ipynb](https://github.com/FareedKhan-dev/all-agentic-architectures/blob/main/notebooks/05_multi_agent.ipynb) — those stay in B2 / Phase 7, not here.
 
 #### `4. Workflow_Pattern/5_Evaluator-optimizer/`
 

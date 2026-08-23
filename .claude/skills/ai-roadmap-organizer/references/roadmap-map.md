@@ -50,7 +50,8 @@ Owns: all agent-building content, both frameworks, in one place.
 |---|---|---|
 | `LangChain_Tools_and_Agents/` | ✅ Built | Tool calling + agents (from `LangChain_Demystified`'s modules 06 & 10), plus `03_Applied_Projects/` (16 nb, from `AgenticAI_Projects_Demystified`) |
 | `AI_Agents_with_LangGraph/` | ✅ Built | 11 real-world agent builds (8 original + 3 from `AgenticAI_Projects_Demystified` after 5 duplicates were skipped — see History §6) |
-| `Workflow_and_Agent_Patterns/` | ✅ Built | 8 pattern subfolders, ~27 notebooks |
+| `4. Workflow_Pattern/` | ✅ Built | Anthropic workflows: chaining, routing, **fixed** parallelization, orchestrator–worker (`Send` / map-reduce), evaluator–optimizer |
+| `5. Agent Pattern/` / `Workflow_and_Agent_Patterns/` | ✅ Built | Agent patterns (tool use, planning loops, reflection, …) — not the Anthropic workflow five |
 | `Building_Agents_From_Scratch/` | ✅ Built | OpenAI API + `agentic_patterns` package — from `AI-Agents-Essentials`; not a second LangGraph patterns track |
 
 ## Phase 6 — `06_Agent_SDKs_First_Party/` — 🚧 Planned

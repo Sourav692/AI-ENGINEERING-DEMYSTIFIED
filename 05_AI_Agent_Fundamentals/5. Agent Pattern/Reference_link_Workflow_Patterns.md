@@ -1,7 +1,12 @@
 1. [ ] [Building Advanced AI Agents with LangGraph](https://courses.analyticsvidhya.com/courses/take/building-advanced-ai-agents-with-langgraph/lessons/62148220-project-implementation-part-ii-create-utility-functions)
-1. [ ] [LangGraph AI Repository](https://github.com/piyushagni5/langgraph-ai)
-1. [ ] [github.com/evoiz/Agentic-Design-Patterns](https://github.com/evoiz/Agentic-Design-Patterns)
-1. [ ] [github.com/huangjia2019/agent-design-patterns](https://github.com/huangjia2019/agent-design-patterns)
-1. [ ] [github.com/piyushagni5/langgraph-ai](https://github.com/piyushagni5/langgraph-ai)
-1. [ ] [github.com/FareedKhan-dev/all-agentic-architectures/tree/main
+2. [ ] [LangGraph AI Repository](https://github.com/piyushagni5/langgraph-ai)
+3. [ ] [github.com/evoiz/Agentic-Design-Patterns](https://github.com/evoiz/Agentic-Design-Patterns)
+4. [ ] [github.com/huangjia2019/agent-design-patterns](https://github.com/huangjia2019/agent-design-patterns)
+5. [ ] [github.com/piyushagni5/langgraph-ai](https://github.com/piyushagni5/langgraph-ai)
+6. [ ] [github.com/FareedKhan-dev/all-agentic-architectures/tree/main](https://github.com/FareedKhan-dev/all-agentic-architectures/tree/main)
+6. [ ] [dassum.medium.com/multi-agent-ai-patterns-for-developers-pick-the-right-pattern-for-the-right-problem-8f03ef476b45](https://dassum.medium.com/multi-agent-ai-patterns-for-developers-pick-the-right-pattern-for-the-right-problem-8f03ef476b45)
+6. [ ] [medium.com/@bijit211987/agentic-design-patterns-cbd0aae2962f](https://medium.com/@bijit211987/agentic-design-patterns-cbd0aae2962f)
+6. [ ] [medium.com/data-science-collective/ai-agent-patterns-every-developer-should-know-in-2025-with-real-examples-ff353eb4a1de](https://medium.com/data-science-collective/ai-agent-patterns-every-developer-should-know-in-2025-with-real-examples-ff353eb4a1de)
+6. [ ] [mainak-saha.medium.com/agentic-ai-patterns-handbook-for-architects-1c6747ead1d6](https://mainak-saha.medium.com/agentic-ai-patterns-handbook-for-architects-1c6747ead1d6)
+6. [ ] [levelup.gitconnected.com/building-17-agentic-ai-patterns-and-their-role-in-large-scale-ai-systems-f4915b5615ce](https://levelup.gitconnected.com/building-17-agentic-ai-patterns-and-their-role-in-large-scale-ai-systems-f4915b5615ce)[
     ](https://github.com/FareedKhan-dev/all-agentic-architectures/tree/main)

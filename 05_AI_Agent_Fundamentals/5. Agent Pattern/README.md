@@ -7,7 +7,7 @@
 These are the **agentic design patterns** — architectural approaches for building sophisticated AI agents:
 
 - **Tool Use** — Advanced tool calling strategies and trade-offs
-- **Planning** — Task decomposition, parallel execution, map-reduce
+- **Planning** — Task decomposition, ReAct vs plan-and-execute, replan loops
 - **Reflection** — Agent self-evaluation and iterative improvement
 - **Agent Patterns** — Reusable patterns for building production agents
 - **Long-Term Memory** — Persistent memory across sessions
@@ -29,8 +29,10 @@ These are the **agentic design patterns** — architectural approaches for build
 
 | Notebook | What You'll Learn |
 |---|---|
-| [Parallel Steps Execution](02_Planning/01_Parallel_Steps_Execution.ipynb) | Running nodes in parallel for faster execution |
-| [Map-Reduce with Send API](02_Planning/02_Map_Reduce_with_Send_API.ipynb) | Map-reduce patterns via the `Send` API |
+| [ReAct vs Plan](02_Planning/01_Planning_ReAct_vs_Plan.ipynb) | When to loop with ReAct vs plan-then-execute |
+| [Decompose, Execute, Replan](02_Planning/02_Planning_Decompose_Execute_Replan.ipynb) | Planning loop with replan on failure |
+
+Fixed fan-out parallelization and `Send` map-reduce live in [`4. Workflow_Pattern/`](../4.%20Workflow_Pattern/), not here.
 
 ### 3. Reflection (`03_Reflection/`)
 
