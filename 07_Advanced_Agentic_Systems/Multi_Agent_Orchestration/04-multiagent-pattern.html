@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Multi-Agent Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --paper:#eef0ec; --rail:#8a9186;
+    --agent:#a4462c; --agent-soft:#f5e3db;
+    --mono:'JetBrains Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Iowan Old Style',Georgia,serif;padding:28px 16px 60px;}
+  .wrap{max-width:820px;margin:0 auto;}
+  h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em;}
+  .sub{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;
+    letter-spacing:0.1em;color:var(--rail);margin-bottom:26px;}
+  .stage{position:relative;border:1.5px solid var(--ink);border-radius:4px;
+    background:#fff;padding:44px 20px 30px;min-height:340px;}
+  .badge{position:absolute;top:10px;right:14px;font-family:var(--mono);
+    font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rail);}
+  .sup{display:flex;justify-content:center;margin-bottom:8px;}
+  .sup .node{border-color:var(--ink);background:#fff;color:var(--ink);font-weight:600;}
+  .node{font-family:var(--mono);font-size:0.76rem;padding:12px 18px;
+    border:1.5px solid var(--agent);border-radius:3px;background:var(--agent-soft);
+    color:var(--agent);cursor:pointer;transition:transform .15s;text-align:center;}
+  .node:hover{transform:translateY(-2px);}
+  .row{display:flex;justify-content:center;gap:18px;margin:14px 0;flex-wrap:wrap;}
+  .specialist{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .specialist small{font-family:var(--mono);font-size:0.6rem;color:var(--rail);}
+  .connector{text-align:center;font-family:var(--mono);font-size:0.66rem;
+    color:var(--agent);opacity:.7;margin:2px 0;}
+  .report{
+    font-family:var(--mono);font-size:0.66rem;color:var(--agent);
+    border:1.5px dashed var(--agent);border-radius:14px;padding:7px 16px;
+    cursor:pointer;background:#fff;text-align:center;width:fit-content;
+    margin:10px auto 0;
+  }
+  .caption{font-family:var(--mono);font-size:0.74rem;line-height:1.65;
+    background:var(--agent-soft);border-left:3px solid var(--agent);
+    padding:13px 16px;margin-top:20px;border-radius:0 3px 3px 0;min-height:70px;}
+  .caption b{display:block;font-size:0.8rem;margin-bottom:4px;
+    text-transform:uppercase;letter-spacing:0.06em;}
+  .props{width:100%;border-collapse:collapse;margin-top:26px;
+    font-family:var(--mono);font-size:0.72rem;}
+  .props td{border:1px solid #cfd3cb;padding:9px 10px;}
+  .props td:first-child{color:var(--rail);width:38%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Multi-Agent / Agent-as-Tool Pattern</h1>
+  <div class="sub">supervisor delegates to autonomous specialists, each running its own loop</div>
+
+  <div class="stage">
+    <div class="badge">NESTED AUTONOMY</div>
+    <div class="sup">
+      <div class="node" onclick="explain('supervisor')">Supervisor</div>
+    </div>
+    <div class="connector">decides which agent, if any, acts next</div>
+    <div class="row">
+      <div class="specialist">
+        <div class="node" onclick="explain('research')">Research<br>Agent</div>
+        <small>own reasoning loop</small>
+      </div>
+      <div class="specialist">
+        <div class="node" onclick="explain('code')">Code<br>Agent</div>
+        <small>own reasoning loop</small>
+      </div>
+      <div class="specialist">
+        <div class="node" onclick="explain('review')">Review<br>Agent</div>
+        <small>own reasoning loop</small>
+      </div>
+    </div>
+    <div class="report" onclick="explain('report')">specialists report back &rarr; supervisor decides: delegate again, or finish</div>
+  </div>
+
+  <div class="caption" id="cap">
+    <b>Multi-Agent</b>
+    Click the Supervisor, any specialist, or the report-back node. Both the supervisor's routing choice and each specialist's own execution are open-ended &mdash; nothing here is a hardcoded dispatch table.
+  </div>
+
+  <table class="props">
+    <tr><td>Who controls next step</td><td>Supervisor picks the agent; each agent controls its own internal loop</td></tr>
+    <tr><td>Cost / latency</td><td>Highest of all patterns &mdash; nested unpredictability</td></tr>
+    <tr><td>Failure mode</td><td>Sub-agents contradicting each other; delegation thrash</td></tr>
+    <tr><td>Typical guardrail</td><td>Per-agent step budgets; supervisor delegation cap</td></tr>
+  </table>
+</div>
+
+<script>
+const explanations = {
+  supervisor: ["Supervisor", "A dedicated LLM call reads the full conversation so far and decides, fresh each time, which specialist (if any) should act next &mdash; or whether the task is complete. This is a routing judgment, not a fixed dispatch table."],
+  research: ["Research Agent", "An autonomous sub-agent that runs its own internal reasoning loop (often its own ReAct loop) to gather information, then reports its findings back to the supervisor."],
+  code: ["Code Agent", "An autonomous sub-agent focused on implementation. It decides its own steps &mdash; which files to touch, what to run &mdash; independently of the supervisor's control."],
+  review: ["Review Agent", "An autonomous sub-agent that evaluates output from the other agents against its own judgment, similar in spirit to the Reflection pattern but scoped to reviewing someone else's work."],
+  report: ["Report back", "After a specialist finishes its turn, control returns to the supervisor, which reads the new information and decides the next move &mdash; possibly the same agent again, a different one, or finishing entirely."]
+};
+function explain(key){
+  const [title, text] = explanations[key];
+  document.getElementById('cap').innerHTML = `<b>${title}</b>${text}`;
+}
+</script>
+</body>
+</html>

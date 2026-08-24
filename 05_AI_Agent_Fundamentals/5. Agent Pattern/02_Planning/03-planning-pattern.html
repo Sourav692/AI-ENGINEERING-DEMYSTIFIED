@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Planning Agent Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --paper:#eef0ec; --rail:#8a9186;
+    --agent:#a4462c; --agent-soft:#f5e3db;
+    --mono:'JetBrains Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Iowan Old Style',Georgia,serif;padding:28px 16px 60px;}
+  .wrap{max-width:800px;margin:0 auto;}
+  h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em;}
+  .sub{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;
+    letter-spacing:0.1em;color:var(--rail);margin-bottom:26px;}
+  .stage{position:relative;border:1.5px solid var(--ink);border-radius:4px;
+    background:#fff;padding:44px 20px 34px;min-height:320px;}
+  .badge{position:absolute;top:10px;right:14px;font-family:var(--mono);
+    font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rail);}
+  .col{display:flex;flex-direction:column;align-items:center;gap:0;}
+  .node{font-family:var(--mono);font-size:0.78rem;padding:12px 20px;
+    border:1.5px solid var(--agent);border-radius:3px;background:var(--agent-soft);
+    color:var(--agent);cursor:pointer;transition:transform .15s;text-align:center;}
+  .node:hover{transform:translateY(-2px);}
+  .node.plain{border-color:var(--ink);background:#fff;color:var(--ink);}
+  .down-arrow{font-size:1.2rem;color:var(--agent);opacity:.6;margin:2px 0;}
+  .fork{display:flex;align-items:center;gap:10px;margin:4px 0;}
+  .fork-label{font-family:var(--mono);font-size:0.64rem;color:var(--rail);text-align:center;width:90px;}
+  .branch{
+    font-family:var(--mono);font-size:0.68rem;color:var(--agent);
+    border:1.5px dashed var(--agent);border-radius:14px;padding:7px 14px;
+    cursor:pointer;background:#fff;text-align:center;
+  }
+  .caption{font-family:var(--mono);font-size:0.74rem;line-height:1.65;
+    background:var(--agent-soft);border-left:3px solid var(--agent);
+    padding:13px 16px;margin-top:20px;border-radius:0 3px 3px 0;min-height:70px;}
+  .caption b{display:block;font-size:0.8rem;margin-bottom:4px;
+    text-transform:uppercase;letter-spacing:0.06em;}
+  .props{width:100%;border-collapse:collapse;margin-top:26px;
+    font-family:var(--mono);font-size:0.72rem;}
+  .props td{border:1px solid #cfd3cb;padding:9px 10px;}
+  .props td:first-child{color:var(--rail);width:38%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Planning Agent Pattern</h1>
+  <div class="sub">plan &rarr; execute &rarr; check &rarr; replan if the world changed</div>
+
+  <div class="stage">
+    <div class="badge">PLAN IS REVISABLE MID-RUN</div>
+    <div class="col">
+      <div class="node" onclick="explain('plan')">Plan</div>
+      <div class="down-arrow">&#8595;</div>
+      <div class="node" onclick="explain('execute')">Execute step N</div>
+      <div class="down-arrow">&#8595;</div>
+      <div class="node" onclick="explain('check')">Check: still on track?</div>
+      <div class="fork">
+        <div class="branch" onclick="explain('valid')">plan still valid &rarr; next step</div>
+        <div class="branch" onclick="explain('invalid')">plan invalidated &rarr; Replan</div>
+      </div>
+      <div class="down-arrow">&#8595;</div>
+      <div class="node plain" onclick="explain('return')">Return<br><span style="font-size:.6rem;opacity:.6">all steps complete</span></div>
+    </div>
+  </div>
+
+  <div class="caption" id="cap">
+    <b>Planning</b>
+    Click any stage. Unlike a workflow orchestrator, the plan itself can be thrown out and rewritten mid-execution if a step reveals something the original plan didn't anticipate.
+  </div>
+
+  <table class="props">
+    <tr><td>Who controls next step</td><td>The plan &mdash; but the plan is model-authored and revisable</td></tr>
+    <tr><td>Cost / latency</td><td>Higher upfront (planning call) + variable execution</td></tr>
+    <tr><td>Failure mode</td><td>Thrashing &mdash; replanning repeatedly without progress</td></tr>
+    <tr><td>Typical guardrail</td><td>Cap on replan count; require the plan to shrink, not grow</td></tr>
+  </table>
+</div>
+
+<script>
+const explanations = {
+  plan: ["Plan", "The model generates an ordered list of steps toward the goal. This isn't a fixed template &mdash; the number and nature of steps depends on the specific goal."],
+  execute: ["Execute step N", "The model carries out the current step. This might itself involve tool calls or sub-reasoning."],
+  check: ["Check: still on track?", "After each step, the model judges whether the result matches what the plan assumed. This is a fresh judgment call each time, not a fixed rule."],
+  valid: ["Plan still valid", "If the step's outcome matches expectations, execution just continues to the next step in the existing plan."],
+  invalid: ["Plan invalidated", "If the result reveals something the plan didn't account for, the model discards the *remaining* steps and re-enters Plan with the new context &mdash; the code never enumerated this branch in advance."],
+  return: ["Return", "Once every step in the (possibly revised) plan is complete, the agent returns its result."]
+};
+function explain(key){
+  const [title, text] = explanations[key];
+  document.getElementById('cap').innerHTML = `<b>${title}</b>${text}`;
+}
+</script>
+</body>
+</html>

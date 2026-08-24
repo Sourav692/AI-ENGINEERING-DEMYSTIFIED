@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ReAct Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --paper:#eef0ec; --rail:#8a9186;
+    --agent:#a4462c; --agent-soft:#f5e3db;
+    --mono:'JetBrains Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Iowan Old Style',Georgia,serif;padding:28px 16px 60px;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em;}
+  .sub{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;
+    letter-spacing:0.1em;color:var(--rail);margin-bottom:26px;}
+  .stage{position:relative;border:1.5px solid var(--ink);border-radius:4px;
+    background:#fff;padding:44px 20px 34px;min-height:300px;}
+  .loop{position:relative;width:300px;height:240px;margin:0 auto;}
+  .node{position:absolute;font-family:var(--mono);font-size:0.76rem;
+    padding:13px 10px;border:1.5px solid var(--agent);border-radius:3px;
+    background:var(--agent-soft);color:var(--agent);width:100px;text-align:center;
+    cursor:pointer;transition:transform .15s;}
+  .node:hover{transform:translateY(-2px);}
+  .n-think{top:0;left:100px;}
+  .n-act{bottom:44px;right:6px;}
+  .n-observe{bottom:44px;left:6px;}
+  svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+  path{fill:none;stroke:var(--agent);stroke-width:1.5;opacity:.55;marker-end:url(#ah);}
+  .exit{font-family:var(--mono);font-size:0.7rem;color:var(--rail);
+    text-align:center;margin-top:18px;}
+  .exit b{color:var(--agent);}
+  .caption{font-family:var(--mono);font-size:0.74rem;line-height:1.65;
+    background:var(--agent-soft);border-left:3px solid var(--agent);
+    padding:13px 16px;margin-top:20px;border-radius:0 3px 3px 0;min-height:70px;}
+  .caption b{display:block;font-size:0.8rem;margin-bottom:4px;
+    text-transform:uppercase;letter-spacing:0.06em;}
+  .badge{position:absolute;top:10px;right:14px;font-family:var(--mono);
+    font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rail);}
+  .props{width:100%;border-collapse:collapse;margin-top:26px;
+    font-family:var(--mono);font-size:0.72rem;}
+  .props td{border:1px solid #cfd3cb;padding:9px 10px;}
+  .props td:first-child{color:var(--rail);width:38%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ReAct Pattern</h1>
+  <div class="sub">reason &rarr; act &rarr; observe &rarr; repeat until the model says stop</div>
+
+  <div class="stage">
+    <div class="badge">MODEL-CHOSEN LOOP LENGTH</div>
+    <div class="loop">
+      <svg viewBox="0 0 300 240">
+        <defs>
+          <marker id="ah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#a4462c"/>
+          </marker>
+        </defs>
+        <path d="M 175 42 Q 250 95 205 165"/>
+        <path d="M 160 190 Q 95 190 65 165"/>
+        <path d="M 95 140 Q 115 75 160 47"/>
+      </svg>
+      <div class="node n-think" onclick="explain('think')">Think</div>
+      <div class="node n-act" onclick="explain('act')">Act<br><span style="font-size:.6rem;opacity:.7">(call tool)</span></div>
+      <div class="node n-observe" onclick="explain('observe')">Observe</div>
+    </div>
+    <div class="exit" onclick="explain('exit')" style="cursor:pointer;">click here &mdash; <b>exit condition</b>: model's own reasoning says "I have enough"</div>
+  </div>
+
+  <div class="caption" id="cap">
+    <b>ReAct</b>
+    Click Think, Act, Observe, or the exit condition below the loop to see what happens at each stage. The number of times this loop runs is decided by the model, not by code.
+  </div>
+
+  <table class="props">
+    <tr><td>Who controls next step</td><td>The model, at every iteration</td></tr>
+    <tr><td>Cost / latency</td><td>Unpredictable &mdash; depends on loop count</td></tr>
+    <tr><td>Failure mode</td><td>Infinite or excessive looping without a cap</td></tr>
+    <tr><td>Typical guardrail</td><td>Max iteration count, or a tool-call budget</td></tr>
+  </table>
+</div>
+
+<script>
+const explanations = {
+  think: ["Think", "The model reasons over the current state: what does the task need, what do I already know, what's missing? This is a plain LLM call with no tool binding forced."],
+  act: ["Act", "Based on that reasoning, the model itself picks which tool to call and with what arguments. This choice is not hardcoded anywhere in the graph."],
+  observe: ["Observe", "The tool's result is appended to context. The model incorporates it before its next Think step &mdash; each loop, the model knows strictly more than the last."],
+  exit: ["Exit condition", "There's no fixed step count. The loop ends when the model's own reasoning concludes it has enough to answer &mdash; which is why ReAct calls are unpredictable in cost and latency."]
+};
+function explain(key){
+  const [title, text] = explanations[key];
+  document.getElementById('cap').innerHTML = `<b>${title}</b>${text}`;
+}
+</script>
+</body>
+</html>

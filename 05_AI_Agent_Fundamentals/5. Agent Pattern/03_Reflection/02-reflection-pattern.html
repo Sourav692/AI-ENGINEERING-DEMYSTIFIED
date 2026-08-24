@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reflection Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --paper:#eef0ec; --rail:#8a9186;
+    --agent:#a4462c; --agent-soft:#f5e3db;
+    --mono:'JetBrains Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Iowan Old Style',Georgia,serif;padding:28px 16px 60px;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em;}
+  .sub{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;
+    letter-spacing:0.1em;color:var(--rail);margin-bottom:26px;}
+  .stage{position:relative;border:1.5px solid var(--ink);border-radius:4px;
+    background:#fff;padding:44px 20px 34px;min-height:260px;
+    display:flex;flex-direction:column;align-items:center;gap:0;}
+  .badge{position:absolute;top:10px;right:14px;font-family:var(--mono);
+    font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rail);}
+  .node{font-family:var(--mono);font-size:0.78rem;padding:13px 22px;
+    border:1.5px solid var(--agent);border-radius:3px;background:var(--agent-soft);
+    color:var(--agent);cursor:pointer;transition:transform .15s;text-align:center;}
+  .node:hover{transform:translateY(-2px);}
+  .down-arrow{font-size:1.3rem;color:var(--agent);opacity:.6;margin:2px 0;}
+  .loopback{
+    font-family:var(--mono);font-size:0.66rem;color:var(--agent);
+    border:1.5px dashed var(--agent);border-radius:14px;padding:6px 16px;
+    margin:6px 0;cursor:pointer;background:#fff;
+  }
+  .caption{font-family:var(--mono);font-size:0.74rem;line-height:1.65;
+    background:var(--agent-soft);border-left:3px solid var(--agent);
+    padding:13px 16px;margin-top:20px;border-radius:0 3px 3px 0;min-height:70px;}
+  .caption b{display:block;font-size:0.8rem;margin-bottom:4px;
+    text-transform:uppercase;letter-spacing:0.06em;}
+  .props{width:100%;border-collapse:collapse;margin-top:26px;
+    font-family:var(--mono);font-size:0.72rem;}
+  .props td{border:1px solid #cfd3cb;padding:9px 10px;}
+  .props td:first-child{color:var(--rail);width:38%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Reflection Pattern</h1>
+  <div class="sub">generate &rarr; self-critique &rarr; revise, until the model is satisfied</div>
+
+  <div class="stage">
+    <div class="badge">MODEL JUDGES "GOOD ENOUGH"</div>
+    <div class="node" onclick="explain('generate')">Generate</div>
+    <div class="down-arrow">&#8595;</div>
+    <div class="node" onclick="explain('critique')">Critique<br><span style="font-size:.6rem;opacity:.7">(self-review)</span></div>
+    <div class="down-arrow">&#8595;</div>
+    <div class="loopback" onclick="explain('revise')">verdict: "needs work" &mdash; loop back to Generate</div>
+    <div class="down-arrow">&#8595;</div>
+    <div class="node" onclick="explain('accept')" style="border-color:var(--ink);background:#fff;color:var(--ink);">Return<br><span style="font-size:.6rem;opacity:.6">verdict: "good enough"</span></div>
+  </div>
+
+  <div class="caption" id="cap">
+    <b>Reflection</b>
+    Click any stage to see what happens. The loop-back decision is made by the model's own critique &mdash; not by a fixed rubric or external check.
+  </div>
+
+  <table class="props">
+    <tr><td>Who controls next step</td><td>The model's own critique step</td></tr>
+    <tr><td>Cost / latency</td><td>2&ndash;4x a single generation, unbounded without a cap</td></tr>
+    <tr><td>Failure mode</td><td>Model too easily satisfied, or never satisfied</td></tr>
+    <tr><td>Typical guardrail</td><td>Max reflection rounds as a safety net</td></tr>
+  </table>
+</div>
+
+<script>
+const explanations = {
+  generate: ["Generate", "The model writes (or rewrites) a draft. On the first pass it's from scratch; on later passes it incorporates the previous critique's feedback."],
+  critique: ["Critique", "The model reviews its own draft honestly &mdash; not a separate hardcoded rubric, but an open-ended judgment call about whether the draft actually solves the task."],
+  revise: ["Loop back", "If the critique's verdict is 'needs work,' the graph routes back to Generate with the feedback attached. This edge exists because the model said so this round, not because code scheduled another pass."],
+  accept: ["Return", "Once critique's verdict is 'accept,' the loop ends. A safety-net cap (e.g. max 4 rounds) exists in case the model never converges, but it's a backstop, not the primary exit."]
+};
+function explain(key){
+  const [title, text] = explanations[key];
+  document.getElementById('cap').innerHTML = `<b>${title}</b>${text}`;
+}
+</script>
+</body>
+</html>
