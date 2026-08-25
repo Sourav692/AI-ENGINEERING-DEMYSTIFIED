@@ -273,6 +273,7 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 |---|---|---|
 | `01_Memory/` | `01_Memory_and_Conversational_Agent.ipynb`, `02_Memory_Optimizations.ipynb` | Memory & threads |
 | `01_Memory/memory/` | `02_Agent_Memory_Types_SQLite.ipynb` | Agent memory types with SQLite persistence (self-contained sub-module) |
+| `01_Memory/memory/` | `00_Memory_Layers_Guide.md`, `03_Short_Term_Working_Memory_SQLite.ipynb`, `04_Session_Memory_SQLite.ipynb`, `05_Long_Term_Semantic_Memory_SQLite.ipynb`, `06_Long_Term_Episodic_Memory_SQLite.ipynb`, `07_Long_Term_Procedural_Memory_SQLite.ipynb` | Memory layers tutorial series — each notebook is a real, runnable LangGraph agent (SQLite-backed) demonstrating one layer's native LangGraph mechanism: short-term via `SqliteSaver`, session via `SqliteStore`+`TTLConfig`, semantic/episodic via cross-thread `Store` namespaces, procedural via `Store`+`interrupt()`/`Command` human-in-the-loop approval; plus a guide covering the differences and gotchas across all layers |
 | `02_Long_Term_Memory/` | `01_Long_Term_Memory.ipynb` | Persistent long-term memory (PostgreSQL) |
 
 ## `Memory_and_State/LangChain/Memory/`
