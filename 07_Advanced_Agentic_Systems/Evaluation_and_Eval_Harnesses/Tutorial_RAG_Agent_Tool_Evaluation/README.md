@@ -6,6 +6,8 @@ A single, ordered learning path through everything this repo has for evaluating 
 
 **Target environment:** `deepeval==4.1.8` (repo root `.venv`). If you run an original source notebook directly instead of this tutorial's version, check that notebook's own folder for a different pin first.
 
+**📖 [`TUTORIAL.md`](TUTORIAL.md)** — the theory-only companion to everything below: taxonomy, reference-based vs. referenceless, LLM-as-judge failure modes, every metric's definition and when to reach for it, and a master quick-reference table — with no code, no API calls, and no environment needed. Read it standalone (to study or prep for an interview) or alongside the notebooks as a concept lookup.
+
 ## Table of contents
 
 | # | Notebook | Covers | Status |

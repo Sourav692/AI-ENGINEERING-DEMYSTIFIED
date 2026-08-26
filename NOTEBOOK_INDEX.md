@@ -302,6 +302,10 @@ Not notebooks — Python scripts + a `deepagents`-based multi-agent system:
 
 ## `Evaluation_and_Eval_Harnesses/`
 
+### `Tutorial_RAG_Agent_Tool_Evaluation/`
+
+The single ordered learning path through everything else in this folder — 14 numbered notebooks (Modules 0–5: evaluation landscape → RAG eval → conversational/tool/task eval → agent trajectory eval → production tracing bridge → real multi-agent capstone) plus `TUTORIAL.md`, a theory-only companion doc (taxonomy, every metric's definition, LLM-as-judge caveats, master quick-reference — no code/API calls needed). See its own `README.md` for the full table of contents and `../TUTORIAL_PLAN.md` for build history and source mapping. Nothing below was deleted or modified to build this — it's additive, referencing the material below in place where a real relative-path/live-service dependency exists (the Arize labs, the CrewAI app).
+
 ### `Agent_Evaluation/`
 
 | Path | Content |

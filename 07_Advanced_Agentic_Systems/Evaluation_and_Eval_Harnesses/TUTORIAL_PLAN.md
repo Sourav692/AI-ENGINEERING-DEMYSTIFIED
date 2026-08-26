@@ -2,6 +2,8 @@
 
 **Status:** ✅ Complete. All 6 modules (0–5), 15 notebooks, 198 cells, built at `Tutorial_RAG_Agent_Tool_Evaluation/`. No source notebook was deleted or modified at any point (one exception, unrelated to the merge itself: a hardcoded API key found in `Agent_Evaluation/CrewAI_Travel_Planner/tools/search_tool.py` was removed with the user's explicit go-ahead while building Module 5 — see that section below).
 
+**Addendum (later session):** the tutorial above is code-first — 14 runnable notebooks. On request, added `Tutorial_RAG_Agent_Tool_Evaluation/TUTORIAL.md`, a standalone theory-only companion document covering the same ground (taxonomy, every metric's definition and when to use it, LLM-as-judge failure modes, framework comparisons, a master quick-reference table) with no code, no API calls, and nothing to execute — written by extracting and synthesizing the markdown/theory cells already authored across all 15 notebooks, not by re-deriving the concepts from scratch. Linked from the tutorial's own `README.md` and added to `NOTEBOOK_INDEX.md` (which had never indexed this tutorial folder at all until now).
+
 **Decisions confirmed:**
 - Red teaming is **out of this tutorial** and has been moved to where it actually belongs: `12_Production_and_Observability/Safety_and_Alignment/02_Red_Teaming_Agents_and_RAG.ipynb` (done — a cleaned-up, narrated version of `red_teaming/test_rt.py` using `deepteam`, with a README entry added). The original `red_teaming/` folder here is untouched.
 - The new tutorial folder stays **inside this current `Evaluation_and_Eval_Harnesses/` folder**, alongside `RAG_Evaluation/`, `Agent_Evaluation/`, etc. — no restructuring of the phase's existing flat layout.
