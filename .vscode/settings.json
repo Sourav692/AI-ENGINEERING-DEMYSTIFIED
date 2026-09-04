@@ -1,4 +1,48 @@
 {
+    // ---- Databricks-style cell markers (pre-existing) ----
     "jupyter.interactiveWindow.cellMarker.codeRegex": "^# COMMAND ----------|^# Databricks notebook source|^(#\\s*%%|#\\s*\\<codecell\\>|#\\s*In\\[\\d*?\\]|#\\s*In\\[ \\])",
-    "jupyter.interactiveWindow.cellMarker.default": "# COMMAND ----------"
+    "jupyter.interactiveWindow.cellMarker.default": "# COMMAND ----------",
+
+    // ---- Interpreter: lets the language server resolve site-packages ----
+    // Without this, `langchain` resolves to nothing and go-to-definition has
+    // no target. Still run "Python: Select Interpreter" once from the palette;
+    // this key alone doesn't always trigger a re-resolve.
+    "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true,
+
+    // ---- Analysis / go-to-definition ----
+    "python.analysis.extraPaths": ["${workspaceFolder}"],
+    "python.analysis.indexing": true,
+    "python.analysis.useLibraryCodeForTypes": true,
+
+    // Default index depth is shallow, so symbols resolve only to top-level
+    // re-exports. LangChain's real code sits deeper -- e.g.
+    // langchain/agents/middleware/summarization.py is four levels in.
+    "python.analysis.packageIndexDepths": [
+        { "name": "langchain", "depth": 4 },
+        { "name": "langchain_core", "depth": 4 },
+        { "name": "langchain_openai", "depth": 4 },
+        { "name": "langchain_community", "depth": 4 },
+        { "name": "langgraph", "depth": 4 }
+    ],
+
+    // 532 notebooks + 687 .py files here; indexing retired/vendored trees
+    // competes with resolution and makes jumps intermittently fail.
+    "python.analysis.exclude": [
+        "**/archive/**",
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/.venv/**/node_modules/**",
+        "**/__pycache__/**"
+    ],
+
+    // ---- Notebooks ----
+    // Run each notebook with its own folder as cwd, so the relative data paths
+    // inherited from the merged-in source repos (e.g. 04_Retrieval_and_RAG's
+    // ../../data/ references) resolve the way their authors intended.
+    "jupyter.notebookFileRoot": "${fileDirname}",
+
+    // Notebook cells inherit the workspace interpreter for analysis; the kernel
+    // is still picked per notebook (top-right kernel picker -> same .venv).
+    "notebook.output.textLineLimit": 80
 }

@@ -1,0 +1,54 @@
+# ============================================================
+# 03_LangGraph_Fundamentals — Scoped Dependencies
+# ============================================================
+# Generated from the actual imports found across every notebook in
+# 03_LangGraph_Fundamentals/ (01_Foundations + 02_Core_Capabilities),
+# including the transitive imports pulled in by the local `helpers`
+# package (helpers/utils.py: get_llm / get_embeddings factory).
+#
+# The previous, repo-wide requirements.txt was backed up to
+# requirements.txt.bak before this file was written.
+# ============================================================
+
+# --- LangChain ecosystem ---
+langchain==1.2.7
+langchain-core==1.2.7
+langchain-openai==1.1.7
+langchain-community==0.4.1
+langchain-groq==1.1.1
+langchain-chroma==1.1.0
+
+# --- LangGraph ---
+# langgraph==1.0.7 pulled in langgraph-prebuilt>=1.0.10 (unpinned transitive dep),
+# which imports ExecutionInfo/ServerInfo from langgraph.runtime — not present until
+# langgraph>=1.2. Pin the core package at a version that stays in lockstep with
+# whatever langgraph-prebuilt resolves to.
+langgraph==1.2.11
+
+# --- Databricks (helpers.get_llm platform-aware default on macOS; ---
+# --- databricks.vector_search.client used in 03_Customer_Support_Router_RAG_Databricks_Alt.ipynb) ---
+databricks-langchain==0.13.0
+databricks-sdk
+databricks-vectorsearch
+mcp<2.0.0  # databricks-langchain's langchain-mcp-adapters dep breaks on mcp==2.0.0
+
+# --- Data handling and validation ---
+pydantic==2.12.5
+typing-extensions==4.15.0
+numpy
+pandas
+
+# --- Utilities ---
+python-dotenv==1.2.1
+requests>=2.31.0
+rich
+tqdm==4.67.1
+ipython==9.9.0
+
+# --- Notebook execution ---
+jupyter==1.1.1
+
+# NOTE: the local `helpers` package (helpers.get_llm / helpers.get_embeddings)
+# is installed separately with `--no-deps`, since `-e .` would pull in the
+# full repo-wide pyproject.toml dependency set (deepagents, etc.) and
+# conflict with the pins above. See install step in chat history.

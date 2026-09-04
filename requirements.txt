@@ -1,54 +1,246 @@
 # ============================================================
-# 03_LangGraph_Fundamentals — Scoped Dependencies
+# PRIMARY requirements.txt — repo-wide, resolver-verified
 # ============================================================
-# Generated from the actual imports found across every notebook in
-# 03_LangGraph_Fundamentals/ (01_Foundations + 02_Core_Capabilities),
-# including the transitive imports pulled in by the local `helpers`
-# package (helpers/utils.py: get_llm / get_embeddings factory).
+# One consolidated dependency set covering the union of the direct,
+# top-level packages named across all 51 per-folder requirements.txt
+# files in this repo. Every pin below is the newest version that
+# co-resolves with all the others: produced with
 #
-# The previous, repo-wide requirements.txt was backed up to
-# requirements.txt.bak before this file was written.
+#     uv pip compile <this list> --python-version 3.12
+#
+# and verified against PyPI's current release for each package.
+# Transitive-only pins from the per-folder files (certifi, attrs,
+# aiohappyeyeballs, ...) are deliberately NOT listed — let the
+# resolver pick them.
+#
+# Install:
+#     uv venv --python 3.12
+#     source .venv/bin/activate        # Windows: .venv\Scripts\activate
+#     uv pip install -r requirements.txt
+#     uv pip install -e . --no-deps    # the local `helpers` package
+#
+# The previous, LangGraph-scoped root file is kept as
+# requirements.langgraph-scoped.txt.bak.
+#
+# ------------------------------------------------------------
+# DELIBERATE EXCLUSIONS — these cannot share one environment
+# ------------------------------------------------------------
+# crewai / crewai-tools : CrewAI 1.x hard-pins chromadb>=1.1,<1.2, while
+#   langchain-chroma 1.1 requires chromadb>=1.3.5. Chroma wins here because
+#   Phases 4 and 8 depend on it. Install CrewAI in its own venv from
+#   10_Alternative_Agent_Frameworks/CrewAI/**/requirements.txt.
+# grouse-eval : not published on PyPI.
+# ragatouille, lamini, pyppeteer, huey, magika : single-notebook, heavily
+#   pinned deps — install per-notebook rather than repo-wide.
+#
+# ------------------------------------------------------------
+# HELD BELOW LATEST — 154 of 172 pins are the newest published
+# release; these 18 are capped by real upstream constraints:
+# ------------------------------------------------------------
+# mcp 1.29.1        <2.0.0 — databricks-langchain's langchain-mcp-adapters
+#                   dep breaks on mcp 2.x (pre-existing repo note).
+# fastmcp 3.4.7     fastmcp 4.x requires mcp>=2.
+# arize-phoenix     20.3.0 — 20.7.0 requires mcp>=2 via fastmcp-slim.
+# google-adk 2.7.0  2.8.0 requires opentelemetry-sdk>1.43, which in turn
+# opentelemetry-*   is why the otel packages sit at 1.43.0.
+# openai 2.54.0     ragas -> instructor caps openai<3. Chosen deliberately
+#                   so ragas 0.4.3 + deepeval 4.2.1 stay current.
+# groq 0.37.1       langchain-groq caps groq<1.
+# pgvector 0.3.6    langchain-postgres caps pgvector<0.4.
+# websockets 15.0.1 google-genai caps websockets<17.
+# huggingface-hub 1.16.1, rich 14.3.4, tabulate 0.9.0, diffusers 0.39.0
+#                   — all capped by deepeval's click<8.4 constraint chain
+#                   (hf-hub>=1.23 needs click>=8.4.2).
+# unitycatalog-ai / -langchain 0.3.0 — 0.4.0 caps langchain<=1.2.10.
+# databricks-connect 18.0.0 — 19.1 not co-resolvable with this set.
+# pydantic 2.12.5   capped transitively by the agent/eval stack.
 # ============================================================
 
-# --- LangChain ecosystem ---
-langchain==1.2.7
-langchain-core==1.2.7
-langchain-openai==1.1.7
-langchain-community==0.4.1
-langchain-groq==1.1.1
+# LangChain / LangGraph
+langchain==1.4.0
+langchain-core==1.6.1
+langchain-classic==1.0.8
+langchain-community==0.4.2
+langchain-experimental==0.4.2
+langchain-text-splitters==1.1.2
+langchain-openai==1.6.0
+langchain-anthropic==1.7.1
+langchain-google-genai==4.4.0
+langchain-groq==1.1.3
+langchain-aws==1.7.5
+langchain-fireworks==1.6.1
+langchain-huggingface==1.2.2
 langchain-chroma==1.1.0
-
-# --- LangGraph ---
-# langgraph==1.0.7 pulled in langgraph-prebuilt>=1.0.10 (unpinned transitive dep),
-# which imports ExecutionInfo/ServerInfo from langgraph.runtime — not present until
-# langgraph>=1.2. Pin the core package at a version that stays in lockstep with
-# whatever langgraph-prebuilt resolves to.
+langchain-pinecone==0.2.13
+langchain-postgres==0.0.17
+langchain-tavily==0.2.18
+langchain-mcp-adapters==0.3.2
+langchainhub==0.1.21
 langgraph==1.2.11
-
-# --- Databricks (helpers.get_llm platform-aware default on macOS; ---
-# --- databricks.vector_search.client used in 03_Customer_Support_Router_RAG_Databricks_Alt.ipynb) ---
-databricks-langchain==0.13.0
-databricks-sdk
-databricks-vectorsearch
-mcp<2.0.0  # databricks-langchain's langchain-mcp-adapters dep breaks on mcp==2.0.0
-
-# --- Data handling and validation ---
+langgraph-checkpoint==4.2.0
+langgraph-checkpoint-sqlite==3.1.1
+langgraph-checkpoint-postgres==3.1.2
+langgraph-prebuilt==1.1.0
+langgraph-sdk==0.4.4
+langgraph-swarm==0.1.0
+langmem==0.0.30
+langsmith==0.12.1
+deepagents==0.7.13
+# Model providers / SDKs
+openai==2.54.0
+anthropic==1.3.0
+groq==0.37.1
+cohere==7.1.1
+litellm==1.99.0
+google-genai==2.22.0
+google-generativeai==0.8.6
+google-api-python-client==2.200.0
+google-cloud-aiplatform==2.1.0
+google-adk==2.7.0
+huggingface-hub==1.16.1
+transformers==5.16.1
+diffusers==0.39.0
+accelerate==1.14.0
+peft==0.20.0
+trl==1.12.0
+datasets==5.0.1
+evaluate==0.4.6
+tokenizers==0.23.2
+safetensors==0.8.0
+sentence-transformers==6.0.1
+torch==2.14.0
+torchvision==0.29.0
+torchaudio==2.11.0
+openai-whisper==20250625
+# Databricks
+databricks-langchain==0.20.0
+databricks-sdk==0.135.0
+databricks-vectorsearch==0.75
+databricks-connect==18.0.0
+databricks-sql-connector==4.5.0
+databricks-ai-bridge==0.21.0
+databricks-mcp==0.9.2
+unitycatalog-ai==0.3.0
+unitycatalog-langchain==0.3.0
+# Alternative agent frameworks
+# crewai EXCLUDED
+# crewai-tools  EXCLUDED
+autogen-agentchat==0.7.5
+autogen-core==0.7.5
+autogen-ext==0.7.5
+mem0ai==2.0.20
+# Protocols
+mcp==1.29.1
+fastmcp==3.4.7
+a2a-sdk==1.1.2
+# Vector stores / retrieval
+chromadb==1.5.9
+faiss-cpu==1.15.0
+neo4j==6.3.0
+pgvector==0.3.6
+rank-bm25==0.2.2
+duckduckgo-search==8.1.1
+tavily-python==0.8.1
+wikipedia==1.4.0
+arxiv==4.0.1
+youtube-transcript-api==1.2.4
+# Document processing
+pypdf==6.17.0
+pypdf2==3.0.1
+pymupdf==1.28.2
+python-docx==1.2.0
+docx2txt==0.9
+unstructured==0.27.5
+markitdown==0.1.7
+markdownify==1.2.3
+beautifulsoup4==4.15.0
+readabilipy==0.3.0
+langextract==1.6.0
+reportlab==5.0.1
+tiktoken==0.14.0
+# Evaluation / observability
+deepeval==4.2.1
+deepteam==1.0.9
+ragas==0.4.3
+mlflow==3.16.0
+arize-phoenix==20.3.0
+arize-phoenix-otel==0.17.1
+openinference-instrumentation-openai==0.1.57
+opentelemetry-sdk==1.43.0
+opentelemetry-exporter-otlp-proto-grpc==1.43.0
+sentry-sdk==2.68.1
+# grouse-eval  # not on PyPI
+pyrit==1.0.1
+# Data / ML
+numpy==2.5.2
+pandas==3.0.5
+scikit-learn==1.9.0
+scipy==1.18.1
+matplotlib==3.11.1
+altair==6.2.2
+pyarrow==25.0.1
+duckdb==1.5.5
+networkx==3.6.1
+numexpr==2.14.2
+yfinance==1.7.0
+# Web / apps / serving
+fastapi==0.141.1
+uvicorn==0.52.4
+starlette==1.6.0
+sse-starlette==3.4.10
+python-multipart==0.0.32
+flask==3.1.3
+flask-cors==6.0.5
+waitress==3.0.2
+streamlit==1.63.0
+streamlit-agraph==0.0.45
+streamlit-chat==0.1.1
+streamlit-mic-recorder==0.0.8
+gradio==6.26.0
+docker==7.2.0
+# Databases / persistence
+sqlalchemy==2.0.52
+sqlalchemy-utils==0.42.1
+psycopg[binary]==3.3.5
+psycopg-pool==3.3.1
+psycopg2-binary==2.9.12
+asyncpg==0.31.0
+aiosqlite==0.22.1
+pymysql==1.2.0
+mysql-connector-python==26.7.0
+redis==8.1.0
+alembic==1.19.1
+# Utilities
 pydantic==2.12.5
-typing-extensions==4.15.0
-numpy
-pandas
-
-# --- Utilities ---
-python-dotenv==1.2.1
-requests>=2.31.0
-rich
-tqdm==4.67.1
-ipython==9.9.0
-
-# --- Notebook execution ---
+pydantic-settings==2.15.0
+typing-extensions==4.16.0
+python-dotenv==1.2.3
+requests==2.34.2
+httpx==0.28.1
+aiohttp==3.14.3
+aiofiles==25.1.0
+tenacity==9.1.4
+rich==14.3.4
+tqdm==4.70.0
+typer==0.27.2
+pyyaml==6.0.3
+orjson==3.12.0
+jsonlines==4.0.0
+tabulate==0.9.0
+prettytable==3.18.0
+validators==0.35.0
+grandalf==0.8
+nest-asyncio==1.6.0
+websockets==15.0.1
+boto3==1.43.88
+# Notebook / dev tooling
 jupyter==1.1.1
-
-# NOTE: the local `helpers` package (helpers.get_llm / helpers.get_embeddings)
-# is installed separately with `--no-deps`, since `-e .` would pull in the
-# full repo-wide pyproject.toml dependency set (deepagents, etc.) and
-# conflict with the pins above. See install step in chat history.
+ipykernel==7.3.0
+ipython==9.17.1
+notebook==7.6.2
+nbformat==5.11.1
+pytest==9.1.1
+pytest-asyncio==1.4.0
+ruff==0.16.6
+black==26.5.1
+isort==9.0.1

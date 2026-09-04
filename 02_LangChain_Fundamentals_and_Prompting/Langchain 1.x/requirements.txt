@@ -1,0 +1,5 @@
+langchain>=1.0
+langchain-openai>=0.3
+langgraph>=1.0
+python-dotenv>=1.0
+jupyter

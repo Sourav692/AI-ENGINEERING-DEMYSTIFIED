@@ -1,0 +1,2538 @@
+# Fully-resolved transitive lock for the primary requirements.txt (548 packages).
+# Regenerate: uv pip compile requirements.txt --python-version 3.12 -o requirements.lock.txt
+a2a-sdk==1.1.2
+    # via -r requirements.txt
+absl-py==2.5.0
+    # via
+    #   langextract
+    #   ml-collections
+accelerate==1.14.0
+    # via
+    #   -r requirements.txt
+    #   peft
+    #   trl
+aiofile==3.12.3
+    # via py-key-value-aio
+aiofiles==25.1.0
+    # via
+    #   -r requirements.txt
+    #   pyrit
+    #   unstructured-client
+aiohappyeyeballs==2.7.1
+    # via aiohttp
+aiohttp==3.14.3
+    # via
+    #   -r requirements.txt
+    #   aiohttp-retry
+    #   deepeval
+    #   deepteam
+    #   fireworks-ai
+    #   fsspec
+    #   google-adk
+    #   httpx-aiohttp
+    #   instructor
+    #   kubernetes
+    #   langchain-community
+    #   langchain-fireworks
+    #   langchain-tavily
+    #   langextract
+    #   litellm
+    #   mlflow
+    #   pinecone
+    #   unitycatalog-client
+aiohttp-retry==2.9.1
+    # via
+    #   pinecone
+    #   unitycatalog-client
+aioitertools==0.13.0
+    # via arize-phoenix
+aiologic==0.17.1
+    # via culsans
+aiosignal==1.4.0
+    # via aiohttp
+aiosqlite==0.22.1
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   google-adk
+    #   langgraph-checkpoint-sqlite
+alembic==1.19.1
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   mlflow
+    #   pyrit
+altair==6.2.2
+    # via
+    #   -r requirements.txt
+    #   streamlit
+annotated-doc==0.0.5
+    # via
+    #   fastapi
+    #   typer
+annotated-types==0.8.0
+    # via pydantic
+anthropic==1.3.0
+    # via
+    #   -r requirements.txt
+    #   langchain-anthropic
+    #   pydantic-ai-slim
+anyio==4.14.2
+    # via
+    #   anthropic
+    #   fireworks-ai
+    #   google-genai
+    #   gradio
+    #   groq
+    #   httpx
+    #   httpx2
+    #   jupyter-server
+    #   langsmith
+    #   mcp
+    #   mlflow-skinny
+    #   openai
+    #   py-key-value-aio
+    #   pydantic-ai-slim
+    #   pydantic-graph
+    #   sse-starlette
+    #   starlette
+    #   streamlit
+    #   watchfiles
+appdirs==1.4.4
+    # via
+    #   pyrit
+    #   ragas
+argon2-cffi==25.1.0
+    # via jupyter-server
+argon2-cffi-bindings==26.1.0
+    # via argon2-cffi
+arize-phoenix==20.3.0
+    # via -r requirements.txt
+arize-phoenix-client==3.4.0
+    # via arize-phoenix
+arize-phoenix-evals==3.6.0
+    # via arize-phoenix
+arize-phoenix-otel==0.17.1
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+arize-phoenix-sqlean==0.1.1
+    # via arize-phoenix
+arrow==1.4.0
+    # via isoduration
+art==6.5
+    # via pyrit
+arxiv==4.0.1
+    # via -r requirements.txt
+asttokens==3.0.2
+    # via stack-data
+async-lru==2.3.0
+    # via jupyterlab
+async-timeout==5.0.1
+    # via langextract
+asyncpg==0.31.0
+    # via
+    #   -r requirements.txt
+    #   langchain-postgres
+attrs==26.1.0
+    # via
+    #   aiohttp
+    #   cyclopts
+    #   jsonlines
+    #   jsonschema
+    #   jsonschema-path
+    #   referencing
+authlib==1.8.0
+    # via
+    #   arize-phoenix
+    #   fastmcp-slim
+    #   google-adk
+autogen-agentchat==0.7.5
+    # via -r requirements.txt
+autogen-core==0.7.5
+    # via
+    #   -r requirements.txt
+    #   autogen-agentchat
+    #   autogen-ext
+autogen-ext==0.7.5
+    # via -r requirements.txt
+av==18.1.0
+    # via pyrit
+azure-ai-contentsafety==1.0.0
+    # via pyrit
+azure-core==1.41.0
+    # via
+    #   azure-ai-contentsafety
+    #   azure-identity
+    #   azure-keyvault-secrets
+    #   azure-storage-blob
+    #   pyrit
+azure-identity==1.25.3
+    # via pyrit
+azure-keyvault-secrets==4.11.2
+    # via pyrit
+azure-storage-blob==12.30.1
+    # via pyrit
+babel==2.18.0
+    # via jupyterlab-server
+backoff==2.2.1
+    # via posthog
+base2048==0.1.3
+    # via pyrit
+bashkit==0.17.1
+    # via arize-phoenix
+bcrypt==5.0.0
+    # via chromadb
+beartype==0.22.9
+    # via py-key-value-aio
+beautifulsoup4==4.15.0
+    # via
+    #   -r requirements.txt
+    #   markdownify
+    #   markitdown
+    #   nbconvert
+    #   readabilipy
+    #   unstructured
+    #   wikipedia
+    #   yfinance
+black==26.5.1
+    # via -r requirements.txt
+bleach==6.4.0
+    # via nbconvert
+blinker==1.9.0
+    # via flask
+blis==1.3.3
+    # via thinc
+boto3==1.43.88
+    # via
+    #   -r requirements.txt
+    #   langchain-aws
+    #   litellm
+    #   pydantic-ai-slim
+botocore==1.43.88
+    # via
+    #   boto3
+    #   s3transfer
+bracex==3.0.1
+    # via wcmatch
+brotli==1.2.0
+    # via gradio
+build==1.6.0
+    # via chromadb
+cachetools==7.1.8
+    # via
+    #   arize-phoenix
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   py-key-value-aio
+caio==0.12.2
+    # via aiofile
+catalogue==2.0.10
+    # via
+    #   spacy
+    #   srsly
+    #   thinc
+certifi==2026.7.22
+    # via
+    #   curl-cffi
+    #   google-cloud-aiplatform
+    #   httpcore
+    #   httpx
+    #   kubernetes
+    #   langchain-openai
+    #   pinecone
+    #   requests
+    #   sentry-sdk
+cffi==2.1.1
+    # via
+    #   argon2-cffi-bindings
+    #   cryptography
+    #   curl-cffi
+charset-normalizer==3.5.1
+    # via
+    #   markitdown
+    #   reportlab
+    #   requests
+    #   unstructured
+chromadb==1.5.9
+    # via
+    #   -r requirements.txt
+    #   langchain-chroma
+click==8.3.3
+    # via
+    #   black
+    #   deepeval
+    #   duckduckgo-search
+    #   flask
+    #   google-adk
+    #   litellm
+    #   magika
+    #   mlflow-skinny
+    #   python-oxmsg
+    #   spacy
+    #   streamlit
+    #   uvicorn
+cloudpathlib==0.25.0
+    # via weasel
+cloudpickle==3.1.2
+    # via
+    #   joblib
+    #   mlflow-skinny
+    #   unitycatalog-ai
+cohere==7.1.1
+    # via -r requirements.txt
+colorama==0.4.6
+    # via
+    #   build
+    #   click
+    #   ipython
+    #   pyrit
+    #   pytest
+    #   tqdm
+    #   typer
+    #   wasabi
+comm==0.2.3
+    # via
+    #   ipykernel
+    #   ipywidgets
+confection==1.3.3
+    # via
+    #   spacy
+    #   thinc
+    #   weasel
+confusable-homoglyphs==3.3.1
+    # via pyrit
+confusables==1.2.0
+    # via pyrit
+contourpy==1.3.3
+    # via matplotlib
+cross-web==0.7.0
+    # via strawberry-graphql
+cryptography==50.0.1
+    # via
+    #   authlib
+    #   azure-identity
+    #   azure-storage-blob
+    #   google-auth
+    #   joserfc
+    #   mlflow
+    #   msal
+    #   pyjwt
+culsans==0.11.0
+    # via a2a-sdk
+curl-cffi==0.16.3
+    # via yfinance
+cycler==0.12.1
+    # via matplotlib
+cyclopts==4.24.0
+    # via fastmcp-slim
+cymem==2.0.13
+    # via
+    #   preshed
+    #   spacy
+    #   thinc
+databricks-ai-bridge==0.21.0
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+    #   databricks-mcp
+    #   databricks-openai
+databricks-ai-search==0.78
+    # via
+    #   databricks-ai-bridge
+    #   databricks-langchain
+    #   databricks-openai
+    #   databricks-vectorsearch
+databricks-connect==18.0.0
+    # via
+    #   -r requirements.txt
+    #   unitycatalog-ai
+databricks-langchain==0.20.0
+    # via -r requirements.txt
+databricks-mcp==0.9.2
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+    #   databricks-openai
+databricks-openai==0.17.1
+    # via databricks-langchain
+databricks-sdk==0.135.0
+    # via
+    #   -r requirements.txt
+    #   databricks-ai-bridge
+    #   databricks-connect
+    #   databricks-langchain
+    #   databricks-mcp
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   unitycatalog-ai
+databricks-sql-connector==4.5.0
+    # via -r requirements.txt
+databricks-vectorsearch==0.75
+    # via -r requirements.txt
+datasets==5.0.1
+    # via
+    #   -r requirements.txt
+    #   evaluate
+    #   pyrit
+    #   ragas
+    #   trl
+debugpy==1.8.21
+    # via ipykernel
+deepagents==0.7.13
+    # via -r requirements.txt
+deepeval==4.2.1
+    # via
+    #   -r requirements.txt
+    #   deepteam
+deepteam==1.0.9
+    # via -r requirements.txt
+defusedxml==0.7.1
+    # via
+    #   markitdown
+    #   nbconvert
+    #   youtube-transcript-api
+deprecation==2.1.0
+    # via
+    #   databricks-ai-search
+    #   databricks-vectorsearch
+diffusers==0.39.0
+    # via -r requirements.txt
+dill==0.4.1
+    # via
+    #   datasets
+    #   evaluate
+    #   multiprocess
+diskcache==5.6.3
+    # via ragas
+distro==1.9.0
+    # via
+    #   fireworks-ai
+    #   google-genai
+    #   groq
+    #   langsmith
+    #   openai
+    #   posthog
+dnspython==2.8.0
+    # via email-validator
+docker==7.2.0
+    # via
+    #   -r requirements.txt
+    #   mlflow
+docstring-parser==0.18.0
+    # via
+    #   anthropic
+    #   cyclopts
+    #   google-cloud-aiplatform
+    #   instructor
+docx2txt==0.9
+    # via -r requirements.txt
+duckdb==1.5.5
+    # via -r requirements.txt
+duckduckgo-search==8.1.1
+    # via -r requirements.txt
+durationpy==0.11
+    # via kubernetes
+dydantic==0.0.8
+    # via trustcall
+ecoji==0.1.1
+    # via pyrit
+email-validator==2.3.0
+    # via
+    #   arize-phoenix
+    #   pydantic
+emoji==2.15.0
+    # via unstructured
+et-xmlfile==2.0.0
+    # via openpyxl
+evaluate==0.4.6
+    # via -r requirements.txt
+exceptiongroup==1.3.1
+    # via
+    #   fastmcp-slim
+    #   langextract
+execnet==2.1.2
+    # via pytest-xdist
+executing==2.2.1
+    # via stack-data
+faiss-cpu==1.15.0
+    # via -r requirements.txt
+fastapi==0.141.1
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   google-adk
+    #   gradio
+    #   mlflow-skinny
+    #   pyrit
+fastavro==1.12.2
+    # via cohere
+fastjsonschema==2.22.2
+    # via nbformat
+fastmcp==3.4.7
+    # via -r requirements.txt
+fastmcp-slim==3.4.7
+    # via
+    #   arize-phoenix
+    #   fastmcp
+    #   pydantic-ai-slim
+fastuuid==0.14.0
+    # via litellm
+filelock==3.32.5
+    # via
+    #   datasets
+    #   diffusers
+    #   huggingface-hub
+    #   torch
+    #   unstructured
+filetype==1.2.0
+    # via
+    #   langchain-google-genai
+    #   unstructured
+fireworks-ai==1.2.11
+    # via langchain-fireworks
+flask==3.1.3
+    # via
+    #   -r requirements.txt
+    #   flask-cors
+    #   mlflow
+flask-cors==6.0.5
+    # via
+    #   -r requirements.txt
+    #   mlflow
+flatbuffers==25.12.19
+    # via onnxruntime
+fonttools==4.64.0
+    # via matplotlib
+fqdn==1.5.1
+    # via jsonschema
+frozenlist==1.8.0
+    # via
+    #   aiohttp
+    #   aiosignal
+fsspec==2026.6.0
+    # via
+    #   datasets
+    #   evaluate
+    #   gradio-client
+    #   huggingface-hub
+    #   torch
+genai-prices==0.1.6
+    # via pydantic-ai-slim
+gitdb==4.0.12
+    # via gitpython
+gitpython==3.1.61
+    # via mlflow-skinny
+google-adk==2.7.0
+    # via -r requirements.txt
+google-ai-generativelanguage==0.6.15
+    # via google-generativeai
+google-api-core==2.33.0
+    # via
+    #   a2a-sdk
+    #   google-ai-generativelanguage
+    #   google-api-python-client
+    #   google-cloud-aiplatform
+    #   google-cloud-bigquery
+    #   google-cloud-core
+    #   google-cloud-resource-manager
+    #   google-cloud-storage
+    #   google-generativeai
+google-api-python-client==2.200.0
+    # via
+    #   -r requirements.txt
+    #   google-generativeai
+google-auth==2.57.1
+    # via
+    #   databricks-sdk
+    #   google-adk
+    #   google-ai-generativelanguage
+    #   google-api-core
+    #   google-api-python-client
+    #   google-auth-httplib2
+    #   google-cloud-aiplatform
+    #   google-cloud-bigquery
+    #   google-cloud-core
+    #   google-cloud-resource-manager
+    #   google-cloud-storage
+    #   google-genai
+    #   google-generativeai
+google-auth-httplib2==0.4.2
+    # via google-api-python-client
+google-cloud-aiplatform==2.1.0
+    # via -r requirements.txt
+google-cloud-bigquery==3.45.0
+    # via google-cloud-aiplatform
+google-cloud-core==2.7.0
+    # via
+    #   google-cloud-bigquery
+    #   google-cloud-storage
+google-cloud-resource-manager==1.18.0
+    # via google-cloud-aiplatform
+google-cloud-storage==3.13.1
+    # via
+    #   google-cloud-aiplatform
+    #   langextract
+google-crc32c==1.8.0
+    # via
+    #   google-cloud-storage
+    #   google-resumable-media
+google-genai==2.22.0
+    # via
+    #   -r requirements.txt
+    #   google-adk
+    #   google-cloud-aiplatform
+    #   langchain-google-genai
+    #   langextract
+    #   pydantic-ai-slim
+google-generativeai==0.8.6
+    # via -r requirements.txt
+google-resumable-media==2.10.2
+    # via
+    #   google-cloud-bigquery
+    #   google-cloud-storage
+googleapis-common-protos==1.75.0
+    # via
+    #   a2a-sdk
+    #   databricks-connect
+    #   google-api-core
+    #   grpc-google-iam-v1
+    #   grpcio-status
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+gradio==6.26.0
+    # via -r requirements.txt
+gradio-client==2.6.1
+    # via
+    #   gradio
+    #   hf-gradio
+grandalf==0.8
+    # via -r requirements.txt
+graphene==3.4.3
+    # via mlflow
+graphql-core==3.2.12
+    # via
+    #   graphene
+    #   graphql-relay
+    #   strawberry-graphql
+graphql-relay==3.2.0
+    # via graphene
+graphviz==0.21
+    # via google-adk
+greenlet==3.5.5
+    # via sqlalchemy
+griffelib==2.2.0
+    # via
+    #   fastmcp-slim
+    #   openai-agents
+    #   pydantic-ai-slim
+groovy==0.1.2
+    # via gradio
+groq==0.37.1
+    # via
+    #   -r requirements.txt
+    #   langchain-groq
+grpc-google-iam-v1==0.14.4
+    # via google-cloud-resource-manager
+grpc-interceptor==0.15.4
+    # via arize-phoenix
+grpcio==1.83.1
+    # via
+    #   arize-phoenix
+    #   chromadb
+    #   databricks-connect
+    #   deepeval
+    #   deepteam
+    #   google-api-core
+    #   google-cloud-resource-manager
+    #   googleapis-common-protos
+    #   grpc-google-iam-v1
+    #   grpc-interceptor
+    #   grpcio-status
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   qdrant-client
+grpcio-status==1.71.2
+    # via
+    #   databricks-connect
+    #   google-api-core
+h11==0.16.0
+    # via
+    #   httpcore
+    #   httpcore2
+    #   uvicorn
+h2==4.4.1
+    # via httpx
+hf-gradio==0.4.1
+    # via gradio
+hf-xet==1.6.0
+    # via huggingface-hub
+hpack==4.2.0
+    # via h2
+html5lib==1.1
+    # via
+    #   readabilipy
+    #   unstructured
+httpcore==1.0.9
+    # via
+    #   httpx
+    #   unstructured-client
+httpcore2==2.12.0
+    # via httpx2
+httplib2==0.32.0
+    # via
+    #   google-api-python-client
+    #   google-auth-httplib2
+httptools==0.8.0
+    # via
+    #   streamlit
+    #   uvicorn
+httpx==0.28.1
+    # via
+    #   -r requirements.txt
+    #   a2a-sdk
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   chromadb
+    #   cohere
+    #   databricks-ai-search
+    #   databricks-vectorsearch
+    #   datasets
+    #   diffusers
+    #   fastmcp-slim
+    #   fireworks-ai
+    #   google-adk
+    #   google-genai
+    #   gradio
+    #   gradio-client
+    #   groq
+    #   httpx-aiohttp
+    #   huggingface-hub
+    #   jupyterlab
+    #   langchain-core
+    #   langchain-pinecone
+    #   langgraph-sdk
+    #   litellm
+    #   mcp
+    #   mem0ai
+    #   openai
+    #   pydantic-ai-slim
+    #   pydantic-graph
+    #   pyrit
+    #   qdrant-client
+    #   safehttpx
+    #   tavily-python
+    #   unstructured-client
+    #   weasel
+httpx-aiohttp==0.2.0
+    # via fireworks-ai
+httpx-sse==0.4.3
+    # via
+    #   langchain-community
+    #   mcp
+httpx2==2.12.0
+    # via
+    #   anthropic
+    #   genai-prices
+    #   langsmith
+huey==3.4.0
+    # via mlflow
+huggingface-hub==1.16.1
+    # via
+    #   -r requirements.txt
+    #   accelerate
+    #   datasets
+    #   diffusers
+    #   evaluate
+    #   gradio
+    #   gradio-client
+    #   langchain-huggingface
+    #   peft
+    #   sentence-transformers
+    #   tokenizers
+    #   transformers
+hyperframe==6.1.0
+    # via h2
+idna==3.19
+    # via
+    #   anyio
+    #   email-validator
+    #   httpx
+    #   httpx2
+    #   jsonschema
+    #   requests
+    #   yarl
+importlib-metadata==8.9.0
+    # via
+    #   diffusers
+    #   litellm
+    #   mlflow-skinny
+importlib-resources==7.1.0
+    # via chromadb
+iniconfig==2.3.0
+    # via pytest
+installer==0.7.0
+    # via unstructured
+instructor==1.16.0
+    # via ragas
+ipykernel==7.3.0
+    # via
+    #   -r requirements.txt
+    #   jupyter
+    #   jupyter-console
+    #   jupyterlab
+ipython==9.17.1
+    # via
+    #   -r requirements.txt
+    #   ipykernel
+    #   ipywidgets
+    #   jupyter-console
+ipython-pygments-lexers==1.1.1
+    # via ipython
+ipywidgets==8.1.9
+    # via jupyter
+isodate==0.7.2
+    # via
+    #   azure-ai-contentsafety
+    #   azure-keyvault-secrets
+    #   azure-storage-blob
+isoduration==20.11.0
+    # via jsonschema
+isort==9.0.1
+    # via -r requirements.txt
+itsdangerous==2.2.0
+    # via
+    #   flask
+    #   streamlit
+jaraco-classes==3.4.0
+    # via keyring
+jaraco-context==6.1.2
+    # via keyring
+jaraco-functools==4.6.0
+    # via keyring
+jedi==0.20.0
+    # via ipython
+jinja2==3.1.6
+    # via
+    #   altair
+    #   arize-phoenix
+    #   deepeval
+    #   flask
+    #   gradio
+    #   instructor
+    #   jupyter-server
+    #   jupyterlab
+    #   jupyterlab-server
+    #   litellm
+    #   nbconvert
+    #   pydeck
+    #   pyrit
+    #   spacy
+    #   torch
+    #   trl
+jiter==0.14.0
+    # via
+    #   anthropic
+    #   instructor
+    #   openai
+jmespath==1.1.0
+    # via
+    #   arize-phoenix
+    #   boto3
+    #   botocore
+joblib==1.6.0
+    # via scikit-learn
+joserfc==1.7.5
+    # via
+    #   arize-phoenix
+    #   authlib
+    #   fastmcp-slim
+json-rpc==1.15.0
+    # via a2a-sdk
+json5==0.15.0
+    # via jupyterlab-server
+jsonlines==4.0.0
+    # via -r requirements.txt
+jsonpatch==1.33
+    # via
+    #   langchain-core
+    #   trustcall
+jsonpath-ng==1.8.0
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-evals
+jsonpointer==3.1.1
+    # via
+    #   jsonpatch
+    #   jsonschema
+jsonref==1.1.0
+    # via
+    #   autogen-core
+    #   fastmcp-slim
+jsonschema==4.26.0
+    # via
+    #   altair
+    #   arize-phoenix
+    #   chromadb
+    #   google-adk
+    #   jupyter-events
+    #   jupyterlab-server
+    #   litellm
+    #   mcp
+    #   nbformat
+jsonschema-path==0.5.0
+    # via fastmcp-slim
+jsonschema-specifications==2025.9.1
+    # via jsonschema
+jupyter==1.1.1
+    # via -r requirements.txt
+jupyter-builder==1.2.2
+    # via
+    #   jupyterlab
+    #   notebook
+jupyter-client==8.10.0
+    # via
+    #   ipykernel
+    #   jupyter-console
+    #   jupyter-server
+    #   nbclient
+jupyter-console==6.6.3
+    # via jupyter
+jupyter-core==5.9.1
+    # via
+    #   ipykernel
+    #   jupyter-builder
+    #   jupyter-client
+    #   jupyter-console
+    #   jupyter-server
+    #   jupyterlab
+    #   nbclient
+    #   nbconvert
+    #   nbformat
+jupyter-events==0.12.1
+    # via jupyter-server
+jupyter-lsp==2.3.1
+    # via jupyterlab
+jupyter-server==2.21.0
+    # via
+    #   jupyter-lsp
+    #   jupyterlab
+    #   jupyterlab-server
+    #   notebook
+    #   notebook-shim
+jupyter-server-terminals==0.5.4
+    # via jupyter-server
+jupyterlab==4.6.3
+    # via
+    #   jupyter
+    #   notebook
+jupyterlab-pygments==0.3.0
+    # via nbconvert
+jupyterlab-server==2.28.0
+    # via
+    #   jupyterlab
+    #   notebook
+jupyterlab-widgets==3.0.17
+    # via ipywidgets
+keyring==25.7.0
+    # via py-key-value-aio
+kiwisolver==1.5.1
+    # via matplotlib
+kubernetes==36.0.3
+    # via chromadb
+langchain==1.4.0
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+    #   deepagents
+    #   langchain-tavily
+    #   langgraph-swarm
+    #   langmem
+    #   ragas
+    #   unitycatalog-langchain
+langchain-anthropic==1.7.1
+    # via
+    #   -r requirements.txt
+    #   deepagents
+    #   langmem
+langchain-aws==1.7.5
+    # via -r requirements.txt
+langchain-chroma==1.1.0
+    # via -r requirements.txt
+langchain-classic==1.0.8
+    # via
+    #   -r requirements.txt
+    #   langchain-community
+langchain-community==0.4.2
+    # via
+    #   -r requirements.txt
+    #   langchain-experimental
+    #   ragas
+    #   unitycatalog-langchain
+langchain-core==1.6.1
+    # via
+    #   -r requirements.txt
+    #   deepagents
+    #   langchain
+    #   langchain-anthropic
+    #   langchain-aws
+    #   langchain-chroma
+    #   langchain-classic
+    #   langchain-community
+    #   langchain-experimental
+    #   langchain-fireworks
+    #   langchain-google-genai
+    #   langchain-groq
+    #   langchain-huggingface
+    #   langchain-mcp-adapters
+    #   langchain-openai
+    #   langchain-pinecone
+    #   langchain-postgres
+    #   langchain-tavily
+    #   langchain-text-splitters
+    #   langgraph
+    #   langgraph-checkpoint
+    #   langgraph-prebuilt
+    #   langgraph-sdk
+    #   langgraph-swarm
+    #   langmem
+    #   ragas
+langchain-experimental==0.4.2
+    # via -r requirements.txt
+langchain-fireworks==1.6.1
+    # via -r requirements.txt
+langchain-google-genai==4.4.0
+    # via
+    #   -r requirements.txt
+    #   deepagents
+langchain-groq==1.1.3
+    # via -r requirements.txt
+langchain-huggingface==1.2.2
+    # via -r requirements.txt
+langchain-mcp-adapters==0.3.2
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+langchain-openai==1.6.0
+    # via
+    #   -r requirements.txt
+    #   langchain-pinecone
+    #   langmem
+    #   ragas
+langchain-pinecone==0.2.13
+    # via -r requirements.txt
+langchain-postgres==0.0.17
+    # via -r requirements.txt
+langchain-protocol==0.0.19
+    # via
+    #   langchain-core
+    #   langgraph-sdk
+langchain-tavily==0.2.18
+    # via -r requirements.txt
+langchain-text-splitters==1.1.2
+    # via
+    #   -r requirements.txt
+    #   langchain-classic
+langchainhub==0.1.21
+    # via -r requirements.txt
+langdetect==1.0.9
+    # via unstructured
+langextract==1.6.0
+    # via -r requirements.txt
+langgraph==1.2.11
+    # via
+    #   -r requirements.txt
+    #   langchain
+    #   langgraph-swarm
+    #   langmem
+    #   trustcall
+langgraph-checkpoint==4.2.0
+    # via
+    #   -r requirements.txt
+    #   langgraph
+    #   langgraph-checkpoint-postgres
+    #   langgraph-checkpoint-sqlite
+    #   langgraph-prebuilt
+    #   langmem
+langgraph-checkpoint-postgres==3.1.2
+    # via -r requirements.txt
+langgraph-checkpoint-sqlite==3.1.1
+    # via -r requirements.txt
+langgraph-prebuilt==1.1.0
+    # via
+    #   -r requirements.txt
+    #   langgraph
+langgraph-sdk==0.4.4
+    # via
+    #   -r requirements.txt
+    #   langgraph
+langgraph-swarm==0.1.0
+    # via -r requirements.txt
+langmem==0.0.30
+    # via -r requirements.txt
+langsmith==0.12.1
+    # via
+    #   -r requirements.txt
+    #   deepagents
+    #   langchain-classic
+    #   langchain-community
+    #   langchain-core
+    #   langmem
+lark==1.3.1
+    # via rfc3987-syntax
+ldap3==2.9.1
+    # via arize-phoenix
+litellm==1.99.0
+    # via -r requirements.txt
+llvmlite==0.49.0
+    # via numba
+logfire-api==4.41.0
+    # via pydantic-graph
+lxml==6.1.3
+    # via
+    #   arxiv
+    #   duckduckgo-search
+    #   python-docx
+    #   readabilipy
+    #   unstructured
+    #   yfinance
+lz4==4.4.5
+    # via databricks-sql-connector
+magika==0.6.2
+    # via markitdown
+mako==1.4.1
+    # via alembic
+markdown-it-py==4.2.0
+    # via rich
+markdownify==1.2.3
+    # via
+    #   -r requirements.txt
+    #   markitdown
+markitdown==0.1.7
+    # via -r requirements.txt
+markupsafe==3.0.3
+    # via
+    #   flask
+    #   gradio
+    #   jinja2
+    #   mako
+    #   nbconvert
+    #   werkzeug
+matplotlib==3.11.1
+    # via
+    #   -r requirements.txt
+    #   mlflow
+matplotlib-inline==0.2.2
+    # via
+    #   ipykernel
+    #   ipython
+mcp==1.29.1
+    # via
+    #   -r requirements.txt
+    #   databricks-mcp
+    #   databricks-openai
+    #   fastmcp-slim
+    #   langchain-mcp-adapters
+    #   openai-agents
+mdurl==0.1.2
+    # via markdown-it-py
+mem0ai==2.0.20
+    # via -r requirements.txt
+mistune==3.3.4
+    # via nbconvert
+ml-collections==1.1.0
+    # via langextract
+mlflow==3.16.0
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+    #   databricks-mcp
+    #   databricks-openai
+mlflow-skinny==3.16.0
+    # via
+    #   databricks-ai-bridge
+    #   databricks-ai-search
+    #   databricks-vectorsearch
+    #   mlflow
+mlflow-tracing==3.16.0
+    # via mlflow
+mmh3==5.3.0
+    # via chromadb
+more-itertools==11.1.0
+    # via
+    #   jaraco-classes
+    #   jaraco-functools
+    #   langextract
+    #   openai-whisper
+mpmath==1.3.0
+    # via sympy
+msal==1.38.0
+    # via
+    #   azure-identity
+    #   msal-extensions
+msal-extensions==1.3.1
+    # via azure-identity
+multidict==6.7.1
+    # via
+    #   aiohttp
+    #   yarl
+multiprocess==0.70.19
+    # via
+    #   datasets
+    #   evaluate
+multitasking==0.0.13
+    # via yfinance
+murmurhash==1.0.15
+    # via
+    #   preshed
+    #   spacy
+    #   thinc
+mypy-extensions==1.1.0
+    # via
+    #   black
+    #   isort
+mysql-connector-python==26.7.0
+    # via -r requirements.txt
+narwhals==2.25.0
+    # via
+    #   altair
+    #   scikit-learn
+nbclient==0.11.0
+    # via nbconvert
+nbconvert==7.17.1
+    # via
+    #   jupyter
+    #   jupyter-server
+nbformat==5.11.1
+    # via
+    #   -r requirements.txt
+    #   jupyter-server
+    #   nbclient
+    #   nbconvert
+neo4j==6.3.0
+    # via -r requirements.txt
+nest-asyncio==1.6.0
+    # via
+    #   -r requirements.txt
+    #   deepeval
+    #   ragas
+    #   unitycatalog-ai
+nest-asyncio2==1.7.2
+    # via ipykernel
+networkx==3.6.1
+    # via
+    #   -r requirements.txt
+    #   ragas
+    #   streamlit-agraph
+    #   torch
+nh3==0.3.7
+    # via unstructured
+notebook==7.6.2
+    # via
+    #   -r requirements.txt
+    #   jupyter
+notebook-shim==0.2.4
+    # via
+    #   jupyterlab
+    #   notebook
+numba==0.67.0
+    # via
+    #   openai-whisper
+    #   unstructured
+numexpr==2.14.2
+    # via -r requirements.txt
+numpy==2.5.2
+    # via
+    #   -r requirements.txt
+    #   accelerate
+    #   arize-phoenix
+    #   blis
+    #   chromadb
+    #   contourpy
+    #   databricks-connect
+    #   datasets
+    #   diffusers
+    #   evaluate
+    #   faiss-cpu
+    #   gradio
+    #   langchain-aws
+    #   langchain-chroma
+    #   langchain-community
+    #   langchain-pinecone
+    #   langchain-postgres
+    #   langextract
+    #   magika
+    #   matplotlib
+    #   mlflow
+    #   numba
+    #   numexpr
+    #   onnxruntime
+    #   openai-whisper
+    #   pandas
+    #   peft
+    #   pgvector
+    #   pydeck
+    #   pyrit
+    #   qdrant-client
+    #   ragas
+    #   rank-bm25
+    #   scikit-learn
+    #   scikit-network
+    #   scipy
+    #   sentence-transformers
+    #   skops
+    #   spacy
+    #   streamlit
+    #   thinc
+    #   torchvision
+    #   transformers
+    #   unstructured
+    #   yfinance
+oauthlib==3.3.1
+    # via
+    #   databricks-sql-connector
+    #   requests-oauthlib
+olefile==0.47
+    # via python-oxmsg
+onnxruntime==1.29.0
+    # via
+    #   chromadb
+    #   magika
+openai==2.54.0
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+    #   databricks-openai
+    #   deepeval
+    #   deepteam
+    #   instructor
+    #   langchain-fireworks
+    #   langchain-openai
+    #   litellm
+    #   mem0ai
+    #   openai-agents
+    #   pydantic-ai-slim
+    #   pyrit
+    #   ragas
+    #   unitycatalog-openai
+openai-agents==0.20.0
+    # via databricks-openai
+openai-whisper==20250625
+    # via -r requirements.txt
+openapi-pydantic==0.5.1
+    # via fastmcp-slim
+openinference-instrumentation==0.1.60
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-evals
+    #   arize-phoenix-otel
+    #   openinference-instrumentation-openai
+openinference-instrumentation-openai==0.1.57
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+openinference-semantic-conventions==0.1.34
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-evals
+    #   arize-phoenix-otel
+    #   openinference-instrumentation
+    #   openinference-instrumentation-openai
+openpyxl==3.1.5
+    # via
+    #   databricks-sql-connector
+    #   pyrit
+opentelemetry-api==1.43.0
+    # via
+    #   arize-phoenix-evals
+    #   autogen-core
+    #   chromadb
+    #   deepeval
+    #   fastmcp-slim
+    #   google-adk
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   openinference-instrumentation
+    #   openinference-instrumentation-openai
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-instrumentation
+    #   opentelemetry-sdk
+    #   opentelemetry-semantic-conventions
+    #   pydantic-ai-slim
+opentelemetry-exporter-otlp==1.43.0
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-otel
+opentelemetry-exporter-otlp-proto-common==1.43.0
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-grpc==1.43.0
+    # via
+    #   -r requirements.txt
+    #   chromadb
+    #   opentelemetry-exporter-otlp
+opentelemetry-exporter-otlp-proto-http==1.43.0
+    # via opentelemetry-exporter-otlp
+opentelemetry-instrumentation==0.64b0
+    # via openinference-instrumentation-openai
+opentelemetry-proto==1.43.0
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-otel
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   opentelemetry-exporter-otlp-proto-common
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+opentelemetry-sdk==1.43.0
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-otel
+    #   chromadb
+    #   deepeval
+    #   google-adk
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   openinference-instrumentation
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+opentelemetry-semantic-conventions==0.64b0
+    # via
+    #   arize-phoenix-otel
+    #   openinference-instrumentation-openai
+    #   opentelemetry-instrumentation
+    #   opentelemetry-sdk
+orjson==3.12.0
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   chromadb
+    #   gradio
+    #   langgraph-checkpoint-postgres
+    #   langgraph-sdk
+    #   langsmith
+ormsgpack==1.12.2
+    # via langgraph-checkpoint
+overrides==7.7.0
+    # via chromadb
+packaging==24.2
+    # via
+    #   a2a-sdk
+    #   accelerate
+    #   altair
+    #   black
+    #   build
+    #   databricks-connect
+    #   datasets
+    #   deepagents
+    #   deprecation
+    #   evaluate
+    #   faiss-cpu
+    #   fastmcp-slim
+    #   google-adk
+    #   google-cloud-aiplatform
+    #   google-cloud-bigquery
+    #   gradio
+    #   gradio-client
+    #   huggingface-hub
+    #   ipykernel
+    #   jupyter-events
+    #   jupyter-server
+    #   jupyterlab
+    #   jupyterlab-server
+    #   langchain-core
+    #   langchainhub
+    #   langsmith
+    #   matplotlib
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   nbconvert
+    #   onnxruntime
+    #   opentelemetry-instrumentation
+    #   peft
+    #   pinecone-plugin-assistant
+    #   pytest
+    #   pytest-rerunfailures
+    #   skops
+    #   spacy
+    #   strawberry-graphql
+    #   streamlit
+    #   thinc
+    #   transformers
+    #   trl
+    #   weasel
+    #   wheel
+pandas==3.0.5
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   arize-phoenix-evals
+    #   databricks-ai-bridge
+    #   databricks-connect
+    #   databricks-sql-connector
+    #   datasets
+    #   evaluate
+    #   gradio
+    #   langextract
+    #   mlflow
+    #   streamlit
+    #   unitycatalog-ai
+    #   yfinance
+pandocfilters==1.5.1
+    # via nbconvert
+parso==0.8.7
+    # via jedi
+pathable==0.6.0
+    # via jsonschema-path
+pathspec==1.1.1
+    # via black
+peewee==4.4.0
+    # via yfinance
+peft==0.20.0
+    # via -r requirements.txt
+pgvector==0.3.6
+    # via
+    #   -r requirements.txt
+    #   langchain-postgres
+pillow==12.3.0
+    # via
+    #   autogen-core
+    #   diffusers
+    #   gradio
+    #   matplotlib
+    #   pyrit
+    #   ragas
+    #   reportlab
+    #   streamlit
+    #   torchvision
+pinecone==7.3.0
+    # via langchain-pinecone
+pinecone-plugin-assistant==1.8.0
+    # via pinecone
+pinecone-plugin-interface==0.0.7
+    # via pinecone
+platformdirs==4.11.7
+    # via
+    #   black
+    #   fastmcp-slim
+    #   jupyter-core
+    #   yfinance
+pluggy==1.6.0
+    # via pytest
+portalocker==3.2.0
+    # via
+    #   deepeval
+    #   qdrant-client
+posthog==7.45.4
+    # via
+    #   deepeval
+    #   mem0ai
+preshed==3.0.13
+    # via
+    #   spacy
+    #   thinc
+prettytable==3.18.0
+    # via
+    #   -r requirements.txt
+    #   skops
+primp==2.0.0
+    # via duckduckgo-search
+prometheus-client==0.26.0
+    # via
+    #   arize-phoenix
+    #   jupyter-server
+prompt-toolkit==3.0.53
+    # via
+    #   ipython
+    #   jupyter-console
+    #   questionary
+propcache==0.5.2
+    # via
+    #   aiohttp
+    #   yarl
+proto-plus==1.28.2
+    # via
+    #   google-ai-generativelanguage
+    #   google-api-core
+    #   google-cloud-aiplatform
+    #   google-cloud-resource-manager
+protobuf==5.29.6
+    # via
+    #   a2a-sdk
+    #   autogen-core
+    #   databricks-sdk
+    #   databricks-vectorsearch
+    #   google-ai-generativelanguage
+    #   google-api-core
+    #   google-cloud-aiplatform
+    #   google-cloud-resource-manager
+    #   google-generativeai
+    #   googleapis-common-protos
+    #   grpc-google-iam-v1
+    #   grpcio-status
+    #   mem0ai
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   onnxruntime
+    #   opentelemetry-proto
+    #   proto-plus
+    #   qdrant-client
+    #   streamlit
+    #   yfinance
+psutil==7.2.2
+    # via
+    #   accelerate
+    #   arize-phoenix
+    #   ipykernel
+    #   ipython
+    #   peft
+    #   unstructured
+psycopg==3.3.5
+    # via
+    #   -r requirements.txt
+    #   langchain-postgres
+    #   langgraph-checkpoint-postgres
+psycopg-binary==3.3.5
+    # via psycopg
+psycopg-pool==3.3.1
+    # via
+    #   -r requirements.txt
+    #   langchain-postgres
+    #   langgraph-checkpoint-postgres
+psycopg2-binary==2.9.12
+    # via -r requirements.txt
+pure-eval==0.2.3
+    # via stack-data
+py-key-value-aio==0.4.5
+    # via fastmcp-slim
+py4j==0.10.9.9
+    # via databricks-connect
+pyarrow==25.0.1
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   databricks-connect
+    #   datasets
+    #   mlflow
+    #   streamlit
+pyasn1==0.6.4
+    # via
+    #   ldap3
+    #   pyasn1-modules
+pyasn1-modules==0.4.2
+    # via google-auth
+pybase64==1.5.0
+    # via chromadb
+pybreaker==1.4.1
+    # via databricks-sql-connector
+pycparser==3.0
+    # via cffi
+pydantic==2.12.5
+    # via
+    #   -r requirements.txt
+    #   a2a-sdk
+    #   anthropic
+    #   arize-phoenix
+    #   arize-phoenix-evals
+    #   autogen-core
+    #   chromadb
+    #   cohere
+    #   databricks-ai-bridge
+    #   databricks-langchain
+    #   databricks-openai
+    #   deepeval
+    #   dydantic
+    #   fastapi
+    #   fastmcp-slim
+    #   fireworks-ai
+    #   genai-prices
+    #   google-adk
+    #   google-cloud-aiplatform
+    #   google-genai
+    #   google-generativeai
+    #   gradio
+    #   groq
+    #   instructor
+    #   langchain
+    #   langchain-anthropic
+    #   langchain-aws
+    #   langchain-classic
+    #   langchain-core
+    #   langchain-google-genai
+    #   langchain-pinecone
+    #   langextract
+    #   langgraph
+    #   langsmith
+    #   litellm
+    #   mcp
+    #   mem0ai
+    #   mlflow-skinny
+    #   mlflow-tracing
+    #   openai
+    #   openai-agents
+    #   openapi-pydantic
+    #   pydantic-ai-slim
+    #   pydantic-graph
+    #   pydantic-settings
+    #   pyrit
+    #   qdrant-client
+    #   ragas
+    #   spacy
+    #   thinc
+    #   unitycatalog-ai
+    #   unitycatalog-client
+    #   unitycatalog-openai
+    #   unstructured-client
+    #   weasel
+pydantic-ai-slim==2.31.1
+    # via arize-phoenix
+pydantic-core==2.41.5
+    # via
+    #   cohere
+    #   instructor
+    #   pydantic
+pydantic-graph==2.31.1
+    # via pydantic-ai-slim
+pydantic-monty==0.0.19
+    # via arize-phoenix
+pydantic-monty-runtime==0.0.19
+    # via pydantic-monty
+pydantic-settings==2.15.0
+    # via
+    #   -r requirements.txt
+    #   chromadb
+    #   deepeval
+    #   fastmcp-slim
+    #   langchain-community
+    #   litellm
+    #   mcp
+pydeck==0.9.3
+    # via streamlit
+pydub==0.25.1
+    # via gradio
+pyfiglet==1.0.4
+    # via deepeval
+pygments==2.21.0
+    # via
+    #   ipython
+    #   ipython-pygments-lexers
+    #   jupyter-console
+    #   nbconvert
+    #   pytest
+    #   rich
+    #   rich-rst
+pyjwt==2.13.0
+    # via
+    #   databricks-sql-connector
+    #   mcp
+    #   msal
+    #   pyrit
+pymupdf==1.28.2
+    # via -r requirements.txt
+pymysql==1.2.0
+    # via -r requirements.txt
+pyodbc==5.3.0
+    # via pyrit
+pyparsing==3.3.2
+    # via
+    #   grandalf
+    #   httplib2
+    #   matplotlib
+    #   rdflib
+pypdf==6.17.0
+    # via
+    #   -r requirements.txt
+    #   pyrit
+    #   unstructured-client
+pypdf2==3.0.1
+    # via -r requirements.txt
+pypdfium2==5.13.0
+    # via unstructured-client
+pyperclip==1.11.0
+    # via fastmcp-slim
+pypika==0.51.1
+    # via chromadb
+pyproject-hooks==1.2.0
+    # via build
+pyrit==1.0.1
+    # via -r requirements.txt
+pystache==0.6.8
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-evals
+pytest==9.1.1
+    # via
+    #   -r requirements.txt
+    #   deepeval
+    #   pytest-asyncio
+    #   pytest-repeat
+    #   pytest-rerunfailures
+    #   pytest-xdist
+pytest-asyncio==1.4.0
+    # via
+    #   -r requirements.txt
+    #   deepeval
+pytest-repeat==0.9.4
+    # via deepeval
+pytest-rerunfailures==16.6.1
+    # via deepeval
+pytest-xdist==3.8.0
+    # via deepeval
+python-dateutil==2.9.0.post0
+    # via
+    #   arize-phoenix
+    #   arrow
+    #   botocore
+    #   databricks-sql-connector
+    #   google-cloud-bigquery
+    #   graphene
+    #   jupyter-client
+    #   kubernetes
+    #   matplotlib
+    #   pandas
+    #   pinecone
+    #   strawberry-graphql
+    #   unitycatalog-client
+python-docx==1.2.0
+    # via
+    #   -r requirements.txt
+    #   pyrit
+python-dotenv==1.2.3
+    # via
+    #   -r requirements.txt
+    #   deepeval
+    #   fastmcp-slim
+    #   google-adk
+    #   langextract
+    #   litellm
+    #   magika
+    #   mlflow-skinny
+    #   pydantic-settings
+    #   pyrit
+    #   uvicorn
+python-iso639==2026.7.23
+    # via unstructured
+python-json-logger==4.2.0
+    # via jupyter-events
+python-magic==0.4.27
+    # via unstructured
+python-multipart==0.0.32
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   fastmcp-slim
+    #   google-adk
+    #   gradio
+    #   mcp
+    #   streamlit
+python-oxmsg==0.0.2
+    # via unstructured
+pytokens==0.4.1
+    # via black
+pytz==2026.3.post1
+    # via
+    #   gradio
+    #   mem0ai
+    #   neo4j
+    #   yfinance
+pywin32==312
+    # via
+    #   docker
+    #   mcp
+    #   portalocker
+pywin32-ctypes==0.2.3
+    # via keyring
+pywinpty==3.0.5
+    # via
+    #   jupyter-server
+    #   jupyter-server-terminals
+    #   terminado
+pyyaml==6.0.3
+    # via
+    #   -r requirements.txt
+    #   accelerate
+    #   arize-phoenix
+    #   chromadb
+    #   datasets
+    #   deepteam
+    #   fastmcp-slim
+    #   google-adk
+    #   gradio
+    #   huggingface-hub
+    #   jsonschema-path
+    #   jupyter-events
+    #   kubernetes
+    #   langchain-classic
+    #   langchain-community
+    #   langchain-core
+    #   langextract
+    #   ml-collections
+    #   mlflow-skinny
+    #   peft
+    #   transformers
+    #   uvicorn
+pyzmq==27.2.0
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   jupyter-console
+    #   jupyter-server
+qdrant-client==1.19.0
+    # via mem0ai
+questionary==2.1.1
+    # via deepeval
+ragas==0.4.3
+    # via -r requirements.txt
+rank-bm25==0.2.2
+    # via -r requirements.txt
+rapidfuzz==3.14.6
+    # via unstructured
+rdflib==7.6.0
+    # via streamlit-agraph
+readabilipy==0.3.0
+    # via -r requirements.txt
+redis==8.1.0
+    # via -r requirements.txt
+referencing==0.37.0
+    # via
+    #   jsonschema
+    #   jsonschema-path
+    #   jsonschema-specifications
+    #   jupyter-events
+regex==2026.9.3
+    # via
+    #   diffusers
+    #   instructor
+    #   langextract
+    #   readabilipy
+    #   tiktoken
+    #   transformers
+    #   unstructured
+reportlab==5.0.1
+    # via
+    #   -r requirements.txt
+    #   pyrit
+requests==2.34.2
+    # via
+    #   -r requirements.txt
+    #   arxiv
+    #   azure-core
+    #   cohere
+    #   databricks-ai-search
+    #   databricks-sdk
+    #   databricks-sql-connector
+    #   databricks-vectorsearch
+    #   datasets
+    #   deepeval
+    #   deepteam
+    #   diffusers
+    #   docker
+    #   evaluate
+    #   google-adk
+    #   google-api-core
+    #   google-auth
+    #   google-cloud-bigquery
+    #   google-cloud-storage
+    #   google-genai
+    #   instructor
+    #   jupyterlab-server
+    #   kubernetes
+    #   langchain-classic
+    #   langchain-community
+    #   langchain-fireworks
+    #   langchain-tavily
+    #   langchainhub
+    #   langextract
+    #   langsmith
+    #   markitdown
+    #   mlflow-skinny
+    #   msal
+    #   openai-agents
+    #   opentelemetry-exporter-otlp-proto-http
+    #   pinecone-plugin-assistant
+    #   posthog
+    #   requests-oauthlib
+    #   requests-toolbelt
+    #   spacy
+    #   streamlit
+    #   tavily-python
+    #   tiktoken
+    #   unstructured
+    #   wikipedia
+    #   yfinance
+    #   youtube-transcript-api
+requests-oauthlib==2.0.0
+    # via kubernetes
+requests-toolbelt==1.0.0
+    # via
+    #   langsmith
+    #   unstructured-client
+rfc3339-validator==0.1.4
+    # via
+    #   jsonschema
+    #   jupyter-events
+rfc3986-validator==0.1.1
+    # via
+    #   jsonschema
+    #   jupyter-events
+rfc3987-syntax==1.1.0
+    # via jsonschema
+rich==14.3.4
+    # via
+    #   -r requirements.txt
+    #   chromadb
+    #   cyclopts
+    #   deepeval
+    #   fastmcp-slim
+    #   instructor
+    #   ragas
+    #   rich-rst
+    #   typer
+rich-rst==2.1.0
+    # via cyclopts
+rpds-py==2026.6.3
+    # via
+    #   jsonschema
+    #   referencing
+ruff==0.16.6
+    # via -r requirements.txt
+s3transfer==0.19.2
+    # via boto3
+safehttpx==0.1.7
+    # via gradio
+safetensors==0.8.0
+    # via
+    #   -r requirements.txt
+    #   accelerate
+    #   diffusers
+    #   peft
+    #   transformers
+scikit-learn==1.9.0
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   mlflow
+    #   sentence-transformers
+    #   skops
+scikit-network==0.33.5
+    # via ragas
+scipy==1.18.1
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   mlflow
+    #   pyrit
+    #   scikit-learn
+    #   scikit-network
+    #   sentence-transformers
+    #   skops
+segno==1.6.6
+    # via pyrit
+semantic-version==2.10.0
+    # via gradio
+send2trash==2.1.0
+    # via jupyter-server
+sentence-transformers==6.0.1
+    # via -r requirements.txt
+sentry-sdk==2.68.1
+    # via -r requirements.txt
+setuptools==84.0.0
+    # via
+    #   databricks-connect
+    #   deepeval
+    #   spacy
+    #   thinc
+    #   torch
+shellingham==1.5.4
+    # via typer
+simsimd==6.5.16
+    # via langchain-pinecone
+six==1.17.0
+    # via
+    #   databricks-connect
+    #   html5lib
+    #   kubernetes
+    #   langdetect
+    #   markdownify
+    #   python-dateutil
+    #   rfc3339-validator
+    #   treelib
+skops==0.14.0
+    # via mlflow
+smart-open==8.0.1
+    # via weasel
+smmap==5.0.3
+    # via gitdb
+sniffio==1.3.1
+    # via
+    #   aiologic
+    #   anthropic
+    #   fireworks-ai
+    #   google-genai
+    #   groq
+    #   langsmith
+    #   openai
+soupsieve==2.9.2
+    # via beautifulsoup4
+spacy==3.8.16
+    # via unstructured
+spacy-legacy==3.0.12
+    # via spacy
+spacy-loggers==1.0.5
+    # via spacy
+speechrecognition==3.17.0
+    # via streamlit-mic-recorder
+sqlalchemy==2.0.52
+    # via
+    #   -r requirements.txt
+    #   alembic
+    #   arize-phoenix
+    #   langchain-classic
+    #   langchain-community
+    #   langchain-postgres
+    #   mem0ai
+    #   mlflow
+    #   pyrit
+    #   sqlalchemy-utils
+sqlalchemy-utils==0.42.1
+    # via -r requirements.txt
+sqlglot==30.15.0
+    # via arize-phoenix
+sqlite-vec==0.1.9
+    # via langgraph-checkpoint-sqlite
+sqlparse==0.6.0
+    # via mlflow-skinny
+srsly==2.5.3
+    # via
+    #   spacy
+    #   thinc
+    #   weasel
+sse-starlette==3.4.10
+    # via
+    #   -r requirements.txt
+    #   mcp
+stack-data==0.6.3
+    # via ipython
+starlette==1.6.0
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   fastapi
+    #   fastmcp-slim
+    #   google-adk
+    #   gradio
+    #   mcp
+    #   mlflow-skinny
+    #   pydantic-ai-slim
+    #   pyrit
+    #   sse-starlette
+    #   streamlit
+strawberry-graphql==0.320.4
+    # via arize-phoenix
+streamlit==1.63.0
+    # via
+    #   -r requirements.txt
+    #   streamlit-agraph
+    #   streamlit-chat
+    #   streamlit-mic-recorder
+streamlit-agraph==0.0.45
+    # via -r requirements.txt
+streamlit-chat==0.1.1
+    # via -r requirements.txt
+streamlit-mic-recorder==0.0.8
+    # via -r requirements.txt
+sympy==1.14.0
+    # via torch
+tabulate==0.9.0
+    # via
+    #   -r requirements.txt
+    #   databricks-ai-bridge
+    #   deepeval
+    #   deepteam
+tavily-python==0.8.1
+    # via -r requirements.txt
+tenacity==9.1.4
+    # via
+    #   -r requirements.txt
+    #   chromadb
+    #   deepeval
+    #   google-adk
+    #   google-genai
+    #   instructor
+    #   langchain-community
+    #   langchain-core
+    #   pyrit
+termcolor==3.3.0
+    # via pyrit
+terminado==0.18.1
+    # via
+    #   jupyter-server
+    #   jupyter-server-terminals
+thinc==8.3.13
+    # via spacy
+threadpoolctl==3.6.0
+    # via scikit-learn
+thrift==0.24.0
+    # via databricks-sql-connector
+tiktoken==0.14.0
+    # via
+    #   -r requirements.txt
+    #   databricks-ai-bridge
+    #   langchain-openai
+    #   litellm
+    #   openai-whisper
+    #   pydantic-ai-slim
+    #   ragas
+    #   tavily-python
+tinycss2==1.5.1
+    # via bleach
+tinytag==2.3.1
+    # via pyrit
+tokenizers==0.23.2
+    # via
+    #   -r requirements.txt
+    #   chromadb
+    #   cohere
+    #   langchain-huggingface
+    #   litellm
+    #   sentence-transformers
+    #   transformers
+toml==0.10.2
+    # via streamlit
+tomlkit==0.14.0
+    # via gradio
+torch==2.14.0
+    # via
+    #   -r requirements.txt
+    #   accelerate
+    #   openai-whisper
+    #   peft
+    #   sentence-transformers
+    #   torchvision
+torchaudio==2.11.0
+    # via -r requirements.txt
+torchvision==0.29.0
+    # via -r requirements.txt
+tornado==6.5.8
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   jupyter-server
+    #   jupyterlab
+    #   notebook
+    #   terminado
+tqdm==4.70.0
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-evals
+    #   chromadb
+    #   datasets
+    #   deepeval
+    #   deepteam
+    #   evaluate
+    #   google-generativeai
+    #   huggingface-hub
+    #   langextract
+    #   openai
+    #   openai-whisper
+    #   peft
+    #   pyrit
+    #   ragas
+    #   sentence-transformers
+    #   spacy
+    #   transformers
+    #   unstructured
+traitlets==5.16.1
+    # via
+    #   ipykernel
+    #   ipython
+    #   ipywidgets
+    #   jupyter-builder
+    #   jupyter-client
+    #   jupyter-console
+    #   jupyter-core
+    #   jupyter-events
+    #   jupyter-server
+    #   jupyterlab
+    #   matplotlib-inline
+    #   nbclient
+    #   nbconvert
+    #   nbformat
+transformers==5.16.1
+    # via
+    #   -r requirements.txt
+    #   peft
+    #   pyrit
+    #   sentence-transformers
+    #   trl
+treelib==1.8.0
+    # via pyrit
+trl==1.12.0
+    # via -r requirements.txt
+trustcall==0.0.39
+    # via langmem
+truststore==0.10.4
+    # via
+    #   httpcore2
+    #   httpx2
+typer==0.27.2
+    # via
+    #   -r requirements.txt
+    #   chromadb
+    #   deepeval
+    #   gradio
+    #   hf-gradio
+    #   huggingface-hub
+    #   instructor
+    #   ragas
+    #   spacy
+    #   transformers
+    #   weasel
+types-requests==2.33.0.20260712
+    # via
+    #   cohere
+    #   langchainhub
+typing-extensions==4.16.0
+    # via
+    #   -r requirements.txt
+    #   aiohttp
+    #   aiologic
+    #   aiosignal
+    #   alembic
+    #   altair
+    #   anthropic
+    #   anyio
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-evals
+    #   arize-phoenix-otel
+    #   autogen-core
+    #   azure-core
+    #   azure-identity
+    #   azure-keyvault-secrets
+    #   azure-storage-blob
+    #   beautifulsoup4
+    #   chromadb
+    #   cohere
+    #   cross-web
+    #   culsans
+    #   databricks-ai-bridge
+    #   exceptiongroup
+    #   fastapi
+    #   fastmcp-slim
+    #   fireworks-ai
+    #   google-adk
+    #   google-cloud-aiplatform
+    #   google-genai
+    #   google-generativeai
+    #   gradio
+    #   gradio-client
+    #   graphene
+    #   groq
+    #   grpcio
+    #   httpx2
+    #   huggingface-hub
+    #   jupyter-client
+    #   langchain-core
+    #   langchain-mcp-adapters
+    #   langchain-protocol
+    #   langextract
+    #   langsmith
+    #   mcp
+    #   mlflow-skinny
+    #   openai
+    #   openai-agents
+    #   openinference-instrumentation-openai
+    #   opentelemetry-api
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-sdk
+    #   opentelemetry-semantic-conventions
+    #   pinecone
+    #   posthog
+    #   psycopg
+    #   psycopg-pool
+    #   py-key-value-aio
+    #   pydantic
+    #   pydantic-core
+    #   pydantic-monty
+    #   pytest-asyncio
+    #   python-docx
+    #   python-oxmsg
+    #   referencing
+    #   sentence-transformers
+    #   speechrecognition
+    #   sqlalchemy
+    #   starlette
+    #   strawberry-graphql
+    #   streamlit
+    #   torch
+    #   typing-inspection
+    #   unitycatalog-ai
+    #   unitycatalog-client
+    #   unstructured
+typing-inspection==0.4.4
+    # via
+    #   fastapi
+    #   mcp
+    #   pydantic
+    #   pydantic-ai-slim
+    #   pydantic-graph
+    #   pydantic-settings
+tzdata==2026.3
+    # via
+    #   arrow
+    #   pandas
+    #   psycopg
+    #   tzlocal
+tzlocal==5.4.4
+    # via google-adk
+uncalled-for==0.4.0
+    # via fastmcp-slim
+unitycatalog-ai==0.3.0
+    # via
+    #   -r requirements.txt
+    #   unitycatalog-langchain
+    #   unitycatalog-openai
+unitycatalog-client==0.4.0
+    # via unitycatalog-ai
+unitycatalog-langchain==0.3.0
+    # via
+    #   -r requirements.txt
+    #   databricks-langchain
+unitycatalog-openai==0.2.0
+    # via databricks-openai
+unstructured==0.27.5
+    # via -r requirements.txt
+unstructured-client==0.46.2
+    # via unstructured
+uri-template==1.3.0
+    # via jsonschema
+uritemplate==4.2.0
+    # via google-api-python-client
+urllib3==2.7.0
+    # via
+    #   botocore
+    #   databricks-sdk
+    #   databricks-sql-connector
+    #   docker
+    #   kubernetes
+    #   pinecone
+    #   qdrant-client
+    #   requests
+    #   sentry-sdk
+    #   types-requests
+    #   unitycatalog-client
+uuid-utils==0.17.0
+    # via
+    #   langchain-core
+    #   langsmith
+uvicorn==0.52.4
+    # via
+    #   -r requirements.txt
+    #   arize-phoenix
+    #   chromadb
+    #   fastmcp-slim
+    #   google-adk
+    #   gradio
+    #   mcp
+    #   mlflow-skinny
+    #   pyrit
+    #   streamlit
+validators==0.35.0
+    # via -r requirements.txt
+waitress==3.0.2
+    # via
+    #   -r requirements.txt
+    #   mlflow
+wasabi==1.1.3
+    # via
+    #   spacy
+    #   thinc
+    #   weasel
+watchdog==6.0.0
+    # via
+    #   google-adk
+    #   streamlit
+watchfiles==1.2.0
+    # via
+    #   fastmcp-slim
+    #   uvicorn
+wcmatch==11.0.1
+    # via deepagents
+wcwidth==0.8.3
+    # via
+    #   prettytable
+    #   prompt-toolkit
+weasel==1.0.0
+    # via spacy
+webcolors==25.10.0
+    # via jsonschema
+webencodings==0.6.1
+    # via
+    #   bleach
+    #   html5lib
+    #   tinycss2
+websocket-client==1.9.2
+    # via
+    #   jupyter-server
+    #   kubernetes
+websockets==15.0.1
+    # via
+    #   -r requirements.txt
+    #   fastmcp-slim
+    #   google-adk
+    #   google-genai
+    #   langgraph-sdk
+    #   langsmith
+    #   openai-agents
+    #   pyrit
+    #   streamlit
+    #   uvicorn
+    #   yfinance
+werkzeug==3.1.8
+    # via
+    #   flask
+    #   flask-cors
+wheel==0.48.0
+    # via deepeval
+widgetsnbextension==4.0.16
+    # via ipywidgets
+wikipedia==1.4.0
+    # via -r requirements.txt
+wrapt==2.4.0
+    # via
+    #   aiologic
+    #   arize-phoenix
+    #   arize-phoenix-otel
+    #   openinference-instrumentation
+    #   openinference-instrumentation-openai
+    #   opentelemetry-instrumentation
+    #   smart-open
+    #   unstructured
+xxhash==4.0.1
+    # via
+    #   datasets
+    #   evaluate
+    #   langgraph
+    #   langsmith
+yarl==1.24.5
+    # via aiohttp
+yfinance==1.7.0
+    # via -r requirements.txt
+youtube-transcript-api==1.2.4
+    # via -r requirements.txt
+zipp==4.1.0
+    # via importlib-metadata
+zstandard==0.25.0
+    # via
+    #   databricks-connect
+    #   langsmith

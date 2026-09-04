@@ -140,13 +140,47 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 
 ```bash
 uv venv --python 3.12
-source .venv/bin/activate
-uv pip install -e ".[dev]"       # includes pytest, jupyter, ruff
-# or install everything: uv pip install -e ".[all]"
-# extras: [dev], [apps] (streamlit), [fullstack] (fastapi+postgres), [all]
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# Option A — the pinned, reproducible set (recommended)
+uv pip install -r requirements.txt
+uv pip install -e . --no-deps    # the local `helpers` package
+
+# Option B — via extras
+uv pip install -e ".[dev]"       # core spine + notebooks/pytest/ruff
+uv pip install -e ".[all]"       # everything; equals the requirements.txt set
 ```
 
-Always use `uv` for dependency management. `pyproject.toml` is the single source of truth for dependencies; `requirements.txt` is a pinned mirror — update both when adding deps.
+The distribution is named `ai_engineering_roadmap`. Core (`uv pip install -e .`) is the
+LangChain/LangGraph/RAG spine only — ~65 packages. Everything else lives in eleven extras:
+
+| Extra | Covers |
+| ------------- | ------------------------------------------------------------------------ |
+| `providers`   | Bedrock, Fireworks, Cohere, LiteLLM, Vertex AI, boto3 |
+| `protocols`   | Phase 9 — fastmcp, a2a-sdk, google-adk, databricks-mcp |
+| `frameworks`  | Phase 10 AutoGen + Phase 7 langmem/langgraph-swarm, mem0ai |
+| `retrieval`   | Phases 4/8 — pinecone, pgvector, neo4j, faiss, document loaders |
+| `hf`          | Phase 1 — transformers/torch/diffusers/peft/trl (large download) |
+| `databricks`  | Databricks Connect, SQL connector, Unity Catalog |
+| `eval`        | Phases 7/12 — deepeval, ragas, mlflow, arize-phoenix, pyrit |
+| `data`        | scikit-learn, scipy, matplotlib, duckdb, yfinance |
+| `fullstack`   | Phase 13 — FastAPI/Flask, Postgres/MySQL/Redis, docker |
+| `apps`        | Streamlit + Gradio |
+| `dev`         | jupyter, pytest, ruff, black, isort |
+
+Always use `uv` for dependency management. `pyproject.toml` holds the version floors and is
+the source of truth for *what* is a dependency; `requirements.txt` is the resolver-verified
+pinned mirror (172 direct pins) and `requirements.lock.txt` the full 548-package transitive
+lock. Update all three when adding deps — regenerate the lock with:
+
+```bash
+uv pip compile requirements.txt --python-version 3.12 -o requirements.lock.txt
+```
+
+`requirements.txt`'s header documents the deliberate exclusions (CrewAI cannot share an
+environment with `langchain-chroma` 1.1 — it hard-pins `chromadb<1.2`; install it from its
+own per-folder `requirements.txt` in a separate venv) and the 18 pins held below their latest
+release by real upstream constraints. Don't "helpfully" bump those without re-resolving.
 
 ## Running Things
 
