@@ -44,5 +44,20 @@
 
     // Notebook cells inherit the workspace interpreter for analysis; the kernel
     // is still picked per notebook (top-right kernel picker -> same .venv).
-    "notebook.output.textLineLimit": 80
+    "notebook.output.textLineLimit": 80,
+
+    // ---- Notebook font sizes ----
+    // 0 on either of these means "inherit": markup defaults to 120% of
+    // editor.fontSize, output defaults to editor.fontSize. Explicit values
+    // below shrink both without touching regular editors.
+    "notebook.markup.fontSize": 12,
+    "notebook.output.fontSize": 11,
+    "notebook.markdown.lineHeight": 18,
+    "notebook.output.lineHeight": 16
+
+    // Note: notebook CODE cells have no per-notebook font setting -- they follow
+    // "editor.fontSize", which is global. To shrink those too, either set
+    // "editor.fontSize" in your USER settings (affects all editors), or keep
+    // notebooks in their own window and use Ctrl+- (View: Zoom Out), which is
+    // per-window.
 }
