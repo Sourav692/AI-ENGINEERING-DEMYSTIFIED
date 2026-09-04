@@ -14,12 +14,17 @@ Rules:
   * ```python-noexec  -> code cell that is illustrative only; rendered as
                          ```python but the fence tag reminds you not to run it
   * everything else   -> markdown cells (other fences stay inline as markdown)
-  * `<!-- split -->`  -> force a markdown cell break
-  * A `## ` or `# ` heading always starts a new markdown cell.
+  * a standalone `---` -> starts a new markdown cell, keeping the `---` at its top
+                          (the format's major-section separator). Headings do NOT
+                          split, so the title cell keeps its H1 + Learning
+                          Objectives + Prerequisites together.
+  * `<!-- split -->`  -> force a markdown cell break anywhere else
 
---check validates a notebook against this repo's conventions (CLAUDE.md):
-title cell, heading hierarchy, code-cell banners, grouped imports, summary cell.
-Stdlib only. Never executes anything.
+--check validates the notebook against the Format_Python_Notebook skill
+(.claude/skills/format-notebook/SKILL.md): title cell (rule 1), section
+separators and heading emoji (rule 2), the 3-line code banner (rule 3),
+summary + next steps (rule 6), cleared outputs (rule 7). Each message names
+the rule it breaks. Stdlib only. Never executes anything.
 """
 
 from __future__ import annotations
@@ -42,10 +47,21 @@ for _stream in (sys.stdout, sys.stderr):
 
 FENCE_RE = re.compile(r"^```(\w[\w-]*)?\s*$")
 SPLIT_RE = re.compile(r"^<!--\s*split\s*-->\s*$", re.I)
-HEADING_RE = re.compile(r"^#{1,2}\s+\S")
-BANNER_RE = re.compile(r"^#\s*=+\s*.+?\s*=+\s*$")
+HR_RE = re.compile(r"^---\s*$")   # thematic break = major-section boundary
+# Format_Python_Notebook's 3-line banner:
+#   # ==========...
+#   # SECTION_NAME: Brief description
+#   # ==========...
+BANNER_RULE_RE = re.compile(r"^#\s*={10,}\s*$")
+BANNER_NAME_RE = re.compile(r"^#\s+[A-Z0-9][A-Z0-9 ._/&()+-]*(:.*)?$")
 
 CODE_LANGS = {"python", "python-noexec", "py"}
+
+# Headings the Format_Python_Notebook templates show without an emoji.
+FIXED_HEADINGS = {
+    "Learning Objectives", "Prerequisites", "Key Concepts", "Key Concepts:",
+    "Next Steps", "Summary", "Recap",
+}
 
 
 def _cell(kind: str, source: str, noexec: bool = False) -> dict:
@@ -111,7 +127,9 @@ def md_to_cells(text: str) -> list[dict]:
         if SPLIT_RE.match(raw):
             flush_md()
             continue
-        if HEADING_RE.match(raw) and any(b.strip() for b in buf):
+        if HR_RE.match(raw) and any(b.strip() for b in buf):
+            # A `---` opens a new major section: close the previous cell and
+            # start the next one WITH the separator, per format rule 2.
             flush_md()
         buf.append(raw)
 
@@ -135,8 +153,15 @@ def build_notebook(cells: list[dict]) -> dict:
 
 
 # --------------------------------------------------------------------------
-# Convention check
+# Convention check — enforces the Format_Python_Notebook skill's rules
+# (.claude/skills/format-notebook/SKILL.md). Keep the two in sync: if that
+# skill's rules change, change these checks and say so in its Reference section.
 # --------------------------------------------------------------------------
+def _has_emoji(text: str) -> bool:
+    """Any non-ASCII pictograph counts — the formatter wants one per heading."""
+    return any(ord(ch) > 0x2100 for ch in text)
+
+
 def check(path: Path) -> list[str]:
     problems: list[str] = []
     try:
@@ -152,12 +177,25 @@ def check(path: Path) -> list[str]:
         s = c.get("source", "")
         return "".join(s) if isinstance(s, list) else s
 
+    # ---- 1. Title cell: H1 + emoji + Learning Objectives + Prerequisites ----
     first = cells[0]
     if first.get("cell_type") != "markdown":
         problems.append("cell 0 must be markdown (the title cell)")
-    elif not src(first).lstrip().startswith("# "):
-        problems.append("cell 0 must open with a single `# Title` heading")
+    else:
+        head = src(first)
+        title_line = head.lstrip().split("\n")[0]
+        if not title_line.startswith("# "):
+            problems.append("cell 0 must open with a single `# <emoji> Title` heading")
+        elif not _has_emoji(title_line):
+            problems.append("cell 0: the H1 title needs one leading emoji "
+                            "(format rule 1)")
+        if "## Learning Objectives" not in head:
+            problems.append("cell 0: missing `## Learning Objectives` "
+                            "(3-5 bolded items) — format rule 1")
+        if "## Prerequisites" not in head:
+            problems.append("cell 0: missing `## Prerequisites` — format rule 1")
 
+    # ---- 2. Code cells: 3-line banner ----
     code_cells = [(i, c) for i, c in enumerate(cells) if c.get("cell_type") == "code"]
     if not code_cells:
         problems.append("no code cells — an explainer notebook needs runnable examples")
@@ -167,21 +205,65 @@ def check(path: Path) -> list[str]:
         if not body:
             problems.append(f"cell {i}: empty code cell")
             continue
-        if not BANNER_RE.match(body.splitlines()[0].strip()):
+        lines = [ln.rstrip() for ln in body.splitlines()]
+        ok = (len(lines) >= 3
+              and BANNER_RULE_RE.match(lines[0])
+              and BANNER_NAME_RE.match(lines[1])
+              and BANNER_RULE_RE.match(lines[2]))
+        if not ok:
             problems.append(
-                f"cell {i}: first line should be a banner "
-                f"`# ============ SECTION NAME ============`")
+                f"cell {i}: needs the 3-line banner (format rule 3):\n"
+                f"        # {'=' * 74}\n"
+                f"        # SECTION_NAME: Brief description\n"
+                f"        # {'=' * 74}")
 
-    if cells[-1].get("cell_type") != "markdown":
-        problems.append("last cell must be a markdown summary / key-takeaways cell")
+    # ---- 3. Summary cell ----
+    last = cells[-1]
+    if last.get("cell_type") != "markdown":
+        problems.append("last cell must be the markdown summary cell (format rule 6)")
+    else:
+        tail = src(last)
+        if "## 📝 Summary" not in tail and "## Summary" not in tail:
+            problems.append("last cell: missing `## 📝 Summary` heading (format rule 6)")
+        if "### Next Steps" not in tail:
+            problems.append("last cell: missing `### Next Steps` (format rule 6)")
 
+    # ---- 4. Markdown section hygiene ----
+    h1_count = 0
     for i, c in enumerate(cells):
-        if c.get("cell_type") == "code" and c.get("outputs"):
-            problems.append(f"cell {i}: has saved outputs — clear them before committing")
-
-    heads = [src(c).lstrip()[:4] for c in cells if c.get("cell_type") == "markdown"]
-    if sum(1 for h in heads if h.startswith("# ") and not h.startswith("## ")) > 1:
+        if c.get("cell_type") != "markdown":
+            continue
+        body = src(c).strip()
+        if not body:
+            continue
+        lines = body.split("\n")
+        if lines[0].startswith("# ") and not lines[0].startswith("## "):
+            h1_count += 1
+        # Major `##` sections open with a `---` separator (format rule 2).
+        if lines[0].startswith("## ") and i != 0:
+            problems.append(f"cell {i}: `##` section should open with a `---` "
+                            f"separator line above it (format rule 2)")
+        for ln in lines:
+            # Emoji is required on `##` CONTENT sections only. The formatter's
+            # own fixed headings appear without one in its templates, and `###`
+            # / `####` sub-headings are left to the author's judgment.
+            if re.match(r"^##\s+\S", ln) and not re.match(r"^###", ln)                     and not _has_emoji(ln)                     and ln.strip("# ").strip() not in FIXED_HEADINGS:
+                problems.append(f"cell {i}: `##` heading has no emoji — "
+                                f"`{ln[:60]}` (format rule 2)")
+                break
+    if h1_count > 1:
         problems.append("more than one top-level `# ` heading — use `##` for sections")
+
+    # ---- 5. Outputs cleared ----
+    for i, c in enumerate(cells):
+        if c.get("cell_type") != "code":
+            continue
+        if c.get("outputs"):
+            problems.append(f"cell {i}: has saved outputs — clear them (format rule 7)")
+        if c.get("execution_count") is not None:
+            problems.append(f"cell {i}: execution_count must be null (format rule 7)")
+        if "application/vnd.databricks.v1+cell" in json.dumps(c.get("metadata", {})):
+            problems.append(f"cell {i}: strip Databricks cell metadata (format rule 7)")
 
     return problems
 

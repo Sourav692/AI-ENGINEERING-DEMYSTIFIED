@@ -101,9 +101,22 @@ on the task (`--note "extending 3.5_Chain_Migrations rather than adding a new no
 State the destination path and get a nod before creating a new file. Notebooks land in a curated
 roadmap and are expensive to undo.
 
-### 3. Draft in markdown
+### 3. Draft in markdown, to the formatter's contract
 
-Write each notebook as a single `.md` draft in the scratchpad, following the blueprint's section
+**Load the `Format_Python_Notebook` skill first** (`Skill` tool, name `Format_Python_Notebook`).
+It owns the formatting contract for every notebook in this repo — title cell shape, heading
+hierarchy and emoji, the 3-line code banner, confirmation prints, import grouping, summary
+cell, cleanup rules. This skill supplies the migration *content*; that skill supplies the
+*form*. Do not invent a competing structure.
+
+Its sample notebook (`.claude/skills/format-notebook/notebook/sample.ipynb`) is the concrete
+reference — skim it before your first draft so the output looks like the rest of the repo.
+
+One documented override: the formatter's **rule 5** shows `get_databricks_llm(...)`
+unconditionally, but model init here follows the destination phase (see the blueprint's table).
+Everything else in rule 5 still applies.
+
+Write each notebook as a single `.md` draft in the scratchpad, following the blueprint's part
 order. Fences drive cell types:
 
 - ` ```python ` → runnable code cell
@@ -111,6 +124,14 @@ order. Fences drive cell types:
   it must never be presented as runnable — always precede it with the ⚠️ callout)
 - anything else stays inside the markdown cell
 - `<!-- split -->` forces a markdown cell break
+
+Every code fence must open with the 3-line banner, or the check in step 4 fails:
+
+```
+# ==============================================================================
+# SECTION_NAME: Brief description
+# ==============================================================================
+```
 
 Drafting in markdown rather than notebook JSON is the point: it diffs cleanly and keeps you
 writing prose instead of assembling cells.
@@ -127,9 +148,11 @@ python .claude/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py \
   "<scratchpad>/draft.md" --out "<destination>/3.7_Concept_LangChain_v1.ipynb"
 ```
 
-The script converts and then validates against `CLAUDE.md` conventions in one pass — title cell,
-single `#` heading, `# ==== BANNER ====` first line in every code cell, markdown summary last,
-no saved outputs. Fix what it reports and re-run with `--force`.
+The script converts and then validates against `Format_Python_Notebook`'s rules in one pass —
+title cell (H1 + emoji + Learning Objectives + Prerequisites), `---` before `##` sections, one
+emoji per heading, the 3-line banner on every code cell, `## 📝 Summary` + `### Next Steps` last,
+outputs cleared and `execution_count: null`. Each failure names the format rule it violates. Fix
+the **draft** and re-run with `--force`.
 
 To validate a notebook you edited by other means: `md_to_notebook.py <file.ipynb> --check`.
 

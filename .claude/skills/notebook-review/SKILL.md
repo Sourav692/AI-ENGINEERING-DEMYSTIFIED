@@ -4,7 +4,7 @@ description: >-
   Independently reviews a notebook produced or edited by a `.tasks/` board task and
   returns a machine-actionable APPROVED / CHANGES_REQUESTED verdict. Six static gates —
   syntax (AST parse), API correctness judged from knowledge of the concept, pedagogy,
-  repo conventions, task fidelity, and placement. Use when the user says "review this
+  strict `Format_Python_Notebook` compliance, task fidelity, and placement. Use when the user says "review this
   notebook", "check the notebook", "is this notebook approved", or when a notebook-authoring
   skill needs sign-off before closing a review-gated task. Reviews only — never rewrites the
   notebook and never executes it (no kernel, no API calls, no cost). A task of type
@@ -80,9 +80,12 @@ wrong return shape (`result["output"]` where 1.x gives `result["messages"][-1].t
 property used as a method (`.text()` vs `.text`), `.run()`/`.predict()` on something that only
 exposes `.invoke()`, a keyword-only argument passed positionally.
 
-Gates 3-6 (pedagogy, conventions, task fidelity, placement) are the formatting and cosmetic
-half — heading hierarchy, banners, section completeness, model-init convention, placement.
-`md_to_notebook.py --check` mechanizes part of Gate 4.
+Gates 3-6 are the pedagogy and format half. **Gate 4 checks compliance with the
+`Format_Python_Notebook` skill** — load that skill (`.claude/skills/format-notebook/SKILL.md`)
+before judging it, since it is the contract and the rubric is only the checklist.
+`md_to_notebook.py --check` mechanizes rules 1, 2, 3, 6 and 7; the rest (objective quality,
+narrative after headings, import grouping, confirmation-print emoji, cleanup rules) is
+inspection, and the rubric lists each one.
 
 ### 4. Return the verdict
 

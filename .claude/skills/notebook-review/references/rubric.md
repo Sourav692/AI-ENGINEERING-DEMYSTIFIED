@@ -73,19 +73,42 @@ From `plan-to-teaching-notebook/references/notebook-blueprint.md`:
 - Exercises present and solvable from the notebook's own content.
 - One concept per notebook. Two unrelated concepts = **blocker** (split the task).
 
-## Gate 4 — Repo conventions
+## Gate 4 — `Format_Python_Notebook` compliance
 
-Run `md_to_notebook.py <notebook> --check` and treat its output as findings:
-title cell, single `#` heading, `# ==== BANNER ====` first line per code cell,
-markdown summary last, no saved outputs.
+The notebook must follow the `Format_Python_Notebook` skill
+(`.claude/skills/format-notebook/SKILL.md`) **exactly**. Read that skill before judging this
+gate — it is the contract, this is only the checklist. Its sample notebook
+(`.claude/skills/format-notebook/notebook/sample.ipynb`) shows every rule applied.
 
-Plus, by inspection:
+Start with the mechanical half:
 
-- Imports grouped stdlib → third-party → local.
-- **Model init matches the destination phase** — `helpers.get_llm` for phases 3/5/7/8;
-  direct instantiation in `LangChain_Fundamentals/` and `RAG_Demystified`-sourced folders.
-  Getting this backwards is a **blocker**; it's the most common real defect.
-- Filename and numbering fit the destination folder's existing sequence.
+```bash
+python .claude/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py <notebook> --check
+```
+
+Every line it prints is a **blocker**, and each names the format rule it breaks. It covers
+rules 1, 2 (partially), 3, 6 and 7.
+
+Then check by inspection what a parser cannot judge. Each of these is a **blocker**:
+
+| Rule | What to verify |
+| --- | --- |
+| 1 | Learning objectives are **3-5** items, each `**bolded**` with a dash description; prerequisites are real (packages, keys, prior notebooks), not filler |
+| 2 | 2-4 sentences of *what and why* after each heading — not a bare heading followed by code; `### Key Concepts:` or `> **Note**:` callouts where a concept needs one |
+| 2 | Heading levels are used for their meaning: `##` major parts, `###` sub-sections, `####` minor topics — not chosen for font size |
+| 3 | `SECTION_NAME` in the banner is UPPER_CASE and actually describes the cell |
+| 3 | Inline comments explain *why*, and don't narrate obvious code; `# ---` separates logical blocks inside long cells |
+| 3 | Config/parameter calls carry per-argument inline comments where the options aren't self-evident |
+| 4 | Imports grouped stdlib → third-party → LangChain → project helpers, in that order |
+| 4 | `sys.path.append(os.path.abspath(".."))` present *only* if importing from `helpers/` |
+| 5 | Active model choice shown, alternatives listed as comments, and the loaded model printed. **Which** initializer is correct is the destination phase's call, not rule 5's default — see the blueprint's table; flag a mismatch with the *phase*, not with the formatter |
+| 5 | Setup/initialization cells end with a confirmation print using the right emoji (`✅` success, `🤖` LLM, `📋` metadata, `🔍` search, `⚠️` warning, `❌` error, `🔧` tool) |
+| 6 | Summary is per-section with `**Key point**:` lines, not a flat list; `### Next Steps` names something concrete |
+| 7 | No duplicate or near-duplicate cells; no stale `getpass` / `os.environ` key blocks (the repo uses `.env`); no oversized cell doing three unrelated things; no pair of tiny cells that belong together |
+| 8 | If a package outside `pyproject.toml` is used, the commented-out install cell is present right after setup |
+
+Two nits (record, don't fail): emoji chosen outside the documented set, and heading emoji that
+repeat across sections when distinct ones were available.
 
 ## Gate 5 — Task fidelity
 
@@ -125,7 +148,7 @@ Return exactly this shape so the calling skill can act on it without parsing pro
     "syntax": "pass|fail",
     "api_correctness": "pass|fail",
     "pedagogy": "pass|fail",
-    "conventions": "pass|fail",
+    "format_compliance": "pass|fail",
     "task_fidelity": "pass|fail",
     "placement": "pass|fail"
   },
