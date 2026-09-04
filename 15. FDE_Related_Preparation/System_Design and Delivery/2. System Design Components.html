@@ -1,0 +1,604 @@
+<title>The 12-Part System Design Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --ai:#5f45b8; --ai-soft:#ece7fa;
+  --shadow:0 1px 2px rgba(20,31,39,.05), 0 8px 24px -16px rgba(20,31,39,.28);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --ai:#a892f2; --ai-soft:#221c3a;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --ai:#a892f2; --ai-soft:#221c3a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{
+  font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+}
+.mono,.flow ol li,.sec-num,td:first-child,th:first-child{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+/* ---------- masthead ---------- */
+.mast{padding:clamp(48px,8vw,92px) 0 clamp(28px,4vw,44px); border-bottom:1px solid var(--rule)}
+.eyebrow{
+  font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--accent); font-weight:600; margin:0 0 18px;
+}
+h1{
+  font-family:"Bricolage Grotesque",sans-serif;
+  font-weight:800; font-size:clamp(38px,6.4vw,68px); line-height:1.03;
+  letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance;
+  max-width:15ch;
+}
+.lede{font-size:clamp(17px,2vw,20px); color:var(--body); max-width:62ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{
+  display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:28px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em;
+  color:var(--muted); text-transform:uppercase;
+}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+/* ---------- layout ---------- */
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){
+  .shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}
+}
+nav.toc{display:none}
+@media(min-width:1000px){
+  nav.toc{
+    display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto;
+    padding:44px 0 40px; border-right:1px solid var(--rule-soft);
+  }
+}
+nav.toc p{
+  font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px;
+}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{
+  display:flex; gap:12px; align-items:baseline; text-decoration:none;
+  padding:6px 10px 6px 0; font-size:14px; line-height:1.35; color:var(--muted);
+  border-radius:4px; transition:color .15s ease;
+}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent);
+  min-width:18px; font-variant-numeric:tabular-nums; opacity:.75;
+}
+
+/* ---------- sections ---------- */
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(40px,5vw,60px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:26px}
+.sec-num{
+  font-size:13px; font-weight:600; color:var(--accent);
+  background:var(--accent-soft); border-radius:2px;
+  padding:6px 9px; line-height:1; margin-top:8px;
+  font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
+.sec-num--mark{color:var(--ai); background:var(--ai-soft)}
+.sec-head h2{
+  font-size:clamp(25px,3.4vw,34px); font-weight:700; letter-spacing:-.02em;
+  color:var(--ink); margin:0; line-height:1.15; text-wrap:balance;
+}
+.sec-purpose{
+  margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px;
+  letter-spacing:.05em; text-transform:uppercase; color:var(--muted);
+}
+.sec-body{display:flex; flex-direction:column; gap:22px}
+.prose{margin:0; max-width:66ch}
+.prose strong{color:var(--ink)}
+
+/* ---------- grouped subsections ---------- */
+.grp{
+  display:flex; flex-direction:column; gap:18px;
+  border-left:2px solid var(--rule); padding-left:clamp(16px,2.4vw,26px);
+}
+.grp h3{
+  margin:0; font-size:13px; font-weight:600; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink);
+}
+.grp--ai{border-left-color:var(--ai)}
+.grp--ai h3{color:var(--ai)}
+.grp--ai .item h4::before{background:var(--ai)}
+
+/* ---------- pointer items ---------- */
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){ .items{grid-template-columns:1fr 1fr; gap:2px} }
+.item{
+  background:var(--surface); padding:18px 20px 20px;
+  border:1px solid var(--rule-soft); margin:-1px 0 0 -1px;
+}
+.item h4{
+  margin:0 0 7px; font-size:15px; font-weight:700; color:var(--ink);
+  letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px;
+}
+.item h4::before{
+  content:""; width:5px; height:5px; flex:none; background:var(--accent);
+  border-radius:50%; transform:translateY(-3px);
+}
+.item p{margin:0; font-size:15.5px; line-height:1.58; color:var(--body)}
+
+/* ---------- callout ---------- */
+.callout{
+  background:var(--accent-soft); border-left:3px solid var(--accent);
+  padding:16px 20px; font-size:16px; color:var(--ink); max-width:70ch;
+}
+.callout strong{font-family:"Bricolage Grotesque",sans-serif; font-size:12px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent);
+  display:block; margin-bottom:4px}
+
+/* ---------- flow ---------- */
+.flow{margin:0; background:var(--surface-2); border:1px solid var(--rule-soft); padding:18px 20px}
+.flow figcaption{
+  font-size:11px; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:14px;
+}
+.flow ol{
+  list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap;
+  align-items:center; gap:9px 0;
+}
+.flow ol li{display:inline-flex; align-items:center}
+.flow ol li span{
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; letter-spacing:.01em;
+  color:var(--ink); background:var(--surface); border:1px solid var(--rule);
+  padding:6px 11px; white-space:nowrap;
+}
+.flow ol li + li::before{
+  content:"\2192"; color:var(--accent); padding:0 10px; font-weight:600;
+  font-family:"IBM Plex Mono",monospace; font-size:13px;
+}
+.grp--ai .flow ol li + li::before{color:var(--ai)}
+
+/* ---------- steps ---------- */
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{
+  counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px;
+  background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0;
+  padding:15px 18px;
+}
+.steps li::before{
+  content:counter(s,decimal-leading-zero);
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent);
+  font-variant-numeric:tabular-nums; padding-top:3px;
+}
+.steps h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink)}
+.steps p{margin:0; font-size:15.5px; color:var(--body)}
+
+/* ---------- table ---------- */
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:520px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft)}
+th{
+  font-size:11px; font-weight:600; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--muted); background:var(--surface-2);
+}
+td{font-size:15px}
+td:first-child,th:first-child{width:52px; color:var(--accent); font-variant-numeric:tabular-nums; font-size:13px}
+tbody tr:last-child td{border-bottom:0}
+tbody td:nth-child(2){color:var(--ink); font-weight:600;
+  font-family:"Bricolage Grotesque",sans-serif; font-size:15px}
+tbody td:nth-child(3){color:var(--muted)}
+
+footer{
+  border-top:1px solid var(--rule); padding:28px 0 60px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted);
+  letter-spacing:.03em;
+}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+<style>
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(12px,2vw,20px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:70ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:720px; height:auto}
+.dgm .box{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .boxAI{fill:var(--ai-soft); stroke:var(--ai)}
+.dgm .plane{fill:none; stroke:var(--ai); stroke-dasharray:6 5; opacity:.65}
+.dgm .xcut{fill:none; stroke:var(--rule); stroke-dasharray:4 4}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif; font-size:12.5px; font-weight:600}
+.dgm .mid{text-anchor:middle}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .lbl{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.14em}
+.dgm .planelbl{fill:var(--ai); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.12em}
+.dgm .fl{fill:none; stroke:var(--muted); stroke-width:1.3}
+.dgm .flA{stroke:var(--ai)}
+.dgm .flK{stroke:var(--accent); stroke-width:1.7}
+.dgm .flKt{fill:var(--accent)}
+.dgm .mk{fill:var(--muted)}
+.dgm .mkA{fill:var(--ai)}
+.dgm .mkK{fill:var(--accent)}
+</style>
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews</p>
+  <h1>The 12-Part System Design Framework</h1>
+  <p class="lede">A good system design interview is not about drawing boxes and arrows. It is about demonstrating <strong>structured thinking</strong>, <strong>tradeoff analysis</strong>, and the ability to design a scalable, reliable, and maintainable system. Every component below answers a different question the interviewer is silently asking.</p>
+  <div class="mast-meta">
+    <span>12 components</span><span>Traditional &amp; AI systems</span><span>Reference sheet</span>
+  </div>
+</header>
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#the-framework-at-a-glance"><span class="n">·</span><span>The framework at a glance</span></a></li><li><a href="#c1"><span class="n">1</span><span>Problem Definition</span></a></li><li><a href="#c2"><span class="n">2</span><span>Functional Requirements</span></a></li><li><a href="#c3"><span class="n">3</span><span>Non-Functional Requirements</span></a></li><li><a href="#c4"><span class="n">4</span><span>Capacity Estimation</span></a></li><li><a href="#c5"><span class="n">5</span><span>High-Level Architecture</span></a></li><li><a href="#c6"><span class="n">6</span><span>Data Design</span></a></li><li><a href="#c7"><span class="n">7</span><span>Component Design</span></a></li><li><a href="#c8"><span class="n">8</span><span>Data Flow</span></a></li><li><a href="#c9"><span class="n">9</span><span>Scalability Strategy</span></a></li><li><a href="#c10"><span class="n">10</span><span>Reliability &amp; Availability</span></a></li><li><a href="#c11"><span class="n">11</span><span>Security &amp; Governance</span></a></li><li><a href="#c12"><span class="n">12</span><span>Tradeoffs &amp; Future Improvements</span></a></li><li><a href="#ai-system-design-additions"><span class="n">·</span><span>AI System Design Additions</span></a></li><li><a href="#a-simple-mental-model"><span class="n">·</span><span>A Simple Mental Model</span></a></li></ol></nav><main>
+<section class="sec sec-plain" id="the-framework-at-a-glance">
+<header class="sec-head"><span class="sec-num">&#9679;</span><div><h2>The framework at a glance</h2></div></header><div class="sec-body">
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Component</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>1</td><td>Problem Definition</td><td>Understand what you&#x27;re building</td></tr>
+<tr><td>2</td><td>Functional Requirements</td><td>Define system capabilities</td></tr>
+<tr><td>3</td><td>Non-Functional Requirements</td><td>Define quality attributes</td></tr>
+<tr><td>4</td><td>Capacity Estimation</td><td>Estimate scale</td></tr>
+<tr><td>5</td><td>High-Level Architecture</td><td>Major building blocks</td></tr>
+<tr><td>6</td><td>Data Design</td><td>How data is stored</td></tr>
+<tr><td>7</td><td>Component Design</td><td>Internal services / modules</td></tr>
+<tr><td>8</td><td>Data Flow</td><td>End-to-end request lifecycle</td></tr>
+<tr><td>9</td><td>Scalability Strategy</td><td>Handle growth</td></tr>
+<tr><td>10</td><td>Reliability &amp; Availability</td><td>Ensure uptime</td></tr>
+<tr><td>11</td><td>Security &amp; Governance</td><td>Protect the system</td></tr>
+<tr><td>12</td><td>Tradeoffs &amp; Future Improvements</td><td>Show engineering judgment</td></tr>
+</tbody></table></div>
+</div></section>
+<section class="sec" id="c1">
+<header class="sec-head">
+<span class="sec-num">1</span>
+<div><h2>Problem Definition</h2><p class="sec-purpose">Understand what you&#x27;re building</p></div>
+</header><div class="sec-body">
+<p class="prose">Start by clarifying the problem before touching the whiteboard. Five minutes of questions here prevents twenty minutes of designing the wrong system.</p>
+<div class="items">
+<div class="item"><h4>What are we building?</h4><p>Restate the problem in your own words and get the interviewer to confirm it. Ambiguity here compounds through every later decision, and a wrong assumption about the product is far more expensive than a wrong choice of database.</p></div>
+<div class="item"><h4>Who are the users?</h4><p>Consumers, internal staff, and third-party partners have wildly different scale, latency, and trust profiles. Knowing the user also tells you the access pattern — a million casual readers is a caching problem, a thousand power users writing constantly is a locking problem.</p></div>
+<div class="item"><h4>What business problem are we solving?</h4><p>Tie the system to the outcome it exists for: revenue, retention, cost reduction, or compliance. This is what lets you argue later that a cheaper eventually-consistent design is acceptable, or that it absolutely is not.</p></div>
+<div class="item"><h4>What is out of scope?</h4><p>Explicitly park things like payments, fraud detection, or admin tooling so you are judged on depth rather than breadth. Saying &quot;I&#x27;ll assume payments are handled by an existing service&quot; is a senior move, not a dodge.</p></div>
+</div>
+<aside class="callout"><strong>Example:</strong> Design an AI Travel Assistant that helps customers search flights, hotels, and book trips.</aside>
+</div></section>
+<section class="sec" id="c2">
+<header class="sec-head">
+<span class="sec-num">2</span>
+<div><h2>Functional Requirements</h2><p class="sec-purpose">Define system capabilities</p></div>
+</header><div class="sec-body">
+<p class="prose">These describe <strong>what the system should do</strong> — the capabilities a user would recognise. Keep the list short, ordered by importance, and confirm it before designing.</p>
+<div class="items">
+<div class="item"><h4>User authentication</h4><p>Sign-up, login, session management, and identity for every downstream call. Everything else in the system depends on knowing who the caller is, so this is usually the first service you draw.</p></div>
+<div class="item"><h4>Search flights</h4><p>A read-heavy, latency-sensitive path that fans out to external supplier APIs and aggregates the results. This is the natural home for caching, timeouts, and partial-result handling.</p></div>
+<div class="item"><h4>Book hotels</h4><p>A write path with real money and real inventory behind it, so it needs idempotency keys and transactional guarantees. Double-booking is the failure mode interviewers will probe.</p></div>
+<div class="item"><h4>Cancel bookings</h4><p>The compensating action for a booking, often spanning several external systems that cannot participate in one transaction. This is where sagas and outbox patterns earn their keep.</p></div>
+<div class="item"><h4>Chat with AI assistant</h4><p>A conversational surface that turns natural language into structured intent and tool calls. It introduces streaming responses, conversation memory, and non-deterministic latency.</p></div>
+<div class="item"><h4>Retrieve travel history</h4><p>A user-scoped read over past bookings and itineraries, ideal for a read replica or denormalised view. It also feeds the assistant&#x27;s personalisation context.</p></div>
+<div class="item"><h4>Send notifications</h4><p>Email, push, and SMS for confirmations, changes, and reminders, delivered asynchronously. It belongs behind a queue so a slow provider never blocks a booking.</p></div>
+</div>
+</div></section>
+<section class="sec" id="c3">
+<header class="sec-head">
+<span class="sec-num">3</span>
+<div><h2>Non-Functional Requirements</h2><p class="sec-purpose">Define quality attributes</p></div>
+</header><div class="sec-body">
+<p class="prose">These describe <strong>how well</strong> the system should perform. Quantify each one — &quot;highly available&quot; means nothing, &quot;99.99% with a 5-minute RTO&quot; is a design constraint.</p>
+<div class="items">
+<div class="item"><h4>Scalability</h4><p>The ability to absorb more users, data, and traffic by adding resources rather than rewriting. State whether you are scaling reads, writes, or both, since they demand different solutions.</p></div>
+<div class="item"><h4>Reliability</h4><p>The system produces correct results and does not lose data, even when components fail. Measured by error rates and data-loss objectives (RPO), not just uptime.</p></div>
+<div class="item"><h4>Availability</h4><p>The proportion of time the system serves requests successfully, expressed in nines. Each extra nine multiplies cost, so name the number and justify it against the business impact.</p></div>
+<div class="item"><h4>Security</h4><p>Protection of data and functionality against unauthorised access, at rest, in transit, and in use. Treat it as a requirement with acceptance criteria, not a layer bolted on at the end.</p></div>
+<div class="item"><h4>Performance</h4><p>Latency and throughput targets, always stated as percentiles (p50, p95, p99) rather than averages. Averages hide the tail, and the tail is what users actually complain about.</p></div>
+<div class="item"><h4>Maintainability</h4><p>How cheaply the team can change the system: clear service boundaries, tests, and observability. It is the requirement that decides whether the design survives its second year.</p></div>
+<div class="item"><h4>Cost efficiency</h4><p>The unit economics — cost per request, per user, per GB stored, per million tokens. Naming a cost ceiling makes your architectural tradeoffs concrete instead of theoretical.</p></div>
+<div class="item"><h4>Fault tolerance</h4><p>The system degrades gracefully when a dependency fails instead of cascading into an outage. Decide in advance which features may be shed and which must never fail.</p></div>
+<div class="item"><h4>Observability</h4><p>Metrics, structured logs, and distributed traces that let you answer new questions without a deploy. Without it you cannot prove any of the other targets are being met.</p></div>
+<div class="item"><h4>Compliance</h4><p>Regulatory obligations such as GDPR, PCI-DSS, HIPAA, or data residency rules. These dictate storage location, retention windows, and deletion guarantees, so surface them early.</p></div>
+</div>
+<aside class="callout"><strong>Example targets:</strong> 99.99% availability · &lt; 2 sec response time · 10 million users · GDPR compliant</aside>
+</div></section>
+<section class="sec" id="c4">
+<header class="sec-head">
+<span class="sec-num">4</span>
+<div><h2>Capacity Estimation</h2><p class="sec-purpose">Estimate scale</p></div>
+</header><div class="sec-body">
+<p class="prose">Estimate scale before choosing technology — the numbers are what justify your architectural choices. Round aggressively; interviewers want the reasoning, not arithmetic precision.</p>
+<div class="items">
+<div class="item"><h4>Users — 5M MAU, 500K DAU, 10K concurrent</h4><p>Monthly actives size your storage and cost, daily actives size your steady-state traffic, and concurrency sizes your connection pools and instance count. The MAU-to-DAU ratio (here 10%) is the assumption to state out loud.</p></div>
+<div class="item"><h4>Traffic — 50K requests/sec</h4><p>Derive it from DAU × actions per user per day ÷ 86,400, then multiply by a peak factor of 2–5× for daily and seasonal spikes. Split it into read versus write RPS, because a 100:1 read ratio changes the entire design.</p></div>
+<div class="item"><h4>Storage — 20 TB/year</h4><p>Multiply record count by average record size, then add indexes, replicas, and backups, which typically triple the raw figure. Pair it with a retention policy so growth is bounded rather than infinite.</p></div>
+<div class="item"><h4>Bandwidth — 2 Gbps</h4><p>Requests per second × average payload size, computed separately for ingress and egress. Egress is usually the expensive direction and the strongest argument for putting a CDN in front.</p></div>
+</div>
+</div></section>
+<section class="sec" id="c5">
+<header class="sec-head">
+<span class="sec-num">5</span>
+<div><h2>High-Level Architecture</h2><p class="sec-purpose">Major building blocks</p></div>
+</header><div class="sec-body">
+<p class="prose">This is the famous architecture diagram: the major building blocks and the path a request takes through them.</p>
+<figure class="flow"><figcaption>Request path</figcaption><ol><li><span>Users</span></li><li><span>CDN</span></li><li><span>Load Balancer</span></li><li><span>API Gateway</span></li><li><span>Application Services</span></li><li><span>Databases</span></li><li><span>Cache</span></li><li><span>Message Queue</span></li><li><span>Monitoring</span></li></ol></figure>
+<div class="items">
+<div class="item"><h4>Users / Clients</h4><p>Web, mobile, and partner integrations, each with different connectivity and retry behaviour. Mobile clients in particular need small payloads and tolerance for flaky networks.</p></div>
+<div class="item"><h4>CDN</h4><p>Serves static assets and cacheable responses from edge locations close to the user. It removes the majority of bytes from your origin and absorbs the first wave of any traffic spike.</p></div>
+<div class="item"><h4>Load Balancer</h4><p>Distributes traffic across healthy instances, terminates TLS, and removes failed nodes from rotation. It is also where you get zone-aware routing and connection draining during deploys.</p></div>
+<div class="item"><h4>API Gateway</h4><p>A single entry point handling authentication, rate limiting, routing, and request/response shaping. It keeps cross-cutting concerns out of every individual service.</p></div>
+<div class="item"><h4>Application Services</h4><p>The stateless business logic, split by domain so each can be scaled and deployed independently. Statelessness is what makes horizontal scaling and rolling deploys trivial.</p></div>
+<div class="item"><h4>Databases</h4><p>The system of record, chosen per service according to its access pattern rather than one database for everything. Call out the primary/replica topology and where writes land.</p></div>
+<div class="item"><h4>Cache</h4><p>An in-memory tier (Redis, Memcached) in front of expensive reads and computations. Always specify the invalidation strategy and TTL — a cache without one is a correctness bug waiting to happen.</p></div>
+<div class="item"><h4>Message Queue</h4><p>Decouples slow or bursty work (notifications, indexing, analytics) from the request path. It absorbs spikes as backlog instead of as errors, and enables retries with backoff.</p></div>
+<div class="item"><h4>Monitoring</h4><p>Metrics, logging, tracing, and alerting wired into every component from day one. Define the SLIs and the alert thresholds, not just &quot;we&#x27;ll use Prometheus&quot;.</p></div>
+</div>
+<section class="grp grp--ai"><h3>For AI systems, add</h3>
+<div class="items">
+<div class="item"><h4>LLM</h4><p>The reasoning engine behind generation, summarisation, and intent understanding. Treat it as a slow, expensive, non-deterministic dependency and design timeouts and fallbacks accordingly.</p></div>
+<div class="item"><h4>Vector Database</h4><p>Stores embeddings and serves approximate nearest-neighbour search for retrieval. Its index type and recall/latency tradeoff are real design decisions, not implementation details.</p></div>
+<div class="item"><h4>Embedding Service</h4><p>Converts documents and queries into vectors, both in batch for ingestion and online for queries. Version the embedding model, because changing it invalidates the entire index.</p></div>
+<div class="item"><h4>Semantic Cache</h4><p>Returns a stored answer when a new query is semantically close to a previous one. It can cut both cost and p95 latency dramatically, at the risk of serving a subtly wrong match.</p></div>
+<div class="item"><h4>Agent Orchestrator</h4><p>Plans multi-step tasks, decides which tool or sub-agent to invoke, and assembles the final answer. It needs step limits and budgets or a loop can run away.</p></div>
+<div class="item"><h4>Model Gateway</h4><p>A routing layer that sends each request to the right model and provider, with fallback and retries. It also centralises token accounting, rate limits, and per-tenant quotas.</p></div>
+<div class="item"><h4>Tool Integrations</h4><p>The connectors that let the model act on real systems — booking APIs, CRMs, internal services. Every tool call needs permission checks, timeouts, and audit logging.</p></div>
+</div>
+</section>
+<section class="grp grp--ai"><h3>The integrated picture — every AI component in place</h3>
+<p class="prose">The list above says <em>what</em> to add. This says <em>where</em> each piece sits once it is added: the AI plane hangs off the same API gateway as the traditional services, calls back into them through the tool layer, and shares the data plane underneath.</p>
+<figure class="dgm-fig"><div class="scroll"><svg class="dgm" viewBox="0 0 1040 950" role="img" aria-label="Integrated high-level architecture: clients and edge feed an API gateway, which splits into an AI plane containing the agent orchestrator, guardrails, semantic cache, context engineering, prompt management, model gateway, embedding service, LLM pool, vector database and tool layer, and a service plane of auth, booking, search, notification and supplier APIs; the tool layer calls into the service plane, and both planes sit above a shared data plane, an async plane, and cross-cutting observability, security and governance."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkA"/></marker><marker id="arK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkK"/></marker></defs><text class="band" x="40" y="22">CLIENTS</text><rect class="box" x="40" y="30" width="306" height="46" rx="3"/><text class="t" x="52" y="51">Web app</text><text class="s" x="52" y="66">browser · SPA</text><rect class="box" x="367" y="30" width="306" height="46" rx="3"/><text class="t" x="379" y="51">Mobile app</text><text class="s" x="379" y="66">iOS · Android</text><rect class="box" x="694" y="30" width="306" height="46" rx="3"/><text class="t" x="706" y="51">Partner APIs</text><text class="s" x="706" y="66">B2B integrations</text><polyline class="fl" points="520,76 520,114" marker-end="url(#ar)"/><text class="lbl" x="530" y="100">HTTPS · trace-id</text><text class="band" x="40" y="110">EDGE</text><rect class="box" x="40" y="118" width="470" height="46" rx="3"/><text class="t" x="52" y="139">CDN</text><text class="s" x="52" y="154">static assets · cached responses</text><rect class="box" x="530" y="118" width="470" height="46" rx="3"/><text class="t" x="542" y="139">Load Balancer</text><text class="s" x="542" y="154">TLS · health checks · zone-aware</text><polyline class="fl" points="520,164 520,202" marker-end="url(#ar)"/><text class="band" x="40" y="198">ENTRY</text><rect class="box" x="40" y="206" width="960" height="48" rx="3"/><text class="t" x="52" y="227">API Gateway</text><text class="s" x="52" y="242">authN · authZ · rate limit · quota · routing · trace propagation</text><polyline class="fl" points="250,254 250,298" marker-end="url(#arA)"/><text class="lbl" x="258" y="280">chat / natural language</text><polyline class="fl" points="770,254 770,330" marker-end="url(#ar)"/><text class="lbl" x="778" y="280">REST / structured calls</text><rect class="plane" x="24" y="300" width="482" height="322" rx="8"/><text class="planelbl" x="38" y="320">AI PLANE — added for AI systems</text><rect class="box boxAI" x="40" y="332" width="218" height="48" rx="3"/><text class="t" x="52" y="353">Agent Orchestrator</text><text class="s" x="52" y="368">supervisor · plans · budgets</text><rect class="box boxAI" x="274" y="332" width="218" height="48" rx="3"/><text class="t" x="286" y="353">Guardrails</text><text class="s" x="286" y="368">injection · moderation · policy</text><rect class="box boxAI" x="40" y="388" width="218" height="48" rx="3"/><text class="t" x="52" y="409">Semantic Cache</text><text class="s" x="52" y="424">similar-query reuse</text><rect class="box boxAI" x="274" y="388" width="218" height="48" rx="3"/><text class="t" x="286" y="409">Context Engineering</text><text class="s" x="286" y="424">history · docs · tool output</text><rect class="box boxAI" x="40" y="444" width="218" height="48" rx="3"/><text class="t" x="52" y="465">Prompt Management</text><text class="s" x="52" y="480">versioned · A/B · rollback</text><rect class="box boxAI" x="274" y="444" width="218" height="48" rx="3"/><text class="t" x="286" y="465">Model Gateway</text><text class="s" x="286" y="480">route · fallback · token budget</text><rect class="box boxAI" x="40" y="500" width="218" height="48" rx="3"/><text class="t" x="52" y="521">Embedding Service</text><text class="s" x="52" y="536">batch + online vectors</text><rect class="box boxAI" x="274" y="500" width="218" height="48" rx="3"/><text class="t" x="286" y="521">LLM Pool</text><text class="s" x="286" y="536">small · frontier · self-hosted</text><rect class="box boxAI" x="40" y="556" width="218" height="48" rx="3"/><text class="t" x="52" y="577">Vector Database</text><text class="s" x="52" y="592">ANN · top-k retrieval</text><rect class="box boxAI" x="274" y="556" width="218" height="48" rx="3"/><text class="t" x="286" y="577">Tool Layer (MCP)</text><text class="s" x="286" y="592">typed · permission-checked</text><text class="band" x="530" y="320">SERVICE PLANE</text><rect class="box" x="530" y="332" width="470" height="48" rx="3"/><text class="t" x="542" y="353">Auth Service</text><text class="s" x="542" y="368">login · JWT · MFA · session validation</text><rect class="box" x="530" y="388" width="470" height="48" rx="3"/><text class="t" x="542" y="409">Booking Service</text><text class="s" x="542" y="424">reserve · pay (idempotent) · cancel</text><rect class="box" x="530" y="444" width="470" height="48" rx="3"/><text class="t" x="542" y="465">Search Service</text><text class="s" x="542" y="480">flights · hotels · supplier fan-out</text><rect class="box" x="530" y="500" width="470" height="48" rx="3"/><text class="t" x="542" y="521">Notification Service</text><text class="s" x="542" y="536">email · push · SMS (async)</text><rect class="box" x="530" y="556" width="470" height="48" rx="3"/><text class="t" x="542" y="577">Supplier / Enterprise APIs</text><text class="s" x="542" y="592">GDS · payments · CRM · Jira</text><line class="fl flA" x1="516" y1="580" x2="516" y2="356"/><polyline class="fl flA" points="492,580 514,580" marker-end="url(#arA)"/><polyline class="fl flA" points="516,412 528,412" marker-end="url(#arA)"/><polyline class="fl flA" points="516,468 528,468" marker-end="url(#arA)"/><polyline class="fl flA" points="516,580 528,580" marker-end="url(#arA)"/><polyline class="fl flA" points="516,356 528,356" marker-end="url(#arA)"/><text class="lbl" x="530" y="642">tool calls · permission-checked</text><polyline class="fl flA" points="265,622 265,698" marker-end="url(#arA)"/><text class="lbl" x="272" y="660">embeddings · agent state</text><polyline class="fl" points="765,604 765,698" marker-end="url(#ar)"/><text class="lbl" x="772" y="660">reads / writes</text><text class="band" x="40" y="694">DATA PLANE</text><rect class="box" x="40" y="702" width="226" height="46" rx="3"/><text class="t" x="52" y="723">SQL</text><text class="s" x="52" y="738">bookings · payments</text><rect class="box" x="284" y="702" width="226" height="46" rx="3"/><text class="t" x="296" y="723">NoSQL</text><text class="s" x="296" y="738">sessions · catalogue</text><rect class="box" x="528" y="702" width="226" height="46" rx="3"/><text class="t" x="540" y="723">Cache (Redis)</text><text class="s" x="540" y="738">hot reads · sessions</text><rect class="box" x="772" y="702" width="226" height="46" rx="3"/><text class="t" x="784" y="723">Object Store</text><text class="s" x="784" y="738">hot / cold tiering</text><polyline class="fl" points="520,748 520,786" marker-end="url(#ar)"/><text class="lbl" x="528" y="772">events</text><text class="band" x="40" y="782">ASYNC PLANE</text><rect class="box" x="40" y="790" width="226" height="46" rx="3"/><text class="t" x="52" y="811">Message Queue</text><text class="s" x="52" y="826">buffer · retry · DLQ</text><rect class="box" x="284" y="790" width="226" height="46" rx="3"/><text class="t" x="296" y="811">Stream Processor</text><text class="s" x="296" y="826">fan-out · enrichment</text><rect class="box" x="528" y="790" width="226" height="46" rx="3"/><text class="t" x="540" y="811">Search Indexer</text><text class="s" x="540" y="826">denormalised views</text><rect class="box" x="772" y="790" width="226" height="46" rx="3"/><text class="t" x="784" y="811">Warehouse</text><text class="s" x="784" y="826">analytics · evals</text><rect class="xcut" x="40" y="876" width="960" height="54" rx="3"/><text class="band" x="56" y="898">CROSS-CUTTING</text><text class="s" x="56" y="916">Observability &amp; tracing · LLM observability (latency · tokens · cost · quality) · Security &amp; governance · Compliance · CI/CD &amp; model governance</text></svg></div><figcaption>The full architecture. Violet marks everything an AI system adds; the grey service, data, and async planes are the traditional design unchanged. The tool layer is the only path from the model back into the services.</figcaption></figure>
+<figure class="dgm-fig"><div class="scroll"><svg class="dgm" viewBox="0 0 1040 400" role="img" aria-label="One AI request end to end: user request passes input guardrails, hits the semantic cache which either returns a cached answer directly or misses through to context engineering, which is fed by the embedding service, vector database and prompt management; the model gateway routes to the LLM pool, the model may call the tool layer which invokes application and supplier APIs and returns the result, and the output passes output guardrails before streaming back."><defs><marker id="b_ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="b_arK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkK"/></marker><marker id="b_arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkA"/></marker></defs><rect class="box boxAI" x="48" y="170" width="100" height="56" rx="3"/><text class="t mid" x="98" y="190">User</text><text class="t mid" x="98" y="203">request</text><text class="s mid" x="98" y="218"></text><rect class="box boxAI" x="168" y="170" width="100" height="56" rx="3"/><text class="t mid" x="218" y="190">Guardrails</text><text class="t mid" x="218" y="203">input</text><text class="s mid" x="218" y="218"></text><rect class="box boxAI" x="288" y="170" width="100" height="56" rx="3"/><text class="t mid" x="338" y="190">Semantic</text><text class="t mid" x="338" y="203">Cache</text><text class="s mid" x="338" y="218"></text><rect class="box boxAI" x="408" y="170" width="100" height="56" rx="3"/><text class="t mid" x="458" y="190">Context</text><text class="t mid" x="458" y="203">Engineering</text><text class="s mid" x="458" y="218"></text><rect class="box boxAI" x="528" y="170" width="100" height="56" rx="3"/><text class="t mid" x="578" y="190">Model</text><text class="t mid" x="578" y="203">Gateway</text><text class="s mid" x="578" y="218"></text><rect class="box boxAI" x="648" y="170" width="100" height="56" rx="3"/><text class="t mid" x="698" y="190">LLM</text><text class="t mid" x="698" y="203">generate</text><text class="s mid" x="698" y="218"></text><rect class="box boxAI" x="768" y="170" width="100" height="56" rx="3"/><text class="t mid" x="818" y="190">Guardrails</text><text class="t mid" x="818" y="203">output</text><text class="s mid" x="818" y="218"></text><rect class="box boxAI" x="888" y="170" width="100" height="56" rx="3"/><text class="t mid" x="938" y="190">Response</text><text class="t mid" x="938" y="203">stream</text><text class="s mid" x="938" y="218"></text><polyline class="fl" points="148,198 166,198" marker-end="url(#b_ar)"/><polyline class="fl" points="268,198 286,198" marker-end="url(#b_ar)"/><text class="lbl mid" x="278" y="242">sanitised</text><polyline class="fl" points="388,198 406,198" marker-end="url(#b_ar)"/><text class="lbl mid" x="398" y="242">miss</text><polyline class="fl" points="508,198 526,198" marker-end="url(#b_ar)"/><text class="lbl mid" x="518" y="242">context</text><polyline class="fl" points="628,198 646,198" marker-end="url(#b_ar)"/><text class="lbl mid" x="638" y="242">routed</text><polyline class="fl" points="748,198 766,198" marker-end="url(#b_ar)"/><text class="lbl mid" x="758" y="242">draft</text><polyline class="fl" points="868,198 886,198" marker-end="url(#b_ar)"/><text class="lbl mid" x="878" y="242">validated</text><polyline class="fl flK" points="338.0,170 338.0,110 938.0,110 938.0,168" marker-end="url(#b_arK)"/><text class="lbl mid flKt" x="638" y="100">cache hit — answer returned with no model call</text><rect class="box" x="140" y="308" width="128" height="48" rx="3"/><text class="t" x="152" y="329">Embedding</text><text class="s" x="152" y="344">service</text><rect class="box" x="284" y="308" width="128" height="48" rx="3"/><text class="t" x="296" y="329">Vector DB</text><text class="s" x="296" y="344">top-k chunks</text><rect class="box" x="428" y="308" width="128" height="48" rx="3"/><text class="t" x="440" y="329">Prompt Mgmt</text><text class="s" x="440" y="344">system prompt vN</text><polyline class="fl" points="268,332 282,332" marker-end="url(#ar)"/><polyline class="fl" points="348,308 348,282 444.0,282 444.0,228" marker-end="url(#ar)"/><polyline class="fl" points="492,308 492,282 472.0,282 472.0,228" marker-end="url(#ar)"/><rect class="box boxAI" x="614" y="308" width="158" height="48" rx="3"/><text class="t" x="626" y="329">Tool Layer (MCP)</text><text class="s" x="626" y="344">typed · permitted</text><rect class="box" x="792" y="308" width="208" height="48" rx="3"/><text class="t" x="804" y="329">App &amp; supplier APIs</text><text class="s" x="804" y="344">booking · search · CRM</text><polyline class="fl flA" points="680.0,226 680.0,306" marker-end="url(#b_arA)"/><text class="lbl" x="672.0" y="286" text-anchor="end">tool call</text><polyline class="fl flA" points="718.0,306 718.0,228" marker-end="url(#b_arA)"/><text class="lbl" x="726.0" y="286">result → context</text><polyline class="fl" points="772,332 790,332" marker-end="url(#ar)"/></svg></div><figcaption>The same architecture as one request. The teal path is the cache hit that skips retrieval, the model, and every tool call; the violet loop is the agent calling a tool and feeding the result back into its own context.</figcaption></figure>
+<div class="items">
+<div class="item"><h4>Two planes, one front door</h4><p>The AI plane and the traditional service plane both sit behind the same API gateway, which keeps authentication, rate limiting, quotas, and tracing in one place. Chat traffic routes to the agent orchestrator; ordinary REST traffic goes straight to the services, so a model outage never takes down booking.</p></div>
+<div class="item"><h4>The tool layer is the boundary between them</h4><p>Everything the agent does to the real world goes through typed, permission-checked tool calls into the existing services — the LLM never touches a database directly. That single choke point is where authorisation, timeouts, and audit logging are enforced.</p></div>
+<div class="item"><h4>Retrieval is a side path, not an extra hop</h4><p>The embedding service and vector database feed context engineering rather than sitting in the request chain, so retrieval latency is bounded and can be skipped when the task does not need it. Prompt management supplies the versioned system prompt into the same assembly step.</p></div>
+<div class="item"><h4>The semantic cache is the main cost lever</h4><p>It sits in front of the expensive path, so a hit returns an answer with no model call, no retrieval, and no tool execution. Tune its similarity threshold conservatively: a false hit is not a slow answer, it is a wrong one.</p></div>
+<div class="item"><h4>Guardrails bracket the model on both sides</h4><p>Input guardrails handle prompt injection and moderation before anything reaches the model; output guardrails validate structure and grounding before anything reaches the user or triggers an action. Both should fail closed on transactional requests.</p></div>
+<div class="item"><h4>The data and async planes stay shared</h4><p>SQL, NoSQL, Redis, and object storage serve both planes, and events still flow through the queue to workers, indexers, and the warehouse. The AI plane adds components on top of the traditional architecture — it does not replace any of it.</p></div>
+</div>
+</section>
+</div></section>
+<section class="sec" id="c6">
+<header class="sec-head">
+<span class="sec-num">6</span>
+<div><h2>Data Design</h2><p class="sec-purpose">How data is stored</p></div>
+</header><div class="sec-body">
+<p class="prose">Choose storage per access pattern, and be explicit about what is stored, where, and for how long.</p>
+<section class="grp"><h3>Databases</h3>
+<div class="items">
+<div class="item"><h4>SQL</h4><p>Relational stores for transactional, strongly consistent data with joins and constraints — bookings, payments, users. Choose it whenever correctness matters more than raw write throughput.</p></div>
+<div class="item"><h4>NoSQL</h4><p>Document or wide-column stores for high-volume, flexible-schema, partition-friendly data such as sessions or catalogues. You trade joins and multi-record transactions for horizontal scale.</p></div>
+<div class="item"><h4>Graph</h4><p>Purpose-built for relationship traversal — recommendations, fraud rings, itinerary connections. Use it when queries are about paths between entities rather than rows in a table.</p></div>
+<div class="item"><h4>Time-series</h4><p>Optimised for append-heavy, timestamp-ordered data like metrics, prices, and events. Built-in downsampling and retention keep long histories affordable.</p></div>
+</div>
+<aside class="callout"><strong>The one question that actually decides SQL vs. NoSQL:</strong> does this write need to be correct <em>together</em> with another write, or does this read need to be correct <em>together</em> with another read? Booking a flight touches multiple related facts that must all be true at once — decrement seat inventory, insert the booking, charge the payment — and if the charge fails, the seat decrement has to roll back too, or you've sold a seat nobody paid for. That's a transaction, and it's exactly what SQL guarantees; you also constantly need relational questions answered ("this user's bookings joined with payment status"), which means joins across <code>users</code>/<code>bookings</code>/<code>payments</code> tables. A hotel catalogue is the opposite: reading one listing never needs to lock or join against another, and different hotels genuinely have different shapes of data (a boutique hotel has <code>pet_friendly</code>, a business hotel has <code>conference_rooms</code>) — forcing that into rigid SQL columns means a table full of mostly-NULL fields. NoSQL lets each document stand alone with its own shape, and scales by just adding machines, each independently serving whichever documents they hold, with no cross-machine transaction to coordinate. Same logic explains why <strong>sessions</strong> sit in NoSQL/Redis (each one is independent, high-volume, ephemeral) while <strong>bookings and payments</strong> sit in SQL (interdependent, must be transactionally consistent, permanent record).</aside>
+</section>
+<section class="grp"><h3>Data models</h3>
+<div class="items">
+<div class="item"><h4>Customer</h4><p>Identity, profile, preferences, and consent flags, referenced by nearly every other entity. It is also the record most affected by privacy rules, so plan for export and deletion.</p></div>
+<div class="item"><h4>Booking</h4><p>The transactional core: status, itinerary, price, and links to payment and supplier references. Model it as a state machine with an immutable event history rather than a mutable row.</p></div>
+<div class="item"><h4>Flight</h4><p>Mostly external, cache-heavy reference data — schedules, availability, fares — with short TTLs. Decide what you persist versus what you always fetch live from the supplier.</p></div>
+<div class="item"><h4>Hotel</h4><p>Property, room inventory, rates, and media, refreshed on a slower cadence than flights. Rich content makes this the natural candidate for a search index and a CDN.</p></div>
+<div class="item"><h4>Payment</h4><p>Charges, refunds, and reconciliation records held to the strictest consistency and audit standards. Store tokens rather than card data so PCI scope stays contained.</p></div>
+</div>
+</section>
+<section class="grp"><h3>Storage decisions</h3>
+<div class="items">
+<div class="item"><h4>Hot vs Cold storage</h4><p>Keep recent, frequently accessed data on fast storage and tier older data to cheap object storage. This is often the single largest cost lever in a data-heavy system.</p></div>
+<div class="item"><h4>Partitioning</h4><p>Split data across shards by a key — customer, region, or time — so no single node holds everything. Pick the key carefully: a bad one creates hotspots you cannot fix without a migration.</p></div>
+<div class="item"><h4>Replication</h4><p>Maintain copies across nodes and zones for read scaling and failover. State whether replication is synchronous (safer, slower) or asynchronous (faster, risks losing recent writes).</p></div>
+<div class="item"><h4>Backup strategy</h4><p>Scheduled snapshots plus point-in-time recovery, with defined RPO and RTO targets. A backup you have never restored is a hypothesis, so include periodic restore drills.</p></div>
+</div>
+</section>
+</div></section>
+<section class="sec" id="c7">
+<header class="sec-head">
+<span class="sec-num">7</span>
+<div><h2>Component Design</h2><p class="sec-purpose">Internal services / modules</p></div>
+</header><div class="sec-body">
+<p class="prose">Now zoom into each service and state its responsibilities, interfaces, and data ownership.</p>
+<section class="grp"><h3>Authentication Service</h3>
+<div class="items">
+<div class="item"><h4>Login</h4><p>Validates credentials or federated identity (OAuth/OIDC) and establishes a session. Rate limiting and lockout policy live here to blunt credential-stuffing attacks.</p></div>
+<div class="item"><h4>JWT generation</h4><p>Issues short-lived signed access tokens plus longer-lived refresh tokens. Short expiry limits the blast radius of a leaked token; key rotation and revocation need a plan.</p></div>
+<div class="item"><h4>MFA</h4><p>A second factor (TOTP, push, WebAuthn) for high-risk logins and sensitive actions. Step-up authentication before payment or cancellation is a good detail to volunteer.</p></div>
+<div class="item"><h4>Session validation</h4><p>Verifies tokens on every request, ideally at the gateway so downstream services stay simple. It must be fast and cacheable since it sits on the critical path of every call.</p></div>
+</div>
+</section>
+<section class="grp"><h3>Booking Service</h3>
+<div class="items">
+<div class="item"><h4>Reserve seats</h4><p>Holds inventory atomically with an idempotency key so retries never double-book. Reservations should expire automatically if payment does not complete in time.</p></div>
+<div class="item"><h4>Handle payments</h4><p>Orchestrates authorisation and capture through a payment provider, never touching raw card data. Model it as a saga with compensating actions, since the provider is an external system.</p></div>
+<div class="item"><h4>Cancellation</h4><p>Reverses the booking across supplier, payment, and notification systems while honouring fare rules. Needs to be idempotent and auditable, because partial failures here are visible to customers.</p></div>
+</div>
+</section>
+<section class="grp grp--ai"><h3>AI Agent</h3>
+<div class="items">
+<div class="item"><h4>Intent classification</h4><p>Maps a free-form message to a supported task — search, book, cancel, ask — with a confidence score. Low-confidence input should trigger a clarifying question rather than a guess.</p></div>
+<div class="item"><h4>Planning</h4><p>Decomposes a request into ordered steps and decides which tools to call in what sequence. Cap the number of steps and the token budget so a plan cannot loop indefinitely.</p></div>
+<div class="item"><h4>Tool invocation</h4><p>Calls the underlying services with validated arguments and handles their errors and timeouts. Every write-capable tool needs an explicit permission check before it fires.</p></div>
+<div class="item"><h4>Memory retrieval</h4><p>Pulls relevant conversation history, preferences, and past trips into the context window. Scope memory strictly per user, and retrieve selectively rather than dumping everything.</p></div>
+</div>
+</section>
+</div></section>
+<section class="sec" id="c8">
+<header class="sec-head">
+<span class="sec-num">8</span>
+<div><h2>Data Flow</h2><p class="sec-purpose">End-to-end request lifecycle</p></div>
+</header><div class="sec-body">
+<p class="prose">Walk through one request end to end. Interviewers love this section because it proves you understand how the pieces actually interact.</p>
+<figure class="flow"><figcaption>End-to-end request</figcaption><ol><li><span>User</span></li><li><span>API Gateway</span></li><li><span>Authentication</span></li><li><span>Supervisor Agent</span></li><li><span>Semantic Cache</span></li><li><span>Travel Agent</span></li><li><span>Flight API</span></li><li><span>Hotel API</span></li><li><span>Booking Service</span></li><li><span>LLM</span></li><li><span>Response</span></li></ol></figure>
+<div class="items">
+<div class="item"><h4>User</h4><p>Sends a natural-language request such as &quot;find me a flight to Delhi next Friday&quot;. The client attaches an auth token and a request/trace ID that follows the call everywhere.</p></div>
+<div class="item"><h4>API Gateway</h4><p>Terminates TLS, applies rate limits, and routes to the assistant service. It is also where the trace begins and where the global timeout budget is set.</p></div>
+<div class="item"><h4>Authentication</h4><p>Validates the token and resolves the user&#x27;s identity, roles, and entitlements. Everything downstream operates under that scope, which is what keeps memory and data user-isolated.</p></div>
+<div class="item"><h4>Supervisor Agent</h4><p>Interprets the request, builds a plan, and delegates to the appropriate specialised agent. It owns the step budget and decides when the task is complete.</p></div>
+<div class="item"><h4>Semantic Cache</h4><p>Checks whether a semantically similar request was answered recently and returns it if so. A hit skips the expensive downstream path entirely; a miss continues and populates the cache.</p></div>
+<div class="item"><h4>Travel Agent</h4><p>The domain specialist that knows which tools to call and how to combine their results. It normalises supplier differences into one consistent internal shape.</p></div>
+<div class="item"><h4>Flight API</h4><p>Queries suppliers or GDS systems for availability and fares, usually in parallel. Slow suppliers get a timeout and a partial result rather than blocking the whole response.</p></div>
+<div class="item"><h4>Hotel API</h4><p>Fetches properties, rooms, and rates matching the itinerary, then merges them with flight options. Results are typically cached briefly because prices move but not by the second.</p></div>
+<div class="item"><h4>Booking Service</h4><p>Called only when the user confirms, creating the reservation and taking payment idempotently. It emits events that trigger notifications and history updates asynchronously.</p></div>
+<div class="item"><h4>LLM</h4><p>Turns the structured results into a clear, grounded natural-language answer. Ground it strictly in retrieved data and validate the output before it reaches the user.</p></div>
+<div class="item"><h4>Response</h4><p>Streamed back so the user sees progress rather than a spinner, with the trace ID retained. Log latency and token cost per stage to find bottlenecks later.</p></div>
+</div>
+</div></section>
+<section class="sec" id="c9">
+<header class="sec-head">
+<span class="sec-num">9</span>
+<div><h2>Scalability Strategy</h2><p class="sec-purpose">Handle growth</p></div>
+</header><div class="sec-body">
+<p class="prose">Discuss how the system grows — and be specific about which bottleneck each technique removes.</p>
+<div class="items">
+<div class="item"><h4>Horizontal scaling</h4><p>Add more instances rather than bigger ones, which requires services to be stateless. It gives near-linear capacity growth and removes the single-machine ceiling.</p></div>
+<div class="item"><h4>Auto scaling</h4><p>Adjust instance count automatically from CPU, queue depth, or request-rate signals. Tune warm-up time and cooldown, or you will scale up after the spike has already caused errors.</p></div>
+<div class="item"><h4>Load balancing</h4><p>Spread traffic across instances and zones using health checks and a sensible algorithm. Least-connections or latency-aware routing usually beats round-robin for uneven workloads.</p></div>
+<div class="item"><h4>Caching</h4><p>Keep hot reads in memory at the edge, gateway, application, or database layer. Each layer you add cuts load on the one behind it, at the cost of another invalidation problem.</p></div>
+<div class="item"><h4>Database sharding</h4><p>Split data horizontally across independent databases by a partition key. It is the answer when write volume or dataset size exceeds one node, and the cost is cross-shard queries.</p></div>
+<div class="item"><h4>Read replicas</h4><p>Serve reads from asynchronous copies of the primary to relieve write-node pressure. Be explicit about replication lag and which reads must go to the primary.</p></div>
+<div class="item"><h4>Message queues</h4><p>Buffer work so producers never wait on consumers, smoothing spikes into backlog. They also give retries, dead-lettering, and independent scaling of the consumer side.</p></div>
+<div class="item"><h4>Event-driven architecture</h4><p>Services publish events instead of calling each other synchronously, reducing coupling and fan-out latency. The tradeoff is eventual consistency and harder end-to-end debugging.</p></div>
+<div class="item"><h4>Stateless services</h4><p>Push session and cached state into shared stores so any instance can serve any request. This is the precondition for autoscaling, rolling deploys, and instance replacement.</p></div>
+<div class="item"><h4>CDN</h4><p>Push static and cacheable content to the edge, cutting origin load and geographic latency. It is the cheapest scaling win available and should be the first thing you mention.</p></div>
+</div>
+<aside class="callout"><strong>Why statelessness is the prerequisite, not a nice-to-have:</strong> a load balancer can route a user's requests to a <em>different</em> instance every time. If an instance keeps request-specific state in its own local memory or disk (a session, a cart, a file mid-upload), a request that lands on the wrong instance breaks. Stateless design pushes all of that into a shared external store — Redis/DB for session state, a signed JWT the client carries instead of a server-side session, S3 instead of local disk — so any instance can serve any request. That interchangeability is what lets you freely add, remove, or replace instances (near-linear scaling) and also what makes rolling deploys safe, since no single instance is the sole holder of anything important.</aside>
+<section class="grp grp--ai"><h3>For AI</h3>
+<div class="items">
+<div class="item"><h4>Model routing</h4><p>Send simple requests to small fast models and reserve frontier models for hard ones. This typically cuts cost by an order of magnitude with minimal quality loss.</p></div>
+<div class="item"><h4>Semantic cache</h4><p>Reuse answers for semantically similar queries instead of re-invoking the model. Set the similarity threshold conservatively, since a false hit is a wrong answer.</p></div>
+<div class="item"><h4>Multi-region vector DBs</h4><p>Replicate the embedding index near users to cut retrieval latency and survive a region loss. Index rebuilds and replication lag are the operational costs to acknowledge.</p></div>
+<div class="item"><h4>Token optimisation</h4><p>Trim prompts, compress history, and retrieve selectively so the context window stays small. Tokens are both your latency budget and your bill, so this is a scaling lever, not a micro-optimisation.</p></div>
+<div class="item"><h4>Request batching</h4><p>Group embedding and inference calls to improve GPU utilisation and throughput. It trades a few milliseconds of queueing delay for a large gain in cost per request.</p></div>
+<div class="item"><h4>Short-circuiting</h4><p>Stop an agent pipeline the moment a step already satisfies the task, instead of running every planned hop to completion. It trades completeness of the reasoning chain for cost, latency, and safety.</p></div>
+</div>
+<aside class="callout"><strong>How it applies to agentic design:</strong> the same idea as boolean short-circuit evaluation (<code>a &amp;&amp; b</code> skips <code>b</code> once <code>a</code> is false), applied to orchestration. It shows up at several points in an agent pipeline: a cache hit or guardrail check that skips an LLM call entirely; a verifier that fails early in a planner &rarr; retriever &rarr; verifier &rarr; synthesiser chain, halting before downstream agents burn tokens on doomed input; a tool-calling loop that stops as soon as a result meets the success criteria rather than running to the max-turn budget; an ensemble of parallel agents that returns once N of M already agree, without waiting on the rest; and a policy filter that blocks unsafe input before any tool or model runs at all, so a reasoning chain never gets the chance to justify an irreversible action. Implemented via confidence thresholds between steps, conditional edges in an orchestrator graph, or a circuit breaker that stops calling a repeatedly failing dependency and fails fast rather than cascading. The design skill is picking the right checkpoint to evaluate "is this good enough to stop here" — too early loses correctness, too late loses the cost/latency/safety benefit.</aside>
+</section>
+</div></section>
+<section class="sec" id="c10">
+<header class="sec-head">
+<span class="sec-num">10</span>
+<div><h2>Reliability &amp; Availability</h2><p class="sec-purpose">Ensure uptime</p></div>
+</header><div class="sec-body">
+<p class="prose">How do you ensure uptime? Assume every dependency will fail and describe what happens when it does.</p>
+<div class="items">
+<div class="item"><h4>Retry policies</h4><p>Retry transient failures with exponential backoff and jitter, only for idempotent operations. Cap the attempts, or retries become a self-inflicted denial-of-service.</p></div>
+<div class="item"><h4>Circuit breakers</h4><p>Stop calling a failing dependency after a threshold and fail fast until it recovers. This prevents one sick service from exhausting every caller&#x27;s thread pool.</p></div>
+<div class="item"><h4>Timeouts</h4><p>Set an explicit deadline on every network call and propagate a shrinking budget downstream. A missing timeout is the most common cause of a full-system hang.</p></div>
+<div class="item"><h4>Dead letter queues</h4><p>Park messages that repeatedly fail so the main queue keeps flowing. They preserve the failed work for inspection and replay instead of silently dropping it.</p></div>
+<div class="item"><h4>Multi-AZ deployment</h4><p>Spread instances and database replicas across availability zones within a region. It protects against the most common real-world failure — losing one data centre.</p></div>
+<div class="item"><h4>Multi-region failover</h4><p>Keep a standby (or active) region ready to take traffic when a whole region is lost. State the RTO and how DNS or global routing shifts traffic, plus how data is replicated.</p></div>
+<div class="item"><h4>Health checks</h4><p>Liveness and readiness probes that remove unhealthy instances from rotation automatically. Make readiness check real dependencies so you never route traffic to a half-started pod.</p></div>
+<div class="item"><h4>Leader election</h4><p>Ensure exactly one node performs singleton work such as schedulers or cleanup jobs. Consensus systems (etcd, ZooKeeper) provide this safely across failures.</p></div>
+<div class="item"><h4>Graceful degradation</h4><p>Shed non-essential features under stress instead of failing the whole request. For a travel assistant: keep search working even if personalisation or reviews are unavailable.</p></div>
+<div class="item"><h4>Backup &amp; restore</h4><p>Automated backups with tested, timed restore procedures against defined RPO/RTO. Rehearse the restore, since the first real attempt should never be during an incident.</p></div>
+<div class="item"><h4>Chaos testing</h4><p>Deliberately inject failures — kill nodes, add latency, drop dependencies — in controlled conditions. It converts assumed resilience into verified resilience.</p></div>
+</div>
+<aside class="callout"><strong>How a circuit breaker actually works:</strong> it wraps a dependency call and tracks its failure rate, moving through three states like the electrical device it's named after. <strong>Closed</strong> (normal) — every call goes through, failures are counted. <strong>Open</strong> — once failures cross a threshold, the breaker trips: for a cooldown window, every call fails <em>instantly</em> without even touching the dependency, no timeout wait required. <strong>Half-open</strong> — after the cooldown, a small number of trial requests are let through; if they succeed, the breaker closes again; if they fail, it reopens for another cooldown. The specific failure mode it targets: a timeout alone still makes every caller wait out the full deadline on every request to a dead dependency, tying up a thread or connection each time — under load, that alone can exhaust the caller's own pool and take down a perfectly healthy service. Failing fast is what breaks that cascade; the cooldown is what gives the failing dependency room to actually recover instead of getting hit by retry traffic the instant it starts responding again.</aside>
+<aside class="callout"><strong>Reliability and availability are not the same target,</strong> so each technique above earns its place by protecting one of them. Availability is <em>whether</em> the system responds — measured in nines, and won by redundancy: multi-AZ, multi-region failover, health checks, and load balancing all exist to route traffic around something that's down. Reliability is <em>whether the response is correct and no data is lost</em>, even mid-failure — won by containment: timeouts, circuit breakers, retries-with-backoff, and dead letter queues all exist to stop one failure from corrupting or cascading into others. A system can be highly available and unreliable (always responds fast, sometimes with the wrong answer or silently dropped data) or reliable and unavailable (correct whenever it responds, but down often) — naming which techniques buy you which property is what separates a checklist from a design. Backup &amp; restore is reliability's version of a safety net (bounded by RPO — how much data you can afford to lose); multi-region failover is availability's (bounded by RTO — how long you can afford to be down).</aside>
+</div>
+</div></section>
+<section class="sec" id="c11">
+<header class="sec-head">
+<span class="sec-num">11</span>
+<div><h2>Security &amp; Governance</h2><p class="sec-purpose">Protect the system</p></div>
+</header><div class="sec-body">
+<div class="items">
+<div class="item"><h4>Authentication</h4><p>Establish who the caller is, using strong identity and short-lived credentials. Federate with an identity provider rather than building password handling from scratch.</p></div>
+<div class="item"><h4>Authorization</h4><p>Enforce what an authenticated caller may do, with least-privilege roles or attribute-based rules. Check it at the service, not only at the UI or gateway.</p></div>
+<div class="item"><h4>Encryption at rest</h4><p>Encrypt databases, object storage, and backups with managed keys and regular rotation. It is usually a compliance requirement, and it limits the damage of a stolen disk or snapshot.</p></div>
+<div class="item"><h4>Encryption in transit</h4><p>TLS everywhere, including between internal services, with mTLS for service-to-service trust. It defends against network-level interception and lateral movement.</p></div>
+<div class="item"><h4>Secrets management</h4><p>Keep credentials and keys in a vault with rotation and audited access, never in code or env files. Prefer short-lived, dynamically issued credentials over static ones.</p></div>
+<div class="item"><h4>Audit logs</h4><p>Immutable, timestamped records of who did what to which resource, retained per policy. They are essential for incident forensics and for most compliance regimes.</p></div>
+<div class="item"><h4>Rate limiting</h4><p>Per-user, per-IP, and per-tenant quotas to stop abuse and protect capacity. For AI systems, meter tokens and cost as well as request count.</p></div>
+<div class="item"><h4>API security</h4><p>Input validation, schema enforcement, output encoding, and defence against injection and SSRF. Version and deprecate endpoints deliberately so old, weaker paths do not linger.</p></div>
+<div class="item"><h4>PII protection</h4><p>Classify personal data, minimise what you collect, and mask or tokenise it in logs and analytics. Support export and deletion requests as a first-class feature, not a manual script.</p></div>
+<div class="item"><h4>Compliance</h4><p>Map GDPR, PCI-DSS, or residency obligations to concrete controls, retention windows, and evidence. Automate the evidence collection so audits do not consume an engineering quarter.</p></div>
+</div>
+<section class="grp grp--ai"><h3>For AI</h3>
+<div class="items">
+<div class="item"><h4>Prompt injection protection</h4><p>Treat retrieved documents and tool output as untrusted data that must never be executed as instructions. Separate system, user, and retrieved content, and constrain what tools can do.</p></div>
+<div class="item"><h4>Guardrails</h4><p>Policy checks on both input and output that block disallowed topics, actions, and formats. They should fail closed for anything that moves money or changes a booking.</p></div>
+<div class="item"><h4>Content moderation</h4><p>Screen user input and model output for harmful, abusive, or unsafe content before it is shown or stored. Log decisions so false positives can be reviewed and tuned.</p></div>
+<div class="item"><h4>Tool permission checks</h4><p>Authorise every tool call against the calling user&#x27;s own entitlements, not the agent&#x27;s. An agent must never be able to act beyond the permissions of the person it serves.</p></div>
+<div class="item"><h4>Output validation</h4><p>Validate structure and ground claims against retrieved sources before acting or replying. For anything transactional, require a schema-valid response and a human confirmation step.</p></div>
+<div class="item"><h4>Data masking</h4><p>Redact PII before it enters prompts, logs, traces, or third-party model providers. This keeps sensitive data out of systems you do not control.</p></div>
+<div class="item"><h4>Model governance</h4><p>Track model versions, prompts, evaluations, and approvals so behaviour changes are traceable. Regulators and incident reviews both ask &quot;which model and prompt produced this?&quot;</p></div>
+</div>
+</section>
+</div></section>
+<section class="sec" id="c12">
+<header class="sec-head">
+<span class="sec-num">12</span>
+<div><h2>Tradeoffs &amp; Future Improvements</h2><p class="sec-purpose">Show engineering judgment</p></div>
+</header><div class="sec-body">
+<p class="prose">This is where senior candidates stand out. Don&#x27;t just name a technology — explain its tradeoff.</p>
+<div class="items">
+<div class="item"><h4>Instead of &quot;We use Redis&quot;</h4><p>→ <em>&quot;Redis reduces read latency from hundreds to single-digit milliseconds, but introduces cache-consistency challenges.&quot;</em> You now have to reason about invalidation, stale reads, and what happens on a cache-wide eviction.</p></div>
+<div class="item"><h4>Instead of &quot;We use Kafka&quot;</h4><p>→ <em>&quot;Kafka improves throughput and decouples services, but increases operational complexity.&quot;</em> You take on partition management, consumer-lag monitoring, and the shift to eventual consistency.</p></div>
+</div>
+<section class="grp"><h3>Future improvements</h3>
+<div class="items">
+<div class="item"><h4>Multi-region deployment</h4><p>Serve users from the nearest region and survive the loss of an entire one. The cost is data replication complexity and conflict resolution on writes.</p></div>
+<div class="item"><h4>Event sourcing</h4><p>Store every state change as an immutable event, making the current state a projection. It gives perfect auditability and time travel, at the price of higher storage and read complexity.</p></div>
+<div class="item"><h4>Active-active architecture</h4><p>Run all regions live and serving traffic rather than keeping a warm standby. It removes failover delay entirely but demands conflict-free data design.</p></div>
+<div class="item"><h4>Better caching</h4><p>Add layered caches, smarter TTLs, and predictive warming for known-hot paths. Each refinement cuts cost and tail latency without changing the application logic.</p></div>
+<div class="item"><h4>AI cost optimisation</h4><p>Route by difficulty, cache semantically, shorten prompts, and batch requests. In production AI systems, inference is frequently the single largest line item.</p></div>
+<div class="item"><h4>Model distillation</h4><p>Train a smaller model on a larger one&#x27;s outputs for a task-specific workload. It can cut latency and cost substantially while holding quality on that narrow task.</p></div>
+<div class="item"><h4>Autonomous agents</h4><p>Extend from assisted actions to agents that complete multi-step tasks end to end. This raises the bar on guardrails, permissions, and human-in-the-loop checkpoints.</p></div>
+</div>
+<aside class="callout"><strong>Active-active vs. active-passive, and what it actually costs you:</strong> active-passive (the "multi-region failover" in §10) keeps one region live and a standby idle or replicating; losing the primary means <em>detecting</em> the failure, <em>promoting</em> the standby, and <em>repointing</em> traffic (DNS/global LB) — real downtime measured by that RTO. Active-active removes the failover step itself: every region is already serving live traffic, so losing one just means the global load balancer stops routing there and the surviving regions absorb the rest — nothing to detect, promote, or repoint. The price is on the data layer, not the network: with two-plus regions accepting <em>writes</em> to the same logical data, you now have concurrent writers, and something has to reconcile them. The three ways out are (1) partition writes by region so they never overlap — the AMER/EMEA/APJ pattern from the travel-agent design, where each region owns its own users, (2) conflict-free replicated data types or last-writer-wins for data that genuinely gets written from multiple regions, or (3) accept eventual consistency and resolve conflicts in application logic. There's a capacity cost too: every live region must be sized for real traffic (not idling as a standby), and — for the failover benefit to actually hold — the survivors need enough spare headroom to absorb a failed region's load, not just their own.</aside>
+</section>
+</div></section>
+<section class="sec sec-plain" id="ai-system-design-additions">
+<header class="sec-head"><span class="sec-num sec-num--mark">&#9679;</span><div><h2>AI System Design Additions</h2></div></header><div class="sec-body">
+<p class="prose">For modern AI systems, interviewers often expect these additional components.</p>
+<div class="items">
+<div class="item"><h4>Model Gateway</h4><p>Routes each request to the most appropriate LLM based on task complexity, cost, and availability. It centralises retries, fallbacks, quotas, and token accounting so services never call providers directly.</p></div>
+<div class="item"><h4>Prompt Management</h4><p>Stores prompts as versioned, reviewable artifacts rather than strings buried in code. It enables A/B tests, instant rollback of a bad prompt, and a clear audit trail of behaviour changes.</p></div>
+<div class="item"><h4>Context Engineering</h4><p>Builds the context window from user history, retrieved documents, and tool outputs within a token budget. What you include, in what order, and what you drop is now a core design decision.</p></div>
+<div class="item"><h4>Embedding Service</h4><p>Converts documents and queries into vectors for semantic search, in batch and online. The embedding model must be versioned, because changing it invalidates the whole index.</p></div>
+<div class="item"><h4>Vector Database</h4><p>Stores embeddings and serves approximate nearest-neighbour queries for retrieval. Index type, dimensionality, and the recall-versus-latency tradeoff are real architectural choices.</p></div>
+<div class="item"><h4>Semantic Cache</h4><p>Avoids repeated LLM calls for semantically similar requests by returning a stored answer. It cuts cost and tail latency sharply, but the similarity threshold must be tuned to avoid wrong matches.</p></div>
+<div class="item"><h4>Agent Orchestrator (Supervisor)</h4><p>Plans tasks, coordinates specialised sub-agents, and assembles the final result. It enforces step limits, token budgets, and the decision of when a task is actually done.</p></div>
+<div class="item"><h4>Tool Layer (MCP or Function Calls)</h4><p>Connects the LLM to enterprise systems such as Jira, Salesforce, or internal APIs through typed interfaces. Every tool needs schema validation, permission checks, timeouts, and audit logging.</p></div>
+<div class="item"><h4>LLM Observability</h4><p>Tracks latency, token usage, cost, hallucination rate, and quality metrics per request and per prompt version. Without it you cannot tell whether a change improved the system or quietly broke it.</p></div>
+<div class="item"><h4>Safety &amp; Guardrails</h4><p>Handles prompt injection, content moderation, and policy enforcement on both input and output. It should fail closed on any action that spends money or modifies customer data.</p></div>
+</div>
+</div></section>
+<section class="sec sec-plain" id="a-simple-mental-model">
+<header class="sec-head"><span class="sec-num">&#9679;</span><div><h2>A Simple Mental Model</h2></div></header><div class="sec-body">
+<p class="prose">A strong system design discussion typically follows this flow:</p>
+<ol class="steps">
+<li><h4>Define the problem</h4><p>clarify scope, users, and what you are explicitly not building.</p></li>
+<li><h4>Gather requirements</h4><p>separate functional capabilities from quantified quality attributes.</p></li>
+<li><h4>Estimate scale</h4><p>users, RPS, storage, and bandwidth, with your assumptions stated.</p></li>
+<li><h4>Design the high-level architecture</h4><p>the major blocks and the path a request takes.</p></li>
+<li><h4>Design data storage and services</h4><p>pick stores per access pattern and define service boundaries.</p></li>
+<li><h4>Explain end-to-end data flow</h4><p>trace one real request through every component.</p></li>
+<li><h4>Address scalability</h4><p>name the bottleneck first, then the technique that removes it.</p></li>
+<li><h4>Address reliability</h4><p>describe what happens when each dependency fails.</p></li>
+<li><h4>Address security and governance</h4><p>authentication, authorisation, data protection, compliance.</p></li>
+<li><h4>Discuss tradeoffs and future enhancements</h4><p>what you gave up, and what you would do next.</p></li>
+</ol>
+<p class="prose">This framework works for both traditional distributed systems (ride sharing, e-commerce, banking) and modern AI systems (agentic RAG, customer support copilots, AI travel assistants).</p>
+</div></section></main></div>
+<footer>Works for traditional distributed systems — ride sharing, e-commerce, banking — and for modern AI systems: agentic RAG, support copilots, AI travel assistants.</footer>
+</div>

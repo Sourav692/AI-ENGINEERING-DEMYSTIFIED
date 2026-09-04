@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Multi-Agent LLM Platform Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --orange: #ffa657;
+    --teal: #39d353;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .header h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #58a6ff, #bc8cff, #3fb950);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 14px;
+  }
+  .badge {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+
+  /* ── AWS Cloud wrapper ── */
+  .aws-cloud {
+    border: 2px solid #238636;
+    border-radius: 16px;
+    padding: 28px 20px;
+    background: rgba(35,134,54,0.05);
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .aws-cloud > .section-label {
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    background: var(--bg);
+    padding: 2px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #3fb950;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #238636;
+    border-radius: 6px;
+  }
+
+  /* ── Flow arrow ── */
+  .flow-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 0;
+    color: var(--muted);
+    font-size: 1.2rem;
+    position: relative;
+  }
+  .flow-arrow .arrow-label {
+    position: absolute;
+    right: calc(50% - 120px);
+    font-size: 0.68rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    background: var(--bg2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  /* ── Generic node ── */
+  .node {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .node .node-title {
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .node .node-detail {
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.6;
+  }
+
+  /* ── Color variants ── */
+  .node-blue   { border-color: #58a6ff44; background: #58a6ff0d; }
+  .node-blue .node-title   { color: var(--blue); }
+  .node-green  { border-color: #3fb95044; background: #3fb9500d; }
+  .node-green .node-title  { color: var(--green); }
+  .node-yellow { border-color: #d2992244; background: #d299220d; }
+  .node-yellow .node-title { color: var(--yellow); }
+  .node-red    { border-color: #f8514944; background: #f851490d; }
+  .node-red .node-title    { color: var(--red); }
+  .node-purple { border-color: #bc8cff44; background: #bc8cff0d; }
+  .node-purple .node-title { color: var(--purple); }
+  .node-orange { border-color: #ffa65744; background: #ffa6570d; }
+  .node-orange .node-title { color: var(--orange); }
+
+  /* ── Subgraph sections ── */
+  .subgraph {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px 16px;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .subgraph-label {
+    position: absolute;
+    top: -13px;
+    left: 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 10px;
+    border-radius: 5px;
+    background: var(--bg);
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .sg-security   { border-color: #d29922; }
+  .sg-security .subgraph-label   { color: #d29922; border-color: #d29922; }
+  .sg-lookup     { border-color: #1f6feb; }
+  .sg-lookup .subgraph-label     { color: #58a6ff; border-color: #1f6feb; }
+  .sg-pipeline   { border-color: #8b5cf6; }
+  .sg-pipeline .subgraph-label   { color: var(--purple); border-color: #8b5cf6; }
+  .sg-saveeval   { border-color: #238636; }
+  .sg-saveeval .subgraph-label   { color: var(--green); border-color: #238636; }
+  .sg-storage    { border-color: #b45309; }
+  .sg-storage .subgraph-label    { color: var(--orange); border-color: #b45309; }
+  .sg-ecs        { border-color: #1f6feb; }
+  .sg-ecs .subgraph-label        { color: #58a6ff; border-color: #1f6feb; }
+  .sg-apptask    { border-color: #2f81f7; }
+  .sg-apptask .subgraph-label    { color: #58a6ff; border-color: #2f81f7; }
+  .sg-redteam    { border-color: #f85149; }
+  .sg-redteam .subgraph-label    { color: var(--red); border-color: #f85149; }
+  .sg-llm        { border-color: #3fb950; }
+  .sg-llm .subgraph-label        { color: var(--green); border-color: #3fb950; }
+  .sg-obs        { border-color: #58a6ff; }
+  .sg-obs .subgraph-label        { color: var(--blue); border-color: #58a6ff; }
+  .sg-cicd       { border-color: #8b5cf6; }
+  .sg-cicd .subgraph-label       { color: var(--purple); border-color: #8b5cf6; }
+  .sg-support    { border-color: #6e7681; }
+  .sg-support .subgraph-label    { color: #8b949e; border-color: #6e7681; }
+
+  /* ── Grid helpers ── */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+  .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; }
+
+  /* ── User node ── */
+  .user-node {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .user-node .node {
+    width: 260px;
+    text-align: center;
+    border-color: #58a6ff66;
+    background: #58a6ff0d;
+  }
+  .user-node .node-title { color: var(--blue); text-align: center; }
+
+  /* ── ALB node ── */
+  .alb-node {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .alb-node .node {
+    width: 420px;
+    text-align: center;
+    border-color: #bc8cff66;
+    background: #bc8cff0d;
+  }
+  .alb-node .node-title { color: var(--purple); text-align: center; }
+
+  /* ── Queue node ── */
+  .queue-node {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .queue-node .node {
+    width: 460px;
+    text-align: center;
+    border-color: #d2992266;
+    background: #d299220d;
+  }
+  .queue-node .node-title { color: var(--yellow); text-align: center; }
+
+  /* ── GOut node ── */
+  .gout-node {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+  .gout-node .node {
+    width: 480px;
+    text-align: center;
+    border-color: #f8514966;
+    background: #f851490d;
+  }
+  .gout-node .node-title { color: var(--red); text-align: center; }
+
+  /* ── Critic retry badge ── */
+  .retry-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: #f85149;
+  }
+  .retry-badge::before, .retry-badge::after {
+    content: ''; flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #f8514944);
+  }
+  .retry-badge::after {
+    background: linear-gradient(to left, transparent, #f8514944);
+  }
+
+  /* ── Bedrock sidebar ── */
+  .bedrock-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f851490d;
+    border: 1px solid #f8514944;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--red);
+  }
+
+  /* ── Agent step number ── */
+  .agent-step {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: #8b5cf6;
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Connector line ── */
+  .connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 0;
+  }
+  .connector-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 80px;
+  }
+
+  /* ── Side annotations ── */
+  .annotation {
+    font-size: 0.68rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    text-align: center;
+    padding: 2px 0;
+  }
+
+  /* ── Outer sections below AWS box ── */
+  .outer-sections {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 1400px;
+    margin: 20px auto 0;
+  }
+
+  /* ── Flow diagram connectors ── */
+  .flow-line {
+    width: 2px;
+    background: var(--border);
+    margin: 0 auto;
+    position: relative;
+  }
+  .v-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .v-connector .v-line {
+    width: 2px;
+    height: 20px;
+    background: var(--border);
+  }
+  .v-connector .v-arrow {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--border);
+  }
+
+  .h-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .h-flow .h-line {
+    height: 2px;
+    flex: 1;
+    background: var(--border);
+    min-width: 10px;
+  }
+  .h-flow .h-arrow {
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid var(--border);
+  }
+  .h-flow .h-label {
+    font-size: 0.62rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    padding: 0 4px;
+    white-space: nowrap;
+  }
+
+  /* ── Tag chips ── */
+  .chip {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    margin: 2px 2px 0 0;
+  }
+  .chip-red    { border-color: #f8514944; color: var(--red); background: #f851490d; }
+  .chip-blue   { border-color: #58a6ff44; color: var(--blue); background: #58a6ff0d; }
+  .chip-green  { border-color: #3fb95044; color: var(--green); background: #3fb9500d; }
+  .chip-purple { border-color: #bc8cff44; color: var(--purple); background: #bc8cff0d; }
+  .chip-yellow { border-color: #d2992244; color: var(--yellow); background: #d299220d; }
+
+  /* ── scrollable on small screens ── */
+  @media (max-width: 900px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .grid-2, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
+    .outer-sections { grid-template-columns: 1fr; }
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 24px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════ -->
+<div class="header">
+  <h1>☁️ AWS Multi-Agent LLM Platform Architecture</h1>
+  <p>Region: us-east-1 &nbsp;·&nbsp; ECS Fargate &nbsp;·&nbsp; LangGraph &nbsp;·&nbsp; Bedrock Guardrails &nbsp;·&nbsp; TensorZero</p>
+  <div class="badge-row">
+    <span class="badge">FastAPI</span>
+    <span class="badge">LangGraph</span>
+    <span class="badge">TensorZero</span>
+    <span class="badge">PyRIT 0.14.0</span>
+    <span class="badge">Redis ElastiCache</span>
+    <span class="badge">pgvector</span>
+    <span class="badge">Bedrock Guardrails</span>
+    <span class="badge">LangSmith</span>
+    <span class="badge">GPT-4o + Groq Fallback</span>
+    <span class="badge">Terraform + GitHub Actions</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     USER
+═══════════════════════════════════════════ -->
+<div class="user-node">
+  <div class="node">
+    <div class="node-title">👤 User</div>
+    <div class="node-detail">Browser / API Client</div>
+  </div>
+</div>
+
+<div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+<div class="annotation">HTTPS request</div>
+<div class="v-connector"><div class="v-line" style="height:8px"></div></div>
+
+<!-- ═══════════════════════════════════════════
+     ALB
+═══════════════════════════════════════════ -->
+<div class="alb-node">
+  <div class="node">
+    <div class="node-title">🔀 ALB — Application Load Balancer</div>
+    <div class="node-detail">
+      <span class="chip chip-blue">:80 → App</span>
+      <span class="chip chip-red">:8001 → Red Team</span>
+    </div>
+  </div>
+</div>
+
+<div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+<div class="annotation">app traffic → Security</div>
+<div class="v-connector"><div class="v-line" style="height:8px"></div></div>
+
+<!-- ═══════════════════════════════════════════
+     AWS CLOUD
+═══════════════════════════════════════════ -->
+<div class="aws-cloud">
+  <span class="section-label">☁️ AWS Cloud — us-east-1</span>
+
+  <!-- SECURITY LAYER -->
+  <div class="subgraph sg-security">
+    <span class="subgraph-label">🔒 Security — every request passes through</span>
+    <div class="grid-3">
+      <div class="node node-yellow">
+        <div class="node-title">🔑 API Key Auth</div>
+        <div class="node-detail">
+          <code>X-API-Key</code> header<br>
+          → <span style="color:var(--red)">401</span> if wrong / missing
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+        <div class="h-flow" style="width:100%">
+          <div class="h-line"></div><div class="h-arrow"></div>
+        </div>
+        <div class="node node-yellow" style="flex:1;width:100%">
+          <div class="node-title">⏱️ Rate Limiter</div>
+          <div class="node-detail">10 req / 60s per IP<br>via Redis counter</div>
+        </div>
+        <div class="h-flow" style="width:100%">
+          <div class="h-line"></div><div class="h-arrow"></div>
+        </div>
+      </div>
+      <div class="node node-red">
+        <div class="node-title">🛡️ Bedrock Guardrail — INPUT</div>
+        <div class="node-detail">
+          <span class="chip chip-red">Hate</span>
+          <span class="chip chip-red">PII</span>
+          <span class="chip chip-red">Weapons</span>
+          <span class="chip chip-red">Prompt Attacks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+  <div class="annotation">safe ✓ — queued for processing</div>
+  <div class="v-connector"><div class="v-line" style="height:6px"></div></div>
+
+  <!-- QUEUE -->
+  <div class="queue-node">
+    <div class="node">
+      <div class="node-title">📨 Redis Stream — Async Job Queue</div>
+      <div class="node-detail">Decouples ingestion from processing · async workers consume jobs</div>
+    </div>
+  </div>
+
+  <div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+  <div class="v-connector"><div class="v-line" style="height:6px"></div></div>
+
+  <!-- SMART LOOKUP -->
+  <div class="subgraph sg-lookup">
+    <span class="subgraph-label">⚡ Smart Lookup — saves LLM cost</span>
+    <div style="display:grid; grid-template-columns:1fr 32px 1fr 32px 1fr; gap:0; align-items:center;">
+      <div class="node node-blue">
+        <div class="node-title">Redis Semantic Cache</div>
+        <div class="node-detail">
+          cosine sim <strong style="color:var(--blue)">≥ 0.85</strong><br>
+          ⚡ Instant return<br>
+          <span class="chip chip-green">cache hit → skip agents</span>
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <div class="h-flow"><div class="h-line"></div><div class="h-arrow"></div></div>
+        <div class="annotation" style="font-size:0.6rem">miss</div>
+      </div>
+      <div class="node node-blue">
+        <div class="node-title">pgvector — Exact LTM</div>
+        <div class="node-detail">
+          sim <strong style="color:var(--blue)">≥ 0.88</strong><br>
+          Return stored report<br>
+          <span class="chip chip-green">ltm hit → skip agents</span>
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <div class="h-flow"><div class="h-line"></div><div class="h-arrow"></div></div>
+        <div class="annotation" style="font-size:0.6rem">miss</div>
+      </div>
+      <div class="node node-blue">
+        <div class="node-title">pgvector — Related LTM</div>
+        <div class="node-detail">
+          sim <strong style="color:var(--blue)">0.50 – 0.88</strong><br>
+          Context injected into<br>Writer Agent
+        </div>
+      </div>
+    </div>
+    <div class="annotation" style="margin-top:10px; color:#58a6ff88">All lookup nodes call SentenceTransformer all-MiniLM-L6-v2 (384-dim) for embedding</div>
+  </div>
+
+  <div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+  <div class="annotation">novel query → full agent pipeline</div>
+  <div class="v-connector"><div class="v-line" style="height:6px"></div></div>
+
+  <!-- LANGGRAPH PIPELINE -->
+  <div class="subgraph sg-pipeline">
+    <span class="subgraph-label">🤖 LangGraph — Multi-Agent Pipeline</span>
+    <div style="display:grid; grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr; gap:0; align-items:center; margin-bottom:10px;">
+
+      <div class="node node-purple" style="position:relative;">
+        <span class="agent-step">STEP 1</span>
+        <div class="node-title">🔍 Search Agent</div>
+        <div class="node-detail">Finds key facts<br>Uses session history</div>
+      </div>
+      <div class="h-flow"><div class="h-line"></div><div class="h-arrow"></div></div>
+
+      <div class="node node-purple" style="position:relative;">
+        <span class="agent-step">STEP 2</span>
+        <div class="node-title">📝 Summarize Agent</div>
+        <div class="node-detail">Condenses findings<br>into bullet points</div>
+      </div>
+      <div class="h-flow"><div class="h-line"></div><div class="h-arrow"></div></div>
+
+      <div class="node node-purple" style="position:relative;">
+        <span class="agent-step">STEP 3</span>
+        <div class="node-title">✍️ Writer Agent</div>
+        <div class="node-detail">Full structured report<br>Uses LTM context</div>
+      </div>
+      <div class="h-flow"><div class="h-line"></div><div class="h-arrow"></div></div>
+
+      <div class="node node-purple" style="position:relative;">
+        <span class="agent-step">STEP 4</span>
+        <div class="node-title">🧐 Critic Agent</div>
+        <div class="node-detail">Fact-checks report<br>❌ fail → retry loop<br>✅ pass → output</div>
+      </div>
+    </div>
+    <div class="retry-badge">❌ fail — Critic retries back to Search Agent (step 1)</div>
+    <div class="annotation" style="margin-top:8px;color:#bc8cff88">All agents → POST /inference → TensorZero :3000 &nbsp;|&nbsp; @traceable → LangSmith</div>
+  </div>
+
+  <div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+  <div class="annotation">✅ pass — output safety check</div>
+  <div class="v-connector"><div class="v-line" style="height:6px"></div></div>
+
+  <!-- GUARDRAIL OUT -->
+  <div class="gout-node">
+    <div class="node">
+      <div class="node-title">🛡️ Bedrock Guardrail — OUTPUT</div>
+      <div class="node-detail">Blocks harmful / policy-violating responses before delivery</div>
+    </div>
+  </div>
+
+  <div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+  <div class="v-connector"><div class="v-line" style="height:6px"></div></div>
+
+  <!-- SAVE + EVAL -->
+  <div class="subgraph sg-saveeval">
+    <span class="subgraph-label">💾 Save + Evaluate</span>
+    <div class="grid-2">
+      <div class="node node-green">
+        <div class="node-title">💾 Store Results</div>
+        <div class="node-detail">
+          <span class="chip chip-yellow">Redis</span> cache + session memory<br>
+          <span class="chip chip-blue">PostgreSQL + pgvector</span> LTM vector store
+        </div>
+      </div>
+      <div class="node node-green">
+        <div class="node-title">📊 LLM-as-Judge Evaluation</div>
+        <div class="node-detail">
+          <span class="chip chip-green">Relevance</span>
+          <span class="chip chip-green">Completeness</span>
+          <span class="chip chip-green">Hallucination</span>
+          <span class="chip chip-green">Quality</span><br>
+          4 eval scores per report · traced in LangSmith
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-connector"><div class="v-line"></div><div class="v-arrow"></div></div>
+  <div class="annotation">Response → User</div>
+  <div style="height:20px"></div>
+
+  <!-- ECS + LLMs + Storage in a 3-col grid -->
+  <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:16px; margin-bottom:16px;">
+
+    <!-- ECS Fargate -->
+    <div class="subgraph sg-ecs">
+      <span class="subgraph-label">🖥️ ECS Fargate — Auto-scaling Containers</span>
+      <div class="grid-2" style="margin-top:4px;">
+        <div class="subgraph sg-apptask" style="margin-bottom:0;">
+          <span class="subgraph-label" style="font-size:0.7rem;">App Task</span>
+          <div class="node node-blue" style="margin-bottom:8px;">
+            <div class="node-title">⚡ FastAPI :8000</div>
+            <div class="node-detail">REST API<br>Background Worker</div>
+          </div>
+          <div class="node node-blue">
+            <div class="node-title">🔀 TensorZero :3000</div>
+            <div class="node-detail">LLM Gateway Sidecar<br>Primary / Fallback routing</div>
+          </div>
+        </div>
+        <div class="subgraph sg-redteam" style="margin-bottom:0;">
+          <span class="subgraph-label" style="font-size:0.7rem;">Red Team Task</span>
+          <div class="node node-red">
+            <div class="node-title">🔴 PyRIT 0.14.0</div>
+            <div class="node-detail">
+              <span class="chip chip-red">Jailbreak</span>
+              <span class="chip chip-red">XPIA</span>
+              <span class="chip chip-red">Crescendo</span>
+              <span class="chip chip-red">Skeleton Key</span>
+              <br><br>Triggered weekly via EventBridge<br>Monday 2am UTC
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LLM Providers -->
+    <div class="subgraph sg-llm">
+      <span class="subgraph-label">🧠 LLM Providers — via TensorZero</span>
+      <div style="margin-top:4px;">
+        <div class="node node-green" style="margin-bottom:10px;">
+          <div class="node-title">🟢 OpenAI GPT-4o</div>
+          <div class="node-detail"><span class="chip chip-green">PRIMARY</span> — all agent inference</div>
+        </div>
+        <div class="connector"><div class="connector-line"></div>fallback<div class="connector-line"></div></div>
+        <div class="node node-yellow">
+          <div class="node-title">🟡 Groq llama-3.1-8b-instant</div>
+          <div class="node-detail"><span class="chip chip-yellow">FALLBACK</span> — auto-failover</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storage Layer -->
+  <div class="subgraph sg-storage">
+    <span class="subgraph-label">🗄️ Storage Layer</span>
+    <div class="grid-2">
+      <div class="node node-orange">
+        <div class="node-title">⚡ Redis ElastiCache</div>
+        <div class="node-detail">
+          <span class="chip chip-yellow">Semantic cache</span>
+          <span class="chip chip-yellow">Session memory</span>
+          <span class="chip chip-yellow">Job queue</span>
+        </div>
+      </div>
+      <div class="node node-orange">
+        <div class="node-title">🗄️ RDS PostgreSQL 15 + pgvector</div>
+        <div class="node-detail">
+          <span class="chip chip-blue">384-dim embeddings</span>
+          <span class="chip chip-blue">Long-term memory (LTM)</span><br>
+          Vector similarity search · persistent report store
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWS Support Services -->
+  <div class="subgraph sg-support" style="margin-top:16px;">
+    <span class="subgraph-label">🔧 AWS Support Services</span>
+    <div class="grid-4">
+      <div class="node">
+        <div class="node-title" style="color:#8b949e;">🔐 Secrets Manager</div>
+        <div class="node-detail">All API keys + config<br>Loaded at startup</div>
+      </div>
+      <div class="node">
+        <div class="node-title" style="color:#8b949e;">📦 ECR</div>
+        <div class="node-detail">
+          3 Docker images<br>
+          <span class="chip">app</span>
+          <span class="chip">pyrit</span>
+          <span class="chip">tensorzero</span>
+        </div>
+      </div>
+      <div class="node">
+        <div class="node-title" style="color:#8b949e;">📋 CloudWatch</div>
+        <div class="node-detail">Container logs<br>7-day retention</div>
+      </div>
+      <div class="node">
+        <div class="node-title" style="color:#8b949e;">⏰ EventBridge</div>
+        <div class="node-detail">Weekly red team trigger<br>Every Monday 2am UTC</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /aws-cloud -->
+
+<!-- ═══════════════════════════════════════════
+     OUTER SECTIONS — below AWS box
+═══════════════════════════════════════════ -->
+<div class="outer-sections">
+
+  <!-- Observability -->
+  <div class="subgraph sg-obs">
+    <span class="subgraph-label">🔭 Observability + Embeddings</span>
+    <div style="margin-top:6px;">
+      <div class="node node-blue" style="margin-bottom:10px;">
+        <div class="node-title">📊 LangSmith</div>
+        <div class="node-detail">Traces every agent node<br>4 eval scores per report</div>
+      </div>
+      <div class="node node-blue">
+        <div class="node-title">🔢 SentenceTransformer</div>
+        <div class="node-detail"><code>all-MiniLM-L6-v2</code><br>384-dim · runs in-process<br>(no external call)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CI/CD -->
+  <div class="subgraph sg-cicd">
+    <span class="subgraph-label">🔄 CI/CD + Infrastructure as Code</span>
+    <div style="margin-top:6px;">
+      <div class="node node-purple" style="margin-bottom:10px;">
+        <div class="node-title">⚙️ GitHub Actions</div>
+        <div class="node-detail">
+          On every <code>git push</code>:<br>
+          1. Build 3 Docker images<br>
+          2. Push → ECR<br>
+          3. Deploy → ECS<br>
+          4. Auto rollback on failure
+        </div>
+      </div>
+      <div class="node node-purple">
+        <div class="node-title">🏗️ Terraform</div>
+        <div class="node-detail">
+          Provisions all AWS resources:<br>
+          <span class="chip chip-purple">VPC</span>
+          <span class="chip chip-purple">Subnets</span>
+          <span class="chip chip-purple">ECS</span>
+          <span class="chip chip-purple">ALB</span>
+          <span class="chip chip-purple">RDS</span>
+          <span class="chip chip-purple">ElastiCache</span>
+          <span class="chip chip-purple">ECR</span>
+          <span class="chip chip-purple">Bedrock</span>
+          <span class="chip chip-purple">IAM</span>
+          <span class="chip chip-purple">EventBridge</span>
+          <span class="chip chip-purple">S3 lock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safety -->
+  <div class="subgraph sg-redteam">
+    <span class="subgraph-label" style="color:var(--red); border-color:var(--red);">🛡️ AWS Bedrock Guardrails</span>
+    <div style="margin-top:6px;">
+      <div class="node node-red" style="margin-bottom:10px;">
+        <div class="node-title">INPUT Guardrail</div>
+        <div class="node-detail">Attached to GIn node<br>Blocks before queue<br><span class="chip chip-red">Hate</span><span class="chip chip-red">PII</span><span class="chip chip-red">Weapons</span><span class="chip chip-red">Prompt Injection</span></div>
+      </div>
+      <div class="node node-red">
+        <div class="node-title">OUTPUT Guardrail</div>
+        <div class="node-detail">Attached to GOut node<br>Blocks before response<br><span class="chip chip-red">Harmful content</span><span class="chip chip-red">Policy violations</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /outer-sections -->
+
+<!-- ═══════════════════════════════════════════
+     LEGEND
+═══════════════════════════════════════════ -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#238636"></div> AWS Cloud Boundary</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d29922"></div> Security / Queue</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div> Smart Lookup / ECS</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div> LangGraph Agents</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f85149"></div> Guardrails / Red Team</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div> LLM Providers / Save+Eval</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffa657"></div> Storage Layer</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#bc8cff"></div> CI/CD + Infra as Code</div>
+</div>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
+</body>
+</html>

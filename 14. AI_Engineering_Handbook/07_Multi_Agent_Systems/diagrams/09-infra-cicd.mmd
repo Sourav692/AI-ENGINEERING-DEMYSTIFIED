@@ -1,0 +1,22 @@
+%% Layer 9 — Infrastructure & CI/CD (terraform/, .github/workflows/)
+flowchart TD
+    GH["GitHub Actions\non every push:\nbuild 3 Docker images\npush to ECR -> deploy ECS\nauto rollback on failure"]
+    ECR["ECR\napp · pyrit · tensorzero images"]
+    ECS["ECS Fargate\nauto-scaling containers"]
+    Secrets["Secrets Manager\nAPI keys + config\nloaded at startup"]
+    CW["CloudWatch\ncontainer logs, 7-day retention"]
+    TF["Terraform\nVPC · Subnets · ECS · ALB\nRDS · ElastiCache · ECR\nBedrock · Secrets Manager\nIAM · EventBridge · S3 lock"]
+    AWS["All AWS resources\nabove"]
+
+    GH -->|"push image"| ECR
+    ECR -->|"pull on deploy"| ECS
+    ECS -->|"reads on startup"| Secrets
+    ECS -->|"logs"| CW
+    TF -.->|"provisions"| AWS
+
+    classDef ci fill:#1c2128,stroke:#4fb8d0,color:#e6edf3
+    classDef infra fill:#11161d,stroke:#7c8a9b,color:#e6edf3
+    classDef iac fill:#11161d,stroke:#e0a458,color:#e6edf3
+    class GH ci
+    class ECR,ECS,Secrets,CW infra
+    class TF,AWS iac

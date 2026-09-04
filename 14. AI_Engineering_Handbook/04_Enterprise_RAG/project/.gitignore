@@ -1,0 +1,6 @@
+data/chroma/
+data/acl_catalog.db
+runs/
+__pycache__/
+*.pyc
+.pytest_cache/

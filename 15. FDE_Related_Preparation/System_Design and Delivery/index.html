@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Design &amp; Delivery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --svc:#5f45b8; --svc-soft:#ece7fa;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --svc:#a892f2; --svc-soft:#211c38;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --svc:#a892f2; --svc-soft:#211c38;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,.mono,.eyebrow,.card h3,.grp-title{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,44px) 96px}
+
+.mast{padding:clamp(44px,7vw,80px) 0 clamp(24px,4vw,36px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 16px}
+h1{font-weight:800; font-size:clamp(32px,5.2vw,50px); line-height:1.08; letter-spacing:-.025em; color:var(--ink); margin:0 0 18px; text-wrap:balance; max-width:22ch}
+.lede{font-size:clamp(16.5px,1.9vw,19px); color:var(--body); max-width:70ch; margin:0}
+.lede strong{color:var(--ink)}
+
+.grp{padding:clamp(30px,4.5vw,44px) 0}
+.grp + .grp{border-top:1px solid var(--rule-soft)}
+.grp-head{display:flex; align-items:baseline; gap:14px; margin:0 0 20px}
+.grp-title{font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); margin:0}
+.grp-count{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted)}
+.cards{display:grid; grid-template-columns:1fr; gap:16px}
+@media(min-width:760px){ .cards{grid-template-columns:1fr 1fr} }
+.cards.single{grid-template-columns:1fr}
+.card{display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+  padding:clamp(20px,2.6vw,28px); text-decoration:none; transition:border-color .15s, transform .15s; height:100%;}
+.card:hover{border-color:var(--accent); transform:translateY(-1px)}
+.card .idx{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.08em; color:var(--accent); font-weight:600; margin:0 0 9px}
+.card h3{font-size:clamp(17.5px,2vw,19.5px); font-weight:700; letter-spacing:-.01em; color:var(--ink); margin:0 0 9px}
+.card p{margin:0; color:var(--muted); font-size:14.5px; max-width:60ch; flex:1}
+.card .go{display:inline-block; margin-top:14px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600}
+.card .go::after{content:" →"}
+
+footer{border-top:1px solid var(--rule-soft); padding:28px 0 0; color:var(--muted); font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <p class="eyebrow">FDE Interview Preparation</p>
+    <h1>System Design &amp; Delivery</h1>
+    <p class="lede">Frameworks and principles for structuring any system design answer, five fully worked case studies (agentic and traditional), a side-by-side comparison of the two largest agentic designs, and the delivery/behavioral questions that come after the whiteboard.</p>
+  </header>
+
+  <section class="grp">
+    <div class="grp-head"><h2 class="grp-title">Frameworks &amp; Principles</h2><span class="grp-count">3</span></div>
+    <div class="cards">
+      <a class="card" href="2. System Design Components.html">
+        <p class="idx">01 — FRAMEWORK</p>
+        <h3>The 12-Part System Design Framework</h3>
+        <p>A structured checklist for any system design interview — problem definition, functional and non-functional requirements, capacity estimation, high-level architecture, data design, scalability, reliability, security, and trade-offs — each one answering a question the interviewer is silently asking.</p>
+        <span class="go">Read the framework</span>
+      </a>
+      <a class="card" href="3. System Design Principles.html">
+        <p class="idx">02 — PRINCIPLES</p>
+        <h3>System Design Principles</h3>
+        <p>15 core principles for scalable, reliable, maintainable, secure, and cost-effective systems, each with an AI-oriented example — built around the SCALED mnemonic and an 8-lens framework for reaching for the right principle at the right moment.</p>
+        <span class="go">Read the principles</span>
+      </a>
+      <a class="card" href="4. Monolith vs Microservice Architecture.html">
+        <p class="idx">03 — ARCHITECTURE</p>
+        <h3>Monolith vs Microservice Architecture</h3>
+        <p>One of the most common interview topics, and rarely about which one you prefer — a comparison table, an AI-system worked example, and an evolution model for growing from a monolith into microservices without a rewrite.</p>
+        <span class="go">Read the comparison</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2 class="grp-title">Worked System Designs</h2><span class="grp-count">5</span></div>
+    <div class="cards">
+      <a class="card" href="1. System Design Overview.html">
+        <p class="idx">04 — CASE STUDY</p>
+        <h3>Travel Agent System Design</h3>
+        <p>An agentic AI travel assistant spanning AMER, EMEA, and APJ — reconciling a reference architecture with five structural fixes: rate limiting inside the gateway, a cache-first supervisor, per-agent RAG, tool calls scoped to each agent's own turn, and a Synthesizer Agent that resolves conflicts before the response goes out.</p>
+        <span class="go">Read the architecture review</span>
+      </a>
+      <a class="card" href="5. Enterprise AI Assistant Design.html">
+        <p class="idx">05 — CASE STUDY</p>
+        <h3>Enterprise AI Assistant Design</h3>
+        <p>A ChatGPT-Enterprise-style assistant wired into 100+ internal business applications — 50,000 employees, 8,000 peak concurrency — and when REST APIs, MCP servers, function calling, and agent frameworks are complementary tools rather than competing technologies.</p>
+        <span class="go">Read the case study</span>
+      </a>
+      <a class="card" href="6. Customer Support AI Assistant Design.html">
+        <p class="idx">06 — CASE STUDY</p>
+        <h3>Customer Support AI Assistant Design</h3>
+        <p>Salesforce Einstein plus Zendesk plus AI agents — answering FAQs, updating tickets, querying CRM, and processing refunds at 1M conversations/day, with a 3-layer memory model and where RAG, tool calling, MCP servers, and human approval each earn their place.</p>
+        <span class="go">Read the case study</span>
+      </a>
+      <a class="card" href="7. AI Powered Coding Assistant Design.html">
+        <p class="idx">07 — CASE STUDY</p>
+        <h3>AI Powered Coding Assistant Design</h3>
+        <p>A GitHub-Copilot-style assistant for millions of developers — how context engineering, semantic retrieval, model routing, semantic caching, and output validation combine to keep completions under 300ms without sacrificing accuracy or safety.</p>
+        <span class="go">Read the case study</span>
+      </a>
+      <a class="card" href="8. AI Powered Recruiting Platform Design.html">
+        <p class="idx">08 — CASE STUDY</p>
+        <h3>AI Powered Recruiting Platform Design</h3>
+        <p>Screening, matching, and scoring candidates end to end at thousands of resumes/hour — with explainable ranking, human-in-the-loop review, and EEOC/GDPR-aware design built in from the start rather than bolted on afterward.</p>
+        <span class="go">Read the case study</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2 class="grp-title">Comparison</h2><span class="grp-count">1</span></div>
+    <div class="cards single">
+      <a class="card" href="Agentic Coverage Map.html">
+        <p class="idx">09 — COMPARISON</p>
+        <h3>Agentic Coverage Map</h3>
+        <p>The Enterprise AI Assistant and Customer Support AI Assistant case studies, read side by side against the same agentic-design vocabulary — where their architectures agree, where they diverge, and why.</p>
+        <span class="go">Compare the two designs</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2 class="grp-title">Delivery &amp; Behavioral</h2><span class="grp-count">2</span></div>
+    <div class="cards">
+      <a class="card" href="9. Proj Delivery.html">
+        <p class="idx">10 — DELIVERY</p>
+        <h3>Proj Delivery: End-to-End AI Delivery</h3>
+        <p>"Walk me through a project you delivered" is a storytelling question in disguise. A 6-stage, business-first framework for a quantified 3–5 minute answer that proves end-to-end ownership, not just a prototype.</p>
+        <span class="go">Read the framework</span>
+      </a>
+      <a class="card" href="10. Cross Team Collaboration.html">
+        <p class="idx">11 — BEHAVIORAL</p>
+        <h3>Cross Team Collaboration</h3>
+        <p>"Tell me about a cross-team project" — the hard part of a cross-team AI platform is rarely the technology. RACI ownership, tiered communication, and phased delivery for aligning stakeholders with different priorities.</p>
+        <span class="go">Read the framework</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    System Design &amp; Delivery — FDE Related Preparation
+  </footer>
+</div>
+</body>
+</html>

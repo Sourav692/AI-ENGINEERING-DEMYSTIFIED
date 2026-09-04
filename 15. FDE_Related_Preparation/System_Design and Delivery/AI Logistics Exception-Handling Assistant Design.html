@@ -1,0 +1,357 @@
+<title>AI Logistics Exception-Handling Assistant Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --cross:#5f45b8; --cross-soft:#ece7fa;
+  --amb:#9a6412; --amb-soft:#f7ecd6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --cross:#a892f2; --cross-soft:#211c38;
+    --amb:#e0ab52; --amb-soft:#332612;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --cross:#a892f2; --cross-soft:#211c38;
+  --amb:#e0ab52; --amb-soft:#332612;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono,td:first-child,th:first-child{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+.mast{padding:clamp(48px,8vw,88px) 0 clamp(28px,4vw,40px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 18px}
+h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,5.6vw,56px); line-height:1.06; letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance; max-width:20ch}
+.lede{font-size:clamp(16.5px,2vw,19px); color:var(--body); max-width:70ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){.shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}}
+nav.toc{display:none}
+@media(min-width:1000px){nav.toc{display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:40px 0 40px; border-right:1px solid var(--rule-soft)}}
+nav.toc p{font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{display:flex; gap:12px; align-items:baseline; text-decoration:none; padding:6px 10px 6px 0; font-size:13.5px; line-height:1.35; color:var(--muted); border-radius:4px; transition:color .15s ease}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); min-width:18px; font-variant-numeric:tabular-nums; opacity:.75}
+
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:22px}
+.sec-num{font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:6px 9px; line-height:1; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.sec-head h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0; line-height:1.15; text-wrap:balance}
+.sec-purpose{margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.sec-body{display:flex; flex-direction:column; gap:20px}
+.prose{margin:0; max-width:70ch}
+.prose strong{color:var(--ink)}
+.prose em{color:var(--ink)}
+
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.items{grid-template-columns:1fr 1fr}}
+.item{background:var(--surface); padding:18px 20px 20px; border:1px solid var(--rule-soft); margin:-1px 0 0 -1px}
+.item h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px}
+.item h4::before{content:""; width:5px; height:5px; flex:none; background:var(--accent); border-radius:50%; transform:translateY(-3px)}
+.item p{margin:0; font-size:15px; line-height:1.58; color:var(--body)}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:14.5px}
+tbody tr:last-child td{border-bottom:0}
+
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(14px,2.4vw,28px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:72ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:640px; height:auto}
+.dgm .n{fill:var(--surface); stroke:var(--rule); stroke-width:1.2}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-size:12.5px; font-weight:600; text-anchor:middle}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .gw{fill:var(--surface); stroke:var(--ink); stroke-width:1.3}
+.dgm .gwT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12.5px; text-anchor:middle}
+.dgm .svc{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.3}
+.dgm .svcT{fill:var(--cross); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .amb{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+.dgm .ambT{fill:var(--amb); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .accent{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.3}
+.dgm .accentT{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .diamond{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+.dgm .diamondT{fill:var(--amb); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11px; text-anchor:middle}
+.dgm .fl{fill:none; stroke:var(--rule); stroke-width:1.3}
+.dgm .dl{fill:none; stroke:var(--cross); stroke-width:1; stroke-dasharray:3 3; opacity:.8}
+.dgm .mk{fill:var(--muted)}
+.dgm .bandbg{fill:var(--surface-2)}
+.dgm .band{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-anchor:middle}
+.dgm .lbl{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600}
+
+.callout{background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 20px; font-size:16px; color:var(--ink); max-width:72ch}
+.callout.cross{background:var(--cross-soft); border-left-color:var(--cross)}
+.callout.amb{background:var(--amb-soft); border-left-color:var(--amb)}
+
+.bullets{list-style:none; margin:0; padding:0; display:grid; gap:9px; max-width:64ch}
+.bullets li{display:flex; gap:10px; align-items:baseline; font-size:15px; color:var(--body)}
+.bullets li::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; transform:translateY(-2px)}
+
+.chiprow{display:flex; flex-wrap:wrap; gap:8px}
+.chiprow span{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--surface-2); border:1px solid var(--rule-soft); color:var(--muted); padding:5px 10px; border-radius:3px}
+
+.vgrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.vgrid{grid-template-columns:1fr 1fr}}
+.vcol{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px}
+.vcol h3{margin:0 0 4px; font-size:17px; font-weight:800; font-family:"Bricolage Grotesque",sans-serif; color:var(--ink)}
+.vcol .vsub{margin:0 0 14px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.vcol.vmono h3{color:var(--accent)}
+.vcol.vmicro h3{color:var(--cross)}
+
+.qagrid{display:grid; gap:2px; grid-template-columns:1fr}
+.qcard{background:var(--surface); border:1px solid var(--rule-soft); padding:16px 20px; display:flex; flex-direction:column; gap:6px}
+.qcard .q{font-family:"Bricolage Grotesque",sans-serif; font-weight:700; color:var(--ink); font-size:15px}
+.qcard .a{font-size:15px; color:var(--body); margin:0}
+.qcard .imp{font-size:13.5px; color:var(--accent); margin:0; font-family:"IBM Plex Mono",monospace}
+
+footer{border-top:1px solid var(--rule); padding:28px 0 60px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.03em}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews — Full Worked Tutorial (FDE Round)</p>
+  <h1>AI Logistics Exception-Handling Assistant Design</h1>
+  <p class="lede">The interview question: you're the FDE embedded with a mid-size logistics customer. They want an AI-powered exception-handling assistant that watches their shipment pipeline, detects disruptions (customs holds, missed carrier scans, weather delays), and either auto-resolves them or drafts a resolution for a human ops agent to approve — across multiple carriers and a mix of real-time and batch data feeds. This tutorial walks the <strong>full FDE loop end-to-end</strong>: clarifying questions, requirements, architecture, deep dives, tradeoffs, and a final summary — with a model answer at every stage.</p>
+  <div class="mast-meta">
+    <span>200 events/sec real-time</span><span>150 ops agents, 40 concurrent</span><span>US / EU / APAC</span><span>EU data residency</span>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#p1"><span class="n">1</span><span>Define the problem space</span></a></li>
+<li><a href="#p2"><span class="n">2</span><span>High-level architecture</span></a></li>
+<li><a href="#p3"><span class="n">3</span><span>Ingestion: streaming vs. batch</span></a></li>
+<li><a href="#p4"><span class="n">4</span><span>The Policy Gate</span></a></li>
+<li><a href="#p5"><span class="n">5</span><span>Regional deployment</span></a></li>
+<li><a href="#p6"><span class="n">6</span><span>Scaling and reliability</span></a></li>
+<li><a href="#p7"><span class="n">7</span><span>Security &amp; governance</span></a></li>
+<li><a href="#p8"><span class="n">8</span><span>Tradeoffs</span></a></li>
+<li><a href="#p9"><span class="n">9</span><span>Final design summary</span></a></li>
+</ol></nav>
+
+<main>
+
+<section class="sec" id="p1">
+<header class="sec-head"><span class="sec-num">1</span><div><h2>Define the problem space</h2><p class="sec-purpose">A strong candidate clarifies before proposing an architecture</p></div></header>
+<div class="sec-body">
+<p class="prose">These four questions decide most of the design that follows — each one rules out an entire class of architecture before a single box gets drawn.</p>
+<div class="qagrid">
+<div class="qcard"><span class="q">Data volume &amp; freshness per carrier?</span><p class="a">Mixed. ~60% of carriers push real-time events (webhooks — scan events, status changes), ~200 events/sec combined at peak. The remaining ~40%, mostly smaller regional carriers, only provide batch file drops (CSV/EDI) every 2–6 hours, a few thousand records per drop.</p><p class="imp">→ ingestion needs both a streaming path and a scheduled batch path feeding the same pipeline.</p></div>
+<div class="qcard"><span class="q">Who are the users, and what's the scale?</span><p class="a">Internal only — the customer's own ops team, not their end customers. ~150 ops agents across three shifts, ~40 concurrent at peak during shift handoff, each handling ~30–50 exception cases/day.</p><p class="imp">→ low-DAU, high-stakes-per-interaction system; scale pressure comes from event throughput, not concurrent users.</p></div>
+<div class="qcard"><span class="q">What's the auto-resolution vs. human-approval boundary?</span><p class="a">Value- and confidence-based: under $500 shipment value + high model confidence → auto-resolve. Customs/regulatory holds → always human, no exceptions. Over $500 value, or confidence below threshold → always human.</p><p class="imp">→ this is the core risk-boundary decision; customs is a distinct always-gated path, not just a low-confidence case.</p></div>
+<div class="qcard"><span class="q">Regional or multi-tenant topology?</span><p class="a">One customer, one assistant experience, but operations span US, EU, and APAC with different carrier sets per region — and EU shipment/customer data cannot leave the EU.</p><p class="imp">→ rules out a single global deployment/data store; needs regional data isolation behind one coherent experience.</p></div>
+</div>
+<div class="vgrid">
+<div class="vcol vmono">
+<h3>✅ Functional</h3>
+<p class="vsub">What the assistant must do</p>
+<ul class="bullets">
+<li>Ingest shipment events from carriers, real-time and batch</li>
+<li>Detect disruptions: customs holds, missed scans, weather delays</li>
+<li>Classify each exception by type, value, and confidence</li>
+<li>Auto-resolve low-risk, low-value, high-confidence cases</li>
+<li>Draft a proposed resolution for everything else, routed to a human</li>
+<li>Let an ops agent approve, edit, or reject a drafted resolution</li>
+<li>Maintain a full audit trail of every decision, automated or human</li>
+</ul>
+</div>
+<div class="vcol vmicro">
+<h3>⚙️ Non-functional</h3>
+<p class="vsub">The qualities that make it production-grade</p>
+<ul class="bullets">
+<li>Regional data residency (EU data never leaves the EU)</li>
+<li>High reliability — a missed exception is a shipment sitting stuck</li>
+<li>Low latency from detection to draft resolution</li>
+<li>Auditable and compliant — every decision must be traceable</li>
+<li>Cost-efficient at a modest, bounded user scale</li>
+<li>Extensible to new carriers without a core-pipeline redeploy</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p2">
+<header class="sec-head"><span class="sec-num">2</span><div><h2>High-level architecture</h2><p class="sec-purpose">Two ingestion paths, one exception pipeline, a policy gate before anything acts</p></div></header>
+<div class="sec-body">
+<p class="prose">Carrier data arrives through two paths — real-time webhooks and scheduled batch drops — and both normalize into the same event stream. A Disruption Detection service classifies each event; anything that looks like an exception goes to a Resolution Agent, which drafts an action and a confidence score. A Policy Gate decides whether that action executes automatically or lands in an ops agent's approval queue. Every path, automated or human, writes to an audit log.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 720 900" role="img" aria-label="High-level architecture: carriers feed a webhook ingest and a batch file ingest, which merge into event normalization, then disruption detection, then a resolution agent, then a policy gate that splits into auto-resolve or a human approval queue, converging into carrier and ops systems and an audit log.">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker></defs>
+<rect class="n" x="190" y="20" width="340" height="44" rx="6"/><text class="t" x="360" y="47">Carriers (60% real-time, 40% batch)</text>
+<polyline class="fl" points="290,64 150,100" marker-end="url(#ar)"/>
+<polyline class="fl" points="430,64 570,100" marker-end="url(#ar)"/>
+<rect class="accent" x="35" y="102" width="230" height="52" rx="6"/><text class="accentT" x="150" y="124">Webhook Ingest</text><text class="accentT" x="150" y="140">real-time events</text>
+<rect class="n" x="455" y="102" width="230" height="52" rx="6"/><text class="t" x="570" y="124">Batch File Ingest</text><text class="s" x="570" y="139">EDI / CSV, every 2–6h</text>
+<polyline class="fl" points="150,154 360,192" marker-end="url(#ar)"/>
+<polyline class="fl" points="570,154 360,192" marker-end="url(#ar)"/>
+<rect class="n" x="190" y="194" width="340" height="46" rx="6"/><text class="t" x="360" y="222">Event Normalization &amp; Stream</text>
+<polyline class="fl" points="360,240 360,264" marker-end="url(#ar)"/>
+<rect class="gw" x="160" y="266" width="400" height="50" rx="6"/><text class="gwT" x="360" y="288">Disruption Detection Service</text><text class="s" x="360" y="304">customs hold · missed scan · weather delay</text>
+<polyline class="fl" points="360,316 360,340" marker-end="url(#ar)"/>
+<rect class="svc" x="180" y="342" width="360" height="50" rx="6"/><text class="svcT" x="360" y="364">Resolution Agent</text><text class="s" x="360" y="380">drafts action + confidence score</text>
+<polyline class="fl" points="360,392 360,416" marker-end="url(#ar)"/>
+<rect class="amb" x="180" y="418" width="360" height="52" rx="6"/><text class="ambT" x="360" y="440">Policy Gate</text><text class="s" x="360" y="456">value + confidence + always-human customs rule</text>
+<polyline class="fl" points="300,470 150,506" marker-end="url(#ar)"/>
+<polyline class="fl" points="420,470 570,506" marker-end="url(#ar)"/>
+<rect class="accent" x="35" y="508" width="230" height="46" rx="6"/><text class="accentT" x="150" y="536">Auto-Resolve</text>
+<rect class="n" x="455" y="508" width="230" height="58" rx="6"/><text class="t" x="570" y="530">Human Approval Queue</text><text class="s" x="570" y="546">approve / edit / reject</text>
+<polyline class="fl" points="150,554 360,592" marker-end="url(#ar)"/>
+<polyline class="fl" points="570,566 360,592" marker-end="url(#ar)"/>
+<rect class="n" x="180" y="594" width="360" height="52" rx="6"/><text class="t" x="360" y="616">Carrier / Ops Systems</text><text class="s" x="360" y="632">execute the resolution</text>
+<polyline class="fl" points="360,646 360,670" marker-end="url(#ar)"/>
+<rect class="n" x="140" y="672" width="440" height="46" rx="6"/><text class="t" x="360" y="700">Audit Log — every decision, automated or human</text>
+</svg></div>
+<figcaption>The Policy Gate is drawn as a first-class component, not a side-check inside the Resolution Agent — it's the one piece the customer explicitly said must never be bypassed for customs cases, so it needs to be independently testable and auditable.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p3">
+<header class="sec-head"><span class="sec-num">3</span><div><h2>Ingestion: streaming vs. batch, unified</h2><p class="sec-purpose">Why not force everything onto one path?</p></div></header>
+<div class="sec-body">
+<p class="prose">Forcing the 40% batch-only carriers onto a fake "real-time" interface just means polling a file drop every few seconds for no benefit — the data doesn't get fresher, only the infrastructure gets more complex. Instead, both paths converge <em>after</em> ingestion, not before.</p>
+<div class="items">
+<div class="item"><h4>🔌 Webhook ingest</h4><p>Real-time carriers push scan/status events directly; validated, deduplicated, and pushed onto the event stream immediately. This is the path exception detection needs to be genuinely low-latency on.</p></div>
+<div class="item"><h4>📦 Batch ingest</h4><p>Regional carriers' file drops are picked up on their delivery schedule (every 2–6 hours), parsed, and diffed against the last known state per shipment so only changes enter the same event stream. A missed scan on a batch carrier is inherently detected late — surface that latency to ops agents rather than hide it.</p></div>
+</div>
+<p class="prose">Both paths write to the same normalized event schema, so Disruption Detection never needs to know which path an event came from.</p>
+</div>
+</section>
+
+<section class="sec" id="p4">
+<header class="sec-head"><span class="sec-num">4</span><div><h2>The Policy Gate — auto-resolve vs. human approval</h2><p class="sec-purpose">The one component the customer explicitly said must never be bypassed</p></div></header>
+<div class="sec-body">
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 640 480" role="img" aria-label="Policy gate decision flow: resolution agent output first checks whether the exception type is customs or regulatory, routing to human approval always if yes; otherwise it checks whether value is under 500 dollars and confidence is above threshold, routing to auto-resolve if yes and human approval queue if no.">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker></defs>
+<rect class="n" x="160" y="16" width="320" height="52" rx="6"/><text class="t" x="320" y="38">Resolution Agent output</text><text class="s" x="320" y="54">action + confidence + value + type</text>
+<polyline class="fl" points="320,68 320,92" marker-end="url(#ar2)"/>
+<polygon class="diamond" points="320,94 470,150 320,206 170,150"/><text class="diamondT" x="320" y="146">Exception type =</text><text class="diamondT" x="320" y="160">customs / regulatory?</text>
+<text class="lbl" x="240" y="140">Yes</text>
+<text class="lbl" x="410" y="140">No</text>
+<polyline class="fl" points="200,175 130,230" marker-end="url(#ar2)"/>
+<polyline class="fl" points="440,175 500,230" marker-end="url(#ar2)"/>
+<rect class="amb" x="20" y="232" width="220" height="52" rx="6"/><text class="ambT" x="130" y="254">Human Approval</text><text class="ambT" x="130" y="270">Queue (always)</text>
+<polygon class="diamond" points="500,232 640,286 500,340 360,286"/><text class="diamondT" x="500" y="280">value &lt; $500 AND</text><text class="diamondT" x="500" y="294">confidence ≥ threshold?</text>
+<text class="lbl" x="420" y="276">Yes</text>
+<text class="lbl" x="560" y="276">No</text>
+<polyline class="fl" points="440,300 340,360" marker-end="url(#ar2)"/>
+<polyline class="fl" points="560,300 560,360" marker-end="url(#ar2)"/>
+<rect class="accent" x="220" y="362" width="220" height="50" rx="6"/><text class="accentT" x="330" y="391">Auto-Resolve</text>
+<rect class="amb" x="450" y="362" width="180" height="52" rx="6"/><text class="ambT" x="540" y="384">Human Approval</text><text class="ambT" x="540" y="400">Queue</text>
+</svg></div>
+<figcaption>The customs check runs <em>first</em> and short-circuits everything else. Only after that gate does the value/confidence rule apply — a candidate who checks confidence before the customs carve-out has built a system where a high-confidence model could still auto-resolve a customs hold, exactly what the customer ruled out.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p5">
+<header class="sec-head"><span class="sec-num">5</span><div><h2>Regional deployment for data residency</h2><p class="sec-purpose">One assistant experience, three isolated data planes</p></div></header>
+<div class="sec-body">
+<p class="prose">EU shipment and customer data cannot leave the EU, so the architecture can't be a single global deployment. The pattern: a shared control plane (agent logic, model routing, policy definitions, UI) deployed identically in each region, paired with a <strong>regional data plane</strong> — event store, similarity/embedding store if used, and audit log — that never replicates data across regions.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 800 320" role="img" aria-label="Regional deployment: a shared control plane sits above three isolated regions — US, EU, and APAC — each with its own carrier data and audit log, with EU data never leaving the EU.">
+<defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker></defs>
+<rect class="gw" x="180" y="20" width="440" height="56" rx="6"/><text class="gwT" x="400" y="45">Shared Control Plane</text><text class="s" x="400" y="62">logic, policy, UI — versioned identically everywhere</text>
+<polyline class="fl" points="270,76 130,130" marker-end="url(#ar3)"/>
+<polyline class="fl" points="400,76 400,130" marker-end="url(#ar3)"/>
+<polyline class="fl" points="530,76 670,130" marker-end="url(#ar3)"/>
+<rect class="n" x="20" y="132" width="220" height="70" rx="6"/><text class="t" x="130" y="156">US Region</text><text class="s" x="130" y="174">US carrier data</text><text class="s" x="130" y="188">US audit log</text>
+<rect class="accent" x="290" y="132" width="220" height="70" rx="6"/><text class="accentT" x="400" y="156">EU Region</text><text class="accentT" x="400" y="174">EU carrier data</text><text class="accentT" x="400" y="188">never leaves EU</text>
+<rect class="n" x="560" y="132" width="220" height="70" rx="6"/><text class="t" x="670" y="156">APAC Region</text><text class="s" x="670" y="174">APAC carrier data</text><text class="s" x="670" y="188">APAC audit log</text>
+<rect class="bandbg" x="290" y="230" width="220" height="18"/><text class="band" x="400" y="243">DATA RESIDENCY BOUNDARY</text>
+</svg></div>
+<figcaption>An ops agent in any region sees the same assistant UI and the same policy rules — only the underlying data storage is partitioned. This is the same "shared logic, isolated data" pattern used for any multi-region compliance boundary.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p6">
+<header class="sec-head"><span class="sec-num">6</span><div><h2>Scaling and reliability</h2><p class="sec-purpose">Constrained by event throughput and correctness, not user count</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>🧩 Stateless services</h4><p>Detection and Resolution Agent services are stateless, horizontally scalable behind a queue; state lives in the event store and audit log, not in the service instances.</p></div>
+<div class="item"><h4>📬 Event-driven, queue-backed</h4><p>Webhook events land on a queue before Disruption Detection consumes them, so a burst of carrier events smooths into backlog instead of overwhelming the detection service.</p></div>
+<div class="item"><h4>🔁 Idempotent auto-resolve actions</h4><p>Any auto-resolved action must be idempotent and carry an idempotency key, since retries after a transient failure must never double-book or double-refund.</p></div>
+<div class="item"><h4>🛑 Circuit breakers on carrier APIs</h4><p>When auto-resolution calls a carrier API, wrap it in a circuit breaker — a flaky API should degrade to "route to human" rather than let retries pile up and delay every other exception behind it.</p></div>
+<div class="item"><h4>🗄️ Batch-path latency, made visible</h4><p>Track "time to detect" separately for real-time vs. batch carriers — averaging them together would hide that a meaningful share of exceptions are detected hours late by design, not by failure.</p></div>
+<div class="item"><h4>⏱️ Approval-queue SLAs</h4><p>With only 150 agents and 40 concurrent at peak, alert on queue depth during shift handoff, not just on individual event latency — a growing backlog is a capacity problem the AI layer can't solve alone.</p></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p7">
+<header class="sec-head"><span class="sec-num">7</span><div><h2>Security &amp; governance</h2><p class="sec-purpose">Every decision must be traceable — this customer's compliance posture depends on it</p></div></header>
+<div class="sec-body">
+<ul class="bullets">
+<li><strong>Audit log as a first-class store</strong> — every Policy Gate decision and every ops agent action (approve/edit/reject) is written immutably, with the model's confidence score and reasoning trace attached.</li>
+<li><strong>Least-privilege carrier API credentials</strong> — the Resolution Agent's execution path holds only the specific carrier API scopes needed to rebook/reschedule, never broad account-level credentials.</li>
+<li><strong>Regional access control</strong> — an EU ops agent's session should not query US shipment data and vice versa by default, mirroring the data-residency boundary at the application layer, not just storage.</li>
+<li><strong>Explainability at the point of approval</strong> — the drafted resolution shown to an ops agent must include why the model proposed it, since an agent approving a black-box suggestion under time pressure is how a wrong suggestion turns into a wrong human decision too.</li>
+</ul>
+</div>
+</section>
+
+<section class="sec" id="p8">
+<header class="sec-head"><span class="sec-num">8</span><div><h2>Tradeoffs</h2><p class="sec-purpose">Five decisions, and what each one costs</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>Decision</th><th>Best use</th><th>Advantages</th><th>Tradeoffs</th></tr></thead>
+<tbody>
+<tr><td style="color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Unified stream (webhook + batch merge)</td><td>Single detection pipeline regardless of feed type</td><td>One code path for detection; simpler to add new carriers</td><td>Batch-sourced exceptions are detected late by design — must be surfaced, not hidden</td></tr>
+<tr><td style="color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Policy Gate as separate component</td><td>Enforcing the customs-always-human rule</td><td>Independently testable/auditable; can't be silently bypassed</td><td>Extra hop in the critical path vs. embedding the check in the agent</td></tr>
+<tr><td style="color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Regional data planes, shared control plane</td><td>EU data residency + one consistent experience</td><td>Compliant by construction; consistent UX and policy everywhere</td><td>Cross-region analytics needs an aggregation layer that respects residency</td></tr>
+<tr><td style="color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Queue-backed ingestion</td><td>Absorbing bursty carrier event spikes</td><td>Smooths spikes into backlog instead of dropping/overwhelming</td><td>Adds latency under normal load; needs backlog monitoring</td></tr>
+<tr><td style="color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Idempotent auto-resolve actions</td><td>Any action touching a carrier booking/refund</td><td>Safe to retry after transient failures</td><td>Requires every carrier integration to support idempotency keys — legacy APIs may force human-only handling</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p9">
+<header class="sec-head"><span class="sec-num">9</span><div><h2>Final design summary</h2><p class="sec-purpose">One non-negotiable — everything else is built to feed it correctly</p></div></header>
+<div class="sec-body">
+<p class="prose">The design centers on one non-negotiable: the Policy Gate. Ingestion unifies two very different carrier data shapes — real-time webhooks and multi-hour batch drops — into one event stream, so Disruption Detection has a single interface regardless of carrier maturity. The Resolution Agent proposes an action and a confidence score, but never executes anything directly — that decision belongs to the Policy Gate, which enforces the customer's explicit compliance rule (customs is always human) ahead of the general value/confidence threshold, designed as an independently auditable component precisely because it's the boundary the customer cares about most.</p>
+<p class="prose">Regional deployment isn't bolted on for compliance — EU data residency shapes the architecture from the start, via a shared control plane paired with isolated regional data planes, so the assistant behaves identically for every ops agent while data never crosses a boundary it isn't allowed to. Reliability comes from treating the batch path's inherent latency as a surfaced fact rather than noise to average away, from idempotent auto-resolve actions, and from circuit-breaking flaky carrier APIs down to a safe human-approval fallback.</p>
+<div class="callout">This is a modest-scale, high-stakes system — 150 users, not millions — where the engineering bar isn't raw throughput, it's correctness and auditability at the one decision boundary (auto vs. human) the customer will actually be held accountable for.</div>
+</div>
+</section>
+
+</main>
+</div>
+<footer>Companion mock-interview transcript: <a href="Mock%20-%20AI%20Exception-Handling%20Assistant.md">Mock - AI Exception-Handling Assistant.md</a></footer>
+</div>

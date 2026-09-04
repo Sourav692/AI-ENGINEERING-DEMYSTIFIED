@@ -1,0 +1,9 @@
+{
+  "customer_name": "Northwind Logistics",
+  "success_metrics": [
+    "Tier-1 ticket first-response time drops below 5 minutes for the top 3 ticket categories",
+    "Agent-drafted replies are sent with no human edit on at least 60% of eligible tickets by week 4"
+  ],
+  "data_sources": ["zendesk_connector", "confluence_connector", "salesforce_connector"],
+  "customer_sme": "u_sme_northwind"
+}

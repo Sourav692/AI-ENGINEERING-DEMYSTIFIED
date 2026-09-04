@@ -1,0 +1,440 @@
+<title>AI Powered Coding Assistant Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --cross:#5f45b8; --cross-soft:#ece7fa;
+  --amb:#9a6412; --amb-soft:#f7ecd6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --cross:#a892f2; --cross-soft:#211c38;
+    --amb:#e0ab52; --amb-soft:#332612;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --cross:#a892f2; --cross-soft:#211c38;
+  --amb:#e0ab52; --amb-soft:#332612;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono,td:first-child,th:first-child{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+.mast{padding:clamp(48px,8vw,88px) 0 clamp(28px,4vw,40px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 18px}
+h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(36px,6vw,62px); line-height:1.04; letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance; max-width:16ch}
+.lede{font-size:clamp(16.5px,2vw,19px); color:var(--body); max-width:66ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){.shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}}
+nav.toc{display:none}
+@media(min-width:1000px){nav.toc{display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:40px 0 40px; border-right:1px solid var(--rule-soft)}}
+nav.toc p{font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{display:flex; gap:12px; align-items:baseline; text-decoration:none; padding:6px 10px 6px 0; font-size:13.5px; line-height:1.35; color:var(--muted); border-radius:4px; transition:color .15s ease}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); min-width:18px; font-variant-numeric:tabular-nums; opacity:.75}
+
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:22px}
+.sec-num{font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:6px 9px; line-height:1; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.sec-head h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0; line-height:1.15; text-wrap:balance}
+.sec-purpose{margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.sec-body{display:flex; flex-direction:column; gap:20px}
+.prose{margin:0; max-width:68ch}
+.prose strong{color:var(--ink)}
+
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.items{grid-template-columns:1fr 1fr}}
+.item{background:var(--surface); padding:18px 20px 20px; border:1px solid var(--rule-soft); margin:-1px 0 0 -1px}
+.item h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px}
+.item h4::before{content:""; width:5px; height:5px; flex:none; background:var(--accent); border-radius:50%; transform:translateY(-3px)}
+.item .aiex{margin:0 0 8px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.02em; color:var(--accent); background:var(--accent-soft); display:inline-block; padding:2px 8px; border-radius:3px}
+.item p{margin:0; font-size:15px; line-height:1.58; color:var(--body)}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:14.5px}
+td:first-child,th:first-child{width:44px; color:var(--accent); font-variant-numeric:tabular-nums; font-size:13px}
+tbody tr:last-child td{border-bottom:0}
+tbody td:nth-child(2){color:var(--ink); font-weight:600; font-family:"Bricolage Grotesque",sans-serif; font-size:14.5px; min-width:190px}
+tbody td:nth-child(3){color:var(--muted)}
+
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(14px,2.4vw,28px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:70ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:640px; height:auto}
+.dgm .hub{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .hubt{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:13px; text-anchor:middle}
+.dgm .spoke{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .spokeL{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:20px; text-anchor:middle}
+.dgm .spokeT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:11.5px; text-anchor:middle}
+.dgm .fl{fill:none; stroke:var(--rule); stroke-width:1.3}
+.dgm .ring{fill:none; stroke:var(--cross); stroke-width:1.3; stroke-dasharray:3 4}
+.dgm .cross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .crossT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.13em}
+
+.dgm .outer{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .outerT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .pill{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1}
+.dgm .pillT{fill:var(--accent); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .pillM{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .pillMT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .gw{fill:var(--surface); stroke:var(--ink); stroke-width:1.3}
+.dgm .gwT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .svc{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.3}
+.dgm .svcT{fill:var(--cross); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .db{fill:var(--surface); stroke:var(--muted); stroke-width:1.2}
+.dgm .dbT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .stage{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .stageAccent{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .stageCross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.4}
+.dgm .stageT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .stageSub{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .axis{stroke:var(--rule); stroke-width:1.3; stroke-dasharray:2 4}
+.dgm .axisT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase}
+.dgm .panelT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:15px; text-anchor:middle}
+.dgm .bandbg{fill:var(--surface-2)}
+.dgm .vs{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .n{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-size:12.5px; font-weight:600}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .fl{fill:none; stroke:var(--muted); stroke-width:1.3}
+.dgm .dl{fill:none; stroke:var(--cross); stroke-width:1; stroke-dasharray:3 3; opacity:.8}
+.dgm .mk{fill:var(--muted)}
+.dgm .mkD{fill:var(--cross)}
+.dgm .badge{fill:var(--accent); stroke:var(--surface); stroke-width:2}
+.dgm .badget{fill:#fff; font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:800}
+
+.dgm .amb{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+.dgm .ambT{fill:var(--amb); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .diamond{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+
+.callout{background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 20px; font-size:16px; color:var(--ink); max-width:72ch}
+.callout.cross{background:var(--cross-soft); border-left-color:var(--cross)}
+.callout.amb{background:var(--amb-soft); border-left-color:var(--amb)}
+
+.bullets{list-style:none; margin:0; padding:0; display:grid; gap:9px; max-width:60ch}
+.bullets li{display:flex; gap:10px; align-items:baseline; font-size:15px; color:var(--body)}
+.bullets li::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; transform:translateY(-2px)}
+
+.chiprow{display:flex; flex-wrap:wrap; gap:8px}
+.chiprow span{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--surface-2); border:1px solid var(--rule-soft); color:var(--muted); padding:5px 10px; border-radius:3px}
+
+.vgrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.vgrid{grid-template-columns:1fr 1fr}}
+.vcol{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px}
+.vcol h3{margin:0 0 4px; font-size:17px; font-weight:800; font-family:"Bricolage Grotesque",sans-serif; color:var(--ink)}
+.vcol .vsub{margin:0 0 14px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.vcol.vmono h3{color:var(--accent)}
+.vcol.vmicro h3{color:var(--cross)}
+
+.quotegrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.quotegrid{grid-template-columns:1fr 1fr}}
+.qcard{background:var(--surface); border:1px solid var(--rule-soft); padding:16px 18px; display:flex; gap:12px}
+.qcard .ck{color:var(--accent); font-weight:700; flex:none}
+.qcard div{min-width:0}
+.qcard b{display:block; color:var(--ink); font-size:13.5px; margin-bottom:3px; font-family:"Bricolage Grotesque",sans-serif}
+.qcard span{font-size:14.5px; color:var(--body); font-style:italic}
+
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px; background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0; padding:15px 18px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:3px}
+.steps li>div{min-width:0}
+.steps h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink)}
+.steps p{margin:0; font-size:14.5px; color:var(--body)}
+
+footer{border-top:1px solid var(--rule); padding:28px 0 60px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.03em}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews</p>
+  <h1>AI Powered Coding Assistant Design</h1>
+  <p class="lede">The interview question: design an AI-powered coding assistant like GitHub Copilot that provides real-time code completion, explains code, generates unit tests, fixes bugs, refactors code, and answers developer questions — integrated seamlessly into the IDE. Explain how <strong>context engineering, semantic retrieval, model routing, semantic caching, and output validation</strong> combine to keep suggestions fast, accurate, and safe.</p>
+  <div class="mast-meta">
+    <span>&lt;300ms autocomplete</span><span>millions of developers</span><span>context-engineered</span><span>end-to-end architecture</span>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#p1"><span class="n">1</span><span>Define the problem space</span></a></li>
+<li><a href="#p2"><span class="n">2</span><span>High-level architecture</span></a></li>
+<li><a href="#p3"><span class="n">3</span><span>Step-by-step request flow</span></a></li>
+<li><a href="#p4"><span class="n">4</span><span>Context signals &amp; model routing</span></a></li>
+<li><a href="#p5"><span class="n">5</span><span>Major components</span></a></li>
+<li><a href="#p6"><span class="n">6</span><span>AI-specific design considerations</span></a></li>
+<li><a href="#p7"><span class="n">7</span><span>Scaling to millions of developers</span></a></li>
+<li><a href="#p8"><span class="n">8</span><span>Security considerations</span></a></li>
+<li><a href="#p9"><span class="n">9</span><span>Tradeoffs</span></a></li>
+<li><a href="#p10"><span class="n">10</span><span>Common follow-up questions</span></a></li>
+<li><a href="#p11"><span class="n">11</span><span>Final design summary</span></a></li>
+</ol></nav>
+
+<main>
+
+<section class="sec" id="p1">
+<header class="sec-head"><span class="sec-num">1</span><div><h2>Define the problem space</h2><p class="sec-purpose">A GitHub Copilot-style assistant, clarified before it's architected</p></div></header>
+<div class="sec-body">
+<p class="prose">A developer typing inside an IDE should get real-time code completion, multi-line generation, code explanations, generated unit tests and documentation, refactoring, bug fixes, and answers to coding questions — all workspace-aware and under a strict latency budget. That combination of "must feel instant" and "must understand my entire repository" is what makes this a context-engineering problem as much as a distributed-systems one.</p>
+<div class="callout">Is the assistant cloud-based or can it run locally — both models exist, and the answer changes where inference happens. Should suggestions be real-time as the user types — yes, which sets the latency budget before anything else is designed. Which IDEs and languages need support — VS Code, IntelliJ, Visual Studio, and most mainstream languages, which argues for a thin, IDE-agnostic extension talking to a shared backend. Should it understand the entire repository or just the current file — the whole repo, within reason, which is exactly why context engineering becomes the hard problem. Do enterprise customers need private models and on-prem deployment — yes, which shapes the security and deployment story from day one.</div>
+<div class="vgrid">
+<div class="vcol vmono">
+<h3>✅ Functional</h3>
+<p class="vsub">What the assistant must do</p>
+<ul class="bullets">
+<li>Real-time code completion</li>
+<li>Multi-line code generation</li>
+<li>Explain selected code</li>
+<li>Generate unit tests</li>
+<li>Generate documentation / comments</li>
+<li>Refactor code</li>
+<li>Fix compilation / runtime errors</li>
+<li>Answer coding questions</li>
+<li>Search project codebase</li>
+<li>Generate commit messages</li>
+<li>Support multiple languages</li>
+<li>Workspace-aware suggestions</li>
+</ul>
+</div>
+<div class="vcol vmicro">
+<h3>⚙️ Non-functional</h3>
+<p class="vsub">The qualities that make it production-grade</p>
+<ul class="bullets">
+<li>&lt;300ms autocomplete latency</li>
+<li>High accuracy</li>
+<li>Low hallucination rate</li>
+<li>Highly available</li>
+<li>Enterprise security</li>
+<li>Support millions of developers</li>
+<li>Personalized suggestions</li>
+<li>Cost efficient</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p2">
+<header class="sec-head"><span class="sec-num">2</span><div><h2>High-level architecture</h2><p class="sec-purpose">Cache first, retrieve only on a miss, route by task complexity</p></div></header>
+<div class="sec-body">
+<p class="prose">A keystroke flows from the IDE extension through authentication and the API gateway to a context builder, which combines fresh context signals with conversation memory. A semantic cache sits immediately in front of the expensive path: on a cache hit, the request skips straight to prompt construction; on a miss, the embedding service, vector database, and code retrieval assemble fresh context. The model router then picks a small fast model or a large reasoning model per task, and every output is validated before it ever reaches the editor.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 1000 1180" role="img" aria-label="High-level architecture: the IDE extension authenticates through the API gateway, then context collection and user preferences feed a context builder that also draws on conversation memory. The semantic cache short-circuits repeated requests straight to the prompt builder, otherwise the embedding service, vector database, and code retrieval build fresh context. The model router splits between a small fast model and a large reasoning model, both passing through output validation before returning IDE suggestions."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="340.0" y="20" width="320" height="44" rx="6"/><text class="t" x="500.0" y="46.0" text-anchor="middle" >IDE Extension</text><polyline class="fl" points="500.0,64.0 500.0,88.0" marker-end="url(#ar)"/><rect class="n" x="340.0" y="90" width="320" height="44" rx="6"/><text class="t" x="500.0" y="116.0" text-anchor="middle" >Authentication Service</text><polyline class="fl" points="500.0,134.0 500.0,158.0" marker-end="url(#ar)"/><rect class="gw" x="340.0" y="160" width="320" height="46" rx="6"/><text class="gwT" x="500.0" y="187.0" text-anchor="middle" >API Gateway / Load Balancer</text><polyline class="fl" points="500.0,206.0 360.0,244.0" marker-end="url(#ar)"/><rect class="svc" x="240.0" y="246" width="240" height="46" rx="6"/><text class="svcT" x="360.0" y="273.0" text-anchor="middle" >Context Collection</text><polyline class="fl" points="500.0,206.0 640.0,244.0" marker-end="url(#ar)"/><rect class="svc" x="520.0" y="246" width="240" height="46" rx="6"/><text class="svcT" x="640.0" y="273.0" text-anchor="middle" >User Preferences</text><rect class="n" x="770.0" y="246" width="180" height="46" rx="6"/><text class="t" x="860.0" y="266.0" text-anchor="middle" >Conversation</text><text class="t" x="860.0" y="280.0" text-anchor="middle" >Memory</text><polyline class="fl" points="360.0,292.0 500.0,330.0" marker-end="url(#ar)"/><polyline class="fl" points="640.0,292.0 500.0,330.0" marker-end="url(#ar)"/><polyline class="dl" points="860.0,292.0 860.0,340.0 665.0,340.0 500.0,330.0" marker-end="url(#arD)"/><rect class="gw" x="340.0" y="332" width="320" height="48" rx="6"/><text class="gwT" x="500.0" y="360.0" text-anchor="middle" >Context Builder</text><polyline class="fl" points="500.0,380.0 500.0,412.0" marker-end="url(#ar)"/><rect class="n" x="350.0" y="414" width="300" height="46" rx="6"/><text class="t" x="500.0" y="441.0" text-anchor="middle" >Semantic Cache</text><polyline class="fl" points="500.0,460.0 330.0,492.0" marker-end="url(#ar)"/><rect class="svc" x="210.0" y="494" width="240" height="46" rx="6"/><text class="svcT" x="330.0" y="521.0" text-anchor="middle" >Embedding Service</text><rect class="bandbg" x="256.0" y="466.0" width="68.0" height="16"/><text class="s" x="290.0" y="478.0" text-anchor="middle" >CACHE MISS</text><polyline class="fl" points="330.0,540.0 330.0,568.0" marker-end="url(#ar)"/><path d="M 245.0 579.0 L 245.0 601.0 A 85.0 9.0 0 0 0 415.0 601.0 L 415.0 579.0" class="db"/><ellipse class="db" cx="330.0" cy="579.0" rx="85.0" ry="9.0"/><text class="t" x="330.0" y="626.0" text-anchor="middle" >Vector Database</text><polyline class="fl" points="330.0,642.0 330.0,654.0" marker-end="url(#ar)"/><rect class="svc" x="210.0" y="656" width="240" height="46" rx="6"/><text class="svcT" x="330.0" y="676.0" text-anchor="middle" >Relevant Code</text><text class="svcT" x="330.0" y="690.0" text-anchor="middle" >Retrieval</text><polyline class="dl" points="500.0,460.0 700.0,482.0 700.0,740.0 500.0,740.0" marker-end="url(#arD)"/><rect class="bandbg" x="723.8" y="484.0" width="62.4" height="16"/><text class="s" x="755.0" y="496.0" text-anchor="middle" >CACHE HIT</text><polyline class="fl" points="330.0,702.0 500.0,740.0" marker-end="url(#ar)"/><rect class="gw" x="340.0" y="742" width="320" height="48" rx="6"/><text class="gwT" x="500.0" y="770.0" text-anchor="middle" >Prompt Builder</text><polyline class="fl" points="500.0,790.0 500.0,822.0" marker-end="url(#ar)"/><rect class="gw" x="350.0" y="824" width="300" height="48" rx="6"/><text class="gwT" x="500.0" y="852.0" text-anchor="middle" >Model Router</text><polyline class="fl" points="500.0,872.0 350.0,910.0" marker-end="url(#ar)"/><rect class="svc" x="220.0" y="912" width="260" height="48" rx="6"/><text class="svcT" x="350.0" y="940.0" text-anchor="middle" >Small Fast Model</text><polyline class="fl" points="500.0,872.0 650.0,910.0" marker-end="url(#ar)"/><rect class="svc" x="520.0" y="912" width="260" height="48" rx="6"/><text class="svcT" x="650.0" y="940.0" text-anchor="middle" >Large Reasoning Model</text><polyline class="fl" points="350.0,960.0 500.0,998.0" marker-end="url(#ar)"/><polyline class="fl" points="650.0,960.0 500.0,998.0" marker-end="url(#ar)"/><rect class="amb" x="330.0" y="1000" width="340" height="48" rx="6"/><text class="ambT" x="500.0" y="1028.0" text-anchor="middle" >Output Validation</text><polyline class="fl" points="500.0,1048.0 500.0,1080.0" marker-end="url(#ar)"/><rect class="svc" x="350.0" y="1082" width="300" height="46" rx="6"/><text class="svcT" x="500.0" y="1109.0" text-anchor="middle" >IDE Suggestions</text></svg></div>
+<figcaption>The semantic cache is the load-bearing latency optimization: it lets the common case — a completion the assistant has effectively seen before — skip embedding, retrieval, and often the large model entirely.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p3">
+<header class="sec-head"><span class="sec-num">3</span><div><h2>Step-by-step request flow</h2><p class="sec-purpose">From keystroke to accepted suggestion</p></div></header>
+<div class="sec-body">
+<ol class="steps">
+<li><div><h4>⌨️ 1 · User types code</h4><p>The developer starts typing inside VS Code — e.g. <code>def calculate_total(items):</code> — and the IDE extension detects the cursor position.</p></div></li>
+<li><div><h4>📥 2 · Context collection</h4><p>The extension gathers current function, file, open tabs, imports, repo structure, cursor location, language, recent edits, and compiler errors — selecting only what's relevant rather than sending the whole repository.</p></div></li>
+<li><div><h4>🔎 3 · Semantic code search</h4><p>The assistant searches for semantically related code — similar functions, existing helpers, internal APIs, coding patterns, project conventions — preventing duplicate implementations and encouraging reuse.</p></div></li>
+<li><div><h4>🧱 4 · Prompt construction</h4><p>A structured prompt combines system instructions, the user request, current code, retrieved snippets, language/framework, repository conventions, and relevant documentation.</p></div></li>
+<li><div><h4>🚦 5 · Model routing</h4><p>The request routes to the most appropriate model based on task complexity, balancing latency, quality, and cost.</p></div></li>
+<li><div><h4>✨ 6 · Generate suggestion</h4><p>The selected model generates code completion, explanation, refactoring suggestions, unit tests, documentation, or bug fixes.</p></div></li>
+<li><div><h4>🛡️ 7 · Output validation</h4><p>Before returning: parse generated code, check syntax, validate formatting, apply security filters, detect hallucinated APIs, and remove unsafe patterns. Invalid or low-confidence outputs may be regenerated or suppressed.</p></div></li>
+<li><div><h4>📤 8 · Return suggestion</h4><p>Suggestions stream back to the IDE and display inline. The developer can accept, partially accept, reject, or request alternatives — valuable feedback for future personalization.</p></div></li>
+</ol>
+</div>
+</section>
+
+<section class="sec" id="p4">
+<header class="sec-head"><span class="sec-num">4</span><div><h2>Context signals &amp; model routing</h2><p class="sec-purpose">What gets collected, and which model handles which task</p></div></header>
+<div class="sec-body">
+<p class="prose">Not every task needs the largest model, and not every context signal is worth its token cost. The routing decision and the context-collection decision are really the same kind of tradeoff: spend latency and money only where it buys accuracy.</p>
+<div class="chiprow"><span>Current function</span><span>Current file</span><span>Open tabs</span><span>Imported libraries</span><span>Repository structure</span><span>Cursor location</span><span>Programming language</span><span>Recent edits</span><span>Compiler errors</span><span>Git branch (optional)</span></div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Task</th><th>Recommended model</th></tr></thead>
+<tbody>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Next-word completion</td><td>Small, low-latency model</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Multi-line completion</td><td>Medium model</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Code explanation</td><td>Larger reasoning model</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Bug fixing</td><td>Larger reasoning model</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Refactoring</td><td>Larger reasoning model</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Architecture questions</td><td>Most capable reasoning model</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p5">
+<header class="sec-head"><span class="sec-num">5</span><div><h2>Major components</h2><p class="sec-purpose">Fourteen services, each with one job</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>#</th><th>Component</th><th>Responsibility</th></tr></thead>
+<tbody>
+<tr><td>01</td><td>IDE Extension</td><td>Captures developer actions and displays suggestions</td></tr>
+<tr><td>02</td><td>Authentication Service</td><td>Verifies user identity and licenses</td></tr>
+<tr><td>03</td><td>API Gateway</td><td>Routes requests and enforces rate limits</td></tr>
+<tr><td>04</td><td>Context Collector</td><td>Gathers relevant workspace information</td></tr>
+<tr><td>05</td><td>Context Builder</td><td>Compresses and structures context for the model</td></tr>
+<tr><td>06</td><td>Embedding Service</td><td>Converts code into vector embeddings</td></tr>
+<tr><td>07</td><td>Vector Database</td><td>Stores embeddings for semantic retrieval</td></tr>
+<tr><td>08</td><td>Semantic Search</td><td>Retrieves relevant code and documentation</td></tr>
+<tr><td>09</td><td>Prompt Builder</td><td>Constructs optimized prompts</td></tr>
+<tr><td>10</td><td>Semantic Cache</td><td>Reuses responses for similar requests</td></tr>
+<tr><td>11</td><td>Model Router</td><td>Selects the best model based on task complexity</td></tr>
+<tr><td>12</td><td>LLM Inference Service</td><td>Generates code and explanations</td></tr>
+<tr><td>13</td><td>Validation Service</td><td>Checks syntax, security, and quality</td></tr>
+<tr><td>14</td><td>Telemetry &amp; Analytics</td><td>Captures usage, latency, and feedback</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p6">
+<header class="sec-head"><span class="sec-num">6</span><div><h2>AI-specific design considerations</h2><p class="sec-purpose">The concepts interviewers actually want to hear</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>🧩 Context engineering</h4><p>Only include information that materially improves the response — current function, related classes, imports, similar implementations, coding standards, project docs. Avoid sending unnecessary files to reduce latency and token usage.</p></div>
+<div class="item"><h4>🔎 Semantic search</h4><p>Instead of keyword matching, use embeddings to retrieve code with similar intent. Searching "calculate tax" may retrieve <code>compute_gst()</code> because the underlying semantics are similar.</p></div>
+<div class="item"><h4>📝 Prompt management</h4><p>Maintain different prompt templates per task — completion, test generation, bug fixing, refactoring, documentation, explanation. Versioning prompts enables safe experimentation and rollback.</p></div>
+<div class="item"><h4>🚦 Model routing</h4><p>Not every task needs the largest model: autocomplete gets a fast model, explaining code gets a medium model, refactoring architecture gets an advanced reasoning model — optimizing cost and responsiveness.</p></div>
+<div class="item"><h4>⚡ Semantic cache</h4><p>Frequently requested completions — framework boilerplate, standard algorithms, popular API usage — get cached. Semantic matching allows reuse even when requests are phrased differently.</p></div>
+<div class="item"><h4>🪟 Context window management</h4><p>Large repositories can exceed model limits. Retrieve only relevant files, chunk code intelligently, compress long histories, prioritize nearby code over distant files, and remove irrelevant context.</p></div>
+</div>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 860 380" role="img" aria-label="Context engineering funnel: the full repository, potentially millions of tokens, narrows to relevant signals like the current file and imports, then to compressed and ranked context, and finally to a prompt that fits the model context window."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="70.0" y="20" width="640" height="54" rx="6"/><text class="t" x="390.0" y="44.0" text-anchor="middle" >Full Repository &amp; Workspace</text><text class="t" x="390.0" y="58.0" text-anchor="middle" >(potentially millions of tokens)</text><polyline class="fl" points="390.0,74.0 390.0,102.0" marker-end="url(#ar)"/><rect class="svc" x="130.0" y="104" width="520" height="54" rx="6"/><text class="svcT" x="390.0" y="128.0" text-anchor="middle" >Relevant Signals</text><text class="svcT" x="390.0" y="142.0" text-anchor="middle" >(current file, imports, open tabs, cursor, recent edits)</text><text class="crossT" x="668.0" y="93.0" text-anchor="start" style="text-anchor:start">✕ unrelated files</text><polyline class="fl" points="390.0,158.0 390.0,186.0" marker-end="url(#ar)"/><rect class="svc" x="190.0" y="188" width="400" height="54" rx="6"/><text class="svcT" x="390.0" y="212.0" text-anchor="middle" >Compressed &amp; Ranked Context</text><text class="svcT" x="390.0" y="226.0" text-anchor="middle" >(semantic search + prioritization)</text><text class="crossT" x="608.0" y="177.0" text-anchor="start" style="text-anchor:start">✕ distant history</text><polyline class="fl" points="390.0,242.0 390.0,270.0" marker-end="url(#ar)"/><rect class="gw" x="250.0" y="272" width="280" height="54" rx="6"/><text class="gwT" x="390.0" y="296.0" text-anchor="middle" >Final Prompt</text><text class="gwT" x="390.0" y="310.0" text-anchor="middle" >(fits model context window)</text></svg></div>
+<figcaption>Context engineering is a funnel, not a filter that runs once — the repository narrows to signals, signals narrow to ranked context, and only the ranked context becomes the prompt that actually reaches the model.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p7">
+<header class="sec-head"><span class="sec-num">7</span><div><h2>Scaling to millions of developers</h2><p class="sec-purpose">Staying under 300ms while serving everyone</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>🧩 1 · Stateless API servers</h4><p>API servers sit behind load balancers so they scale horizontally with demand.</p></div>
+<div class="item"><h4>🗄️ 2 · Distributed vector databases</h4><p>Embeddings are sharded across regions and repositories rather than living in one giant index.</p></div>
+<div class="item"><h4>⚙️ 3 · GPU inference clusters</h4><p>Autoscaling GPU clusters absorb bursty demand from IDE keystrokes without over-provisioning at idle.</p></div>
+<div class="item"><h4>📡 4 · Streaming responses</h4><p>Tokens stream back as they're generated, so perceived latency drops even when total generation time doesn't.</p></div>
+<div class="item"><h4>🌍 5 · Multi-region deployment</h4><p>Inference runs close to developers geographically, and static assets are served from a CDN.</p></div>
+<div class="item"><h4>🚦 6 · Rate limiting &amp; batching</h4><p>Request batching where appropriate, plus rate limiting and quota management, protect shared infrastructure from runaway usage.</p></div>
+</div>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 816 190" role="img" aria-label="Latency budget breakdown for sub-300 millisecond autocomplete: roughly 10 milliseconds for the semantic cache check, 40 for context assembly, 200 for model inference streaming, and 50 for output validation."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="30" y="50" width="110" height="56" rx="3"/><text class="t" x="85.0" y="72.0" text-anchor="middle" >Cache</text><text class="t" x="85.0" y="85.0" text-anchor="middle" >check</text><text class="s" x="85.0" y="124.0" text-anchor="middle" >~10ms</text><rect class="svc" x="140" y="50" width="110" height="56" rx="3"/><text class="svcT" x="195.0" y="72.0" text-anchor="middle" >Context</text><text class="svcT" x="195.0" y="85.0" text-anchor="middle" >assembly</text><text class="s" x="195.0" y="124.0" text-anchor="middle" >~40ms</text><rect class="gw" x="250" y="50" width="426.6666666666667" height="56" rx="3"/><text class="gwT" x="463.3" y="72.0" text-anchor="middle" >Model inference</text><text class="gwT" x="463.3" y="85.0" text-anchor="middle" >(streamed)</text><text class="s" x="463.3" y="124.0" text-anchor="middle" >~200ms</text><rect class="svc" x="676.6666666666667" y="50" width="110" height="56" rx="3"/><text class="svcT" x="731.7" y="72.0" text-anchor="middle" >Validation</text><text class="s" x="731.7" y="124.0" text-anchor="middle" >~50ms</text><text class="axisT" x="30.0" y="34.0" text-anchor="start" >0ms</text><text class="axisT" x="786.7" y="34.0" text-anchor="end" >300ms budget</text><line x1="30" y1="44" x2="786.6666666666667" y2="44" class="axis"/></svg></div>
+<figcaption>A rough latency budget for a sub-300ms autocomplete: the cache check and context assembly stay cheap, most of the budget goes to streamed model inference, and validation runs in the remaining margin.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p8">
+<header class="sec-head"><span class="sec-num">8</span><div><h2>Security considerations</h2><p class="sec-purpose">Source code is the most sensitive asset in the pipeline</p></div></header>
+<div class="sec-body">
+<ul class="bullets">
+<li>Never train foundation models on private enterprise code without explicit consent.</li>
+<li>Encrypt source code in transit and at rest.</li>
+<li>Enforce repository-level access controls.</li>
+<li>Respect organizational permissions during retrieval.</li>
+<li>Mask secrets and credentials before sending context.</li>
+<li>Support deployment within a customer's private environment for highly regulated industries.</li>
+<li>Maintain audit logs for compliance and governance.</li>
+</ul>
+</div>
+</section>
+
+<section class="sec" id="p9">
+<header class="sec-head"><span class="sec-num">9</span><div><h2>Tradeoffs</h2><p class="sec-purpose">Six decisions, and what each one costs</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>Decision</th><th>Pros</th><th>Cons</th></tr></thead>
+<tbody>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Small model</td><td>Fast and inexpensive</td><td>Lower reasoning quality</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Large model</td><td>Better suggestions</td><td>Higher latency and cost</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Full repository context</td><td>Richer understanding</td><td>Higher token usage</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Retrieved context only</td><td>Lower cost and faster</td><td>May miss relevant information</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Cloud inference</td><td>Easy to scale</td><td>Privacy considerations</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Local inference</td><td>Better data privacy</td><td>Limited by local hardware</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p10">
+<header class="sec-head"><span class="sec-num">10</span><div><h2>Common follow-up questions</h2><p class="sec-purpose">Three questions interviewers reach for</p></div></header>
+<div class="sec-body">
+<p class="prose"><strong>🔒 How do you avoid leaking customer code?</strong></p>
+<ul class="bullets">
+<li>Isolate customer data by tenant.</li>
+<li>Do not use private repositories for public model training unless explicitly permitted.</li>
+<li>Retrieve only documents the user is authorized to access.</li>
+<li>Mask sensitive information before sending prompts.</li>
+<li>Offer private or on-premises deployments for enterprise customers.</li>
+<li>Enforce strict access controls and auditing.</li>
+</ul>
+<p class="prose"><strong>⚡ How do you reduce latency below 300ms?</strong></p>
+<ul class="bullets">
+<li>Use a lightweight model for inline autocomplete.</li>
+<li>Stream tokens as they are generated.</li>
+<li>Maintain persistent connections from the IDE.</li>
+<li>Cache embeddings and frequent completions.</li>
+<li>Perform semantic indexing in the background.</li>
+<li>Deploy inference close to users in multiple regions.</li>
+<li>Limit retrieved context to only what is necessary.</li>
+<li>Use speculative decoding or similar inference optimizations where supported.</li>
+</ul>
+<p class="prose"><strong>🎯 How do you personalize suggestions?</strong></p>
+<ul class="bullets">
+<li>Learn preferred coding style — naming, formatting, patterns.</li>
+<li>Prioritize project-specific APIs and frameworks.</li>
+<li>Incorporate accepted versus rejected suggestions.</li>
+<li>Respect repository coding standards and linting rules.</li>
+<li>Tailor prompts using developer and team preferences while keeping raw source code protected.</li>
+<li>Continuously refine retrieval based on feedback and recent activity.</li>
+</ul>
+</div>
+</section>
+
+<section class="sec" id="p11">
+<header class="sec-head"><span class="sec-num">11</span><div><h2>Final design summary</h2><p class="sec-purpose">A retrieval-augmented, context-engineered system — not one call to a big model</p></div></header>
+<div class="sec-body">
+<p class="prose">The strongest answers treat a coding assistant as a retrieval-augmented, context-engineered system rather than a single call to a large LLM: gathering and prioritizing relevant context instead of sending entire repositories, using semantic retrieval and embeddings to improve suggestions, routing across models to balance latency, cost, and quality, and managing context windows carefully for large codebases.</p>
+<p class="prose">Scalability comes from stateless API servers, distributed vector databases, autoscaling GPU inference, streaming responses, and multi-region deployment. Security comes from tenant isolation, repository-level access control, secret masking, and — for regulated industries — private or on-premises deployment. Enterprise concerns like security, privacy, and access control aren't an afterthought; they shape the architecture from the first clarifying question onward.</p>
+<div class="callout">This layered architecture treats context engineering, semantic retrieval, model routing, semantic caching, and output validation as complementary techniques — each earning its place by trading latency, cost, and quality against the others, rather than any one of them being "the" solution.</div>
+</div>
+</section>
+
+</main>
+</div>
+<footer>Source: <a href="https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/coding-assistant-ai-design">iGrace — AI Powered Coding Assistant Design</a></footer>
+</div>

@@ -1,0 +1,18 @@
+%% Layer 7 — Observability
+%% Every agent node and the evaluator is traced; embeddings are computed in-process (no external call).
+flowchart LR
+    A1["Search Agent"]
+    A2["Summarize Agent"]
+    A3["Writer Agent"]
+    A4["Critic Agent"]
+    Ev["LLM-as-Judge Eval"]
+    LS["LangSmith\n@traceable on every node\n4 eval scores per report"]
+
+    ST["SentenceTransformer\nall-MiniLM-L6-v2, 384-dim\nruns in-process — used by\ncache, LTM lookup & save"]
+
+    A1 & A2 & A3 & A4 & Ev -->|"trace"| LS
+
+    classDef agent fill:#11161d,stroke:#4fb8d0,color:#e6edf3
+    classDef obs fill:#1c2128,stroke:#e0a458,color:#e6edf3
+    class A1,A2,A3,A4,Ev agent
+    class LS,ST obs

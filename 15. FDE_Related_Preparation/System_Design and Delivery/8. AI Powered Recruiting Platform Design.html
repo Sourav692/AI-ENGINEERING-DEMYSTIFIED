@@ -1,0 +1,427 @@
+<title>AI Powered Recruiting Platform Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --cross:#5f45b8; --cross-soft:#ece7fa;
+  --amb:#9a6412; --amb-soft:#f7ecd6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --cross:#a892f2; --cross-soft:#211c38;
+    --amb:#e0ab52; --amb-soft:#332612;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --cross:#a892f2; --cross-soft:#211c38;
+  --amb:#e0ab52; --amb-soft:#332612;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono,td:first-child,th:first-child{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+.mast{padding:clamp(48px,8vw,88px) 0 clamp(28px,4vw,40px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 18px}
+h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(36px,6vw,62px); line-height:1.04; letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance; max-width:16ch}
+.lede{font-size:clamp(16.5px,2vw,19px); color:var(--body); max-width:66ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){.shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}}
+nav.toc{display:none}
+@media(min-width:1000px){nav.toc{display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:40px 0 40px; border-right:1px solid var(--rule-soft)}}
+nav.toc p{font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{display:flex; gap:12px; align-items:baseline; text-decoration:none; padding:6px 10px 6px 0; font-size:13.5px; line-height:1.35; color:var(--muted); border-radius:4px; transition:color .15s ease}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); min-width:18px; font-variant-numeric:tabular-nums; opacity:.75}
+
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:22px}
+.sec-num{font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:6px 9px; line-height:1; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.sec-head h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0; line-height:1.15; text-wrap:balance}
+.sec-purpose{margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.sec-body{display:flex; flex-direction:column; gap:20px}
+.prose{margin:0; max-width:68ch}
+.prose strong{color:var(--ink)}
+
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.items{grid-template-columns:1fr 1fr}}
+.item{background:var(--surface); padding:18px 20px 20px; border:1px solid var(--rule-soft); margin:-1px 0 0 -1px}
+.item h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px}
+.item h4::before{content:""; width:5px; height:5px; flex:none; background:var(--accent); border-radius:50%; transform:translateY(-3px)}
+.item .aiex{margin:0 0 8px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.02em; color:var(--accent); background:var(--accent-soft); display:inline-block; padding:2px 8px; border-radius:3px}
+.item p{margin:0; font-size:15px; line-height:1.58; color:var(--body)}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:14.5px}
+td:first-child,th:first-child{width:44px; color:var(--accent); font-variant-numeric:tabular-nums; font-size:13px}
+tbody tr:last-child td{border-bottom:0}
+tbody td:nth-child(2){color:var(--ink); font-weight:600; font-family:"Bricolage Grotesque",sans-serif; font-size:14.5px; min-width:190px}
+tbody td:nth-child(3){color:var(--muted)}
+
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(14px,2.4vw,28px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:70ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:640px; height:auto}
+.dgm .hub{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .hubt{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:13px; text-anchor:middle}
+.dgm .spoke{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .spokeL{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:20px; text-anchor:middle}
+.dgm .spokeT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:11.5px; text-anchor:middle}
+.dgm .fl{fill:none; stroke:var(--rule); stroke-width:1.3}
+.dgm .ring{fill:none; stroke:var(--cross); stroke-width:1.3; stroke-dasharray:3 4}
+.dgm .cross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .crossT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.13em}
+
+.dgm .outer{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .outerT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .pill{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1}
+.dgm .pillT{fill:var(--accent); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .pillM{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .pillMT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .gw{fill:var(--surface); stroke:var(--ink); stroke-width:1.3}
+.dgm .gwT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .svc{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.3}
+.dgm .svcT{fill:var(--cross); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .db{fill:var(--surface); stroke:var(--muted); stroke-width:1.2}
+.dgm .dbT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .stage{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .stageAccent{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .stageCross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.4}
+.dgm .stageT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .stageSub{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .axis{stroke:var(--rule); stroke-width:1.3; stroke-dasharray:2 4}
+.dgm .axisT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase}
+.dgm .panelT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:15px; text-anchor:middle}
+.dgm .bandbg{fill:var(--surface-2)}
+.dgm .vs{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .n{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-size:12.5px; font-weight:600}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .fl{fill:none; stroke:var(--muted); stroke-width:1.3}
+.dgm .dl{fill:none; stroke:var(--cross); stroke-width:1; stroke-dasharray:3 3; opacity:.8}
+.dgm .mk{fill:var(--muted)}
+.dgm .mkD{fill:var(--cross)}
+.dgm .badge{fill:var(--accent); stroke:var(--surface); stroke-width:2}
+.dgm .badget{fill:#fff; font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:800}
+
+.dgm .amb{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+.dgm .ambT{fill:var(--amb); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .diamond{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+
+.callout{background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 20px; font-size:16px; color:var(--ink); max-width:72ch}
+.callout.cross{background:var(--cross-soft); border-left-color:var(--cross)}
+.callout.amb{background:var(--amb-soft); border-left-color:var(--amb)}
+
+.bullets{list-style:none; margin:0; padding:0; display:grid; gap:9px; max-width:60ch}
+.bullets li{display:flex; gap:10px; align-items:baseline; font-size:15px; color:var(--body)}
+.bullets li::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; transform:translateY(-2px)}
+
+.chiprow{display:flex; flex-wrap:wrap; gap:8px}
+.chiprow span{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--surface-2); border:1px solid var(--rule-soft); color:var(--muted); padding:5px 10px; border-radius:3px}
+
+.vgrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.vgrid{grid-template-columns:1fr 1fr}}
+.vcol{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px}
+.vcol h3{margin:0 0 4px; font-size:17px; font-weight:800; font-family:"Bricolage Grotesque",sans-serif; color:var(--ink)}
+.vcol .vsub{margin:0 0 14px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.vcol.vmono h3{color:var(--accent)}
+.vcol.vmicro h3{color:var(--cross)}
+
+.quotegrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.quotegrid{grid-template-columns:1fr 1fr}}
+.qcard{background:var(--surface); border:1px solid var(--rule-soft); padding:16px 18px; display:flex; gap:12px}
+.qcard .ck{color:var(--accent); font-weight:700; flex:none}
+.qcard div{min-width:0}
+.qcard b{display:block; color:var(--ink); font-size:13.5px; margin-bottom:3px; font-family:"Bricolage Grotesque",sans-serif}
+.qcard span{font-size:14.5px; color:var(--body); font-style:italic}
+
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px; background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0; padding:15px 18px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:3px}
+.steps li>div{min-width:0}
+.steps h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink)}
+.steps p{margin:0; font-size:14.5px; color:var(--body)}
+
+footer{border-top:1px solid var(--rule); padding:28px 0 60px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.03em}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews</p>
+  <h1>AI Powered Recruiting Platform Design</h1>
+  <p class="lede">The interview question: design an AI-powered recruiting platform that helps recruiters screen resumes, match candidates against job descriptions, generate interview questions, score candidates, schedule interviews, and assist hiring managers throughout the recruitment lifecycle — end to end, from resume upload to hiring decision.</p>
+  <div class="mast-meta">
+    <span>thousands of resumes/hour</span><span>explainable ranking</span><span>human-in-the-loop</span><span>EEOC / GDPR aware</span>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#p1"><span class="n">1</span><span>Define the problem space</span></a></li>
+<li><a href="#p2"><span class="n">2</span><span>High-level architecture</span></a></li>
+<li><a href="#p3"><span class="n">3</span><span>Step-by-step request flow</span></a></li>
+<li><a href="#p4"><span class="n">4</span><span>Explainable candidate ranking</span></a></li>
+<li><a href="#p5"><span class="n">5</span><span>Major components</span></a></li>
+<li><a href="#p6"><span class="n">6</span><span>AI-specific design considerations</span></a></li>
+<li><a href="#p7"><span class="n">7</span><span>Scalability considerations</span></a></li>
+<li><a href="#p8"><span class="n">8</span><span>Security &amp; fairness</span></a></li>
+<li><a href="#p9"><span class="n">9</span><span>Tradeoffs</span></a></li>
+<li><a href="#p10"><span class="n">10</span><span>Common follow-up questions</span></a></li>
+<li><a href="#p11"><span class="n">11</span><span>Final design summary</span></a></li>
+</ol></nav>
+
+<main>
+
+<section class="sec" id="p1">
+<header class="sec-head"><span class="sec-num">1</span><div><h2>Define the problem space</h2><p class="sec-purpose">Resume screening to hiring, end to end</p></div></header>
+<div class="sec-body">
+<p class="prose">Recruiters need to upload a job description, receive resumes in bulk, get candidates ranked by fit, generate interview questions and scorecards, schedule interviews, and receive a hiring recommendation — while remaining in control of the final decision. That last clause is the whole design constraint: this is an AI-assisted workflow, not an autonomous hiring system.</p>
+<div class="callout">Is the platform for enterprise hiring or staffing agencies — the multi-tenant and volume assumptions differ either way. Should matching happen in real time or batch mode — batch for bulk resume ingestion, near-real-time for recruiter search. Should recruiters be able to override AI recommendations — yes, always, which makes human-in-the-loop a first-class requirement rather than an afterthought. Are hiring decisions fully automated or human-assisted — human-assisted, which shapes every downstream design choice around explainability. Are there compliance requirements like GDPR or EEOC — yes, which makes fairness monitoring and audit logging non-negotiable.</div>
+<div class="vgrid">
+<div class="vcol vmono">
+<h3>✅ Functional</h3>
+<p class="vsub">What the platform must do</p>
+<ul class="bullets">
+<li>Upload Job Description (JD)</li>
+<li>Upload resumes (PDF, DOCX)</li>
+<li>Extract structured candidate info</li>
+<li>Rank candidates by job fit</li>
+<li>Semantic search across profiles</li>
+<li>Generate interview questions</li>
+<li>Generate interview scorecards</li>
+<li>Recommend hiring decisions</li>
+<li>Schedule interviews</li>
+<li>Summarize interviewer feedback</li>
+<li>Recruiter chatbot</li>
+<li>Learn from previous hiring decisions</li>
+</ul>
+</div>
+<div class="vcol vmicro">
+<h3>⚙️ Non-functional</h3>
+<p class="vsub">The qualities that make it production-grade</p>
+<ul class="bullets">
+<li>Process thousands of resumes / hour</li>
+<li>High matching accuracy</li>
+<li>Low hallucination rate</li>
+<li>Secure PII handling</li>
+<li>Highly scalable</li>
+<li>Explainable candidate rankings</li>
+<li>Enterprise-grade compliance</li>
+<li>Cost efficient</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p2">
+<header class="sec-head"><span class="sec-num">2</span><div><h2>High-level architecture</h2><p class="sec-purpose">Two parallel intake paths, converging into one ranked pipeline</p></div></header>
+<div class="sec-body">
+<p class="prose">Resumes and job descriptions enter through parallel upload paths — each parsed by a specialized parser — before converging into a single structured extraction service. From there, one pipeline builds candidate profiles, generates embeddings, and ranks candidates by similarity, before fanning out again into interview question generation and AI-judged scoring, converging into an evaluation pipeline that a human recruiter reviews before scheduling and candidate communication.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 1000 1360" role="img" aria-label="High-level architecture: the recruiter portal authenticates through the API gateway, then resume upload and job description upload are parsed in parallel by OCR and a JD parser, converging into structured extraction, a candidate profile builder, embedding generation, a vector database, and similarity search. Candidate ranking fans out to interview question generation and AI judge scoring, converging into an evaluation pipeline, human recruiter review, interview scheduling, and the candidate portal."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="340.0" y="20" width="320" height="44" rx="6"/><text class="t" x="500.0" y="46.0" text-anchor="middle" >Recruiter Portal</text><polyline class="fl" points="500.0,64.0 500.0,88.0" marker-end="url(#ar)"/><rect class="n" x="340.0" y="90" width="320" height="44" rx="6"/><text class="t" x="500.0" y="116.0" text-anchor="middle" >Authentication Service</text><polyline class="fl" points="500.0,134.0 500.0,158.0" marker-end="url(#ar)"/><rect class="gw" x="340.0" y="160" width="320" height="46" rx="6"/><text class="gwT" x="500.0" y="187.0" text-anchor="middle" >API Gateway / Load Balancer</text><polyline class="fl" points="500.0,206.0 350.0,244.0" marker-end="url(#ar)"/><rect class="svc" x="220.0" y="246" width="260" height="46" rx="6"/><text class="svcT" x="350.0" y="273.0" text-anchor="middle" >Resume Upload</text><polyline class="fl" points="500.0,206.0 650.0,244.0" marker-end="url(#ar)"/><rect class="svc" x="520.0" y="246" width="260" height="46" rx="6"/><text class="svcT" x="650.0" y="273.0" text-anchor="middle" >Job Description Upload</text><polyline class="fl" points="350.0,292.0 350.0,330.0" marker-end="url(#ar)"/><rect class="n" x="220.0" y="332" width="260" height="50" rx="6"/><text class="t" x="350.0" y="354.0" text-anchor="middle" >OCR / Document</text><text class="t" x="350.0" y="368.0" text-anchor="middle" >Parser</text><polyline class="fl" points="650.0,292.0 650.0,330.0" marker-end="url(#ar)"/><rect class="n" x="520.0" y="332" width="260" height="50" rx="6"/><text class="t" x="650.0" y="361.0" text-anchor="middle" >JD Parser</text><polyline class="fl" points="350.0,382.0 500.0,420.0" marker-end="url(#ar)"/><polyline class="fl" points="650.0,382.0 500.0,420.0" marker-end="url(#ar)"/><rect class="gw" x="330.0" y="422" width="340" height="48" rx="6"/><text class="gwT" x="500.0" y="450.0" text-anchor="middle" >Structured Extraction Service</text><polyline class="fl" points="500.0,470.0 500.0,502.0" marker-end="url(#ar)"/><rect class="n" x="340.0" y="504" width="320" height="46" rx="6"/><text class="t" x="500.0" y="531.0" text-anchor="middle" >Candidate Profile Builder</text><polyline class="fl" points="500.0,550.0 500.0,582.0" marker-end="url(#ar)"/><rect class="svc" x="340.0" y="584" width="320" height="46" rx="6"/><text class="svcT" x="500.0" y="611.0" text-anchor="middle" >Embedding Generation Service</text><polyline class="fl" points="500.0,630.0 500.0,658.0" marker-end="url(#ar)"/><path d="M 405.0 669.0 L 405.0 691.0 A 95.0 9.0 0 0 0 595.0 691.0 L 595.0 669.0" class="db"/><ellipse class="db" cx="500.0" cy="669.0" rx="95.0" ry="9.0"/><text class="t" x="500.0" y="716.0" text-anchor="middle" >Vector Database</text><text class="t" x="500.0" y="729.0" text-anchor="middle" >(candidate &amp; JD embeddings)</text><polyline class="fl" points="500.0,745.0 500.0,759.0" marker-end="url(#ar)"/><rect class="gw" x="330.0" y="761" width="340" height="46" rx="6"/><text class="gwT" x="500.0" y="788.0" text-anchor="middle" >Similarity Search Engine</text><polyline class="fl" points="500.0,807.0 500.0,839.0" marker-end="url(#ar)"/><rect class="gw" x="340.0" y="841" width="320" height="48" rx="6"/><text class="gwT" x="500.0" y="869.0" text-anchor="middle" >Candidate Ranking</text><polyline class="fl" points="500.0,889.0 355.0,927.0" marker-end="url(#ar)"/><rect class="svc" x="230.0" y="929" width="250" height="54" rx="6"/><text class="svcT" x="355.0" y="953.0" text-anchor="middle" >Interview Question</text><text class="svcT" x="355.0" y="967.0" text-anchor="middle" >Generator</text><polyline class="fl" points="500.0,889.0 645.0,927.0" marker-end="url(#ar)"/><rect class="svc" x="520.0" y="929" width="250" height="54" rx="6"/><text class="svcT" x="645.0" y="953.0" text-anchor="middle" >AI Judge</text><text class="svcT" x="645.0" y="967.0" text-anchor="middle" >Scoring</text><polyline class="fl" points="355.0,983.0 500.0,1021.0" marker-end="url(#ar)"/><polyline class="fl" points="645.0,983.0 500.0,1021.0" marker-end="url(#ar)"/><rect class="gw" x="330.0" y="1023" width="340" height="48" rx="6"/><text class="gwT" x="500.0" y="1051.0" text-anchor="middle" >Evaluation Pipeline</text><polyline class="fl" points="500.0,1071.0 500.0,1103.0" marker-end="url(#ar)"/><rect class="amb" x="330.0" y="1105" width="340" height="48" rx="6"/><text class="ambT" x="500.0" y="1133.0" text-anchor="middle" >Human Recruiter Review</text><polyline class="fl" points="500.0,1153.0 500.0,1177.0" marker-end="url(#ar)"/><rect class="svc" x="350.0" y="1179" width="300" height="46" rx="6"/><text class="svcT" x="500.0" y="1206.0" text-anchor="middle" >Interview Scheduler</text><polyline class="fl" points="500.0,1225.0 500.0,1249.0" marker-end="url(#ar)"/><rect class="n" x="350.0" y="1251" width="300" height="44" rx="6"/><text class="t" x="500.0" y="1277.0" text-anchor="middle" >Candidate Portal</text></svg></div>
+<figcaption>Structured extraction is the seam between "documents" and "data": everything before it deals with PDFs and free text, everything after it deals with comparable, rankable candidate profiles.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p3">
+<header class="sec-head"><span class="sec-num">3</span><div><h2>Step-by-step request flow</h2><p class="sec-purpose">From job posting to scheduled interview</p></div></header>
+<div class="sec-body">
+<ol class="steps">
+<li><div><h4>📑 1 · Recruiter uploads a job description</h4><p>For a role like Senior AI Engineer (Python, LLMs, LangGraph, Vector Databases, AWS), the system parses required skills, preferred skills, years of experience, education, certifications, location, and salary range.</p></div></li>
+<li><div><h4>📤 2 · Candidate uploads resume</h4><p>The platform accepts PDF, DOCX, a LinkedIn profile, or an existing ATS profile.</p></div></li>
+<li><div><h4>🧾 3 · Structured extraction</h4><p>The AI extracts structured fields instead of storing resumes as raw text — structured profiles make searching and ranking more reliable.</p></div></li>
+<li><div><h4>🔢 4 · Generate embeddings</h4><p>Embeddings are generated for the job description, candidate profile, skills, projects, experience, and certifications — capturing semantic meaning rather than exact keywords.</p></div></li>
+<li><div><h4>🔎 5 · Similarity search</h4><p>The system retrieves candidates semantically similar to the JD. Searching "LLM Engineer" may retrieve candidates mentioning Generative AI, RAG, Prompt Engineering, or Agentic AI — even if "LLM Engineer" isn't explicitly listed.</p></div></li>
+<li><div><h4>🏅 6 · Candidate ranking</h4><p>The ranking engine weighs multiple signals and produces an explainable ranked list instead of a simple pass/fail decision.</p></div></li>
+<li><div><h4>❓ 7 · Generate interview questions</h4><p>The LLM generates role-specific questions based on JD requirements, candidate experience, missing skills, and previous projects — coding, system design, behavioral, or domain-specific.</p></div></li>
+<li><div><h4>⚖️ 8 · AI judge evaluation</h4><p>After interviews or coding assessments, the AI judge evaluates technical correctness, communication clarity, problem-solving approach, and alignment with job requirements — producing structured feedback and preliminary scores.</p></div></li>
+<li><div><h4>🧑‍💼 9 · Human recruiter review</h4><p>A recruiter or hiring manager reviews the ranking, AI-generated scores, interview summaries, and recommendations, then makes the final hiring decision — ensuring accountability and reducing bias.</p></div></li>
+<li><div><h4>📅 10 · Interview scheduling</h4><p>Once shortlisted, the platform checks interviewer availability, finds suitable time slots, sends calendar invites, notifies candidates, and updates the ATS automatically.</p></div></li>
+</ol>
+</div>
+</section>
+
+<section class="sec" id="p4">
+<header class="sec-head"><span class="sec-num">4</span><div><h2>Explainable candidate ranking</h2><p class="sec-purpose">A weighted score, not a black-box pass/fail</p></div></header>
+<div class="sec-body">
+<p class="prose">The ranking engine combines several signals rather than relying on a single similarity number — semantic similarity score, required skills match, experience level, domain expertise, location, certifications, availability, and historical hiring success where applicable. Weighting the signals explicitly, rather than letting one opaque model score decide everything, is what makes a ranking explainable to a recruiter and defensible in an audit.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 790 190" role="img" aria-label="Ranking score composition: semantic similarity contributes 30 percent, required skills match 25 percent, experience level 20 percent, domain expertise 15 percent, and other signals such as location, certifications, and availability 10 percent."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="gw" x="30" y="50" width="204.0" height="64" rx="3"/><text class="gwT" x="132.0" y="76.0" text-anchor="middle" >Semantic</text><text class="gwT" x="132.0" y="89.0" text-anchor="middle" >similarity</text><text class="s" x="132.0" y="132.0" text-anchor="middle" >30%</text><rect class="svc" x="234.0" y="50" width="170.0" height="64" rx="3"/><text class="svcT" x="319.0" y="76.0" text-anchor="middle" >Skills</text><text class="svcT" x="319.0" y="89.0" text-anchor="middle" >match</text><text class="s" x="319.0" y="132.0" text-anchor="middle" >25%</text><rect class="svc" x="404.0" y="50" width="136.0" height="64" rx="3"/><text class="svcT" x="472.0" y="76.0" text-anchor="middle" >Experience</text><text class="svcT" x="472.0" y="89.0" text-anchor="middle" >level</text><text class="s" x="472.0" y="132.0" text-anchor="middle" >20%</text><rect class="svc" x="540.0" y="50" width="110" height="64" rx="3"/><text class="svcT" x="595.0" y="76.0" text-anchor="middle" >Domain</text><text class="svcT" x="595.0" y="89.0" text-anchor="middle" >expertise</text><text class="s" x="595.0" y="132.0" text-anchor="middle" >15%</text><rect class="n" x="650.0" y="50" width="110" height="64" rx="3"/><text class="t" x="705.0" y="76.0" text-anchor="middle" >Other</text><text class="t" x="705.0" y="89.0" text-anchor="middle" >signals</text><text class="s" x="705.0" y="132.0" text-anchor="middle" >10%</text><text class="axisT" x="30.0" y="34.0" text-anchor="start" >RANKING SCORE</text><text class="axisT" x="760.0" y="34.0" text-anchor="end" >100%</text><line x1="30" y1="44" x2="760.0" y2="44" class="axis"/></svg></div>
+<figcaption>An illustrative weighting: semantic similarity carries the most weight, but skills match, experience, and domain expertise all contribute — so a recruiter can see why a candidate ranked where they did, not just that they did.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p5">
+<header class="sec-head"><span class="sec-num">5</span><div><h2>Major components</h2><p class="sec-purpose">Sixteen services, each with one job</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>#</th><th>Component</th><th>Responsibility</th></tr></thead>
+<tbody>
+<tr><td>01</td><td>Recruiter Portal</td><td>Upload JDs, review candidates, manage hiring</td></tr>
+<tr><td>02</td><td>Candidate Portal</td><td>Upload resumes, track application status</td></tr>
+<tr><td>03</td><td>Authentication Service</td><td>Secure access and role management</td></tr>
+<tr><td>04</td><td>Resume Parser</td><td>Extract text from resumes</td></tr>
+<tr><td>05</td><td>JD Parser</td><td>Extract structured requirements from job descriptions</td></tr>
+<tr><td>06</td><td>Structured Extraction Service</td><td>Convert unstructured documents into structured profiles</td></tr>
+<tr><td>07</td><td>Embedding Service</td><td>Generate vector embeddings for semantic understanding</td></tr>
+<tr><td>08</td><td>Vector Database</td><td>Store candidate and JD embeddings</td></tr>
+<tr><td>09</td><td>Similarity Search Engine</td><td>Retrieve best-matching candidates</td></tr>
+<tr><td>10</td><td>Ranking Engine</td><td>Rank candidates using multiple signals</td></tr>
+<tr><td>11</td><td>Prompt Builder</td><td>Create prompts for question generation and evaluation</td></tr>
+<tr><td>12</td><td>LLM Inference Service</td><td>Generate interview questions and summaries</td></tr>
+<tr><td>13</td><td>AI Judge</td><td>Score interviews and coding assessments</td></tr>
+<tr><td>14</td><td>Evaluation Pipeline</td><td>Aggregate AI scores, feedback, and confidence</td></tr>
+<tr><td>15</td><td>Human Review Dashboard</td><td>Enable recruiter validation and overrides</td></tr>
+<tr><td>16</td><td>Scheduler</td><td>Coordinate interview scheduling with calendars</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p6">
+<header class="sec-head"><span class="sec-num">6</span><div><h2>AI-specific design considerations</h2><p class="sec-purpose">The concepts interviewers actually want to hear</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>📄 Structured extraction</h4><p>Resumes vary widely in format. LLMs convert them into consistent structured profiles, enabling accurate matching and downstream automation.</p></div>
+<div class="item"><h4>🔢 Embeddings</h4><p>Embeddings represent skills, experience, projects, job descriptions, and certifications — enabling semantic matching beyond keyword searches.</p></div>
+<div class="item"><h4>🔎 Similarity search</h4><p>Instead of exact keyword matching, semantic search identifies transferable experience. A resume mentioning "Agentic AI" may still match a role seeking "Multi-Agent Systems."</p></div>
+<div class="item"><h4>📝 Prompt management</h4><p>Different prompt templates for resume extraction, candidate summaries, question generation, evaluation, and recommendations. Versioning allows continuous improvement while ensuring consistency.</p></div>
+<div class="item"><h4>⚖️ AI Judge</h4><p>Evaluates coding assignments, technical/behavioral interviews, and communication skills. It provides standardized scoring and rationale but does not make the final hiring decision.</p></div>
+<div class="item"><h4>🧮 Evaluation pipeline</h4><p>Combines similarity score, resume completeness, AI Judge scores, interview feedback, recruiter feedback, and hiring-manager input. Confidence thresholds determine when manual review is mandatory.</p></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p7">
+<header class="sec-head"><span class="sec-num">7</span><div><h2>Scalability considerations</h2><p class="sec-purpose">Thousands of resumes an hour, without falling behind</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>🧩 Stateless application servers</h4><p>API servers run behind load balancers so ingestion and search scale horizontally with demand.</p></div>
+<div class="item"><h4>🔄 Asynchronous document processing</h4><p>Resume parsing and embedding generation run as background jobs rather than blocking the upload request.</p></div>
+<div class="item"><h4>🗄️ Distributed vector databases</h4><p>Candidate and JD embeddings are sharded so similarity search stays fast as the candidate pool grows.</p></div>
+<div class="item"><h4>⚙️ GPU-backed LLM inference clusters</h4><p>Autoscaling GPU clusters absorb bursty demand — a new job posting can trigger thousands of resume comparisons at once.</p></div>
+<div class="item"><h4>📨 Event-driven workflows</h4><p>Resume ingestion is event-driven, decoupling upload from parsing, extraction, embedding, and ranking.</p></div>
+<div class="item"><h4>🌍 Multi-region deployment</h4><p>Regional deployment keeps latency low and helps satisfy data-residency requirements for candidate PII.</p></div>
+</div>
+<p class="prose">Caching embeddings and generated outputs, plus queue-based processing for peak hiring seasons, keeps the system responsive when application volume spikes around a popular job posting.</p>
+</div>
+</section>
+
+<section class="sec" id="p8">
+<header class="sec-head"><span class="sec-num">8</span><div><h2>Security &amp; fairness</h2><p class="sec-purpose">Candidate data is sensitive; hiring decisions carry legal weight</p></div></header>
+<div class="sec-body">
+<ul class="bullets">
+<li>Encrypt resumes and candidate data at rest and in transit.</li>
+<li>Protect Personally Identifiable Information (PII).</li>
+<li>Enforce role-based access control for recruiters and hiring managers.</li>
+<li>Maintain audit logs for all AI recommendations and hiring actions.</li>
+<li>Support GDPR, CCPA, and EEOC compliance requirements.</li>
+<li>Allow candidates to request deletion of their data.</li>
+<li>Monitor models for fairness and bias across protected groups.</li>
+</ul>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 620 340" role="img" aria-label="Human-in-the-loop oversight: AI ranking and scores feed a human recruiter review, which can approve or override the recommendation, before a final hiring decision, with continuous bias and fairness monitoring across every stage."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="svc" x="120.0" y="20" width="380" height="46" rx="6"/><text class="svcT" x="310.0" y="47.0" text-anchor="middle" >AI Ranking &amp; Scores</text><polyline class="fl" points="310.0,66.0 310.0,88.0" marker-end="url(#ar)"/><rect class="amb" x="120.0" y="90" width="380" height="46" rx="6"/><text class="ambT" x="310.0" y="117.0" text-anchor="middle" >Human Recruiter Review</text><polyline class="fl" points="310.0,136.0 310.0,158.0" marker-end="url(#ar)"/><rect class="amb" x="120.0" y="160" width="380" height="46" rx="6"/><text class="ambT" x="310.0" y="187.0" text-anchor="middle" >Approve or Override</text><polyline class="fl" points="310.0,206.0 310.0,228.0" marker-end="url(#ar)"/><rect class="gw" x="120.0" y="230" width="380" height="46" rx="6"/><text class="gwT" x="310.0" y="257.0" text-anchor="middle" >Final Hiring Decision</text><rect class="bandbg" x="200.4" y="294.0" width="219.2" height="16"/><text class="s" x="310.0" y="306.0" text-anchor="middle" >CONTINUOUS BIAS &amp; FAIRNESS MONITORING</text></svg></div>
+<figcaption>AI ranking and scores never bypass a human — a recruiter approves or overrides before any final hiring decision, with fairness monitoring watching the whole path rather than a one-time check.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p9">
+<header class="sec-head"><span class="sec-num">9</span><div><h2>Tradeoffs</h2><p class="sec-purpose">Six decisions, and what each one costs</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>Decision</th><th>Pros</th><th>Cons</th></tr></thead>
+<tbody>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Keyword matching</td><td>Fast and simple</td><td>Misses semantically similar candidates</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Embedding-based search</td><td>Better candidate discovery</td><td>Higher computational cost</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Fully automated hiring</td><td>Faster decisions</td><td>Higher legal and ethical risks</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Human-in-the-loop</td><td>Better oversight and fairness</td><td>Slower process</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Large reasoning model</td><td>Higher quality summaries and questions</td><td>Higher latency and cost</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Smaller model</td><td>Faster and cheaper</td><td>Lower reasoning capability</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p10">
+<header class="sec-head"><span class="sec-num">10</span><div><h2>Common follow-up questions</h2><p class="sec-purpose">Three questions interviewers reach for</p></div></header>
+<div class="sec-body">
+<p class="prose"><strong>⚖️ How do you reduce bias in AI hiring?</strong></p>
+<ul class="bullets">
+<li>Remove or mask sensitive demographic information where appropriate.</li>
+<li>Train and evaluate models using diverse datasets.</li>
+<li>Continuously monitor fairness metrics.</li>
+<li>Require human approval for hiring decisions.</li>
+<li>Provide transparent explanations for rankings.</li>
+<li>Regularly audit models for unintended bias.</li>
+</ul>
+<p class="prose"><strong>🎯 How do you improve candidate matching accuracy?</strong></p>
+<ul class="bullets">
+<li>Use semantic embeddings instead of keyword-only matching.</li>
+<li>Combine multiple ranking signals — skills, experience, projects, certifications.</li>
+<li>Incorporate recruiter feedback to refine ranking models.</li>
+<li>Continuously evaluate precision and recall using historical hiring outcomes.</li>
+<li>Fine-tune prompts and retrieval strategies based on recruiter feedback.</li>
+</ul>
+<p class="prose"><strong>🧑‍💼 How would you personalize recommendations for different recruiters?</strong></p>
+<ul class="bullets">
+<li>Learn recruiter preferences from previous hiring decisions.</li>
+<li>Prioritize candidates similar to previously successful hires while monitoring for bias.</li>
+<li>Customize interview question difficulty based on role seniority.</li>
+<li>Adapt ranking based on team-specific skills and project needs.</li>
+<li>Allow recruiters to configure weighting factors such as skills, location, or experience.</li>
+</ul>
+</div>
+</section>
+
+<section class="sec" id="p11">
+<header class="sec-head"><span class="sec-num">11</span><div><h2>Final design summary</h2><p class="sec-purpose">An end-to-end AI workflow, with a human always at the decision point</p></div></header>
+<div class="sec-body">
+<p class="prose">The strongest designs treat recruiting as an end-to-end AI workflow — structured extraction, semantic matching, explainable ranking, AI-judged evaluation — while keeping a human in control of the final decision and rigorously addressing fairness, PII protection, and compliance. Every stage from resume parsing to interview scheduling is AI-assisted, but no stage is AI-decided.</p>
+<p class="prose">Scalability comes from stateless application servers, asynchronous document processing, distributed vector databases, GPU-backed inference clusters, event-driven ingestion, and multi-region deployment. Security and fairness come from encryption, RBAC, audit logging, GDPR/EEOC-aware data handling, and continuous bias monitoring — not as compliance checkboxes, but as design constraints that shape the ranking and evaluation pipeline from the start.</p>
+<div class="callout">This layered architecture demonstrates the ability to design an end-to-end AI workflow spanning resume ingestion through hiring, apply embeddings and semantic search for intelligent candidate matching, extract structured information from unstructured documents, and balance AI automation with human oversight to deliver trustworthy hiring decisions.</div>
+</div>
+</section>
+
+</main>
+</div>
+<footer>Source: <a href="https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/recruiting-platform-ai-design">iGrace — AI Powered Recruiting Platform Design</a></footer>
+</div>

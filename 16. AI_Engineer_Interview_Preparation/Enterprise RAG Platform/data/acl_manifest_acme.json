@@ -1,0 +1,43 @@
+{
+  "documents": [
+    {
+      "doc_id": "TKX-9001",
+      "source": "ticket_export",
+      "sensitivity": "internal",
+      "allowed_groups": ["support-tier1", "support-tier3", "engineering"],
+      "region": "US",
+      "product": "checkout",
+      "owner": "support",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "TKX-9002",
+      "source": "ticket_export",
+      "sensitivity": "internal",
+      "allowed_groups": ["support-tier1", "support-tier3", "finance"],
+      "region": "US",
+      "product": "billing",
+      "owner": "support",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "TKX-9003",
+      "source": "ticket_export",
+      "sensitivity": "internal",
+      "allowed_groups": ["support-tier3", "engineering"],
+      "region": "US",
+      "product": "platform",
+      "owner": "support",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    }
+  ]
+}

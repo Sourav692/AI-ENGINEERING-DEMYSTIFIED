@@ -1,0 +1,332 @@
+<title>Travel Agent Architecture Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --warn:#a4372f; --warn-soft:#f9e6e4;
+  --fix:#b5790f; --fix-soft:#faf1de;
+  --svc:#5f45b8; --svc-soft:#ece7fa;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --warn:#e08585; --warn-soft:#2c1614;
+    --fix:#e0a53a; --fix-soft:#2c220f;
+    --svc:#a892f2; --svc-soft:#211c38;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --warn:#e08585; --warn-soft:#2c1614;
+  --fix:#e0a53a; --fix-soft:#2c220f;
+  --svc:#a892f2; --svc-soft:#211c38;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,th,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px) 96px}
+
+.mast{padding:clamp(44px,7vw,80px) 0 clamp(24px,4vw,36px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 16px}
+h1{font-weight:800; font-size:clamp(32px,5.2vw,52px); line-height:1.06; letter-spacing:-.025em; color:var(--ink); margin:0 0 18px; text-wrap:balance; max-width:20ch}
+.lede{font-size:clamp(16.5px,1.9vw,19px); color:var(--body); max-width:72ch; margin:0}
+.lede strong{color:var(--ink)}
+.lede a{color:var(--accent); text-decoration-color:var(--rule)}
+
+.verdict{display:flex; gap:16px; align-items:flex-start; margin:32px 0 0; padding:20px 22px; background:var(--accent-soft); border-left:3px solid var(--accent); max-width:80ch}
+.verdict .mark{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); flex:none; padding-top:2px}
+.verdict p{margin:0; color:var(--ink); font-size:16.5px}
+
+section{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+section:last-of-type{border-bottom:0}
+h2{font-size:clamp(22px,2.8vw,28px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0 0 8px}
+.sub{margin:0 0 22px; color:var(--muted); font-size:15px; max-width:72ch}
+
+.dgm-wrap{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(12px,2vw,22px)}
+.dgm{display:block; width:100%; min-width:720px; height:auto}
+.dgm-strip{min-width:920px}
+.dgm .n{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .n-strip{fill:var(--surface)}
+.dgm .n-warn{fill:var(--warn-soft); stroke:var(--warn)}
+.dgm .n-agent{fill:var(--accent-soft); stroke:var(--accent)}
+.dgm .n-svc{fill:var(--svc-soft); stroke:var(--svc)}
+.dgm .n-syn{fill:var(--fix-soft); stroke:var(--fix)}
+.dgm .xcut{fill:none; stroke:var(--rule); stroke-dasharray:4 4}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-size:12.5px; font-weight:600}
+.dgm .t.tiny{font-size:10.5px}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .s.onarr{fill:var(--muted)}
+.dgm .bandbg{fill:var(--surface-2)}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.13em}
+.dgm .fl{fill:none; stroke:var(--muted); stroke-width:1.3}
+.dgm .fl-hit{stroke:var(--accent); stroke-width:1.6}
+.dgm .dl{fill:none; stroke:var(--svc); stroke-width:1; stroke-dasharray:3 3; opacity:.75}
+.dgm .mk{fill:var(--muted)}
+.dgm .mkD{fill:var(--svc)}
+.dgm .wb{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9px}
+.dgm .hit{fill:var(--accent); font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:600}
+.dgm .warndot{fill:var(--warn)}
+.dgm .badge{fill:var(--warn); stroke:var(--surface); stroke-width:2}
+.dgm .badget{fill:#fff; font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:800}
+figcaption{margin-top:12px; font-size:14.5px; color:var(--muted); max-width:76ch; line-height:1.5}
+
+.chips{display:flex; flex-wrap:wrap; gap:10px 18px; margin:14px 0 0}
+.chip{display:inline-flex; align-items:center; gap:7px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted)}
+.chip i{width:9px; height:9px; border-radius:50%; display:inline-block}
+.chip.warn i{background:var(--warn)} .chip.svc i{background:var(--svc)} .chip.accent i{background:var(--accent)}
+
+.fixgrid{display:grid; gap:2px; grid-template-columns:1fr; margin-top:6px}
+.fixcard{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px; display:grid; grid-template-columns:34px 1fr; gap:16px}
+.fixcard + .fixcard{margin-top:-1px}
+.fixnum{width:34px; height:34px; border-radius:50%; background:var(--warn-soft); color:var(--warn); border:1px solid var(--warn); display:flex; align-items:center; justify-content:center; font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px}
+.fixcard h3{margin:0 0 6px; font-size:16.5px; color:var(--ink); font-weight:700}
+.fixcard .verd{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:3px 8px; border-radius:3px; margin-bottom:8px}
+.fixcard p{margin:0 0 8px; font-size:15px; color:var(--body)}
+.fixcard .was{font-size:13.5px; color:var(--muted)}
+.fixcard .was b{color:var(--warn); font-weight:600}
+.fixcard .now{font-size:13.5px; color:var(--muted)}
+.fixcard .now b{color:var(--accent); font-weight:600}
+
+footer{border-top:1px solid var(--rule); padding:26px 0 0; margin-top:8px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:600px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:15px}
+td.c{color:var(--ink); font-weight:600; font-family:"Bricolage Grotesque",sans-serif; font-size:14.5px; min-width:220px}
+tbody tr:last-child td{border-bottom:0}
+.tag{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.04em; color:var(--fix); background:var(--fix-soft); padding:2px 7px; border-radius:3px; margin-left:6px; font-weight:600; text-transform:none}
+.tag-new{color:var(--accent); background:var(--accent-soft)}
+
+.fixgrid{display:grid; gap:2px; grid-template-columns:1fr; margin-top:6px}
+.fixcard{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px; display:grid; grid-template-columns:34px 1fr; gap:16px}
+.fixcard + .fixcard{margin-top:-1px}
+.fixcard-new{background:var(--fix-soft); border-color:var(--fix)}
+.fixnum{width:34px; height:34px; border-radius:50%; background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent); display:flex; align-items:center; justify-content:center; font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px}
+.fixcard-new .fixnum{background:var(--fix-soft); color:var(--fix); border-color:var(--fix)}
+.fixcard h3{margin:0 0 6px; font-size:16.5px; color:var(--ink); font-weight:700}
+.fixcard .verd{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--fix); margin-bottom:6px}
+.fixcard p{margin:0; font-size:15px; color:var(--body)}
+
+.chips{display:flex; flex-wrap:wrap; gap:10px 18px; margin:0 0 22px}
+.chip{display:inline-flex; align-items:center; gap:7px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted)}
+.chip i{width:9px; height:9px; border-radius:50%; display:inline-block}
+.chip.accent i{background:var(--accent)} .chip.warn i{background:var(--accent)}
+.chip.svc i{background:var(--svc)} .chip.fix i{background:var(--fix)}
+
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px; background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0; padding:14px 18px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:1px}
+.steps li span{font-size:15px; color:var(--body)}
+
+.tofgrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.tofgrid{grid-template-columns:1fr 1fr}}
+.tof{background:var(--surface); border:1px solid var(--rule-soft); padding:18px 20px}
+.tof h4{margin:0 0 8px; font-size:15px; color:var(--ink)}
+.tof p{margin:0; font-size:14.5px; color:var(--body)}
+</style>
+
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design Reference · Final Reconciled Version</p>
+  <h1>Travel Agent System Design</h1>
+  <p class="lede">System design is the blueprint that describes how software components collaborate to solve a business problem efficiently, reliably, and at scale. This page works through that blueprint for one sample system — an <strong>agentic AI travel assistant</strong> serving customers across AMER, EMEA, and APJ — reconciling iGrace's original reference architecture with the five structural fixes found across two follow-up reviews.</p>
+  <div class="verdict">
+    <span class="mark">What this is</span>
+    <p>iGrace's <a href="https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/overview">System Design Overview</a> page draws a sample travel-agent architecture as a strict pipeline: five agents fan out, then funnel through one shared cache, retrieval, LLM, and tool-calling stage in sequence. A follow-up review caught four places where that sequence doesn't match how a multi-agent system actually runs; a separate blueprint independently reached the same four fixes and added a fifth — an explicit Synthesizer Agent to replace the missing aggregation step. This page merges all of it into one final architecture.</p>
+  </div>
+</header>
+
+<section>
+  <h2>What changed, and why</h2>
+  <p class="sub">Five structural fixes over the original diagram — four from the architecture review, one from the prior blueprint.</p>
+  <div class="fixgrid">
+
+    <div class="fixcard">
+      <div class="fixnum">1</div>
+      <div>
+        <h3>Rate limiting moved inside the API Gateway</h3>
+        <p>The original draws Rate Limiter as a second box off the load balancer, parallel to the Gateway but with no line continuing downstream — a dead end. Rate limiting is a policy the Gateway enforces on every request, not an alternate route.</p>
+      </div>
+    </div>
+
+    <div class="fixcard">
+      <div class="fixnum">2</div>
+      <div>
+        <h3>Semantic Cache checked before any agent spawns</h3>
+        <p>Originally the cache sat after all five agents had already run. A cache meant to "significantly reduce LLM latency and cost" has to sit in front of the expensive work, not after it — so it's now the Supervisor's first move, and a hit returns without spawning a single agent.</p>
+      </div>
+    </div>
+
+    <div class="fixcard">
+      <div class="fixnum">3</div>
+      <div>
+        <h3>RAG owned by each agent, not a shared stage</h3>
+        <p>One mandatory retrieval box downstream of all five agents forced a vector-DB lookup onto agents that never needed one. Search and Recommendation pull regional travel content; Booking and Policy mostly don't — so retrieval is now a call each agent makes for itself.</p>
+      </div>
+    </div>
+
+    <div class="fixcard">
+      <div class="fixnum">4</div>
+      <div>
+        <h3>Tool calling, MCP, and external APIs sit alongside the agents</h3>
+        <p>The original funnelled every agent into one shared LLM step, then one Tool Calling step, then one MCP Registry — as if the whole request got a single turn. A Booking Agent needs the Payment and Flight MCP servers during its <em>own</em> turn, not after four unrelated agents finish.</p>
+      </div>
+    </div>
+
+    <div class="fixcard fixcard-new">
+      <div class="fixnum">5</div>
+      <div>
+        <span class="verd">Added by the prior blueprint</span>
+        <h3>A Synthesizer Agent replaces the missing aggregation step</h3>
+        <p>The original never showed how five parallel agent outputs become one response — the diagram just continues as a single line as if that were automatic. A named Synthesizer Agent now merges every agent that actually ran and resolves conflicts between them (a Policy decision overriding a Booking choice, for instance) before anything reaches the user.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Architecture</h2>
+  <p class="sub">Same components and regional footprint as the original — restructured so a cache hit is genuinely cheap, every agent's tool use happens inside its own loop, and results converge through one accountable step before the response goes out.</p>
+  <div class="chips">
+    <span class="chip accent"><i></i>request path</span>
+    <span class="chip warn"><i></i>agents — parallel, independent loops</span>
+    <span class="chip svc"><i></i>shared backend, called on demand (dashed)</span>
+    <span class="chip fix"><i></i>new: Synthesizer Agent</span>
+  </div>
+  <figure>
+    <div class="dgm-wrap"><svg class="dgm" viewBox="0 0 1040 740" role="img" aria-label="Final travel agent architecture: API Gateway with rate limiting built in, then a Semantic Cache checked immediately by the Supervisor Agent before any specialist spawns, a cache hit returning directly; on a miss the Supervisor spawns specialised agents that each independently call a shared backend of the Foundation LLM, regional vector databases, the MCP tool registry, and external APIs; every agent that ran reports to a Synthesizer Agent, which merges outputs and resolves conflicts before the response returns to the user and is written back to the cache; monitoring spans every stage."><defs><marker id="g_ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker></defs><rect class="n" x="350.0" y="26" width="340" height="52" rx="4"/><text class="t" x="520" y="50" text-anchor="middle">API Gateway</text><text class="s" x="520" y="65" text-anchor="middle">routing · auth check · rate limiting</text><polyline class="fl" points="520.0,78 520.0,114" marker-end="url(#ar)"/><rect class="n" x="350.0" y="114" width="340" height="52" rx="4"/><text class="t" x="520" y="138" text-anchor="middle">Semantic Cache</text><text class="s" x="520" y="153" text-anchor="middle">checked by the Supervisor — before any agent spawns</text><text class="hit" x="704.0" y="135">hit →</text><text class="hit" x="704.0" y="149">no agent spawns</text><polyline class="fl fl-hit" points="698.0,140 754.0,140 754.0,694 560.0,694" marker-end="url(#ar)"/><polyline class="fl" points="520.0,166 520.0,202" marker-end="url(#ar)"/><text class="s onarr" x="530.0" y="188">miss</text><rect class="n" x="350.0" y="202" width="340" height="48" rx="4"/><text class="t" x="520" y="224" text-anchor="middle">Supervisor Agent</text><text class="s" x="520" y="239" text-anchor="middle">reads the query, spawns only the specialists it needs</text><polyline class="fl" points="520.0,250 520.0,282" marker-end="url(#ar)"/><line class="fl" x1="520.0" y1="250" x2="520.0" y2="268"/><line class="fl" x1="129.6" y1="268" x2="910.4" y2="268"/><polyline class="fl" points="129.6,268 129.6,304" marker-end="url(#ar)"/><polyline class="fl" points="324.79999999999995,268 324.79999999999995,304" marker-end="url(#ar)"/><polyline class="fl" points="520.0,268 520.0,304" marker-end="url(#ar)"/><polyline class="fl" points="715.1999999999999,268 715.1999999999999,304" marker-end="url(#ar)"/><polyline class="fl" points="910.4,268 910.4,304" marker-end="url(#ar)"/><rect class="n n-agent" x="40.0" y="306" width="179.2" height="50" rx="4"/><text class="t" x="130" y="336" text-anchor="middle">Search</text><rect class="n n-agent" x="235.2" y="306" width="179.2" height="50" rx="4"/><text class="t" x="325" y="336" text-anchor="middle">Booking</text><rect class="n n-agent" x="430.4" y="306" width="179.2" height="50" rx="4"/><text class="t" x="520" y="336" text-anchor="middle">Pricing</text><rect class="n n-agent" x="625.5999999999999" y="306" width="179.2" height="50" rx="4"/><text class="t" x="715" y="336" text-anchor="middle">Recommend.</text><rect class="n n-agent" x="820.8" y="306" width="179.2" height="50" rx="4"/><text class="t" x="910" y="336" text-anchor="middle">Policy</text><rect class="bandbg" x="34" y="273" width="400.40000000000003" height="17"/><text class="band" x="40" y="286">SPECIALISED AGENTS — each owns its own retrieval + tool calls</text><polyline class="dl" points="129.6,356 129.6,392 154.0,392 154.0,412"/><polyline class="dl" points="129.6,356 129.6,392 398.0,392 398.0,412"/><polyline class="dl" points="129.6,356 129.6,392 642.0,392 642.0,412"/><polyline class="dl" points="129.6,356 129.6,392 886.0,392 886.0,412"/><polyline class="dl" points="324.79999999999995,356 324.79999999999995,392 398.0,392 398.0,412"/><polyline class="dl" points="324.79999999999995,356 324.79999999999995,392 642.0,392 642.0,412"/><polyline class="dl" points="324.79999999999995,356 324.79999999999995,392 886.0,392 886.0,412"/><polyline class="dl" points="520.0,356 520.0,392 154.0,392 154.0,412"/><polyline class="dl" points="520.0,356 520.0,392 642.0,392 642.0,412"/><polyline class="dl" points="715.1999999999999,356 715.1999999999999,392 154.0,392 154.0,412"/><polyline class="dl" points="715.1999999999999,356 715.1999999999999,392 398.0,392 398.0,412"/><polyline class="dl" points="715.1999999999999,356 715.1999999999999,392 642.0,392 642.0,412"/><polyline class="dl" points="715.1999999999999,356 715.1999999999999,392 886.0,392 886.0,412"/><polyline class="dl" points="910.4,356 910.4,392 642.0,392 642.0,412"/><rect class="n n-svc" x="40.0" y="412" width="228.0" height="52" rx="4"/><text class="t" x="154" y="436" text-anchor="middle">Foundation LLM</text><text class="s" x="154" y="451" text-anchor="middle">reasoning · generation</text><rect class="n n-svc" x="284.0" y="412" width="228.0" height="52" rx="4"/><text class="t" x="398" y="436" text-anchor="middle">Vector DBs</text><text class="s" x="398" y="451" text-anchor="middle">AMER · EMEA · APJ</text><rect class="n n-svc" x="528.0" y="412" width="228.0" height="52" rx="4"/><text class="t" x="642" y="436" text-anchor="middle">MCP Tool Registry</text><text class="s" x="642" y="451" text-anchor="middle">dynamic tool discovery</text><rect class="n n-svc" x="772.0" y="412" width="228.0" height="52" rx="4"/><text class="t" x="886" y="436" text-anchor="middle">External APIs</text><text class="s" x="886" y="451" text-anchor="middle">flights · hotels · maps · payment</text><rect class="bandbg" x="34" y="367" width="381.20000000000005" height="17"/><text class="band" x="40" y="380">SHARED BACKEND — each agent calls what it needs, on demand</text><line class="fl" x1="129.6" y1="464" x2="910.4" y2="464"/><line class="fl" x1="129.6" y1="356" x2="129.6" y2="464" stroke-dasharray="0" opacity="0"/><line class="fl" x1="324.79999999999995" y1="356" x2="324.79999999999995" y2="464" stroke-dasharray="0" opacity="0"/><line class="fl" x1="520.0" y1="356" x2="520.0" y2="464" stroke-dasharray="0" opacity="0"/><line class="fl" x1="715.1999999999999" y1="356" x2="715.1999999999999" y2="464" stroke-dasharray="0" opacity="0"/><line class="fl" x1="910.4" y1="356" x2="910.4" y2="464" stroke-dasharray="0" opacity="0"/><line class="fl" x1="520.0" y1="464" x2="520.0" y2="502"/><polyline class="fl" points="520.0,502 520.0,504" marker-end="url(#ar)"/><rect class="n n-syn" x="350.0" y="504" width="340" height="52" rx="4"/><text class="t" x="520" y="528" text-anchor="middle">Synthesizer Agent</text><text class="s" x="520" y="543" text-anchor="middle">merges every agent that ran · resolves conflicts (e.g. Policy overrides Booking)</text><polyline class="fl" points="520.0,556 520.0,586" marker-end="url(#ar)"/><rect class="n" x="350.0" y="586" width="340" height="48" rx="4"/><text class="t" x="520" y="608" text-anchor="middle">Response to user</text><text class="s" x="520" y="623" text-anchor="middle">+ write-back to Semantic Cache for future reuse</text><polyline class="dl" points="692.0,610 1016,610 1016,157 692.0,157"/><text class="s wb" x="1010" y="602" text-anchor="end">write-back</text><text class="s wb" x="1010" y="614" text-anchor="end">to cache</text><rect class="xcut" x="40" y="656" width="960" height="42" rx="3"/><text class="band" x="56" y="674">MONITORING &amp; LOGGING</text><text class="s" x="56" y="690">latency · token usage · per-agent execution traces · cache hit rate · alerts — spans every stage above</text></svg></div>
+    <figcaption>A cache hit (teal) returns before the Supervisor spawns anything. On a miss, the Supervisor spawns only the agents the query needs; each one independently calls the shared backend — Foundation LLM, regional vector DBs, the MCP registry, external APIs — for exactly what its own task requires. The Synthesizer Agent then merges whatever ran into one response, which is written back to the cache (dashed, right) for the next matching query.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Key components</h2>
+  <p class="sub">Same roster as the original reference, with the Gateway, Cache, and agent-owned services re-scoped, and the Synthesizer added.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Client</td><td>Web / mobile surface for search, booking, and itinerary management.</td></tr>
+      <tr><td class="c">Authentication</td><td>Verifies identity via OAuth, JWT, or SSO before anything else runs.</td></tr>
+      <tr><td class="c">Load Balancer</td><td>Spreads traffic across API instances for availability.</td></tr>
+      <tr><td class="c">API Gateway <span class="tag">rate limiting moved inside</span></td><td>Single entry point: routing, request validation, and throttling as one policy layer — not a separate hop.</td></tr>
+      <tr><td class="c">Supervisor Agent <span class="tag">renamed / refocused</span></td><td>Reads the query, checks the cache, and — only on a miss — decides which specialised agents to spawn.</td></tr>
+      <tr><td class="c">Semantic Cache <span class="tag">moved earlier</span></td><td>Checked immediately after the Supervisor receives the query. A hit returns an answer without spawning a single agent.</td></tr>
+      <tr><td class="c">Search / Booking / Pricing / Recommendation / Policy Agents <span class="tag">now own RAG + tools</span></td><td>Each agent retrieves its own domain context and calls its own tools — a Booking Agent reaches the Payment gateway directly; nothing routes through one shared LLM step.</td></tr>
+      <tr><td class="c">Regional Vector DBs (AMER / EMEA / APJ)</td><td>Still the shared retrieval infrastructure — reframed as something agents call into, not a pipeline stage every request passes through in sequence.</td></tr>
+      <tr><td class="c">MCP Tool Registry</td><td>Dynamic tool discovery, reached independently by whichever agent needs it, whenever it needs it.</td></tr>
+      <tr><td class="c">External APIs</td><td>Flights, hotels, maps, and payment providers, called via MCP servers.</td></tr>
+      <tr><td class="c">Synthesizer Agent <span class="tag tag-new">new</span></td><td>Merges outputs from every agent that ran, resolves conflicts between them (e.g. Policy overriding a Booking choice), and produces one coherent response.</td></tr>
+      <tr><td class="c">Monitoring &amp; Logging</td><td>Latency, token usage, failures, and per-agent execution traces across the whole request.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Data flow</h2>
+  <p class="sub">The original's ten steps, reordered so "cache-first" is actually first.</p>
+  <ol class="steps">
+    <li><span>User submits a request through the web or mobile client.</span></li>
+    <li><span>Authentication validates identity; the Load Balancer routes to an available API instance; the API Gateway applies rate limiting and forwards to the Supervisor.</span></li>
+    <li><span>The Supervisor checks the Semantic Cache first, before deciding anything about agents.</span></li>
+    <li><span>On a cache hit, the cached answer returns immediately — no agent is ever spawned.</span></li>
+    <li><span>On a miss, the Supervisor spawns the specialised agents the query actually needs (Search, Booking, Pricing, Recommendation, Policy).</span></li>
+    <li><span>Each agent independently retrieves the context it needs from the relevant regional Vector DB, as a tool call inside its own loop.</span></li>
+    <li><span>Each agent calls whatever external APIs it needs (flights, hotels, maps, payment) through the MCP Tool Registry, again inside its own loop.</span></li>
+    <li><span>The Synthesizer Agent collects every agent's output, resolves conflicts, and composes one grounded response.</span></li>
+    <li><span>The final response returns to the user, and the answer is written back to the Semantic Cache for future reuse.</span></li>
+    <li><span>Monitoring and logging capture latency, token usage, and per-agent traces across the entire request.</span></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Non-functional requirements</h2>
+  <p class="sub">Unchanged from the original reference — the reordering above just makes the "cache-first" row actually true.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Requirement</th><th>Example solution</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Scalability</td><td>Horizontal scaling, auto-scaling, load balancing.</td></tr>
+      <tr><td class="c">Reliability</td><td>Multi-region deployment, retries, failover.</td></tr>
+      <tr><td class="c">Availability</td><td>Active-active regional architecture.</td></tr>
+      <tr><td class="c">Performance</td><td>Semantic caching before fan-out, Redis, CDN, optimized vector search.</td></tr>
+      <tr><td class="c">Security</td><td>OAuth, JWT, encryption, RBAC, secrets management.</td></tr>
+      <tr><td class="c">Cost optimization</td><td>Cache-first strategy that actually gates spawn, smaller models for simple tasks, regional routing.</td></tr>
+      <tr><td class="c">Observability</td><td>Metrics, logs, distributed tracing per agent, dashboards, alerts.</td></tr>
+      <tr><td class="c">Maintainability</td><td>Microservices, modular agents that own their own tools, CI/CD, infrastructure as code.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Trade-offs worth naming out loud</h2>
+  <p class="sub">The distinctions an interviewer is listening for.</p>
+  <div class="tofgrid">
+    <div class="tof">
+      <h4>Shared retrieval service vs. per-agent RAG</h4>
+      <p>A shared Vector DB layer centralizes data-residency and guardrail enforcement but couples every agent to one service. Per-agent retrieval matches how LangGraph/CrewAI-style frameworks wire tools, at the cost of duplicated embedding infra if ungoverned. Either is defensible — treating RAG as a peer of the agents instead of infrastructure or a tool is the actual mistake.</p>
+    </div>
+    <div class="tof">
+      <h4>Single agent vs. multi-agent</h4>
+      <p>Multi-agent adds coordination and synthesis overhead; it earns its keep when sub-tasks need different tools, different guardrails, or independent scaling — as Booking and Policy clearly do here.</p>
+    </div>
+    <div class="tof">
+      <h4>Semantic cache vs. traditional cache</h4>
+      <p>Semantic caching matches near-duplicate queries, not just exact ones, which is why it can short-circuit the entire agent fan-out rather than just one downstream call.</p>
+    </div>
+    <div class="tof">
+      <h4>Global vs. regional vector DBs</h4>
+      <p>Regional stores (AMER/EMEA/APJ) buy data-residency compliance and lower latency; a global store buys simpler operations and cross-region consistency.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Mental model: an international airport</h2>
+  <p class="sub">Same analogy as the original reference, extended to cover the cache gate and the Synthesizer.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Airport</th><th>System</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Passengers</td><td>Users</td></tr>
+      <tr><td class="c">Airport entrance</td><td>Authentication</td></tr>
+      <tr><td class="c">Security check + baggage scanner <span class="tag">one line, not two</span></td><td>API Gateway with rate limiting built in</td></tr>
+      <tr><td class="c">Information desk checking "have we answered this before?"</td><td>Semantic Cache, checked before any staff is dispatched</td></tr>
+      <tr><td class="c">Air traffic control tower</td><td>Supervisor Agent</td></tr>
+      <tr><td class="c">Airline staff, each with their own manuals and radios</td><td>Specialised agents, each with their own retrieval and tool access</td></tr>
+      <tr><td class="c">Flight information binders each desk keeps</td><td>Vector databases, consulted by whichever desk needs them</td></tr>
+      <tr><td class="c">Ground crew, catering, fuel trucks</td><td>External APIs (flights, hotels, maps, payments)</td></tr>
+      <tr><td class="c">Dispatch officer compiling one departure report from every crew <span class="tag tag-new">new</span></td><td>Synthesizer Agent</td></tr>
+      <tr><td class="c">CCTV &amp; operations center</td><td>Monitoring, logging &amp; observability</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<footer>
+  Reconciles three sources: iGrace's <a href="https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/overview">System Design Overview — AI-Powered Travel Agent</a> (the original), the <em>Travel Agent Architecture Review</em> (fixes 1–4), and the <em>Travel Agent System Blueprint</em> (fix 5, the Synthesizer Agent).
+</footer>
+</div>

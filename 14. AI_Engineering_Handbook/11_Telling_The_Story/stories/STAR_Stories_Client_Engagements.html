@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STAR Stories — Client Engagements</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f4f6f4;
+    --bg-raised: #ffffff;
+    --bg-sunken: #e9eee9;
+    --ink: #12211b;
+    --ink-soft: #3d4d45;
+    --muted: #64756c;
+    --line: #d7ded7;
+    --accent: #00684a;
+    --accent-ink: #ffffff;
+    --accent-pop: #00a35e;
+    --accent-soft: #e1f2e9;
+    --warn: #9a5b12;
+    --warn-soft: #faf0dd;
+    --bad: #a3341f;
+    --bad-soft: #fbe9e4;
+    --shadow: 0 1px 2px rgba(18, 33, 27, 0.06), 0 8px 24px -12px rgba(18, 33, 27, 0.15);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1512; --bg-raised: #121e19; --bg-sunken: #0e1815;
+      --ink: #e9efe9; --ink-soft: #b7c5bc; --muted: #83958a; --line: #22322b;
+      --accent: #00ed64; --accent-ink: #06180f; --accent-pop: #35f487; --accent-soft: #103322;
+      --warn: #e8b866; --warn-soft: #2e2410; --bad: #f2917c; --bad-soft: #341813;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1512; --bg-raised: #121e19; --bg-sunken: #0e1815;
+    --ink: #e9efe9; --ink-soft: #b7c5bc; --muted: #83958a; --line: #22322b;
+    --accent: #00ed64; --accent-ink: #06180f; --accent-pop: #35f487; --accent-soft: #103322;
+    --warn: #e8b866; --warn-soft: #2e2410; --bad: #f2917c; --bad-soft: #341813;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+  header.masthead {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    margin-bottom: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: 1.8rem;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.72rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: "Fraunces", Georgia, serif; font-optical-sizing: auto; font-weight: 600;
+    font-size: clamp(1.9rem, 4vw, 2.5rem); line-height: 1.12; margin: 0; text-wrap: balance;
+  }
+  .subhead { color: var(--ink-soft); font-size: 1.05rem; max-width: 66ch; }
+
+  /* client nav */
+  .client-nav {
+    display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.4rem;
+  }
+  .client-tab {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; font-weight: 500;
+    padding: 0.55rem 1rem; border-radius: 99px; border: 1px solid var(--line);
+    background: var(--bg-raised); color: var(--ink-soft); cursor: pointer;
+  }
+  .client-tab.ready { border-color: var(--accent); color: var(--accent); }
+  .client-tab.pending { color: var(--muted); font-style: italic; }
+
+  section.story {
+    background: var(--bg-raised); border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: var(--shadow); padding: 1.8rem 1.9rem 2rem; margin-bottom: 2.2rem;
+  }
+  .story-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem; flex-wrap: wrap; margin-bottom: 1.1rem;
+  }
+  .story-head h2 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.5rem; margin: 0 0 0.2rem;
+  }
+  .story-head .tag { color: var(--muted); font-size: 0.9rem; }
+  .badge {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 99px;
+    background: var(--accent-soft); color: var(--accent); white-space: nowrap; height: fit-content;
+  }
+
+  .metric-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden; margin-bottom: 1.4rem;
+  }
+  .metric { background: var(--bg-raised); padding: 0.85rem 1rem; }
+  .metric .v { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 1.15rem; color: var(--accent); }
+  .metric .k { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+  .star-grid { display: flex; flex-direction: column; gap: 0; }
+  .star-row {
+    display: grid; grid-template-columns: 90px 1fr; gap: 1rem;
+    padding: 1rem 0; border-top: 1px solid var(--line);
+  }
+  .star-row:first-child { border-top: none; }
+  .star-letter {
+    font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 1.6rem; color: var(--accent);
+  }
+  .star-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); display: block; margin-top: 0.1rem;
+  }
+  .star-body p { margin: 0 0 0.7rem; }
+  .star-body p:last-child { margin-bottom: 0; }
+  .star-body ul { margin: 0.4rem 0 0.7rem; padding-left: 1.2rem; }
+  .star-body li { margin-bottom: 0.4rem; }
+
+  .pivot {
+    background: var(--warn-soft); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+    border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.92rem; margin: 0.7rem 0;
+  }
+  .pivot strong { color: var(--warn); }
+
+  .stack-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  .pill {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; padding: 0.25rem 0.6rem;
+    border-radius: 6px; background: var(--bg-sunken); color: var(--ink-soft);
+  }
+
+  .verbal-box {
+    background: var(--accent-soft); border-radius: 12px; padding: 1.1rem 1.3rem; margin-top: 1.4rem;
+  }
+  .verbal-box h3 {
+    margin: 0 0 0.5rem; font-size: 0.95rem; font-family: "Fraunces", Georgia, serif; color: var(--accent);
+  }
+  .verbal-box p { margin: 0; font-size: 0.95rem; font-style: italic; }
+
+  .followups {
+    margin-top: 1.4rem; border-top: 1px dashed var(--line); padding-top: 1.1rem;
+  }
+  .followups h3 {
+    font-size: 0.9rem; font-family: "IBM Plex Mono", monospace; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--muted); margin: 0 0 0.7rem;
+  }
+  .followups ul { margin: 0; padding-left: 1.2rem; }
+  .followups li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+
+  .evidence {
+    display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem;
+  }
+  .evidence a {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.78rem;
+    padding: 0.45rem 0.8rem; border: 1px solid var(--line); border-radius: 8px;
+    text-decoration: none; color: var(--ink-soft); background: var(--bg-sunken);
+  }
+  .evidence a:hover { border-color: var(--accent); color: var(--accent); }
+
+  .estimate-note {
+    background: var(--bad-soft); border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent);
+    border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.9rem; margin: 0.9rem 0 0;
+  }
+  .estimate-note strong { color: var(--bad); }
+
+  .pending-card {
+    background: var(--bg-sunken); border: 1px dashed var(--line); border-radius: 14px;
+    padding: 1.6rem 1.8rem; margin-bottom: 1.4rem; color: var(--muted);
+  }
+  .pending-card h2 {
+    font-family: "Fraunces", Georgia, serif; font-size: 1.2rem; color: var(--ink-soft); margin: 0 0 0.4rem;
+  }
+  .pending-card p { margin: 0; font-size: 0.92rem; }
+
+  footer.note {
+    margin-top: 2.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line);
+    font-size: 0.82rem; color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">MongoDB · Staff FDE · Interview Prep</div>
+    <h1>STAR Stories</h1>
+    <p class="subhead">Interview-ready narratives from your client engagements, structured for the customer-ownership and technical-depth questions in the Hiring Manager Screen and beyond.</p>
+  </header>
+
+  <div class="client-nav">
+    <span class="client-tab ready">AIA GROUP — READY</span>
+    <span class="client-tab pending">BARCLAYS — awaiting your input</span>
+    <span class="client-tab ready">BAJAJ FINSERV — READY</span>
+  </div>
+
+  <section class="story" id="aia">
+    <div class="story-head">
+      <div>
+        <h2>AIA Group — Governed Multi-Agent Data Assistant</h2>
+        <div class="tag">Asia's largest publicly listed life insurer, HQ Hong Kong · GenAI / Multi-Agent System · Advisory + semi-implementation</div>
+      </div>
+      <span class="badge">Field&nbsp;→&nbsp;Product feedback loop</span>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric"><div class="v">2–10 days → minutes</div><div class="k">time-to-insight</div></div>
+      <div class="metric"><div class="v">~4 wks → self-serve</div><div class="k">dashboard delivery</div></div>
+      <div class="metric"><div class="v">+35% YTD</div><div class="k">consumption growth</div></div>
+      <div class="metric"><div class="v">8–9 weeks</div><div class="k">MVP delivered</div></div>
+    </div>
+
+    <div class="star-grid">
+      <div class="star-row">
+        <div class="star-letter">S<span class="star-label">Situation</span></div>
+        <div class="star-body">
+          <p>AIA's business users — actuaries, claims managers, analysts — needed natural-language answers over governed enterprise data spanning multiple business units and markets. There was no self-serve path: an ad-hoc question took 2–10 business days routed through the BI/analyst queue, and a new dashboard took roughly 4 weeks end to end (business question → queue → SQL/ML coding → dashboard build → review → delivery).</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">T<span class="star-label">Task</span></div>
+        <div class="star-body">
+          <p>I led this engagement end to end as the field engineer on the account — architecture, hands-on build, and delivery — owning a governed, production-grade MVP that let business users self-serve accurate, explainable answers, with full traceability and governance, inside an 8–9 week advisory-plus-build engagement. The scope was bounded to governed data domains, not open-ended enterprise search.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">A<span class="star-label">Action</span></div>
+        <div class="star-body">
+          <p>I led this engagement end to end — architecture, build, and delivery. I started with a single "do-everything" agent carrying the full prompt, 20+ tools, and conversation history, and it broke down fast in real testing: context bloat degraded accuracy, and the agent kept picking the wrong tool because nothing was specialized by domain.</p>
+
+          <div class="pivot"><strong>The pivot happened live, mid-engagement.</strong> I re-architected to a Supervisor pattern: an 8-node LangGraph state machine (<code>classify_intent → clarify_or_disambiguate → resolve_assets → route_to_{genie|multi_tool|analysis|visualization} → compose_answer</code>) that interprets intent with a confidence score, asks a clarifying question when confidence drops below 60%, then routes to one of four specialist workers — a Genie agent for text-to-SQL BI questions, a Multi-Tool agent combining LLM-generated SQL with RAG over policy documents, a Data Analysis agent doing z-score anomaly detection and trend stats, and a Visualization agent that creates real AI/BI dashboards via the Lakeview REST API and hands back a clickable link. I built and owned a Context Index — 16 indexed assets (Genie Spaces, metric views, tables, document indexes) — as a semantic-discovery tool the Supervisor calls once per question, with endorsed assets prioritized in routing, so every worker agent sees a consistent, governed set of assets instead of each one searching independently.</div>
+
+          <p>I built the Unity Catalog data foundation underneath it myself: bronze tables (products, agents, customers, policies, claims, policy documents), silver enrichment joins (<code>enriched_claims</code>, <code>enriched_policies</code>, <code>customer_360</code>), and seven governed gold-layer metric views (claims, policy performance, agent productivity, fraud analysis) that the agents queried instead of touching raw tables. Short-term memory ran on Delta-backed LangGraph checkpoints keyed by <code>thread_id</code> for multi-turn conversations; prompts lived in a Delta table (<code>ai_ops.agent_instructions</code>) with base + overlay prompts and a 5-minute cache, so I could tune agent behavior without redeploying. I instrumented every node with MLflow tracing (<code>@mlflow.trace</code>, proper span types) and put an AI Gateway in front of the serving endpoint for rate limiting, PII filtering, and guardrails.</p>
+
+          <div class="pivot"><strong>Second pivot, further into the build:</strong> as the number of specialist domains grew, I evolved the architecture again into a Deep Agent pattern I named Synaptic Command — a central orchestrator that delegates to fully self-contained subagents, each with its own prompt, its own small toolset, and its own context window, instead of one supervisor juggling growing tool lists. I split the four analytics domains into dedicated Genie-backed subagents (customer analytics, distribution channels, policy & underwriting, claims analytics), each wired to its own Genie Space and its own gold/silver tables, plus a memory-manager subagent handling long-term, cross-conversation memory in a categorized Delta table (preference / fact / decision / project / feedback) that the orchestrator was required to check and update on every turn.</div>
+
+          <p>I also designed around real platform constraints rather than fighting them — Agent Bricks' Multi-Agent Supervisor wasn't GA in AIA's Azure region (SEA/East Asia) at the time, so I built the Supervisor logic myself in LangGraph on GA primitives (Agent Framework, Model Serving, Genie, Vector Search, Metric Views, MLflow Tracing) instead of depending on a Beta regional feature.</p>
+
+          <div class="stack-pills">
+            <span class="pill">LangGraph (8-node StateGraph)</span>
+            <span class="pill">Unity Catalog (bronze/silver/gold/ai_ops)</span>
+            <span class="pill">Genie Spaces (4 domains)</span>
+            <span class="pill">Vector Search (Context Index + RAG)</span>
+            <span class="pill">Metric Views (7 governed KPIs)</span>
+            <span class="pill">Lakeview Dashboard API</span>
+            <span class="pill">AI Gateway</span>
+            <span class="pill">MLflow Tracing + Eval</span>
+            <span class="pill">Databricks Apps (Dash / React+FastAPI)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">R<span class="star-label">Result</span></div>
+        <div class="star-body">
+          <ul>
+            <li>Time-to-insight dropped from 2–10 business days to minutes; dashboard delivery moved from a ~4-week queued process to fast, governed self-serve, with the Visualization agent publishing real Lakeview dashboards on request.</li>
+            <li>~35% YTD growth in platform consumption following the engagement start.</li>
+            <li>Delivered a working, production-grade MVP in 8–9 weeks — architected, built, and shipped hands-on — giving every AIA business user a governed, explainable, self-serve AI data agent across business units and markets, with full SQL/source traceability on every answer.</li>
+            <li>Two real architectural pivots (single-agent → Supervisor → Deep Agent/Synaptic Command) became a reusable pattern I've carried into every agentic engagement since: specialize early, keep each agent's context and toolset small, and don't depend on Beta/regional features for your core path.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="followups">
+      <h3>Likely follow-ups — have these ready</h3>
+      <ul>
+        <li><strong>"Walk me through why the single-agent approach failed."</strong> — Name the mechanism: prompt + 20+ tool schemas in context degraded the model's tool-selection accuracy and blew out its effective context window — not just "it got confused."</li>
+        <li><strong>"How does the Supervisor decide which agent to call?"</strong> — Intent classification with a confidence score; below 60% it triggers a clarification turn instead of guessing (e.g. "Show me the numbers" → "Which numbers — claims, policies, agents, or customers?").</li>
+        <li><strong>"What stopped two worker agents from seeing different data for the same question?"</strong> — The Context Index resolution happens once, centrally, at the Supervisor; results are shared via shared graph state so every worker sees the same resolved assets.</li>
+        <li><strong>"Why move to the Deep Agent pattern if the Supervisor was already working?"</strong> — As domains grew, the Supervisor's own tool list started re-approaching the original bloat problem; splitting into self-contained subagents (each with its own context window) removed that ceiling.</li>
+        <li><strong>"How did you validate accuracy?"</strong> — MLflow Agent Evaluation against a held-out eval dataset, plus per-node tracing so a wrong answer could be traced back to the exact node/tool call that produced it.</li>
+        <li><strong>"What was the regional constraint, and how did it change your design?"</strong> — Agent Bricks' Multi-Agent Supervisor wasn't GA in AIA's Azure region, so the Supervisor was hand-built in LangGraph on GA primitives rather than depending on a Beta feature for the core path.</li>
+        <li><strong>"How do you know the 35% growth was caused by this, not something else?"</strong> — Be honest about attribution: it's YTD consumption growth correlated with rollout, a strong signal rather than a controlled experiment — say that plainly if pressed.</li>
+      </ul>
+    </div>
+
+    <div class="verbal-box">
+      <h3>60-second spoken version</h3>
+      <p>"At AIA — Asia's largest listed life insurer — business users like actuaries and claims managers were waiting 2 to 10 days for answers over governed data, because everything ran through a BI queue. I led and hand-built a multi-agent system to let them ask in natural language instead. My first version was a single agent with 20-plus tools, and it broke down live during testing — too much context, and it kept picking the wrong tool. I re-architected it into a Supervisor pattern — an 8-node LangGraph state machine that classifies intent, asks for clarification when it's not confident, and routes to specialist agents for BI questions, document RAG, statistical analysis, and dashboard generation, all sharing one governed asset index so nobody works off inconsistent data. As the number of domains grew, I pivoted again to a Deep Agent pattern with fully self-contained subagents, each with its own prompt and tools. We shipped a governed, production-grade MVP in 8 to 9 weeks, cut time-to-insight from days to minutes, and saw about 35% YTD growth in platform usage after rollout. The lesson I've carried into every agentic engagement since: a single do-everything agent doesn't scale — specialization does, and you build for it before it becomes a fire."</p>
+    </div>
+
+    <div class="evidence">
+      <a href="https://github.com/Sourav692/Databricks-Projects/tree/main/aia-multi-agent" target="_blank" rel="noopener">↗ aia-multi-agent — Supervisor architecture (GitHub)</a>
+      <a href="https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/tree/main/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering" target="_blank" rel="noopener">↗ Synaptic Command — Deep Agent pattern (GitHub)</a>
+    </div>
+  </section>
+
+  <div class="pending-card">
+    <h2>Barclays — investment bank Lakehouse migration</h2>
+    <p>Placeholder for your ~700M events/day, cross-region (APAC/EMEA/AMER) migration story, 70% runtime cut. Send me the specific bottleneck, the hardest call you made, and any go-live friction, and I'll build this one out the same way.</p>
+  </div>
+
+  <section class="story" id="bajaj">
+    <div class="story-head">
+      <div>
+        <h2>Bajaj Finserv — Agentic IT Support for RapidLR PL</h2>
+        <div class="tag">India's largest NBFC lending arm · Lead-routing data pipeline (RapidLR) → SFDC CRM / Dialer · GenAI / RAG + tool-calling agent</div>
+      </div>
+      <span class="badge">Production ops&nbsp;→&nbsp;RCA automation</span>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric"><div class="v">182 tickets</div><div class="k">historical ticket set analyzed</div></div>
+      <div class="metric"><div class="v">58%</div><div class="k">were Master Maintenance</div></div>
+      <div class="metric"><div class="v">10 tools</div><div class="k">domain-specific agent tools</div></div>
+      <div class="metric"><div class="v">3 routes</div><div class="k">log lookup / workflow / master</div></div>
+    </div>
+
+    <div class="star-grid">
+      <div class="star-row">
+        <div class="star-letter">S<span class="star-label">Situation</span></div>
+        <div class="star-body">
+          <p>RapidLR PL is Bajaj Finserv's data pipeline that routes leads through business rules to downstream systems — SFDC CRM and their outbound Dialer. When something went wrong — a lead not reaching SFDC, a feed silently excluded, a master table out of sync — an IT engineer had to manually chase it: pull the right log table by log ID, check exclusion reasons and control flags (<code>sendToSfdc</code>, <code>sfdcFlag</code>), trace whether the issue was upstream ingestion, a stale master table, or a business-rule/filter bug buried in the pipeline's own code, then write it all up in a DevOps ticket. I worked from Bajaj's own historical ticket log — 182 real tickets — to understand the actual shape of the problem before building anything: 58% were master-table maintenance requests (refresh/sync/update), roughly 30% were clarification round-trips, and the rest split across log-lookup investigations, source-system issues, and change requests.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">T<span class="star-label">Task</span></div>
+        <div class="star-body">
+          <p>I owned building an agentic IT support system that could autonomously triage an incoming ticket, investigate it using the same tools a human engineer would, and produce a Root Cause Analysis report — cutting the manual, multi-system chase down to something close to self-service, without giving an LLM free rein over production master tables and pipeline configuration.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">A<span class="star-label">Action</span></div>
+        <div class="star-body">
+          <p>I designed the system around ticket triage first, because the 182-ticket dataset showed the problem wasn't one shape — it was three. I built a classifier that routes each incoming ticket down one of three investigation paths based on trigger signals in the ticket text: a <strong>log lookup</strong> route (specific log IDs, "data not pushing downstream," exclusion reasons) chaining <code>query_log_view → analyze_exclusion_reason → check_control_flags</code>; a <strong>workflow</strong> route (pipeline failures, processor errors, feeds stopping entirely) chaining <code>run_pipeline_check → check_upstream_source → query_log_view</code>; and a <strong>master maintenance</strong> route (table refresh/sync requests — the majority of real volume) chaining <code>update_master_table → refresh_master_table → send_email_notification</code>.</p>
+
+          <p>On top of that routing layer I built a LangGraph ReAct agent with 10 domain-specific tools — covering all three routes plus downstream/upstream connectivity checks, control-flag verification, stakeholder email notifications, and direct Azure DevOps ticket updates with the agent's own findings. I grounded the agent with RAG: I built a knowledge base from real historical tickets and their resolution steps, chunked it into Delta tables, and indexed it with Databricks Vector Search using managed embeddings (<code>databricks-gte-large-en</code>), so the agent retrieves similar past tickets and proven resolution patterns before it acts — instead of reasoning from scratch every time.</p>
+
+          <div class="pivot"><strong>Where it went further than a support bot:</strong> a meaningful share of tickets weren't data problems at all — they were business-rule or filter-logic bugs sitting in the pipeline's own C# source (the Business Rule Engine evaluation step, campaign-routing filters, control-flag misconfigurations). A log-and-master-table agent alone can't find those, so I built a second, dedicated Code Agent with a two-step design rather than handing an LLM the whole repo at once. <strong>Step 1 is deterministic, not AI:</strong> a CI-triggered indexer pulls the pipeline repo via the GitHub API on every commit and lands it in a Delta table (<code>git_index_raw</code>) tagged by business unit and country/filename, so when a ticket says "Japan data missing from the dashboard, business unit LRS," the agent does a plain filtered lookup — <code>business_unit == 'LRS' AND filename startswith 'japan_'</code> — to fetch the exact file, no guessing. <strong>Step 2 hands only that one retrieved file to the LLM</strong> (Claude 3.7 Sonnet), prompted as a senior backend engineer, and asks four targeted questions against it: is there filter logic here, a feature-flag restriction, a config exclusion, or a conditional-return block — and to explain plainly what's causing the issue. Keeping the retrieval deterministic and the reasoning step narrow (one file, not a repo-wide search) is what keeps the root-cause explanation grounded instead of the model speculating across code it was never shown. I also indexed the same repo into Vector Search with managed embeddings as a semantic-search path for scaling past exact business-unit/filename matches. That split — an ops agent for data/config issues, a code agent for logic issues — mirrors how I approached the AIA engagement: don't force one agent to be an expert in everything.</div>
+
+          <div class="stack-pills">
+            <span class="pill">LangGraph ReAct agent</span>
+            <span class="pill">Databricks Vector Search (RAG over KB)</span>
+            <span class="pill">databricks-claude-3-7-sonnet</span>
+            <span class="pill">databricks-gte-large-en embeddings</span>
+            <span class="pill">Delta tables + log views</span>
+            <span class="pill">CI-triggered repo indexer (C# → Delta)</span>
+            <span class="pill">Deterministic lookup + scoped LLM reasoning</span>
+            <span class="pill">Azure DevOps ticket integration</span>
+            <span class="pill">PySpark</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">R<span class="star-label">Result</span></div>
+        <div class="star-body">
+          <ul>
+            <li>Built and shipped a working triage-to-RCA pipeline covering all three investigation routes plus a separate code-level root-cause agent — the two failure modes (data/config vs. business logic) that the historical ticket data showed actually occurred.</li>
+            <li>Grounded every investigation in real precedent: the RAG knowledge base meant the agent wasn't guessing at resolution steps, it was retrieving the same steps a senior engineer had used on a near-identical past ticket.</li>
+            <li>Every automated RCA lands directly in the DevOps ticket with findings attached — engineers review and confirm rather than starting the investigation cold.</li>
+          </ul>
+          <div class="estimate-note"><strong>On the numbers — say this honestly in the room:</strong> I don't have a client-confirmed before/after metric for this one, and I'd tell an interviewer that directly rather than invent one. What I can defend with the data: master-maintenance and straightforward log-lookup tickets together were roughly 70%+ of the historical volume, and both routes are almost entirely mechanical — the kind of ticket where an engineer's real work is "find the right table/log ID, run a known command, confirm, notify" rather than novel judgment. That's exactly the profile where agent automation compresses a multi-system, queue-bound manual investigation (often hours to over a day once you count ticket queue time) down to minutes. If Marcon or anyone pushes for a hard percentage, the honest answer is "I'd estimate 50–60% of ticket volume was a strong fit for full or partial automation based on the ticket mix — I'd want production usage data to confirm the actual resolution-time delta."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pivot" style="margin-top: 0.4rem;"><strong>Where I'd take it next — graph-based root cause analysis:</strong> the current Code Agent's biggest limitation is that it can only see the one file a ticket happens to name. If the real defect sits in a shared function that file <em>calls</em> — a config resolver, a shared validator — the agent never finds it. My next iteration replaces the flat file lookup with a code graph: parse the repo's AST into function/config-key nodes with <code>calls</code> / <code>reads_config</code> edges, then let a LangGraph ReAct agent walk that graph outward from the entry point instead of stopping at hop zero — with tools like <code>get_function</code>, <code>get_callers</code>, and <code>get_config_value</code>. I'd also close the biggest trust gap in the current design: nothing today verifies the LLM's claimed root cause against a real failing record, so I'd add a final step that re-checks the claim against an actual <code>query_log_view</code> result before the RCA goes out. Same principle as the AIA pivot — give the model a way to navigate structure instead of a way to guess across it.</div>
+
+    <div class="followups">
+      <h3>Likely follow-ups — have these ready</h3>
+      <ul>
+        <li><strong>"What stopped the agent from making a bad change to a production master table?"</strong> — Talk about tool scoping: each tool does one narrow, named operation (refresh vs. update vs. sync a specific table) rather than open-ended write access, and every action lands in a reviewable DevOps ticket rather than executing silently.</li>
+        <li><strong>"Why build a separate Code Agent instead of one bigger agent?"</strong> — Same lesson as AIA: data/config investigation and source-code logic investigation need different tools and different context — a table-refresh tool and a code-reading tool don't belong in one prompt.</li>
+        <li><strong>"How does the Code Agent avoid hallucinating a root cause?"</strong> — By design, it never free-searches the repo. Step 1 is a deterministic Delta filter (business unit + filename/country) that retrieves exactly one file; step 2 hands only that file to the LLM with four targeted questions (filter logic, feature flag, config exclusion, conditional return). The model reasons over real code it was actually shown, not a repo-wide guess.</li>
+        <li><strong>"How does the code index stay current?"</strong> — It's designed to sync on commit — a CI/GitHub Action trigger re-indexes changed files into the Delta table, so the agent isn't working off a stale snapshot of the pipeline.</li>
+        <li><strong>"How did you decide which route to send a ticket down?"</strong> — Trigger signals in the ticket text itself — specific log IDs and "not pushing downstream" language route to log lookup; pipeline/processor failure language routes to workflow; refresh/sync language routes to master maintenance.</li>
+        <li><strong>"What would you need to actually prove the time savings?"</strong> — Be ready to say it plainly: production rollout with before/after resolution-time tracking per ticket_type — you'd want that instrumented from day one next time, not retrofitted.</li>
+        <li><strong>"How would you improve this if you rebuilt it today?"</strong> — Lead with the graph-based redesign: a code knowledge graph (AST-parsed functions/config keys as nodes, calls/reads as edges) walked by a LangGraph ReAct agent, plus a verification step against real log data — see the full writeup linked below.</li>
+      </ul>
+    </div>
+
+    <div class="verbal-box">
+      <h3>60-second spoken version</h3>
+      <p>"At Bajaj Finserv, I built an agentic IT support system for RapidLR — their pipeline that routes leads into SFDC and their dialer. Before I wrote any code, I went through 182 real historical tickets to understand the actual problem, and found it wasn't one shape — most were master-table refresh requests, but a real chunk were log-exclusion investigations, and a smaller set were actual bugs in the pipeline's business-rule logic. So I built a triage layer that routes each ticket down one of three investigation paths, a LangGraph agent with 10 scoped tools grounded in a RAG knowledge base of past resolutions, and a separate Code Agent for the cases that were logic bugs, not data problems. That agent doesn't just point an LLM at the whole repo — it does a deterministic lookup first, by business unit and filename, to pull the one relevant file, then hands only that file to the model and asks it four specific questions: is there filter logic, a feature flag, a config exclusion, or a conditional return causing this. Grounded reasoning over one real file, not a guess across a codebase — because one agent can't be an expert in both data ops and source-level logic. I don't have a client-confirmed time-savings number to quote you, and I'd rather say that than make one up — but master maintenance and log lookup alone were over two-thirds of ticket volume, and both are exactly the kind of mechanical, multi-system chase that automation compresses from hours to minutes."</p>
+    </div>
+
+    <div class="evidence">
+      <a href="https://github.com/Sourav692/Databricks-Projects/tree/main/bajaj-rapidlr" target="_blank" rel="noopener">↗ bajaj-rapidlr (GitHub)</a>
+      <a href="https://claude.ai/code/artifact/c8ed91e1-d183-4c7a-ae59-9cb92caafa9a" target="_blank" rel="noopener">↗ Graph-based Code Agent redesign (writeup)</a>
+    </div>
+  </section>
+
+  <footer class="note">
+    Built from your AIA case-study slide, GitHub portfolio links, and MongoDB FDE Hiring Manager Screen prep · Aug 27, 2026
+  </footer>
+
+</div>
+</body>
+</html>

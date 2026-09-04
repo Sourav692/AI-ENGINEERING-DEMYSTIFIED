@@ -1,0 +1,26 @@
+%% Layer 4 — LLM Gateway (tensorzero/)
+%% Every agent and the evaluator call the same sidecar; TensorZero owns provider routing and retry.
+flowchart LR
+    subgraph Callers["Callers"]
+        direction TB
+        A1["Search Agent"]
+        A2["Summarize Agent"]
+        A3["Writer Agent"]
+        A4["Critic Agent"]
+        Ev["LLM-as-Judge Eval"]
+    end
+
+    TZ["TensorZero :3000\nLLM Gateway sidecar\nPOST /inference"]
+    GPT["OpenAI GPT-4o\nprimary"]
+    Groq["Groq llama-3.1-8b-instant\nfallback on failure"]
+
+    Callers --> TZ
+    TZ -->|"primary"| GPT
+    TZ -.->|"fallback if primary fails"| Groq
+
+    classDef caller fill:#11161d,stroke:#7c8a9b,color:#e6edf3
+    classDef gateway fill:#1c2128,stroke:#4fb8d0,color:#e6edf3
+    classDef provider fill:#11161d,stroke:#e0a458,color:#e6edf3
+    class A1,A2,A3,A4,Ev caller
+    class TZ gateway
+    class GPT,Groq provider

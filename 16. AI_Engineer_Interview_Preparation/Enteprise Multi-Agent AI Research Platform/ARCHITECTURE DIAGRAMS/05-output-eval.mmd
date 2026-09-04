@@ -1,0 +1,20 @@
+%% Layer 5 — Output, Save & Evaluate (output.py, eval.py)
+%% Runs once the pipeline (or a cache/LTM hit) produces a report.
+flowchart TD
+    Report["Verified report\n(from pipeline or cache/LTM hit)"]
+    GOut["Bedrock Guardrail — Output\nblocks harmful responses"]
+    Save["Store Results\nRedis: cache + session\nPostgreSQL: LTM vector"]
+    Eval["LLM-as-Judge\nRelevance · Completeness\nHallucination · Quality"]
+    User(["Response to User"])
+
+    Report --> GOut
+    GOut -->|"safe"| Save
+    GOut --> Eval
+    Save --> User
+
+    classDef gate fill:#1c2128,stroke:#e0a458,color:#e6edf3
+    classDef step fill:#11161d,stroke:#4fb8d0,color:#e6edf3
+    classDef term fill:#11161d,stroke:#7c8a9b,color:#7c8a9b,stroke-dasharray: 3 3
+    class GOut gate
+    class Save,Eval step
+    class Report,User term

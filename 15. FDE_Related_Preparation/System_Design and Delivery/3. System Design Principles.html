@@ -1,0 +1,385 @@
+<title>System Design Principles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --cross:#5f45b8; --cross-soft:#ece7fa;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --cross:#a892f2; --cross-soft:#211c38;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --cross:#a892f2; --cross-soft:#211c38;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono,td:first-child,th:first-child{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+.mast{padding:clamp(48px,8vw,88px) 0 clamp(28px,4vw,40px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 18px}
+h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(36px,6vw,62px); line-height:1.04; letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance; max-width:16ch}
+.lede{font-size:clamp(16.5px,2vw,19px); color:var(--body); max-width:66ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){.shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}}
+nav.toc{display:none}
+@media(min-width:1000px){nav.toc{display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:40px 0 40px; border-right:1px solid var(--rule-soft)}}
+nav.toc p{font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{display:flex; gap:12px; align-items:baseline; text-decoration:none; padding:6px 10px 6px 0; font-size:13.5px; line-height:1.35; color:var(--muted); border-radius:4px; transition:color .15s ease}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); min-width:18px; font-variant-numeric:tabular-nums; opacity:.75}
+
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:22px}
+.sec-num{font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:6px 9px; line-height:1; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.sec-head h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0; line-height:1.15; text-wrap:balance}
+.sec-purpose{margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.sec-body{display:flex; flex-direction:column; gap:20px}
+.prose{margin:0; max-width:68ch}
+.prose strong{color:var(--ink)}
+
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.items{grid-template-columns:1fr 1fr}}
+.item{background:var(--surface); padding:18px 20px 20px; border:1px solid var(--rule-soft); margin:-1px 0 0 -1px}
+.item h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px}
+.item h4::before{content:""; width:5px; height:5px; flex:none; background:var(--accent); border-radius:50%; transform:translateY(-3px)}
+.item .aiex{margin:0 0 8px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.02em; color:var(--accent); background:var(--accent-soft); display:inline-block; padding:2px 8px; border-radius:3px}
+.item p{margin:0; font-size:15px; line-height:1.58; color:var(--body)}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:14.5px}
+td:first-child,th:first-child{width:44px; color:var(--accent); font-variant-numeric:tabular-nums; font-size:13px}
+tbody tr:last-child td{border-bottom:0}
+tbody td:nth-child(2){color:var(--ink); font-weight:600; font-family:"Bricolage Grotesque",sans-serif; font-size:14.5px; min-width:190px}
+tbody td:nth-child(3){color:var(--muted)}
+
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(14px,2.4vw,28px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:70ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:640px; height:auto}
+.dgm .hub{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .hubt{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:13px; text-anchor:middle}
+.dgm .spoke{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .spokeL{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:20px; text-anchor:middle}
+.dgm .spokeT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:11.5px; text-anchor:middle}
+.dgm .fl{fill:none; stroke:var(--rule); stroke-width:1.3}
+.dgm .ring{fill:none; stroke:var(--cross); stroke-width:1.3; stroke-dasharray:3 4}
+.dgm .cross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .crossT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.13em}
+
+.callout{background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 20px; font-size:16px; color:var(--ink); max-width:72ch}
+
+.quotegrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.quotegrid{grid-template-columns:1fr 1fr}}
+.qcard{background:var(--surface); border:1px solid var(--rule-soft); padding:16px 18px; display:flex; gap:12px}
+.qcard .ck{color:var(--accent); font-weight:700; flex:none}
+.qcard div{min-width:0}
+.qcard b{display:block; color:var(--ink); font-size:13.5px; margin-bottom:3px; font-family:"Bricolage Grotesque",sans-serif}
+.qcard span{font-size:14.5px; color:var(--body); font-style:italic}
+
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px; background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0; padding:15px 18px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:3px}
+.steps li>div{min-width:0}
+.steps h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink)}
+.steps p{margin:0; font-size:14.5px; color:var(--body)}
+
+footer{border-top:1px solid var(--rule); padding:28px 0 60px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.03em}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews</p>
+  <h1>System Design Principles</h1>
+  <p class="lede">System design principles are the fundamental guidelines that help engineers build systems that are <strong>scalable, reliable, maintainable, secure, and cost-effective</strong>. Interviewers expect candidates to apply these principles naturally when making design decisions — not recite them, but reach for the right one at the right moment. Here are 15 core principles, each with an AI-oriented example.</p>
+  <div class="mast-meta">
+    <span>15 core principles</span><span>SCALED mnemonic</span><span>8-lens framework</span>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#p1"><span class="n">1</span><span>Simplicity (KISS)</span></a></li>
+<li><a href="#p2"><span class="n">2</span><span>Separation of Concerns</span></a></li>
+<li><a href="#p3"><span class="n">3</span><span>Loose Coupling</span></a></li>
+<li><a href="#p4"><span class="n">4</span><span>High Cohesion</span></a></li>
+<li><a href="#p5"><span class="n">5</span><span>Scalability</span></a></li>
+<li><a href="#p6"><span class="n">6</span><span>Reliability</span></a></li>
+<li><a href="#p7"><span class="n">7</span><span>Fault Tolerance</span></a></li>
+<li><a href="#p8"><span class="n">8</span><span>Availability</span></a></li>
+<li><a href="#p9"><span class="n">9</span><span>Performance</span></a></li>
+<li><a href="#p10"><span class="n">10</span><span>Security by Design</span></a></li>
+<li><a href="#p11"><span class="n">11</span><span>Observability</span></a></li>
+<li><a href="#p12"><span class="n">12</span><span>Extensibility</span></a></li>
+<li><a href="#p13"><span class="n">13</span><span>Cost Optimization</span></a></li>
+<li><a href="#p14"><span class="n">14</span><span>Data Consistency</span></a></li>
+<li><a href="#p15"><span class="n">15</span><span>Maintainability</span></a></li>
+<li><a href="#mnemonic"><span class="n">·</span><span>SCALED mnemonic</span></a></li>
+<li><a href="#apply"><span class="n">·</span><span>Applying it in an interview</span></a></li>
+<li><a href="#framework"><span class="n">·</span><span>The 8-lens framework</span></a></li>
+</ol></nav>
+
+<main>
+
+<section class="sec" id="glance">
+<header class="sec-head"><span class="sec-num">·</span><div><h2>The 15, at a glance</h2><p class="sec-purpose">Quick reference — expanded below</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>#</th><th>Principle</th><th>AI example</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Simplicity (KISS)</td><td>Start with a single-agent RAG before introducing a multi-agent architecture.</td></tr>
+<tr><td>2</td><td>Separation of Concerns</td><td>Separate ingestion, embedding generation, retrieval, and response generation into independent services.</td></tr>
+<tr><td>3</td><td>Loose Coupling</td><td>The embedding service shouldn't depend directly on the LLM service.</td></tr>
+<tr><td>4</td><td>High Cohesion</td><td>Keep all prompt templates and prompt management in one module.</td></tr>
+<tr><td>5</td><td>Scalability</td><td>Scale vector search independently from LLM inference.</td></tr>
+<tr><td>6</td><td>Reliability</td><td>Retry transient LLM API failures and fall back to a secondary model if needed.</td></tr>
+<tr><td>7</td><td>Fault Tolerance</td><td>If reranking fails, return retrieved documents instead of failing the entire request.</td></tr>
+<tr><td>8</td><td>Availability</td><td>Deploy inference endpoints across multiple regions.</td></tr>
+<tr><td>9</td><td>Performance</td><td>Cache embeddings and frequently asked questions to reduce response time.</td></tr>
+<tr><td>10</td><td>Security by Design</td><td>Encrypt vector databases, protect APIs with authentication, redact sensitive information before prompting.</td></tr>
+<tr><td>11</td><td>Observability</td><td>Track retrieval precision, token usage, latency, hallucination rate, and model errors.</td></tr>
+<tr><td>12</td><td>Extensibility</td><td>Design an interface that allows switching from OpenAI to Gemini or Claude with minimal code changes.</td></tr>
+<tr><td>13</td><td>Cost Optimization</td><td>Use a smaller model for routing and a larger model only for complex requests.</td></tr>
+<tr><td>14</td><td>Data Consistency</td><td>Refresh embeddings whenever source documents change and version the vector index.</td></tr>
+<tr><td>15</td><td>Maintainability</td><td>Use modular services, clear APIs, automated testing, and infrastructure as code.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p1">
+<header class="sec-head">
+<span class="sec-num">1</span>
+<div><h2>Simplicity (KISS)</h2><p class="sec-purpose">Keep the design as simple as possible</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Start with a single-agent RAG before introducing a multi-agent architecture.</div>
+<p>Complexity should be earned by a real requirement, not added pre-emptively "in case we need it later." A single-agent RAG pipeline is easier to reason about, test, and debug than an orchestrator you don't yet need — and it gives you a clean baseline to point back to when someone, an interviewer included, asks why a component exists.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p2">
+<header class="sec-head">
+<span class="sec-num">2</span>
+<div><h2>Separation of Concerns</h2><p class="sec-purpose">Each component should have one clear responsibility</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Separate ingestion, embedding generation, retrieval, and response generation into independent services.</div>
+<p>When ingestion, embedding generation, retrieval, and response generation live in separate services, each one can be scaled, tested, or redeployed without touching the others. It also isolates failure: an embedding-service outage doesn't have to take down response generation if the two were never coupled in the first place.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p3">
+<header class="sec-head">
+<span class="sec-num">3</span>
+<div><h2>Loose Coupling</h2><p class="sec-purpose">Components should have minimal dependencies</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — The embedding service shouldn&#x27;t depend directly on the LLM service.</div>
+<p>The embedding service shouldn't need to know which LLM provider you're calling, and the LLM service shouldn't care how embeddings were generated. That independence is what lets you replace either side — swap embedding models, switch LLM vendors — without a coordinated rewrite of both.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p4">
+<header class="sec-head">
+<span class="sec-num">4</span>
+<div><h2>High Cohesion</h2><p class="sec-purpose">Related functionality should stay together</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Keep all prompt templates and prompt management in one module.</div>
+<p>Scattering prompt templates and prompt-management logic across multiple services turns a single prompt change into a multi-file hunt. Keeping everything that changes together — templates, versioning, injection logic — in one module means one place to look and one place to test.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p5">
+<header class="sec-head">
+<span class="sec-num">5</span>
+<div><h2>Scalability</h2><p class="sec-purpose">Design to handle increasing traffic and data volumes</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Scale vector search independently from LLM inference.</div>
+<p>Vector search and LLM inference have different scaling profiles — one is I/O and index-size bound, the other is compute bound — so bundling them into one scaling unit means over-provisioning one to satisfy the other. Scaling them independently lets each grow, and cost, in proportion to its own actual load.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p6">
+<header class="sec-head">
+<span class="sec-num">6</span>
+<div><h2>Reliability</h2><p class="sec-purpose">The system should continue operating despite failures</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Retry transient LLM API failures and fall back to a secondary model if needed.</div>
+<p>A production LLM call will occasionally time out or return a malformed response. Reliability is planning for that in advance — retries with backoff for transient failures, and a secondary model to fail over to when the primary is down — rather than treating every failure as an incident.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p7">
+<header class="sec-head">
+<span class="sec-num">7</span>
+<div><h2>Fault Tolerance</h2><p class="sec-purpose">Failures should be isolated rather than cascading</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — If reranking fails, return retrieved documents instead of failing the entire request.</div>
+<p>This is reliability's companion: a failure in one non-critical stage shouldn't take down the whole request. If a reranking step fails, returning the raw retrieved documents — a degraded but still-usable answer — beats failing the entire request outright.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p8">
+<header class="sec-head">
+<span class="sec-num">8</span>
+<div><h2>Availability</h2><p class="sec-purpose">Maximize uptime and service continuity</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Deploy inference endpoints across multiple regions.</div>
+<p>Availability is usually expressed in nines and bought with redundancy. Deploying inference endpoints across multiple regions means a single region's outage, maintenance window, or capacity crunch doesn't take the whole service offline.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p9">
+<header class="sec-head">
+<span class="sec-num">9</span>
+<div><h2>Performance</h2><p class="sec-purpose">Optimize latency and throughput</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Cache embeddings and frequently asked questions to reduce response time.</div>
+<p>Every embedding you recompute and every FAQ you re-answer from scratch is latency and cost you didn't need to spend. Caching embeddings and frequent responses turns the expensive path into the exception rather than the default — usually the single biggest lever on both metrics at once.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p10">
+<header class="sec-head">
+<span class="sec-num">10</span>
+<div><h2>Security by Design</h2><p class="sec-purpose">Incorporate security from the beginning</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Encrypt vector databases, protect APIs with authentication, and redact sensitive information before prompting.</div>
+<p>Retrofitting security into an AI pipeline after launch means auditing every place a document or prompt has already touched. Building it in from the start — encrypted vector stores, authenticated APIs, PII redaction before anything reaches a prompt — means sensitive data never has a window where it's exposed.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p11">
+<header class="sec-head">
+<span class="sec-num">11</span>
+<div><h2>Observability</h2><p class="sec-purpose">Build systems that are easy to monitor and debug</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Track retrieval precision, token usage, latency, hallucination rate, and model errors.</div>
+<p>An LLM system fails in ways a traditional service doesn't — a technically successful call that hallucinates, or retrieval that quietly returns the wrong documents. Tracking retrieval precision, token usage, latency, hallucination rate, and model errors is what turns "the answers feel worse lately" into a specific, fixable regression.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p12">
+<header class="sec-head">
+<span class="sec-num">12</span>
+<div><h2>Extensibility</h2><p class="sec-purpose">Make it easy to add new capabilities</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Design an interface that allows switching from OpenAI to Gemini or Claude with minimal code changes.</div>
+<p>The model landscape moves fast — this quarter's best model is rarely next quarter's. An interface that lets you swap providers with a config change rather than a rewrite is what keeps you from being locked into a decision made under different constraints.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p13">
+<header class="sec-head">
+<span class="sec-num">13</span>
+<div><h2>Cost Optimization</h2><p class="sec-purpose">Balance performance with operational cost</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Use a smaller model for routing and a larger model only for complex requests.</div>
+<p>Not every request needs your most expensive model. Routing simple lookups to a small, cheap model and reserving the large reasoning model for genuinely complex requests can cut inference spend by an order of magnitude with little to no quality loss on the easy cases.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p14">
+<header class="sec-head">
+<span class="sec-num">14</span>
+<div><h2>Data Consistency</h2><p class="sec-purpose">Ensure data remains correct and trustworthy</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Refresh embeddings whenever source documents change and version the vector index.</div>
+<p>An embedding that no longer matches its source document is a subtle, silent failure mode — the system will confidently retrieve and answer from stale content. Refreshing embeddings when source documents change and versioning the vector index is what keeps retrieval grounded in current truth.</p>
+</div></div>
+</div></section>
+<section class="sec" id="p15">
+<header class="sec-head">
+<span class="sec-num">15</span>
+<div><h2>Maintainability</h2><p class="sec-purpose">Build systems that are easy to modify and support</p></div>
+</header><div class="sec-body">
+<div class="items"><div class="item" style="grid-column:1/-1">
+<div class="aiex">AI EXAMPLE — Use modular services, clear APIs, automated testing, and infrastructure as code.</div>
+<p>The system you ship is rarely the system you're still running a year later, so how easily it can be changed matters as much as whether it works today. Modular services, clear APIs, automated tests, and infrastructure as code are what make the next change safe instead of risky.</p>
+</div></div>
+</div></section>
+
+<section class="sec" id="mnemonic">
+<header class="sec-head"><span class="sec-num">·</span><div><h2>A useful mnemonic: SCALED PRINCIPLES</h2><p class="sec-purpose">Six core design goals, wrapped in five cross-cutting concerns</p></div></header>
+<div class="sec-body">
+<p class="prose">Fifteen items is a lot to hold in your head mid-interview. <strong>SCALED</strong> compresses the core design goals into six letters — and then reminds you that five more concerns aren't a seventh category, they're a lens you apply to <em>every</em> one of the six: security, observability, reliability, cost, and maintainability all cut across simplicity, cohesion, availability, latency, extensibility, and durability alike.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 1040 560" role="img" aria-label="The SCALED mnemonic: six core design goals — Simplicity, Cohesion and Coupling, Availability, Latency, Extensibility, and Durability and Data Consistency — arranged around a central hub, surrounded by an outer ring of five cross-cutting concerns — Security, Observability, Reliability, Cost, and Maintainability — that apply to every spoke."><defs></defs><circle class="hub" cx="520.0" cy="270.0" r="72"/><text class="hubt" x="520.0" y="264.0">SCALED</text><text class="hubt" x="520.0" y="282.0" style="font-size:9.5px;letter-spacing:.08em">PRINCIPLES</text><line class="fl" x1="520" y1="196" x2="520" y2="118"/><circle class="spoke" cx="520" cy="70" r="48"/><text class="spokeL" x="520" y="68">S</text><text class="spokeT" x="520" y="86">Simplicity</text><line class="fl" x1="584" y1="233" x2="651" y2="194"/><circle class="spoke" cx="693" cy="170" r="48"/><text class="spokeL" x="693" y="168">C</text><text class="spokeT" x="693" y="186">Cohesion &amp;</text><text class="spokeT" x="693" y="199">Coupling</text><line class="fl" x1="584" y1="307" x2="651" y2="346"/><circle class="spoke" cx="693" cy="370" r="48"/><text class="spokeL" x="693" y="368">A</text><text class="spokeT" x="693" y="386">Availability</text><line class="fl" x1="520" y1="344" x2="520" y2="422"/><circle class="spoke" cx="520" cy="470" r="48"/><text class="spokeL" x="520" y="468">L</text><text class="spokeT" x="520" y="486">Latency</text><text class="spokeT" x="520" y="499">(Performance)</text><line class="fl" x1="456" y1="307" x2="389" y2="346"/><circle class="spoke" cx="347" cy="370" r="48"/><text class="spokeL" x="347" y="368">E</text><text class="spokeT" x="347" y="386">Extensibility</text><line class="fl" x1="456" y1="233" x2="389" y2="194"/><circle class="spoke" cx="347" cy="170" r="48"/><text class="spokeL" x="347" y="168">D</text><text class="spokeT" x="347" y="186">Durability &amp;</text><text class="spokeT" x="347" y="199">Data Consistency</text><circle class="ring" cx="520.0" cy="270.0" r="318"/><rect class="cross" x="672" y="-0" width="71" height="26" rx="13"/><text class="crossT" x="707" y="17">Security</text><rect class="cross" x="771" y="355" width="104" height="26" rx="13"/><text class="crossT" x="822" y="372">Observability</text><rect class="cross" x="475" y="575" width="91" height="26" rx="13"/><text class="crossT" x="520" y="592">Reliability</text><rect class="cross" x="195" y="355" width="44" height="26" rx="13"/><text class="crossT" x="218" y="372">Cost</text><rect class="cross" x="275" y="-0" width="117" height="26" rx="13"/><text class="crossT" x="333" y="17">Maintainability</text><text class="band" x="402.0" y="546" text-anchor="middle">— cross-cutting: apply to every spoke, every principle —</text></svg></div>
+<figcaption>The six SCALED letters sit as spokes off a central hub; the dashed outer ring is the reminder that security, observability, reliability, cost, and maintainability aren't optional extras — they apply to whichever spoke you're currently designing for.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="apply">
+<header class="sec-head"><span class="sec-num">·</span><div><h2>How to apply these in an interview</h2><p class="sec-purpose">Worked example</p></div></header>
+<div class="sec-body">
+<div class="callout"><strong>Prompt:</strong> "Design an AI-powered customer support chatbot."</div>
+<p class="prose">A strong candidate doesn't list principles — they narrate decisions, and the principle is implicit in the reasoning:</p>
+<div class="quotegrid">
+<div class="qcard"><span class="ck">✅</span><div><b>Simplicity</b><span>"I'll start with a single-agent RAG architecture because it meets the current requirements."</span></div></div>
+<div class="qcard"><span class="ck">✅</span><div><b>Scalability</b><span>"The retrieval service and LLM inference layer will scale independently."</span></div></div>
+<div class="qcard"><span class="ck">✅</span><div><b>Reliability</b><span>"If the primary LLM is unavailable, requests will fail over to a backup model."</span></div></div>
+<div class="qcard"><span class="ck">✅</span><div><b>Performance</b><span>"I'll cache frequent responses and reuse embeddings to reduce latency."</span></div></div>
+<div class="qcard"><span class="ck">✅</span><div><b>Security</b><span>"Sensitive customer data will be masked before it's included in prompts."</span></div></div>
+<div class="qcard"><span class="ck">✅</span><div><b>Observability</b><span>"I'll monitor latency, retrieval quality, token usage, and hallucination rates."</span></div></div>
+<div class="qcard"><span class="ck">✅</span><div><b>Cost</b><span>"Simple queries will use a smaller, cheaper model, while complex ones are routed to a more capable model."</span></div></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="framework">
+<header class="sec-head"><span class="sec-num">·</span><div><h2>A simple framework for answering system design questions</h2><p class="sec-purpose">Eight lenses, in order</p></div></header>
+<div class="sec-body">
+<p class="prose">When designing any system, evaluate it through these eight lenses. Working the list in order is what makes the answer sound structured rather than improvised.</p>
+<ol class="steps">
+<li><div><h4>Requirements</h4><p>What problem are we solving?</p></div></li>
+<li><div><h4>Architecture</h4><p>How are the components organized?</p></div></li>
+<li><div><h4>Scalability</h4><p>Can it handle growth?</p></div></li>
+<li><div><h4>Reliability</h4><p>What happens when components fail?</p></div></li>
+<li><div><h4>Performance</h4><p>Does it meet latency and throughput goals?</p></div></li>
+<li><div><h4>Security</h4><p>How is data protected?</p></div></li>
+<li><div><h4>Observability</h4><p>How will we detect and diagnose issues?</p></div></li>
+<li><div><h4>Cost &amp; Evolution</h4><p>Is it economical today, and can it evolve tomorrow?</p></div></li>
+</ol>
+<p class="prose" style="margin-top:8px">Using this checklist consistently demonstrates structured thinking and strong engineering judgment — qualities interviewers look for in senior system design interviews.</p>
+</div>
+</section>
+
+</main>
+</div>
+<footer>Source: <a href="https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/system-design-principles">iGrace — System Design Principles</a></footer>
+</div>

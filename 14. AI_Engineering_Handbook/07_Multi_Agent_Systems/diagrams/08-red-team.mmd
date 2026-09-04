@@ -1,0 +1,21 @@
+%% Layer 8 — Red Team (pyrit_dashboard/)
+%% Runs as a separate ECS task, reachable on its own ALB port, and on a weekly automated schedule.
+flowchart LR
+    EB["EventBridge\nweekly — Monday 2am UTC"]
+    ALB["ALB :8001"]
+    PyRIT["PyRIT 0.14.0\nJailbreak · XPIA\nCrescendo · Skeleton Key"]
+    Target["App :8000\nvia same auth + guardrail path\nas real users"]
+    Dash["pyrit_dashboard\nattack results"]
+
+    EB -->|"trigger"| PyRIT
+    ALB -->|"manual/dashboard access"| PyRIT
+    PyRIT -->|"attack requests"| Target
+    Target -->|"responses"| PyRIT
+    PyRIT --> Dash
+
+    classDef trigger fill:#1c2128,stroke:#e0a458,color:#e6edf3
+    classDef redteam fill:#11161d,stroke:#f85149,color:#e6edf3
+    classDef app fill:#11161d,stroke:#4fb8d0,color:#e6edf3
+    class EB,ALB trigger
+    class PyRIT,Dash redteam
+    class Target app

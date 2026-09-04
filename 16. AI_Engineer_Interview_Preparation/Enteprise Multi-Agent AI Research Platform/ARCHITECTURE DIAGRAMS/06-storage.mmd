@@ -1,0 +1,25 @@
+%% Layer 6 — Storage
+%% Two stateful services shared by every other layer.
+flowchart LR
+    subgraph Redis["Redis ElastiCache"]
+        direction TB
+        R1["Semantic cache\n(cosine similarity)"]
+        R2["Session memory\n(conversation history)"]
+        R3["Job queue\n(Redis Stream)"]
+    end
+
+    subgraph RDS["RDS PostgreSQL 15 + pgvector"]
+        direction TB
+        P1["Long-term memory\n384-dim embeddings"]
+        P2["Exact / related report match"]
+    end
+
+    Redis -.->|"read/write"| App["FastAPI app\n+ agent pipeline"]
+    RDS -.->|"vector search/store"| App
+
+    classDef redis fill:#11161d,stroke:#4fb8d0,color:#e6edf3
+    classDef rds fill:#11161d,stroke:#e0a458,color:#e6edf3
+    classDef app fill:#1c2128,stroke:#7c8a9b,color:#e6edf3
+    class R1,R2,R3 redis
+    class P1,P2 rds
+    class App app

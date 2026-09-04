@@ -1,0 +1,26 @@
+%% Layer 2 — Smart Lookup (cache.py, memory.py)
+%% Checked in order before any agent runs, to avoid paying for an LLM call when the answer is already known.
+flowchart TD
+    Queue["Job from Queue"]
+    SC{{"Semantic Cache — Redis\ncosine sim >= 0.85"}}
+    LTM1{{"Exact LTM Match — pgvector\nsim >= 0.88"}}
+    LTM2{{"Related LTM — pgvector\n0.50 - 0.88 sim"}}
+    HitFast["Return cached answer\nskip agent pipeline"]
+    HitStored["Return stored report\nskip agent pipeline"]
+    ToAgents["Continue to Agent Pipeline\nwith related report as context"]
+    NoContext["Continue to Agent Pipeline\nno prior context"]
+
+    Queue --> SC
+    SC -->|"hit"| HitFast
+    SC -->|"miss"| LTM1
+    LTM1 -->|"hit"| HitStored
+    LTM1 -->|"miss"| LTM2
+    LTM2 -->|"hit"| ToAgents
+    LTM2 -->|"miss"| NoContext
+
+    classDef check fill:#1c2128,stroke:#4fb8d0,color:#e6edf3
+    classDef exit fill:#11161d,stroke:#e0a458,color:#e6edf3
+    classDef cont fill:#11161d,stroke:#7c8a9b,color:#e6edf3
+    class SC,LTM1,LTM2 check
+    class HitFast,HitStored exit
+    class ToAgents,NoContext,Queue cont

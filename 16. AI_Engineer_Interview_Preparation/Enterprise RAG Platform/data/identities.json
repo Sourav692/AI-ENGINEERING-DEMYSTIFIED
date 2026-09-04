@@ -1,0 +1,113 @@
+{
+  "_comment": "Personas stand in for the identity provider. In production these attributes are resolved per request from the IdP (SSO/OIDC claims + directory groups), never taken from user input. Each persona is chosen to exercise a different policy rule.",
+  "principals": [
+    {
+      "user_id": "u_lena_t1",
+      "display_name": "Lena Fischer",
+      "tenant_id": "meridian",
+      "role": "Tier 1 Support Agent",
+      "groups": ["support-tier1"],
+      "clearance": "internal",
+      "region": "EU",
+      "projects": [],
+      "can_view_pii": true,
+      "is_external": false
+    },
+    {
+      "user_id": "u_marco_t3",
+      "display_name": "Marco Feldman",
+      "tenant_id": "meridian",
+      "role": "Tier 3 Escalation Engineer",
+      "groups": ["support-tier3", "engineering"],
+      "clearance": "confidential",
+      "region": "EU",
+      "projects": [],
+      "can_view_pii": true,
+      "is_external": false
+    },
+    {
+      "user_id": "u_sofia_am",
+      "display_name": "Sofia Duarte",
+      "tenant_id": "meridian",
+      "role": "Enterprise Account Manager",
+      "groups": ["sales", "account-management"],
+      "clearance": "confidential",
+      "region": "EU",
+      "projects": [],
+      "can_view_pii": true,
+      "is_external": false
+    },
+    {
+      "user_id": "u_ravi_sec",
+      "display_name": "Ravi Menon",
+      "tenant_id": "meridian",
+      "role": "Security Engineer",
+      "groups": ["security", "engineering"],
+      "clearance": "restricted",
+      "region": "GLOBAL",
+      "projects": ["vuln-response"],
+      "can_view_pii": true,
+      "is_external": false
+    },
+    {
+      "user_id": "u_erin_secmgr",
+      "display_name": "Erin Doyle",
+      "tenant_id": "meridian",
+      "role": "Security Manager (no vuln-response compartment)",
+      "groups": ["security"],
+      "clearance": "restricted",
+      "region": "GLOBAL",
+      "projects": [],
+      "can_view_pii": true,
+      "is_external": false
+    },
+    {
+      "user_id": "u_tom_contractor",
+      "display_name": "Tom Alvarez",
+      "tenant_id": "meridian",
+      "role": "Tier 1 Support Agent (external contractor)",
+      "groups": ["support-tier1"],
+      "clearance": "internal",
+      "region": "US",
+      "projects": [],
+      "can_view_pii": false,
+      "is_external": true
+    },
+    {
+      "user_id": "u_dana_ext",
+      "display_name": "Dana Whitfield",
+      "tenant_id": "meridian",
+      "role": "External Solutions Consultant (high clearance)",
+      "groups": ["sales", "engineering", "account-management"],
+      "clearance": "confidential",
+      "region": "GLOBAL",
+      "projects": [],
+      "can_view_pii": false,
+      "is_external": true
+    },
+    {
+      "user_id": "u_jin_us_t3",
+      "display_name": "Jin Park",
+      "tenant_id": "meridian",
+      "role": "Tier 3 Escalation Engineer (US region)",
+      "groups": ["support-tier3", "engineering"],
+      "clearance": "confidential",
+      "region": "US",
+      "projects": [],
+      "can_view_pii": true,
+      "is_external": false
+    },
+    {
+      "user_id": "u_attacker_other_tenant",
+      "display_name": "Other-Tenant Principal (negative control)",
+      "tenant_id": "acme",
+      "role": "Support Agent",
+      "groups": ["support-tier3", "engineering", "sales", "legal", "security"],
+      "clearance": "restricted",
+      "region": "EU",
+      "projects": ["vuln-response"],
+      "can_view_pii": true,
+      "is_external": false
+    }
+  ]
+}

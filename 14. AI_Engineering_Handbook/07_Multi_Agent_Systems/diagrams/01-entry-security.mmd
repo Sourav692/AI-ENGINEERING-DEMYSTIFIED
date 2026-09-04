@@ -1,0 +1,26 @@
+%% Layer 1 — Entry & Security
+%% Every request passes through auth, rate limiting, and an input guardrail before it reaches the queue.
+flowchart LR
+    User(["User\nBrowser / API client"])
+    ALB["ALB\nApplication Load Balancer\n:80 app · :8001 red team"]
+    Auth["API Key Check\nX-API-Key header\n401 if missing/wrong"]
+    RateL["Rate Limiter\n10 req / 60s per IP\nRedis counter"]
+    GIn["Bedrock Guardrail — Input\nHate · PII · Weapons\nPrompt-injection attacks"]
+    Queue["Redis Stream\nJob Queue"]
+    Reject(["402/403/400 response"])
+
+    User -->|"HTTPS"| ALB
+    ALB -->|"app traffic"| Auth
+    Auth -->|"valid key"| RateL
+    Auth -.->|"invalid key"| Reject
+    RateL -->|"under limit"| GIn
+    RateL -.->|"over limit"| Reject
+    GIn -->|"passes"| Queue
+    GIn -.->|"blocked"| Reject
+
+    classDef gate fill:#1c2128,stroke:#e0a458,color:#e6edf3
+    classDef flow fill:#11161d,stroke:#4fb8d0,color:#e6edf3
+    classDef term fill:#11161d,stroke:#7c8a9b,color:#7c8a9b,stroke-dasharray: 3 3
+    class Auth,RateL,GIn gate
+    class ALB,Queue flow
+    class User,Reject term

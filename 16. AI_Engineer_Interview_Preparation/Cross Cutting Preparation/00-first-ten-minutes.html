@@ -1,0 +1,391 @@
+<title>The First Ten Minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
+<style>
+  :root {
+    --paper: #f6f3ed;
+    --paper-raised: #efeadf;
+    --ink: #1c2128;
+    --muted: #6b6558;
+    --line: #d8d2c2;
+    --accent: #bd5b28;      /* burnt amber — flag / "ask this" */
+    --accent-ink: #ffffff;
+    --accent-2: #2f5d62;    /* muted teal-slate — secondary structure */
+    --accent-2-soft: #e4ece9;
+    --accent-soft: #f4e2d3;
+    --shadow: 0 1px 0 rgba(28, 33, 40, 0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15181b;
+      --paper-raised: #1b1f23;
+      --ink: #e9e5da;
+      --muted: #9a9486;
+      --line: #2c3136;
+      --accent: #e08a52;
+      --accent-ink: #17130e;
+      --accent-2: #7fb4b9;
+      --accent-2-soft: #1d2b2c;
+      --accent-soft: #2c2119;
+      --shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #15181b;
+    --paper-raised: #1b1f23;
+    --ink: #e9e5da;
+    --muted: #9a9486;
+    --line: #2c3136;
+    --accent: #e08a52;
+    --accent-ink: #17130e;
+    --accent-2: #7fb4b9;
+    --accent-2-soft: #1d2b2c;
+    --accent-soft: #2c2119;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  a { color: var(--accent-2); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 5rem;
+  }
+
+  /* ---------- header ---------- */
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 1.1rem;
+  }
+
+  .kicker::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--accent-2);
+    display: inline-block;
+  }
+
+  header.masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1.6rem;
+  }
+
+  h1 {
+    font-family: "Zilla Slab", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5vw, 3.1rem);
+    line-height: 1.03;
+    margin: 0 0 0.65rem;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  .dek {
+    max-width: 46ch;
+    color: var(--muted);
+    font-size: 1.03rem;
+  }
+
+  .compass {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    opacity: 0.85;
+  }
+
+  .brief-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0.6rem 0 2.6rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 2.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- sections ---------- */
+
+  .lede {
+    font-size: 1.06rem;
+    max-width: 62ch;
+    margin: 0 0 2.8rem;
+  }
+
+  .lede strong { color: var(--ink); }
+
+  .buckets {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 620px) {
+    .buckets { grid-template-columns: repeat(2, 1fr); }
+    .bucket--lead { grid-column: 1 / -1; }
+  }
+
+  .bucket {
+    background: var(--paper);
+    padding: 1.9rem clamp(1rem, 3vw, 1.9rem) 2.1rem;
+  }
+
+  .bucket-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .bucket-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bucket-title {
+    font-family: "Zilla Slab", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.28rem;
+    letter-spacing: -0.005em;
+  }
+
+  .bucket--lead .bucket-title { font-size: 1.42rem; }
+
+  .qlist {
+    list-style: none;
+    margin: 0 0 1.15rem;
+    padding: 0;
+    display: grid;
+    gap: 0.62rem;
+  }
+
+  .bucket--lead .qlist { max-width: 60ch; }
+
+  .qlist li {
+    position: relative;
+    padding-left: 1.15rem;
+    font-size: 0.98rem;
+  }
+
+  .qlist li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  .why {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-style: italic;
+    border-top: 1px solid var(--line);
+    padding-top: 0.75rem;
+    max-width: 52ch;
+  }
+
+  .why b {
+    font-style: normal;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ---------- strategy note ---------- */
+
+  .strategy {
+    margin-top: 2.6rem;
+    background: var(--accent-2-soft);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1.6rem clamp(1.1rem, 3vw, 2rem);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.4rem 1.1rem;
+  }
+
+  .strategy-label {
+    grid-column: 1 / -1;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 600;
+  }
+
+  .strategy p {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 0.99rem;
+    max-width: 66ch;
+  }
+
+  .strategy .callout {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  footer.foot {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bucket { transition: background-color 0.15s ease; }
+  }
+</style>
+
+<div class="page">
+
+  <div class="kicker">DevRev · System Design Round</div>
+
+  <header class="masthead">
+    <div>
+      <h1>The First Ten Minutes</h1>
+      <p class="dek">What to ask before you touch the whiteboard — so the interviewer sees an FDE, not a solver reaching for the pen.</p>
+    </div>
+    <svg class="compass" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <circle cx="24" cy="24" r="19" stroke="var(--ink)" stroke-width="1.6"/>
+      <path d="M24 10L28 24L24 38L20 24Z" fill="var(--accent)"/>
+      <circle cx="24" cy="24" r="2.3" fill="var(--ink)"/>
+    </svg>
+  </header>
+
+  <div class="brief-meta">
+    <span>Briefing · pre-whiteboard checklist</span>
+    <span>5 areas · ask 3–4</span>
+  </div>
+
+  <p class="lede">Interviewers aren't testing whether you can design a system — they're testing whether you'd waste three months building the wrong one. <strong>Ask before you architect.</strong> Pick a few questions per area below, ask them conversationally, and let the answers visibly steer your design out loud. Applies the same way whether the problem is a RAG platform, an agent platform, or a delivery process.</p>
+
+  <div class="buckets">
+
+    <section class="bucket bucket--lead">
+      <div class="bucket-head">
+        <span class="bucket-num">01</span>
+        <h2 class="bucket-title">Who's the customer, really</h2>
+      </div>
+      <ul class="qlist">
+        <li>Is this for one enterprise customer, or a platform serving many tenants?</li>
+        <li>What decision or workflow does the answer actually feed into?</li>
+        <li>Who are the end users — internal employees, external customers, or both? Technical or not?</li>
+      </ul>
+      <p class="why"><b>Why it matters</b>One answer here decides your entire isolation model — and, for an agent platform, the entire authoring surface — before a single architecture choice.</p>
+    </section>
+
+    <section class="bucket">
+      <div class="bucket-head">
+        <span class="bucket-num">02</span>
+        <h2 class="bucket-title">Data & system reality</h2>
+      </div>
+      <ul class="qlist">
+        <li>What shape is the underlying data or the systems being integrated with today?</li>
+        <li>Is it static, or does it change — and how fast?</li>
+        <li>Who owns data/access quality, and can we get it before day one?</li>
+      </ul>
+      <p class="why"><b>Why it matters</b>Most demos assume clean, structured input. Real deployments never are.</p>
+    </section>
+
+    <section class="bucket">
+      <div class="bucket-head">
+        <span class="bucket-num">03</span>
+        <h2 class="bucket-title">Access control & blast radius</h2>
+      </div>
+      <ul class="qlist">
+        <li>Does every user/tenant have uniform access, or does visibility vary by group, role, or region?</li>
+        <li>Is the system read-only, or can it take real actions — and what costs more, a wrong action or an over-cautious refusal?</li>
+      </ul>
+      <p class="why"><b>Why it matters</b>Decides how much of the design has to be permission-aware and guardrailed, or can stay simple.</p>
+    </section>
+
+    <section class="bucket">
+      <div class="bucket-head">
+        <span class="bucket-num">04</span>
+        <h2 class="bucket-title">Scale & SLAs</h2>
+      </div>
+      <ul class="qlist">
+        <li>Roughly how many tenants/users/items, and what volume of requests?</li>
+        <li>What latency is acceptable — is that p50, or p95/p99?</li>
+      </ul>
+      <p class="why"><b>Why it matters</b>Ten of something and ten million are different systems, not different sizes of one.</p>
+    </section>
+
+    <section class="bucket">
+      <div class="bucket-head">
+        <span class="bucket-num">05</span>
+        <h2 class="bucket-title">Definition of done</h2>
+      </div>
+      <ul class="qlist">
+        <li>How will we know if this is working — is quality or accuracy even measured?</li>
+        <li>Is there a fallback if it's wrong or down — does it escalate to a human?</li>
+      </ul>
+      <p class="why"><b>Why it matters</b>Offering to own evaluation is the strongest FDE signal in the room.</p>
+    </section>
+
+  </div>
+
+  <div class="strategy">
+    <span class="strategy-label">Why this reads as FDE mindset</span>
+    <p>Don't fire all twelve questions. Ask three or four, then <span class="callout">visibly let the answers change the design</span>, out loud — "okay, if it's multi-tenant with per-user visibility, that changes how I'd structure this, let me start there." The adaptation is the signal, not the question count.</p>
+  </div>
+
+  <footer class="foot">
+    <span>Interview prep · DevRev System Design</span>
+    <span>Ask first. Design second.</span>
+  </footer>
+
+</div>

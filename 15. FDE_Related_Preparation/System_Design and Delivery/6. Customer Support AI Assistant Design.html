@@ -1,0 +1,368 @@
+<title>Customer Support AI Assistant Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --cross:#5f45b8; --cross-soft:#ece7fa;
+  --amb:#9a6412; --amb-soft:#f7ecd6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --cross:#a892f2; --cross-soft:#211c38;
+    --amb:#e0ab52; --amb-soft:#332612;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --cross:#a892f2; --cross-soft:#211c38;
+  --amb:#e0ab52; --amb-soft:#332612;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono,td:first-child,th:first-child{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+.mast{padding:clamp(48px,8vw,88px) 0 clamp(28px,4vw,40px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 18px}
+h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(36px,6vw,62px); line-height:1.04; letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance; max-width:16ch}
+.lede{font-size:clamp(16.5px,2vw,19px); color:var(--body); max-width:66ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){.shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}}
+nav.toc{display:none}
+@media(min-width:1000px){nav.toc{display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:40px 0 40px; border-right:1px solid var(--rule-soft)}}
+nav.toc p{font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{display:flex; gap:12px; align-items:baseline; text-decoration:none; padding:6px 10px 6px 0; font-size:13.5px; line-height:1.35; color:var(--muted); border-radius:4px; transition:color .15s ease}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); min-width:18px; font-variant-numeric:tabular-nums; opacity:.75}
+
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:22px}
+.sec-num{font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:6px 9px; line-height:1; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.sec-head h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0; line-height:1.15; text-wrap:balance}
+.sec-purpose{margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.sec-body{display:flex; flex-direction:column; gap:20px}
+.prose{margin:0; max-width:68ch}
+.prose strong{color:var(--ink)}
+
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.items{grid-template-columns:1fr 1fr}}
+.item{background:var(--surface); padding:18px 20px 20px; border:1px solid var(--rule-soft); margin:-1px 0 0 -1px}
+.item h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px}
+.item h4::before{content:""; width:5px; height:5px; flex:none; background:var(--accent); border-radius:50%; transform:translateY(-3px)}
+.item .aiex{margin:0 0 8px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.02em; color:var(--accent); background:var(--accent-soft); display:inline-block; padding:2px 8px; border-radius:3px}
+.item p{margin:0; font-size:15px; line-height:1.58; color:var(--body)}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:14.5px}
+td:first-child,th:first-child{width:44px; color:var(--accent); font-variant-numeric:tabular-nums; font-size:13px}
+tbody tr:last-child td{border-bottom:0}
+tbody td:nth-child(2){color:var(--ink); font-weight:600; font-family:"Bricolage Grotesque",sans-serif; font-size:14.5px; min-width:190px}
+tbody td:nth-child(3){color:var(--muted)}
+
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(14px,2.4vw,28px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:70ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:640px; height:auto}
+.dgm .hub{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .hubt{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:13px; text-anchor:middle}
+.dgm .spoke{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .spokeL{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:20px; text-anchor:middle}
+.dgm .spokeT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:11.5px; text-anchor:middle}
+.dgm .fl{fill:none; stroke:var(--rule); stroke-width:1.3}
+.dgm .ring{fill:none; stroke:var(--cross); stroke-width:1.3; stroke-dasharray:3 4}
+.dgm .cross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .crossT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.13em}
+
+.dgm .outer{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .outerT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .pill{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1}
+.dgm .pillT{fill:var(--accent); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .pillM{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .pillMT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .gw{fill:var(--surface); stroke:var(--ink); stroke-width:1.3}
+.dgm .gwT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .svc{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.3}
+.dgm .svcT{fill:var(--cross); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .db{fill:var(--surface); stroke:var(--muted); stroke-width:1.2}
+.dgm .dbT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .stage{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .stageAccent{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .stageCross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.4}
+.dgm .stageT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .stageSub{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .axis{stroke:var(--rule); stroke-width:1.3; stroke-dasharray:2 4}
+.dgm .axisT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase}
+.dgm .panelT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:15px; text-anchor:middle}
+.dgm .bandbg{fill:var(--surface-2)}
+.dgm .vs{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .n{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-size:12.5px; font-weight:600}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .fl{fill:none; stroke:var(--muted); stroke-width:1.3}
+.dgm .dl{fill:none; stroke:var(--cross); stroke-width:1; stroke-dasharray:3 3; opacity:.8}
+.dgm .mk{fill:var(--muted)}
+.dgm .mkD{fill:var(--cross)}
+.dgm .badge{fill:var(--accent); stroke:var(--surface); stroke-width:2}
+.dgm .badget{fill:#fff; font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:800}
+
+.dgm .amb{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+.dgm .ambT{fill:var(--amb); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .diamond{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+
+.callout{background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 20px; font-size:16px; color:var(--ink); max-width:72ch}
+.callout.cross{background:var(--cross-soft); border-left-color:var(--cross)}
+.callout.amb{background:var(--amb-soft); border-left-color:var(--amb)}
+
+.bullets{list-style:none; margin:0; padding:0; display:grid; gap:9px; max-width:60ch}
+.bullets li{display:flex; gap:10px; align-items:baseline; font-size:15px; color:var(--body)}
+.bullets li::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; transform:translateY(-2px)}
+
+.chiprow{display:flex; flex-wrap:wrap; gap:8px}
+.chiprow span{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--surface-2); border:1px solid var(--rule-soft); color:var(--muted); padding:5px 10px; border-radius:3px}
+
+.vgrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.vgrid{grid-template-columns:1fr 1fr}}
+.vcol{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px}
+.vcol h3{margin:0 0 4px; font-size:17px; font-weight:800; font-family:"Bricolage Grotesque",sans-serif; color:var(--ink)}
+.vcol .vsub{margin:0 0 14px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.vcol.vmono h3{color:var(--accent)}
+.vcol.vmicro h3{color:var(--cross)}
+
+.quotegrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.quotegrid{grid-template-columns:1fr 1fr}}
+.qcard{background:var(--surface); border:1px solid var(--rule-soft); padding:16px 18px; display:flex; gap:12px}
+.qcard .ck{color:var(--accent); font-weight:700; flex:none}
+.qcard div{min-width:0}
+.qcard b{display:block; color:var(--ink); font-size:13.5px; margin-bottom:3px; font-family:"Bricolage Grotesque",sans-serif}
+.qcard span{font-size:14.5px; color:var(--body); font-style:italic}
+
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px; background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0; padding:15px 18px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:3px}
+.steps li>div{min-width:0}
+.steps h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink)}
+.steps p{margin:0; font-size:14.5px; color:var(--body)}
+
+footer{border-top:1px solid var(--rule); padding:28px 0 60px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.03em}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews</p>
+  <h1>Customer Support AI Assistant Design</h1>
+  <p class="lede">The interview question: design an AI Customer Support Platform — like Salesforce Einstein plus Zendesk plus AI agents — that answers FAQs, creates and updates tickets, queries CRM systems, processes refunds, and escalates cases. Explain when you'd reach for <strong>RAG, agent orchestration, tool calling, MCP servers, human approval, and memory</strong>, and the tradeoffs each one carries.</p>
+  <div class="mast-meta">
+    <span>1M conversations/day</span><span>6 core technologies</span><span>3-layer memory</span><span>end-to-end architecture</span>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#p1"><span class="n">1</span><span>Define the problem space</span></a></li>
+<li><a href="#p2"><span class="n">2</span><span>High-level architecture</span></a></li>
+<li><a href="#p3"><span class="n">3</span><span>RAG vs. tool calling</span></a></li>
+<li><a href="#p4"><span class="n">4</span><span>Where MCP fits</span></a></li>
+<li><a href="#p5"><span class="n">5</span><span>Multi-agent orchestration</span></a></li>
+<li><a href="#p6"><span class="n">6</span><span>Three layers of memory</span></a></li>
+<li><a href="#p7"><span class="n">7</span><span>Human approval workflow</span></a></li>
+<li><a href="#p8"><span class="n">8</span><span>Scaling to 50M customers</span></a></li>
+<li><a href="#p9"><span class="n">9</span><span>Tradeoffs</span></a></li>
+<li><a href="#p10"><span class="n">10</span><span>Detailed end-to-end design</span></a></li>
+<li><a href="#p11"><span class="n">11</span><span>Final design summary</span></a></li>
+</ol></nav>
+
+<main>
+
+<section class="sec" id="p1">
+<header class="sec-head"><span class="sec-num">1</span><div><h2>Define the problem space</h2><p class="sec-purpose">A strong candidate clarifies before proposing an architecture</p></div></header>
+<div class="sec-body">
+<p class="prose">Customers should be able to ask product questions, track orders, request refunds, create and update support tickets, and escalate complex issues to a human agent. That's already both an information-retrieval system and a transactional one — and the clarifying questions that follow decide most of the architecture before a single box gets drawn.</p>
+<div class="callout">Is the AI only answering questions, or executing actions too — <strong>both</strong>. Where does product knowledge live — spread across documentation, a knowledge base, CRM, order management, and ticketing, which is exactly the shape RAG is built for. Can the AI make business decisions independently, like issuing a $5,000 refund — no, some actions need manager approval, which means human-in-the-loop workflows for sensitive operations. Scale — about one million conversations a day globally, which makes cost optimization a first-class concern. And should the AI remember previous conversations — yes, customers expect continuity, which means conversational memory on top of enterprise knowledge retrieval.</div>
+<div class="vgrid">
+<div class="vcol vmono">
+<h3>✅ Functional</h3>
+<p class="vsub">What the platform must do</p>
+<ul class="bullets">
+<li>Answer FAQs</li>
+<li>Search enterprise knowledge</li>
+<li>Create and update tickets</li>
+<li>Query CRM</li>
+<li>Process refunds</li>
+<li>Escalate cases</li>
+<li>Maintain conversation history</li>
+</ul>
+</div>
+<div class="vcol vmicro">
+<h3>⚙️ Non-functional</h3>
+<p class="vsub">The qualities that make it production-grade</p>
+<ul class="bullets">
+<li>High availability</li>
+<li>Low latency</li>
+<li>Enterprise security</li>
+<li>High accuracy</li>
+<li>Easy onboarding of new business systems</li>
+<li>Highly scalable</li>
+<li>Cost efficient</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p2">
+<header class="sec-head"><span class="sec-num">2</span><div><h2>High-level architecture</h2><p class="sec-purpose">Retrieval, action, and memory as three peers, not a pipeline</p></div></header>
+<div class="sec-body">
+<p class="prose">A customer request comes in through web, mobile, or WhatsApp, passes through the API Gateway and an authentication layer, and reaches an AI Orchestrator Agent. From there it fans out to three capabilities that solve different problems — RAG for retrieval, tool calling for action, memory for continuity — converging through MCP servers into the actual backend systems, before a response comes back through the enterprise LLM and, when needed, a human approval step.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 900 850" role="img" aria-label="High-level architecture: a customer on web, mobile, or WhatsApp reaches an API Gateway and Authentication Layer, then an AI Orchestrator Agent that fans out to a RAG layer, tool calling, and memory, converging through MCP servers into the knowledge base, CRM, ticketing, and order management systems, then back through the enterprise LLM, human approval, and the customer response."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="290.0" y="20" width="320" height="44" rx="6"/><text class="t" x="450.0" y="46.0" text-anchor="middle" >Customer</text><polyline class="fl" points="450.0,64.0 450.0,86.0" marker-end="url(#ar)"/><rect class="n" x="290.0" y="88" width="320" height="44" rx="6"/><text class="t" x="450.0" y="114.0" text-anchor="middle" >Web / Mobile / WhatsApp</text><polyline class="fl" points="450.0,132.0 450.0,154.0" marker-end="url(#ar)"/><rect class="gw" x="290.0" y="156" width="320" height="44" rx="6"/><text class="gwT" x="450.0" y="182.0" text-anchor="middle" >API Gateway</text><polyline class="fl" points="450.0,200.0 450.0,222.0" marker-end="url(#ar)"/><rect class="n" x="290.0" y="224" width="320" height="44" rx="6"/><text class="t" x="450.0" y="250.0" text-anchor="middle" >Authentication Layer</text><polyline class="fl" points="450.0,268.0 450.0,290.0" marker-end="url(#ar)"/><rect class="svc" x="290.0" y="292" width="320" height="44" rx="6"/><text class="svcT" x="450.0" y="318.0" text-anchor="middle" >AI Orchestrator Agent</text><polyline class="fl" points="450.0,336.0 194.0,380.0" marker-end="url(#ar)"/><rect class="svc" x="79.0" y="382" width="230" height="44" rx="6"/><text class="svcT" x="194.0" y="408.0" text-anchor="middle" >RAG Layer</text><polyline class="fl" points="450.0,336.0 450.0,380.0" marker-end="url(#ar)"/><rect class="svc" x="335.0" y="382" width="230" height="44" rx="6"/><text class="svcT" x="450.0" y="408.0" text-anchor="middle" >Tool Calling</text><polyline class="fl" points="450.0,336.0 706.0,380.0" marker-end="url(#ar)"/><rect class="svc" x="591.0" y="382" width="230" height="44" rx="6"/><text class="svcT" x="706.0" y="408.0" text-anchor="middle" >Memory</text><polyline class="fl" points="194.0,426.0 450.0,464.0" marker-end="url(#ar)"/><polyline class="fl" points="450.0,426.0 450.0,464.0" marker-end="url(#ar)"/><polyline class="fl" points="706.0,426.0 450.0,464.0" marker-end="url(#ar)"/><rect class="gw" x="300.0" y="466" width="300" height="46" rx="6"/><text class="gwT" x="450.0" y="493.0" text-anchor="middle" >MCP Servers</text><polyline class="fl" points="450.0,512.0 120.0,556.0" marker-end="url(#ar)"/><rect class="n" x="20.0" y="558" width="200" height="46" rx="6"/><text class="t" x="120.0" y="578.0" text-anchor="middle" >Knowledge</text><text class="t" x="120.0" y="592.0" text-anchor="middle" >Base</text><polyline class="fl" points="450.0,512.0 340.0,556.0" marker-end="url(#ar)"/><rect class="n" x="240.0" y="558" width="200" height="46" rx="6"/><text class="t" x="340.0" y="578.0" text-anchor="middle" >CRM /</text><text class="t" x="340.0" y="592.0" text-anchor="middle" >ERP</text><polyline class="fl" points="450.0,512.0 560.0,556.0" marker-end="url(#ar)"/><rect class="n" x="460.0" y="558" width="200" height="46" rx="6"/><text class="t" x="560.0" y="578.0" text-anchor="middle" >Ticketing /</text><text class="t" x="560.0" y="592.0" text-anchor="middle" >Payments</text><polyline class="fl" points="450.0,512.0 780.0,556.0" marker-end="url(#ar)"/><rect class="n" x="680.0" y="558" width="200" height="46" rx="6"/><text class="t" x="780.0" y="578.0" text-anchor="middle" >Order Mgmt /</text><text class="t" x="780.0" y="592.0" text-anchor="middle" >Inventory</text><polyline class="fl" points="120.0,604.0 450.0,642.0" marker-end="url(#ar)"/><polyline class="fl" points="340.0,604.0 450.0,642.0" marker-end="url(#ar)"/><polyline class="fl" points="560.0,604.0 450.0,642.0" marker-end="url(#ar)"/><polyline class="fl" points="780.0,604.0 450.0,642.0" marker-end="url(#ar)"/><rect class="svc" x="300.0" y="644" width="300" height="46" rx="6"/><text class="svcT" x="450.0" y="671.0" text-anchor="middle" >Enterprise LLM</text><polyline class="fl" points="450.0,690.0 450.0,712.0" marker-end="url(#ar)"/><rect class="amb" x="300.0" y="712" width="300" height="46" rx="6"/><text class="ambT" x="450.0" y="739.0" text-anchor="middle" >Human Approval</text><polyline class="fl" points="450.0,758.0 450.0,780.0" marker-end="url(#ar)"/><rect class="svc" x="300.0" y="780" width="300" height="46" rx="6"/><text class="svcT" x="450.0" y="807.0" text-anchor="middle" >Customer Response</text></svg></div>
+<figcaption>RAG, tool calling, and memory sit side by side as peers the orchestrator draws on — not a sequential pipeline every request has to pass through in order.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p3">
+<header class="sec-head"><span class="sec-num">3</span><div><h2>RAG vs. tool calling</h2><p class="sec-purpose">Why have both — can't the LLM just answer everything?</p></div></header>
+<div class="sec-body">
+<p class="prose">They're solving different problems. RAG retrieves information; tool calling executes actions. If a customer asks <em>"What is your refund policy?"</em>, the AI retrieves the answer from the knowledge base using RAG. But if they say <em>"Refund my order,"</em> the AI has to invoke a business system to actually process it — LLMs generate text, they don't update enterprise databases by themselves.</p>
+<div class="items">
+<div class="item"><h4>📚 RAG</h4><p>Retrieves accurate, up-to-date answers from documentation, FAQs, and policies rather than depending on model memory that can be stale or simply wrong.</p></div>
+<div class="item"><h4>🔧 Tool calling</h4><p>Executes deterministic business operations — creating tickets, querying CRM, updating records, processing refunds — and is reliable and auditable in a way free-text generation isn't.</p></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p4">
+<header class="sec-head"><span class="sec-num">4</span><div><h2>Where MCP fits</h2><p class="sec-purpose">One standardized interface over dozens of backend systems</p></div></header>
+<div class="sec-body">
+<p class="prose">An enterprise support platform sits in front of dozens or hundreds of backend systems. Instead of exposing thousands of individual APIs directly to the LLM, MCP servers — a CRM MCP Server, a Ticketing MCP Server, a Payments MCP Server, an Inventory MCP Server — each advertise their available tools, resources, prompts, and capabilities. The AI discovers what's available dynamically instead of hardcoding every integration, and internally an MCP server can still call REST, GraphQL, a database, or a legacy application.</p>
+<div class="callout cross">REST remains the underlying communication mechanism — MCP doesn't replace it. MCP standardizes how AI systems <strong>discover</strong> and <strong>interact with</strong> enterprise capabilities. REST solves communication; MCP solves AI interoperability and discoverability.</div>
+</div>
+</section>
+
+<section class="sec" id="p5">
+<header class="sec-head"><span class="sec-num">5</span><div><h2>Multi-agent orchestration</h2><p class="sec-purpose">Not every request needs a planner</p></div></header>
+<div class="sec-body">
+<p class="prose">A simple request like <em>"Track my order"</em> is a single tool call — no orchestration needed. But <em>"My laptop arrived damaged. Refund the order, cancel the warranty, notify shipping, and create a high-priority support ticket"</em> requires planning and coordination across multiple systems. That's when a Planner Agent earns its cost, decomposing the request across specialist agents.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 1040 330" role="img" aria-label="Multi-agent orchestration: a customer request goes to a Planner Agent, which fans out to six specialist agents — Knowledge, CRM, Refund, Ticket, Shipping, and Notification — whose results are merged into the customer response."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="390.0" y="20" width="260" height="44" rx="6"/><text class="t" x="520.0" y="46.0" text-anchor="middle" >Customer Request</text><polyline class="fl" points="520.0,64.0 520.0,94.0" marker-end="url(#ar)"/><rect class="gw" x="390.0" y="96" width="260" height="48" rx="6"/><text class="gwT" x="520.0" y="124.0" text-anchor="middle" >Planner Agent</text><polyline class="fl" points="520.0,144.0 110.0,188.0" marker-end="url(#ar)"/><rect class="svc" x="35.0" y="190" width="150" height="54" rx="6"/><text class="svcT" x="110.0" y="214.0" text-anchor="middle" >Knowledge</text><text class="svcT" x="110.0" y="228.0" text-anchor="middle" >Agent</text><polyline class="fl" points="520.0,144.0 274.0,188.0" marker-end="url(#ar)"/><rect class="svc" x="199.0" y="190" width="150" height="54" rx="6"/><text class="svcT" x="274.0" y="214.0" text-anchor="middle" >CRM</text><text class="svcT" x="274.0" y="228.0" text-anchor="middle" >Agent</text><polyline class="fl" points="520.0,144.0 438.0,188.0" marker-end="url(#ar)"/><rect class="svc" x="363.0" y="190" width="150" height="54" rx="6"/><text class="svcT" x="438.0" y="214.0" text-anchor="middle" >Refund</text><text class="svcT" x="438.0" y="228.0" text-anchor="middle" >Agent</text><polyline class="fl" points="520.0,144.0 602.0,188.0" marker-end="url(#ar)"/><rect class="svc" x="527.0" y="190" width="150" height="54" rx="6"/><text class="svcT" x="602.0" y="214.0" text-anchor="middle" >Ticket</text><text class="svcT" x="602.0" y="228.0" text-anchor="middle" >Agent</text><polyline class="fl" points="520.0,144.0 766.0,188.0" marker-end="url(#ar)"/><rect class="svc" x="691.0" y="190" width="150" height="54" rx="6"/><text class="svcT" x="766.0" y="214.0" text-anchor="middle" >Shipping</text><text class="svcT" x="766.0" y="228.0" text-anchor="middle" >Agent</text><polyline class="fl" points="520.0,144.0 930.0,188.0" marker-end="url(#ar)"/><rect class="svc" x="855.0" y="190" width="150" height="54" rx="6"/><text class="svcT" x="930.0" y="214.0" text-anchor="middle" >Notification</text><text class="svcT" x="930.0" y="228.0" text-anchor="middle" >Agent</text><polyline class="fl" points="110.0,244.0 520.0,284.0" marker-end="url(#ar)"/><polyline class="fl" points="274.0,244.0 520.0,284.0" marker-end="url(#ar)"/><polyline class="fl" points="438.0,244.0 520.0,284.0" marker-end="url(#ar)"/><polyline class="fl" points="602.0,244.0 520.0,284.0" marker-end="url(#ar)"/><polyline class="fl" points="766.0,244.0 520.0,284.0" marker-end="url(#ar)"/><polyline class="fl" points="930.0,244.0 520.0,284.0" marker-end="url(#ar)"/><rect class="n" x="370.0" y="286" width="300" height="44" rx="6"/><text class="t" x="520.0" y="312.0" text-anchor="middle" >Merge Results → Customer Response</text></svg></div>
+<figcaption>Each agent specializes in one domain — Knowledge, CRM, Refund, Ticket, Shipping, Notification — improving modularity and maintainability. Results merge back into a single customer response. For straightforward requests, a single agent or direct tool call is faster and cheaper; multi-agent workflows are reserved for complex, cross-system tasks that require planning or parallel execution.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p6">
+<header class="sec-head"><span class="sec-num">6</span><div><h2>Three layers of memory</h2><p class="sec-purpose">Separating conversational memory from enterprise knowledge</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>⏱️ Short-term memory</h4><p>Maintains context during the current session. If a customer asks "Where's my package?" and later "Can you refund it?", the AI understands "it" refers to the same order.</p></div>
+<div class="item"><h4>🗂️ Long-term customer memory</h4><p>Persistent preferences and history — preferred language, communication channel, previous purchases, past support interactions — enabling personalized support across sessions.</p></div>
+<div class="item" style="grid-column:1/-1"><h4>📚 Enterprise knowledge</h4><p>Stored separately in RAG: product documentation, policies, FAQs, troubleshooting guides. Keeping this apart from conversational memory improves both accuracy and maintainability — a stale customer preference and an outdated policy document fail in very different ways, and conflating them makes both harder to fix.</p></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p7">
+<header class="sec-head"><span class="sec-num">7</span><div><h2>Human approval workflow</h2><p class="sec-purpose">Balancing automation with governance</p></div></header>
+<div class="sec-body">
+<p class="prose">Human approval is required for high-risk or high-value actions: refunds above a threshold, VIP customer escalations, account deletion, legal or compliance requests, and changes to payment information.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 560 470" role="img" aria-label="Human approval workflow: a refund request goes through AI validation, then an approval check — if required, it enters a manager approval queue; once approved, the refund executes."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="100.0" y="20" width="360" height="44" rx="6"/><text class="t" x="280.0" y="46.0" text-anchor="middle" >Refund Request</text><polyline class="fl" points="280.0,64.0 280.0,88.0" marker-end="url(#ar)"/><rect class="n" x="100.0" y="90" width="360" height="44" rx="6"/><text class="t" x="280.0" y="116.0" text-anchor="middle" >AI Validation</text><polyline class="fl" points="280.0,134.0 280.0,158.0" marker-end="url(#ar)"/><rect class="amb" x="100.0" y="160" width="360" height="44" rx="6"/><text class="ambT" x="280.0" y="186.0" text-anchor="middle" >Approval Required?</text><polyline class="fl" points="280.0,204.0 280.0,228.0" marker-end="url(#ar)"/><rect class="amb" x="100.0" y="230" width="360" height="44" rx="6"/><text class="ambT" x="280.0" y="256.0" text-anchor="middle" >Manager Approval Queue</text><polyline class="fl" points="280.0,274.0 280.0,298.0" marker-end="url(#ar)"/><rect class="amb" x="100.0" y="300" width="360" height="44" rx="6"/><text class="ambT" x="280.0" y="326.0" text-anchor="middle" >Approved</text><polyline class="fl" points="280.0,344.0 280.0,368.0" marker-end="url(#ar)"/><rect class="svc" x="100.0" y="370" width="360" height="44" rx="6"/><text class="svcT" x="280.0" y="396.0" text-anchor="middle" >Execute Refund</text><text class="s" x="474.0" y="222.0" text-anchor="start" >Yes</text></svg></div>
+<figcaption>The AI validates the request first — most requests never reach a human at all. Only the ones that cross a risk or value threshold route into a manager approval queue before execution.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p8">
+<header class="sec-head"><span class="sec-num">8</span><div><h2>Scaling to 50M customers</h2><p class="sec-purpose">10 million conversations a day — what has to scale independently</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>🧩 1 · Stateless AI services</h4><p>API gateways, orchestrators, and LLM routing services stay stateless so they scale horizontally behind load balancers.</p></div>
+<div class="item"><h4>🗄️ 2 · RAG scaling</h4><p>Instead of searching all documents, partition embeddings by product, region, language, and business unit to cut retrieval latency.</p></div>
+<div class="item"><h4>⚡ 3 · Semantic cache</h4><p>Many customers ask identical questions — "What is your return policy?", "Where is my order?" A semantic cache answers repeated queries without invoking the LLM, cutting both cost and latency.</p></div>
+<div class="item"><h4>🔄 4 · Asynchronous workflows</h4><p>Long-running tasks — refunds, warranty cancellations, shipping investigations — run asynchronously. The AI immediately replies "Your request has been submitted," while background workers finish the job.</p></div>
+<div class="item"><h4>🚦 5 · Rate limiting</h4><p>Per-user limits, per-tenant quotas, tool invocation limits, and circuit breakers protect backend systems from downstream failures.</p></div>
+<div class="item"><h4>🔒 6 · Security</h4><p>Every tool invocation propagates enterprise identity, OAuth tokens, RBAC/ABAC permissions, and audit logs. The LLM never bypasses application authorization — business systems remain the source of truth for access control.</p></div>
+</div>
+<div class="item" style="grid-column:1/-1">
+<h4>💰 7 · Cost optimization — model routing</h4>
+<p style="margin-bottom:10px">Not every request needs the largest LLM. Routing by task complexity optimizes cost while preserving quality where it matters.</p>
+<div class="chiprow"><span>FAQ → small LLM</span><span>Refund investigation → large reasoning model</span></div>
+</div>
+<p class="prose"><strong>Global deployment</strong>: regional AI gateways and orchestrators close to users for low latency, knowledge indexes and vector databases partitioned by geography where data residency requires it, stateless AI services running active-active across regions, customer data kept within compliance boundaries, and global load balancing routing traffic to the nearest healthy region.</p>
+</div>
+</section>
+
+<section class="sec" id="p9">
+<header class="sec-head"><span class="sec-num">9</span><div><h2>Tradeoffs</h2><p class="sec-purpose">Seven technologies, and what each one costs</p></div></header>
+<div class="sec-body">
+<div class="tablewrap">
+<table>
+<thead><tr><th>Technology</th><th>Best use</th><th>Advantages</th><th>Tradeoffs</th></tr></thead>
+<tbody>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">RAG</td><td>Enterprise knowledge retrieval</td><td>Accurate, up-to-date answers</td><td>Requires indexing and embedding pipeline</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Tool Calling</td><td>Execute deterministic business actions</td><td>Reliable and auditable</td><td>Limited to predefined tools</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">MCP</td><td>Standardized enterprise integrations</td><td>Excellent discoverability and extensibility</td><td>Additional abstraction layer</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Agent Framework</td><td>Multi-step workflows</td><td>Modular, scalable, parallel execution</td><td>More orchestration complexity</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Human Approval</td><td>High-risk operations</td><td>Governance and compliance</td><td>Increased response time</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Memory</td><td>Personalized conversations</td><td>Better customer experience</td><td>Requires lifecycle management and privacy controls</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Semantic Cache</td><td>Repeated customer questions</td><td>Lower latency and cost</td><td>Cache invalidation complexity</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="sec" id="p10">
+<header class="sec-head"><span class="sec-num">10</span><div><h2>Detailed end-to-end design</h2><p class="sec-purpose">Every layer, brought together</p></div></header>
+<div class="sec-body">
+<p class="prose">Bringing every layer together: customer channels through authentication, a rate-limited API Gateway, semantic caching, orchestration, specialist agents, the shared RAG/memory/tool-calling/model-routing capability layer, the backend systems reached through MCP servers, human approval, and observability watching the whole path.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 1200 1220" role="img" aria-label="Detailed end-to-end architecture: the customer request passes through authentication, a load balancer, an API Gateway paired with a rate limiter, and a semantic cache, into an AI Orchestrator that fans out to six specialist agents. The agents draw on shared capabilities — RAG retrieval, memory, tool calling, and a model gateway — which connect to vector databases, MCP servers fanning to CRM, ticketing, payments, and inventory systems, and the foundation LLM. Everything converges through a human approval queue into the customer response, watched throughout by monitoring and observability."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="n" x="430.0" y="20" width="340" height="50" rx="6"/><text class="t" x="600.0" y="42.0" text-anchor="middle" >Customer</text><text class="t" x="600.0" y="56.0" text-anchor="middle" >(Web / Mobile / WhatsApp)</text><polyline class="fl" points="600.0,70.0 600.0,94.0" marker-end="url(#ar)"/><rect class="n" x="430.0" y="96" width="340" height="50" rx="6"/><text class="t" x="600.0" y="118.0" text-anchor="middle" >Authentication</text><text class="t" x="600.0" y="132.0" text-anchor="middle" >(OAuth / SSO / JWT)</text><polyline class="fl" points="600.0,146.0 600.0,170.0" marker-end="url(#ar)"/><rect class="n" x="430.0" y="172" width="340" height="44" rx="6"/><text class="t" x="600.0" y="198.0" text-anchor="middle" >Load Balancer</text><polyline class="fl" points="600.0,216.0 480.0,240.0" marker-end="url(#ar)"/><polyline class="fl" points="600.0,216.0 720.0,240.0" marker-end="url(#ar)"/><rect class="gw" x="390.0" y="242" width="180" height="46" rx="6"/><text class="gwT" x="480.0" y="269.0" text-anchor="middle" >API Gateway</text><rect class="n" x="630.0" y="242" width="180" height="46" rx="6"/><text class="t" x="720.0" y="269.0" text-anchor="middle" >Rate Limiter</text><polyline class="fl" points="480.0,288.0 600.0,320.0" marker-end="url(#ar)"/><polyline class="fl" points="720.0,288.0 600.0,320.0" marker-end="url(#ar)"/><rect class="n" x="410.0" y="322" width="380" height="54" rx="6"/><text class="t" x="600.0" y="346.0" text-anchor="middle" >Semantic Cache (Redis)</text><text class="t" x="600.0" y="360.0" text-anchor="middle" >Answer repeated FAQs without the LLM</text><polyline class="fl" points="600.0,376.0 600.0,408.0" marker-end="url(#ar)"/><rect class="gw" x="430.0" y="410" width="340" height="50" rx="6"/><text class="gwT" x="600.0" y="439.0" text-anchor="middle" >AI Orchestrator / Planner Agent</text><polyline class="fl" points="600.0,460.0 150.0,508.0" marker-end="url(#ar)"/><rect class="svc" x="67.5" y="510" width="165" height="54" rx="6"/><text class="svcT" x="150.0" y="534.0" text-anchor="middle" >Knowledge</text><text class="svcT" x="150.0" y="548.0" text-anchor="middle" >Agent</text><polyline class="fl" points="600.0,460.0 330.0,508.0" marker-end="url(#ar)"/><rect class="svc" x="247.5" y="510" width="165" height="54" rx="6"/><text class="svcT" x="330.0" y="534.0" text-anchor="middle" >CRM</text><text class="svcT" x="330.0" y="548.0" text-anchor="middle" >Agent</text><polyline class="fl" points="600.0,460.0 510.0,508.0" marker-end="url(#ar)"/><rect class="svc" x="427.5" y="510" width="165" height="54" rx="6"/><text class="svcT" x="510.0" y="534.0" text-anchor="middle" >Refund</text><text class="svcT" x="510.0" y="548.0" text-anchor="middle" >Agent</text><polyline class="fl" points="600.0,460.0 690.0,508.0" marker-end="url(#ar)"/><rect class="svc" x="607.5" y="510" width="165" height="54" rx="6"/><text class="svcT" x="690.0" y="534.0" text-anchor="middle" >Ticket</text><text class="svcT" x="690.0" y="548.0" text-anchor="middle" >Agent</text><polyline class="fl" points="600.0,460.0 870.0,508.0" marker-end="url(#ar)"/><rect class="svc" x="787.5" y="510" width="165" height="54" rx="6"/><text class="svcT" x="870.0" y="534.0" text-anchor="middle" >Shipping</text><text class="svcT" x="870.0" y="548.0" text-anchor="middle" >Agent</text><polyline class="fl" points="600.0,460.0 1050.0,508.0" marker-end="url(#ar)"/><rect class="svc" x="967.5" y="510" width="165" height="54" rx="6"/><text class="svcT" x="1050.0" y="534.0" text-anchor="middle" >Notification</text><text class="svcT" x="1050.0" y="548.0" text-anchor="middle" >Agent</text><rect class="bandbg" x="472.0" y="482.0" width="256.0" height="16"/><text class="s" x="600.0" y="494.0" text-anchor="middle" >SPECIALIST AGENTS — EACH OWNS ONE DOMAIN</text><rect class="n" x="104.0" y="634" width="230" height="52" rx="6"/><text class="t" x="219.0" y="657.0" text-anchor="middle" >RAG /</text><text class="t" x="219.0" y="671.0" text-anchor="middle" >Retrieval Layer</text><rect class="n" x="358.0" y="634" width="230" height="52" rx="6"/><text class="t" x="473.0" y="657.0" text-anchor="middle" >Memory</text><text class="t" x="473.0" y="671.0" text-anchor="middle" >(S-Term / L-Term)</text><rect class="n" x="612.0" y="634" width="230" height="52" rx="6"/><text class="t" x="727.0" y="657.0" text-anchor="middle" >Tool Calling</text><text class="t" x="727.0" y="671.0" text-anchor="middle" >(Actions)</text><rect class="n" x="866.0" y="634" width="230" height="52" rx="6"/><text class="t" x="981.0" y="657.0" text-anchor="middle" >Model Gateway</text><text class="t" x="981.0" y="671.0" text-anchor="middle" >(Small / Large routing)</text><polyline class="dl" points="150.0,564.0 150.0,598.0"/><polyline class="dl" points="330.0,564.0 330.0,598.0"/><polyline class="dl" points="510.0,564.0 510.0,598.0"/><polyline class="dl" points="690.0,564.0 690.0,598.0"/><polyline class="dl" points="870.0,564.0 870.0,598.0"/><polyline class="dl" points="1050.0,564.0 1050.0,598.0"/><polyline class="dl" points="150.0,598.0 1050.0,598.0"/><polyline class="dl" points="219.0,598.0 219.0,632.0"/><polyline class="dl" points="473.0,598.0 473.0,632.0"/><polyline class="dl" points="727.0,598.0 727.0,632.0"/><polyline class="dl" points="981.0,598.0 981.0,632.0"/><rect class="bandbg" x="478.1" y="606.0" width="243.8" height="16"/><text class="s" x="600.0" y="618.0" text-anchor="middle" >SHARED CAPABILITIES — CALLED ON DEMAND</text><polyline class="fl" points="219.0,686.0 219.0,748.0" marker-end="url(#ar)"/><path d="M 134.0 759.0 L 134.0 781.0 A 85.0 9.0 0 0 0 304.0 781.0 L 304.0 759.0" class="db"/><ellipse class="db" cx="219.0" cy="759.0" rx="85.0" ry="9.0"/><text class="t" x="219.0" y="820.0" text-anchor="middle" >Vector DBs</text><text class="t" x="219.0" y="833.0" text-anchor="middle" >(region / product / language)</text><polyline class="fl" points="727.0,686.0 727.0,748.0" marker-end="url(#ar)"/><rect class="gw" x="622.0" y="750" width="210" height="46" rx="6"/><text class="gwT" x="727.0" y="770.0" text-anchor="middle" >MCP Servers</text><text class="gwT" x="727.0" y="784.0" text-anchor="middle" >Dynamic discovery &amp; tool catalog</text><polyline class="fl" points="981.0,686.0 981.0,748.0" marker-end="url(#ar)"/><rect class="svc" x="881.0" y="750" width="200" height="46" rx="6"/><text class="svcT" x="981.0" y="770.0" text-anchor="middle" >Foundation LLM</text><text class="svcT" x="981.0" y="784.0" text-anchor="middle" >(GPT / Gemini / Claude)</text><polyline class="fl" points="727.0,796.0 470.5,842.0" marker-end="url(#ar)"/><rect class="n" x="393.0" y="844" width="155" height="50" rx="6"/><text class="t" x="470.5" y="866.0" text-anchor="middle" >CRM /</text><text class="t" x="470.5" y="880.0" text-anchor="middle" >ERP</text><polyline class="fl" points="727.0,796.0 641.5,842.0" marker-end="url(#ar)"/><rect class="n" x="564.0" y="844" width="155" height="50" rx="6"/><text class="t" x="641.5" y="866.0" text-anchor="middle" >Ticketing</text><text class="t" x="641.5" y="880.0" text-anchor="middle" >System</text><polyline class="fl" points="727.0,796.0 812.5,842.0" marker-end="url(#ar)"/><rect class="n" x="735.0" y="844" width="155" height="50" rx="6"/><text class="t" x="812.5" y="866.0" text-anchor="middle" >Payments</text><text class="t" x="812.5" y="880.0" text-anchor="middle" >Gateway</text><polyline class="fl" points="727.0,796.0 983.5,842.0" marker-end="url(#ar)"/><rect class="n" x="906.0" y="844" width="155" height="50" rx="6"/><text class="t" x="983.5" y="866.0" text-anchor="middle" >Inventory /</text><text class="t" x="983.5" y="880.0" text-anchor="middle" >Order Mgmt</text><rect class="bandbg" x="675.2" y="818.0" width="103.5" height="16"/><text class="s" x="727.0" y="830.0" text-anchor="middle" >BACKEND SYSTEMS</text><polyline class="dl" points="470.5,894.0 470.5,934.0"/><polyline class="dl" points="641.5,894.0 641.5,934.0"/><polyline class="dl" points="812.5,894.0 812.5,934.0"/><polyline class="dl" points="983.5,894.0 983.5,934.0"/><polyline class="dl" points="219.0,850.0 219.0,934.0"/><polyline class="dl" points="981.0,796.0 981.0,934.0"/><polyline class="dl" points="219.0,934.0 981.0,934.0"/><polyline class="dl" points="600.0,934.0 600.0,972.0"/><rect class="amb" x="410.0" y="974" width="380" height="52" rx="6"/><text class="ambT" x="600.0" y="997.0" text-anchor="middle" >Human Approval Queue</text><text class="ambT" x="600.0" y="1011.0" text-anchor="middle" >High-risk / high-value actions</text><polyline class="fl" points="600.0,1026.0 600.0,1058.0" marker-end="url(#ar)"/><rect class="svc" x="450.0" y="1060" width="300" height="46" rx="6"/><text class="svcT" x="600.0" y="1087.0" text-anchor="middle" >Customer Response</text><polyline class="dl" points="600.0,1106.0 600.0,1138.0"/><rect class="n" x="370.0" y="1140" width="460" height="44" rx="6"/><text class="t" x="600.0" y="1159.0" text-anchor="middle" >Monitoring &amp; Observability</text><text class="t" x="600.0" y="1173.0" text-anchor="middle" >Latency · tokens · cost · quality · audit logs</text></svg></div>
+<figcaption>The semantic cache sits immediately after the gateway so a repeated question never reaches the orchestrator at all. Specialist agents call into shared capabilities on demand rather than every request passing through every layer in sequence; only requests that cross a risk threshold route through the human approval queue before reaching the customer.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p11">
+<header class="sec-head"><span class="sec-num">11</span><div><h2>Final design summary</h2><p class="sec-purpose">Specialized responsibilities, not one LLM doing everything</p></div></header>
+<div class="sec-body">
+<p class="prose">The architecture separates customer support into specialized responsibilities instead of relying on a single LLM. RAG powers accurate answers by retrieving the latest enterprise knowledge rather than depending on model memory. Tool calling executes deterministic business operations — creating tickets, querying CRM, updating records, processing refunds. MCP servers provide a standardized AI interface to enterprise applications, letting new systems onboard with minimal changes while REST stays the underlying communication mechanism. Agent orchestration coordinates complex workflows spanning multiple business domains. Memory splits into short-term conversational context, long-term customer personalization, and enterprise knowledge managed through RAG. Human approval workflows govern high-risk actions.</p>
+<p class="prose">Scalability comes from stateless services, horizontally scalable orchestrators, semantic caching, asynchronous processing, partitioned vector databases, and regional deployments. Security comes from enterprise authentication, RBAC/ABAC authorization, identity propagation, encryption, audit logging, and strict tenant isolation. Cost is optimized using semantic caching, model routing, asynchronous execution, and targeted retrieval so expensive LLMs are invoked only when necessary.</p>
+<div class="callout">This layered architecture creates a secure, scalable, and maintainable enterprise AI Customer Support Platform where each technology — RAG, MCP, tool calling, agent orchestration, memory, and human approval — is used for the responsibility it's best suited to handle, rather than treated as a competing solution.</div>
+</div>
+</section>
+
+</main>
+</div>
+<footer>Source: <a href="https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/customer-support-ai-design">iGrace — Customer Support AI Assistant Design</a></footer>
+</div>

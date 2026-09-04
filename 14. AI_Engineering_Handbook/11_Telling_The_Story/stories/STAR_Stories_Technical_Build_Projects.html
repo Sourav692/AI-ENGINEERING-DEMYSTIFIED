@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STAR Stories — Technical Build Projects</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #f4f6f4;
+  --bg-raised: #ffffff;
+  --bg-sunken: #e9eee9;
+  --ink: #12211b;
+  --ink-soft: #3d4d45;
+  --muted: #64756c;
+  --line: #d7ded7;
+  --accent: #00684a;
+  --accent-ink: #ffffff;
+  --accent-pop: #00a35e;
+  --accent-soft: #e1f2e9;
+  --warn: #9a5b12;
+  --warn-soft: #faf0dd;
+  --bad: #a3341f;
+  --bad-soft: #fbe9e4;
+  --shadow: 0 1px 2px rgba(18, 33, 27, 0.06), 0 8px 24px -12px rgba(18, 33, 27, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1512; --bg-raised: #121e19; --bg-sunken: #0e1815;
+    --ink: #e9efe9; --ink-soft: #b7c5bc; --muted: #83958a; --line: #22322b;
+    --accent: #00ed64; --accent-ink: #06180f; --accent-pop: #35f487; --accent-soft: #103322;
+    --warn: #e8b866; --warn-soft: #2e2410; --bad: #f2917c; --bad-soft: #341813;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1512; --bg-raised: #121e19; --bg-sunken: #0e1815;
+  --ink: #e9efe9; --ink-soft: #b7c5bc; --muted: #83958a; --line: #22322b;
+  --accent: #00ed64; --accent-ink: #06180f; --accent-pop: #35f487; --accent-soft: #103322;
+  --warn: #e8b866; --warn-soft: #2e2410; --bad: #f2917c; --bad-soft: #341813;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.55; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); }
+.wrap { max-width: 920px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+header.masthead {
+  display: flex; flex-direction: column; gap: 0.6rem;
+  margin-bottom: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: 1.8rem;
+}
+.eyebrow {
+  font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.72rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+h1 {
+  font-family: "Fraunces", Georgia, serif; font-optical-sizing: auto; font-weight: 600;
+  font-size: clamp(1.9rem, 4vw, 2.5rem); line-height: 1.12; margin: 0; text-wrap: balance;
+}
+.subhead { color: var(--ink-soft); font-size: 1.05rem; max-width: 66ch; }
+
+.client-nav {
+  display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.4rem;
+}
+.client-tab {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; font-weight: 500;
+  padding: 0.55rem 1rem; border-radius: 99px; border: 1px solid var(--line);
+  background: var(--bg-raised); color: var(--ink-soft); cursor: pointer;
+}
+.client-tab.ready { border-color: var(--accent); color: var(--accent); }
+.client-tab.pending { color: var(--muted); font-style: italic; }
+
+section.story {
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: var(--shadow); padding: 1.8rem 1.9rem 2rem; margin-bottom: 2.2rem;
+}
+.story-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 1rem; flex-wrap: wrap; margin-bottom: 1.1rem;
+}
+.story-head h2 {
+  font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.5rem; margin: 0 0 0.2rem;
+}
+.story-head .tag { color: var(--muted); font-size: 0.9rem; }
+.badge {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 99px;
+  background: var(--accent-soft); color: var(--accent); white-space: nowrap; height: fit-content;
+}
+
+.metric-strip {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+  overflow: hidden; margin-bottom: 1.4rem;
+}
+.metric { background: var(--bg-raised); padding: 0.85rem 1rem; }
+.metric .v { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 1.15rem; color: var(--accent); }
+.metric .k { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+.star-grid { display: flex; flex-direction: column; gap: 0; }
+.star-row {
+  display: grid; grid-template-columns: 90px 1fr; gap: 1rem;
+  padding: 1rem 0; border-top: 1px solid var(--line);
+}
+.star-row:first-child { border-top: none; }
+.star-letter {
+  font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 1.6rem; color: var(--accent);
+}
+.star-label {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); display: block; margin-top: 0.1rem;
+}
+.star-body p { margin: 0 0 0.7rem; }
+.star-body p:last-child { margin-bottom: 0; }
+.star-body ul { margin: 0.4rem 0 0.7rem; padding-left: 1.2rem; }
+.star-body li { margin-bottom: 0.4rem; }
+
+.pivot {
+  background: var(--warn-soft); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+  border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.92rem; margin: 0.7rem 0;
+}
+.pivot strong { color: var(--warn); }
+
+.stack-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+.pill {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; padding: 0.25rem 0.6rem;
+  border-radius: 6px; background: var(--bg-sunken); color: var(--ink-soft);
+}
+
+.verbal-box {
+  background: var(--accent-soft); border-radius: 12px; padding: 1.1rem 1.3rem; margin-top: 1.4rem;
+}
+.verbal-box h3 {
+  margin: 0 0 0.5rem; font-size: 0.95rem; font-family: "Fraunces", Georgia, serif; color: var(--accent);
+}
+.verbal-box p { margin: 0; font-size: 0.95rem; font-style: italic; }
+
+.followups {
+  margin-top: 1.4rem; border-top: 1px dashed var(--line); padding-top: 1.1rem;
+}
+.followups h3 {
+  font-size: 0.9rem; font-family: "IBM Plex Mono", monospace; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted); margin: 0 0 0.7rem;
+}
+.followups ul { margin: 0; padding-left: 1.2rem; }
+.followups li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+
+.evidence {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem;
+}
+.evidence a {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.78rem;
+  padding: 0.45rem 0.8rem; border: 1px solid var(--line); border-radius: 8px;
+  text-decoration: none; color: var(--ink-soft); background: var(--bg-sunken);
+}
+.evidence a:hover { border-color: var(--accent); color: var(--accent); }
+
+.estimate-note {
+  background: var(--bad-soft); border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent);
+  border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.9rem; margin: 0.9rem 0 0;
+}
+.estimate-note strong { color: var(--bad); }
+
+.pending-card {
+  background: var(--bg-sunken); border: 1px dashed var(--line); border-radius: 14px;
+  padding: 1.6rem 1.8rem; margin-bottom: 1.4rem; color: var(--muted);
+}
+.pending-card h2 {
+  font-family: "Fraunces", Georgia, serif; font-size: 1.2rem; color: var(--ink-soft); margin: 0 0 0.4rem;
+}
+.pending-card p { margin: 0; font-size: 0.92rem; }
+
+footer.note {
+  margin-top: 2.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line);
+  font-size: 0.82rem; color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">DevRev · Staff/Senior SDE · System Design Round Prep</div>
+    <h1>STAR Stories — Technical Build Projects</h1>
+    <p class="subhead">Two solo-built, fully-tested reference systems built specifically to answer DevRev's system design prep-guide problem types with a running system instead of a whiteboard sketch — companion to the client-engagement STAR stories.</p>
+  </header>
+
+  <div class="client-nav">
+    <span class="client-tab ready">AGENT PLATFORM — READY</span>
+    <span class="client-tab ready">ENTERPRISE RAG (MERIDIAN ASSIST) — READY</span>
+  </div>
+
+  <section class="story" id="agent-platform">
+    <div class="story-head">
+      <div>
+        <h2>Agent Platform — Deterministic Guardrail &amp; Orchestration Engine</h2>
+        <div class="tag">Solo build for DevRev prep §3.1 "AI agent platform for non-technical users" · durability, idempotency &amp; guardrail proofs · no LLM in the loop, on purpose</div>
+      </div>
+      <span class="badge">Slide claim&nbsp;→&nbsp;Proven property</span>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric"><div class="v">3 properties</div><div class="k">proven, not asserted</div></div>
+      <div class="metric"><div class="v">5 stages</div><div class="k">DRAFT → AUTONOMOUS rollout</div></div>
+      <div class="metric"><div class="v">21 / 21</div><div class="k">deterministic tests passing</div></div>
+      <div class="metric"><div class="v">$500 vs $50</div><div class="k">refund refused, not clamped</div></div>
+    </div>
+
+    <div class="star-grid">
+      <div class="star-row">
+        <div class="star-letter">S<span class="star-label">Situation</span></div>
+        <div class="star-body">
+          <p>DevRev's own system design prep guide names Problem Type A as "design an AI agent platform for non-technical users to configure workflow automations across multiple channels" — email, chat, Slack, web forms, webhooks. The hard part isn't running an agent; it's letting someone non-technical wire one up <em>safely</em>. Most answers to that prompt stay at the slide level — "we'd add guardrails," "we'd make it idempotent" — without ever having to defend those claims against a system that can actually be attacked.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">T<span class="star-label">Task</span></div>
+        <div class="star-body">
+          <p>I set out to turn three specific claims from that prep guide into checkable properties of a real, runnable system rather than bullet points: (1) a destructive action never executes without an explicit human approval or an explicit per-tenant allow-list entry, even on a fully autonomous workflow; (2) a retried or redelivered action never applies its side effect twice; (3) a crash mid-run never re-runs a step that already completed. I scoped it deliberately narrow — no LLM, no real connectors — so every property could be proven with a fast, deterministic test instead of an LLM's mood on the day.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">A<span class="star-label">Action</span></div>
+        <div class="star-body">
+          <p>I designed the system so that every automated action has to earn its right to run on its own — nothing executes just because it technically could. Anything destructive, like issuing a refund, either needs a human to click approve first, or has to be on a pre-approved list for that specific customer. Nothing in between.</p>
+
+          <p>To prove a retry never charges someone twice, I gave every individual action its own one-time "receipt" the moment it runs. If the same action gets asked for again — because a network hiccuped and the request came through twice — the system recognizes the receipt already exists and simply does nothing the second time, instead of repeating the action.</p>
+
+          <p>To prove a crash never loses or repeats work, I built the system so it always remembers exactly which step it was on. I tested this literally — I killed the process mid-run on purpose, restarted it, and watched it pick up exactly where it left off, never redoing a step that had already happened.</p>
+
+          <div class="pivot"><strong>A design decision I'm proud of:</strong> I kept two safety checks separate on purpose instead of merging them into one. One check asks "which automation is the right one to respond to this event?" — a business decision. The other asks "is anything else already touching this same customer record right now?" — a safety rule that has to hold no matter what. Same logic for spending limits: "has this run taken too many steps overall?" is a different question from "is this one action about to spend too much money?" A $500 refund against a $50 limit gets stopped immediately, on dollars alone — it can't sneak through by looking cheap on step count.</div>
+
+          <p>Finally, I built a five-stage rollout path — draft, test on sample data, watch real traffic without touching it, go live with human approval on every risky action, then finally fully autonomous — and made sure only a second person, never the person who built the automation, can move it forward a stage. Same idea as requiring a second reviewer before code ships, applied to automation instead.</p>
+
+          <div class="stack-pills">
+            <span class="pill">Deterministic step-based orchestrator</span>
+            <span class="pill">Idempotency key: run_id:step_name</span>
+            <span class="pill">Priority routing + entity lock (independent checks)</span>
+            <span class="pill">Deny-overrides guardrail chain</span>
+            <span class="pill">Staged rollout state machine</span>
+            <span class="pill">Typed tool registry + arg validation</span>
+            <span class="pill">Run-trace observability</span>
+            <span class="pill">pytest, 21 deterministic tests</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">R<span class="star-label">Result</span></div>
+        <div class="star-body">
+          <ul>
+            <li>Reproduced DevRev's own "Cascade Robotics" $500-refund scenario end to end and showed exactly why it did <em>not</em> fire automatically: not budget (a $500 refund against a $50 cap is refused outright, never silently clamped down), but that <code>issue_refund</code> wasn't allow-listed for autonomous use on that tenant — so the run correctly paused for a human.</li>
+            <li>Proved idempotency directly: retried <code>issue_refund</code> against an existing idempotency key and confirmed exactly one apply, not two.</li>
+            <li>Proved durability directly: crashed a run after step 0, resumed it, and confirmed step 0 never re-ran — the resume path is the same loop, not a different one.</li>
+            <li>Built a negative-control demo exercising seven distinct denial paths (wrong role trying to self-promote, skipping a rollout stage, a type mismatch, a not-yet-LIVE workflow, the spend cap, the step budget, a locked entity) — all correctly denied, all logged with a named reason, never a silent stop.</li>
+            <li>Named the scope honestly rather than overselling it: locks and idempotency-key storage are in-process Python dicts, correct in shape but not surviving a restart or shared across workers — documented directly in the coverage map instead of hidden.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="followups">
+      <h3>Likely follow-ups — have these ready</h3>
+      <ul>
+        <li><strong>"Why no LLM at all?"</strong> — The reasoning-loop shape (plan → select → call → observe → iterate, hard step cap) is real; swapping the fixed step sequence for an LLM planner is a bounded, named extension, not a redesign — and keeping it deterministic meant every guardrail property could be proven with a fast, exactly-reproducible test instead of fighting model non-determinism.</li>
+        <li><strong>"How would this survive a process restart in production?"</strong> — Name it directly: locks and the idempotency-key store move from in-process dicts to something like Redis/Postgres with the same key shape (<code>{run_id}:{step_name}</code>) — the logic doesn't change, only where it's persisted.</li>
+        <li><strong>"Why two separate checks for routing and two for limits instead of one each?"</strong> — Walk through the concrete failure each collapse would cause: a misconfigured priority becoming a correctness bug; a workflow "spending down" its step budget to dodge the dollar cap.</li>
+        <li><strong>"What stops the workflow's own author from promoting it straight to AUTONOMOUS?"</strong> — Promotion is gated to the <code>approver</code>/<code>admin</code> roles at the identity layer, checked at every stage transition, not just enforced by UI affordance.</li>
+      </ul>
+    </div>
+
+    <div class="verbal-box">
+      <h3>60-second spoken version</h3>
+      <p>"DevRev's prep guide names 'agent platform for non-technical users' as a design problem, and the easy trap is answering it with slide bullets — 'we'd add guardrails, we'd make it idempotent.' I built a real, runnable version instead, scoped deliberately without an LLM so every property could be proven with a fast, deterministic test. I proved three things directly: a destructive action never runs without approval or an allow-list entry — I reproduced DevRev's own $500-refund scenario and showed it's not a budget problem, it's that the action wasn't allow-listed for autonomous use, so it correctly paused for a human. A retry never double-applies — I retried a refund against an existing idempotency key and got exactly one apply. And a crash never re-runs a completed step — I actually crashed a run mid-flight and resumed it. The design choice I'm proudest of is keeping routing priority and the entity lock as two independent checks, and the step budget and spend cap as two independent checks, because collapsing either pair turns a misconfiguration into a correctness bug instead of a config mistake."</p>
+    </div>
+
+    <div class="evidence">
+      <a href="https://github.com/Sourav692/INTERVIEW-PREPARATION/tree/main/agentic%20system%20design/agent_platform" target="_blank" rel="noopener">↗ agent_platform (GitHub)</a>
+      <a href="https://github.com/Sourav692/INTERVIEW-PREPARATION/blob/main/agentic%20system%20design/agent_platform/docs/02-architecture-end-to-end.md" target="_blank" rel="noopener">↗ architecture end-to-end (docs/02)</a>
+    </div>
+  </section>
+
+  <section class="story" id="enterprise-rag">
+    <div class="story-head">
+      <div>
+        <h2>Meridian Assist — Enterprise RAG with Attribute-Based Access Control</h2>
+        <div class="tag">Solo build for DevRev's enterprise-RAG problem type · LangGraph + ChromaDB + OpenAI · access control as a provable property, not a prompt</div>
+      </div>
+      <span class="badge">Quality metric&nbsp;→&nbsp;Security gate</span>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric"><div class="v">22 / 22</div><div class="k">golden-set pass, enterprise strategy</div></div>
+      <div class="metric"><div class="v">0 leaks</div><div class="k">the release gate, deterministic</div></div>
+      <div class="metric"><div class="v">1.00 / 1.00</div><div class="k">recall@k / groundedness</div></div>
+      <div class="metric"><div class="v">68 tests</div><div class="k">62 fast + 6 live, all passing</div></div>
+    </div>
+
+    <div class="star-grid">
+      <div class="star-row">
+        <div class="star-letter">S<span class="star-label">Situation</span></div>
+        <div class="star-body">
+          <p>The thing that actually makes enterprise RAG hard isn't retrieval quality — it's that not everyone is allowed to read everything, so the same question has different correct answers for different people. I framed it as a concrete B2B SaaS scenario: "Why did Vertex Financial lose data in March, and do they get service credits?" A Tier-1 support agent should get the platform-side backlog; a Tier-3 engineer should get the engineering root cause; an account manager should get the contractual credit tiers but not the root cause; an external contractor and anyone outside the tenant should get nothing. Getting that right <em>provably</em>, not by prompting the model nicely, was the whole point.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">T<span class="star-label">Task</span></div>
+        <div class="star-body">
+          <p>I owned building an enterprise RAG platform end to end where policy correctness was a gated, tested property of the system — not a hope resting on the LLM refusing nicely — while still being honest about what a small, near-perfect eval corpus can and can't prove.</p>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">A<span class="star-label">Action</span></div>
+        <div class="star-body">
+          <p>I built the system so that permission-checking always happens before the AI ever sees a single document — not as a coding convention someone could forget, but wired directly into the shape of the pipeline itself, so it's structurally impossible to skip. I split access control into two layers on purpose. The first is a fast, cheap filter that narrows the search down to only documents this person could plausibly see — like a bouncer doing a quick ID check at the door. The second is a slower, thorough re-check right before the answer is written, using the person's up-to-the-second permissions — embargoes, group membership, whether access was just revoked — because the fast filter can go stale between when it was built and the moment someone asks a question. If that second check ever catches something the first one should have caught, that's flagged as a security incident, not quietly ignored, because it means the fast filter has drifted out of date. On top of both, I physically separated every customer's data into its own storage bucket, so even a bug in the permission logic can't leak one customer's data into another's answer. The permission rules themselves are seven plain-language checks — which company you belong to, your clearance level, your region, timing windows, whether you need-to-know this topic, whether you're an external contractor, and "deny by default" if nothing explicitly allows it.</p>
+
+          <p>I also tried six different ways of searching the documents — from simple keyword and similarity search up to a more elaborate approach that breaks a complex question into sub-questions and re-ranks the results — and measured all of them against the same test set, so the choice of search method was based on evidence, not a guess.</p>
+
+          <div class="pivot"><strong>Three real mistakes my own testing caught before they became real problems:</strong> First, a false alarm — the system flagged itself for "leaking" a document to an account manager, but she was actually allowed to read it; I'd mislabeled "not relevant to this question" as "not allowed to see it" in my own test data. I fixed the test data and added a check that keeps those two ideas from ever being confused again — a false security alarm is worse than no alarm, because people learn to ignore it. Second, I found a rule that was never actually being tested — one permission check kept getting shadowed by an earlier, stricter check firing first, so I added a specific test person whose only path to being blocked was that exact rule, to confirm it worked on its own. Third, I found one test that passed or failed almost at random, because I'd made the AI's own judgment part of the pass/fail decision. I fixed that by separating "did we leak data" — decided by hard rules, never by the AI — from "did we phrase the refusal well" — which can be a judgment call. Security can never come down to a coin flip.</div>
+
+          <div class="pivot"><strong>Rebuilding it on a second platform (Databricks) surfaced a real gap, not just a copy-paste port:</strong> that platform's own search index doesn't automatically inherit the company's central permission rules — it's a separate copy of the data, so a permission change doesn't travel with it on its own. I designed around that the same way — fast filter for speed, then a second, authoritative check against the real, live-governed source before answering. Being able to show both versions, and explain exactly why that second check is non-negotiable on that platform, was the whole point of building it twice.</div>
+
+          <div class="stack-pills">
+            <span class="pill">LangGraph (8-node graph)</span>
+            <span class="pill">ChromaDB, 1 collection/tenant</span>
+            <span class="pill">OpenAI embeddings + generation</span>
+            <span class="pill">7-rule deny-overrides ABAC policy</span>
+            <span class="pill">6 retrieval strategies benchmarked</span>
+            <span class="pill">Golden-set eval harness (quality/security/behaviour)</span>
+            <span class="pill">Databricks: UC + Vector Search + Agent Framework</span>
+            <span class="pill">pytest, 68 tests</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="star-row">
+        <div class="star-letter">R<span class="star-label">Result</span></div>
+        <div class="star-body">
+          <ul>
+            <li>22/22 golden-set pass on the production ("enterprise") strategy: recall@k 1.00, MRR 1.00, groundedness 1.00, refusal accuracy 100%, <strong>0 leaks</strong> (the hard release gate), 0 distractions, p50 10.7s, $0.0196/query.</li>
+            <li>Ran the full six-strategy comparison on the same golden set — every strategy scored 0 leaks; dense was the cheapest/fastest at this corpus size, HyDE had the best MRR (1.00) at the cost of lower groundedness (0.929), enterprise was the most expensive and slowest by design, trading cost for the decomposition + reranking that a larger corpus would need.</li>
+            <li>68 tests passing (62 fast — policy, fusion, chunking, enforcement, golden-set integrity — plus 6 live integration tests against OpenAI), plus a standalone script asserting the security-reference doc matches the running policy so documentation can't silently drift from code.</li>
+            <li>Shipped a second, Databricks-native version of the same system proving the same properties on Unity Catalog + Vector Search + MLflow, specifically to demonstrate the extra enforcement layer that platform requires and a ChromaDB-only design would miss.</li>
+          </ul>
+          <div class="estimate-note"><strong>Read these numbers honestly — say this in the room:</strong> The corpus is 22 documents. Retrieval is easy at that size, so every strategy scores near-perfectly on quality and the differences between them are mostly noise — this table is <em>not</em> proof that HyDE or multi-query earn their keep; "enterprise" is simply the slowest and priciest here, and dense would be the right production choice for a corpus this small. The value is that the harness exists and gates the release at all — on a 200,000-document corpus, the same table is what tells you whether HyDE's extra latency is actually earning its keep. The number that matters at any corpus size is the zero-leak column.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="followups">
+      <h3>Likely follow-ups — have these ready</h3>
+      <ul>
+        <li><strong>"Why two enforcement layers instead of just filtering the vector search well?"</strong> — The pre-filter is an optimization on attributes that were true when the index was built; it can go stale (a revoked group, an expired embargo) without a reindex. The post-check re-evaluates on fresh attributes right before generation, so staleness in the index can never become a leak — it becomes a logged security event instead.</li>
+        <li><strong>"How do you know the eval isn't just testing itself?"</strong> — Point to the three caught bugs directly: the false alarm, the shadowed rule, and the flaky gate were all found by the harness disagreeing with itself or with a hand-labeled case, and each fix has a test that prevents the same drift from recurring.</li>
+        <li><strong>"What breaks first at 200k documents instead of 22?"</strong> — Retrieval quality differentiation reappears (this is where HyDE/multi-query would actually need to justify their latency), and Chroma's per-tenant-collection isolation approach needs revisiting for collection-count scaling — both are named explicitly in <code>docs/Scale_Optimization.md</code> rather than glossed over.</li>
+        <li><strong>"Why does Databricks need a second enforcement layer if Unity Catalog already governs the data?"</strong> — Because Vector Search indexes are a derived copy of the data; UC's row filters and column masks apply to the governed table, not automatically to a copy of its embeddings sitting in a separate index.</li>
+      </ul>
+    </div>
+
+    <div class="verbal-box">
+      <h3>60-second spoken version</h3>
+      <p>"I built an enterprise RAG platform around the part that actually makes enterprise RAG hard — not everyone's allowed to read everything, so the same question needs a different correct answer per person. I split access control into two layers: a cheap pre-filter compiled into the vector search for speed, and an authoritative post-check on fresh attributes right before generation for correctness, plus physical per-tenant isolation so a filter bug can't cross a tenant boundary. I built a golden-set eval harness that gates releases on a hard zero-leak number, and it actually caught three real bugs during development — a false security alarm from conflating 'unauthorised' with 'irrelevant,' a policy rule that no test case was actually exercising, and a flaky LLM-judged gate that I moved off the security-critical path entirely, because security can't hinge on a coin flip. Final numbers: 22 of 22 on the golden set, zero leaks, 68 tests passing. Then I rebuilt the same system on Databricks and found a real platform gap — Vector Search doesn't enforce Unity Catalog's row filters — which is exactly why that second enforcement layer isn't optional, it's the whole design."</p>
+    </div>
+
+    <div class="evidence">
+      <a href="https://github.com/Sourav692/INTERVIEW-PREPARATION/tree/main/agentic%20system%20design/enterprise_rag_platform" target="_blank" rel="noopener">↗ enterprise_rag_platform (GitHub)</a>
+      <a href="https://github.com/Sourav692/INTERVIEW-PREPARATION/blob/main/agentic%20system%20design/enterprise_rag_platform/docs/06-architecture-end-to-end.md" target="_blank" rel="noopener">↗ architecture end-to-end (docs/06)</a>
+    </div>
+  </section>
+
+  <footer class="note">
+    Built from the agent_platform and enterprise_rag_platform (Meridian Assist) READMEs, docs, and verified test/eval runs in <code>agentic system design/</code> (moved from <code>DevRev_Preparation/System_Design_Round/</code>) · companion to <code>STAR Stories — Client Engagements.html</code> · Aug 28, 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

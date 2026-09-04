@@ -1,0 +1,35 @@
+[gateway]
+bind_address = "0.0.0.0:3000"
+
+[models.research_model]
+routing = ["openai_gpt4o", "groq_fallback"]
+
+[models.research_model.providers.openai_gpt4o]
+type = "openai"
+model_name = "gpt-4o"
+
+[models.research_model.providers.groq_fallback]
+type = "groq"
+model_name = "llama-3.1-8b-instant"
+
+[functions.research_summarize]
+type = "chat"
+
+[functions.research_summarize.variants.primary]
+type = "chat_completion"
+model = "research_model"
+weight = 1.0
+temperature = 0.3
+max_tokens = 2000
+system_template = "templates/research_summarize_system.minijinja"
+
+[functions.report_write]
+type = "chat"
+
+[functions.report_write.variants.primary]
+type = "chat_completion"
+model = "research_model"
+weight = 1.0
+temperature = 0.5
+max_tokens = 4000
+system_template = "templates/report_write_system.minijinja"

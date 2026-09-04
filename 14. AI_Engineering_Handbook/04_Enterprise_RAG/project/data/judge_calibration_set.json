@@ -1,0 +1,46 @@
+{
+  "cases": [
+    {
+      "id": "C01",
+      "note": "Fully grounded, exact match",
+      "answer": "The DPM ceiling on the Growth plan is 500,000 [PR-CAL-01].",
+      "passages": [{"doc_id": "PR-CAL-01", "text": "The Growth plan carries a DPM ceiling of 500,000 data points per minute."}],
+      "human_groundedness": 1.0
+    },
+    {
+      "id": "C02",
+      "note": "Fully grounded, paraphrased wording",
+      "answer": "Emergency rate-limit overrides above 2x require sign-off from an on-call SRE lead [RB-CAL-02].",
+      "passages": [{"doc_id": "RB-CAL-02", "text": "Any temporary rate limit increase exceeding double the customer's normal ceiling must be approved by the on-call SRE lead before it is applied."}],
+      "human_groundedness": 1.0
+    },
+    {
+      "id": "C03",
+      "note": "Fabricated number not in the passage",
+      "answer": "The refund for a missed SLA is 75% of the monthly fee [PR-CAL-03].",
+      "passages": [{"doc_id": "PR-CAL-03", "text": "Customers below the 99.5% availability commitment receive a 25% service credit against the following month's invoice."}],
+      "human_groundedness": 0.0
+    },
+    {
+      "id": "C04",
+      "note": "Fabricated entity - contact not mentioned anywhere",
+      "answer": "Escalations should be routed to Priya Shah, the VP of Support [HC-CAL-04].",
+      "passages": [{"doc_id": "HC-CAL-04", "text": "Escalations outside business hours should be filed through the on-call paging system rather than emailed directly."}],
+      "human_groundedness": 0.0
+    },
+    {
+      "id": "C05",
+      "note": "Partially grounded - one supported claim, one unsupported claim",
+      "answer": "The March incident was caused by a compaction queue backlog, and the customer was fully refunded for the month [PM-CAL-05].",
+      "passages": [{"doc_id": "PM-CAL-05", "text": "Root cause: the compaction queue exceeded its configured depth during the EU maintenance window, causing ingest backpressure for 45 minutes. No customer-facing SLA was breached."}],
+      "human_groundedness": 0.3
+    },
+    {
+      "id": "C06",
+      "note": "Wrong date - passage says a different date than the answer claims",
+      "answer": "The key rotation policy took effect on 2026-01-01 [SEC-CAL-06].",
+      "passages": [{"doc_id": "SEC-CAL-06", "text": "The mandatory API key rotation policy takes effect on 2026-07-01 for all tenants."}],
+      "human_groundedness": 0.0
+    }
+  ]
+}

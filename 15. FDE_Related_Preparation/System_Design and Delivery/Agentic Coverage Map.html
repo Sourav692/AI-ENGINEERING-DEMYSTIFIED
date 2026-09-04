@@ -1,0 +1,278 @@
+<!DOCTYPE html><html data-scribe-recorder-ready="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@charset "utf-8";
+
+:root { color-scheme: light; }
+
+body { margin: 0px; padding: 0px; font: 14px -apple-system, BlinkMacSystemFont, sans-serif; background: rgb(250, 249, 245); color: rgb(20, 20, 19); }
+
+img { max-width: 100%; }
+
+[hidden]:not([hidden="until-found"]) { display: none !important; }
+</style><style>@charset "utf-8";
+
+:root { --bg: #f2f5f6; --surface: #ffffff; --surface-2: #eef2f3; --ink: #141f27; --body: #2f3f4a; --muted: #5f7280; --rule: #d9e2e6; --rule-soft: #e7edef; --accent: #0d6f68; --accent-soft: #e2f0ee; --sup: #b5790f; --sup-soft: #faf1de; --ent: #5f45b8; --ent-soft: #ece7fa; --gap: #a4372f; --gap-soft: #f9e6e4; --shadow: 0 1px 2px rgba(20,31,39,.05), 0 8px 24px -16px rgba(20,31,39,.28); }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0c1216; --surface: #121c22; --surface-2: #16232a; --ink: #e6edf0; --body: #c2d0d7; --muted: #8ba0ac; --rule: #22323b; --rule-soft: #1b282f; --accent: #54c3b5; --accent-soft: #12302e; --sup: #e0a53a; --sup-soft: #2c220f; --ent: #a892f2; --ent-soft: #211c38; --gap: #e08585; --gap-soft: #2c1614; }
+}
+
+:root[data-theme="dark"] { --bg: #0c1216; --surface: #121c22; --surface-2: #16232a; --ink: #e6edf0; --body: #c2d0d7; --muted: #8ba0ac; --rule: #22323b; --rule-soft: #1b282f; --accent: #54c3b5; --accent-soft: #12302e; --sup: #e0a53a; --sup-soft: #2c220f; --ent: #a892f2; --ent-soft: #211c38; --gap: #e08585; --gap-soft: #2c1614; }
+
+* { box-sizing: border-box; }
+
+body { margin: 0px; background: var(--bg); color: var(--body); font-family: "Source Serif 4", Georgia, serif; font-size: 17px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+
+h1, h2, h3, h4, .mono, th, .eyebrow { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; }
+
+.mono, td.mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+
+a { color: inherit; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+.wrap { max-width: 1180px; margin: 0px auto; padding: 0px clamp(18px, 4vw, 44px) 96px; }
+
+.mast { padding: clamp(44px, 7vw, 80px) 0px clamp(24px, 4vw, 36px); border-bottom: 1px solid var(--rule); }
+
+.eyebrow { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0px 0px 16px; }
+
+h1 { font-weight: 800; font-size: clamp(34px, 5.6vw, 56px); line-height: 1.05; letter-spacing: -0.025em; color: var(--ink); margin: 0px 0px 18px; text-wrap: balance; max-width: 18ch; }
+
+.lede { font-size: clamp(16.5px, 1.9vw, 19px); color: var(--body); max-width: 70ch; margin: 0px; }
+
+.lede strong { color: var(--ink); }
+
+.verdict { display: flex; gap: 16px; align-items: flex-start; margin: 32px 0px 0px; padding: 20px 22px; background: var(--accent-soft); border-left: 3px solid var(--accent); max-width: 78ch; }
+
+.verdict .mark { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); flex: 0 0 auto; padding-top: 2px; }
+
+.verdict p { margin: 0px; color: var(--ink); font-size: 16.5px; }
+
+section { padding: clamp(38px, 5vw, 54px) 0px; border-bottom: 1px solid var(--rule-soft); }
+
+section:last-of-type { border-bottom: 0px; }
+
+h2 { font-size: clamp(23px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 0px 0px 8px; }
+
+.sub { margin: 0px 0px 24px; color: var(--muted); font-size: 15px; max-width: 70ch; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0px 0px 22px; }
+
+.chip { display: inline-flex; align-items: center; gap: 7px; font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--muted); }
+
+.chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+.chip.both i { background: var(--accent); }
+
+.chip.sup i { background: var(--sup); }
+
+.chip.ent i { background: var(--ent); }
+
+.chip.gap i { background: var(--gap); }
+
+.dgm-wrap { overflow-x: auto; background: var(--surface-2); border: 1px solid var(--rule-soft); padding: clamp(12px, 2vw, 22px); }
+
+.dgm { display: block; width: 100%; min-width: 760px; height: auto; }
+
+.dgm .n { fill: var(--surface); stroke: var(--rule); stroke-width: 1; }
+
+.dgm .n-both { fill: var(--accent-soft); stroke: var(--accent); }
+
+.dgm .n-sup { fill: var(--sup-soft); stroke: var(--sup); }
+
+.dgm .n-ent { fill: var(--ent-soft); stroke: var(--ent); }
+
+.dgm .n-gap { fill: var(--gap-soft); stroke: var(--gap); stroke-dasharray: 4, 3; }
+
+.dgm .dot-both { fill: var(--accent); }
+
+.dgm .dot-sup { fill: var(--sup); }
+
+.dgm .dot-ent { fill: var(--ent); }
+
+.dgm .dot-gap { fill: var(--gap); }
+
+.dgm .t { fill: var(--ink); font-family: "Bricolage Grotesque", sans-serif; font-size: 12.5px; font-weight: 600; }
+
+.dgm .s { fill: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 9.3px; }
+
+.dgm .band { fill: var(--muted); font-family: "Bricolage Grotesque", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.13em; }
+
+.dgm .legend { fill: var(--body); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+
+.dgm .rule { stroke: var(--rule); }
+
+.dgm .fl { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+
+.dgm .mk { fill: var(--muted); }
+
+figcaption { margin-top: 12px; font-size: 14.5px; color: var(--muted); max-width: 74ch; line-height: 1.5; }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--rule-soft); background: var(--surface); }
+
+table { border-collapse: collapse; width: 100%; min-width: 760px; }
+
+th, td { text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+
+th { font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); position: sticky; top: 0px; }
+
+td { font-size: 14.5px; }
+
+td.concept { color: var(--ink); font-weight: 600; font-family: "Bricolage Grotesque", sans-serif; font-size: 14.5px; min-width: 230px; }
+
+td.note { color: var(--muted); font-size: 13.5px; }
+
+tbody tr:last-child td { border-bottom: 0px; }
+
+.catrow td { background: var(--surface-2); font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); padding: 9px 16px; }
+
+.mark-cell { text-align: center; width: 44px; font-size: 15px; }
+
+.y { color: var(--accent); }
+
+.p { color: var(--sup); }
+
+.n { color: var(--muted); }
+
+.gaps { display: grid; gap: 2px; grid-template-columns: 1fr; margin-top: 6px; }
+
+@media (min-width: 700px) {
+  .gaps { grid-template-columns: 1fr 1fr; }
+}
+
+.gaps .g { background: var(--gap-soft); border: 1px solid var(--rule-soft); padding: 16px 18px; }
+
+.gaps h4 { margin: 0px 0px 6px; font-size: 14.5px; color: var(--ink); display: flex; gap: 8px; align-items: baseline; }
+
+.gaps h4::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gap); flex: 0 0 auto; transform: translateY(-1px); }
+
+.gaps p { margin: 0px; font-size: 14px; color: var(--body); }
+
+footer { border-top: 1px solid var(--rule); padding: 26px 0px 0px; margin-top: 8px; font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: auto ease 0s 1 normal none running none !important; }
+}
+
+.filterbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0px 0px 18px; }
+
+.fbtn { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.03em; padding: 7px 13px; border-radius: 20px; border: 1px solid var(--rule); background: var(--surface); color: var(--muted); cursor: pointer; }
+
+.fbtn[aria-pressed="true"] { color: var(--ink); border-color: var(--accent); background: var(--accent-soft); }
+
+.fbtn:hover { color: var(--ink); }
+
+tr.dim { opacity: 0.28; }
+</style><!-- frame-runtime --><base href="https://f25790f1-5260-472a-9f85-de97a31ea414.frame.claudeusercontent.com/_f/1788135091-b5cf/"><!-- /frame-runtime --><meta name="viewport" content="width=device-width,initial-scale=1"></head><body data-new-gr-c-s-check-loaded="14.1324.0" data-gr-ext-installed="" class="hn-initialized">
+<title>Agentic Coverage Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">Case Study Comparison</p>
+  <h1>Agentic Coverage Map</h1>
+  <p class="lede">Two interview walkthroughs — an <strong>Enterprise AI Assistant</strong> wired into 100+ internal apps, and a <strong>Customer Support AI Assistant</strong> built on RAG, tools, and memory — read side by side against the common vocabulary of agentic system design.</p>
+  <div class="verdict">
+    <span class="mark">Verdict</span>
+    <p>Yes. Between the two, they cover nearly every concept an agentic-system-design interview expects. Neither one alone is complete — the Enterprise Assistant goes deep on integration methods and tool-discovery at scale but never mentions RAG, memory, or human approval; the Customer Support Assistant covers the full agent loop (RAG, memory, human-in-the-loop, model routing) but doesn't revisit the tool-registry scaling problem. Together they're complementary, not redundant.</p>
+  </div>
+</header>
+
+<section>
+  <h2>The combined architecture</h2>
+  <p class="sub">One generic agentic-assistant spine, with every stage tagged by which project actually covers it.</p>
+  <figure class="dgm-wrap-fig">
+    <div class="dgm-wrap">
+      <svg class="dgm" viewBox="0 0 1040 920" role="img" aria-label="A single agentic-assistant spine with each stage tagged by which of the two projects covers it: teal for both, amber for Customer Support only, violet for Enterprise Assistant only, and red dashed for a gap neither project addresses."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"></path></marker></defs><circle class="dot dot-both" cx="46" cy="26" r="5"></circle><text class="legend" x="58" y="30">Both projects</text><circle class="dot dot-sup" cx="241" cy="26" r="5"></circle><text class="legend" x="253" y="30">Customer Support only</text><circle class="dot dot-ent" cx="524" cy="26" r="5"></circle><text class="legend" x="536" y="30">Enterprise Assistant only</text><circle class="dot dot-gap" cx="851" cy="26" r="5"></circle><text class="legend" x="863" y="30">Gap in both</text><line class="rule" x1="40" y1="44" x2="1000" y2="44"></line><rect class="n n-both" x="40" y="70" width="960" height="50" rx="4"></rect><circle class="dot dot-both" cx="986" cy="84" r="5"></circle><text class="t" x="52" y="91">Client channels</text><text class="s" x="52" y="106">web · mobile · WhatsApp · chat UI</text><rect class="n n-both" x="40" y="134" width="960" height="50" rx="4"></rect><circle class="dot dot-both" cx="986" cy="148" r="5"></circle><text class="t" x="52" y="155">Authentication</text><text class="s" x="52" y="170">OAuth / SSO / JWT, enterprise identity</text><polyline class="fl" points="520.0,122 520.0,132" marker-end="url(#ar)"></polyline><rect class="n n-both" x="40" y="198" width="960" height="50" rx="4"></rect><circle class="dot dot-both" cx="986" cy="212" r="5"></circle><text class="t" x="52" y="219">API Gateway</text><text class="s" x="52" y="234">routing · quota · entry point</text><polyline class="fl" points="520.0,186 520.0,196" marker-end="url(#ar)"></polyline><rect class="n n-sup" x="40" y="262" width="960" height="50" rx="4"></rect><circle class="dot dot-sup" cx="986" cy="276" r="5"></circle><text class="t" x="52" y="283">Semantic Cache</text><text class="s" x="52" y="298">answers repeated queries, no LLM call</text><polyline class="fl" points="520.0,250 520.0,260" marker-end="url(#ar)"></polyline><rect class="n n-both" x="40" y="326" width="960" height="50" rx="4"></rect><circle class="dot dot-both" cx="986" cy="340" r="5"></circle><text class="t" x="52" y="347">Orchestrator / Planner Agent</text><text class="s" x="52" y="362">decomposes the request into steps</text><polyline class="fl" points="520.0,314 520.0,324" marker-end="url(#ar)"></polyline><text class="band" x="40" y="390">PARALLEL CAPABILITIES — reached from the orchestrator</text><rect class="n n-sup" x="40" y="404" width="309.3333333333333" height="64" rx="4"></rect><circle class="dot dot-sup" cx="335.3333333333333" cy="418" r="5"></circle><text class="t" x="52" y="425">RAG / Knowledge Retrieval</text><text class="s" x="52" y="440">vector DB · docs · policies</text><rect class="n n-both" x="365.3333333333333" y="404" width="309.3333333333333" height="64" rx="4"></rect><circle class="dot dot-both" cx="660.6666666666666" cy="418" r="5"></circle><text class="t" x="377.3333333333333" y="425">Tool / Function Calling</text><text class="s" x="377.3333333333333" y="440">deterministic actions</text><rect class="n n-both" x="690.6666666666666" y="404" width="309.3333333333333" height="64" rx="4"></rect><circle class="dot dot-both" cx="986.0" cy="418" r="5"></circle><text class="t" x="702.6666666666666" y="425">MCP Servers</text><text class="s" x="702.6666666666666" y="440">per-app tool discovery</text><polyline class="fl" points="194.66666666666666,402 194.66666666666666,390" marker-end="url(#ar)"></polyline><polyline class="fl" points="520.0,402 520.0,390" marker-end="url(#ar)"></polyline><polyline class="fl" points="845.3333333333333,402 845.3333333333333,390" marker-end="url(#ar)"></polyline><polyline class="fl" points="520.0,392 520.0,390" marker-end="url(#ar)"></polyline><rect class="n n-ent" x="40" y="482" width="309.3333333333333" height="64" rx="4"></rect><circle class="dot dot-ent" cx="335.3333333333333" cy="496" r="5"></circle><text class="t" x="52" y="503">Tool Registry / Discovery</text><text class="s" x="52" y="518">loads only relevant tools at scale</text><rect class="n n-sup" x="365.3333333333333" y="482" width="309.3333333333333" height="64" rx="4"></rect><circle class="dot dot-sup" cx="660.6666666666666" cy="496" r="5"></circle><text class="t" x="377.3333333333333" y="503">Memory</text><text class="s" x="377.3333333333333" y="518">short-term session + long-term profile</text><rect class="n n-both" x="690.6666666666666" y="482" width="309.3333333333333" height="64" rx="4"></rect><circle class="dot dot-both" cx="986.0" cy="496" r="5"></circle><text class="t" x="702.6666666666666" y="503">Specialised Agents</text><text class="s" x="702.6666666666666" y="518">CRM · refund · ticket · shipping …</text><polyline class="fl" points="194.66666666666666,466 194.66666666666666,480" marker-end="url(#ar)"></polyline><polyline class="fl" points="520.0,466 520.0,480" marker-end="url(#ar)"></polyline><polyline class="fl" points="845.3333333333333,466 845.3333333333333,480" marker-end="url(#ar)"></polyline><text class="band" x="40" y="570">CONVERGE</text><rect class="n n-sup" x="40" y="584" width="528.0" height="50" rx="4"></rect><circle class="dot dot-sup" cx="554.0" cy="598" r="5"></circle><text class="t" x="52" y="605">Model Gateway / Routing</text><text class="s" x="52" y="620">small model for FAQs, large for reasoning</text><rect class="n n-sup" x="584.0" y="584" width="416.0" height="50" rx="4"></rect><circle class="dot dot-sup" cx="986.0" cy="598" r="5"></circle><text class="t" x="596.0" y="605">Human Approval Queue</text><text class="s" x="596.0" y="620">high-value / high-risk actions</text><line class="fl" x1="520.0" y1="548" x2="520.0" y2="570"></line><line class="fl" x1="304.0" y1="570" x2="776.0" y2="570"></line><polyline class="fl" points="304.0,570 304.0,582" marker-end="url(#ar)"></polyline><polyline class="fl" points="776.0,570 776.0,582" marker-end="url(#ar)"></polyline><rect class="n n-both" x="40" y="648" width="960" height="50" rx="4"></rect><circle class="dot dot-both" cx="986" cy="662" r="5"></circle><text class="t" x="52" y="669">Customer / Employee Response</text><text class="s" x="52" y="684">streamed back, trace-id retained</text><polyline class="fl" points="304.0,636 304.0,646" marker-end="url(#ar)"></polyline><polyline class="fl" points="776.0,636 776.0,646" marker-end="url(#ar)"></polyline><text class="band" x="40" y="720">CROSS-CUTTING — applies to every stage above</text><rect class="n n-both" x="40.0" y="734" width="228.0" height="58" rx="4"></rect><circle class="dot dot-both" cx="254.0" cy="748" r="5"></circle><text class="t" x="52.0" y="755">Async Execution</text><text class="s" x="52.0" y="770">job-id, background workers</text><rect class="n n-both" x="284.0" y="734" width="228.0" height="58" rx="4"></rect><circle class="dot dot-both" cx="498.0" cy="748" r="5"></circle><text class="t" x="296.0" y="755">Rate Limiting</text><text class="s" x="296.0" y="770">circuit breakers, quotas</text><rect class="n n-both" x="528.0" y="734" width="228.0" height="58" rx="4"></rect><circle class="dot dot-both" cx="742.0" cy="748" r="5"></circle><text class="t" x="540.0" y="755">Security</text><text class="s" x="540.0" y="770">RBAC/ABAC · identity · audit log</text><rect class="n n-both" x="772.0" y="734" width="228.0" height="58" rx="4"></rect><circle class="dot dot-both" cx="986.0" cy="748" r="5"></circle><text class="t" x="784.0" y="755">Observability</text><text class="s" x="784.0" y="770">trace · latency · cost · quality</text><rect class="n n-both" x="40.0" y="806" width="228.0" height="58" rx="4"></rect><circle class="dot dot-both" cx="254.0" cy="820" r="5"></circle><text class="t" x="52.0" y="827">Multi-region deployment</text><text class="s" x="52.0" y="842">regional gateways, active-active</text><rect class="n n-both" x="284.0" y="806" width="228.0" height="58" rx="4"></rect><circle class="dot dot-both" cx="498.0" cy="820" r="5"></circle><text class="t" x="296.0" y="827">Data residency</text><text class="s" x="296.0" y="842">geo-partitioned data &amp; vector stores</text><rect class="n n-gap" x="528.0" y="806" width="228.0" height="58" rx="4"></rect><circle class="dot dot-gap" cx="742.0" cy="820" r="5"></circle><text class="t" x="540.0" y="827">Guardrails &amp; Prompt Injection Defense</text><text class="s" x="540.0" y="842">content moderation, input/output checks</text><rect class="n n-gap" x="772.0" y="806" width="228.0" height="58" rx="4"></rect><circle class="dot dot-gap" cx="986.0" cy="820" r="5"></circle><text class="t" x="784.0" y="827">DR / Chaos Testing</text><text class="s" x="784.0" y="842">backup, failover drills</text></svg>
+    </div>
+    <figcaption>Reading top to bottom: request intake and orchestration are identical in both case studies (teal). The three parallel capabilities the orchestrator reaches for split unevenly — retrieval and memory appear only in the Customer Support design, tool-registry-at-scale only in the Enterprise design. Model routing and human approval are Customer-Support-only. Guardrails and disaster-recovery testing are dashed red: neither project addresses them.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Concept-by-concept</h2>
+  <p class="sub">Every concept named in either transcript, grouped the way a system-design rubric would group them. Click a tag to filter.</p>
+  <div class="filterbar" role="group" aria-label="Filter by coverage">
+    <button class="fbtn" data-f="all" aria-pressed="false">All concepts</button>
+    <button class="fbtn" data-f="both" aria-pressed="false">● Both</button>
+    <button class="fbtn" data-f="ent" aria-pressed="false">● Enterprise only</button>
+    <button class="fbtn" data-f="sup" aria-pressed="false">● Support only</button>
+    <button class="fbtn" data-f="gap" aria-pressed="true">● Gap in both</button>
+  </div>
+  <div class="tablewrap">
+  <table id="matrix">
+    <thead><tr><th>Concept</th><th class="mark-cell">Ent.</th><th class="mark-cell">Supp.</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Foundations</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Clarifying questions before architecture</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both open with 5 questions that shape scope before any diagram appears.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Functional vs. non-functional split</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Explicit candidate-summary section in both.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">High-level architecture diagram</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both walk a boxes-and-arrows diagram before deep-diving.</td></tr>
+      <tr data-tag="ent" class="dim"><td class="concept">Reusable 5-step interview framework</td><td class="mark-cell y">✓</td><td class="mark-cell n">—</td><td class="note">Only the Enterprise doc names the meta-framework as a takeaway.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Knowledge &amp; retrieval</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">RAG (retrieval-augmented generation)</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">Enterprise assistant is action/read-write only — RAG is never mentioned.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Vector DB partitioning by geography / product</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">Named explicitly under RAG scaling.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Embedding pipeline as a cost/maintenance item</td><td class="mark-cell n">—</td><td class="mark-cell p">~</td><td class="note">Implied by "requires indexing and embedding pipeline" in the tradeoff table, not detailed.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Action &amp; integration</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">REST APIs as the integration substrate</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both are explicit that MCP standardizes discovery, REST still does the calling.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Function / tool calling</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both distinguish it from retrieval and from MCP.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">MCP servers</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Per-application MCP servers (SAP, Jira, CRM, Payments…) in both.</td></tr>
+      <tr data-tag="ent" class="dim"><td class="concept">Tool registry / dynamic discovery at scale</td><td class="mark-cell y">✓</td><td class="mark-cell n">—</td><td class="note">Enterprise doc solves the "1,500 functions blow up the prompt" problem explicitly; Support doesn't revisit it.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Integration-method tradeoff table</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">REST/Function-Calling/MCP/Agent-Framework compared in both.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Orchestration &amp; reasoning</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Single- vs. multi-agent decision rule</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both give a concrete "use one agent when…" rule.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Planner / orchestrator agent</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Named component in both architectures.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Specialised domain agents</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">CRM/Email/Analytics/Calendar vs. CRM/Refund/Ticket/Shipping/Notification.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Memory &amp; personalization</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Short-term session memory</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">"it" resolving to the same order across turns.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Long-term user/customer memory</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">Preferences, channel, purchase history.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Memory kept separate from enterprise knowledge</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">Named as a deliberate accuracy/maintainability choice.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Governance &amp; safety</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Human-in-the-loop approval workflow</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">Refund-threshold, VIP, compliance triggers, manager queue.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">RBAC / ABAC authorization</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both: the app, never the LLM, is the source of truth.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Identity propagation per tool call</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">OAuth token / user identity carried to every downstream call.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Audit logging</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Named directly in both security sections.</td></tr>
+      <tr data-tag="gap" class=""><td class="concept">Guardrails / prompt-injection / moderation</td><td class="mark-cell n">—</td><td class="mark-cell n">—</td><td class="note">Neither transcript mentions input/output validation against adversarial content.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Scale &amp; performance</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Stateless, horizontally-scaled services</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Gateway, orchestrator, LLM routing — both call this out first.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Semantic caching (named explicitly)</td><td class="mark-cell p">~</td><td class="mark-cell y">✓</td><td class="note">Enterprise mentions generic "caching" of profile/org data; only Support names semantic cache for repeated NL queries.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Model routing (small vs. large LLM)</td><td class="mark-cell n">—</td><td class="mark-cell y">✓</td><td class="note">FAQ → small model, refund investigation → large reasoning model.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Async execution / job-id pattern</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">"Task accepted" response, background workers finish the job.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Rate limiting &amp; circuit breakers</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both guard against runaway agents and downstream failure.</td></tr>
+      <tr data-tag="sup" class="dim"><td class="concept">Cost optimization as its own design goal</td><td class="mark-cell p">~</td><td class="mark-cell y">✓</td><td class="note">Support has a dedicated cost section; Enterprise treats it as a side-effect of scaling.</td></tr>
+
+      <tr class="catrow" data-tag="hdr"><td colspan="4">Operations, reach &amp; evaluation</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Observability / execution tracing</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Full trace (prompt → tools → latency → cost → errors) in both.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Multi-region / global deployment</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Regional gateways, active-active stateless services, both.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Data residency &amp; compliance boundaries</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Geo-partitioned data/vector stores in both.</td></tr>
+      <tr data-tag="gap" class=""><td class="concept">Disaster recovery / chaos testing</td><td class="mark-cell n">—</td><td class="mark-cell n">—</td><td class="note">No backup/restore or failure-injection discussion in either transcript.</td></tr>
+      <tr data-tag="both" class="dim"><td class="concept">Final tradeoff table across technologies</td><td class="mark-cell y">✓</td><td class="mark-cell y">✓</td><td class="note">Both close Phase 5 with a best-use/advantage/tradeoff table.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>What neither one covers</h2>
+  <p class="sub">The gaps, if you're using these two as full interview prep for agentic system design.</p>
+  <div class="gaps">
+    <div class="g"><h4>Guardrails &amp; prompt-injection defense</h4><p>Neither transcript discusses treating retrieved documents or tool output as untrusted input, or validating model output before it triggers an action.</p></div>
+    <div class="g"><h4>Prompt management / versioning</h4><p>System prompts are implied but never treated as versioned, tested artifacts the way the rest of the stack is.</p></div>
+    <div class="g"><h4>Disaster recovery &amp; chaos testing</h4><p>Multi-region deployment is covered for latency and residency, but neither walks through what happens when a region — or the LLM provider itself — goes down.</p></div>
+    <div class="g"><h4>Explicit capacity estimation</h4><p>Both state a target (1M or 10M conversations/day; 50K–200K employees) but neither derives RPS, storage, or bandwidth from it the way a general system-design rubric would.</p></div>
+  </div>
+</section>
+
+<footer>Sources: iGrace — Enterprise AI Assistant Design · Customer Support AI Assistant Design</footer>
+</div>
+
+
+
+</body><chatgpt-sidebar data-rendered="true" data-gpts-theme="light"><template shadowmode="open"><div class="chat-gpt-quick-query-container"><div class="css-1d6rho5 ant-app"></div></div><meta name="sider-selection-tags" content="disable-translator-fab"></template></chatgpt-sidebar><grammarly-desktop-integration data-grammarly-shadow-root="true" style="visibility: visible !important;"><template shadowmode="open"><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

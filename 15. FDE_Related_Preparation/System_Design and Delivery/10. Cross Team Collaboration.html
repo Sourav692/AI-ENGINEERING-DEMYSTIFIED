@@ -1,0 +1,319 @@
+<title>Cross Team Collaboration Interview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#eef2f3;
+  --ink:#141f27; --body:#2f3f4a; --muted:#5f7280;
+  --rule:#d9e2e6; --rule-soft:#e7edef;
+  --accent:#0d6f68; --accent-soft:#e2f0ee;
+  --cross:#5f45b8; --cross-soft:#ece7fa;
+  --amb:#9a6412; --amb-soft:#f7ecd6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+    --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+    --rule:#22323b; --rule-soft:#1b282f;
+    --accent:#54c3b5; --accent-soft:#12302e;
+    --cross:#a892f2; --cross-soft:#211c38;
+    --amb:#e0ab52; --amb-soft:#332612;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1216; --surface:#121c22; --surface-2:#16232a;
+  --ink:#e6edf0; --body:#c2d0d7; --muted:#8ba0ac;
+  --rule:#22323b; --rule-soft:#1b282f;
+  --accent:#54c3b5; --accent-soft:#12302e;
+  --cross:#a892f2; --cross-soft:#211c38;
+  --amb:#e0ab52; --amb-soft:#332612;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.mono,.sec-num,th,.flow figcaption,.eyebrow{font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;}
+.mono,td:first-child,th:first-child{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+.mast{padding:clamp(48px,8vw,88px) 0 clamp(28px,4vw,40px); border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 18px}
+h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(36px,6vw,62px); line-height:1.04; letter-spacing:-.025em; color:var(--ink); margin:0 0 20px; text-wrap:balance; max-width:16ch}
+.lede{font-size:clamp(16.5px,2vw,19px); color:var(--body); max-width:66ch; margin:0}
+.lede strong{color:var(--ink)}
+.mast-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase}
+.mast-meta span{display:inline-flex; align-items:center; gap:8px}
+.mast-meta span::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+.shell{display:grid; grid-template-columns:1fr; gap:0}
+@media(min-width:1000px){.shell{grid-template-columns:232px minmax(0,1fr); gap:56px; align-items:start}}
+nav.toc{display:none}
+@media(min-width:1000px){nav.toc{display:block; position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:40px 0 40px; border-right:1px solid var(--rule-soft)}}
+nav.toc p{font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.toc a{display:flex; gap:12px; align-items:baseline; text-decoration:none; padding:6px 10px 6px 0; font-size:13.5px; line-height:1.35; color:var(--muted); border-radius:4px; transition:color .15s ease}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); min-width:18px; font-variant-numeric:tabular-nums; opacity:.75}
+
+main{padding:8px 0 96px; min-width:0}
+.sec{padding:clamp(36px,5vw,52px) 0; border-bottom:1px solid var(--rule-soft)}
+.sec:last-child{border-bottom:0}
+.sec-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:22px}
+.sec-num{font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:6px 9px; line-height:1; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.sec-head h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin:0; line-height:1.15; text-wrap:balance}
+.sec-purpose{margin:6px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.sec-body{display:flex; flex-direction:column; gap:20px}
+.prose{margin:0; max-width:68ch}
+.prose strong{color:var(--ink)}
+
+.items{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.items{grid-template-columns:1fr 1fr}}
+.item{background:var(--surface); padding:18px 20px 20px; border:1px solid var(--rule-soft); margin:-1px 0 0 -1px}
+.item h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.005em; display:flex; align-items:baseline; gap:9px}
+.item h4::before{content:""; width:5px; height:5px; flex:none; background:var(--accent); border-radius:50%; transform:translateY(-3px)}
+.item .aiex{margin:0 0 8px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.02em; color:var(--accent); background:var(--accent-soft); display:inline-block; padding:2px 8px; border-radius:3px}
+.item p{margin:0; font-size:15px; line-height:1.58; color:var(--body)}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--rule-soft); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface-2)}
+td{font-size:14.5px}
+td:first-child,th:first-child{width:44px; color:var(--accent); font-variant-numeric:tabular-nums; font-size:13px}
+tbody tr:last-child td{border-bottom:0}
+tbody td:nth-child(2){color:var(--ink); font-weight:600; font-family:"Bricolage Grotesque",sans-serif; font-size:14.5px; min-width:190px}
+tbody td:nth-child(3){color:var(--muted)}
+
+.dgm-fig{margin:0; display:flex; flex-direction:column; gap:12px}
+.dgm-fig .scroll{overflow-x:auto; background:var(--surface-2); border:1px solid var(--rule-soft); padding:clamp(14px,2.4vw,28px)}
+.dgm-fig figcaption{font-size:14.5px; color:var(--muted); max-width:70ch; line-height:1.5}
+.dgm{display:block; width:100%; min-width:640px; height:auto}
+.dgm .hub{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .hubt{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:13px; text-anchor:middle}
+.dgm .spoke{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .spokeL{fill:var(--accent); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:20px; text-anchor:middle}
+.dgm .spokeT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:11.5px; text-anchor:middle}
+.dgm .fl{fill:none; stroke:var(--rule); stroke-width:1.3}
+.dgm .ring{fill:none; stroke:var(--cross); stroke-width:1.3; stroke-dasharray:3 4}
+.dgm .cross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .crossT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .band{fill:var(--muted); font-family:"Bricolage Grotesque",sans-serif; font-size:10px; font-weight:700; letter-spacing:.13em}
+
+.dgm .outer{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .outerT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .pill{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1}
+.dgm .pillT{fill:var(--accent); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .pillM{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1}
+.dgm .pillMT{fill:var(--cross); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .gw{fill:var(--surface); stroke:var(--ink); stroke-width:1.3}
+.dgm .gwT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:12px; text-anchor:middle}
+.dgm .svc{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.3}
+.dgm .svcT{fill:var(--cross); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .db{fill:var(--surface); stroke:var(--muted); stroke-width:1.2}
+.dgm .dbT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .stage{fill:var(--surface); stroke:var(--rule); stroke-width:1.3}
+.dgm .stageAccent{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.dgm .stageCross{fill:var(--cross-soft); stroke:var(--cross); stroke-width:1.4}
+.dgm .stageT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:14px; text-anchor:middle}
+.dgm .stageSub{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-anchor:middle}
+.dgm .axis{stroke:var(--rule); stroke-width:1.3; stroke-dasharray:2 4}
+.dgm .axisT{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase}
+.dgm .panelT{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:15px; text-anchor:middle}
+.dgm .bandbg{fill:var(--surface-2)}
+.dgm .vs{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11px; text-anchor:middle}
+.dgm .n{fill:var(--surface); stroke:var(--rule); stroke-width:1}
+.dgm .t{fill:var(--ink); font-family:"Bricolage Grotesque",sans-serif; font-size:12.5px; font-weight:600}
+.dgm .s{fill:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:9.5px}
+.dgm .fl{fill:none; stroke:var(--muted); stroke-width:1.3}
+.dgm .dl{fill:none; stroke:var(--cross); stroke-width:1; stroke-dasharray:3 3; opacity:.8}
+.dgm .mk{fill:var(--muted)}
+.dgm .mkD{fill:var(--cross)}
+.dgm .badge{fill:var(--accent); stroke:var(--surface); stroke-width:2}
+.dgm .badget{fill:#fff; font-family:"Bricolage Grotesque",sans-serif; font-size:11px; font-weight:800}
+
+.dgm .amb{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+.dgm .ambT{fill:var(--amb); font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:11.5px; text-anchor:middle}
+.dgm .diamond{fill:var(--amb-soft); stroke:var(--amb); stroke-width:1.3}
+
+.callout{background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 20px; font-size:16px; color:var(--ink); max-width:72ch}
+.callout.cross{background:var(--cross-soft); border-left-color:var(--cross)}
+.callout.amb{background:var(--amb-soft); border-left-color:var(--amb)}
+
+.bullets{list-style:none; margin:0; padding:0; display:grid; gap:9px; max-width:60ch}
+.bullets li{display:flex; gap:10px; align-items:baseline; font-size:15px; color:var(--body)}
+.bullets li::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; transform:translateY(-2px)}
+
+.chiprow{display:flex; flex-wrap:wrap; gap:8px}
+.chiprow span{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--surface-2); border:1px solid var(--rule-soft); color:var(--muted); padding:5px 10px; border-radius:3px}
+
+.vgrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.vgrid{grid-template-columns:1fr 1fr}}
+.vcol{background:var(--surface); border:1px solid var(--rule-soft); padding:20px 22px}
+.vcol h3{margin:0 0 4px; font-size:17px; font-weight:800; font-family:"Bricolage Grotesque",sans-serif; color:var(--ink)}
+.vcol .vsub{margin:0 0 14px; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.vcol.vmono h3{color:var(--accent)}
+.vcol.vmicro h3{color:var(--cross)}
+
+.quotegrid{display:grid; gap:2px; grid-template-columns:1fr}
+@media(min-width:760px){.quotegrid{grid-template-columns:1fr 1fr}}
+.qcard{background:var(--surface); border:1px solid var(--rule-soft); padding:16px 18px; display:flex; gap:12px}
+.qcard .ck{color:var(--accent); font-weight:700; flex:none}
+.qcard div{min-width:0}
+.qcard b{display:block; color:var(--ink); font-size:13.5px; margin-bottom:3px; font-family:"Bricolage Grotesque",sans-serif}
+.qcard span{font-size:14.5px; color:var(--body); font-style:italic}
+
+.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:grid; gap:1px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:14px; background:var(--surface); border:1px solid var(--rule-soft); margin:-1px 0 0; padding:15px 18px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:3px}
+.steps li>div{min-width:0}
+.steps h4{margin:0 0 4px; font-size:15px; font-weight:700; color:var(--ink)}
+.steps p{margin:0; font-size:14.5px; color:var(--body)}
+
+footer{border-top:1px solid var(--rule); padding:28px 0 60px; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.03em}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <p class="eyebrow">System Design &amp; Delivery Interviews</p>
+  <h1>Cross Team Collaboration</h1>
+  <p class="lede">The interview question: <strong>"Tell me about a time when you led a cross-team data/AI project involving multiple stakeholders. How did you ensure alignment, ownership, and effective communication?"</strong> The hard part of a cross-team AI platform is rarely the technology — it's aligning teams with different priorities and tightly coupled dependencies.</p>
+  <div class="mast-meta">
+    <span>5 stakeholder groups</span><span>RACI ownership</span><span>tiered communication</span><span>phased delivery</span>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="toc"><p>Contents</p><ol>
+<li><a href="#p1"><span class="n">1</span><span>The interview question</span></a></li>
+<li><a href="#p2"><span class="n">2</span><span>Stakeholders &amp; complexity</span></a></li>
+<li><a href="#p3"><span class="n">3</span><span>Establishing clear ownership (RACI)</span></a></li>
+<li><a href="#p4"><span class="n">4</span><span>Communication strategy</span></a></li>
+<li><a href="#p5"><span class="n">5</span><span>Conflict resolution</span></a></li>
+<li><a href="#p6"><span class="n">6</span><span>Execution &amp; delivery</span></a></li>
+<li><a href="#p7"><span class="n">7</span><span>Outcome</span></a></li>
+<li><a href="#p8"><span class="n">8</span><span>Key learnings</span></a></li>
+<li><a href="#p9"><span class="n">9</span><span>Why this answer works</span></a></li>
+</ol></nav>
+
+<main>
+
+<section class="sec" id="p1">
+<header class="sec-head"><span class="sec-num">1</span><div><h2>The interview question</h2><p class="sec-purpose">Alignment, ownership, and communication — not just delivery</p></div></header>
+<div class="sec-body">
+<div class="callout">"Tell me about a time when you led a cross-team data/AI project involving multiple stakeholders. How did you ensure alignment, ownership, and effective communication?"</div>
+<p class="prose">A strong example: a global data and AI platform delivered to generate seller and executive insights. The real challenge wasn't just building the platform — it was aligning multiple teams with different priorities and dependencies. This framing is deliberate: naming the actual difficulty up front (not the technology) is what signals senior-level thinking before a single detail is given.</p>
+</div>
+</section>
+
+<section class="sec" id="p2">
+<header class="sec-head"><span class="sec-num">2</span><div><h2>Stakeholders &amp; complexity</h2><p class="sec-purpose">Five groups, tightly coupled dependencies</p></div></header>
+<div class="sec-body">
+<p class="prose">This initiative involved software teams, a data engineering team, AI/ML engineers, a project manager, and business stakeholders — each with a different stake in the outcome and a different definition of "done." The key challenge: different teams had conflicting priorities, and dependencies were tightly coupled, increasing delivery risk.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 900 780" role="img" aria-label="Stakeholder map: the global data and AI platform sits at the center of five stakeholder groups arranged radially — software teams owning upstream apps and APIs, the data engineering team owning ingestion and the lake, AI/ML engineers building forecasting models, the project manager coordinating timelines, and business stakeholders defining success metrics."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><polyline class="fl" points="450.0,390.0 450.0,130.0"/><polyline class="fl" points="450.0,390.0 697.3,309.7"/><polyline class="fl" points="450.0,390.0 602.8,600.3"/><polyline class="fl" points="450.0,390.0 297.2,600.3"/><polyline class="fl" points="450.0,390.0 202.7,309.7"/><rect class="gw" x="320.0" y="345.0" width="260" height="90" rx="6"/><text class="gwT" x="450.0" y="387.0" text-anchor="middle" >Global Data &amp; AI</text><text class="gwT" x="450.0" y="401.0" text-anchor="middle" >Platform</text><rect class="svc" x="335.0" y="98.0" width="230" height="64" rx="6"/><text class="svcT" x="450.0" y="127.0" text-anchor="middle" >Software Teams</text><text class="svcT" x="450.0" y="141.0" text-anchor="middle" >(upstream apps &amp; APIs)</text><rect class="svc" x="582.27469423674" y="277.6555814625137" width="230" height="64" rx="6"/><text class="svcT" x="697.3" y="306.7" text-anchor="middle" >Data Engineering</text><text class="svcT" x="697.3" y="320.7" text-anchor="middle" >(ingestion &amp; lake)</text><rect class="svc" x="487.82416559604303" y="568.3444185374864" width="230" height="64" rx="6"/><text class="svcT" x="602.8" y="597.3" text-anchor="middle" >AI/ML Engineers</text><text class="svcT" x="602.8" y="611.3" text-anchor="middle" >(forecasting models)</text><rect class="n" x="182.17583440395703" y="568.3444185374864" width="230" height="64" rx="6"/><text class="t" x="297.2" y="597.3" text-anchor="middle" >Project Manager</text><text class="t" x="297.2" y="611.3" text-anchor="middle" >(timelines &amp; coordination)</text><rect class="amb" x="87.72530576326005" y="277.65558146251374" width="230" height="64" rx="6"/><text class="ambT" x="202.7" y="306.7" text-anchor="middle" >Business Stakeholders</text><text class="ambT" x="202.7" y="320.7" text-anchor="middle" >(success metrics)</text></svg></div>
+<figcaption>Five stakeholder groups, one platform: software teams own upstream application data and APIs, the DE team builds ingestion and lake pipelines, AI/ML engineers develop forecasting and insight models, the PM manages timelines and cross-team coordination, and business stakeholders define success metrics and consume outputs.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p3">
+<header class="sec-head"><span class="sec-num">3</span><div><h2>Establishing clear ownership (RACI)</h2><p class="sec-purpose">Removing ambiguity before it causes delay</p></div></header>
+<div class="sec-body">
+<p class="prose">To remove ambiguity, a RACI matrix was implemented across all major workstreams — who is Responsible for doing the work, Accountable for the outcome, Consulted before decisions, and Informed after them.</p>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Workstream</th><th>Responsible</th><th>Accountable</th><th>Consulted</th><th>Informed</th></tr></thead>
+<tbody>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Data Ingestion</td><td>DE Team</td><td>Data Platform Lead</td><td>Software Teams</td><td>PM, Business</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Data Modeling (Lake)</td><td>DE Team</td><td>Data Platform Lead</td><td>AI Engineers</td><td>PM</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">ML Forecasting Models</td><td>AI Engineers</td><td>ML Lead</td><td>DE Team, Business</td><td>PM</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">API / Data Access</td><td>Software Teams</td><td>Engineering Manager</td><td>DE Team</td><td>PM, Business</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Dashboards &amp; Insights</td><td>BI / AI Team</td><td>Product Owner</td><td>Business Stakeholders</td><td>PM</td></tr>
+<tr><td style="width:auto;color:var(--ink);font-weight:600;font-family:'Bricolage Grotesque',sans-serif">Program Delivery</td><td>Project Manager</td><td>Program Sponsor</td><td>All Teams</td><td>Leadership</td></tr>
+</tbody>
+</table>
+</div>
+<p class="prose">This helped eliminate ownership confusion, speed up decision-making, and ensure accountability at every stage — a workstream with an unclear owner is where cross-team projects quietly stall.</p>
+</div>
+</section>
+
+<section class="sec" id="p4">
+<header class="sec-head"><span class="sec-num">4</span><div><h2>Communication strategy</h2><p class="sec-purpose">Structured and outcome-driven, not more meetings</p></div></header>
+<div class="sec-body">
+<p class="prose">The focus was structured and outcome-driven communication, rather than increasing meeting load. A tiered communication model matched cadence to altitude: daily async updates for progress and blockers, a weekly cross-team sync for dependencies and decisions, and bi-weekly executive updates for impact and risk.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 860 400" role="img" aria-label="Tiered communication model: daily async updates via a shared tracker, a weekly cross-team sync focused only on dependencies and decisions, and bi-weekly executive updates highlighting impact, risks, and progress."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="svc" x="90.0" y="20" width="680" height="56" rx="6"/><text class="svcT" x="430.0" y="45.0" text-anchor="middle" >📌 Daily Async Updates</text><text class="svcT" x="430.0" y="59.0" text-anchor="middle" >Shared tracker: progress, risks, blockers</text><polyline class="fl" points="430.0,76.0 430.0,108.0" marker-end="url(#ar)"/><rect class="n" x="170.0" y="110" width="520" height="56" rx="6"/><text class="t" x="430.0" y="135.0" text-anchor="middle" >📌 Weekly Cross-Team Sync</text><text class="t" x="430.0" y="149.0" text-anchor="middle" >Focused only on dependencies and decisions</text><polyline class="fl" points="430.0,166.0 430.0,198.0" marker-end="url(#ar)"/><rect class="gw" x="240.0" y="200" width="380" height="56" rx="6"/><text class="gwT" x="430.0" y="225.0" text-anchor="middle" >📌 Bi-Weekly Executive Updates</text><text class="gwT" x="430.0" y="239.0" text-anchor="middle" >Impact, risks, and progress</text><text class="axisT" x="430.0" y="286.0" text-anchor="middle" >HIGHER FREQUENCY, MORE DETAIL  →  LOWER FREQUENCY, MORE ALTITUDE</text></svg></div>
+<figcaption>Each tier answers a different question at a different frequency — the daily tracker keeps peers unblocked, the weekly sync resolves cross-team dependencies, and the bi-weekly update keeps leadership informed without pulling them into the details.</figcaption>
+</figure>
+<div class="items">
+<div class="item"><h4>🚫 No status-only meetings</h4><p>Every interaction must unblock or decide something — a meeting that only reports status is a written update that got a calendar invite.</p></div>
+<div class="item"><h4>📍 Single source of truth</h4><p>One centralized tracking system — not five spreadsheets and a Slack thread each claiming to be current.</p></div>
+<div class="item"><h4>✍️ Write-first culture</h4><p>Decisions documented before discussion, so meetings resolve disagreements instead of generating the first draft of them.</p></div>
+<div class="item"><h4>⚡ Fast escalation</h4><p>Blockers raised within 24 hours — a dependency that sits unescalated for a week is how tightly coupled workstreams cascade into delay.</p></div>
+</div>
+<p class="prose"><strong>Bridging tech and business:</strong> technical issues were translated into business impact — "data delay affects forecast accuracy and seller decisions," not "the ingestion job failed." The customer was kept continuously engaged, not just briefed at delivery.</p>
+</div>
+</section>
+
+<section class="sec" id="p5">
+<header class="sec-head"><span class="sec-num">5</span><div><h2>Conflict resolution</h2><p class="sec-purpose">Speed vs. reliability, resolved with contracts and phasing</p></div></header>
+<div class="sec-body">
+<p class="prose">A key conflict emerged: software teams prioritized speed of feature delivery, while DE and AI teams needed stable, high-quality data. Neither priority was wrong — they were just optimizing for different stages of the same pipeline. The resolution introduced data contracts and delivered in two phases, balancing speed and reliability instead of forcing one team to simply lose the argument.</p>
+<figure class="dgm-fig">
+<div class="scroll"><svg class="dgm" viewBox="0 0 860 480" role="img" aria-label="Conflict resolution: software teams wanted speed of feature delivery while data engineering and AI teams needed stable, high-quality data. Data contracts resolved the tension, enabling a phased delivery of a reliable core dataset followed by advanced features."><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker><marker id="arD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.6" markerHeight="5.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mkD"/></marker></defs><rect class="svc" x="70.0" y="20" width="340" height="56" rx="6"/><text class="svcT" x="240.0" y="45.0" text-anchor="middle" >Software Teams</text><text class="svcT" x="240.0" y="59.0" text-anchor="middle" >want: speed of feature delivery</text><rect class="svc" x="450.0" y="20" width="340" height="56" rx="6"/><text class="svcT" x="620.0" y="45.0" text-anchor="middle" >DE / AI Teams</text><text class="svcT" x="620.0" y="59.0" text-anchor="middle" >need: stable, high-quality data</text><polyline class="fl" points="240.0,76.0 430.0,114.0" marker-end="url(#ar)"/><polyline class="fl" points="620.0,76.0 430.0,114.0" marker-end="url(#ar)"/><rect class="gw" x="270.0" y="116" width="320" height="50" rx="6"/><text class="gwT" x="430.0" y="145.0" text-anchor="middle" >Data Contracts</text><polyline class="fl" points="430.0,166.0 430.0,198.0" marker-end="url(#ar)"/><rect class="n" x="250.0" y="200" width="360" height="54" rx="6"/><text class="t" x="430.0" y="224.0" text-anchor="middle" >Phase 1</text><text class="t" x="430.0" y="238.0" text-anchor="middle" >Reliable core dataset</text><polyline class="fl" points="430.0,254.0 430.0,286.0" marker-end="url(#ar)"/><rect class="svc" x="250.0" y="288" width="360" height="54" rx="6"/><text class="svcT" x="430.0" y="312.0" text-anchor="middle" >Phase 2</text><text class="svcT" x="430.0" y="326.0" text-anchor="middle" >Advanced features</text></svg></div>
+<figcaption>Data contracts turned an ownership argument into an interface agreement: phase one shipped a reliable core dataset, and phase two layered advanced features on top of it once the foundation was stable.</figcaption>
+</figure>
+</div>
+</section>
+
+<section class="sec" id="p6">
+<header class="sec-head"><span class="sec-num">6</span><div><h2>Execution &amp; delivery</h2><p class="sec-purpose">RACI and cadence, put into practice</p></div></header>
+<div class="sec-body">
+<ul class="bullets">
+<li>Workstreams aligned to RACI ownership, so every deliverable had exactly one accountable owner.</li>
+<li>Centralized tracking of dependencies kept the tightly coupled workstreams visible to everyone, not just the PM.</li>
+<li>Regular integration checkpoints ensured alignment before divergence became expensive to unwind.</li>
+</ul>
+</div>
+</section>
+
+<section class="sec" id="p7">
+<header class="sec-head"><span class="sec-num">7</span><div><h2>Outcome</h2><p class="sec-purpose">A platform, and a repeatable way of working</p></div></header>
+<div class="sec-body">
+<div class="chiprow"><span>Better demand forecasting</span><span>Reduced stockouts and wastage</span><span>Repeatable collaboration model for future programs</span></div>
+<p class="prose">Successfully delivered a scalable global data and AI platform — and, arguably more valuable long-term, created a repeatable collaboration model that other cross-team programs could reuse without rebuilding the RACI and communication structure from scratch.</p>
+</div>
+</section>
+
+<section class="sec" id="p8">
+<header class="sec-head"><span class="sec-num">8</span><div><h2>Key learnings</h2><p class="sec-purpose">What actually moved the needle</p></div></header>
+<div class="sec-body">
+<ul class="bullets">
+<li>Clear ownership via RACI significantly improves execution speed.</li>
+<li>Communication must be intentional and structured, not frequent — more meetings is not the same as more alignment.</li>
+<li>Early alignment across teams prevents late-stage risks that are far more expensive to resolve after integration.</li>
+</ul>
+</div>
+</section>
+
+<section class="sec" id="p9">
+<header class="sec-head"><span class="sec-num">9</span><div><h2>Why this answer works</h2><p class="sec-purpose">Complexity, ownership, communication, and outcomes — in one story</p></div></header>
+<div class="sec-body">
+<div class="items">
+<div class="item"><h4>🧩 Clearly demonstrates cross-team complexity</h4><p>Five stakeholder groups with conflicting priorities, named specifically rather than gestured at.</p></div>
+<div class="item"><h4>📋 Shows structured ownership</h4><p>RACI in action, not just claimed — with the actual matrix to back it up.</p></div>
+<div class="item"><h4>🗣️ Highlights communication maturity</h4><p>A tiered cadence, not "we had a lot of syncs."</p></div>
+<div class="item"><h4>⚖️ Includes conflict resolution + outcomes</h4><p>A real tension named, resolved with a concrete mechanism, and tied to measurable results.</p></div>
+<div class="item" style="grid-column:1/-1"><h4>🎯 Reflects senior leadership and delivery mindset</h4><p>The story is about how the work got coordinated, not just what got built — which is exactly what this question is designed to surface.</p></div>
+</div>
+</div>
+</section>
+
+</main>
+</div>
+<footer>Source: <a href="https://www.igrace.in/technology/interviews-proj-delivery/project-delivery/cross-team-collaboration">iGrace — Cross Team Collaboration</a></footer>
+</div>

@@ -1,0 +1,20 @@
+%% Layer 3 — Multi-Agent Pipeline (agents.py — LangGraph StateGraph)
+%% Orchestrator retries the loop up to agent_max_iterations times if the Critic rejects the report.
+flowchart LR
+    Start(["search node"])
+    A1["Search Agent\nfinds 5 key facts\nuses session history"]
+    A2["Summarize Agent\ncondenses findings\ninto bullet points"]
+    A3["Writer Agent\nfull structured report\nuses LTM context if present"]
+    A4{"Critic Agent\nfact-check pass?"}
+    Done(["END — verified report"])
+
+    Start --> A1 --> A2 --> A3 --> A4
+    A4 -->|"NO — under max_iterations"| A1
+    A4 -->|"YES"| Done
+
+    classDef agent fill:#11161d,stroke:#4fb8d0,color:#e6edf3
+    classDef gate fill:#1c2128,stroke:#e0a458,color:#e6edf3
+    classDef term fill:#11161d,stroke:#7c8a9b,color:#7c8a9b,stroke-dasharray: 3 3
+    class A1,A2,A3 agent
+    class A4 gate
+    class Start,Done term

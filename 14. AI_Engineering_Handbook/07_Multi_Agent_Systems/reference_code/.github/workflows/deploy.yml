@@ -1,0 +1,202 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push app image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          APP_REPO: research-agent-app
+        run: |
+          docker build -f app/Dockerfile -t $ECR_REGISTRY/$APP_REPO:$GITHUB_SHA .
+          docker push $ECR_REGISTRY/$APP_REPO:$GITHUB_SHA
+          docker tag $ECR_REGISTRY/$APP_REPO:$GITHUB_SHA $ECR_REGISTRY/$APP_REPO:latest
+          docker push $ECR_REGISTRY/$APP_REPO:latest
+
+      - name: Build and push PyRIT image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          PYRIT_REPO: research-agent-pyrit
+        run: |
+          docker build -f pyrit_dashboard/Dockerfile -t $ECR_REGISTRY/$PYRIT_REPO:$GITHUB_SHA .
+          docker push $ECR_REGISTRY/$PYRIT_REPO:$GITHUB_SHA
+          docker tag $ECR_REGISTRY/$PYRIT_REPO:$GITHUB_SHA $ECR_REGISTRY/$PYRIT_REPO:latest
+          docker push $ECR_REGISTRY/$PYRIT_REPO:latest
+
+      - name: Build and push TensorZero image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          TZ_REPO: research-agent-tensorzero
+        run: |
+          docker build -f tensorzero/Dockerfile -t $ECR_REGISTRY/$TZ_REPO:$GITHUB_SHA .
+          docker push $ECR_REGISTRY/$TZ_REPO:$GITHUB_SHA
+          docker tag $ECR_REGISTRY/$TZ_REPO:$GITHUB_SHA $ECR_REGISTRY/$TZ_REPO:latest
+          docker push $ECR_REGISTRY/$TZ_REPO:latest
+
+      - name: Deploy app to ECS
+        id: deploy-app
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          APP_REPO: research-agent-app
+        run: |
+          # Save the currently running task def ARN so we can roll back to it on failure
+          PREVIOUS_ARN=$(aws ecs describe-services \
+            --cluster research-agent-cluster \
+            --services research-agent-app \
+            --query 'services[0].taskDefinition' --output text 2>/dev/null || echo "")
+          echo "previous_task_def_arn=$PREVIOUS_ARN" >> $GITHUB_OUTPUT
+
+          TASK_DEF=$(aws ecs describe-task-definition --task-definition research-agent-app --query taskDefinition)
+          NEW_TASK_DEF=$(echo $TASK_DEF | python3 -c "
+          import json, sys, os
+          td = json.load(sys.stdin)
+          registry = os.environ['ECR_REGISTRY']
+          sha = os.environ['GITHUB_SHA']
+          for c in td['containerDefinitions']:
+              if c['name'] == 'app':
+                  c['image'] = f'{registry}/research-agent-app:{sha}'
+              elif c['name'] == 'tensorzero':
+                  c['image'] = f'{registry}/research-agent-tensorzero:{sha}'
+          for key in ['taskDefinitionArn','revision','status','requiresAttributes','compatibilities','registeredAt','registeredBy']:
+              td.pop(key, None)
+          print(json.dumps(td))
+          ")
+          NEW_ARN=$(aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF" --query taskDefinition.taskDefinitionArn --output text)
+          PUBLIC_SUBNETS=$(aws ec2 describe-subnets \
+            --filters "Name=tag:Name,Values=research-agent-public-0,research-agent-public-1" \
+            --query 'Subnets[].SubnetId' --output text | tr '\t' ',')
+          ECS_SG=$(aws ec2 describe-security-groups \
+            --filters "Name=group-name,Values=research-agent-ecs-tasks" \
+            --query 'SecurityGroups[0].GroupId' --output text)
+          APP_TG=$(aws elbv2 describe-target-groups \
+            --names research-agent-app-tg \
+            --query 'TargetGroups[0].TargetGroupArn' --output text)
+          STATUS=$(aws ecs describe-services --cluster research-agent-cluster --services research-agent-app --query 'services[0].status' --output text 2>/dev/null || echo "MISSING")
+          echo "Service status: $STATUS"
+          if [ "$STATUS" = "ACTIVE" ]; then
+            aws ecs update-service \
+              --cluster research-agent-cluster \
+              --service research-agent-app \
+              --task-definition $NEW_ARN \
+              --region $AWS_REGION
+          else
+            echo "Service not active, creating from scratch..."
+            aws ecs create-service \
+              --cluster research-agent-cluster \
+              --service-name research-agent-app \
+              --task-definition $NEW_ARN \
+              --desired-count 1 \
+              --launch-type FARGATE \
+              --network-configuration "awsvpcConfiguration={subnets=[$PUBLIC_SUBNETS],securityGroups=[$ECS_SG],assignPublicIp=ENABLED}" \
+              --load-balancers "targetGroupArn=$APP_TG,containerName=app,containerPort=8000" \
+              --region $AWS_REGION
+          fi
+
+      - name: Deploy PyRIT to ECS
+        id: deploy-pyrit
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          PYRIT_REPO: research-agent-pyrit
+        run: |
+          PREVIOUS_ARN=$(aws ecs describe-services \
+            --cluster research-agent-cluster \
+            --services research-agent-pyrit \
+            --query 'services[0].taskDefinition' --output text 2>/dev/null || echo "")
+          echo "previous_task_def_arn=$PREVIOUS_ARN" >> $GITHUB_OUTPUT
+
+          TASK_DEF=$(aws ecs describe-task-definition --task-definition research-agent-pyrit --query taskDefinition)
+          NEW_TASK_DEF=$(echo $TASK_DEF | python3 -c "
+          import json, sys
+          td = json.load(sys.stdin)
+          td['containerDefinitions'][0]['image'] = '$ECR_REGISTRY/$PYRIT_REPO:$GITHUB_SHA'
+          for key in ['taskDefinitionArn','revision','status','requiresAttributes','compatibilities','registeredAt','registeredBy']:
+              td.pop(key, None)
+          print(json.dumps(td))
+          ")
+          NEW_ARN=$(aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF" --query taskDefinition.taskDefinitionArn --output text)
+          PUBLIC_SUBNETS=$(aws ec2 describe-subnets \
+            --filters "Name=tag:Name,Values=research-agent-public-0,research-agent-public-1" \
+            --query 'Subnets[].SubnetId' --output text | tr '\t' ',')
+          ECS_SG=$(aws ec2 describe-security-groups \
+            --filters "Name=group-name,Values=research-agent-ecs-tasks" \
+            --query 'SecurityGroups[0].GroupId' --output text)
+          PYRIT_TG=$(aws elbv2 describe-target-groups \
+            --names research-agent-pyrit-tg \
+            --query 'TargetGroups[0].TargetGroupArn' --output text)
+          STATUS=$(aws ecs describe-services --cluster research-agent-cluster --services research-agent-pyrit --query 'services[0].status' --output text 2>/dev/null || echo "MISSING")
+          echo "Service status: $STATUS"
+          if [ "$STATUS" = "ACTIVE" ]; then
+            aws ecs update-service \
+              --cluster research-agent-cluster \
+              --service research-agent-pyrit \
+              --task-definition $NEW_ARN \
+              --region $AWS_REGION
+          else
+            echo "Service not active, creating from scratch..."
+            aws ecs create-service \
+              --cluster research-agent-cluster \
+              --service-name research-agent-pyrit \
+              --task-definition $NEW_ARN \
+              --desired-count 1 \
+              --launch-type FARGATE \
+              --network-configuration "awsvpcConfiguration={subnets=[$PUBLIC_SUBNETS],securityGroups=[$ECS_SG],assignPublicIp=ENABLED}" \
+              --load-balancers "targetGroupArn=$PYRIT_TG,containerName=pyrit,containerPort=8001" \
+              --region $AWS_REGION
+          fi
+
+      - name: Wait for app service stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster research-agent-cluster \
+            --services research-agent-app \
+            --region $AWS_REGION
+
+      - name: Rollback app on deploy failure
+        if: failure() && steps.deploy-app.outputs.previous_task_def_arn != ''
+        run: |
+          echo "Deploy failed — rolling back app to ${{ steps.deploy-app.outputs.previous_task_def_arn }}"
+          aws ecs update-service \
+            --cluster research-agent-cluster \
+            --service research-agent-app \
+            --task-definition ${{ steps.deploy-app.outputs.previous_task_def_arn }} \
+            --region $AWS_REGION
+          aws ecs wait services-stable \
+            --cluster research-agent-cluster \
+            --services research-agent-app \
+            --region $AWS_REGION
+
+      - name: Rollback PyRIT on deploy failure
+        if: failure() && steps.deploy-pyrit.outputs.previous_task_def_arn != ''
+        run: |
+          echo "Deploy failed — rolling back PyRIT to ${{ steps.deploy-pyrit.outputs.previous_task_def_arn }}"
+          aws ecs update-service \
+            --cluster research-agent-cluster \
+            --service research-agent-pyrit \
+            --task-definition ${{ steps.deploy-pyrit.outputs.previous_task_def_arn }} \
+            --region $AWS_REGION

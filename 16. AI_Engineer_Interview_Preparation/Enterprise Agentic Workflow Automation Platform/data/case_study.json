@@ -1,0 +1,24 @@
+{
+  "tenant_id": "cascade_robotics",
+  "scenario": "Cascade Robotics wants Tier-1 support triage automated across two channels: a Zendesk webhook for new tickets, and an #support-escalations Slack channel for urgent messages. A high-priority ticket should get a drafted reply and, if it's a billing complaint, an automatic refund up to $50 - above that, a human must approve. A duplicate/retried step must never issue a second refund.",
+  "workflows": [
+    {
+      "workflow_id": "wf_ticket_triage",
+      "name": "Ticket Triage + Refund",
+      "priority": 10,
+      "trigger": {"channel": "webhook", "event_type": "ticket.created"}
+    },
+    {
+      "workflow_id": "wf_legacy_ticket_tagger",
+      "name": "Legacy Auto-Tagger (lower priority, same trigger - conflict demo)",
+      "priority": 1,
+      "trigger": {"channel": "webhook", "event_type": "ticket.created"}
+    },
+    {
+      "workflow_id": "wf_slack_escalation",
+      "name": "Slack Escalation Triage",
+      "priority": 10,
+      "trigger": {"channel": "slack", "event_type": "urgent_message"}
+    }
+  ]
+}

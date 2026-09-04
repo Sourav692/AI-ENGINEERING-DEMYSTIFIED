@@ -1,0 +1,370 @@
+{
+  "documents": [
+    {
+      "doc_id": "CT-KST-003",
+      "source": "contract",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "sales",
+        "legal",
+        "account-management"
+      ],
+      "region": "GLOBAL",
+      "product": "platform",
+      "owner": "legal",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "CT-NGR-002",
+      "source": "contract",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "sales",
+        "legal",
+        "account-management"
+      ],
+      "region": "US",
+      "product": "platform",
+      "owner": "legal",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "CT-VTX-001",
+      "source": "contract",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "sales",
+        "legal",
+        "account-management"
+      ],
+      "region": "EU",
+      "product": "platform",
+      "owner": "legal",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "HC-001",
+      "source": "helpcenter",
+      "sensitivity": "public",
+      "allowed_groups": [
+        "public"
+      ],
+      "region": "GLOBAL",
+      "product": "ingest",
+      "owner": "docs-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "HC-002",
+      "source": "helpcenter",
+      "sensitivity": "public",
+      "allowed_groups": [
+        "public"
+      ],
+      "region": "GLOBAL",
+      "product": "ingest",
+      "owner": "docs-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "HC-003",
+      "source": "helpcenter",
+      "sensitivity": "public",
+      "allowed_groups": [
+        "public"
+      ],
+      "region": "GLOBAL",
+      "product": "ingest",
+      "owner": "docs-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "HC-004",
+      "source": "helpcenter",
+      "sensitivity": "public",
+      "allowed_groups": [
+        "public"
+      ],
+      "region": "GLOBAL",
+      "product": "query",
+      "owner": "docs-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "PM-2025-11-03",
+      "source": "postmortem",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "engineering",
+        "sre"
+      ],
+      "region": "GLOBAL",
+      "product": "storage",
+      "owner": "storage-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "PM-2026-01-22",
+      "source": "postmortem",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "engineering",
+        "support-tier3",
+        "sre"
+      ],
+      "region": "GLOBAL",
+      "product": "query",
+      "owner": "query-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "PM-2026-03-14",
+      "source": "postmortem",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "engineering",
+        "support-tier3",
+        "sre"
+      ],
+      "region": "EU",
+      "product": "ingest",
+      "owner": "ingest-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "PR-001",
+      "source": "pricing",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "sales",
+        "legal",
+        "finance"
+      ],
+      "region": "GLOBAL",
+      "product": "platform",
+      "owner": "revops",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "PR-002",
+      "source": "pricing",
+      "sensitivity": "confidential",
+      "allowed_groups": [
+        "sales",
+        "legal",
+        "finance",
+        "account-management"
+      ],
+      "region": "GLOBAL",
+      "product": "platform",
+      "owner": "revops",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "RB-101",
+      "source": "runbook",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "engineering",
+        "support-tier3",
+        "sre"
+      ],
+      "region": "GLOBAL",
+      "product": "ingest",
+      "owner": "ingest-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "RB-102",
+      "source": "runbook",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "engineering",
+        "support-tier3",
+        "sre"
+      ],
+      "region": "GLOBAL",
+      "product": "storage",
+      "owner": "storage-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "RB-103",
+      "source": "runbook",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "engineering",
+        "support-tier3",
+        "sre"
+      ],
+      "region": "GLOBAL",
+      "product": "ingest",
+      "owner": "ingest-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "RB-104",
+      "source": "runbook",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "engineering",
+        "support-tier3",
+        "sre"
+      ],
+      "region": "GLOBAL",
+      "product": "query",
+      "owner": "query-team",
+      "contains_pii": false,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "SA-2026-05",
+      "source": "advisory",
+      "sensitivity": "restricted",
+      "allowed_groups": [
+        "security",
+        "engineering"
+      ],
+      "region": "GLOBAL",
+      "product": "query",
+      "owner": "secops",
+      "contains_pii": false,
+      "need_to_know": [
+        "vuln-response"
+      ],
+      "valid_from": "2026-05-15",
+      "valid_until": null
+    },
+    {
+      "doc_id": "SA-2026-07",
+      "source": "advisory",
+      "sensitivity": "restricted",
+      "allowed_groups": [
+        "security"
+      ],
+      "region": "GLOBAL",
+      "product": "platform",
+      "owner": "secops",
+      "contains_pii": false,
+      "need_to_know": [
+        "vuln-response"
+      ],
+      "valid_from": "2026-09-01",
+      "valid_until": null
+    },
+    {
+      "doc_id": "TK-4471",
+      "source": "ticket",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "support-tier1",
+        "support-tier3",
+        "engineering"
+      ],
+      "region": "EU",
+      "product": "ingest",
+      "owner": "support",
+      "contains_pii": true,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "TK-4488",
+      "source": "ticket",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "support-tier1",
+        "support-tier3",
+        "engineering"
+      ],
+      "region": "US",
+      "product": "query",
+      "owner": "support",
+      "contains_pii": true,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "TK-4502",
+      "source": "ticket",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "support-tier1",
+        "support-tier3"
+      ],
+      "region": "GLOBAL",
+      "product": "ingest",
+      "owner": "support",
+      "contains_pii": true,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    },
+    {
+      "doc_id": "TK-4519",
+      "source": "ticket",
+      "sensitivity": "internal",
+      "allowed_groups": [
+        "support-tier1",
+        "support-tier3",
+        "engineering"
+      ],
+      "region": "EU",
+      "product": "ingest",
+      "owner": "support",
+      "contains_pii": true,
+      "need_to_know": [],
+      "valid_from": null,
+      "valid_until": null
+    }
+  ]
+}
