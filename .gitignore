@@ -30,3 +30,7 @@ my_db
 02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.json
 02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.yaml
 cell_*.txt
+
+# Personal learning-progress tracker (see .claude/skills/learning-tracker/).
+# Local study state, not repo content — never shared/committed.
+.tracker/
