@@ -30,9 +30,17 @@ flowchart LR
 | 4 | [Multi-Agent Systems](04_multi_agent_systems_INTERVIEW_TUTORIAL.md) | `04_Multi_Agent_Systems` | Most multi-agent systems should be one agent |
 | 5 | [Production & Operations](05_production_and_operations_INTERVIEW_TUTORIAL.md) | `05_Production_and_Operations` | If you can't measure it, you can't defend it |
 
-There is also a published interactive drill for tutorial 2, with click-to-reveal
-answers, role filters and self-scoring:
-[RAG Interview Drill](https://claude.ai/code/artifact/0bf71791-2308-4bc7-9ffc-8b6f5003bd8c).
+## The interactive drill
+
+All five tutorials are also published as one drillable page, with a tab per tutorial,
+click-to-reveal answers, role filtering, gotcha flip-cards and self-scoring that runs
+across the whole series:
+
+**[AI Engineering Interview Drill](https://claude.ai/code/artifact/0bf71791-2308-4bc7-9ffc-8b6f5003bd8c)**
+
+Its source is `INTERVIEW_DRILL_HUB.html` in this folder, versioned alongside the
+markdown. The markdown is the full written version; the page is built for recall
+practice, so its concept sections are condensed and its question bank is complete.
 
 ## What's covered where
 
