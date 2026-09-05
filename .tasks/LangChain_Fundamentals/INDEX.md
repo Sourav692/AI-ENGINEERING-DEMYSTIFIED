@@ -3,13 +3,13 @@
 **Source plan(s):** `.plan/LangChain_Fundamentals_langchain_v1_plan.md`
 **Updated:** 2026-09-05
 
-**Progress:** `██████████████████████░░` 18/20
+**Progress:** `████████████████████████` 20/20
+
+> ✅ **Board complete** — every task closed. Run `tasks.py rollup` to close the plan.
 
 | Status | Count |
 | --- | --- |
-| `todo` | 1 |
-| `blocked` | 1 |
-| `done` | 18 |
+| `done` | 20 |
 
 ## Wave 0
 
@@ -34,7 +34,7 @@
 | | ID | Task | Type | Effort | Disp. | Review | Blocked by | Output |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [x] | [`T-005`](T-005_Rewrite_summarization_off_load_summarize_chain.md) | Rewrite summarization off load_summarize_chain | migration | L | rewrite | ✓ approved | — | 05_Summarization/ (8.0, 8.1, app.py) |
-| [!] | [`T-006`](T-006_Label_legacy_halves_of_3_5_and_3_6_as_langchain_.md) | Label legacy halves of 3.5 and 3.6 as langchain-classic | migration | M | repoint | ✗ changes requested | — | - |
+| [x] | [`T-006`](T-006_Label_legacy_halves_of_3_5_and_3_6_as_langchain_.md) | Label legacy halves of 3.5 and 3.6 as langchain-classic | migration | M | repoint | ✗ changes requested | — | - |
 | [x] | [`T-011`](T-011_Rewrite_PipelinePromptTemplate_section_class_rem.md) | Rewrite PipelinePromptTemplate section (class removed from ecosystem) | migration | M | rewrite | ✓ approved | — | 02_Inputs_Outputs_Prompts/2.2_Prompt_Templates.ipynb |
 
 ## Wave 5
@@ -49,7 +49,7 @@
 | [x] | [`T-017`](T-017_Add_nbstripout_pre_commit_hook_needs_user_consen.md) | Add nbstripout pre-commit hook (needs user consent) | prereq | S | n/a | — | — | - |
 | [x] | [`T-018`](T-018_Repoint_deprecated_prompt_save_load_prompt_in_2_.md) | Repoint deprecated prompt save/load_prompt in 2.2 | migration | S | rewrite | ✓ approved | — | - |
 | [x] | [`T-019`](T-019_Format_2_2_Prompt_Templates_to_Format_Python_Not.md) | Format 2.2_Prompt_Templates to Format_Python_Notebook | migration | M | rewrite | ✓ approved | — | - |
-| [ ] | [`T-020`](T-020_Gitignore_notebook_generated_artifacts_prompt_js.md) | Gitignore notebook-generated artifacts (prompt.json / prompt.yaml) | migration | S | rewrite | ⏳ pending | — | - |
+| [x] | [`T-020`](T-020_Gitignore_notebook_generated_artifacts_prompt_js.md) | Gitignore notebook-generated artifacts (prompt.json / prompt.yaml) | migration | S | rewrite | ✓ approved | — | .gitignore + untracked prompt.json/prompt.yaml |
 
 ---
 

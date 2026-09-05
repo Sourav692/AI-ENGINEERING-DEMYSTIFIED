@@ -9,7 +9,7 @@
 <!-- rollup:start -->
 - [ ] **Plan complete** — closes automatically when every task on its board is done
 **Board:** `.tasks/LangChain_Fundamentals`
-**Task progress:** `██████████████████████░░` 18/20
+**Task progress:** `████████████████████████` 20/20
 **Last rollup:** 2026-09-05
 <!-- rollup:end -->
 
@@ -123,7 +123,7 @@ Checked and deliberately left alone:
 | Task  | Notebook                                                                | Rounds | Verdict     |
 | ----- | ----------------------------------------------------------------------- | ------ | ----------- |
 | T-007 | `01_Getting_Started/1.8_Package_Split_and_Imports_LangChain_v1.ipynb` | 2      | APPROVED    |
-| T-008 | _(blocked behind T-005 -> T-002 -> T-001)_                            | —     | not started |
+| T-008 | `05_Summarization/8.2_Doc_Chains_to_LCEL_LangChain_v1.ipynb`          | 2      | APPROVED    |
 
 **Not written, deliberately:** a "Chains -> LCEL" explainer. `03_LCEL/3.5_Chain_Migrations.ipynb`
 already teaches it with before/after pairs for both `LLMChain` and legacy RAG, so the largest

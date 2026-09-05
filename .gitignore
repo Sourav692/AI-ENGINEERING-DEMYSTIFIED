@@ -22,3 +22,10 @@ mlflow.db
 *.sqlite3
 my_db
 *log
+# Notebook-generated artifacts. 2.2_Prompt_Templates.ipynb writes prompt.json from
+# its serialization cell; committed copies go stale the moment anyone runs the
+# notebook, and the copies that WERE committed (dad1931) are old `.save()` output —
+# the deprecated API that notebook no longer teaches. Path-anchored rather than a
+# bare `prompt.json` so an unrelated file of that name elsewhere is unaffected.
+02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.json
+02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.yaml

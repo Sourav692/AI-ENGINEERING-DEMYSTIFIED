@@ -2,7 +2,7 @@
 id: T-006
 title: Label legacy halves of 3.5 and 3.6 as langchain-classic
 type: migration
-status: blocked
+status: done
 review: changes-requested
 review_rounds: 2
 wave: 4
@@ -16,7 +16,7 @@ output: -
 created: 2026-09-05
 updated: 2026-09-05
 ---
-- [!] **Label legacy halves of 3.5 and 3.6 as langchain-classic** — `blocked` · review: ✗ changes requested · round 2
+- [x] **Label legacy halves of 3.5 and 3.6 as langchain-classic** — `done` · review: ✗ changes requested · round 2
 
 ## Objective
 
@@ -53,3 +53,7 @@ _(append findings, blockers, decisions as you work — this is the audit trail)_
 - 2026-09-05: review r3: blockers 1+3 confirmed fixed; blocker 2's FIX introduced a NEW error. I replaced a wrong hub claim with another wrong one: Client().pull_prompt('rlm/rag-prompt') raises ValueError on the pinned langsmith 0.12.1 - _validate_public_prompt_pull (client.py:464) rejects any owner != '-' unless dangerously_pull_public_prompt=True. Verified myself. WORSE than the reviewer stated: langchain_classic/hub.py:117 delegates WITHOUT that flag, so the LEGACY cell 8 fails too, not just the LCEL cell 10 - both halves of the RAG lesson were unrunnable, falsifying T-006's core objective. FIXED by inlining the rag-prompt in cells 8 and 10 (three lines, no network, no trust decision), demoting hub.pull and the LangSmith SDK route to documented comments in cell 9 with the correct dangerously_pull_public_prompt=True, and rewriting cell 6 to say hub.pull RAISES rather than merely warns. Nits fixed: 3.5 c7 duplicate llm binding dropped; 3.6 c7/c10 ChatOpenAI(temperature=0) given model='gpt-4o-mini' (was silently falling back to the legacy gpt-3.5-turbo default). SELF-CAUGHT after applying: my cell 8 rewrite had switched to .invoke(), contradicting cell 6's promise of TWO deprecation warnings - restored the legacy qa_chain(...) call style so the 'before' half actually demonstrates the before behaviour. T-006 HAS NOW HIT THE 3-ROUND REVIEW CAP.
 
 - 2026-09-05: DEFERRED BY USER at the 3-round review cap. State on disk: all round-1/2/3 fixes ARE applied to 3.5 and 3.6 (legacy labels naming both deprecations, marker repositioned to index 5, hub.pull inlined in cells 8 and 10 so both halves run, cell 9 documenting the three prompt options, duplicate llm bindings removed, 3.6 ChatOpenAI given an explicit model). Those edits were verified against .venv source, but they carry NO review approval - the last self-assessment on this task was wrong twice in a row, so treat the labelling text as unverified. Deliberately NOT closed as done and NOT force-closed: the review gate is doing its job. To resume: run notebook-review round 4 on 3.5/3.6, or accept and close with --force (which stamps the bypass in this log).
+
+- 2026-09-05: ⚠️ closed with --force, bypassing review (review was 'changes-requested')
+
+- 2026-09-05: CLOSED ON EXPLICIT USER APPROVAL 2026-09-05 ('Approve 006'). To be precise about what this does and does not mean: notebook-review NEVER approved this task - its last verdict was CHANGES_REQUESTED at round 3, and the --force stamp below records that. The user is the authority on their own teaching material and has accepted it; the review gate has not. WHAT IS ON DISK, all verified but unapproved: 3.5 and 3.6 carry legacy labels naming BOTH deprecations (the retired class and the retired chain(...) call style); 3.6's 'LCEL rewrite begins here' marker sits at index 5 where the rewrite actually starts; 3.5 cells 8 and 10 inline the rag-prompt because hub.pull RAISES ValueError on the pinned langsmith rather than merely warning; cell 9 documents the three prompt options with the correct dangerously_pull_public_prompt=True on the LangSmith route; duplicate llm bindings dropped; 3.6's ChatOpenAI calls given an explicit model. Round 3's open finding was that my round-2 FIX for the hub explanation introduced a NEW wrong claim, which I then corrected - but that correction was never independently checked. Treat the hub/prompt narrative in 3.5 cells 6 and 9 as the least verified text in this folder. T-016 later formatted both notebooks and confirmed these label cells survived intact.
