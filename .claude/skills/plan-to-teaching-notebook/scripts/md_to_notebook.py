@@ -57,6 +57,12 @@ BANNER_NAME_RE = re.compile(r"^#\s+[A-Z0-9][A-Z0-9 ._/&()+-]*(:.*)?$")
 
 CODE_LANGS = {"python", "python-noexec", "py"}
 
+# Optional leading emoji on a fixed heading. Deliberately narrow: an earlier
+# version used `(?:\S+\s+)?`, which matched ANY token, so `## Optional
+# Prerequisites` and `## Draft Summary` would have passed. The range matches
+# _has_emoji's own threshold.
+EMOJI_PREFIX = r"(?:[℁-🫿]\S*\s+)?"  # 2101, not 2100: _has_emoji uses `> 0x2100` (exclusive)
+
 # Headings the Format_Python_Notebook templates show without an emoji.
 FIXED_HEADINGS = {
     "Learning Objectives", "Prerequisites", "Key Concepts", "Key Concepts:",
@@ -197,10 +203,13 @@ def check(path: Path) -> list[str]:
         elif not _has_emoji(title_line):
             problems.append("cell 0: the H1 title needs one leading emoji "
                             "(format rule 1)")
-        if "## Learning Objectives" not in head:
+        # Allow an optional emoji: rule 2 asks for one emoji per heading, so
+        # `## 🎯 Learning Objectives` is at least as conformant as the bare form.
+        # A literal substring check rejected it -- that was a checker bug.
+        if not re.search(rf"^##\s+{EMOJI_PREFIX}Learning Objectives\s*$", head, re.M):
             problems.append("cell 0: missing `## Learning Objectives` "
                             "(3-5 bolded items) — format rule 1")
-        if "## Prerequisites" not in head:
+        if not re.search(rf"^##\s+{EMOJI_PREFIX}Prerequisites\s*$", head, re.M):
             problems.append("cell 0: missing `## Prerequisites` — format rule 1")
 
     # ---- 2. Code cells: 3-line banner ----
@@ -231,9 +240,9 @@ def check(path: Path) -> list[str]:
         problems.append("last cell must be the markdown summary cell (format rule 6)")
     else:
         tail = src(last)
-        if "## 📝 Summary" not in tail and "## Summary" not in tail:
+        if not re.search(rf"^##\s+{EMOJI_PREFIX}Summary\s*$", tail, re.M):
             problems.append("last cell: missing `## 📝 Summary` heading (format rule 6)")
-        if "### Next Steps" not in tail:
+        if not re.search(rf"^###\s+{EMOJI_PREFIX}Next Steps\s*$", tail, re.M):
             problems.append("last cell: missing `### Next Steps` (format rule 6)")
 
     # ---- 4. Markdown section hygiene ----
@@ -310,8 +319,11 @@ def main() -> int:
     cells = md_to_cells(args.source.read_text(encoding="utf-8"))
     nb = build_notebook(cells)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n",
-                        encoding="utf-8")
+    # newline="" keeps Windows from translating \n to \r\n. Every other notebook
+    # in this repo is LF; emitting CRLF here inflates every future diff on the
+    # file and was caught in review twice.
+    with open(args.out, "w", encoding="utf-8", newline="") as fh:
+        fh.write(json.dumps(nb, indent=1, ensure_ascii=False) + "\n")
 
     n_code = sum(1 for c in cells if c["cell_type"] == "code")
     print(f"Wrote {args.out} — {len(cells)} cells ({n_code} code, "

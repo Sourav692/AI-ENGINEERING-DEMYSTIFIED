@@ -65,7 +65,7 @@ Python prerequisites for agent work (not LangChain, not Hugging Face Hub). From 
 | 2 | `02_Inputs_Outputs_Prompts/` | Inputs/outputs, prompt templates, LLM vs ChatModel, output parsers (6 nb) |
 | 3 | `03_LCEL/` | LangChain Expression Language, Runnables, chain migrations (7 nb) |
 | 4 | `04_Chains/` | Chain basics, advanced chains, branching/routing/merging (4 nb) |
-| 5 | `05_Summarization/` | Text summarization (2 nb) |
+| 5 | `05_Summarization/` | Text summarization; document-combining chains (stuff / map-reduce / refine) rewritten as LCEL (3 nb) |
 
 Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`. Tool-calling/agents, memory, RAG, LangSmith, advanced features, and microservices deployment moved to their own dedicated phases (see Known Discrepancies).
 

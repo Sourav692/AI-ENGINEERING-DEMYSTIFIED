@@ -149,7 +149,19 @@ uv pip install -e . --no-deps    # the local `helpers` package
 # Option B — via extras
 uv pip install -e ".[dev]"       # core spine + notebooks/pytest/ruff
 uv pip install -e ".[all]"       # everything; equals the requirements.txt set
+
+# Activate the git hooks — once per clone, and NOT optional if you run notebooks.
+# Installing the packages does nothing on its own; this is what wires them in.
+pre-commit install
 ```
+
+`pre-commit` runs **nbstripout** on every commit, repo-wide (`archive/` included), so
+notebooks cannot carry saved outputs into git. That matters for two reasons: notebooks here
+ship with cleared outputs so a learner runs them fresh, and committed outputs have
+previously leaked absolute filesystem paths. Verified against this repo's notebooks:
+outputs are emptied and `execution_count` nulled, while cell `metadata.tags` and the
+notebook `kernelspec` survive — the tags matter because the LangChain-1.x explainers mark
+their 0.x contrast cells with them. Config: `.pre-commit-config.yaml`.
 
 The distribution is named `ai_engineering_roadmap`. Core (`uv pip install -e .`) is the
 LangChain/LangGraph/RAG spine only — ~65 packages. Everything else lives in eleven extras:
@@ -166,11 +178,11 @@ LangChain/LangGraph/RAG spine only — ~65 packages. Everything else lives in el
 | `data`        | scikit-learn, scipy, matplotlib, duckdb, yfinance |
 | `fullstack`   | Phase 13 — FastAPI/Flask, Postgres/MySQL/Redis, docker |
 | `apps`        | Streamlit + Gradio |
-| `dev`         | jupyter, pytest, ruff, black, isort |
+| `dev`         | jupyter, pytest, ruff, black, isort, pre-commit + nbstripout |
 
 Always use `uv` for dependency management. `pyproject.toml` holds the version floors and is
 the source of truth for *what* is a dependency; `requirements.txt` is the resolver-verified
-pinned mirror (172 direct pins) and `requirements.lock.txt` the full 548-package transitive
+pinned mirror (173 direct pins) and `requirements.lock.txt` the full 556-package transitive
 lock. Update all three when adding deps — regenerate the lock with:
 
 ```bash

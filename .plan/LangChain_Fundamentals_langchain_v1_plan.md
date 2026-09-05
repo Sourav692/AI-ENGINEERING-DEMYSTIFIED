@@ -9,7 +9,7 @@
 <!-- rollup:start -->
 - [ ] **Plan complete** — closes automatically when every task on its board is done
 **Board:** `.tasks/LangChain_Fundamentals`
-**Task progress:** `█████████████░░░░░░░░░░░` 7/13
+**Task progress:** `██████████████████████░░` 18/20
 **Last rollup:** 2026-09-05
 <!-- rollup:end -->
 
@@ -63,25 +63,48 @@ construct, or is the construct just a vehicle?"
 
 ### Wave 0 — prerequisite
 
-- [ ] **T-001** Add `langchain-classic` to the three dependency files — *left `todo`, needs you*
+- [x] **T-001** Install the already-pinned `langchain-classic` + `langchain-text-splitters` into `.venv`
 
 ### Wave 1 — imports (mechanical, unblocks everything)
 
-- [ ] **T-002** Repoint `langchain.chains` → `langchain_classic.chains` across the 6 repoint notebooks
-- [ ] **T-003** Fix `langchain.schema` → `langchain_core.*` (7 files) and `langchain.text_splitter`
+- [x] **T-002** Repoint `langchain.chains` → `langchain_classic.chains` across the 6 repoint notebooks
+- [x] **T-003** Fix `langchain.schema` → `langchain_core.*` (7 files) and `langchain.text_splitter`
   → `langchain_text_splitters` (3), `langchain.llms` → partner packages (2)
-- [ ] **T-004** Drop/refresh stale `langchain==0.3.x` pip pins (7 files, INFO only)
+- [x] **T-004** Drop/refresh stale `langchain==0.3.x` pip pins (7 files, INFO only)
 
 ### Wave 4 — chains
 
-- [ ] **T-005** Rewrite the two summarization notebooks + `app.py` off `load_summarize_chain`
-- [ ] **T-006** Refresh `3.5` / `3.6` so their "legacy" halves import from `langchain_classic`
+- [x] **T-005** Rewrite the two summarization notebooks + `app.py` off `load_summarize_chain`
+- [!] **T-006** Refresh `3.5` / `3.6` so their "legacy" halves import from `langchain_classic`
   and are labelled as such
 
 ### Explainers
 
-- [ ] **T-007** New notebook: the package split — where every moved import went, and why
-- [ ] **T-008** New notebook: document-combining chains → LCEL / map-reduce
+- [x] **T-007** New notebook: the package split — where every moved import went, and why
+- [x] **T-008** New notebook: document-combining chains → LCEL / map-reduce
+
+## Discovered during execution (not in the original plan)
+
+The 8 tasks above were the plan as first written. Working it surfaced 9 more, most of
+them from scanner blind spots that only appeared once the migration was actually applied:
+
+- [x] **T-009** `langchain.prompts` imports — 12 BLOCKING findings across 8 files that **no
+      scanner rule matched**. The original plan undercounted because of it.
+- [x] **T-010** an orphaned `IMP-chains` hit in `3.1` that belonged to no task on the board
+- [x] **T-012** stale non-LangChain pins in `1.1`/`1.3` (`openai==1.57.0` conflicts with
+      `langchain-openai`'s `openai>=2.45.0`)
+- [x] **T-013** personal filesystem paths committed inside notebook outputs
+- [x] **T-014** 194 saved output cells cleared folder-wide
+- [x] **T-015** `from langchain import PromptTemplate` in `3.0` — a second new-rule find, in a
+      file four earlier scans had called clean
+- [x] **T-016** `3.5`/`3.6` formatted to `Format_Python_Notebook`
+- [ ] **T-011** `PipelinePromptTemplate` in `2.2` — the class was **removed from the ecosystem**
+      with no replacement anywhere. Needs a pedagogy decision, not a repoint. *Open.*
+- [ ] **T-017** nbstripout pre-commit hook — split out of T-014. Changes every contributor's
+      commit flow, so it is **consent-gated**. *Open.*
+
+Four scanner rules were added as a result: `IMP-prompts`, `IMP-toplevel`, `MOD-direct-call`,
+plus a fix to `IMP-hub`'s over-match and contrast-cell skipping.
 
 ## Explicitly out of scope
 

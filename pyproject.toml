@@ -213,6 +213,8 @@ dev = [
     "ruff>=0.16.6",
     "black>=26.5.1",
     "isort>=9.0.1",
+    "pre-commit>=4.6.2",
+    "nbstripout>=0.9.1",
 ]
 # Install everything — reproduces the full requirements.txt set
 all = [

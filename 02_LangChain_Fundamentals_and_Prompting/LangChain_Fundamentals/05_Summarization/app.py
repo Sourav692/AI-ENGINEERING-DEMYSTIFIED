@@ -1,7 +1,7 @@
 import validators,streamlit as st
 from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
-from langchain.chains.summarize import load_summarize_chain
+from langchain_core.output_parsers import StrOutputParser
 from langchain_community.document_loaders import YoutubeLoader,UnstructuredURLLoader
 
 
@@ -47,8 +47,10 @@ if st.button("Summarize the Content from YT or Website"):
                 docs=loader.load()
 
                 ## Chain For Summarization
-                chain=load_summarize_chain(llm,chain_type="stuff",prompt=prompt)
-                output_summary=chain.run(docs)
+                chain = prompt | llm | StrOutputParser()
+                output_summary = chain.invoke(
+                    {"text": "\n\n".join(d.page_content for d in docs)}
+                )
 
                 st.success(output_summary)
         except Exception as e:

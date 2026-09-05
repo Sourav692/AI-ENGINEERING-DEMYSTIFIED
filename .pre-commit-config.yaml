@@ -1,0 +1,47 @@
+# Pre-commit hooks for the AI Engineering roadmap.
+#
+# Activate once, per clone:
+#     uv pip install -r requirements.txt      # or: uv pip install -e ".[dev]"
+#     pre-commit install
+#
+# Installing the packages is NOT enough — until `pre-commit install` is run in
+# your clone, these hooks do nothing.
+#
+# Why nbstripout: notebooks here ship with cleared outputs so a learner runs them
+# fresh, and because saved outputs leak. Committed outputs in this repo carried
+# absolute filesystem paths that exposed a local directory tree and the name of
+# an unrelated private repo. Clearing them by hand is a mop; this is the fix.
+#
+# Scope is repo-wide by explicit decision, `archive/` included: the point is that
+# no notebook anywhere can carry outputs into a commit.
+
+repos:
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.9.1
+    hooks:
+      - id: nbstripout
+        name: strip output from notebooks
+        # Defaults only, deliberately. Verified on a real notebook from this
+        # repo: outputs are emptied, execution_count is nulled, and cell
+        # `metadata.tags` SURVIVE — which matters, because the LangChain-1.x
+        # explainers tag their 0.x contrast cells `raises-exception` and
+        # `langchain-0x-contrast`, and both the migration scanner and the
+        # bulk-edit scripts key off those tags. Notebook-level `kernelspec` is
+        # also kept, so notebooks still declare their kernel.
+
+# ---------------------------------------------------------------------------
+# Optional extras — NOT enabled, because they were not part of what was agreed.
+# Each guards a failure this repo has actually hit; uncomment if you want them.
+#
+#  - repo: https://github.com/pre-commit/pre-commit-hooks
+#    rev: v6.0.0
+#    hooks:
+#      # Scripted notebook edits can emit invalid JSON. Fail fast rather than
+#      # committing a notebook Jupyter refuses to open.
+#      - id: check-json
+#        files: \.ipynb$
+#      # This repo's notebooks are LF throughout; a Windows-written notebook can
+#      # silently arrive as CRLF and inflate every later diff.
+#      - id: mixed-line-ending
+#        args: [--fix=lf]
+#        files: \.ipynb$

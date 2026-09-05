@@ -196,6 +196,29 @@ So: **fix with the specific pattern, verify with the general one.** Enumerate th
 category (every `pip install` line, every import, every path-looking string), print what
 survives, and read the list. A verification that can only say "yes" is not a verification.
 
+This mistake recurs. It happened twice in one session on the same folder: first with pip pins
+(fix matched `!pip install …==`, missed `# pip install …==`), then immediately again with
+personal filesystem paths — the sweep matched `/Users/`, `/home/` and `C:\Users\` but never
+`~/`, which is exactly how IPython renders a traceback for a path under `$HOME`. 50 leaked
+path occurrences survived a sweep that reported zero. **When sweeping for a class of string,
+enumerate the shapes it can take before writing the pattern**, and include the abbreviated,
+environment-variable and Windows forms:
+
+```python
+PERSONAL = re.compile(r"[A-Za-z]:\\+Users\\+[^\\\"]+|/Users/\w|/home/\w"
+                      r"|~[/\\]Documents[/\\]|%USERPROFILE%[/\\]|\$HOME[/\\]")
+BENIGN   = re.compile(r"~[/\\]\.cache[/\\]")   # keep generic cache paths
+```
+
+Add a **liveness check** to any sweep that reports zero: assert that something you *expect*
+to match still matches (a known-benign hit), so a dead regex cannot masquerade as a clean
+result.
+
+One more shell-specific trap: write these patterns in a **script file**, never in a
+`bash -c` string or heredoc. Backslashes and `$HOME` get eaten by the shell before Python
+sees them — this session produced a literal backspace byte, a literal `0x01` byte, and an
+expanded `$HOME` that way, each time inside a regex that then silently matched nothing.
+
 The same applies to the scanner's own rules — a task's acceptance criterion of "scanner reports
 no findings" passes vacuously when the rule is narrower than the task's stated objective.
 

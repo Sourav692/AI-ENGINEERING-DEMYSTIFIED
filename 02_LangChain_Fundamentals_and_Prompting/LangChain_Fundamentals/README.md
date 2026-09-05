@@ -10,6 +10,6 @@ Merged in from the standalone `LangChain_Demystified` repo, trimmed to true fund
 | 2 | `02_Inputs_Outputs_Prompts/` | Inputs/outputs, prompt templates, LLM vs ChatModel, output parsers |
 | 3 | `03_LCEL/` | LangChain Expression Language, Runnables, chain migrations |
 | 4 | `04_Chains/` | Chain basics, advanced chains, branching/routing/merging |
-| 5 | `05_Summarization/` | Text summarization |
+| 5 | `05_Summarization/` | Text summarization; document-combining chains (stuff / map-reduce / refine) as LCEL |
 
 Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`.
