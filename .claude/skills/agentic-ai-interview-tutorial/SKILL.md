@@ -133,8 +133,12 @@ so the source is versioned next to the markdown.
 Build it from the finished markdown. The blueprint lists the required interactions in
 priority order — click-to-reveal question cards first, then role filtering, then
 self-scoring. Answers must never render visible on load; recall attempt before reveal
-is the whole point. Render the same mermaid diagrams via `<pre class="mermaid">` —
-Artifacts render them natively, so never load a library — and the same code snippets.
+is the whole point. Render the same mermaid diagrams and code snippets.
+
+**Diagrams injected by script need the library loaded explicitly.** The native
+Artifact pass only sees `<pre class="mermaid">` blocks that are in the page markup;
+anything a renderer writes into the DOM later displays as raw source. The blueprint
+has the exact snippet, the pinned version to use, and the two traps in it.
 
 Give it a favicon and a distinctive title, and hand the user the URL.
 

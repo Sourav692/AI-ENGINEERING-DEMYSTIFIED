@@ -112,11 +112,15 @@ h3.sub{font-family:var(--cond); font-weight:700; font-size:19px; margin:26px 0 2
 .fact i{font-style:normal; font-family:var(--cond); font-size:10.5px; letter-spacing:.1em;
   text-transform:uppercase; color:var(--faint)}
 
-/* diagram plate */
+/* diagram plate — constant pale ground in both themes, because mermaid draws
+   dark strokes. The explicit dark `color` keeps the raw source legible if the
+   diagram library is ever blocked and the text renders unstyled. */
 .plate{margin-top:12px; background:#F4F6F8; border:1px solid #D8DEE5; border-radius:3px;
-  padding:14px 12px; overflow-x:auto}
+  padding:14px 12px; overflow-x:auto; color:#14181D}
 .plate pre.mermaid{margin:0; background:none; border:0; text-align:center;
-  font-family:var(--mono)}
+  font-family:var(--mono); font-size:12.5px; color:#14181D}
+.plate pre.mermaid[data-processed]{font-family:inherit}
+.plate svg{max-width:100%; height:auto}
 .plate-cap{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
   text-transform:uppercase; color:var(--faint); margin-top:6px}
 
@@ -277,6 +281,26 @@ footer{margin-top:52px; padding-top:16px; border-top:1px solid var(--rule);
 </div>
 
 <main id="main"></main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.15.0/mermaid.min.js"></script>
+<script>
+/* Diagrams are injected by the tab renderer, which runs after the page's own
+   mermaid pass would have happened, so we drive the library ourselves. If the
+   script is unavailable the plates fall back to readable source text. */
+const MERMAID = window.mermaid
+  || (window.__esbuild_esm_mermaid_nm && window.__esbuild_esm_mermaid_nm.mermaid)
+  || null;
+if(MERMAID){
+  try{ MERMAID.initialize({startOnLoad:false, theme:"neutral", fontFamily:"IBM Plex Sans, sans-serif"}); }
+  catch(e){}
+}
+function drawDiagrams(){
+  if(!MERMAID) return;
+  const nodes=[...document.querySelectorAll("pre.mermaid:not([data-processed])")];
+  if(!nodes.length) return;
+  try{ Promise.resolve(MERMAID.run({nodes})).catch(()=>{}); }catch(e){}
+}
+</script>
 
 <script>
 /* ============================ DATA ============================ */
@@ -1200,7 +1224,7 @@ function render(){
   }
   document.querySelectorAll(".tab").forEach(b=>
     b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
-  wire(); paint(); window.scrollTo({top:0,behavior:"instant"});
+  wire(); paint(); drawDiagrams(); window.scrollTo({top:0,behavior:"instant"});
 }
 
 function wire(){

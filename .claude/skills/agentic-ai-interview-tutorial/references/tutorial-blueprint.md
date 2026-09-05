@@ -144,8 +144,37 @@ A diagram earns its place when it shows a **flow, a decision, or a comparison** 
 prose makes the reader hold in their head. Aim for 5-8 across the tutorial. Do not
 draw a picture of a list.
 
-Markdown uses ` ```mermaid ` fences. The artifact uses `<pre class="mermaid">` —
-Artifacts render mermaid natively, so never load a library for it.
+Markdown uses ` ```mermaid ` fences. The artifact uses `<pre class="mermaid">`.
+
+**Rendering them in the artifact — learned the hard way.** Artifacts render mermaid
+natively, but only for blocks present in the page's own markup. A block written into
+the DOM by script — which is what any tab switcher or data-driven renderer does — is
+missed entirely and displays as raw source text.
+
+So: if every diagram is static in the file, rely on the native pass and load nothing.
+If any diagram is injected by script, drive the library yourself:
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.15.0/mermaid.min.js"></script>
+<script>
+const MERMAID = window.mermaid
+  || (window.__esbuild_esm_mermaid_nm && window.__esbuild_esm_mermaid_nm.mermaid)
+  || null;
+if (MERMAID) MERMAID.initialize({startOnLoad: false, theme: "neutral"});
+
+function drawDiagrams() {                       // call after every re-render
+  if (!MERMAID) return;
+  const nodes = [...document.querySelectorAll("pre.mermaid:not([data-processed])")];
+  if (nodes.length) Promise.resolve(MERMAID.run({nodes})).catch(() => {});
+}
+</script>
+```
+
+Three details that matter. Pin an exact version and check it resolves before
+publishing — the obvious guess `11.4.1` is a 404 on cdnjs. Resolve the global
+defensively, because the cdnjs build may attach to an esbuild namespace rather than
+`window.mermaid`. And give the diagram container an explicit dark `color`, so an
+unrendered block is still readable if the script is ever blocked.
 
 The diagrams that consistently earn their place:
 
