@@ -11,6 +11,8 @@ These are **predefined graphs** (code decides the path). They are not autonomous
 
 Pattern definitions, diagrams, and reference LangGraph / functional-API code are in [`workflows.md`](workflows.md). This file does not repeat that.
 
+Building these same five patterns in **LangChain** instead? See [`LangGraph_vs_LangChain_Workflow_Patterns.md`](LangGraph_vs_LangChain_Workflow_Patterns.md) for the primitive map (`RunnableBranch` vs `RunnableParallel` vs `.map()` vs `Send`) and the pattern-by-pattern comparison. The implementations live in [`06_Workflow_Patterns/`](../../02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/06_Workflow_Patterns/).
+
 ## Folder layout
 
 Each numbered subfolder has:

@@ -1,0 +1,16 @@
+# Retired Notebooks Manifest
+
+Notebooks retired by `notebook-folder-cleanup` are moved here with `git mv` (history
+preserved) rather than deleted. To restore any row below, reverse the `git mv` shown by
+swapping the `From` and `archive/<From>` paths.
+
+| Date | Notebook | From | Reason | Superseded by |
+| --- | --- | --- | --- | --- |
+| 2026-09-05 | 3.0_LCEL_Essentials.ipynb | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/03_LCEL/` | Zero markdown, 6 cells, one throwaway LCEL chain — a scratch warm-up with no narrative | `3.1_LCEL_Introduction.ipynb` |
+| 2026-09-05 | 1.7_OpenAI_API_Basics.ipynb | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/01_Getting_Started/` | 8 cells, no title/summary, one raw OpenAI call — a subset of a notebook that already covers this | `1.1_Commercial_LLMs_Natively.ipynb` |
+| 2026-09-05 | 8.1_Text_Summarization.ipynb | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/05_Summarization/` | Cell 19 has a real unfixed `SyntaxError` (unterminated string literal), mangled encoding in source text, trailing empty cells | Stuff/map-reduce/refine already covered cleanly in `8.0_Summarization_Essentials.ipynb` + side-by-side old/new in `8.2_Doc_Chains_to_LCEL_LangChain_v1.ipynb` |
+| 2026-09-05 | 01_create_agent_basics.ipynb | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/Langchain 1.x/` | Duplicate (0.81 similarity) of `1-langchainintro.ipynb`, which covers the same `create_agent` basics and is already in this repo's title/banner/emoji notebook format | `07_LangChain_1x_Agents_and_Middleware/7.0_LangChain_First_Agent.ipynb` |
+| 2026-09-05 | 02_middleware_deep_dive.ipynb | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/Langchain 1.x/` | Overlapped `6-middleware.ipynb`; had a saved error output (violates the cleared-outputs convention). Its unique sections (`PIIMiddleware`, `ModelCallLimitMiddleware`, writing a custom `AgentMiddleware`, stacking) were ported into the merged notebook before retiring | Ported into `07_LangChain_1x_Agents_and_Middleware/7.5_Middleware.ipynb` (Part 5) |
+| 2026-09-05 | 03_human_in_the_loop_middleware.ipynb | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/Langchain 1.x/` | Subset of `6-middleware.ipynb`'s Part 4 (approve/reject only, no edit scenario, no "never re-run a parked thread" pitfall that the surviving notebook covers) | `07_LangChain_1x_Agents_and_Middleware/7.5_Middleware.ipynb` (Part 4) |
+| 2026-09-05 | `Langchain 1.x/README.md`, `Langchain 1.x/requirements.txt` | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/Langchain 1.x/` | Described the now-consolidated 4-notebook folder; requirements.txt duplicated root-managed pins (against this repo's centralized-dependency convention) | Replaced by `07_LangChain_1x_Agents_and_Middleware/README.md` |
+| 2026-09-05 | `langchainupdated/` scaffold (`.gitignore`, `main.py`, `pyproject.toml`, `README.md`, `requirements.txt`, `uv.lock`) | `02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/langchainupdated/` | Leftover `uv init` boilerplate (default hello-world `main.py`, empty README, generic pyproject) with zero unique content, left behind after its notebooks were extracted | — |

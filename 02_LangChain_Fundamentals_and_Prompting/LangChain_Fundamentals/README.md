@@ -11,5 +11,6 @@ Merged in from the standalone `LangChain_Demystified` repo, trimmed to true fund
 | 3 | `03_LCEL/` | LangChain Expression Language, Runnables, chain migrations |
 | 4 | `04_Chains/` | Chain basics, advanced chains, branching/routing/merging |
 | 5 | `05_Summarization/` | Text summarization; document-combining chains (stuff / map-reduce / refine) as LCEL |
+| 6 | `06_Workflow_Patterns/` | The five agentic workflow patterns built with LangChain 1.x primitives — the LangChain counterparts to Phase 5's LangGraph versions |
 
 Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`.
