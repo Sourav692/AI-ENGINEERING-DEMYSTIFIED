@@ -3,8 +3,8 @@ id: T-006
 title: Label legacy halves of 3.5 and 3.6 as langchain-classic
 type: migration
 status: done
-review: changes-requested
-review_rounds: 2
+review: approved
+review_rounds: 4
 wave: 4
 effort: M
 disposition: repoint
@@ -16,7 +16,7 @@ output: -
 created: 2026-09-05
 updated: 2026-09-05
 ---
-- [x] **Label legacy halves of 3.5 and 3.6 as langchain-classic** — `done` · review: ✗ changes requested · round 2
+- [x] **Label legacy halves of 3.5 and 3.6 as langchain-classic** — `done` · review: ✓ approved · round 4
 
 ## Objective
 
@@ -37,10 +37,19 @@ Findings this task closes: `CHN-llmchain`, `CHN-retrieval`
 
 ## Acceptance criteria
 
-- [ ] Scanner re-run over the target reports no remaining findings for `CHN-llmchain`, `CHN-retrieval`
-- [ ] Notebook narrative (markdown cells) matches the new code
-- [ ] Every code cell parses (`static_check.py`) and every 1.x API used is verified
-- [ ] **Approved by `notebook-review`** (`review: approved`) — required to close
+- [x] ~~Scanner reports no remaining `CHN-llmchain` / `CHN-retrieval` findings~~ —
+      **unsatisfiable as written, and correctly so.** This task's disposition is
+      `repoint`, not `rewrite`: the legacy halves are the lesson and are kept on
+      purpose, so the scanner still reports 4 `CHN-*` findings in 3.5 and 2 in 3.6
+      and always will. The plan says the same at
+      `.plan/LangChain_Fundamentals_langchain_v1_plan.md:54`. The stock criterion
+      was boilerplate that does not fit a `repoint` task. Replaced by:
+- [x] Every `CHN-*` finding that survives is one the notebook deliberately teaches,
+      and is labelled as legacy where a learner meets it
+- [x] Notebook narrative (markdown cells) matches the new code
+- [x] Every code cell parses (`static_check.py` → `ok: true`, 0 syntax errors on both)
+      and every 1.x API claim is verified against installed source
+- [x] **Approved by `notebook-review`** (`review: approved`) — required to close
 
 ## Notes / log
 
@@ -57,3 +66,56 @@ _(append findings, blockers, decisions as you work — this is the audit trail)_
 - 2026-09-05: ⚠️ closed with --force, bypassing review (review was 'changes-requested')
 
 - 2026-09-05: CLOSED ON EXPLICIT USER APPROVAL 2026-09-05 ('Approve 006'). To be precise about what this does and does not mean: notebook-review NEVER approved this task - its last verdict was CHANGES_REQUESTED at round 3, and the --force stamp below records that. The user is the authority on their own teaching material and has accepted it; the review gate has not. WHAT IS ON DISK, all verified but unapproved: 3.5 and 3.6 carry legacy labels naming BOTH deprecations (the retired class and the retired chain(...) call style); 3.6's 'LCEL rewrite begins here' marker sits at index 5 where the rewrite actually starts; 3.5 cells 8 and 10 inline the rag-prompt because hub.pull RAISES ValueError on the pinned langsmith rather than merely warning; cell 9 documents the three prompt options with the correct dangerously_pull_public_prompt=True on the LangSmith route; duplicate llm bindings dropped; 3.6's ChatOpenAI calls given an explicit model. Round 3's open finding was that my round-2 FIX for the hub explanation introduced a NEW wrong claim, which I then corrected - but that correction was never independently checked. Treat the hub/prompt narrative in 3.5 cells 6 and 9 as the least verified text in this folder. T-016 later formatted both notebooks and confirmed these label cells survived intact.
+
+- 2026-09-05: REVIEW ROUND 4 — **APPROVED**, no blockers. Run at user request to
+  retire the force-close, by a FRESH reviewer with no context on the three prior
+  rounds (the T-020 reviewer was deliberately not reused). Static analysis only;
+  no cell executed.
+
+  The unreviewed part of round 3 — the hub/prompt narrative and the inlining of
+  both RAG halves — was checked sentence by sentence against `.venv` source and
+  holds up. Independently confirmed: `hub.pull` is `@deprecated(since="1.0.6",
+  removal="2.0.0")` and its two-line body delegates WITHOUT
+  `dangerously_pull_public_prompt`; `pull_prompt_commit` calls
+  `_validate_public_prompt_pull` as its first statement, before any network call,
+  so `rlm/rag-prompt` raises rather than fetching; cell 6's fenced quote is a
+  verbatim truncation of the real message, not a paraphrase; cell 9's option 2 has
+  the right keyword-only parameter name and shape; `hub.pull`'s real docstring does
+  carry the "Hub manifests are untrusted input" danger block; `langsmith==0.12.1`
+  is pinned in requirements.txt:87 and pyproject.toml:29. Also confirmed: both RAG
+  halves inline the prompt with no live `hub` import anywhere; 3.5 cell 8 still
+  uses the legacy `qa_chain("...")` call style, so cell 6's promise of a call-style
+  warning is honest; 3.6's LCEL marker at cell 5 is truthfully placed and its
+  "nothing below imports langchain-classic" claim holds; all three 3.6
+  `ChatOpenAI` calls carry an explicit `model=`; exactly one `llm` binding per
+  notebook.
+
+  FIXED BEFORE CLOSE — 3 of 5 nits, all factual errors in teaching text, which is
+  the defect class that cost this task its first three rounds:
+   1. "emits **two** deprecation warnings" undercounted, in 3.5 c6 and 3.6 c3.
+      Verified the reviewer's reasoning myself rather than taking it on trust:
+      `RetrievalQA.from_llm` constructs `LLMChain(` and `StuffDocumentsChain(`
+      internally (both carry `__deprecated__`) and `BaseRetrievalQA._call` runs
+      `self.combine_documents_chain.run(...)`, and `Chain.run.__deprecated__` is
+      "Use invoke instead." So a learner sees more than two. Both cells now say
+      **at least two** and name why. NOTE 3.5 c2's "two, not one" for plain
+      `LLMChain` is correct and was left alone — nothing deprecated runs inside
+      `LLMChain._call`.
+   2. 3.6 c1 claimed cells 7, 11 and 16 construct clients inline "because they need
+      temperature=0". Cell 16 sets no temperature. Reworded to "want deterministic
+      output" rather than adding a parameter the lesson did not ask for.
+   3. 3.6 c7's banner described cell 8's content, not its own. Retitled.
+
+  NOT FIXED, deliberately: the blueprint sections (`Why this changed`, `Common
+  errors`, `Key takeaways`) are absent by those names. These are pre-existing
+  course notebooks under a `repoint` disposition, not blueprint-generated
+  explainers; the reviewer recorded this without failing on it and I agree.
+
+  Post-fix: `static_check.py` → `ok: true`, 0 syntax errors on both; diff is 11
+  insertions / 7 deletions with no reserialization damage; cell counts unchanged
+  (3.5: 12, 3.6: 21); the legacy `qa_chain(...)` call style re-verified as intact
+  after my edits.
+
+  T-006 now carries a genuine review approval. The earlier `--force` stamp above
+  stands as the historical record of how it was closed the first time; it is no
+  longer the basis for the close.

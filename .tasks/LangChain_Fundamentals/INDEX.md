@@ -34,7 +34,7 @@
 | | ID | Task | Type | Effort | Disp. | Review | Blocked by | Output |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [x] | [`T-005`](T-005_Rewrite_summarization_off_load_summarize_chain.md) | Rewrite summarization off load_summarize_chain | migration | L | rewrite | ✓ approved | — | 05_Summarization/ (8.0, 8.1, app.py) |
-| [x] | [`T-006`](T-006_Label_legacy_halves_of_3_5_and_3_6_as_langchain_.md) | Label legacy halves of 3.5 and 3.6 as langchain-classic | migration | M | repoint | ✗ changes requested | — | - |
+| [x] | [`T-006`](T-006_Label_legacy_halves_of_3_5_and_3_6_as_langchain_.md) | Label legacy halves of 3.5 and 3.6 as langchain-classic | migration | M | repoint | ✓ approved | — | - |
 | [x] | [`T-011`](T-011_Rewrite_PipelinePromptTemplate_section_class_rem.md) | Rewrite PipelinePromptTemplate section (class removed from ecosystem) | migration | M | rewrite | ✓ approved | — | 02_Inputs_Outputs_Prompts/2.2_Prompt_Templates.ipynb |
 
 ## Wave 5

@@ -7,7 +7,7 @@
 - **Files scanned / needing work:** `28` / `17`
 
 <!-- rollup:start -->
-- [ ] **Plan complete** — closes automatically when every task on its board is done
+- [x] **Plan complete** — closes automatically when every task on its board is done
 **Board:** `.tasks/LangChain_Fundamentals`
 **Task progress:** `████████████████████████` 20/20
 **Last rollup:** 2026-09-05
