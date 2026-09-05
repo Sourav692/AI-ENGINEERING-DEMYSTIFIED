@@ -348,6 +348,13 @@ chain.invoke({"question": "What is LangChain?"})`,
   A1 --> H2["Human: turn 2"]
   H2 --> M["Model"]
   M --> R["AI: turn 2"]`,
+   code:`messages = [
+    SystemMessage(content="You are a concise assistant."),
+    HumanMessage(content="What is LangChain?"),
+    AIMessage(content="A framework for LLM applications."),
+    HumanMessage(content="Who created it?"),   # "it" resolves via history
+]
+# Turn 3 pays for turns 1 and 2. Turn 50 pays for 49 of them.`,
    say:"Memory is just replaying prior messages. The model is stateless, so history is a cost that grows every turn."},
   {t:"Structured output beats parsing prose",
    b:"<code>with_structured_output</code> routes through the provider's tool-calling or JSON mode, so the constraint applies <i>during decoding</i> rather than after. It still fails sometimes, so validate and have a retry path.",
@@ -365,6 +372,11 @@ structured.invoke("Arrived late but works well.").sentiment`,
   B -->|"Yes: rate limit"| C["with_retry"]
   B -->|"No: model gone"| D["with_fallbacks"]
   B -->|"No: answer was poor"| E["Neither, feed critique forward"]`,
+   code:`robust = (
+    chain
+    .with_retry(stop_after_attempt=3)      # same chain: transient failures
+    .with_fallbacks([cheaper_chain])       # different chain: structural ones
+)`,
    say:"Retry for transient, fallback for structural. And retry is blind — it can't fix a quality problem, only a flaky one."},
   {t:"Tracing is how you debug anything real",
    b:"LangSmith records every step — inputs, outputs, latency, tokens, cost — from environment variables. <code>@traceable</code> pulls your own functions into the same timeline. The field that resolves most bugs is the fully-rendered prompt.",
@@ -479,6 +491,11 @@ d_vecs = embeddings_model.embed_documents([...])  # ONE request`,
   C -->|"Yes"| E["Generation bug"]
   D --> D1["Chunk size, embedding, ranking"]
   E --> E1["Prompt, context order, model"]`,
+   code:`# The one check that halves the search space
+docs = retriever.invoke(question)
+for i, doc in enumerate(docs):
+    print(f"Chunk {i+1} [{doc.metadata.get('source')}] {len(doc.page_content)} chars")
+    print(doc.page_content[:150])`,
    say:"First I ask whether the answer was even in the retrieved context. That single check halves the search space."},
   {t:"Metadata filtering is how you do security",
    b:"Chunks carry labels, and the filter runs <b>before</b> the search, so your k results already passed the rule. Swap <code>topic</code> for <code>tenant_id</code> and this is what stops one customer's documents reaching another's answer — enforced in code, so it either ran or it didn't.",
@@ -531,6 +548,17 @@ d_vecs = embeddings_model.embed_documents([...])  # ONE request`,
     B2 -->|"search"| B3["Retrieve"] --> B2
     B2 -->|"done"| B4["Answer"]
   end`,
+   code:`# CHAIN - your code decides. Retrieval always runs, once.
+rag_chain = ({"context": retriever | format_docs,
+              "question": RunnablePassthrough()} | prompt | llm | StrOutputParser())
+
+# AGENT - the model decides. The docstring is its only instruction on when to call.
+@tool
+def search_docs(query: str) -> str:
+    \"\"\"Search the knowledge base for passages relevant to the query.\"\"\"
+    return format_docs(retriever.invoke(query))
+
+llm_with_tools = llm.bind_tools([search_docs])`,
    say:"What I built is a chain. An agent would decide whether to retrieve at all — more capable, strictly harder to bound."}],
  gotchas:[
   {t:"Chroma gives distance, not similarity",s:"Your score gets worse for better matches and goes above 1.0.",c:"similarity_search_with_score returns distance (L2 by default). Lower is better — the opposite of cosine.",f:"Convert with 1/(1+score), or configure cosine. Never show a raw distance as confidence.",a:"\"Your relevance scores are above 1.0. What's going on?\""},
@@ -779,6 +807,18 @@ builder.add_edge("tools", "agent")     # results go back to the model`,
     P1 --> P4["Merge"]
     P2 --> P4
   end`,
+   code:`# Supervisor: a router node returns the next agent's name
+builder.add_node("supervisor", supervisor_node)
+builder.add_node("researcher", researcher_node)
+builder.add_conditional_edges("supervisor", pick_next,
+                              {"researcher": "researcher", "end": END})
+builder.add_edge("researcher", "supervisor")   # control returns to the router
+
+# Parallel: two edges out of one node, two edges into one node
+builder.add_edge("dispatch", "agent_a")
+builder.add_edge("dispatch", "agent_b")
+builder.add_edge("agent_a", "merge")
+builder.add_edge("agent_b", "merge")           # merge waits for both`,
    say:"Agents are nodes in one graph. The pattern is just who decides the next hop, and each answer has a different cost."},
   {t:"Shared state is the communication channel",
    b:"Agents don't call each other. They read and write one shared state dict. Read this schema closely, because it <i>is</i> the interview: messages has a reducer because every agent writes it; next_agent is the routing decision as a testable value; task_complete is the termination flag without which the supervisor loops forever.",
@@ -832,6 +872,16 @@ builder.add_edge("agent_b", "merge")      # merge waits for both`,
   C -->|"No, at cap"| F["Stop, return partial"]
   B --> G{"Same agent, same input?"}
   G -->|"Yes"| F`,
+   code:`MAX_HOPS = 8
+
+def route(state) -> Literal["agent", "give_up", "end"]:
+    if state["task_complete"]:                 # 1. explicit done flag
+        return "end"
+    if state["hops"] >= MAX_HOPS:              # 2. hard cap
+        return "give_up"
+    # 3. no-progress: same agent, same request as last hop
+    sig = f"{state['next_agent']}::{state['messages'][-1].content[:200]}"
+    return "give_up" if sig == state.get("last_delegation") else "agent" `,
    say:"Termination needs care in both directions. I combine an explicit done flag with a hard hop cap and a no-progress check for repeated identical delegations."}],
  gotchas:[
   {t:"Multi-agent is usually the wrong answer",s:"Three agents, three times the cost, no better output.",c:"Architecture chosen by fashion. Coordination overhead buys nothing when subtasks weren't independent.",f:"Justify it by naming what you're buying — parallelism, permissions, or context limits. If you can't, use one agent.",a:"\"When is multi-agent actively worse than a single agent?\""},
@@ -916,6 +966,14 @@ builder.add_edge("agent_b", "merge")      # merge waits for both`,
   subgraph REST["Total time — unchanged by streaming"]
     D --> F["Decode the rest"] --> G["Complete"]
   end`,
+   code:`def percentiles(samples_ms):
+    s = sorted(samples_ms)
+    return {"mean": sum(s) / len(s),
+            "p95": s[int(len(s) * 0.95)],      # the number users feel
+            "p99": s[int(len(s) * 0.99)]}
+
+percentiles([1000] * 95 + [30000] * 5)
+# {'mean': 2450, 'p95': 30000, 'p99': 30000}  <- the mean hides it`,
    say:"I alert on p95 and p99, not the mean. And I separate time to first token from total — different causes, different fixes."},
   {t:"Model routing is the biggest cost lever",
    b:"Classify the request, send easy ones to a cheap model. The catch to volunteer: the classifier is <i>itself</i> a model call, so if most traffic is complex you pay to classify and then pay full price anyway. Measure the split first, and prefer a free heuristic where one exists.",
@@ -927,6 +985,15 @@ builder.add_edge("agent_b", "merge")      # merge waits for both`,
    say:"Routing is usually the biggest lever, but the classifier is itself a call, so it only pays when enough traffic is genuinely simple."},
   {t:"Two kinds of caching, and one is underrated",
    b:"<b>Exact-match</b> response caching rarely hits — natural language doesn't repeat verbatim. <b>Prefix caching</b> almost always helps and just requires stable content first in the prompt. <b>Embedding</b> caching has the clearest payoff, on reingestion.",
+   code:`class ResponseCache:
+    def key(self, prompt, model):
+        # Model goes IN the key, or an upgrade serves the old model's answers
+        return hashlib.sha256(f"{model}::{prompt}".encode()).hexdigest()
+
+    def hit_rate(self):
+        total = self.hits + self.misses
+        return self.hits / total if total else 0.0
+        # Below ~10% on natural language, the cache isn't worth its complexity`,
    say:"Exact-match rarely hits unless queries repeat verbatim. Prefix caching almost always helps and just needs stable content first."},
   {t:"Prompt injection is an input-validation problem",
    b:"Untrusted input reaches the model through the same channel as your instructions. Be honest about regex filters: they catch naive attempts and miss encodings, other languages, and indirect injection through retrieved documents. The real defence is never letting model output be authoritative.",
@@ -940,6 +1007,15 @@ builder.add_edge("agent_b", "merge")      # merge waits for both`,
   E -->|"Yes, irreversible"| H["Layer 4: human approves"]
   E -->|"Yes, safe"| Z["Execute"]
   H --> Z`,
+   code:`# Layer 1 (weakest): filter input.  Layer 3 (real): permissions in code.
+def handle(proposed_action, user):
+    if not sanitizer.looks_safe(proposed_action.raw_input):
+        return reject("input failed screening")
+    if proposed_action.tool not in PERMITTED[user.role]:
+        return reject("not permitted")          # enforced here, not in the prompt
+    if proposed_action.is_irreversible:
+        return await_human_approval(proposed_action)
+    return execute(proposed_action)`,
    say:"Injection is untrusted input reaching the instruction channel. Filtering helps but can't be complete — permissions and validation live in code. And retrieved documents are untrusted input too."},
   {t:"Testing something non-deterministic",
    b:"Three layers, cheapest first. <b>Property assertions</b> are deterministic and run every commit. A <b>frozen regression set</b> runs on every change, read as a distribution. An <b>LLM judge</b> comes last, and only after you've validated it against human labels — otherwise you've automated an unmeasured opinion.",

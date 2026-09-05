@@ -259,6 +259,35 @@ flowchart TD
   G -->|"Yes"| F
 ```
 
+```python
+# All three defences — one in state, all three read by the routing function
+MAX_HOPS = 8
+
+class SupervisorState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    next_agent: str
+    task_complete: bool                        # 1. explicit done flag
+    hops: Annotated[int, operator.add]         # 2. hard cap
+    last_delegation: str                       # 3. no-progress detector
+
+def route(state) -> Literal["agent", "give_up", "end"]:
+    if state["task_complete"]:
+        return "end"
+    if state["hops"] >= MAX_HOPS:
+        return "give_up"                       # partial results, with a reason
+
+    # Same agent, same request as last hop -> the loop is not converging
+    signature = f"{state['next_agent']}::{state['messages'][-1].content[:200]}"
+    if signature == state.get("last_delegation"):
+        return "give_up"
+    return "agent"
+```
+
+The `last_delegation` signature is the piece people leave out. A hop cap alone still
+lets a supervisor and worker burn the whole budget rejecting and retrying the identical
+request — it just bounds how much they burn. Comparing this delegation to the previous
+one catches that on hop two instead of hop eight.
+
 **Say this in an interview.** "Termination needs care in both directions — stopping
 early abandons solvable work, never stopping burns budget on unsolvable work. I combine
 an explicit done flag from the supervisor with a hard hop cap and a no-progress check

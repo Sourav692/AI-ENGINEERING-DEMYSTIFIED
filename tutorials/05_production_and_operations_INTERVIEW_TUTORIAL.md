@@ -127,6 +127,30 @@ Streaming moves where the user's wait ends, from the right edge of that diagram 
 boundary between the two boxes. It changes nothing else on the line, which is why
 "we added streaming" is not an answer to "total latency is too high".
 
+```python
+# Percentiles from the raw samples — the aggregate in 01_monitoring.ipynb
+# tracks latency_sum and latency_count, which can only give you a mean.
+import statistics
+
+def percentiles(samples_ms):
+    s = sorted(samples_ms)
+    return {
+        "mean": statistics.mean(s),
+        "p50":  s[int(len(s) * 0.50)],
+        "p95":  s[int(len(s) * 0.95)],       # the number users feel
+        "p99":  s[int(len(s) * 0.99)],       # the number that pages you
+    }
+
+# 95 fast requests and 5 very slow ones
+print(percentiles([1000] * 95 + [30000] * 5))
+# {'mean': 2450, 'p50': 1000, 'p95': 30000, 'p99': 30000}
+```
+
+Run those numbers and the point makes itself. The mean says 2.4 seconds and looks
+survivable. The p95 says 30 seconds, which is the experience one user in twenty
+actually has. **Storing `latency_sum` and `latency_count` can only ever give you the
+mean** — to get percentiles you have to keep the samples, or use a histogram.
+
 **Say this in an interview.** "I alert on p95 and p99, not the mean, because the mean
 hides tail failures. And for LLM systems I separate time to first token from total
 time — they have different causes and different fixes."
@@ -182,9 +206,45 @@ the prompt.
 Embedding caching is covered in [02 RAG](02_rag_and_retrieval_INTERVIEW_TUTORIAL.md),
 including the namespace trap.
 
+```python
+# Exact-match response cache — the shape from 01_monitoring.ipynb's hit/miss counters
+import hashlib
+
+class ResponseCache:
+    def __init__(self):
+        self.store, self.hits, self.misses = {}, 0, 0
+
+    def key(self, prompt: str, model: str) -> str:
+        # Model goes in the key. Same prompt, different model, different answer.
+        return hashlib.sha256(f"{model}::{prompt}".encode()).hexdigest()
+
+    def get_or_call(self, prompt, model, call_fn):
+        k = self.key(prompt, model)
+        if k in self.store:
+            self.hits += 1
+            return self.store[k]
+        self.misses += 1
+        self.store[k] = call_fn(prompt)
+        return self.store[k]
+
+    def hit_rate(self):
+        total = self.hits + self.misses
+        return self.hits / total if total else 0.0
+```
+
+Two things to point at. **The model belongs in the key**, or a model upgrade silently
+serves answers from the old one. And `hit_rate()` exists because it is the number that
+decides whether this class should exist at all — below roughly 10% on natural-language
+queries, the cache is complexity you are paying for and not using.
+
+Prompt prefix caching needs no code, which is the point. You only have to keep stable
+content — system prompt, instructions, few-shot examples — at the **front** of the
+prompt, so the provider can reuse it.
+
 **Say this in an interview.** "Exact-match caching rarely hits unless queries repeat
-verbatim. Prefix caching almost always helps and just requires stable content first in
-the prompt. Embedding caching is the one with the clearest payoff, on reingestion."
+verbatim, so I measure hit rate before keeping it. Prefix caching almost always helps
+and just requires stable content first in the prompt. Embedding caching has the
+clearest payoff, on reingestion."
 
 ### 1.5 Prompt injection is an input-validation problem
 

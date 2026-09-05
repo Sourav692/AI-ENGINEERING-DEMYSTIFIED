@@ -5,7 +5,9 @@ description: >-
   into an interview-prep tutorial for Generative AI and Agentic AI roles — a markdown
   study guide plus a published interactive HTML artifact with click-to-reveal question
   cards, role filtering and self-scoring. Grounds every concept in what the source
-  notebooks actually demonstrate, adds gotchas (symptom/cause/fix) and tradeoff tables,
+  notebooks actually demonstrate, teaching each one with plain-English prose, a mermaid
+  diagram where a flow or decision needs showing, and a runnable code snippet lifted
+  from the learner's own notebooks. Adds gotchas (symptom/cause/fix) and tradeoff tables,
   runs a LIVE web search each time for the current top 10 real-time agentic system
   design interview questions, and splits practice into a shared core plus tracks for
   Applied AI / AI Engineer, Agentic AI Engineer, and Forward Deployed Engineer. Use

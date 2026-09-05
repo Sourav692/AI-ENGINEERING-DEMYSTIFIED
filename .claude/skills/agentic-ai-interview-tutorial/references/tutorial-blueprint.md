@@ -28,6 +28,8 @@ name (or notebook stem for a single file), lowercased with underscores.
 ### 1.x <Concept>
    - **What it is** (3-4 sentences, no hand-waving)
    - **How it works** (the mechanism, not the marketing)
+   - **A code snippet** — REQUIRED on every concept, no exceptions. See "Code
+     snippets" below. A diagram does not substitute for one; a concept may have both.
    - **In your notebooks**: `file.ipynb` -> the exact symbol demonstrated
    - **Say this in an interview**: a 2-3 sentence spoken answer
 
@@ -197,8 +199,13 @@ The diagrams that consistently earn their place:
 
 ## Code snippets
 
-Every core concept gets a snippet. It is the difference between a reader who can
-describe the idea and one who can build it.
+Every core concept gets a snippet — **all of them, including the ones that already
+have a diagram**. A picture shows the shape; the code shows the API names the learner
+has to say out loud. They do different jobs, so one never replaces the other.
+
+The concepts that most often get skipped are the ones where a diagram feels like
+enough: a termination policy, a latency budget, a caching strategy. Those are exactly
+the ones an interviewer asks you to write on a whiteboard, so they need code most.
 
 - **5-15 lines.** Long enough to be real, short enough to read at a glance.
 - **Lift from the learner's own notebooks wherever possible**, and say which file it

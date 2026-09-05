@@ -475,6 +475,40 @@ will happen and how much it costs. In the agent, the loop has no guaranteed end.
 hard problem in agentic engineering — termination, runaway cost, containment — comes
 from that arrow looping back.
 
+Here is the same retrieval both ways. The chain is what your notebooks build:
+
+```python
+# CHAIN — your code decides. Retrieval always runs, exactly once.
+# This is 06_rag_pipeline.ipynb's demo_basic_rag().
+rag_chain = (
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt
+    | llm
+    | StrOutputParser()
+)
+```
+
+```python
+# AGENT — the model decides. Retrieval is a tool it may call 0, 1 or 5 times.
+# (not in your notebooks — build this)
+from langchain_core.tools import tool
+
+@tool
+def search_docs(query: str) -> str:
+    """Search the knowledge base for passages relevant to the query."""
+    return format_docs(retriever.invoke(query))
+
+llm_with_tools = llm.bind_tools([search_docs])
+
+def should_continue(state) -> Literal["tools", END]:
+    return "tools" if state["messages"][-1].tool_calls else END
+```
+
+Look at what changed. The retriever is identical — it just moved behind a `@tool`
+decorator with a docstring, and **that docstring is now the model's only instruction
+for when to use it**. And `should_continue` appeared: a decision that did not exist in
+the chain, because in a chain there was never a question about what happens next.
+
 **Say this in an interview.** "What I built is a chain. Retrieval always runs once
 because my code says so. An agent would decide whether to retrieve at all, possibly
 several times. That's more capable and strictly harder to bound, which is why I'd keep
