@@ -80,15 +80,16 @@ Topics an interviewer will ask about that this folder never shows. Each is taugh
 below and marked `(not in your notebooks — build this)`. Learn them. Don't claim
 you've shipped them.
 
-| Gap | Why it still gets asked |
-|---|---|
-| **Evaluation** | The most-asked Applied AI topic. There is no way to measure quality anywhere in this folder. |
-| **Agents & tool calling** | Every agentic role assumes it. Your retrieval is a fixed chain, not an agent. |
-| **Streaming & async** | You cannot answer a "real-time" question without it. |
-| **Retries & fallbacks** | `06` has a prompt that says "I don't know", which is not the same as retry logic. |
-| **Observability** | The word "LangSmith" appears only inside a sample document in `06`. Nothing is traced. |
-| **Human-in-the-loop** | No approval steps, no pausing. |
-| **Multi-agent** | No supervisor, no handoff. |
+| Gap | Why it still gets asked | Where it lives in this series |
+|---|---|---|
+| **Evaluation** | The most-asked Applied AI topic. Nothing here measures quality. | [05 Production](05_production_and_operations_INTERVIEW_TUTORIAL.md) |
+| **Agents & tool calling** | Every agentic role assumes it. Your retrieval is a chain, not an agent. | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
+| **Retries & fallbacks** | `06` has a prompt that says "I don't know", which is not retry logic. | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
+| **Observability** | "LangSmith" appears only inside a sample document in `06`. Nothing is traced. | [01 Foundations](01_langchain_foundations_INTERVIEW_TUTORIAL.md), [05 Production](05_production_and_operations_INTERVIEW_TUTORIAL.md) |
+| **Human-in-the-loop** | No approval steps, no pausing. | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
+| **Multi-agent** | No supervisor, no handoff. | [04 Multi-Agent](04_multi_agent_systems_INTERVIEW_TUTORIAL.md) |
+| **Streaming** | You cannot answer a "real-time" question without it. | [01 Foundations](01_langchain_foundations_INTERVIEW_TUTORIAL.md) |
+| **Async** | Concurrency questions land here. | **Nowhere in this repo — build it yourself** |
 
 > **A note on the automated scan.** The inventory script said memory was missing and
 > observability was present. Reading the actual code reversed both.
@@ -1118,6 +1119,30 @@ Answer out loud before reading on.
 - Why your session memory fails on a second replica, and what you'd change.
 - Why multi-agent is probably the wrong answer to their problem.
 - Why "the answers look better" is not evidence.
+
+---
+
+## Where this fits
+
+This is tutorial **2 of 5**.
+
+```mermaid
+flowchart LR
+  A["01 Foundations"] --> B["02 RAG<br/>you are here"]
+  B --> C["03 LangGraph"]
+  C --> D["04 Multi-Agent"]
+  D --> E["05 Production"]
+```
+
+| Tutorial | Relationship to this one |
+|---|---|
+| [01 Foundations](01_langchain_foundations_INTERVIEW_TUTORIAL.md) | The RAG chain here is LCEL. Start there if the `\|` operator is unfamiliar. |
+| [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) | Turns retrieval into a tool an agent chooses, and adds the loop, state and approval this folder lacks. |
+| [04 Multi-Agent](04_multi_agent_systems_INTERVIEW_TUTORIAL.md) | Several agents over one corpus. Share a retrieval step rather than duplicating it per agent. |
+| [05 Production](05_production_and_operations_INTERVIEW_TUTORIAL.md) | The eval harness this folder is missing, plus indirect prompt injection through retrieved documents. |
+
+**Repo-wide gap: async.** No folder in this repo uses `ainvoke`, `astream` or
+`async def`. Build a small async example before interviewing.
 
 ---
 

@@ -90,9 +90,13 @@ TOPIC_SIGNALS: list[tuple[str, str]] = [
      r"\b(AgentMiddleware|before_model|after_model|wrap_model_call|"
      r"wrap_tool_call|ModelCallLimitMiddleware|PIIMiddleware|"
      r"SummarizationMiddleware|guardrail|moderation)\b"),
+    # `.stream(` matters as much as the async forms — a sync token stream is
+    # still streaming, and missing it reported a false gap on a folder that
+    # demonstrated `chain.stream()` in its very first notebook.
     ("Streaming & async",
-     r"\b(astream|ainvoke|abatch|stream_events|async def|await |"
-     r"stream_mode|AsyncCallbackHandler)\b"),
+     r"(\.a?stream\(|\bastream_events\b|\bainvoke\b|\babatch\b|"
+     r"\bstream_events\b|\basync def\b|\bawait \b|\bstream_mode\b|"
+     r"\bAsyncCallbackHandler\b)"),
     ("Evaluation",
      r"\b(ragas|deepeval|GEval|LLMTestCase|evaluate\(|faithfulness|"
      r"answer_relevancy|llm.as.judge|judge)\b"),
