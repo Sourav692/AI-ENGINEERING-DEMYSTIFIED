@@ -1,0 +1,1289 @@
+<title>AI Engineering Interview Drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;450;600&display=swap">
+
+<style>
+:root{
+  --ground:#F6F7F9; --surface:#FFFFFF; --surface-2:#EFF2F5;
+  --ink:#14181D; --muted:#5B6672; --faint:#8894A1;
+  --accent:#0E7C86; --accent-soft:#DCEEF0; --accent-ink:#0A5A61;
+  --rule:#DDE2E8; --rule-strong:#C3CBD4;
+  --got:#2F7D5D; --shaky:#B4690E; --missed:#B3261E;
+  --got-bg:#E4F0EA; --shaky-bg:#F8ECDA; --missed-bg:#F8E3E1;
+  --shadow:0 1px 2px rgba(20,24,29,.06), 0 4px 12px rgba(20,24,29,.05);
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#10141A; --surface:#171C23; --surface-2:#1E242C;
+    --ink:#E6EAEF; --muted:#93A0AD; --faint:#6E7B89;
+    --accent:#3FB3BD; --accent-soft:#123238; --accent-ink:#7FD3DA;
+    --rule:#262E38; --rule-strong:#38424E;
+    --got:#5FBE92; --shaky:#E0A248; --missed:#E8776D;
+    --got-bg:#16281F; --shaky-bg:#2C2213; --missed-bg:#2E1A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#10141A; --surface:#171C23; --surface-2:#1E242C;
+  --ink:#E6EAEF; --muted:#93A0AD; --faint:#6E7B89;
+  --accent:#3FB3BD; --accent-soft:#123238; --accent-ink:#7FD3DA;
+  --rule:#262E38; --rule-strong:#38424E;
+  --got:#5FBE92; --shaky:#E0A248; --missed:#E8776D;
+  --got-bg:#16281F; --shaky-bg:#2C2213; --missed-bg:#2E1A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); font-family:var(--sans);
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{text-wrap:balance; margin:0; line-height:1.22}
+p{margin:0}
+code,.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+code{font-size:.88em; background:var(--surface-2); padding:.1em .34em;
+  border-radius:3px; color:var(--accent-ink)}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+
+/* readout */
+.readout{position:sticky; top:0; z-index:30; background:var(--surface);
+  border-bottom:1px solid var(--rule-strong)}
+.readout-in{max-width:1120px; margin:0 auto; padding:9px 24px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.brand{font-family:var(--cond); font-weight:700; font-size:14px;
+  letter-spacing:.06em; text-transform:uppercase; white-space:nowrap}
+.brand span{color:var(--accent)}
+.meters{display:flex; gap:13px; margin-left:auto; align-items:center}
+.meter{display:flex; align-items:baseline; gap:5px; font-family:var(--mono); font-size:11.5px}
+.meter b{font-size:15px; font-weight:600}
+.m-got b{color:var(--got)} .m-shaky b{color:var(--shaky)} .m-missed b{color:var(--missed)}
+.meter i{font-style:normal; color:var(--faint); letter-spacing:.04em}
+.bar{height:3px; display:flex; background:var(--surface-2)}
+.bar i{display:block; height:100%}
+.b-got{background:var(--got)} .b-shaky{background:var(--shaky)} .b-missed{background:var(--missed)}
+
+/* tabs */
+.tabs{background:var(--surface); border-bottom:1px solid var(--rule);
+  position:sticky; top:44px; z-index:29}
+.tabs-in{max-width:1120px; margin:0 auto; padding:0 24px; display:flex;
+  gap:2px; overflow-x:auto}
+.tab{font-family:var(--cond); font-weight:600; font-size:13px; letter-spacing:.04em;
+  padding:11px 14px; border:0; border-bottom:2px solid transparent; background:none;
+  color:var(--muted); cursor:pointer; white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent-ink); border-bottom-color:var(--accent)}
+.tab u{text-decoration:none; font-family:var(--mono); font-size:11px; color:var(--faint);
+  margin-right:6px}
+.tab[aria-selected="true"] u{color:var(--accent)}
+
+/* controls */
+.controls{max-width:1120px; margin:0 auto; padding:14px 24px 0;
+  display:flex; gap:7px; flex-wrap:wrap; align-items:center}
+.chip{font-family:var(--cond); font-weight:600; font-size:12px; letter-spacing:.05em;
+  text-transform:uppercase; padding:5px 11px; border:1px solid var(--rule-strong);
+  background:var(--surface); color:var(--muted); border-radius:2px; cursor:pointer}
+.chip:hover{border-color:var(--accent); color:var(--accent-ink)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#08171A}}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#08171A}
+.ctl-sep{width:1px; height:20px; background:var(--rule-strong); margin:0 3px}
+
+main{max-width:1120px; margin:0 auto; padding:0 24px 90px}
+section{padding-top:40px}
+.eyebrow{font-family:var(--cond); font-weight:700; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:9px}
+.eyebrow::after{content:""; flex:1; height:1px; background:var(--rule)}
+h2{font-family:var(--cond); font-weight:700; font-size:27px; margin:8px 0 6px}
+h3.sub{font-family:var(--cond); font-weight:700; font-size:19px; margin:26px 0 2px}
+.lede{color:var(--muted); font-size:15.5px; max-width:72ch}
+
+/* masthead */
+.mast{padding:38px 0 4px}
+.mast h1{font-family:var(--cond); font-weight:700; font-size:clamp(30px,4.6vw,46px);
+  letter-spacing:-.015em}
+.mast .sub{color:var(--muted); font-size:16.5px; margin-top:9px; max-width:66ch}
+.facts{display:flex; flex-wrap:wrap; margin-top:20px;
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule)}
+.fact{padding:11px 20px 11px 0; margin-right:20px; border-right:1px solid var(--rule)}
+.fact:last-child{border-right:0}
+.fact b{display:block; font-family:var(--mono); font-size:20px; font-weight:600}
+.fact i{font-style:normal; font-family:var(--cond); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint)}
+
+/* diagram plate */
+.plate{margin-top:12px; background:#F4F6F8; border:1px solid #D8DEE5; border-radius:3px;
+  padding:14px 12px; overflow-x:auto}
+.plate pre.mermaid{margin:0; background:none; border:0; text-align:center;
+  font-family:var(--mono)}
+.plate-cap{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); margin-top:6px}
+
+/* code */
+pre.code{margin-top:10px; background:var(--surface-2); border:1px solid var(--rule);
+  border-left:3px solid var(--accent); border-radius:2px; padding:11px 13px;
+  overflow-x:auto; font-family:var(--mono); font-size:12.7px; line-height:1.6;
+  white-space:pre}
+pre.code .cm{color:var(--faint)}
+
+/* concepts */
+.concept{border-top:1px solid var(--rule); padding:16px 0}
+.concept h4{font-size:17px; font-weight:600; display:flex; gap:10px; align-items:baseline}
+.concept h4 .n{font-family:var(--mono); font-size:12.5px; color:var(--faint); flex:none}
+.concept p{margin-top:7px; max-width:72ch; font-size:15px}
+.say{margin-top:9px; font-size:14.5px; background:var(--surface-2); padding:9px 12px;
+  border-radius:3px}
+.say b{font-family:var(--cond); letter-spacing:.06em; text-transform:uppercase;
+  font-size:10.5px; color:var(--faint); display:block; margin-bottom:2px}
+.gaptag{font-family:var(--cond); font-size:10px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; padding:2px 6px; border:1px solid var(--missed);
+  color:var(--missed); border-radius:2px; white-space:nowrap}
+
+/* questions */
+.qlist{display:flex; flex-direction:column; gap:9px; margin-top:14px}
+.q{background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--rule-strong); border-radius:2px; box-shadow:var(--shadow)}
+.q[data-score="got"]{border-left-color:var(--got)}
+.q[data-score="shaky"]{border-left-color:var(--shaky)}
+.q[data-score="missed"]{border-left-color:var(--missed)}
+.q-head{width:100%; text-align:left; background:none; border:0; cursor:pointer;
+  padding:13px 15px; display:flex; gap:11px; align-items:flex-start; font:inherit; color:inherit}
+.q-head:hover{background:var(--surface-2)}
+.q-n{font-family:var(--mono); font-size:12px; color:var(--faint); flex:none; padding-top:3px;
+  min-width:3.2em}
+.q-t{flex:1; font-size:15.5px; font-weight:450; line-height:1.45}
+.q-tags{display:flex; gap:4px; flex:none; flex-wrap:wrap; justify-content:flex-end; max-width:200px}
+.tag{font-family:var(--cond); font-size:9.5px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; padding:2px 6px; border:1px solid var(--rule-strong);
+  color:var(--muted); border-radius:2px; white-space:nowrap}
+.tag.core{color:var(--accent-ink); border-color:var(--accent); background:var(--accent-soft)}
+.q-body{display:none; padding:0 15px 14px}
+.q.is-open .q-body{display:block}
+.ans{font-size:15px; border-top:1px solid var(--rule); padding-top:12px}
+.ans p + p{margin-top:8px}
+.srcs{margin-top:10px; font-size:12px; font-family:var(--mono); color:var(--faint);
+  display:flex; gap:11px; flex-wrap:wrap}
+.score{margin-top:12px; display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+.score span{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); margin-right:2px}
+.sbtn{font-family:var(--cond); font-weight:600; font-size:11.5px; letter-spacing:.05em;
+  text-transform:uppercase; padding:5px 11px; border:1px solid var(--rule-strong);
+  background:var(--surface); color:var(--muted); border-radius:2px; cursor:pointer}
+.sbtn[data-v="got"][aria-pressed="true"]{background:var(--got-bg); border-color:var(--got); color:var(--got)}
+.sbtn[data-v="shaky"][aria-pressed="true"]{background:var(--shaky-bg); border-color:var(--shaky); color:var(--shaky)}
+.sbtn[data-v="missed"][aria-pressed="true"]{background:var(--missed-bg); border-color:var(--missed); color:var(--missed)}
+
+/* gotchas */
+.gots{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:9px; margin-top:14px}
+.got-c{background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+  padding:13px 14px; cursor:pointer; box-shadow:var(--shadow)}
+.got-c:hover{border-color:var(--rule-strong)}
+.got-c h4{font-size:15px; font-weight:600; margin-bottom:7px}
+.got-row{display:flex; gap:9px; font-size:13.8px; margin-top:6px}
+.got-row b{font-family:var(--cond); font-size:10px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); flex:none; width:60px; padding-top:3px}
+.got-back{display:none}
+.got-c.is-open .got-back{display:block}
+.flip{font-family:var(--cond); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent); margin-top:9px}
+
+/* tables */
+.tw{overflow-x:auto; margin-top:11px; border:1px solid var(--rule); border-radius:2px}
+table{border-collapse:collapse; width:100%; font-size:14px; background:var(--surface)}
+th,td{text-align:left; padding:8px 12px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--faint); background:var(--surface-2); white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600}
+.pick{color:var(--accent-ink)}
+.oneline{margin-top:9px; font-size:14.5px; padding:9px 12px; background:var(--accent-soft);
+  border-radius:3px}
+.oneline b{font-family:var(--cond); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent-ink); display:block; margin-bottom:2px}
+.trade{border-top:1px solid var(--rule); padding:16px 0}
+.trade h4{font-size:16.5px; font-weight:600}
+
+/* matrix */
+.matrix td.y{color:var(--got); font-weight:600; text-align:center}
+.matrix td.n{color:var(--faint); text-align:center}
+.matrix td.x{color:var(--missed); font-weight:600; text-align:center}
+.matrix th.c{text-align:center}
+
+/* self-check */
+.sc{border-top:1px solid var(--rule); padding:10px 0; cursor:pointer}
+.sc-q{display:flex; gap:10px; font-size:15px}
+.sc-q .n{font-family:var(--mono); font-size:12px; color:var(--faint); flex:none;
+  min-width:2em; padding-top:2px}
+.sc-a{display:none; margin:6px 0 0 calc(2em + 10px); font-size:14px;
+  color:var(--accent-ink); font-family:var(--mono)}
+.sc.is-open .sc-a{display:block}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:10px; margin-top:16px}
+.card{background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+  padding:15px 16px; box-shadow:var(--shadow)}
+.card h4{font-family:var(--cond); font-size:17px; font-weight:700}
+.card .n{font-family:var(--mono); font-size:11.5px; color:var(--accent); display:block; margin-bottom:3px}
+.card p{margin-top:6px; font-size:14.3px; color:var(--muted)}
+.card button{margin-top:11px; font-family:var(--cond); font-weight:600; font-size:11.5px;
+  letter-spacing:.05em; text-transform:uppercase; padding:5px 11px;
+  border:1px solid var(--accent); background:none; color:var(--accent-ink);
+  border-radius:2px; cursor:pointer}
+.card button:hover{background:var(--accent-soft)}
+
+.callout{margin-top:16px; padding:14px 16px; background:var(--surface);
+  border:1px solid var(--rule-strong); border-left:3px solid var(--missed);
+  border-radius:2px; font-size:15px; box-shadow:var(--shadow)}
+.callout b{font-family:var(--cond); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--missed); display:block; margin-bottom:4px}
+.empty{padding:24px 0; color:var(--muted); font-size:15px}
+footer{margin-top:52px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:12.5px; color:var(--faint); display:flex; gap:14px; flex-wrap:wrap;
+  justify-content:space-between}
+.persist{font-family:var(--mono); font-size:11px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:640px){
+  .q-tags{max-width:none; justify-content:flex-start; width:100%}
+  .q-head{flex-wrap:wrap}
+  .meters{width:100%; margin-left:0}
+  .tabs{top:70px}
+}
+</style>
+
+<div class="readout">
+  <div class="readout-in">
+    <div class="brand">AI Engineering <span>Interview Drill</span></div>
+    <div class="meters">
+      <div class="meter m-got"><b id="n-got">0</b><i>got it</i></div>
+      <div class="meter m-shaky"><b id="n-shaky">0</b><i>shaky</i></div>
+      <div class="meter m-missed"><b id="n-missed">0</b><i>missed</i></div>
+      <div class="meter"><b id="n-left">0</b><i>unrated</i></div>
+    </div>
+  </div>
+  <div class="bar"><i class="b-got" id="bar-got"></i><i class="b-shaky" id="bar-shaky"></i><i class="b-missed" id="bar-missed"></i></div>
+</div>
+
+<div class="tabs"><div class="tabs-in" id="tabs"></div></div>
+
+<div class="controls">
+  <button class="chip" data-role="all" aria-pressed="true">All roles</button>
+  <button class="chip" data-role="applied" aria-pressed="false">Applied AI</button>
+  <button class="chip" data-role="agentic" aria-pressed="false">Agentic</button>
+  <button class="chip" data-role="fde" aria-pressed="false">FDE</button>
+  <span class="ctl-sep"></span>
+  <button class="chip" id="weak-only" aria-pressed="false">Weak only</button>
+  <button class="chip" id="collapse">Collapse all</button>
+  <button class="chip" id="reset">Reset scores</button>
+</div>
+
+<main id="main"></main>
+
+<script>
+/* ============================ DATA ============================ */
+const ROLE_LABEL={core:"Real-time design",applied:"Applied AI",agentic:"Agentic",fde:"FDE"};
+
+const SERIES=[
+{id:"01",emoji:"🧱",short:"Foundations",title:"LangChain Foundations",
+ md:"01_langchain_foundations_INTERVIEW_TUTORIAL.md",
+ idea:"Everything is a Runnable, and the pipe composes them.",
+ blurb:"The base layer. A prompt, a model, a parser, and the <code>|</code> that joins them. Everything in the other four tutorials is built out of these pieces.",
+ diagram:`flowchart LR
+  A["{question}"] --> B["ChatPromptTemplate"]
+  B --> C["ChatOpenAI"]
+  C --> D["StrOutputParser"]
+  D --> E["plain string"]`,
+ dcap:"A chain is four objects and three pipes",
+ concepts:[
+  {t:"The pipe is function composition",
+   b:"<code>a | b</code> builds a new object that runs <code>a</code> and feeds its output to <code>b</code>. Because the result is itself a Runnable, it gets the same four methods its parts have: <code>invoke</code>, <code>batch</code>, <code>stream</code>, <code>astream</code>. Nothing executes until you invoke.",
+   code:`prompt = ChatPromptTemplate.from_template(
+    "Answer in one sentence: {question}"
+)
+model  = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+chain  = prompt | model | StrOutputParser()
+
+chain.invoke({"question": "What is LangChain?"})`,
+   say:"The pipe builds a composed Runnable, so the whole chain has the same interface as its parts. That's what makes it inspectable and swappable."},
+  {t:"Batch is not a loop",
+   b:"<code>.batch()</code> submits everything concurrently; a for loop sends one at a time. Results come back in input order regardless. There is no default rate limit, so cap it.",
+   code:`results = chain.batch(
+    [{"text": "Hello"}, {"text": "Goodbye"}],
+    config={"max_concurrency": 5},   # or you WILL hit a 429
+)`,
+   say:"Batch is one concurrent submission, not a loop. I cap concurrency in the run config, because the default will exceed a provider's rate limit."},
+  {t:"Streaming changes what users feel, not total time",
+   b:"A model generates one token at a time. Streaming hands you each piece as it arrives. Total latency is unchanged — <b>time to first token</b> is what improves, and that's the number users actually experience.",
+   code:`for chunk in chain.stream({"topic": "nature"}):
+    print(chunk, end="", flush=True)`,
+   say:"Streaming doesn't reduce total latency, it reduces time to first token. It's the first thing I reach for before any model-level optimisation."},
+  {t:"Memory is replaying messages, and you pay every turn",
+   b:"There is no server-side session. You resend prior Human and AI messages with every request, so turn 50 pays for the 49 before it. That's why windowing or summarising stops being optional.",
+   diagram:`flowchart LR
+  S["System"] --> H1["Human: turn 1"]
+  H1 --> A1["AI: turn 1"]
+  A1 --> H2["Human: turn 2"]
+  H2 --> M["Model"]
+  M --> R["AI: turn 2"]`,
+   say:"Memory is just replaying prior messages. The model is stateless, so history is a cost that grows every turn."},
+  {t:"Structured output beats parsing prose",
+   b:"<code>with_structured_output</code> routes through the provider's tool-calling or JSON mode, so the constraint applies <i>during decoding</i> rather than after. It still fails sometimes, so validate and have a retry path.",
+   code:`class Analysis(BaseModel):
+    sentiment: str = Field(description="positive, negative, neutral")
+    confidence: float = Field(description="0.0 to 1.0")
+
+structured = model.with_structured_output(Analysis)
+structured.invoke("Arrived late but works well.").sentiment`,
+   say:"If code consumes the output, constrain the schema. Parsing prose with a regex is a bug you chose to write."},
+  {t:"Retry and fallback fix different things",
+   b:"Retry runs the <b>same</b> thing again, which fixes transient failures. Fallback runs a <b>different</b> thing, which fixes structural ones. Retrying a deprecated model fails three times and still fails.",
+   diagram:`flowchart TD
+  A["Call failed"] --> B{"Would the same call<br/>work if retried?"}
+  B -->|"Yes: rate limit"| C["with_retry"]
+  B -->|"No: model gone"| D["with_fallbacks"]
+  B -->|"No: answer was poor"| E["Neither, feed critique forward"]`,
+   say:"Retry for transient, fallback for structural. And retry is blind — it can't fix a quality problem, only a flaky one."},
+  {t:"Tracing is how you debug anything real",
+   b:"LangSmith records every step — inputs, outputs, latency, tokens, cost — from environment variables. <code>@traceable</code> pulls your own functions into the same timeline. The field that resolves most bugs is the fully-rendered prompt.",
+   code:`# .env:  LANGSMITH_TRACING=true / LANGSMITH_API_KEY=...
+from langsmith import traceable
+
+@traceable(name="custom_step")
+def my_step(x):
+    return transform(x)`,
+   say:"Tracing captures chains automatically, and @traceable pulls my own functions in. The field I care about most is the actual prompt sent."}],
+ gotchas:[
+  {t:"temperature=0 is not deterministic",s:"The same prompt returns different text across runs even at zero.",c:"Zero makes sampling greedy, but batched GPU non-determinism, model updates behind an alias, and provider routing all still vary.",f:"Treat it as low-variance, not reproducible. Assert on properties, never exact strings.",a:"\"Your test asserts exact model output and fails randomly. Why?\""},
+  {t:"StrOutputParser hides tool calls",s:"You add tools and get empty strings back.",c:"When a model calls a tool, content is empty and the payload is in .tool_calls. The string parser reads content.",f:"Don't put StrOutputParser after a tool-bound model. Inspect the AIMessage.",a:"\"Your agent returns empty strings. Where do you look?\""},
+  {t:"Conversation history grows without bound",s:"Cost per turn climbs steadily, then requests fail on context length.",c:"History is resent every turn. Turn 50 pays for turns 1 to 49.",f:"Window, summarise, or both. Pin user constraints outside the transcript so they can't be trimmed.",a:"\"Your chatbot gets more expensive the longer people use it. Why?\""},
+  {t:"with_retry retries blind",s:"Three attempts, three identical bad answers, three times the cost.",c:"Retry re-runs the same input with no memory of the failure, so a quality problem reproduces exactly.",f:"Retry only transient errors, named via retry_if_exception_type. For quality, feed the critique forward.",a:"\"When is a retry the wrong tool?\""},
+  {t:"Batch has no default concurrency limit",s:"A large .batch() triggers 429 rate-limit errors.",c:"Batch submits everything to a thread pool at once.",f:"config={\"max_concurrency\": 5}, and return_exceptions=True so one failure doesn't discard the successes.",a:"\"You batch 1000 documents and get rate limited. Two fixes?\""},
+  {t:"A prompt template fails late",s:"KeyError at invoke time, far from the line that caused it.",c:"from_template records placeholders but doesn't check you'll supply them until you run.",f:"Assert on prompt.input_variables in a test, or bind known values with .partial().",a:"\"How do you catch prompt bugs before production?\""},
+  {t:"Tracing sends your prompts to a third party",s:"A security review blocks your deployment.",c:"LANGSMITH_TRACING=true ships inputs and outputs, including customer data, to an external service.",f:"Know this before a customer asks. Self-hosted, redaction, or sampling.",a:"\"Your customer is in healthcare. What breaks about your observability?\""}],
+ trades:[
+  {t:"Chain versus graph",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["LCEL chain","No cycles, no durable state","Simple, inspectable","The path is fixed"],
+   ["LangGraph","More concepts and code","Cycles, checkpoints, interrupts","You need to loop, pause or resume"]],
+   o:"LCEL is acyclic — the moment I need a loop, a pause, or a resume, I need a graph."},
+  {t:"Streaming versus buffering",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Stream","Harder mid-response error handling","Fast perceived response","A human is reading it"],
+   ["Buffer","Feels slow on long answers","You can validate before showing","Output must be checked first"]],
+   o:"Stream when a human reads it, buffer when code validates it — you can't un-show a token."},
+  {t:"Structured output versus free text",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["with_structured_output","Schema upkeep","Typed fields, constrained decoding","Code consumes the answer"],
+   ["Free text","Fragile parsing","Nothing much","A human reads it directly"]],
+   o:"Constrained decoding beats hopeful parsing — if my code branches on it, it gets a schema."},
+  {t:"One big prompt versus a chain",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["One prompt","Hard to debug","One call, lowest latency","The task is genuinely one step"],
+   ["Chained prompts","N calls, N times latency","Each step checkable","Quality matters more than speed"]],
+   o:"Chain when I need a checkpoint between steps — otherwise I'm paying N times for more moving parts."}],
+ qs:[
+  {r:["core"],q:"What does prompt | model | parser actually build?",a:"<p>A composed Runnable. Each part implements the same interface, so piping produces another object with invoke, batch, stream and astream. Nothing executes at composition time.</p><p>That laziness is what makes the chain inspectable — you can print its input and output schemas before running it, and swap the model without touching the prompt.</p>",s:[["myengineeringpath","https://myengineeringpath.dev/genai-engineer/llm-interview-questions/"]]},
+  {r:["core","fde"],q:"When would you not use LangChain at all?",a:"<p>When the task is one model call with one prompt. The abstraction earns its place with composition, provider swapping, structured output, retries, or tracing.</p><p>For a single call to one provider, the raw SDK is less indirection and easier to debug. Say this out loud — interviewers use it to check you can criticise your own tools.</p>",s:[["DataCamp","https://www.datacamp.com/blog/llm-interview-questions"]]},
+  {r:["core","applied"],q:"How do you get reliable JSON out of a model?",a:"<p><code>with_structured_output</code> with a Pydantic schema, which routes through the provider's tool-calling or JSON mode so the constraint applies during decoding rather than after.</p><p>Then validate anyway and have a retry path, because constrained decoding reduces failures rather than eliminating them. Parsing free text with a regex is the answer that loses the point.</p>",s:[["DataCamp","https://www.datacamp.com/blog/llm-interview-questions"]]},
+  {r:["core","agentic"],q:"Explain the difference between stream and astream.",a:"<p>Both yield chunks as they're generated. <code>stream</code> is synchronous and blocks the calling thread for the whole generation. <code>astream</code> is a coroutine and releases the event loop between chunks.</p><p>For a web service the async form is the one that matters, because the sync form ties up a worker per request.</p>",s:[["myengineeringpath","https://myengineeringpath.dev/genai-engineer/llm-interview-questions/"]]},
+  {r:["core"],q:"How does conversation memory actually work?",a:"<p>There is no server-side session. You resend prior Human and AI messages with every request.</p><p>So memory is a cost that grows linearly with conversation length and eventually hits the context limit. The engineering content is the policy: window, summarise, or store facts separately from the transcript.</p>",s:[["myengineeringpath","https://myengineeringpath.dev/genai-engineer/llm-interview-questions/"]]},
+  {r:["core","fde"],q:"Your chain works locally and fails in production. How do you find out why?",a:"<p>Traces. Turn on LangSmith and compare a working run to a failing one step by step.</p><p>The field that resolves most of these is the fully-rendered prompt, because the difference is usually an input you didn't expect — a longer document, a different locale, a null where you assumed a string. Instrument first, theorise second.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["core"],q:"What is the difference between a retry and a fallback?",a:"<p>Retry runs the same thing again, fixing transient failures like rate limits and timeouts. Fallback runs something different, fixing structural failures like a model being unavailable.</p><p>Retrying a structural failure just fails N times more slowly. Both are one line in LCEL, and knowing which to reach for is the actual question.</p>",s:[["DataCamp","https://www.datacamp.com/blog/llm-interview-questions"]]},
+  {r:["applied","fde"],q:"How do you control cost at this layer?",a:"<p>Four levers before touching architecture. Cap output length, because output tokens usually cost several times input. Route easy queries to a cheaper model. Cache repeated calls. Trim the prompt and retrieved context.</p><p>Then measure per-request token usage so you can tell which lever actually moved.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["applied"],q:"How do you test something whose output is non-deterministic?",a:"<p>Assert on properties, not exact strings. Does it parse into the schema? Does it contain the required field? Is it under the length limit? Does it refuse when it should?</p><p>For quality, use a frozen eval set and a judge, and validate the judge against human labels. Exact-match assertions produce flaky tests that get deleted.</p>",s:[["LLM interviews","https://medium.com/@santosh.rout.cr7/llm-engineering-interviews-how-to-prepare-for-prompting-fine-tuning-and-evaluation-df888e76340e"]]},
+  {r:["fde"],q:"What are the risks of turning on tracing?",a:"<p>Traces contain your prompts and completions, so customer data leaves your network. For a regulated customer that's a blocker, not a detail.</p><p>Options are self-hosted collection, redaction before the trace, or sampling with sensitive fields stripped. The wrong answer is discovering this during their security review.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]}],
+ self:[["What does | return?","A composed Runnable with the same interface."],
+  ["When does a chain execute?","On .invoke(). Composition is lazy."],
+  [".batch() vs a for loop?","Concurrent submission; results stay in input order."],
+  ["Does streaming reduce total latency?","No. It reduces time to first token."],
+  ["Where does conversation history live?","In your request. The model is stateless."],
+  ["Why does StrOutputParser break tool calling?","Content is empty; the payload is in tool_calls."],
+  ["Retry or fallback for a deprecated model?","Fallback. Retry repeats the same failure."],
+  ["Is temperature=0 reproducible?","Low-variance, not deterministic."],
+  ["What does @traceable add?","Your own functions into the framework's trace."],
+  ["Cheapest lever on token cost?","Cap output length — output tokens cost more."]]},
+
+{id:"02",emoji:"🎯",short:"RAG",title:"RAG & Retrieval",
+ md:"02_rag_and_retrieval_INTERVIEW_TUTORIAL.md",
+ idea:"Retrieval and generation fail independently, so you debug them separately.",
+ blurb:"<b>RAG</b> means <b>Retrieval-Augmented Generation</b>: before asking the model, go find the relevant documents and paste them into the prompt. That's the whole idea — the rest is doing it well.",
+ diagram:`flowchart LR
+  subgraph INDEX["Once, ahead of time"]
+    A["Your documents"] --> B["Split into chunks"]
+    B --> C["Turn into numbers"]
+    C --> D[("Vector store")]
+  end
+  subgraph ASK["On every question"]
+    E["User question"] --> F["Turn into numbers"]
+    F --> G["Find closest chunks"]
+    D --> G
+    G --> H["Paste into prompt"]
+    H --> I["Model answers"]
+  end`,
+ dcap:"Almost every bug lives in one specific box",
+ concepts:[
+  {t:"An embedding is just a list of numbers",
+   b:"You can't do maths on the word \"dog\", so you convert text to 1536 numbers. Similar meanings give similar numbers. OpenAI scales every embedding to <b>length 1</b>, so closeness is the angle between two arrows, not the distance between their tips — which is why cosine similarity and the dot product agree.",
+   code:`single = embeddings_model.embed_query("What is Machine Learning?")
+print(len(single))                # 1536
+print(np.linalg.norm(single))     # 1.0002  <- always ~1
+
+def cosine_similarity(v1, v2):
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))`,
+   say:"An embedding is a direction, not a position. Normalised to length 1, so similarity is an angle. A vector store is the ranking loop plus an index."},
+  {t:"Two embedding methods, not interchangeable",
+   b:"<code>embed_query</code> takes one string for the question. <code>embed_documents</code> takes a list and sends them in one request. Some providers train the two sides differently, so using the wrong one degrades ranking with no error at all.",
+   code:`q_vec  = embeddings_model.embed_query("What is ML?")
+d_vecs = embeddings_model.embed_documents([...])  # ONE request`,
+   say:"Never loop embed_query over a corpus. N round trips instead of one, and on asymmetric models it's the wrong vector space."},
+  {t:"Chunk size is a dial, not a setting",
+   b:"Small pieces match sharply but hand the model a fragment. Big pieces carry context but blur the embedding across several ideas. Overlap keeps a fact whole when it sits exactly where you cut.",
+   diagram:`flowchart LR
+  A["Chunk size"] --> B["Small: 200-400"]
+  A --> C["Large: 1000-2000"]
+  B --> B1["Sharp match"]
+  B --> B2["Sees a fragment"]
+  C --> C1["Full context"]
+  C --> C2["Blurry match"]`,
+   code:`splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200,                        # 20%
+    separators=["\\n\\n", "\\n", ". ", " ", ""],  # paragraph, line, sentence
+)`,
+   say:"Chunk size trades recall against precision, so I measure it. Structure-aware splitting beats any fixed size where structure exists."},
+  {t:"Exactly two suspects when the answer is wrong",
+   b:"Either you fetched the wrong documents, or you fetched the right ones and the model ignored them. One check separates them: print the retrieved chunks and read them.",
+   diagram:`flowchart TD
+  A["Answer is wrong"] --> B["Print retrieved chunks"]
+  B --> C{"Is the answer inside them?"}
+  C -->|"No"| D["Retrieval bug"]
+  C -->|"Yes"| E["Generation bug"]
+  D --> D1["Chunk size, embedding, ranking"]
+  E --> E1["Prompt, context order, model"]`,
+   say:"First I ask whether the answer was even in the retrieved context. That single check halves the search space."},
+  {t:"Metadata filtering is how you do security",
+   b:"Chunks carry labels, and the filter runs <b>before</b> the search, so your k results already passed the rule. Swap <code>topic</code> for <code>tenant_id</code> and this is what stops one customer's documents reaching another's answer — enforced in code, so it either ran or it didn't.",
+   code:`results = vectorstore.similarity_search(
+    "What databases are available?",
+    k=5,
+    filter={"topic": "database"},   # BEFORE the search
+)`,
+   say:"Metadata filters are pre-filters. Access control belongs in the filter, never in the prompt — a prompt instruction is unprovable."},
+  {t:"Four ways to make retrieval better",
+   b:"<b>Hybrid</b> blends BM25 keywords with vectors, for exact terms embeddings blur. <b>Multi-query</b> rewrites the question several ways. <b>Compression</b> extracts only relevant sentences per chunk. <b>Parent-document</b> searches small, returns large.",
+   diagram:`flowchart TD
+  A["Top-k not good enough"] --> B{"What is failing?"}
+  B -->|"Misses exact words"| C["Hybrid: BM25 + vectors"]
+  B -->|"User words differ"| D["Multi-query"]
+  B -->|"Too much noise"| E["Compression or rerank"]
+  B -->|"Not enough context"| F["Parent-document"]`,
+   code:`ensemble = EnsembleRetriever(
+    retrievers=[bm25_retriever, semantic_retriever],
+    weights=[0.4, 0.6],       # 40% keyword, 60% semantic
+)`,
+   say:"I'd reach for hybrid first because it's cheap and fixes the most common failure. Compression last — one model call per chunk."},
+  {t:"Caching embeddings, and the namespace trap",
+   b:"Only genuinely new text reaches the API. The cache key is a hash of the <i>text</i>, so two models given the same text produce the same key — without a namespace they overwrite each other and you silently serve vectors from the wrong model.",
+   code:`cached = CacheBackedEmbeddings.from_bytes_store(
+    underlying_embeddings=embeddings_model,
+    document_embedding_cache=LocalFileStore(tempdir),
+    namespace="exercise",     # keeps models from colliding
+    key_encoder="sha256",     # default sha1 warns
+)`,
+   say:"Re-embedding unchanged documents is pure waste. The namespace is what people forget, and getting it wrong is silent, not a crash."},
+  {t:"Evaluation",gap:1,
+   b:"Not in these notebooks. Measure the two halves separately. <b>Retrieval</b>: label the correct chunk, measure recall@k and MRR — no model needed, cheap enough for every change. <b>Generation</b>: faithfulness and relevance, needing a judge you validated against human labels.",
+   code:`def recall_at_k(retriever, eval_set, k=5):
+    hits = 0
+    for row in eval_set:
+        got = retriever.invoke(row["q"])[:k]
+        if any(d.metadata["chunk_id"] == row["chunk_id"] for d in got):
+            hits += 1
+    return hits / len(eval_set)`,
+   say:"There's no eval harness here and it's the first thing I'd add. Fifty labelled pairs, recall@k first because it's free."},
+  {t:"Chains versus agents",gap:1,
+   b:"What's built here is a <b>chain</b>: retrieval always runs, once, because the code says so. An <b>agent</b> decides — it can search zero times or five. Every hard problem in agentic engineering comes from that loop having no guaranteed end.",
+   diagram:`flowchart TD
+  subgraph CH["Chain: code decides"]
+    A1["Question"] --> A2["Always retrieve"] --> A3["Answer"]
+  end
+  subgraph AG["Agent: model decides"]
+    B1["Question"] --> B2{"Model picks"}
+    B2 -->|"search"| B3["Retrieve"] --> B2
+    B2 -->|"done"| B4["Answer"]
+  end`,
+   say:"What I built is a chain. An agent would decide whether to retrieve at all — more capable, strictly harder to bound."}],
+ gotchas:[
+  {t:"Chroma gives distance, not similarity",s:"Your score gets worse for better matches and goes above 1.0.",c:"similarity_search_with_score returns distance (L2 by default). Lower is better — the opposite of cosine.",f:"Convert with 1/(1+score), or configure cosine. Never show a raw distance as confidence.",a:"\"Your relevance scores are above 1.0. What's going on?\""},
+  {t:"In-process session memory dies on restart",s:"Context vanishes after a deploy; under load users randomly lose history.",c:"History lives in a plain dict on one Python object. A second worker has a different dict.",f:"Redis or Postgres keyed by session ID. Sticky sessions are a patch, not a fix.",a:"\"You scaled to three replicas and users say the bot forgot them. Why?\""},
+  {t:"[-10:] throws messages away",s:"In a long chat the assistant forgets a rule set early on, while sounding coherent.",c:"Slicing drops everything older. Nothing carries forward.",f:"Summarise the dropped prefix, or store constraints separately from the transcript.",a:"\"How do you handle a conversation longer than the context window?\""},
+  {t:"The expensive retriever is on by default",s:"Latency and cost several times the baseline, even for trivial questions.",c:"use_advanced=True routes through MultiQueryRetriever — an extra model call plus a search per variant, every question.",f:"Make it opt-in, or trigger only on a low top-1 score.",a:"\"Your RAG costs 4x what you projected. Where does it go?\""},
+  {t:"Compression costs a model call per document",s:"Latency scales with k and jumps by seconds when you raise it.",c:"LLMChainExtractor calls the model once for each retrieved chunk.",f:"Use a cross-encoder reranker — one cheap pass over all candidates.",a:"\"Compression cut your token bill but tripled p95. Now what?\""},
+  {t:"Your two indexes can drift apart",s:"Hybrid search returns deleted documents or misses new ones.",c:"BM25 builds from a Python list while the dense side reads Chroma. Two indexes, no shared write path.",f:"Rebuild both from one source of truth, or use a store with native hybrid search.",a:"\"How do you keep a hybrid index consistent under writes?\""},
+  {t:"Model-reported confidence means nothing",s:"Answers marked high confidence are wrong about as often as medium ones.",c:"That's the model narrating confidence, not measuring it. It isn't calibrated.",f:"Derive it from retrieval score margins or agreement across chunks, and validate the threshold.",a:"\"Convince me that confidence number means something.\""},
+  {t:"Changing the embedding model breaks everything silently",s:"Retrieval quality collapses to near-random with no errors at all.",c:"Query and stored vectors must come from the same model. A different model is a different space; the maths still runs.",f:"Treat a model change as a full reindex. Put the model name in the collection name.",a:"\"You upgraded to a better embedding model. What's your rollout?\""},
+  {t:"A cache namespace collision is silent",s:"Two models share a cache and return each other's vectors. No error.",c:"The key is a hash of the text; without a namespace it's the same key for every model.",f:"Set namespace to something identifying the model, and key_encoder=\"sha256\".",a:"\"What could go wrong with an embedding cache?\""},
+  {t:"persist_directory never cleans up",s:"A ./chroma_db/ folder grows every run and retrieval returns duplicates.",c:"A relative path that's never removed. Re-running from_documents appends rather than replaces.",f:"Temp dir for demos, configured path in production, stable IDs so reruns upsert.",a:"\"Your ingestion job ran twice. What does retrieval return now?\""},
+  {t:"Too much overlap wastes your index",s:"Top 3 results are three near-identical chunks.",c:"High overlap means neighbouring chunks share most text, embed identically, and rank together.",f:"Keep overlap near 10-20% of chunk size. Deduplicate after retrieval, or use MMR.",a:"\"Your top 3 results are the same paragraph. Why?\""},
+  {t:"MMR deliberately drops relevant results",s:"You switch to MMR and an obviously-correct top hit disappears.",c:"MMR re-ranks for variety, penalising documents similar to ones already picked.",f:"Raise fetch_k so it has a wider pool. Use MMR only when repetition is the real problem.",a:"\"When would MMR hurt you?\""},
+  {t:"Four of these notebooks are structurally broken",s:"05 to 08 show every cell as one enormous unbroken line in Jupyter.",c:"Their source arrays store one entry per line without trailing newlines, so viewers join them.",f:"Rejoin each source list with newlines and rewrite. 01 to 04 are clean.",a:"Not an interview question — fix it before you screen-share."}],
+ trades:[
+  {t:"Chunk size",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Small (200-400)","Model sees fragments","Sharp matching","Facts, FAQs, reference"],
+   ["Large (1000-2000)","Blurrier embeddings","Coherent context","Narrative, argument, code"],
+   ["Small + parent-doc","One more moving part","Precise search AND context","You can afford the extra store"]],
+   o:"Search on small chunks, generate on large ones — parent-document gets you both."},
+  {t:"Dense-only versus hybrid",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Dense only","Misses exact terms","One index, simple ops","Prose corpus, conceptual questions"],
+   ["Hybrid","Two indexes to sync","Exact matching on codes and names","Users search identifiers"]],
+   o:"Embeddings are bad at exact tokens — if users search error strings, hybrid isn't optional."},
+  {t:"Reranking versus compression",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Cross-encoder rerank","One pass over candidates","Big precision gain","Default when precision is weak"],
+   ["LLM compression","One call PER document","Fewer downstream tokens","Token cost dominates"],
+   ["Neither","Lower precision","Lowest latency","Top-k is already fine"]],
+   o:"Rerank to fix ranking, compress to fix token bills — compression is the expensive one."},
+  {t:"Single versus multi-query",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Single","Misses wording mismatches","Predictable cost","Users speak the corpus's language"],
+   ["Multi-query","1 model call + N searches","Recall when phrasing differs","Recall is the measured failure"],
+   ["Conditional","Branch logic","Single-query cost on the common path","You can detect weak retrieval"]],
+   o:"Multi-query is a recall fix I'd escalate to, not something every query pays for."},
+  {t:"Ephemeral versus persistent store",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["In-memory","Re-embed on every start","Zero state","Demos and tests"],
+   ["Local persist","Duplicate risk, cleanup","No re-embedding cost","Single node, stable corpus"],
+   ["Managed","Cost and a vendor","Scale and replication","Multi-node, uptime matters"]],
+   o:"Persistence is about not paying the embedding bill twice — and then you own idempotent ingestion."},
+  {t:"RAG versus fine-tuning versus long context",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["RAG","Retrieval infrastructure","Fresh data, citations","Knowledge changes, or you must cite"],
+   ["Fine-tuning","Training pipeline, labels","Consistent format and behaviour","You need behaviour, not facts"],
+   ["Stuff the context","Tokens, lost-in-the-middle","Radical simplicity","The corpus fits"]],
+   o:"RAG for knowledge, fine-tuning for behaviour, long context when the corpus is small enough."}],
+ qs:[
+  {r:["core","agentic"],q:"Your agent loops forever on a fraction of requests. How do you stop it?",a:"<p>Three layers. <b>Hard ceilings</b>: max model calls, wall-clock timeout, token budget — cheap, always on. <b>Progress checks</b>: identical tool call with identical arguments twice means no progress; treat it as terminal. <b>An explicit done signal</b> the model emits and your code validates.</p><p>Say the symmetry: stopping early abandons solvable work, never stopping burns budget on unsolvable work. Ceilings return partial results with a reason, never a bare exception.</p>",s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"],["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+  {r:["core"],q:"Design a real-time agentic assistant with a sub-second first-token target.",a:"<p>Name the budget first. Each reasoning step is 1-3 seconds, so a multi-step agent cannot produce a complete answer under a second. What you can promise is <b>first token</b> under a second.</p><p>Stream so perceived latency decouples from total. Overlap retrieval with prefill. Route simple requests to a small model. Cache embeddings and prompt prefixes. Then say the honest thing: a multi-hop agent is the wrong architecture for a hard real-time deadline, and under load you'd fall back to single-shot RAG.</p>",s:[["Agentic guide 2026","https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf"],["LLM system design","https://www.systemdesignhandbook.com/guides/llm-system-design/"]]},
+  {r:["core","agentic"],q:"How do you design memory for an agent — keep, summarise, evict?",a:"<p>Split by lifetime. <b>Working memory</b> is the run's messages, bounded by context. <b>Session memory</b> is the conversation, windowed then summarised past the window. <b>Long-term</b> is durable facts fetched by relevance, not recency.</p><p>The engineering content is the policy: keep stated constraints, summarise narrative, evict tool output already acted on. Long-term retrieval adds latency to <i>every</i> step, so it must be selective.</p>",s:[["NovelVista","https://www.novelvista.com/blogs/ai-and-ml/agentic-ai-interview-questions-answers"]]},
+  {r:["core","fde"],q:"Your multi-agent system is accurate but too expensive. Trim it without hiding failure.",a:"<p>Account first: cost per run split by agent and step, so you know if it's reasoning tokens, tool calls or retries.</p><p>Then cheap wins — model tiering, prompt-prefix caching, and collapsing agents whose only job is passing messages along. The 'without hiding failure' clause is the test: every reduction ships with a quality metric showing eval numbers didn't move.</p>",s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"]]},
+  {r:["core","agentic"],q:"Where do guardrails live, and why not in the prompt?",a:"<p>The principle: <b>the model proposes, the system decides</b>. Guardrails as instructions are probabilistic; as code they're not.</p><p>Validate tool arguments against a schema before execution, enforce permissions in the runtime, sandbox anything touching files or network, require human approval for irreversible actions. An agent without guardrails can drain API credits in a loop or leak private data.</p>",s:[["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+  {r:["core","applied"],q:"Design a document Q&A system over a customer's private corpus.",a:"<p>Walk the pipeline: ingestion and chunking, embedding and indexing, retrieval, generation, citation. Then the parts that separate candidates.</p><p><b>Access control</b> as a metadata pre-filter, never a prompt instruction. <b>Freshness</b> via incremental reindexing with stable IDs. <b>Evaluation</b> split into retrieval and generation metrics. <b>Failure behaviour</b> when nothing relevant is retrieved.</p>",s:[["field guide","https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/04-ai-system-design.md"]]},
+  {r:["core","agentic"],q:"A tool call fails mid-run. What happens to the rest of the work?",a:"<p>Classify it: transient (retry with backoff), permanent (fall back), or <b>ambiguous</b> — a timeout where the side effect may or may not have landed.</p><p>Ambiguity demands <b>idempotency keys</b> so a retry can't double-charge. For parallel work, decide explicitly whether one failure aborts the batch. Feed the error back to the model as a tool result so it can adapt.</p>",s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"]]},
+  {r:["core","agentic"],q:"How do you debug a bad agent run in production?",a:"<p>A trace, and they want to know what's in it. Per step: inputs, chosen action, tool arguments, tool result, tokens, latency, cost — linked by run ID and session ID.</p><p>Then say what you look for first: the step where the trajectory diverged. You can't debug what you didn't instrument, so this is designed in from the start.</p>",s:[["Agentic guide 2026","https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf"]]},
+  {r:["core","agentic"],q:"When is multi-agent actively worse than one agent with more tools?",a:"<p>Usually. Multi-agent adds coordination overhead, message-passing latency, and a failure class single agents don't have — agents waiting on a peer that never signals done.</p><p>Justify it only for genuine parallelism, distinct tool permissions per role, or context one agent can't hold. This question catches architecture-by-fashion.</p>",s:[["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+  {r:["core","applied"],q:"How do you know a change made the product better, not just your one test case?",a:"<p>A frozen eval set with expected behaviour, metrics that keep retrieval and generation apart, and a run on <b>every</b> change.</p><p>Judge scores need validating against human labels before you trust them. Read the distribution rather than the average, because regressions hide in the tail. Live signals — thumbs, edits, follow-up rate — close the loop offline testing can't.</p>",s:[["DataCamp","https://www.datacamp.com/blog/rag-interview-questions"]]}],
+ self:[["Why is an embedding's length always ~1.0?","Normalised, so cosine equals the dot product."],
+  ["When does the wrong embed method hurt silently?","On asymmetric models: shapes match, ranking degrades."],
+  ["Chroma gives you 1.4. Is that good?","It's a distance — lower is better."],
+  ["Top 3 chunks nearly identical. Two causes?","Overlap too high; no diversity step like MMR."],
+  ["What does MMR trade away?","Pure relevance, for variety. fetch_k sets the pool."],
+  ["Why is metadata filtering a security control?","It runs in code before the search, so it's provable."],
+  ["New embedding model, quality collapsed, no errors. Why?","Different vector spaces. Reindex."],
+  ["What breaks with no cache namespace?","Two models collide on one key. No error."],
+  ["Compression: what scales with k?","Model calls — one per document."],
+  ["One check for retrieval vs generation?","Was the answer present in the retrieved chunks?"],
+  ["\"Only use the context\" — enforcement or request?","A request. Verify cited sources exist."],
+  ["Sub-second on a multi-step agent — what do you promise?","First token, via streaming."]]},
+
+{id:"03",emoji:"🔗",short:"LangGraph",title:"LangGraph Fundamentals",
+ md:"03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md",
+ idea:"Checkpointing gives you memory, human approval and time travel — all from one mechanism.",
+ blurb:"The tutorial that turns a chain into an agent. LangGraph adds the three things a pipeline cannot do: <b>loop</b>, <b>pause</b>, and <b>resume</b>. If you're interviewing for an agentic role, this is your strongest ground.",
+ diagram:`flowchart LR
+  S["START"] --> A["Node: think"]
+  A --> C{"Conditional edge"}
+  C -->|"needs a tool"| B["Node: act"]
+  B --> A
+  C -->|"done"| E["END"]`,
+ dcap:"That arrow from act back to think is the whole point — LCEL cannot draw it",
+ concepts:[
+  {t:"A graph is a state machine over shared state",
+   b:"Three parts. <b>State</b> is a dict every node reads and writes. <b>Nodes</b> are functions taking state and returning updates. <b>Edges</b> decide who runs next, and can be conditional. The reducer says <i>how</i> to merge updates — without it, last write wins and earlier writes vanish.",
+   code:`class State(TypedDict):
+    messages: Annotated[list[BaseMessage], operator.add]   # <- reducer
+
+builder = StateGraph(State)
+builder.add_node("think", think_node)
+builder.add_conditional_edges("think", route, {"act": "act", "end": END})
+builder.add_edge("act", "think")          # the cycle
+graph = builder.compile()`,
+   say:"Any state key more than one node writes needs a reducer. For messages I use add_messages rather than operator.add, because it deduplicates by ID."},
+  {t:"Conditional edges are how the graph decides",
+   b:"A plain Python function returns the name of the next node. <i>Your code</i> decides, using state. The third argument is a map from returned strings to node names — return something not in the map and it raises at run time, not compile time.",
+   code:`def route(state) -> Literal["act", "end"]:
+    last = state["messages"][-1]
+    return "act" if getattr(last, "tool_calls", None) else "end"`,
+   say:"Routing is ordinary Python reading graph state, so the decision is loggable and testable without invoking a model."},
+  {t:"Cycles need a stop condition you own",
+   b:"Once there's an edge back, the graph can run forever. <code>recursion_limit</code> is a backstop that <b>raises</b> — it's not a termination strategy, it's what fires when yours failed. Notice the check below has <b>two</b> exits, not one.",
+   diagram:`flowchart TD
+  A["Generate"] --> B["Check"]
+  B --> C{"Good enough?"}
+  C -->|"Yes"| E["END"]
+  C -->|"No, attempt < max"| A
+  C -->|"No, at max"| F["Give up, return best so far"]`,
+   code:`class State(TypedDict):
+    attempts: Annotated[int, operator.add]   # each pass adds 1
+
+def route(state) -> Literal["generate", "give_up", "end"]:
+    if state["passed"]:
+        return "end"
+    return "generate" if state["attempts"] < MAX_ATTEMPTS else "give_up"`,
+   say:"Every cycle gets a counter in state and a give-up branch returning partial results. recursion_limit is a backstop, not a strategy."},
+  {t:"Checkpointing is what makes a graph durable",
+   b:"A checkpointer saves full state after every step. That one feature unlocks three things that look unrelated: multi-turn memory, human-in-the-loop, and time travel. <code>thread_id</code> is the whole session API — same ID, same conversation.",
+   diagram:`flowchart LR
+  A["Checkpoint after every step"] --> B["Resume from the last one"]
+  A --> C["Resume after a human replies"]
+  A --> D["Resume from an earlier one"]
+  B --> B1["Multi-turn memory"]
+  C --> C1["Human-in-the-loop"]
+  D --> D1["Time travel"]`,
+   code:`graph = builder.compile(checkpointer=MemorySaver())     # dev only
+config = {"configurable": {"thread_id": "user-42"}}
+graph.invoke({"messages": [HumanMessage("Hi")]}, config)
+graph.invoke({"messages": [HumanMessage("What did I say?")]}, config)`,
+   say:"Checkpointing saves full state per step, keyed by thread ID. Memory, HITL and time travel are one mechanism used three ways."},
+  {t:"interrupt pauses the graph mid-run",
+   b:"Mark a point where the graph stops and waits. The run ends, state is checkpointed, your app decides. Resume by invoking with <b>None</b> — you're continuing, not restarting. The detail people miss: resuming must not re-execute completed side effects.",
+   code:`graph = builder.compile(
+    checkpointer=MemorySaver(),
+    interrupt_before=["execute_action"],   # pause before the risky node
+)
+result = graph.invoke(inputs, config)      # returns at the interrupt
+graph.update_state(config, {"approved": True})
+graph.invoke(None, config)                 # None = resume`,
+   say:"interrupt_before pauses and checkpoints; resume with None. The requirement people forget is idempotency on effectful tools."},
+  {t:"Error handling has three separate layers",
+   b:"<b>The call</b> fails on rate limits or timeouts — retry with backoff. <b>The provider</b> fails when a model is down — fall back to another. <b>The node</b> fails on bad input — catch it, write the error into state, and route around it with a conditional edge.",
+   code:`def with_retry(max_attempts=3, backoff=1.0):
+    def deco(fn):
+        @wraps(fn)
+        def wrapper(state):
+            for attempt in range(max_attempts):
+                try:
+                    return fn(state)
+                except Exception:
+                    if attempt == max_attempts - 1: raise
+                    time.sleep(backoff * (2 ** attempt))   # exponential
+        return wrapper
+    return deco`,
+   say:"Retry for transient, fallback for structural, route-around for logical. The third is graph-specific and it's what keeps a bad step from killing the run."},
+  {t:"The agent loop is a graph with two nodes",
+   b:"A model node and a tool node with a conditional edge between them. <code>bind_tools</code> attaches schemas so the provider emits a structured <code>tool_calls</code> payload; <code>ToolNode</code> executes and appends results. That's genuinely all an agent is.",
+   diagram:`flowchart LR
+  S["START"] --> A["agent: call the model"]
+  A --> C{"Emitted tool_calls?"}
+  C -->|"Yes"| T["tools: ToolNode runs them"]
+  T --> A
+  C -->|"No"| E["END"]`,
+   code:`llm_with_tools = llm.bind_tools([search, calculator])
+
+def should_continue(state) -> Literal["tools", END]:
+    return "tools" if state["messages"][-1].tool_calls else END
+
+builder.add_node("tools", ToolNode([search, calculator]))
+builder.add_edge("tools", "agent")     # results go back to the model`,
+   say:"An agent is two nodes and a conditional edge. Everything hard about agents comes from that edge having no guaranteed exit."}],
+ gotchas:[
+  {t:"Missing reducer means silent data loss",s:"Two branches update state and only one survives.",c:"A plain list key uses last-write-wins.",f:"Annotated[list, operator.add], or add_messages for message lists.",a:"\"Two parallel nodes append to the same list. What do you get?\""},
+  {t:"recursion_limit raises, it doesn't stop gracefully",s:"A runaway loop ends in GraphRecursionError and the user gets a 500.",c:"It's a backstop against infinite loops, not a termination policy.",f:"Count attempts in state, add a give-up branch returning the best result with a reason.",a:"\"Your agent hits the recursion limit. What does the user see?\""},
+  {t:"interrupt without a checkpointer does nothing",s:"The graph pauses and you cannot resume it.",c:"Resumption reads state from a checkpoint. No checkpointer, no state.",f:"Always compile with a checkpointer when using interrupts, durable if the pause outlives the process.",a:"\"Your approval step works in a notebook and breaks as a web service. Why?\""},
+  {t:"MemorySaver loses everything on restart",s:"Conversations reset on deploy; overnight approvals vanish.",c:"It's an in-process dictionary — a development tool.",f:"SqliteSaver for single-node, Postgres for real deployments.",a:"\"What's the first thing you change before shipping this graph?\""},
+  {t:"Resuming can re-run side effects",s:"A resumed run sends the email twice.",c:"Checkpointing restores state, but a node that already had an external effect can't know it did.",f:"Idempotency keys on anything effectful. Interrupt before the node, not after.",a:"\"How do you stop a tool being called twice after a resume?\""},
+  {t:"A node that mutates state in place breaks the checkpoint",s:"State looks wrong after a resume, or updates apply twice.",c:"Mutating the passed-in state bypasses the reducer and the checkpoint machinery.",f:"Always return an update dict. Never assign into the state argument.",a:"\"Why must a node return updates instead of mutating state?\""},
+  {t:"The conditional-edge map must cover every return",s:"ValueError at run time on an unexpected branch.",c:"Your routing function returned a string that isn't in the mapping dict.",f:"Type the return with Literal so a checker catches it, and keep the map in sync.",a:"\"How do you make graph routing safe to change?\""},
+  {t:"Tool calls make content empty",s:"Your logging shows blank assistant messages.",c:"The payload is in .tool_calls and .content is empty.",f:"Log tool_calls too, and never pipe a tool-bound model into StrOutputParser.",a:"\"Your agent trace shows empty messages. Is it broken?\""}],
+ trades:[
+  {t:"Chain versus graph",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["LCEL chain","No cycles, pause or durable state","Fewer concepts","The path is fixed"],
+   ["LangGraph","State schema, reducers, setup","Loops, checkpoints, interrupts","You need any of those three"]],
+   o:"The moment I need to loop, pause, or resume, a chain can't express it — that's the whole decision."},
+  {t:"Checkpointer choice",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["MemorySaver","Everything lost on restart","Zero setup","Notebooks and tests"],
+   ["SqliteSaver","Single node, file locking","Survives restart","Single-instance apps"],
+   ["Postgres","Infrastructure to run","Multi-node, durable, queryable","Anything real"]],
+   o:"MemorySaver is a development convenience — if a pause can outlive the process, it needs a database."},
+  {t:"Where the model decides versus where you do",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Conditional edge in code","You must enumerate cases","Deterministic, testable","The cases are known"],
+   ["Model picks the tool","Unbounded paths","Handles what you didn't enumerate","The space is genuinely open"]],
+   o:"I give the model the smallest decision that still solves the problem — every one it makes is one I can't unit test."},
+  {t:"Interrupt before versus after",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["interrupt_before","Human waits before anything happens","Nothing irreversible has run","The action is risky"],
+   ["interrupt_after","The action already happened","Human reviews a real result","The action is safe and reversible"]],
+   o:"Interrupt before the effect — you can't un-send an email because the reviewer said no."}],
+ qs:[
+  {r:["core","agentic"],q:"When do you choose LangGraph over a plain chain?",a:"<p>When you need cycles, durable state, human-in-the-loop, or full auditability. A linear chain can't loop back, pause for input, or resume after a restart.</p><p>Say the inverse too, because it shows judgement: for a fixed pipeline the graph is extra concepts for no gain, and I'd stay on LCEL.</p>",s:[["Interview Coder","https://www.interviewcoder.co/blog/langgraph-interview-questions"],["LangGraph 2026","https://medium.com/@dewasheesh.rana/langgraph-explained-2026-edition-ea8f725abff3"]]},
+  {r:["core","agentic"],q:"What exactly is a checkpoint, and what is in it?",a:"<p>A recovery point, not a log entry. It holds the full graph state as of that step, plus metadata: which step number, which nodes just ran, and pending-writes records used for retry safety.</p><p>It becomes mandatory the moment you need multi-turn memory across separate calls, interrupt-based approval, or time travel — all three are built on checkpoint history.</p>",s:[["Easton","https://eastondev.com/blog/en/posts/ai/20260424-langgraph-agent-architecture/"]]},
+  {r:["core","agentic","fde"],q:"What is a thread_id and why does it matter?",a:"<p>It's the conversation key. The same thread ID loads that conversation's checkpoint history; a different one starts fresh.</p><p>There is no other session concept, so thread ID maps a user, chat window or task to durable state — and getting it wrong means users see each other's history.</p>",s:[["Easton","https://eastondev.com/blog/en/posts/ai/20260424-langgraph-agent-architecture/"]]},
+  {r:["core","agentic"],q:"How do you stop an agent looping forever?",a:"<p>Three layers. Count attempts in state and branch to a give-up node at the cap. Detect no progress — the same tool call with the same arguments twice. Keep recursion_limit as a backstop.</p><p>Say clearly that recursion_limit raises rather than returning, so it's what fires when your real termination logic failed.</p>",s:[["Interview Coder","https://www.interviewcoder.co/blog/langgraph-interview-questions"]]},
+  {r:["core","agentic","fde"],q:"Walk me through adding human approval to an agent.",a:"<p>Compile with a checkpointer and interrupt_before the risky node. The run returns at the pause; inspect with get_state; record the decision with update_state; resume by invoking with None.</p><p>Then volunteer the hard part: the resume path must not re-execute side effects, so effectful tools need idempotency keys.</p>",s:[["HITL with FastAPI","https://shaveen12.medium.com/langgraph-human-in-the-loop-hitl-deployment-with-fastapi-be4a9efcd8c0"]]},
+  {r:["core","agentic"],q:"Why does state need reducers?",a:"<p>Because more than one node can write the same key, especially when branches run concurrently. Without a reducer the last write wins and earlier updates disappear silently — no error, just missing data.</p><p>operator.add concatenates; add_messages is the message-aware version that also deduplicates by ID.</p>",s:[["LangGraph 2026","https://medium.com/@dewasheesh.rana/langgraph-explained-2026-edition-ea8f725abff3"]]},
+  {r:["agentic"],q:"What is time travel and when would you use it?",a:"<p>Rewinding to an earlier checkpoint and re-running, optionally with modified state. In practice it's a debugging tool: reproduce a bad run, change one input, see whether the trajectory changes.</p><p>It also powers edit-and-retry features, where a user corrects the agent's assumption mid-conversation rather than starting over.</p>",s:[["Easton","https://eastondev.com/blog/en/posts/ai/20260424-langgraph-agent-architecture/"]]},
+  {r:["core","agentic"],q:"A tool call fails mid-graph. What happens?",a:"<p>Classify it. Transient gets retry with exponential backoff. Structural gets a fallback provider. Logical gets caught, written into state as an error, and routed to a recovery node.</p><p>Critically, the error text should go back to the model as a tool result so it can adapt, rather than crashing the run.</p>",s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"]]},
+  {r:["agentic","applied"],q:"How do you stream from a graph, and what are you streaming?",a:"<p>Not tokens by default — graph execution emits state updates per step. <code>stream_mode</code> selects what you get: values for full state, updates for deltas, messages for token-level output.</p><p>For a chat interface you usually want messages for the text plus updates to drive a progress indicator.</p>",s:[["Interview Coder","https://www.interviewcoder.co/blog/langgraph-interview-questions"]]},
+  {r:["applied","agentic"],q:"How would you test a graph?",a:"<p>Test nodes as plain functions — they're state in, dict out, so most need no model. Test routing functions directly against handcrafted state. Then test the compiled graph end to end with a stubbed model.</p><p>The property graphs make testable, and chains don't, is that routing decisions are inspectable values.</p>",s:[["LLM interviews","https://medium.com/@santosh.rout.cr7/llm-engineering-interviews-how-to-prepare-for-prompting-fine-tuning-and-evaluation-df888e76340e"]]}],
+ self:[["Three things a graph does that a chain can't?","Loop, pause, resume."],
+  ["What does a reducer do?","Says how to merge updates when several nodes write one key."],
+  ["operator.add vs add_messages?","The latter is message-aware and deduplicates by ID."],
+  ["What's in a checkpoint?","Full state at that step, plus metadata and pending writes."],
+  ["What does thread_id identify?","The conversation. Same ID, same state."],
+  ["Three features from checkpointing?","Memory, human-in-the-loop, time travel."],
+  ["How do you resume after an interrupt?","Invoke with None and the same config."],
+  ["Does recursion_limit stop a loop gracefully?","No, it raises. Add your own counter."],
+  ["Why is AIMessage.content sometimes empty?","The model emitted tool calls instead."],
+  ["What must a node return?","An update dict. Never mutate the state argument."],
+  ["Where do you interrupt for a payment?","Before the node, so nothing irreversible ran."],
+  ["What makes resume safe?","Idempotency keys on effectful tools."]]},
+
+{id:"04",emoji:"🕸️",short:"Multi-Agent",title:"Multi-Agent Systems",
+ md:"04_multi_agent_systems_INTERVIEW_TUTORIAL.md",
+ idea:"Most multi-agent systems should have been one agent with more tools.",
+ blurb:"Everything here is a LangGraph graph with more than one agent in it. Lead with the answer interviewers actually want — that the simpler architecture usually wins — then show you can build the real thing when it's justified.",
+ diagram:`flowchart TD
+  A["Considering multiple agents"] --> B{"Do subtasks run<br/>truly independently?"}
+  B -->|"Yes"| P["Parallel agents"]
+  B -->|"No"| C{"Different tool<br/>permissions per role?"}
+  C -->|"Yes"| S["Supervisor or handoff"]
+  C -->|"No"| D{"Context too big<br/>for one agent?"}
+  D -->|"Yes"| H["Hierarchical teams"]
+  D -->|"No"| Z["One agent with more tools"]`,
+ dcap:"Answer this before choosing a pattern — most of the time it stops here",
+ concepts:[
+  {t:"Agents are nodes, coordination is edges",
+   b:"The four patterns are four answers to \"who decides who runs next\". <b>Supervisor</b>: a router node, one extra model call per hop. <b>Handoff</b>: the current agent decides, no extra call. <b>Parallel</b>: nobody, all run. <b>Hierarchical</b>: supervisors of supervisors.",
+   diagram:`flowchart TD
+  subgraph SUP["Supervisor"]
+    S["Supervisor"] --> A1["Researcher"] --> S
+    S --> A2["Writer"] --> S
+    S --> E1["END"]
+  end
+  subgraph PAR["Parallel"]
+    P0["Fan out"] --> P1["Agent A"]
+    P0 --> P2["Agent B"]
+    P1 --> P4["Merge"]
+    P2 --> P4
+  end`,
+   say:"Agents are nodes in one graph. The pattern is just who decides the next hop, and each answer has a different cost."},
+  {t:"Shared state is the communication channel",
+   b:"Agents don't call each other. They read and write one shared state dict. Read this schema closely, because it <i>is</i> the interview: messages has a reducer because every agent writes it; next_agent is the routing decision as a testable value; task_complete is the termination flag without which the supervisor loops forever.",
+   code:`class SupervisorState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]  # all agents append
+    next_agent: str          # the routing decision, as a value
+    task_complete: bool      # the termination flag
+    final_response: str`,
+   say:"Agents communicate through shared state, not direct calls. I keep the routing decision and done flag as explicit fields, so termination is a value I can test."},
+  {t:"The supervisor is a router with a schema",
+   b:"Structured output constrains the choice to real agent names, so the model can't invent one. The <code>reasoning</code> field gives you a logged justification per hop, which is what makes a bad route debuggable. Cost to name unprompted: one extra model call per hop.",
+   code:`class DepartmentRoute(BaseModel):
+    department: Literal["research", "content", "analysis"] = Field(
+        description="Which department should handle this")
+    reasoning: str = Field(description="Why this department")
+
+router_llm = llm.with_structured_output(DepartmentRoute)`,
+   say:"I constrain the supervisor with a Literal over real agent names, and capture its reasoning so bad routes are debuggable. The honest cost is a call per hop."},
+  {t:"Handoff moves control without a router",
+   b:"The agent currently running decides to transfer. Cheaper — no router call — but nothing holds the overall plan. <code>context_summary</code> is the interesting field: passing full history to every agent is expensive and dilutes focus, so a summary at the handoff is the compromise.",
+   code:`class HandoffState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    current_agent: str
+    handoff_reason: str      # why control moved
+    context_summary: str     # what the next agent needs`,
+   say:"Handoff is cheaper because there's no router call, but nothing holds the plan. The classic failure is transfer ping-pong, so I count hops and cap them."},
+  {t:"Parallel agents need reducers and a merge policy",
+   b:"Two edges out of one node is the fan-out; two edges into one is the join, and the join waits for all of them. Without a reducer you keep exactly one result. And you must decide in advance whether one failure aborts the batch.",
+   code:`class ParallelState(TypedDict):
+    findings: Annotated[list[str], operator.add]   # each agent appends
+
+builder.add_edge("dispatch", "agent_a")
+builder.add_edge("dispatch", "agent_b")   # both from one node = parallel
+builder.add_edge("agent_a", "merge")
+builder.add_edge("agent_b", "merge")      # merge waits for both`,
+   say:"The key they write needs operator.add or I keep one result. And I decide up front whether one failure aborts the batch or returns partial with the gap flagged."},
+  {t:"Hierarchy is subgraphs compiled as nodes",
+   b:"A compiled graph can be a node in another graph, so hierarchy is composition rather than a new mechanism. Reach for it when one router has too many choices to pick well — but every level costs another routing call before any work happens.",
+   code:`def create_hierarchical_system():
+    research_team = build_research_team().compile()
+    content_team  = build_content_team().compile()
+    # each compiled subgraph becomes a single node in the parent graph`,
+   say:"Subgraphs compile to nodes. I add a level when one router has too many choices, and accept that each level costs a call before any work."},
+  {t:"Termination is harder with several agents",
+   b:"The canonical failure: a supervisor rejects a worker's output, the worker retries, the supervisor rejects again — budget burns with no progress. Related: an agent that never signals done, so peers keep waiting.",
+   diagram:`flowchart TD
+  A["Supervisor picks agent"] --> B["Agent works"]
+  B --> C{"Done?"}
+  C -->|"Yes"| E["END"]
+  C -->|"No, hops < cap"| A
+  C -->|"No, at cap"| F["Stop, return partial"]
+  B --> G{"Same agent, same input?"}
+  G -->|"Yes"| F`,
+   say:"Termination needs care in both directions. I combine an explicit done flag with a hard hop cap and a no-progress check for repeated identical delegations."}],
+ gotchas:[
+  {t:"Multi-agent is usually the wrong answer",s:"Three agents, three times the cost, no better output.",c:"Architecture chosen by fashion. Coordination overhead buys nothing when subtasks weren't independent.",f:"Justify it by naming what you're buying — parallelism, permissions, or context limits. If you can't, use one agent.",a:"\"When is multi-agent actively worse than a single agent?\""},
+  {t:"A missing reducer discards parallel results",s:"You fan out to four agents and get one result back.",c:"All four wrote the same key with last-write-wins.",f:"Annotated[list, operator.add] on any key written by more than one node.",a:"\"Four agents ran, one result came back. What did you forget?\""},
+  {t:"Supervisor and worker can loop forever",s:"The run burns tokens without converging.",c:"No hop cap and no no-progress detection. Reject, retry the same way, repeat.",f:"Hop counter with a give-up branch, plus a check for the same agent receiving the same input twice.",a:"\"Your supervisor and worker are stuck in a rejection loop. Fix it.\""},
+  {t:"Passing full history to every agent is expensive",s:"Cost grows superlinearly with hops, and agents get less focused.",c:"Every agent gets the whole message list, so hop N pays for hops 1..N-1.",f:"Pass a context_summary at the handoff, or filter messages per agent role.",a:"\"Why does your five-agent run cost more than five single calls?\""},
+  {t:"The supervisor can route to an agent that doesn't exist",s:"KeyError on the routing map at run time.",c:"Free-text routing, or a Literal that drifted out of sync with node names.",f:"Structured output with a Literal, and derive both the Literal and the map from one list.",a:"\"How do you keep routing safe when you add a sixth agent?\""},
+  {t:"One parallel agent fails and takes the run with it",s:"Nine agents succeed, one raises, you get nothing.",c:"No decision was made about partial failure, so the default applied.",f:"Decide deliberately. Catch inside the node and write an error marker into state.",a:"\"Ten parallel workers, one fails. What does the user get?\""},
+  {t:"Hierarchy multiplies routing cost invisibly",s:"A two-level system costs far more per task than the flat version.",c:"Every level adds a routing call before any work happens.",f:"Only add a level when one router genuinely has too many choices. Measure routing calls as a share of total.",a:"\"What does adding a management layer cost you?\""},
+  {t:"Agents overwrite each other's conclusions",s:"The final answer reflects only the last agent that ran.",c:"Several agents write a scalar key with no reducer.",f:"Accumulate into a list and synthesise at the end, rather than overwriting a shared conclusion.",a:"\"Your research system only reports one agent's findings. Why?\""}],
+ trades:[
+  {t:"One agent versus many",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["One agent, more tools","A long tool list can confuse selection","Simplest, cheapest, easiest to debug","Almost always — start here"],
+   ["Multi-agent","Coordination, latency, new failures","Parallelism, role isolation","You can name which you need"]],
+   o:"I use multiple agents when I can name what I'm buying. Otherwise it's one agent with more tools."},
+  {t:"Supervisor versus handoff",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Supervisor","One model call per hop","Central plan, easy to audit","The work needs orchestrating"],
+   ["Handoff","No global view of progress","Cheaper, natural for conversation","Control should transfer"]],
+   o:"Supervisor when someone needs to hold the plan, handoff when the conversation itself should move."},
+  {t:"Parallel versus sequential",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Sequential","Latency is the sum","Later agents see earlier results","Steps genuinely depend on each other"],
+   ["Parallel","Merge logic, partial failure","Latency of the slowest","Subtasks are independent"]],
+   o:"Parallel only when no agent needs another's output — otherwise you're paying for concurrency you can't use."},
+  {t:"Flat versus hierarchical",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Flat","Router degrades with many choices","One routing call per hop","Under roughly five agents"],
+   ["Hierarchical","A routing call per level","Each decision stays small","Many agents in clear groups"]],
+   o:"Add a level when one router has too many choices, and accept a call per level before any work."}],
+ qs:[
+  {r:["core","agentic"],q:"When is multi-agent actively worse than one agent with more tools?",a:"<p>Usually. Multi-agent adds coordination overhead, message-passing latency, and a failure class single agents don't have — agents waiting on a peer that never signals done.</p><p>Justify it only for genuine parallelism over independent subtasks, distinct tool permissions per role, or context one agent can't hold. This question exists to catch architecture-by-fashion.</p>",s:[["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"],["callsphere","https://callsphere.ai/blog/agentic-ai-multi-agent-interview-questions-2026"]]},
+  {r:["core","agentic"],q:"Your supervisor and worker are stuck rejecting and retrying. Diagnose it.",a:"<p>This is the canonical multi-agent failure. The supervisor rejects, the worker retries the same way, the supervisor rejects again — budget burns with no progress.</p><p>Fix in layers: a hard hop cap returning partial results, a no-progress check for the same agent receiving the same input twice, and feedback specific enough for the worker to actually change approach.</p>",s:[["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+  {r:["core","agentic"],q:"How do agents communicate?",a:"<p>Through shared state, not direct calls. Each agent reads state and returns updates; the graph merges them using reducers and decides who runs next.</p><p>Say the consequence: any key more than one agent writes needs a reducer, or updates are silently lost. Direct agent-to-agent calls would remove the graph's ability to checkpoint and resume.</p>",s:[["LangGraph 2026","https://medium.com/@dewasheesh.rana/langgraph-explained-2026-edition-ea8f725abff3"]]},
+  {r:["core","fde"],q:"Your multi-agent system is accurate but too expensive. Trim it without hiding failure.",a:"<p>Account first: cost per run split by agent and hop, so you know if it's routing calls, agent calls or retries.</p><p>Then the cheap wins — collapse agents whose only job is passing messages along, route only hard steps to the expensive model, cache prefixes, pass summaries instead of full history. Every cut ships with an eval number showing quality held.</p>",s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"]]},
+  {r:["core","agentic"],q:"Ten agents run in parallel, one fails. What happens?",a:"<p>Whatever you decided in advance — and the point of the question is whether you decided at all.</p><p>Options are abort the batch, or return partial results with the failure attached. For research tasks, partial plus an explicit gap note is usually right. The wrong answer is losing nine successes to one failure because you never chose.</p>",s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"]]},
+  {r:["core","agentic"],q:"How do you stop the whole system running forever?",a:"<p>Termination needs care in both directions: stopping early abandons solvable work, never stopping burns money on unsolvable work.</p><p>Combine an explicit done signal from the supervisor, hard ceilings on hops and total model calls, and progress checks. Every ceiling returns partial results with a reason rather than raising.</p>",s:[["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+  {r:["core","applied"],q:"Design a research system with a supervisor and workers.",a:"<p>Supervisor plans N queries, workers execute independently in parallel, a synthesiser merges. State carries findings with operator.add so parallel writes accumulate. Bound it with a hop cap and a per-run model-call budget.</p><p>Then volunteer the honest tradeoff: the supervisor's planning call is pure overhead if the decomposition was predictable, in which case hardcode it.</p>",s:[["field guide","https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/04-ai-system-design.md"]]},
+  {r:["core","agentic","fde"],q:"Where do guardrails live in a multi-agent system?",a:"<p>Outside the model, at the graph level. Validate tool arguments before execution, enforce per-agent tool permissions in the runtime rather than in prompts, and require human approval for irreversible actions.</p><p>The principle: the model proposes, the system decides. Per-agent permissions are one of the few genuinely good reasons to split agents at all.</p>",s:[["galileo","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+  {r:["agentic","fde"],q:"How do you debug a multi-agent run that produced a bad answer?",a:"<p>A trace keyed by run ID, recording per hop: which agent ran, why the supervisor chose it, what it saw, what it returned.</p><p>The supervisor's reasoning field is the highest-value thing to log, because most bad multi-agent outputs are bad <i>routing</i> rather than bad agents. Then find the first hop where the trajectory diverged.</p>",s:[["Agentic guide 2026","https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf"]]},
+  {r:["applied","agentic"],q:"How would you evaluate a multi-agent system?",a:"<p>Two levels. Outcome evaluation asks whether the final answer was right. Trajectory evaluation asks whether it took a sensible path — did the supervisor route correctly, did agents stay in role, how many hops.</p><p>Trajectory matters more here, because a system reaching the right answer through six wasted hops is one prompt change from not reaching it.</p>",s:[["KDnuggets","https://www.kdnuggets.com/how-to-answer-ai-system-design-interview-questions"]]}],
+ self:[["How do agents communicate?","Shared state, not direct calls."],
+  ["What breaks without a reducer on a parallel key?","All but one result is lost."],
+  ["Supervisor vs handoff in one line?","Central plan vs control transferring."],
+  ["What does a supervisor cost per hop?","One extra model call."],
+  ["Why constrain routing with a Literal?","The model can't route to a non-existent agent."],
+  ["The canonical multi-agent failure?","Supervisor-worker rejection loop with no progress."],
+  ["Three defences against it?","Hop cap, no-progress check, specific feedback."],
+  ["What makes a fan-out a fan-in?","Several edges into one node; it waits for all."],
+  ["What does hierarchy cost?","One routing call per level, before any work."],
+  ["When do you collapse agents?","Shared tools, shared context, never concurrent."],
+  ["Highest-value thing to log?","The supervisor's routing reasoning."],
+  ["Outcome or trajectory evaluation?","Both, and trajectory matters more here."]]},
+
+{id:"05",emoji:"🛡️",short:"Production",title:"Production & Operations",
+ md:"05_production_and_operations_INTERVIEW_TUTORIAL.md",
+ idea:"If you can't measure it, you can't defend it.",
+ blurb:"The other four tutorials build things. This one keeps them alive, affordable, safe and measurable — and it fills the biggest gap in all four: <b>evaluation</b>. For Applied AI and FDE roles this is what separates shipped from prototyped.",
+ diagram:`flowchart TD
+  A["It's live. Now what?"] --> B["Is it working?"]
+  A --> C["What does it cost?"]
+  A --> D["Can it be abused?"]
+  A --> E["Did my change help?"]
+  B --> B1["Metrics, latency, errors"]
+  C --> C1["Routing, caching, budgets"]
+  D --> D1["Injection, PII, validation"]
+  E --> E1["Eval sets, regression"]`,
+ dcap:"\"We'd add logging\" is the answer that fails all four",
+ concepts:[
+  {t:"Four metrics, and why tokens are two of them",
+   b:"Output tokens typically cost several times input tokens, so merging them into one number hides your main cost lever. Cache hit rate sits alongside because it's what tells you whether the cache is worth its complexity — one at 2% is a liability.",
+   code:`self.metrics = {
+    "requests_total": 0, "errors_total": 0,
+    "latency_sum": 0,    "latency_count": 0,
+    "tokens_input": 0,   "tokens_output": 0,   # split, deliberately
+    "cache_hits": 0,     "cache_misses": 0,
+}`,
+   say:"Requests, errors, latency, and tokens split input from output — because output costs several times more, so one token count hides the main lever."},
+  {t:"Latency is a distribution, not a number",
+   b:"If 95 requests take 1 second and 5 take 30, the mean is 2.5 and looks fine while one user in twenty suffers. <b>p95</b> and <b>p99</b> are what users feel. And time to first token is a different metric from total time, with different fixes — streaming improves the first and does nothing for the second.",
+   diagram:`flowchart LR
+  subgraph TTFT["Time to first token — streaming improves this"]
+    A["Request"] --> B["Retrieval"] --> C["Prefill"] --> D["First token"]
+  end
+  subgraph REST["Total time — unchanged by streaming"]
+    D --> F["Decode the rest"] --> G["Complete"]
+  end`,
+   say:"I alert on p95 and p99, not the mean. And I separate time to first token from total — different causes, different fixes."},
+  {t:"Model routing is the biggest cost lever",
+   b:"Classify the request, send easy ones to a cheap model. The catch to volunteer: the classifier is <i>itself</i> a model call, so if most traffic is complex you pay to classify and then pay full price anyway. Measure the split first, and prefer a free heuristic where one exists.",
+   code:`class ModelRouter:
+    def __init__(self):
+        self.cheap_model     = ChatOpenAI(model="gpt-4o-mini")
+        self.expensive_model = ChatOpenAI(model="gpt-4o")
+        self.classifier      = ChatOpenAI(model="gpt-4o-mini")  # costs too!`,
+   say:"Routing is usually the biggest lever, but the classifier is itself a call, so it only pays when enough traffic is genuinely simple."},
+  {t:"Two kinds of caching, and one is underrated",
+   b:"<b>Exact-match</b> response caching rarely hits — natural language doesn't repeat verbatim. <b>Prefix caching</b> almost always helps and just requires stable content first in the prompt. <b>Embedding</b> caching has the clearest payoff, on reingestion.",
+   say:"Exact-match rarely hits unless queries repeat verbatim. Prefix caching almost always helps and just needs stable content first."},
+  {t:"Prompt injection is an input-validation problem",
+   b:"Untrusted input reaches the model through the same channel as your instructions. Be honest about regex filters: they catch naive attempts and miss encodings, other languages, and indirect injection through retrieved documents. The real defence is never letting model output be authoritative.",
+   diagram:`flowchart TD
+  A["User input"] --> B["Layer 1: filter"]
+  R["Retrieved documents"] --> B
+  B --> C["Model proposes an action"]
+  C --> D["Layer 2: validate output"]
+  D --> E{"Layer 3: permitted?"}
+  E -->|"No"| X["Reject in code"]
+  E -->|"Yes, irreversible"| H["Layer 4: human approves"]
+  E -->|"Yes, safe"| Z["Execute"]
+  H --> Z`,
+   say:"Injection is untrusted input reaching the instruction channel. Filtering helps but can't be complete — permissions and validation live in code. And retrieved documents are untrusted input too."},
+  {t:"Testing something non-deterministic",
+   b:"Three layers, cheapest first. <b>Property assertions</b> are deterministic and run every commit. A <b>frozen regression set</b> runs on every change, read as a distribution. An <b>LLM judge</b> comes last, and only after you've validated it against human labels — otherwise you've automated an unmeasured opinion.",
+   diagram:`flowchart TD
+  A["Human review: slow, the ground truth"] --> B["LLM judge: scales, validate first"]
+  B --> C["Regression set: every change"]
+  C --> D["Property assertions: every commit, free"]`,
+   code:`def test_returns_valid_schema():
+    result = chain.invoke({"text": SAMPLE})
+    assert isinstance(result, Analysis)
+    assert result.sentiment in {"positive", "negative", "neutral"}
+    assert 0.0 <= result.confidence <= 1.0`,
+   say:"Property assertions first because they're deterministic and free. A judge last, and only after checking it against human labels."}],
+ gotchas:[
+  {t:"Averages hide your worst users",s:"Dashboards look healthy while support tickets pile up.",c:"Alerting on mean latency. A slow tail disappears into a good average.",f:"Alert on p95 and p99. Separate time to first token from total.",a:"\"Mean latency is 1.2s and users say it's slow. Explain.\""},
+  {t:"The complexity classifier can cost more than it saves",s:"Routing is live and the bill barely moved, or went up.",c:"Every request now pays for classification. If most traffic is complex, that's pure overhead.",f:"Measure the split before building. Prefer a heuristic router when a free signal exists.",a:"\"When does model routing lose money?\""},
+  {t:"Exact-match caching almost never hits",s:"Cache hit rate under 5%, complexity for nothing.",c:"Natural-language queries rarely repeat verbatim. One extra word is a miss.",f:"Measure hit rate before committing. Prefer prefix and embedding caching.",a:"\"You added a response cache and nothing improved. Why?\""},
+  {t:"A regex injection filter gives false confidence",s:"It passes your test suite and fails on a real attempt.",c:"It matches known phrasings. Encodings, other languages and indirect injection bypass it.",f:"Treat it as the cheapest layer, never the only one. Real controls go in code.",a:"\"How would you get past your own injection filter?\""},
+  {t:"Retrieved documents are untrusted input",s:"A poisoned document changes behaviour for every user who retrieves it.",c:"Indirect prompt injection. RAG ingests attacker-writable content by design.",f:"Treat retrieved text as data, delimit it clearly, and validate output regardless of source.",a:"\"Someone edits a Confluence page your RAG indexes. What can they do?\""},
+  {t:"Exact-match assertions make flaky tests",s:"CI fails randomly; the team disables the test.",c:"Asserting an exact string from a non-deterministic system. Even temperature=0 isn't reproducible.",f:"Assert properties — schema, ranges, refusal behaviour. Save quality for the eval set.",a:"\"How do you test a system that answers differently each run?\""},
+  {t:"An unvalidated judge automates an opinion",s:"Judge scores improve while users complain more.",c:"The judge was never checked against human labels, and measures something adjacent — often verbosity.",f:"Label a sample by hand, measure agreement, then trust it. Re-check on judge model changes.",a:"\"Eval scores went up and satisfaction went down. What happened?\""},
+  {t:"Tracing exports customer data",s:"A security review blocks the deployment late.",c:"Tracing ships prompts and completions, including customer content, to an external service.",f:"Know your configuration before the meeting. Self-hosted, redaction, or sampling.",a:"\"Your customer is in healthcare. What breaks about your observability?\""},
+  {t:"Cost alerts on absolute thresholds fire late",s:"You find out about a runaway loop from the monthly invoice.",c:"A fixed monthly threshold can't distinguish growth from a bug.",f:"Alert on a rolling baseline — daily spend above 120% of the 7-day average — plus a per-request ceiling.",a:"\"An agent loops overnight. When do you find out?\""}],
+ trades:[
+  {t:"Where to spend the latency budget",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Stream","Harder mid-response errors","Fast perceived response","A human reads the output"],
+   ["Smaller model","Some quality","Real latency and cost cut","The task tolerates it — measure"],
+   ["Cache","Staleness, invalidation","Near-zero latency on hits","Inputs genuinely repeat"],
+   ["Do less work","Feature scope","Everything","Almost always worth checking first"]],
+   o:"Stream first because it's free and changes what users feel, then cut work, then trade quality."},
+  {t:"Evaluation depth",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Property assertions","Won't catch quality drops","Deterministic, free","Always — this is the floor"],
+   ["Frozen regression set","Labelling effort","Catches real regressions","Any system you change"],
+   ["LLM judge","Model cost, needs validating","Scales quality scoring","After checking against humans"],
+   ["Human review","Slow and expensive","The ground truth","Calibrating everything above"]],
+   o:"Property tests every commit, regression set every change, a judge only after I've validated it."},
+  {t:"Security layer placement",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Input filtering","False positives, incomplete","A cheap first pass","Always, as a layer — never alone"],
+   ["Output validation","Latency, some rejections","Catches what got through","Anything user-facing"],
+   ["Permissions in code","Design work up front","Actual enforcement","Any action with consequences"],
+   ["Human approval","Latency and someone's time","The strongest control","Irreversible actions"]],
+   o:"Filtering is a speed bump, code-level permissions are the wall — and a human in front of anything irreversible."},
+  {t:"Build versus buy for observability",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Roll your own","Engineering time, ongoing","Data stays in your network","Hard residency requirement"],
+   ["Hosted","Data leaves your network","Working traces in an afternoon","No residency constraint"],
+   ["Self-hosted vendor","Infrastructure to run","Both, at a price","The requirement is real and funded"]],
+   o:"Hosted until a customer's data residency says otherwise — and I ask that in week one, not at the security review."}],
+ qs:[
+  {r:["applied","fde"],q:"What do you monitor for an LLM application, beyond normal service metrics?",a:"<p>Requests, errors and latency as usual, with three additions. Latency splits into time to first token and total. Tokens split into input and output, because output costs several times more.</p><p>And quality signals — refusal rate, fallback rate, thumbs, edit rate — because an LLM service can be perfectly healthy by infrastructure metrics while producing nonsense.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["applied","fde"],q:"How do you control cost without hurting quality?",a:"<p>Order by cheapness. Cap output length, since output tokens dominate. Cache prompt prefixes. Trim system prompts and retrieved context. Route easy queries to a cheaper model.</p><p>Then the discipline that makes it safe: every reduction ships alongside an eval number showing quality held. Cost work without evaluation is quality loss you haven't noticed yet.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["fde","agentic"],q:"When do you get alerted about a cost problem?",a:"<p>Not from the invoice. Alert on a rolling baseline — daily spend above roughly 120% of the 7-day average catches anomalies without firing on normal growth.</p><p>Add a per-request cost ceiling so a single runaway agent loop is caught in minutes. Track cost per model and per feature so the alert tells you where to look.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["core","fde"],q:"Explain prompt injection and how you defend against it.",a:"<p>Untrusted input reaches the model through the same channel as your instructions, so a user can try to override them.</p><p>Defence is layered: filter input as a cheap first pass, validate output, enforce permissions in code, require approval for irreversible actions. The principle: never treat model output as authoritative. Then mention indirect injection through retrieved documents — the case most candidates miss.</p>",s:[["Prompt Engineer Qs","https://www.crosschq.com/blog/prompt-engineer-interview-questions"],["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["applied"],q:"How do you test a non-deterministic system?",a:"<p>Three layers. Property assertions that are deterministic and run every commit — schema validity, value ranges, refusal behaviour. A frozen regression set scored on every change, read as a distribution rather than a mean.</p><p>And an LLM judge, validated against human labels before you trust it. Exact-match assertions produce flaky tests that get deleted.</p>",s:[["LLM interviews","https://medium.com/@santosh.rout.cr7/llm-engineering-interviews-how-to-prepare-for-prompting-fine-tuning-and-evaluation-df888e76340e"]]},
+  {r:["applied"],q:"How do you know a prompt change made the product better?",a:"<p>A frozen eval set with expected behaviour, run on every change, with retrieval and generation measured separately where both exist.</p><p>Read the whole distribution because regressions hide in the tail. Then close the loop with online signals — thumbs, edits, follow-up rate — because offline evaluation can't see what users actually do.</p>",s:[["DataCamp","https://www.datacamp.com/blog/llm-interview-questions"]]},
+  {r:["applied","fde"],q:"What is model routing and when does it pay off?",a:"<p>Classify the request and send easy ones to a cheap model. Usually the largest single cost lever, but the classifier is itself a model call, so it only pays when a meaningful share of traffic is genuinely simple.</p><p>Measure the split first. A heuristic router — query length, retrieval confidence — costs nothing and is often enough.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["fde","applied"],q:"Your p95 latency doubled overnight. Walk me through it.",a:"<p>Establish what changed: a deploy, a provider incident, or a traffic shift. Split latency by stage — retrieval, prefill, decode, tools — because the aggregate says nothing about which moved.</p><p>Check whether it's all requests or a segment, since a new customer with larger documents looks identical to a regression in aggregate. Then compare traces from before and after.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["fde"],q:"How do you handle PII in an LLM pipeline?",a:"<p>Know where it enters and everywhere it lands. It enters through user input and documents; it lands in prompts, completions, logs, traces and vector stores.</p><p>Detect and redact before it reaches any of those, and remember embeddings of PII are still PII. The vector store is the one people forget, because deleting a source document doesn't delete its vectors.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
+  {r:["fde","applied"],q:"What does release readiness mean for an LLM feature?",a:"<p>A frozen eval set with an agreed pass bar. Monitoring and cost alerts live before launch, not after. A documented failure mode and fallback behaviour. Injection and PII handling reviewed.</p><p>A rollback that doesn't depend on a model provider. And a named owner for the quality metric, because unowned metrics stop being watched within weeks.</p>",s:[["Release readiness","https://arxiv.org/pdf/2403.18958"]]}],
+ self:[["Why split input and output tokens?","Output costs several times more."],
+  ["p95 or mean, and why?","p95 — the mean hides the tail users feel."],
+  ["Two latency metrics for LLMs?","Time to first token, and total time."],
+  ["When does model routing lose money?","When most traffic is complex; you pay to classify anyway."],
+  ["Which cache almost always helps?","Prompt prefix caching."],
+  ["Why is a regex injection filter insufficient?","Encodings, other languages and indirect injection bypass it."],
+  ["What is indirect prompt injection?","Untrusted instructions inside a retrieved document."],
+  ["What should never be authoritative?","Model output. It proposes; code decides."],
+  ["How do you test non-deterministic output?","Property assertions, then a frozen regression set."],
+  ["Before trusting an LLM judge?","Validate it against human labels on a sample."],
+  ["How do you alert on cost?","A rolling baseline plus a per-request ceiling."],
+  ["Where does PII land besides the prompt?","Logs, traces, and the vector store."]]}
+];
+
+const MATRIX=[
+ ["LCEL, prompts, parsers",       [1,0,0,0,0]],
+ ["Structured output",            [1,1,0,1,1]],
+ ["Streaming",                    [1,0,0,0,0]],
+ ["Retrieval, chunking, stores",  [0,1,0,0,0]],
+ ["Embeddings and caching",       [0,1,0,0,1]],
+ ["Conversation memory",          [1,1,1,0,0]],
+ ["Graph state, reducers, cycles",[0,0,1,1,0]],
+ ["Checkpointing and durability", [0,0,1,0,0]],
+ ["Tool calling / agent loop",    [0,0,1,0,0]],
+ ["Human-in-the-loop",            [0,0,1,1,0]],
+ ["Retries and fallbacks",        [1,0,1,0,0]],
+ ["Multi-agent coordination",     [0,0,0,1,0]],
+ ["Tracing and observability",    [1,0,1,0,1]],
+ ["Cost control and routing",     [0,1,0,0,1]],
+ ["Security and injection",       [0,0,0,0,1]],
+ ["Evaluation and testing",       [0,0,0,0,1]],
+ ["Async",                        [-1,-1,-1,-1,-1]]
+];
+
+/* ============================ STATE ============================ */
+const KEY="aidrill.scores.v1";
+let scores={}, role="all", weakOnly=false, tab="overview", db=null;
+try{ scores=JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ scores={}; }
+
+function persist(){
+  try{ localStorage.setItem(KEY,JSON.stringify(scores)); }catch(e){}
+  if(db) db.doc("progress/self_scores").set({scores,updated:Date.now()}).catch(()=>{});
+}
+const ALL_Q=[];
+SERIES.forEach(t=>t.qs.forEach((q,i)=>ALL_Q.push({...q,tid:t.id,qid:t.id+"-"+i,n:i+1})));
+
+/* ============================ RENDER ============================ */
+const esc=s=>String(s).replace(/&(?![a-z]+;|#)/g,"&amp;").replace(/</g,"&lt;");
+const code=s=>`<pre class="code">${esc(s).replace(/(#[^\n]*)/g,'<span class="cm">$1</span>')}</pre>`;
+const plate=(d,cap)=>`<div class="plate"><pre class="mermaid">\n${d}\n</pre></div>`+
+  (cap?`<div class="plate-cap">${cap}</div>`:"");
+
+document.getElementById("tabs").innerHTML=
+  `<button class="tab" data-tab="overview" aria-selected="true">Series overview</button>`+
+  SERIES.map(t=>`<button class="tab" data-tab="${t.id}" aria-selected="false"><u>${t.id}</u>${t.short}</button>`).join("");
+
+function overviewHTML(){
+  return `
+  <div class="mast">
+    <h1>AI Engineering Interview Drill</h1>
+    <p class="sub">Five tutorials built from the notebooks in <code>production-course-main-code-main</code>, for Applied AI, Agentic AI and Forward Deployed Engineer interviews. Try to recall before you reveal — the click is the point.</p>
+    <div class="facts">
+      <div class="fact"><b>5</b><i>tutorials</i></div>
+      <div class="fact"><b>${ALL_Q.length}</b><i>drill questions</i></div>
+      <div class="fact"><b>${SERIES.reduce((a,t)=>a+t.gotchas.length,0)}</b><i>gotchas</i></div>
+      <div class="fact"><b>${SERIES.reduce((a,t)=>a+t.trades.length,0)}</b><i>tradeoffs</i></div>
+      <div class="fact"><b>37</b><i>notebooks read</i></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">The path</div>
+    <h2>Read in order, or jump to what you're weak on</h2>
+    <p class="lede">Each builds on the one before. Every tutorial links to the others where a concept lives elsewhere, rather than repeating it.</p>
+    ${plate(`flowchart LR
+  A["01 Foundations<br/>chains, prompts, parsers"] --> B["02 RAG<br/>your documents"]
+  B --> C["03 LangGraph<br/>loops, state, tools"]
+  C --> D["04 Multi-Agent<br/>coordination"]
+  D --> E["05 Production<br/>measure and defend"]`,"Each tutorial's gaps are filled by another")}
+    <div class="cards">
+      ${SERIES.map(t=>`<div class="card">
+        <span class="n">${t.emoji} Tutorial ${t.id}</span>
+        <h4>${t.title}</h4>
+        <p>${t.idea}</p>
+        <button data-goto="${t.id}">Open drill →</button>
+      </div>`).join("")}
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Coverage</div>
+    <h2>What's covered where</h2>
+    <p class="lede">Verified by scanning the source notebooks, not assumed. Use it to find which tutorial answers a given interview topic.</p>
+    <div class="tw"><table class="matrix">
+      <thead><tr><th>Topic</th>${SERIES.map(t=>`<th class="c">${t.id}</th>`).join("")}</tr></thead>
+      <tbody>${MATRIX.map(([topic,row])=>`<tr><td>${topic}</td>${
+        row.map(v=>v===1?'<td class="y">✓</td>':v===-1?'<td class="x">✗</td>':'<td class="n">·</td>').join("")
+      }</tr>`).join("")}</tbody>
+    </table></div>
+    <div class="callout"><b>The one gap nothing covers</b>
+      No folder uses <code>ainvoke</code>, <code>astream</code> or <code>async def</code>. Every question about concurrency, load, or serving many users lands here. Build a small async service and load-test it — it's the highest-value gap to close across all five.</div>
+  </section>
+
+  <section>
+    <div class="eyebrow">How to use this</div>
+    <h2>Pick a route</h2>
+    <div class="tw"><table>
+      <thead><tr><th>If you're…</th><th>Start with</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Interviewing next week</td><td>05 Production</td><td>Evaluation, cost and security are where prototype-only candidates get found out</td></tr>
+        <tr><td>Going for agentic roles</td><td>03, then 04</td><td>Every multi-agent pattern is the tutorial-03 graph, nested</td></tr>
+        <tr><td>Going for Applied AI</td><td>02, then 05</td><td>Retrieval quality and measuring it are the whole interview</td></tr>
+        <tr><td>Going for FDE</td><td>Any — see the FDE role filter</td><td>Every tutorial has an FDE track; use the role filter above</td></tr>
+        <tr><td>New to all of it</td><td>01 Foundations</td><td>Everything else is built from chains, prompts and parsers</td></tr>
+      </tbody>
+    </table></div>
+  </section>`;
+}
+
+function tutorialHTML(t){
+  return `
+  <div class="mast">
+    <h1>${t.emoji} ${t.title}</h1>
+    <p class="sub">${t.blurb}</p>
+    <div class="facts">
+      <div class="fact"><b>${t.qs.length}</b><i>questions</i></div>
+      <div class="fact"><b>${t.gotchas.length}</b><i>gotchas</i></div>
+      <div class="fact"><b>${t.trades.length}</b><i>tradeoffs</i></div>
+      <div class="fact"><b>${t.concepts.length}</b><i>concepts</i></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">The mental model</div>
+    <h2>${t.idea}</h2>
+    ${plate(t.diagram, t.dcap)}
+  </section>
+
+  <section>
+    <div class="eyebrow">Core concepts</div>
+    <h2>What everything else rests on</h2>
+    ${t.concepts.map((c,i)=>`<div class="concept">
+      <h4><span class="n">${String(i+1).padStart(2,"0")}</span>${c.t}
+        ${c.gap?'<span class="gaptag">not in your notebooks</span>':""}</h4>
+      <p>${c.b}</p>
+      ${c.diagram?plate(c.diagram):""}
+      ${c.code?code(c.code):""}
+      <div class="say"><b>Say this</b>${c.say}</div>
+    </div>`).join("")}
+  </section>
+
+  <section>
+    <div class="eyebrow">Gotchas</div>
+    <h2>True, surprising, and costly</h2>
+    <p class="lede">Symptom on the front. Click for cause, fix, and how it gets asked.</p>
+    <div class="gots">${t.gotchas.map((g,i)=>`<div class="got-c" data-i="${i}" tabindex="0" role="button" aria-expanded="false">
+      <h4>${g.t}</h4>
+      <div class="got-row"><b>Symptom</b><span>${g.s}</span></div>
+      <div class="got-back">
+        <div class="got-row"><b>Cause</b><span>${g.c}</span></div>
+        <div class="got-row"><b>Fix</b><span>${g.f}</span></div>
+        <div class="got-row"><b>Asked as</b><span>${g.a}</span></div>
+      </div>
+      <div class="flip">click to flip</div></div>`).join("")}</div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Tradeoffs</div>
+    <h2>Decisions, with the rule for choosing</h2>
+    ${t.trades.map(x=>`<div class="trade"><h4>${x.t}</h4>
+      <div class="tw"><table><thead><tr>${x.h.map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+      <tbody>${x.r.map(r=>`<tr>${r.map((c,i)=>`<td${i===3?' class="pick"':""}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+      <div class="oneline"><b>The one-liner</b>${x.o}</div></div>`).join("")}
+  </section>
+
+  <section>
+    <div class="eyebrow">Drill</div>
+    <h2>${t.qs.length} questions, answers hidden</h2>
+    <p class="lede">Filter by role above, rate yourself, then re-drill what's weak. Every question carries its source.</p>
+    <div class="qlist" id="qlist"></div>
+    <div class="empty" id="empty" hidden>Nothing matches that filter.</div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Self-check</div>
+    <h2>Rapid fire</h2>
+    <p class="lede">Answer out loud, then click. More than five seconds and it goes back on the pile.</p>
+    <div id="sclist">${t.self.map((s,i)=>`<div class="sc" data-i="${i}" tabindex="0" role="button" aria-expanded="false">
+      <div class="sc-q"><span class="n">${String(i+1).padStart(2,"0")}</span><span>${esc(s[0])}</span></div>
+      <div class="sc-a">${esc(s[1])}</div></div>`).join("")}</div>
+  </section>
+
+  <footer>
+    <div>Full written version: <code>${t.md}</code></div>
+    <div class="persist" id="persist">progress: local to this browser</div>
+  </footer>`;
+}
+
+function qCardsHTML(tid){
+  return ALL_Q.filter(q=>q.tid===tid).map(q=>`<article class="q" data-qid="${q.qid}" data-roles="${q.r.join(" ")}">
+    <button class="q-head" aria-expanded="false">
+      <span class="q-n">${q.tid}·${String(q.n).padStart(2,"0")}</span>
+      <span class="q-t">${esc(q.q)}</span>
+      <span class="q-tags">${q.r.map(r=>`<span class="tag${r==="core"?" core":""}">${ROLE_LABEL[r]}</span>`).join("")}</span>
+    </button>
+    <div class="q-body">
+      <div class="ans">${q.a}</div>
+      ${q.s?`<div class="srcs">${q.s.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${n} &#8599;</a>`).join("")}</div>`:""}
+      <div class="score"><span>Rate yourself</span>
+        <button class="sbtn" data-v="got">Got it</button>
+        <button class="sbtn" data-v="shaky">Shaky</button>
+        <button class="sbtn" data-v="missed">Missed</button>
+      </div>
+    </div></article>`).join("");
+}
+
+function render(){
+  const main=document.getElementById("main");
+  if(tab==="overview"){ main.innerHTML=overviewHTML(); }
+  else{
+    const t=SERIES.find(x=>x.id===tab);
+    main.innerHTML=tutorialHTML(t);
+    document.getElementById("qlist").innerHTML=qCardsHTML(t.id);
+  }
+  document.querySelectorAll(".tab").forEach(b=>
+    b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
+  wire(); paint(); window.scrollTo({top:0,behavior:"instant"});
+}
+
+function wire(){
+  document.querySelectorAll("[data-goto]").forEach(b=>
+    b.addEventListener("click",()=>{tab=b.dataset.goto; render();}));
+  const ql=document.getElementById("qlist");
+  if(ql) ql.addEventListener("click",e=>{
+    const head=e.target.closest(".q-head");
+    if(head){ const c=head.closest(".q");
+      head.setAttribute("aria-expanded",String(c.classList.toggle("is-open"))); return; }
+    const btn=e.target.closest(".sbtn");
+    if(btn){ const id=btn.closest(".q").dataset.qid;
+      scores[id]=scores[id]===btn.dataset.v?undefined:btn.dataset.v;
+      if(!scores[id]) delete scores[id];
+      persist(); paint(); }
+  });
+  document.querySelectorAll(".got-c, .sc").forEach(el=>{
+    const go=()=>el.setAttribute("aria-expanded",String(el.classList.toggle("is-open")));
+    el.addEventListener("click",go);
+    el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();go();} });
+  });
+}
+
+function paint(){
+  let g=0,s=0,m=0;
+  ALL_Q.forEach(q=>{ const v=scores[q.qid];
+    if(v==="got")g++; else if(v==="shaky")s++; else if(v==="missed")m++; });
+  const tot=ALL_Q.length;
+  document.getElementById("n-got").textContent=g;
+  document.getElementById("n-shaky").textContent=s;
+  document.getElementById("n-missed").textContent=m;
+  document.getElementById("n-left").textContent=tot-g-s-m;
+  document.getElementById("bar-got").style.width=(g/tot*100)+"%";
+  document.getElementById("bar-shaky").style.width=(s/tot*100)+"%";
+  document.getElementById("bar-missed").style.width=(m/tot*100)+"%";
+  document.querySelectorAll(".q").forEach(el=>{
+    const v=scores[el.dataset.qid];
+    if(v) el.dataset.score=v; else el.removeAttribute("data-score");
+    el.querySelectorAll(".sbtn").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===v)));
+  });
+  filter();
+}
+
+function filter(){
+  const els=[...document.querySelectorAll(".q")];
+  if(!els.length) return;
+  let shown=0;
+  els.forEach(el=>{
+    const okRole = role==="all" || el.dataset.roles.split(" ").includes(role);
+    const v=scores[el.dataset.qid];
+    const okWeak = !weakOnly || v==="shaky" || v==="missed" || !v;
+    const ok=okRole&&okWeak; el.hidden=!ok; if(ok)shown++;
+  });
+  const e=document.getElementById("empty"); if(e) e.hidden=shown>0;
+}
+
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest(".tab"); if(!b) return; tab=b.dataset.tab; render();
+});
+document.querySelectorAll(".chip[data-role]").forEach(c=>
+  c.addEventListener("click",()=>{ role=c.dataset.role;
+    document.querySelectorAll(".chip[data-role]").forEach(o=>
+      o.setAttribute("aria-pressed",String(o===c)));
+    filter(); }));
+document.getElementById("weak-only").addEventListener("click",e=>{
+  weakOnly=!weakOnly; e.currentTarget.setAttribute("aria-pressed",String(weakOnly)); filter(); });
+document.getElementById("collapse").addEventListener("click",()=>
+  document.querySelectorAll(".q.is-open").forEach(c=>{
+    c.classList.remove("is-open");
+    c.querySelector(".q-head").setAttribute("aria-expanded","false"); }));
+document.getElementById("reset").addEventListener("click",()=>{ scores={}; persist(); paint(); });
+
+render();
+
+/* durable progress when available, localStorage otherwise */
+(async()=>{
+  if(!window.claude||!claude.use) return;
+  try{
+    const d=await claude.use("db"); if(!d) return; db=d;
+    const snap=await d.doc("progress/self_scores").get();
+    if(snap&&snap.scores&&Object.keys(scores).length===0){ scores=snap.scores; paint(); }
+    const el=document.getElementById("persist");
+    if(el) el.textContent="progress: synced across devices";
+  }catch(e){}
+})();
+</script>
