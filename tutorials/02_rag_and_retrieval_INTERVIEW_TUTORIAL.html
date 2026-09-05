@@ -1,0 +1,1086 @@
+<title>RAG Interview Drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;450;600&display=swap">
+
+<style>
+:root{
+  --ground:#F6F7F9; --surface:#FFFFFF; --surface-2:#EFF2F5;
+  --ink:#14181D; --muted:#5B6672; --faint:#8894A1;
+  --accent:#0E7C86; --accent-soft:#DCEEF0; --accent-ink:#0A5A61;
+  --rule:#DDE2E8; --rule-strong:#C3CBD4;
+  --got:#2F7D5D; --shaky:#B4690E; --missed:#B3261E;
+  --got-bg:#E4F0EA; --shaky-bg:#F8ECDA; --missed-bg:#F8E3E1;
+  --shadow:0 1px 2px rgba(20,24,29,.06), 0 4px 12px rgba(20,24,29,.05);
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#10141A; --surface:#171C23; --surface-2:#1E242C;
+    --ink:#E6EAEF; --muted:#93A0AD; --faint:#6E7B89;
+    --accent:#3FB3BD; --accent-soft:#123238; --accent-ink:#7FD3DA;
+    --rule:#262E38; --rule-strong:#38424E;
+    --got:#5FBE92; --shaky:#E0A248; --missed:#E8776D;
+    --got-bg:#16281F; --shaky-bg:#2C2213; --missed-bg:#2E1A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#10141A; --surface:#171C23; --surface-2:#1E242C;
+  --ink:#E6EAEF; --muted:#93A0AD; --faint:#6E7B89;
+  --accent:#3FB3BD; --accent-soft:#123238; --accent-ink:#7FD3DA;
+  --rule:#262E38; --rule-strong:#38424E;
+  --got:#5FBE92; --shaky:#E0A248; --missed:#E8776D;
+  --got-bg:#16281F; --shaky-bg:#2C2213; --missed-bg:#2E1A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); font-family:var(--sans);
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{text-wrap:balance; margin:0; line-height:1.22}
+p{margin:0}
+code,.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+code{font-size:.88em; background:var(--surface-2); padding:.1em .34em;
+  border-radius:3px; color:var(--accent-ink)}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+
+/* ---------- readout bar ---------- */
+.readout{position:sticky; top:0; z-index:20; background:var(--surface);
+  border-bottom:1px solid var(--rule-strong)}
+.readout-in{max-width:1080px; margin:0 auto; padding:10px 24px;
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+.brand{font-family:var(--cond); font-weight:700; font-size:15px;
+  letter-spacing:.06em; text-transform:uppercase; white-space:nowrap}
+.brand span{color:var(--accent)}
+.meters{display:flex; gap:14px; margin-left:auto; align-items:center}
+.meter{display:flex; align-items:baseline; gap:6px; font-family:var(--mono); font-size:12px}
+.meter b{font-size:15px; font-weight:600; font-variant-numeric:tabular-nums}
+.m-got b{color:var(--got)} .m-shaky b{color:var(--shaky)} .m-missed b{color:var(--missed)}
+.meter i{font-style:normal; color:var(--faint); letter-spacing:.04em}
+.bar{height:4px; width:100%; background:var(--surface-2); display:flex; overflow:hidden}
+.bar i{display:block; height:100%}
+.bar .b-got{background:var(--got)} .bar .b-shaky{background:var(--shaky)}
+.bar .b-missed{background:var(--missed)}
+
+/* ---------- controls ---------- */
+.controls{max-width:1080px; margin:0 auto; padding:14px 24px 0;
+  display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.chip{font-family:var(--cond); font-weight:600; font-size:12.5px; letter-spacing:.05em;
+  text-transform:uppercase; padding:5px 11px; border:1px solid var(--rule-strong);
+  background:var(--surface); color:var(--muted); border-radius:2px; cursor:pointer;
+  transition:background .12s, color .12s, border-color .12s}
+.chip:hover{border-color:var(--accent); color:var(--accent-ink)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent);
+  color:#fff}
+:root[data-theme="dark"] .chip[aria-pressed="true"],
+.chip[aria-pressed="true"]{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#08171A}}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#08171A}
+.ctl-sep{width:1px; height:22px; background:var(--rule-strong); margin:0 4px}
+
+/* ---------- layout ---------- */
+main{max-width:1080px; margin:0 auto; padding:0 24px 96px}
+.wrap{max-width:70ch}
+section{padding-top:44px}
+.eyebrow{font-family:var(--cond); font-weight:700; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:9px}
+.eyebrow::after{content:""; flex:1; height:1px; background:var(--rule)}
+h2{font-family:var(--cond); font-weight:700; font-size:29px; margin:8px 0 6px;
+  letter-spacing:-.005em}
+.lede{color:var(--muted); font-size:15.5px; max-width:70ch; margin-bottom:4px}
+
+/* ---------- masthead ---------- */
+.mast{padding:40px 0 6px}
+.mast h1{font-family:var(--cond); font-weight:700; font-size:clamp(34px,5.2vw,52px);
+  letter-spacing:-.015em}
+.mast .sub{color:var(--muted); font-size:17px; margin-top:10px; max-width:64ch}
+.facts{display:flex; gap:0; flex-wrap:wrap; margin-top:24px;
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule)}
+.fact{padding:12px 22px 12px 0; margin-right:22px; border-right:1px solid var(--rule)}
+.fact:last-child{border-right:0}
+.fact b{display:block; font-family:var(--mono); font-size:21px; font-weight:600;
+  font-variant-numeric:tabular-nums}
+.fact i{font-style:normal; font-family:var(--cond); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint)}
+
+/* ---------- coverage ---------- */
+.cov{display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:0 26px;
+  margin-top:14px}
+.cov div{display:flex; gap:9px; padding:7px 0; border-bottom:1px solid var(--rule);
+  font-size:14.5px; align-items:baseline}
+.tick{font-family:var(--mono); font-weight:600; font-size:12px; flex:none}
+.yes .tick{color:var(--got)} .no .tick{color:var(--missed)}
+.no{color:var(--muted)}
+
+/* ---------- concepts ---------- */
+.concept{border-top:1px solid var(--rule); padding:18px 0}
+.concept h3{font-size:18.5px; font-weight:600; display:flex; gap:10px; align-items:baseline}
+.concept h3 .n{font-family:var(--mono); font-size:13px; color:var(--faint); flex:none}
+.concept p{margin-top:8px; max-width:70ch; font-size:15.5px}
+.src-note{margin-top:10px; font-size:13.5px; color:var(--muted);
+  border-left:2px solid var(--accent); padding-left:11px}
+.src-note.gap{border-left-color:var(--missed)}
+.say{margin-top:10px; font-size:14.5px; background:var(--surface-2); padding:10px 13px;
+  border-radius:3px}
+.say b{font-family:var(--cond); letter-spacing:.06em; text-transform:uppercase;
+  font-size:11px; color:var(--faint); display:block; margin-bottom:3px}
+
+/* ---------- code blocks ---------- */
+pre.code{margin-top:11px; background:var(--surface-2); border:1px solid var(--rule);
+  border-left:3px solid var(--accent); border-radius:2px; padding:12px 14px;
+  overflow-x:auto; font-family:var(--mono); font-size:13px; line-height:1.62;
+  white-space:pre; tab-size:4}
+pre.code .cm{color:var(--faint)}
+.code-cap{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); margin-top:11px}
+.note{margin-top:9px; font-size:14.5px; color:var(--muted); max-width:70ch}
+
+/* ---------- diagram plate ----------
+   Diagrams sit on a constant pale plate in both themes: the native mermaid
+   renderer draws dark strokes, so a plate guarantees legibility on either ground. */
+.plate{margin-top:12px; background:#F4F6F8; border:1px solid #D8DEE5; border-radius:3px;
+  padding:14px 12px; overflow-x:auto}
+.plate pre.mermaid{margin:0; background:none; border:0; text-align:center;
+  font-family:var(--mono)}
+.plate-cap{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); margin-top:7px}
+
+/* ---------- glossary ---------- */
+.gloss{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:0 26px;
+  margin-top:14px}
+.gloss div{padding:9px 0; border-bottom:1px solid var(--rule); font-size:14.5px}
+.gloss b{font-family:var(--mono); font-size:13px; color:var(--accent-ink);
+  display:block; margin-bottom:2px}
+
+/* ---------- question cards ---------- */
+.qlist{display:flex; flex-direction:column; gap:10px; margin-top:16px}
+.q{background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--rule-strong);
+  border-radius:2px; box-shadow:var(--shadow); overflow:hidden}
+.q[data-score="got"]{border-left-color:var(--got)}
+.q[data-score="shaky"]{border-left-color:var(--shaky)}
+.q[data-score="missed"]{border-left-color:var(--missed)}
+.q-head{width:100%; text-align:left; background:none; border:0; cursor:pointer;
+  padding:14px 16px; display:flex; gap:12px; align-items:flex-start;
+  font:inherit; color:inherit}
+.q-head:hover{background:var(--surface-2)}
+.q-n{font-family:var(--mono); font-size:12.5px; color:var(--faint); flex:none; padding-top:3px;
+  min-width:2.1em}
+.q-t{flex:1; font-size:16px; font-weight:450; line-height:1.45}
+.q-tags{display:flex; gap:5px; flex:none; flex-wrap:wrap; justify-content:flex-end;
+  max-width:210px}
+.tag{font-family:var(--cond); font-size:10px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; padding:2px 6px; border:1px solid var(--rule-strong);
+  color:var(--muted); border-radius:2px; white-space:nowrap}
+.tag.core{color:var(--accent-ink); border-color:var(--accent); background:var(--accent-soft)}
+.q-body{display:none; padding:0 16px 15px 16px}
+.q.is-open .q-body{display:block}
+.q-body .ans{font-size:15.5px; color:var(--ink); border-top:1px solid var(--rule);
+  padding-top:13px}
+.q-body .ans p + p{margin-top:9px}
+.srcs{margin-top:11px; font-size:12.5px; font-family:var(--mono); color:var(--faint);
+  display:flex; gap:12px; flex-wrap:wrap}
+.score{margin-top:13px; display:flex; gap:7px; align-items:center; flex-wrap:wrap}
+.score span{font-family:var(--cond); font-size:11px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); margin-right:3px}
+.sbtn{font-family:var(--cond); font-weight:600; font-size:12px; letter-spacing:.05em;
+  text-transform:uppercase; padding:5px 12px; border:1px solid var(--rule-strong);
+  background:var(--surface); color:var(--muted); border-radius:2px; cursor:pointer}
+.sbtn:hover{border-color:var(--faint)}
+.sbtn[data-v="got"][aria-pressed="true"]{background:var(--got-bg); border-color:var(--got); color:var(--got)}
+.sbtn[data-v="shaky"][aria-pressed="true"]{background:var(--shaky-bg); border-color:var(--shaky); color:var(--shaky)}
+.sbtn[data-v="missed"][aria-pressed="true"]{background:var(--missed-bg); border-color:var(--missed); color:var(--missed)}
+
+/* ---------- gotcha flip cards ---------- */
+.gots{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px;
+  margin-top:16px}
+.got-c{background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+  padding:14px 15px; cursor:pointer; box-shadow:var(--shadow)}
+.got-c:hover{border-color:var(--rule-strong)}
+.got-c h4{font-size:15.5px; font-weight:600; margin-bottom:8px}
+.got-row{display:flex; gap:9px; font-size:14px; margin-top:7px}
+.got-row b{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); flex:none; width:62px; padding-top:3px}
+.got-back{display:none}
+.got-c.is-open .got-back{display:block}
+.got-c .flip{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--accent); margin-top:10px}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto; margin-top:12px; border:1px solid var(--rule); border-radius:2px}
+table{border-collapse:collapse; width:100%; font-size:14.5px; background:var(--surface)}
+th,td{text-align:left; padding:9px 13px; border-bottom:1px solid var(--rule);
+  vertical-align:top}
+th{font-family:var(--cond); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--faint); background:var(--surface-2); white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600; white-space:nowrap}
+.pick{color:var(--accent-ink)}
+.oneline{margin-top:10px; font-size:15px; padding:10px 13px; background:var(--accent-soft);
+  border-radius:3px}
+.oneline b{font-family:var(--cond); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--accent-ink); display:block; margin-bottom:3px}
+.trade{border-top:1px solid var(--rule); padding:18px 0}
+.trade h3{font-size:18px; font-weight:600}
+
+/* ---------- mock ---------- */
+.prompt{background:var(--surface); border:1px solid var(--rule-strong); border-left:3px solid var(--accent);
+  padding:16px 18px; border-radius:2px; font-size:15.5px; margin-top:14px; box-shadow:var(--shadow)}
+.prompt b{font-family:var(--cond); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:6px}
+
+/* ---------- self check ---------- */
+.sc{border-top:1px solid var(--rule); padding:11px 0; cursor:pointer}
+.sc-q{display:flex; gap:11px; font-size:15.5px}
+.sc-q .n{font-family:var(--mono); font-size:12.5px; color:var(--faint); flex:none; min-width:2em;
+  padding-top:2px}
+.sc-a{display:none; margin:7px 0 0 calc(2em + 11px); font-size:14.5px; color:var(--accent-ink);
+  font-family:var(--mono)}
+.sc.is-open .sc-a{display:block}
+
+.explain{margin-top:16px; padding-left:18px}
+.explain li{margin-top:6px; font-size:15.5px}
+
+footer{margin-top:56px; padding-top:18px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--faint); display:flex; gap:16px; flex-wrap:wrap;
+  align-items:center; justify-content:space-between}
+.persist{font-family:var(--mono); font-size:11.5px}
+
+.empty{padding:26px 0; color:var(--muted); font-size:15px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+@media (max-width:640px){
+  .q-tags{max-width:none; justify-content:flex-start; width:100%}
+  .q-head{flex-wrap:wrap}
+  .meters{width:100%; margin-left:0}
+}
+</style>
+
+<div class="readout">
+  <div class="readout-in">
+    <div class="brand">RAG Interview <span>Drill</span></div>
+    <div class="meters">
+      <div class="meter m-got"><b id="n-got">0</b><i>got it</i></div>
+      <div class="meter m-shaky"><b id="n-shaky">0</b><i>shaky</i></div>
+      <div class="meter m-missed"><b id="n-missed">0</b><i>missed</i></div>
+      <div class="meter"><b id="n-left">0</b><i>unrated</i></div>
+    </div>
+  </div>
+  <div class="bar"><i class="b-got" id="bar-got"></i><i class="b-shaky" id="bar-shaky"></i><i class="b-missed" id="bar-missed"></i></div>
+</div>
+
+<div class="controls">
+  <button class="chip" data-role="all" aria-pressed="true">All roles</button>
+  <button class="chip" data-role="applied" aria-pressed="false">Applied AI</button>
+  <button class="chip" data-role="agentic" aria-pressed="false">Agentic</button>
+  <button class="chip" data-role="fde" aria-pressed="false">FDE</button>
+  <span class="ctl-sep"></span>
+  <button class="chip" id="weak-only" aria-pressed="false">Weak only</button>
+  <button class="chip" id="collapse">Collapse all</button>
+  <button class="chip" id="reset">Reset scores</button>
+</div>
+
+<main>
+
+<div class="mast">
+  <h1>RAG &amp; Retrieval Interview Drill</h1>
+  <p class="sub"><b>RAG</b> means <b>Retrieval-Augmented Generation</b>: before you ask a model a question, you go find the relevant documents and paste them into the prompt. That's the whole idea — everything here is about doing it well. Built from eight notebooks in <code>02_RAG_and_Retrieval</code>. Try to recall before you reveal; the click is the point.</p>
+  <div class="facts">
+    <div class="fact"><b>8</b><i>notebooks read</i></div>
+    <div class="fact"><b>7</b><i>topics grounded</i></div>
+    <div class="fact"><b>7</b><i>coverage gaps</i></div>
+    <div class="fact"><b id="fact-q">0</b><i>drill questions</i></div>
+    <div class="fact"><b>15</b><i>gotchas</i></div>
+  </div>
+</div>
+
+<section id="pipeline">
+  <div class="eyebrow">Section 01 — The mental model</div>
+  <h2>The whole pipeline in one picture</h2>
+  <p class="lede">Read this once and everything else has somewhere to attach. The top row runs once when you load documents. The bottom row runs on every question. Almost every bug lives in one specific box, which is why naming the boxes matters.</p>
+  <div class="plate">
+<pre class="mermaid">
+flowchart LR
+  subgraph INDEX["Step 1 — done once, ahead of time"]
+    A["Your documents"] --> B["Split into chunks"]
+    B --> C["Turn each chunk into numbers"]
+    C --> D[("Vector store")]
+  end
+  subgraph ASK["Step 2 — done on every question"]
+    E["User question"] --> F["Turn question into numbers"]
+    F --> G["Find the closest chunks"]
+    D --> G
+    G --> H["Paste chunks into the prompt"]
+    H --> I["Model writes the answer"]
+  end
+</pre>
+  </div>
+
+  <h3 style="margin-top:26px; font-size:17px">Words you need first</h3>
+  <div class="gloss">
+    <div><b>Embedding</b>A list of numbers standing for a piece of text. Similar meanings give similar numbers.</div>
+    <div><b>Chunk</b>A small piece of a document. You split because whole documents search badly.</div>
+    <div><b>Vector store</b>A database built to search lists of numbers fast. Chroma, FAISS, Pinecone.</div>
+    <div><b>Retriever</b>The thing that takes a question and hands back the most relevant chunks.</div>
+    <div><b>Top-k</b>How many chunks you fetch. <code>k=3</code> means "give me the best 3".</div>
+    <div><b>Cosine similarity</b>A score from -1 to 1 for how close two embeddings are in meaning. Higher is closer.</div>
+    <div><b>BM25</b>An older keyword-matching algorithm. Great at exact words, which embeddings are bad at.</div>
+    <div><b>Reranker</b>A second, smarter model that reorders your top chunks so the best one is first.</div>
+    <div><b>recall@k</b>Across your test questions, how often was the correct chunk in the top k?</div>
+    <div><b>p95 latency</b>95% of requests finish faster than this. The number users actually feel.</div>
+    <div><b>ACL</b>Access Control List — the rules for which user may see which document.</div>
+    <div><b>MMR</b>Maximal Marginal Relevance. Re-ranks for variety, so you don't get three copies of one idea.</div>
+  </div>
+</section>
+
+<section id="coverage">
+  <div class="eyebrow">Section 02 — Grounding</div>
+  <h2>What you can claim, and what you can't</h2>
+  <p class="lede">Every claim here is one an interviewer can ask you to walk through. The right column is what this folder never demonstrates — teach yourself these, but never say you shipped them.</p>
+  <div class="cov" id="cov"></div>
+  <p class="src-note" style="margin-top:16px">The automated scan got two of these wrong and reading the source reversed both. <b>Memory is covered</b> — <code>08_research_assistant</code> keys <code>InMemoryChatMessageHistory</code> by session and injects it via <code>MessagesPlaceholder</code>. <b>Observability is not</b> — the word "LangSmith" appears only inside a sample-document string in <code>06</code>.</p>
+</section>
+
+<section id="concepts">
+  <div class="eyebrow">Section 03 — Shared core</div>
+  <h2>The eleven things everything else rests on</h2>
+  <p class="lede">Read these cold. Each names the mechanism, cites where you built it, and gives you a spoken answer.</p>
+  <div id="concepts-list"></div>
+</section>
+
+<section id="gotchas">
+  <div class="eyebrow">Section 04 — Gotchas</div>
+  <h2>Fifteen things that are true, surprising and costly</h2>
+  <p class="lede">Symptom on the front. Click for cause, fix, and how it gets asked. Most of these are live in your own notebooks right now.</p>
+  <div class="gots" id="gots"></div>
+</section>
+
+<section id="tradeoffs">
+  <div class="eyebrow">Section 05 — Tradeoffs</div>
+  <h2>Decisions, with the rule for choosing</h2>
+  <p class="lede">"It depends" without the rule is worthless in a room. Each table ends with the sentence you actually say out loud.</p>
+  <div id="trades"></div>
+</section>
+
+<section id="agentic-diagrams">
+  <div class="eyebrow">Section 06 — Two pictures for the agent questions</div>
+  <h2>What most agentic answers point back to</h2>
+  <p class="lede">The drill below asks about stopping runaway agents and about real-time budgets. These two diagrams are what those answers describe.</p>
+
+  <div class="plate">
+<pre class="mermaid">
+flowchart TD
+  A["Model thinks"] --> B{"Wants to use a tool?"}
+  B -->|"No"| Z["Return the answer"]
+  B -->|"Yes"| C["Run the tool"]
+  C --> D{"Hit any limit?"}
+  D -->|"Call cap reached"| P["Stop, return partial result"]
+  D -->|"Timed out"| P
+  D -->|"Same call repeated"| P
+  D -->|"No"| A
+</pre>
+  </div>
+  <div class="plate-cap">Three independent exits, because any one of them can fail</div>
+
+  <div class="plate" style="margin-top:20px">
+<pre class="mermaid">
+sequenceDiagram
+  participant U as User
+  participant A as App
+  participant V as Vector store
+  participant L as Model
+  U->>A: Question
+  A->>V: Search, about 200ms
+  V-->>A: Top chunks
+  A->>L: Prompt with chunks
+  L-->>U: First token, under 1s
+  L-->>U: Rest streams, up to 8s
+</pre>
+  </div>
+  <div class="plate-cap">"Under 1 second" means first token, not the finished answer</div>
+</section>
+
+<section id="questions">
+  <div class="eyebrow">Section 07 — Drill</div>
+  <h2>Forty questions, answers hidden</h2>
+  <p class="lede">The first ten are the web-sourced real-time agentic system design set. The rest are role-specific. Filter by role above, rate yourself, then re-drill what's weak.</p>
+  <div class="qlist" id="qlist"></div>
+  <div class="empty" id="empty" hidden>Nothing matches that filter. Clear "Weak only" or pick another role.</div>
+</section>
+
+<section id="mock">
+  <div class="eyebrow">Section 08 — Mock design</div>
+  <h2>Enterprise research assistant, in real time</h2>
+  <div class="prompt">
+    <b>The prompt</b>
+    Design a real-time research assistant for an enterprise. It answers questions over 500k internal documents, streams responses, supports multi-turn follow-ups, must cite sources, and must never surface a document the asking user cannot access. Target: first token under 1 second, p95 complete answer under 8 seconds. Walk me through it.
+  </div>
+  <div class="plate" style="margin-top:16px">
+<pre class="mermaid">
+flowchart TD
+  U["User question + identity"] --> R["Retrieval service"]
+  R --> F["ACL pre-filter by user groups"]
+  F --> H["Hybrid search: BM25 + vectors"]
+  H --> K["Fetch about 30 candidates"]
+  K --> RR["Rerank to top 5"]
+  RR --> P["Build prompt"]
+  M[("Session memory in Redis")] --> P
+  P --> L["Model, streaming"]
+  L --> A["Answer with citations"]
+  L --> T["Trace: run id, chunk ids, cost"]
+</pre>
+  </div>
+  <div class="plate-cap">One shape a strong answer converges on</div>
+  <div class="tw" style="margin-top:18px"><table id="rubric"></table></div>
+  <p class="lede" style="margin-top:18px">A strong answer opens by <em>clarifying</em> — query volume, document churn, tenancy model, and what "cite" actually means — because all four change the design. Then: chunk near 500 tokens with 15% overlap and tune against an eval set; stable chunk IDs so reingestion upserts rather than duplicates; the ACL as a required pre-filter argument in a retrieval service, never a prompt instruction; hybrid BM25 plus dense because internal corpora are full of identifiers embeddings blur; fetch ~30, rerank to 5. Say out loud that the 1-second target is <em>time to first token</em>, not completion, and that you get there by streaming, overlapping retrieval with history fetch, and routing simple lookups to a small model. Session history in Redis, not in process, because replicas and deploys. When retrieval returns nothing above threshold, return a distinct response type so the UI and the metrics both see it. Traces keyed by run and session ID recording retrieved chunk IDs — that one field turns "why did it say that" from a five-hour question into a five-minute one.</p>
+</section>
+
+<section id="selfcheck">
+  <div class="eyebrow">Section 09 — Self-check</div>
+  <h2>Rapid fire</h2>
+  <p class="lede">Answer out loud, then click. If you need more than five seconds, it goes back on the pile.</p>
+  <div id="sclist"></div>
+  <h3 style="margin-top:26px; font-size:17px">Explain to a skeptical staff engineer</h3>
+  <ul class="explain">
+    <li>Why hybrid search is worth running two indexes.</li>
+    <li>Why you would refuse to put access control in the system prompt.</li>
+    <li>Why your session memory design fails on a second replica, and what you'd change.</li>
+    <li>Why multi-agent is probably the wrong answer to their problem.</li>
+    <li>Why "the answers look better" is not evidence.</li>
+  </ul>
+</section>
+
+<footer>
+  <div>Built from <code>production-course-main-code-main/02_RAG_and_Retrieval</code> · 2026-09-06</div>
+  <div class="persist" id="persist">progress: local to this browser</div>
+</footer>
+
+</main>
+
+<script>
+/* ---------------- data ---------------- */
+const CONCEPTS = [
+ {t:"An embedding is just a list of numbers",
+  b:"You can't do maths on the word \"dog\". So you turn text into a list of numbers — 1536 of them for OpenAI's text-embedding-3-small. Text that means similar things gets similar numbers, and \"how close in meaning?\" becomes arithmetic.<br><br>OpenAI scales every embedding so its <b>length is always 1</b>. Picture every piece of text as an arrow of the same length, all starting from the centre of a sphere — only the <em>direction</em> differs. So closeness is the angle between two arrows, not the distance between their tips. That's why cosine similarity and the dot product give the same answer here, and the dot product is cheaper.",
+  code:`# From 04_embeddings_deep.ipynb
+single = embeddings_model.embed_query("What is Machine Learning?")
+
+print(len(single))                  # 1536 numbers
+print(np.linalg.norm(single))       # 1.0002  <- length is always ~1`,
+  note:"The <code>norm</code> line is the one to watch. It prints about 1.0 whatever text you pass — that's the \"all arrows the same length\" fact, made visible.",
+  code2:`# The whole of similarity search, by hand
+def cosine_similarity(v1, v2):
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+
+doc_vectors  = embeddings_model.embed_documents(docs)
+query_vector = embeddings_model.embed_query("What programming languages exist?")
+
+scores = [cosine_similarity(query_vector, dv) for dv in doc_vectors]
+ranked = sorted(zip(docs, scores), key=lambda pair: pair[1], reverse=True)`,
+  note2:"When this ran it scored <b>0.4427</b> for \"Python is a programming language\" and <b>0.1144</b> for \"Cats are popular pets\". That gap is the whole mechanism working.",
+  src:"04_embeddings_deep.ipynb prints norms of 1.0002 and 0.9996, then hand-rolls the ranking loop over five documents.",
+  say:"An embedding is a direction, not a position. OpenAI normalises them to length 1, so similarity is an angle and the dot product works. I've written the ranking loop by hand — embed, score, sort. A vector store is that same loop plus an index so it stays fast on millions of documents."},
+
+ {t:"Two embedding methods, and they are not interchangeable",
+  b:"There are two calls. <code>embed_query</code> takes <b>one</b> string, for the question. <code>embed_documents</code> takes a <b>list</b>, for your documents — and sends them all in a single request instead of one request each.<br><br>Beyond speed, some providers train the two sides differently, so a question and a document that mean the same thing are embedded slightly differently on purpose. Use the wrong method and nothing errors. The shapes still match. The rankings just quietly get worse, which is the hardest kind of bug to find.",
+  code:`# One question -> one vector
+q_vec  = embeddings_model.embed_query("What is Machine Learning?")
+
+# Three documents -> three vectors, ONE network request
+d_vecs = embeddings_model.embed_documents([
+    "What is Machine Learning?",
+    "Explain overfitting in ML.",
+    "How does a neural network work?",
+])`,
+  src:"04_embeddings_deep.ipynb demonstrates both, embedding three texts in one call.",
+  say:"Never loop embed_query over a corpus. It's N round trips instead of one, and on models with asymmetric training it's the wrong vector space for the document side — no error, just worse results."},
+
+ {t:"Chunk size is a dial, not a setting",
+  b:"You split documents before embedding them. How big should the pieces be? There's no right answer, only a trade.<br><br>Small pieces cover about one idea each, so they match a question sharply — but the model only sees a fragment. Big pieces carry full context — but the embedding has to represent several ideas at once, so it lands somewhere in the middle and matches nothing precisely.<br><br><b>Overlap</b> is why you repeat a bit of text at each boundary: if a fact sits exactly where you cut, overlap keeps it whole in at least one chunk.",
+  diagram:`flowchart LR
+  A["Chunk size"] --> B["Small: 200-400 chars"]
+  A --> C["Large: 1000-2000 chars"]
+  B --> B1["Sharp match"]
+  B --> B2["Model sees a fragment"]
+  C --> C1["Full context"]
+  C --> C2["Blurry match"]`,
+  code:`# From 02_text_splitters.ipynb / 08_research_assistant.ipynb
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200,                          # 20% of chunk_size
+    separators=["\\n\\n", "\\n", ". ", " ", ""],   # paragraph, line, sentence, word
+)
+chunks = splitter.split_documents(documents)`,
+  note:"The <code>separators</code> list is the clever part — it breaks at a paragraph first, then a line, then a sentence, and only cuts mid-word if it has no choice.",
+  src:"02_text_splitters.ipynb runs chunk_size_comparison() and overlap_importance() directly, plus structure-aware splitting for markdown and code.",
+  say:"Chunk size trades recall against precision, so I measure it rather than accept a default. Where a document has structure, splitting on that structure beats any fixed size — a markdown section stays whole instead of being cut mid-argument."},
+
+ {t:"When the answer is wrong, there are exactly two suspects",
+  b:"Either you fetched the wrong documents, or you fetched the right ones and the model ignored them. Different bugs, different fixes — and one check tells you which you have.<br><br><b>The check</b>: print the chunks that came back and read them. Was the answer in there?",
+  diagram:`flowchart TD
+  A["The answer is wrong"] --> B["Print the retrieved chunks"]
+  B --> C{"Is the answer inside them?"}
+  C -->|"No"| D["Retrieval bug"]
+  C -->|"Yes"| E["Generation bug"]
+  D --> D1["Chunk size too big or small"]
+  D --> D2["Wrong embedding model"]
+  D --> D3["k too small, or ranking is off"]
+  E --> E1["Prompt is not forcing grounding"]
+  E --> E2["Best chunk buried in the middle"]
+  E --> E3["Model too weak for the task"]`,
+  code:`# From 08_research_assistant.ipynb — see exactly what the model was given
+docs = retriever.invoke(question)
+for i, doc in enumerate(docs):
+    print(f"Chunk {i+1} [{doc.metadata.get('source')}] {len(doc.page_content)} chars")
+    print(doc.page_content[:150])`,
+  src:"08_research_assistant.ipynb has compare_retrievers(), which prints chunks and character totals for basic vs advanced retrieval side by side.",
+  say:"First thing I ask is whether the answer was even in the retrieved context. That single check halves the search space. I built a harness that dumps the retrieved chunks and their sizes so I can see what the model actually saw."},
+
+ {t:"Telling the model to stay grounded is a request, not a rule",
+  b:"You can write \"only answer from the context below, otherwise say you don't know\". It genuinely helps. It does not always work, because you're asking a probabilistic system nicely, not enforcing a constraint.<br><br>Real enforcement sits outside the model. After it answers, check that every source it cited actually exists in what you retrieved. A citation to nothing is a failed generation, and you can detect that in code.",
+  code:`# From 06_rag_pipeline.ipynb
+prompt = ChatPromptTemplate.from_template("""
+Answer the question based ONLY on the following context.
+If the answer is not in the context, respond with:
+"I don't have information about that in my knowledge base."
+
+Context:
+{context}
+
+Question: {question}
+""")`,
+  note:"That notebook tests it honestly — it asks about LangSmith pricing (in the documents) and OpenAI's stock price (not in the documents), and checks the second one refuses.",
+  src:"06_rag_pipeline.ipynb's demo_rag_with_fallback() runs three questions, two deliberately outside the knowledge base.",
+  say:"Prompt-level grounding is a contract the model usually honours, not always. In production I verify the cited sources exist in the retrieved set, and treat a citation to nothing as a failure rather than trusting the text."},
+
+ {t:"Metadata filtering is how you do security",
+  b:"Each chunk can carry labels — which file it came from, which team owns it, which customer it belongs to. You can tell the search \"only look at chunks where topic is database\". That filter runs <b>before</b> the search, not after.<br><br>Why before matters: search-then-filter means you asked for 3 results and might end up with 1, or 0. Filtering first means the 3 you get already passed the rule.<br><br>Now swap <code>topic</code> for <code>tenant_id</code>. This is what stops one customer's documents appearing in another customer's answer. It runs in code, so it either happened or it didn't. Putting \"don't show other customers' documents\" in the prompt is not access control, because you can't prove it held.",
+  code:`# From 05_vector_stores.ipynb
+results = vectorstore.similarity_search(
+    "What databases are available?",
+    k=5,
+    filter={"topic": "database"},     # applied BEFORE the search runs
+)`,
+  src:"05_vector_stores.ipynb runs metadata_filtering() with and without the filter and prints both result sets.",
+  say:"Metadata filters are pre-filters, which matters for getting a full k and matters more for tenancy. Access control belongs in the filter, never in the prompt — a prompt instruction is unprovable."},
+
+ {t:"Conversation memory is state you have to own",
+  b:"For a follow-up like \"how does the second one work?\" to make sense, the system has to remember what was already said. That memory isn't automatic. You store it, you decide how much to keep, and you pass it back in.",
+  code:`# From 08_research_assistant.ipynb
+self.session_store: Dict[str, InMemoryChatMessageHistory] = {}
+
+def _get_session_history(self, session_id: str):
+    if session_id not in self.session_store:
+        self.session_store[session_id] = InMemoryChatMessageHistory()
+    return self.session_store[session_id]
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are an AI Research Assistant..."),
+    MessagesPlaceholder(variable_name="history"),   # <- memory slot
+    ("human", "Context: {context}\\n\\nQuestion: {question}"),
+])
+response = chain.invoke({..., "history": history.messages[-10:]})`,
+  note:"Two things to notice, because both are interview material. <code>session_store</code> is a plain dict in one process — restart the app and it's gone. And <code>[-10:]</code> <b>throws away</b> older messages rather than summarising them, so a rule the user set 12 messages ago silently disappears.",
+  src:"08_research_assistant.ipynb keys history by session_id and demonstrates a real three-turn dependency chain.",
+  say:"I built session-scoped memory keyed by session ID with a 10-message window. Two things I'd fix for production: in-process storage only works with one worker, and a slice is truncation, not summarisation."},
+
+ {t:"Four ways to make retrieval better",
+  b:"When plain top-k search isn't good enough, there are four standard upgrades. Pick by what's actually failing.<br><br><b>Hybrid</b> runs a keyword search and a vector search and blends the scores — embeddings are bad at exact tokens, BM25 is excellent at them. <b>Multi-query</b> asks the model to rewrite the question several ways and pools the results. <b>Compression</b> runs a model over each chunk to pull out only the relevant sentences. <b>Parent-document</b> searches over small chunks but returns the bigger parent they came from.",
+  diagram:`flowchart TD
+  A["Plain top-k is not good enough"] --> B{"What is failing?"}
+  B -->|"Misses exact words like error codes"| C["Hybrid: BM25 + vectors"]
+  B -->|"User words differ from the docs"| D["Multi-query"]
+  B -->|"Right chunk, too much noise"| E["Compression or reranking"]
+  B -->|"Good match, not enough context"| F["Parent-document"]`,
+  code:`# Hybrid search, from 07_advanced_rag.ipynb
+bm25 = BM25Retriever.from_documents(TECH_DOCS)                # keyword side
+bm25.k = 3
+semantic = vectorstore.as_retriever(search_kwargs={"k": 3})   # vector side
+
+ensemble = EnsembleRetriever(
+    retrievers=[bm25, semantic],
+    weights=[0.4, 0.6],        # 40% keyword, 60% semantic
+)`,
+  note:"Those weights are the tuning knob — more keyword weight when users search identifiers, more semantic weight for conceptual questions.",
+  src:"07_advanced_rag.ipynb implements all four: MultiQueryRetriever, EnsembleRetriever over BM25 plus Chroma, ContextualCompressionRetriever, and ParentDocumentRetriever.",
+  say:"I've built all four. I'd reach for hybrid first because it's cheap and fixes the most common failure, exact terms. Compression I'd leave last — it costs one model call per retrieved chunk."},
+
+ {t:"Caching embeddings saves real money",
+  b:"Embedding the same text twice costs twice and returns the same numbers. A cache checks a store first, so only genuinely new text reaches the API.<br><br>The line that matters is <code>namespace</code>. The cache key is a hash of the <em>text</em>, so two different models given the same text produce the same key. Without a namespace they overwrite each other and you silently get vectors from the wrong model — no error, just bad results.",
+  code:`# From 04_embeddings_deep.ipynb
+cached = CacheBackedEmbeddings.from_bytes_store(
+    underlying_embeddings=embeddings_model,   # only called on a cache miss
+    document_embedding_cache=LocalFileStore(root_path=tempdir),
+    namespace="exercise",                     # keeps models from colliding
+    key_encoder="sha256",                     # default "sha1" prints a warning
+)`,
+  src:"04_embeddings_deep.ipynb embeds the same text twice and asserts np.allclose across both calls.",
+  say:"Re-embedding unchanged documents is pure waste. The part people forget is the namespace — get it wrong and it's a silent correctness bug, not a crash."},
+
+ {t:"Evaluation", gap:true,
+  b:"How do you know a change made things better? You need questions where you already know the right answer, and a number that goes up or down. Without it, \"the answers look better to me\" is all you have — and that isn't convincing in an interview.<br><br>Measure the two halves separately, because they fail separately. <b>Retrieval</b>: label which chunk should be found, then measure <b>recall@k</b> (how often the right chunk was in the top k) and <b>MRR</b>, Mean Reciprocal Rank (how <em>high</em> it ranked). No model needed, so it's cheap enough to run on every change. <b>Generation</b>: score faithfulness (is every claim supported by the chunks?) and relevance. These need a model as judge, and that judge needs checking against human labels first.",
+  code:`# What you would write — this does not exist in your notebooks yet
+EVAL_SET = [
+    {"q": "Who created LangChain?",   "chunk_id": "kb_intro_0"},
+    {"q": "What does LangGraph add?", "chunk_id": "kb_langgraph_0"},
+]
+
+def recall_at_k(retriever, eval_set, k=5):
+    hits = 0
+    for row in eval_set:
+        got = retriever.invoke(row["q"])[:k]
+        if any(d.metadata["chunk_id"] == row["chunk_id"] for d in got):
+            hits += 1
+    return hits / len(eval_set)`,
+  src:"Not in your notebooks — build this. There is no way to measure quality anywhere in this folder.",
+  say:"There's no eval harness in this project and that's the first thing I'd add. Fifty hand-labelled question-to-chunk pairs, recall@k first because it's free and catches most regressions, faithfulness on top. Without it I can't defend a claim that a change helped."},
+
+ {t:"Chains versus agents", gap:true,
+  b:"What you built is a <b>chain</b>: retrieval always runs, once, because your code says so. An <b>agent</b> is different — the model decides what to do next, and can search zero times, once, or five times.<br><br>Why this matters so much: in the chain the path is fixed, so you always know what will happen and what it costs. In the agent the loop has no guaranteed end. Every hard problem in agentic engineering — termination, runaway cost, containment — comes from that arrow looping back.",
+  diagram:`flowchart TD
+  subgraph CHAIN["Chain — your code decides the path"]
+    A1["Question"] --> A2["Always retrieve"]
+    A2 --> A3["Always answer"]
+  end
+  subgraph AGENT["Agent — the model decides the path"]
+    B1["Question"] --> B2{"Model picks"}
+    B2 -->|"search again"| B3["Retrieve"]
+    B3 --> B2
+    B2 -->|"done"| B4["Answer"]
+  end`,
+  src:"Not in your notebooks — build this. Nothing here binds tools or runs a loop.",
+  say:"What I built is a chain. Retrieval always runs once because my code says so. An agent would decide whether to retrieve at all, possibly several times. That's more capable and strictly harder to bound, which is why I'd keep the chain unless the task really needs the model to choose."}
+];
+
+const GOTCHAS = [
+ {t:"Chroma returns distance, not similarity",
+  s:"Your \"similarity score\" gets worse for better matches, and exceeds 1.0. Ranking looks inverted.",
+  c:"similarity_search_with_score returns the store's distance metric (L2 by default). Lower is better — the opposite of cosine convention.",
+  f:"Convert explicitly, as 05_vector_stores does with 1 / (1 + score), or configure the collection for cosine. Never show a raw distance as a confidence.",
+  a:"\"Your relevance scores are above 1.0. What's going on?\""},
+ {t:"In-process session memory dies on restart",
+  s:"Context vanishes after a deploy, and under load users intermittently lose history for no visible reason.",
+  c:"08_research_assistant stores history in a plain dict on one Python object. A second worker has a different dict, so requests routed there see empty history.",
+  f:"Move to a shared store — Redis or Postgres — keyed by session ID. Sticky sessions are a workaround, not a fix; they still lose everything on restart.",
+  a:"\"You scaled to three replicas and users say the bot forgot them. Why?\""},
+ {t:"Slicing the last N messages is truncation, not summarization",
+  s:"In long conversations the assistant forgets a constraint set early on, while still sounding coherent.",
+  c:"history.messages[-10:] drops everything older outright. Nothing is carried forward.",
+  f:"Summarize the dropped prefix into a running note, or pin turn-independent facts into separate durable state instead of relying on the transcript.",
+  a:"\"How do you handle a conversation longer than the context window?\""},
+ {t:"The advanced retriever is on by default",
+  s:"p95 latency and cost are several times the naive baseline, even for trivial questions.",
+  c:"AIResearchAssistant.ask() defaults to use_advanced=True, routing through MultiQueryRetriever — one extra LLM call plus an embedding and search per variant, on every question.",
+  f:"Make it opt-in, or gate on a cheap signal like a low top-1 score. Escalate only when the cheap path looks weak.",
+  a:"\"Your RAG costs 4x what you projected. Where does it go?\""},
+ {t:"Contextual compression costs one LLM call per document",
+  s:"Retrieval latency scales with k and jumps by seconds when you raise it.",
+  c:"LLMChainExtractor invokes the LLM once per retrieved chunk. k=4 means four extra sequential calls.",
+  f:"Use a cross-encoder reranker — one cheap pass over all candidates. Reserve LLM compression for when you must cut downstream tokens and can absorb the latency.",
+  a:"\"Compression cut your token bill but tripled p95. Now what?\""},
+ {t:"BM25 and the vector index can drift apart",
+  s:"Hybrid search returns deleted documents, or misses new ones, while pure vector search is correct.",
+  c:"BM25Retriever.from_documents(TECH_DOCS) builds from an in-memory list while the dense side reads Chroma. Two indexes, no shared write path.",
+  f:"Rebuild both from one source of truth on every write, or use a store with native hybrid search so there's only one index.",
+  a:"\"How do you keep a hybrid index consistent under writes?\""},
+ {t:"Model-reported confidence is not calibrated",
+  s:"Answers marked \"high\" confidence are wrong at about the same rate as \"medium\" ones.",
+  c:"Both 06 and 08 ask the LLM to emit a confidence field. That's the model narrating confidence, not a probability, and it isn't calibrated against correctness.",
+  f:"Derive it from measurable signals — retrieval score margins, agreement across chunks, a separate scoring pass — and validate any threshold against labelled data before gating.",
+  a:"\"You gate on self-reported confidence. Convince me that number means something.\""},
+ {t:"Prompt-level grounding is not enforcement",
+  s:"The model occasionally answers from parametric knowledge despite an explicit \"only use the context\" instruction.",
+  c:"Instructions shift compliance probability; they don't constrain the sampler.",
+  f:"Verify after the fact: check cited sources exist in the retrieved set, score the answer against context, and fall back deterministically on violation.",
+  a:"\"How do you know the answer came from your documents?\""},
+ {t:"_collection.count() reaches into a private API",
+  s:"AttributeError after a routine Chroma or LangChain upgrade.",
+  c:"05 and 08 both call vectorstore._collection.count(). The leading underscore is the maintainers saying this isn't supported.",
+  f:"Use the public API where one exists, or wrap the private access in one helper so an upgrade breaks one line instead of five files.",
+  a:"\"How do you manage dependency risk in fast-moving AI libraries?\""},
+ {t:"The embedding model is part of the index",
+  s:"After switching embedding models, retrieval quality collapses to near-random — with no errors at all.",
+  c:"Query and stored vectors must come from the same model. A different model is a different space; the arithmetic still works, so you get garbage rankings rather than a crash.",
+  f:"Treat a model change as a full reindex. Version the model name into the collection or namespace so a mismatch can't be reached silently.",
+  a:"\"You upgraded to a better embedding model. What's your rollout?\""},
+ {t:"A cache namespace collision is a silent correctness bug",
+  s:"Two models sharing a cache return each other's vectors. No error, no warning.",
+  c:"CacheBackedEmbeddings keys on a hash of the text. Without a model-specific namespace, the same text maps to the same key across models.",
+  f:"Set namespace to something identifying the model and its dimension. 04_embeddings_deep also sets key_encoder=\"sha256\" to silence the SHA-1 collision warning the default emits.",
+  a:"\"What could go wrong with an embedding cache?\""},
+ {t:"persist_directory writes to the repo and nothing cleans it up",
+  s:"A ./chroma_db/ directory appears, grows across runs, and reruns return duplicate documents.",
+  c:"persist_chroma() uses a relative path and never removes it. Re-running from_documents appends rather than replaces.",
+  f:"Temp dir for demos, absolute configured path in production, and stable document IDs so a rerun upserts instead of duplicating.",
+  a:"\"Your ingestion job ran twice. What does retrieval return now?\""},
+ {t:"Overlap larger than a meaningful span wastes the index",
+  s:"Your top three results are three near-identical chunks, so effective context is one chunk's worth.",
+  c:"High overlap relative to chunk size means adjacent chunks share most of their text, embed almost identically, and rank together.",
+  f:"Keep overlap near 10-20% of chunk size — 08 uses 200 on 1000. Deduplicate after retrieval, or use MMR to force diversity.",
+  a:"\"Your top 3 results are the same paragraph. Why, and what changes?\""},
+ {t:"MMR trades relevance for diversity",
+  s:"Switching to MMR drops an obviously-correct top hit.",
+  c:"MMR re-ranks to maximize marginal relevance, deliberately penalizing documents similar to ones already picked. 05 uses k=3 with fetch_k=5.",
+  f:"Raise fetch_k so MMR has a wider pool, and use it only when redundancy is the actual problem. For single-fact lookups plain similarity wins.",
+  a:"\"When would MMR hurt you?\""},
+ {t:"Four of these notebooks are structurally malformed",
+  s:"05, 06, 07 and 08 display every cell as one enormous unbroken line in Jupyter — unreadable and uneditable.",
+  c:"Their source arrays store one entry per line without trailing newlines. The format requires the newline on all but the last, so viewers concatenate them.",
+  f:"Rejoin each source list with newlines and rewrite. Verified: 01 through 04 are clean, 05 through 08 have it in every multi-line cell.",
+  a:"Not an interview question — a repo bug to fix before you screen-share any of these."}
+];
+
+const TRADES = [
+ {t:"Chunk size", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["Small (200-400)","Context fragments; the LLM sees pieces","Sharp embeddings, precise matching","Facts, FAQs, structured reference"],
+  ["Large (1000-2000)","Diluted embeddings, more tokens per hit","Coherent context, fewer boundary breaks","Narrative, argument, code where flow matters"],
+  ["Small + parent-doc","Extra store and complexity","Precise search with full context","You can afford one more moving part"]],
+  o:"Search on small chunks, generate on large ones — parent-document buys both, and I've built it."},
+ {t:"Dense-only versus hybrid", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["Dense only","Misses exact terms embeddings blur","One index, simple ops","Corpus is prose, queries are conceptual"],
+  ["Hybrid (BM25 + dense)","Two indexes to keep consistent, weights to tune","Exact matching on codes, names, errors","Users search identifiers, or recall is the failure"]],
+  o:"Embeddings are bad at exact tokens, so if users search product codes or error strings, hybrid isn't optional."},
+ {t:"Reranking versus compression", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["Cross-encoder rerank","One model pass over candidates","Big precision gain at modest latency","Default when top-k precision is weak"],
+  ["LLM compression","One LLM call per document","Fewer downstream tokens, extracted spans","Token cost dominates and latency is slack"],
+  ["Neither","Lower precision","Lowest latency and cost","Top-k is already good enough — measure first"]],
+  o:"Rerank to fix ranking, compress to fix token bills — different problems, and compression is the expensive one."},
+ {t:"Single versus multi-query", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["Single","Misses vocabulary mismatches","One embedding, one search, predictable cost","Queries use the corpus's own vocabulary"],
+  ["Multi-query","1 LLM call + N searches per question","Recall when phrasing differs from source","Recall is the measured failure, latency has room"],
+  ["Conditional","Branch logic to maintain","Cost of single on the common path","You can cheaply detect weak retrieval — the right default"]],
+  o:"Multi-query is a recall fix I'd escalate to, not something every query should pay for."},
+ {t:"Ephemeral versus persistent store", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["In-memory / temp","Re-embed on every start","Zero state, trivially reproducible","Demos, tests, small static corpora"],
+  ["Local persist dir","Idempotency and cleanup concerns","Fast restarts, no re-embedding cost","Single-node app, stable corpus"],
+  ["Managed service","Cost, network hop, a vendor","Scale, replication, real ops","Multi-node, large corpus, uptime matters"]],
+  o:"Persistence is about not paying the embedding bill twice, and the moment you persist you own idempotent ingestion."},
+ {t:"Structured output versus free text", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["Free text","Fragile downstream parsing","Maximum fluency","A human reads the output directly"],
+  ["Structured (Pydantic)","Schema maintenance, validation failures","Fields your code can branch on","Anything programmatic consumes it"]],
+  o:"If code reads the output, constrain the schema — parsing prose is a bug you've chosen to write."},
+ {t:"RAG versus fine-tuning versus long context", h:["Option","Costs you","Buys you","Pick when"], r:[
+  ["RAG","Retrieval infrastructure, chunking work","Fresh data, attribution, cheap updates","Knowledge changes, or you must cite"],
+  ["Fine-tuning","Training pipeline, labels, retrain cycle","Format, style and behavior adherence","You need consistent behavior, not new facts"],
+  ["Stuff the context","Tokens, latency, lost-in-the-middle","Radical simplicity","Corpus reliably fits and the bill is fine"]],
+  o:"RAG for knowledge, fine-tuning for behavior, long context when the corpus is small enough that infrastructure is the pricier choice."}
+];
+
+const Q = [
+ {r:["core"], q:"Your agent loops forever on a fraction of requests. How do you stop it without breaking the successful path?",
+  a:"<p>Answer in three layers. <b>Hard ceilings</b>: max model calls per run, wall-clock timeout, token budget — cheap, always on, bounds the blast radius. <b>Progress checks</b>: detect identical tool calls with identical arguments and treat no-progress as terminal. <b>An explicit done signal</b> the model emits and the runtime validates against a checkable condition.</p><p>Say the symmetry out loud: stopping too early abandons solvable work, never stopping burns budget on unsolvable work. And the ceiling should return partial results plus a reason, never a bare exception.</p>",
+  s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"],["galileo.ai","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+ {r:["core"], q:"Design a real-time agentic assistant with a sub-second first-token target. Where does the time go?",
+  a:"<p>Name the budget before the architecture. Each reasoning step runs roughly 1-3 seconds, so a multi-step agent cannot meet a sub-second <em>complete</em> answer — what you can meet is sub-second <b>time to first token</b>. Decompose: input processing, retrieval, prefill, decode, tool execution per step.</p><p>Then attack it: stream so perceived latency decouples from total, overlap retrieval with prefill, route simple requests to a small model, cache at the embedding and prompt-prefix level. Say plainly that a multi-hop agent is the wrong architecture for a hard real-time deadline, and that you'd degrade to single-shot RAG under load.</p>",
+  s:[["Agentic guide 2026","https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf"],["LLM system design","https://www.systemdesignhandbook.com/guides/llm-system-design/"]]},
+ {r:["core"], q:"How do you design memory for an agent — what do you keep, summarize, and evict?",
+  a:"<p>Reported as the component candidates most often skip. Split by lifetime. <b>Working memory</b> is the current run's messages, bounded by context. <b>Session memory</b> is the conversation, windowed then summarized past the window. <b>Long-term memory</b> is durable facts retrieved by relevance, not recency.</p><p>The engineering content is the policy: keep anything the user stated as a constraint, summarize narrative history, evict tool output already acted on. Note that long-term retrieval adds latency to <em>every</em> step, so it must be selective rather than reflexive.</p>",
+  s:[["NovelVista","https://www.novelvista.com/blogs/ai-and-ml/agentic-ai-interview-questions-answers"],["Agentic guide 2026","https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf"]]},
+ {r:["core"], q:"Your multi-agent system is accurate but too expensive. Trim cost without hiding failure.",
+  a:"<p>The trap is proposing changes that cut spend by quietly cutting quality. Do the accounting first: cost per run decomposed by agent and step, so you know whether spend is in reasoning tokens, tool calls, or retries.</p><p>Then the cheap wins — model tiering so only hard steps hit the expensive model, prompt-prefix caching, and collapsing agents whose only job is passing messages along. The \"without hiding failure\" clause is the real test: every reduction ships with a quality metric showing your eval numbers didn't move.</p>",
+  s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"],["galileo.ai","https://galileo.ai/blog/why-multi-agent-systems-fail"]]},
+ {r:["core"], q:"Where do guardrails live, and why not in the prompt?",
+  a:"<p>The principle they listen for: <b>the model proposes, the system decides</b>. Guardrails as instructions are probabilistic; guardrails as code are not.</p><p>Concretely: validate tool arguments against a schema before execution, enforce permissions in the runtime rather than asking the model to respect them, sandbox anything touching a filesystem or network, require human approval for irreversible actions. An agent without guardrails can drain API credits in a loop or leak private data — and input-side prompt-injection filtering matters as much as output-side checks.</p>",
+  s:[["galileo.ai","https://galileo.ai/blog/why-multi-agent-systems-fail"],["callsphere","https://callsphere.ai/blog/ai-agent-system-design-interview-common-questions-how-to-answer"]]},
+ {r:["core","applied"], q:"Design a document Q&A system over a customer's private corpus.",
+  a:"<p>Cover the pipeline: ingestion and chunking, embedding and indexing, retrieval, generation, citation. Then get to what separates candidates.</p><p><b>Access control</b> as a metadata pre-filter, never a prompt instruction. <b>Freshness</b> via incremental reindexing with stable IDs so ingestion is idempotent. <b>Evaluation</b> split into retrieval metrics and generation metrics. <b>Failure behavior</b> when nothing relevant is retrieved — answer \"I don't know\" and mark it, rather than letting the model improvise.</p>",
+  s:[["field guide","https://github.com/alexeygrigorev/ai-engineering-field-guide/blob/main/interview/questions/04-ai-system-design.md"],["IGotAnOffer","https://igotanoffer.com/en/advice/generative-ai-system-design-interview"]]},
+ {r:["core","agentic"], q:"A tool call fails mid-run. What happens to the rest of the work?",
+  a:"<p>This is the distributed-systems question in an agent costume. Classify: transient (retry with backoff), permanent (fall back or fail the branch), or ambiguous — a timeout where the side effect may or may not have landed.</p><p>Ambiguity is the interesting case and demands <b>idempotency keys</b> so a retry can't double-charge. For parallel work, decide explicitly whether one failure aborts the batch or it returns partial results with errors attached — and say which you chose. Feed error text back to the model as a tool result so it can adapt, rather than crashing the run.</p>",
+  s:[["systemdesignhandbook","https://www.systemdesignhandbook.com/guides/agentic-system-design/"],["buildml","https://buildml.substack.com/p/what-interviewers-ask-after-you-say"]]},
+ {r:["core","agentic"], q:"How do you debug a bad agent run in production?",
+  a:"<p>The answer is a trace, and they want to know what's in it. Per step: inputs, chosen action, tool arguments, tool result, tokens, latency, cost — linked by run ID and session ID so one complaint resolves to one timeline.</p><p>Then say what you look for first: the step where the trajectory diverged from what a correct run would do. Note that you can't debug what you didn't instrument, so this is designed in from the start, and mention sampling, because logging every token from every run at scale is its own cost problem.</p>",
+  s:[["Agentic guide 2026","https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf"],["KDnuggets","https://www.kdnuggets.com/how-to-answer-ai-system-design-interview-questions"]]},
+ {r:["core","agentic"], q:"When is multi-agent actively worse than one agent with more tools?",
+  a:"<p>The expected answer is \"usually.\" Multi-agent adds coordination overhead, message-passing latency, and a failure class that doesn't exist in single agents: agents waiting on peers that never signal done.</p><p>Justify it only for genuine parallelism over independent subtasks, genuinely distinct tool permissions per role, or context windows one agent can't hold. Otherwise one agent with a well-designed tool set is simpler, cheaper and easier to debug. This question exists to detect architecture-by-fashion.</p>",
+  s:[["galileo.ai","https://galileo.ai/blog/why-multi-agent-systems-fail"],["callsphere","https://callsphere.ai/blog/agentic-ai-multi-agent-interview-questions-2026"]]},
+ {r:["core","applied"], q:"How do you know a prompt or retrieval change made the product better, not just your one test case?",
+  a:"<p>Described as the question that splits people who evaluate from people who vibe-check. You need a frozen eval set of representative inputs with expected behavior, metrics separating retrieval from generation, and a run on <em>every</em> change.</p><p>Add that LLM-judge scores need validating against human labels on a sample before you trust them, that you read the distribution rather than the mean because regressions hide in the tail, and that online signals — thumbs, edits, follow-up rate — close the loop offline evals can't.</p>",
+  s:[["DataCamp","https://www.datacamp.com/blog/rag-interview-questions"],["IGotAnOffer","https://igotanoffer.com/en/advice/generative-ai-system-design-interview"]]},
+
+ {r:["applied"], q:"How do you choose chunk size?",
+  a:"<p>Empirically, against a retrieval eval set. I ran size and overlap comparisons in <code>02_text_splitters</code>. The principle is that size is a recall-precision dial; the practice is measuring rather than guessing. Structure-aware splitting beats fixed-size wherever the document has structure to respect.</p>"},
+ {r:["applied"], q:"Your RAG returns confident wrong answers. Debug it.",
+  a:"<p>First check whether the answer was in the retrieved chunks. If not, it's retrieval — inspect chunking, then embedding fit, then ranking. If it was, it's generation — prompt, context ordering, model choice. I built <code>compare_retrievers()</code> to dump exactly what the LLM saw, which is the step that makes this a five-minute triage instead of guesswork.</p>"},
+ {r:["applied"], q:"Retrieval or generation — which is broken, and how do you measure each?",
+  a:"<p>They fail independently and are measured separately. Retrieval: recall@k and MRR against known-correct chunk IDs, no LLM needed. Generation: faithfulness (is every claim supported by context) and answer relevance, which need a judge validated against human labels on a sample.</p>"},
+ {r:["applied"], q:"How do you evaluate a retriever when you have no labels?",
+  a:"<p>Bootstrap: have an LLM generate questions from known chunks, which gives you question-to-chunk pairs for free. Validate a sample by hand. Be honest about the bias — it's phrased in your corpus's own vocabulary, which is exactly the failure mode multi-query exists to fix — so supplement with real user queries as they arrive.</p>"},
+ {r:["applied"], q:"When does hybrid search beat dense retrieval?",
+  a:"<p>Whenever exact tokens matter: product codes, error strings, proper nouns, ticket numbers. Embeddings blur precisely the tokens BM25 nails. I built the ensemble at <code>weights=[0.4, 0.6]</code> in <code>07_advanced_rag</code>. The cost is two indexes that must be written through one path or they drift.</p>"},
+ {r:["applied"], q:"Rerank or compress?",
+  a:"<p>Different problems. Reranking fixes <em>ranking</em> with one cheap model pass over candidates. Compression fixes <em>token spend</em> at one LLM call per document. I'd rerank first — it's the cheaper fix for the more common complaint — and reach for compression only when downstream token cost is the binding constraint.</p>"},
+ {r:["applied"], q:"How do you pick an embedding model?",
+  a:"<p>Dimension against storage and latency, domain fit against your corpus, and cost. The thing people miss: it is not a runtime choice. Changing it means a full reindex, because query and stored vectors must share a space. Version the model name into the collection so a mismatch can't happen silently.</p>"},
+ {r:["applied"], q:"RAG or fine-tuning?",
+  a:"<p>RAG for knowledge that changes or must be cited. Fine-tuning for behavior and format. The evidence that would change my mind is the error distribution: missing-facts errors point to retrieval, wrong-style errors point to fine-tuning. If the corpus is small and stable, stuffing the context can beat both because the infrastructure is the expensive part.</p>"},
+ {r:["applied"], q:"What does an embedding cache actually save, and what's the trap?",
+  a:"<p>It saves re-embedding unchanged documents, which is most of the cost of any reingestion. The trap is the namespace: <code>CacheBackedEmbeddings</code> keys on a hash of the text, so without a model-specific namespace two models collide and you silently serve vectors from the wrong space. No error — just bad rankings.</p>"},
+ {r:["applied"], q:"Your p95 doubled after adding reranking. What now?",
+  a:"<p>Measure where it went: the reranker itself, or the larger <code>fetch_k</code> feeding it. Then decide whether the precision gain justifies the latency, using the eval set rather than intuition. Options are a smaller candidate pool, a faster cross-encoder, or reranking only when the top-1 score margin is thin.</p>"},
+
+ {r:["agentic"], q:"Is what you built an agent?",
+  a:"<p>No — it's a chain. Retrieval always runs, exactly once, because my code says so. An agent decides whether and how often to retrieve. I want to be precise about that rather than overclaim, because the follow-up is always \"so what would change if it were?\"</p>"},
+ {r:["agentic"], q:"Make retrieval a tool. What changes?",
+  a:"<p>Retrieval becomes optional and repeatable. You gain the ability to skip it for questions that don't need it and to refine the query across turns. You take on termination, tool-error handling, and unbounded cost — the loop now has no guaranteed end, which is the whole difficulty.</p>"},
+ {r:["agentic"], q:"What stops the loop?",
+  a:"<p>Layered defense: hard call, token and time ceilings; progress checks that treat repeated identical tool calls as terminal; and a validated done signal from the model. Ceilings return partial results with a reason attached, never a bare exception — a truncated answer plus \"hit the step limit\" is useful, a 500 is not.</p>"},
+ {r:["agentic"], q:"Design memory for a research agent.",
+  a:"<p>Working memory is the run's messages. Session memory is the conversation, windowed then summarized — I built the windowed half in <code>08_research_assistant</code> and would add summarization. Long-term memory is durable facts retrieved by relevance, which costs latency on every step, so it must be selective.</p>"},
+ {r:["agentic"], q:"Your retrieval tool times out. What does the agent do?",
+  a:"<p>Return a structured error as the tool result so the model can adapt — narrow the query, or answer without context and say so. Never crash the run, and critically never return empty results silently: to the model, empty reads as \"nothing exists,\" which produces a confident wrong answer instead of a retry.</p>"},
+ {r:["agentic"], q:"Where do you put a human in the loop?",
+  a:"<p>Before irreversible or high-cost actions. The design requirement people miss is <em>resumption</em>: the run must pause and continue without re-executing completed side effects. That means checkpointing the state and making tools idempotent, so a resume can't double-send.</p>"},
+ {r:["agentic"], q:"Ten parallel workers, one fails. What happens?",
+  a:"<p>Decide deliberately rather than inheriting the default. Abort the batch, or return partial results with the failure attached. For a research agent, partial plus an explicit gap note is usually right. The wrong answer is failing all ten silently — which is what an unguarded batch call does.</p>"},
+ {r:["agentic"], q:"When is one agent better than three?",
+  a:"<p>Almost always. Multi-agent buys parallelism over independent subtasks and distinct permissions per role. It costs coordination, latency, and a failure mode single agents don't have — peers waiting on a done signal that never comes. Reach for it when you can name which of those two things you're buying.</p>"},
+ {r:["agentic"], q:"What would you log per agent step?",
+  a:"<p>Inputs, chosen action, tool arguments, tool result, tokens, latency and cost — all keyed by run ID and session ID. The field that matters most in RAG-backed agents is the retrieved chunk IDs, because \"why did it say that\" is unanswerable without them.</p>"},
+ {r:["agentic"], q:"What did you make deterministic on purpose?",
+  a:"<p>The entire retrieval path. Chunking, ranking and prompt assembly are code, so the only nondeterminism is the generation step. That's a feature: when output changes, I know which layer moved, which makes regressions attributable instead of mysterious.</p>"},
+
+ {r:["fde"], q:"Customer has 40 GB of Confluence and wants an agent. What are the first two weeks?",
+  a:"<p>Week one: narrow to one team's space and one question type, ingest, demo end to end on their real content. Week two: build an eval from questions their team actually asked, and measure. Resist the general solution — they need one narrow thing working by a specific date, and a working slice buys you the credibility to scope the rest.</p>"},
+ {r:["fde"], q:"It works in your demo and fails on their data. Why?",
+  a:"<p>Their documents have structure yours didn't: tables, scans, boilerplate headers, mixed languages, access-controlled sections. I'd dump retrieved chunks for failing queries first, because that separates ingestion problems from retrieval problems in minutes rather than days of theorizing.</p>"},
+ {r:["fde"], q:"They can't send data to OpenAI. Now what?",
+  a:"<p>The deployment shape changes, not the architecture. Self-hosted embeddings and an open-weights model in their VPC. Then an honest statement about the quality delta and what closing it costs — that honesty is the thing that keeps you in the room when the first eval comes back lower than the demo.</p>"},
+ {r:["fde"], q:"The customer asks for 99% accuracy. How do you respond?",
+  a:"<p>Refuse the number, then reframe it. Accuracy of what, measured how, on which questions? Propose a labelled set from their own data, measure the baseline, agree a target against that. A number without a measurement is a promise you can't keep, and agreeing to it is how projects fail three months in.</p>"},
+ {r:["fde"], q:"Multi-tenant retrieval — how do you stop leakage?",
+  a:"<p>Tenant ID as a metadata pre-filter enforced in the retrieval layer, never a prompt instruction. I built metadata filtering in <code>05_vector_stores</code>; the production version makes the filter a required argument at the API boundary so retrieval cannot be called without it, and it gets its own tests.</p>"},
+ {r:["fde"], q:"The bill is 3x the estimate. Explain it to their VP.",
+  a:"<p>Break it down by component — embedding, retrieval, generation — in their terms, not tokens. In this codebase the likely culprit is advanced retrieval defaulting on, which adds an LLM call plus N searches per question. Then present options with quality tradeoffs attached, so it's their decision rather than your surprise.</p>"},
+ {r:["fde"], q:"A third-party API times out intermittently. Walk me through it.",
+  a:"<p>Establish the pattern first: time of day, payload size, specific endpoints. Then retry with backoff and jitter, a circuit breaker so you fail fast instead of piling on, and idempotency keys so retries can't double-apply. Instrument before theorizing — intermittent means you need data, not a hypothesis.</p>"},
+ {r:["fde"], q:"Hosted versus self-hosted LLM for a regulated customer.",
+  a:"<p>Hosted wins on capability, ops burden and speed to value. Self-hosted wins on data residency, auditability and predictable cost at volume. The decision is usually made by their compliance team rather than by benchmarks, so I ask early — it's an architectural constraint, not a preference.</p>"},
+ {r:["fde"], q:"How do you evaluate with their data?",
+  a:"<p>Sit with their users, collect 50 real questions with expected answers, treat that as the acceptance gate. Public benchmarks tell you nothing about their corpus. The collection session doubles as requirements gathering — you learn what they actually ask, which is usually not what the statement of work said.</p>"},
+ {r:["fde"], q:"Tell me about a deployment that went badly.",
+  a:"<p>Have a real one ready with a specific misjudgment, what it cost, and the process change you made. The failure to avoid in the answer is blaming the customer — the whole point of the question is whether you can hold your own share of it.</p>"}
+];
+
+const SELF = [
+ ["Why is an OpenAI embedding's norm ≈ 1.0, and what does that let you skip?","L2-normalized, so cosine similarity equals the dot product."],
+ ["embed_query vs embed_documents — when does the wrong one hurt silently?","On asymmetric models: shapes match, ranking quietly degrades."],
+ ["Chroma hands you a score of 1.4. Is that good?","It's a distance — lower is better. Convert before showing anyone."],
+ ["Your top 3 chunks are near-identical. Two causes?","Overlap too high for the chunk size; no diversity step like MMR."],
+ ["What does MMR trade away, and which knob controls it?","Pure relevance, for diversity. fetch_k sets the pool it diversifies within."],
+ ["Why is metadata filtering a security control?","It's a pre-filter in the retrieval layer, so it's enforceable — unlike a prompt."],
+ ["New embedding model, quality collapsed, no errors. Why?","Query and index vectors are now in different spaces. Reindex."],
+ ["What breaks if CacheBackedEmbeddings has no namespace?","Two models collide on one key. Silent wrong vectors, no error."],
+ ["Contextual compression: what scales with k?","LLM calls — one per retrieved document."],
+ ["One check that tells you whether retrieval or generation broke?","Was the answer present in the retrieved chunks?"],
+ ["\"Only use the context\" — enforcement or request?","Request. Verify cited sources exist afterward."],
+ ["Agent never terminates. Three layers of defense?","Hard ceilings, progress/repetition checks, validated done signal."],
+ ["Tool timed out, side effect may have landed. What saves you?","Idempotency keys."],
+ ["Sub-second target on a multi-step agent — what do you promise?","Time to first token, via streaming. Not completion."],
+ ["How do you prove a prompt change helped?","Frozen eval set, retrieval and generation measured separately, read the tail."]
+];
+
+const COVERAGE = [
+ ["yes","Chunking &amp; indexing"],["yes","Embeddings &amp; similarity"],["yes","Vector stores &amp; filtering"],
+ ["yes","RAG chains &amp; grounding"],["yes","Advanced retrieval"],["yes","Structured output"],
+ ["yes","Session memory"],["no","Evaluation"],["no","Agents &amp; tool calling"],
+ ["no","Streaming &amp; async"],["no","Retries &amp; fallbacks"],["no","Observability"],
+ ["no","Human-in-the-loop"],["no","Multi-agent"]
+];
+
+const RUBRIC = [["Clarifying first","Asks query volume, churn, tenancy and what \"cite\" means before designing"],
+ ["Ingestion","Chunking with a reason, stable IDs for idempotent reindexing, incremental updates"],
+ ["Access control","Metadata pre-filter in the retrieval layer; explicitly rejects prompt-based ACLs"],
+ ["Retrieval","Hybrid for exact terms, reranking for precision, a measurement justifying each"],
+ ["Latency","Separates first-token from total; streams; overlaps retrieval; tiers models"],
+ ["Memory","Session-scoped, windowed with summarization, in a shared store"],
+ ["Failure","Behavior on empty retrieval; timeouts; partial results over silent failure"],
+ ["Evaluation","Retrieval and generation measured apart; frozen set; online feedback loop"],
+ ["Observability","Per-request trace with run and session IDs; cost and latency per stage"],
+ ["Cost","Embedding cache, prefix cache, model tiering, a stated cost-per-query target"]];
+
+/* ---------------- state ---------------- */
+const KEY="ragdrill.scores.v1";
+let scores={}, role="all", weakOnly=false, db=null;
+
+try{ scores=JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ scores={}; }
+
+function persist(){
+  try{ localStorage.setItem(KEY,JSON.stringify(scores)); }catch(e){}
+  if(db){ db.doc("progress/self_scores").set({scores,updated:Date.now()}).catch(()=>{}); }
+}
+
+/* ---------------- render ---------------- */
+const esc=s=>String(s).replace(/&(?![a-z]+;|#)/g,"&amp;").replace(/</g,"&lt;");
+const ROLE_LABEL={core:"Real-time design",applied:"Applied AI",agentic:"Agentic",fde:"FDE"};
+
+document.getElementById("cov").innerHTML=COVERAGE.map(([k,t])=>
+  `<div class="${k}"><span class="tick">${k==="yes"?"[x]":"[ ]"}</span>${t}</div>`).join("");
+
+const codeBlock = src =>
+  `<pre class="code">${esc(src).replace(/(#[^\n]*)/g,'<span class="cm">$1</span>')}</pre>`;
+const plate = (d,cap) =>
+  `<div class="plate"><pre class="mermaid">\n${d}\n</pre></div>` +
+  (cap?`<div class="plate-cap">${cap}</div>`:"");
+
+document.getElementById("concepts-list").innerHTML=CONCEPTS.map((c,i)=>
+  `<div class="concept"><h3><span class="n">${String(i+1).padStart(2,"0")}</span>${c.t}${c.gap?' <span class="tag" style="color:var(--missed);border-color:var(--missed)">not in your notebooks</span>':""}</h3>
+   <p>${c.b}</p>
+   ${c.diagram?plate(c.diagram):""}
+   ${c.code?codeBlock(c.code):""}
+   ${c.note?`<p class="note">${c.note}</p>`:""}
+   ${c.code2?codeBlock(c.code2):""}
+   ${c.note2?`<p class="note">${c.note2}</p>`:""}
+   <p class="src-note${c.gap?" gap":""}">${c.src}</p>
+   <div class="say"><b>Say this</b>${c.say}</div></div>`).join("");
+
+document.getElementById("gots").innerHTML=GOTCHAS.map((g,i)=>
+  `<div class="got-c" data-i="${i}" tabindex="0" role="button" aria-expanded="false">
+     <h4>${g.t}</h4>
+     <div class="got-row"><b>Symptom</b><span>${g.s}</span></div>
+     <div class="got-back">
+       <div class="got-row"><b>Cause</b><span>${g.c}</span></div>
+       <div class="got-row"><b>Fix</b><span>${g.f}</span></div>
+       <div class="got-row"><b>Asked as</b><span>${g.a}</span></div>
+     </div>
+     <div class="flip">click to flip</div>
+   </div>`).join("");
+
+document.getElementById("trades").innerHTML=TRADES.map(t=>
+  `<div class="trade"><h3>${t.t}</h3>
+    <div class="tw"><table><thead><tr>${t.h.map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${t.r.map(r=>`<tr>${r.map((c,i)=>`<td${i===3?' class="pick"':""}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="oneline"><b>The one-liner</b>${t.o}</div></div>`).join("");
+
+document.getElementById("rubric").innerHTML=
+  `<thead><tr><th>Area</th><th>A strong answer includes</th></tr></thead><tbody>`+
+  RUBRIC.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join("")+`</tbody>`;
+
+document.getElementById("sclist").innerHTML=SELF.map((s,i)=>
+  `<div class="sc" data-i="${i}" tabindex="0" role="button" aria-expanded="false">
+     <div class="sc-q"><span class="n">${String(i+1).padStart(2,"0")}</span><span>${esc(s[0])}</span></div>
+     <div class="sc-a">${esc(s[1])}</div></div>`).join("");
+
+document.getElementById("qlist").innerHTML=Q.map((q,i)=>
+  `<article class="q" data-i="${i}" data-roles="${q.r.join(" ")}">
+     <button class="q-head" aria-expanded="false">
+       <span class="q-n">${String(i+1).padStart(2,"0")}</span>
+       <span class="q-t">${esc(q.q)}</span>
+       <span class="q-tags">${q.r.map(r=>`<span class="tag${r==="core"?" core":""}">${ROLE_LABEL[r]}</span>`).join("")}</span>
+     </button>
+     <div class="q-body">
+       <div class="ans">${q.a}</div>
+       ${q.s?`<div class="srcs">${q.s.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${n} &#8599;</a>`).join("")}</div>`:""}
+       <div class="score"><span>Rate yourself</span>
+         <button class="sbtn" data-v="got">Got it</button>
+         <button class="sbtn" data-v="shaky">Shaky</button>
+         <button class="sbtn" data-v="missed">Missed</button>
+       </div>
+     </div>
+   </article>`).join("");
+
+document.getElementById("fact-q").textContent=Q.length;
+
+/* ---------------- behavior ---------------- */
+const qEls=[...document.querySelectorAll(".q")];
+
+function paint(){
+  let g=0,s=0,m=0;
+  qEls.forEach(el=>{
+    const v=scores[el.dataset.i];
+    if(v) el.dataset.score=v; else el.removeAttribute("data-score");
+    el.querySelectorAll(".sbtn").forEach(b=>
+      b.setAttribute("aria-pressed", String(b.dataset.v===v)));
+    if(v==="got")g++; else if(v==="shaky")s++; else if(v==="missed")m++;
+  });
+  const tot=Q.length;
+  document.getElementById("n-got").textContent=g;
+  document.getElementById("n-shaky").textContent=s;
+  document.getElementById("n-missed").textContent=m;
+  document.getElementById("n-left").textContent=tot-g-s-m;
+  document.getElementById("bar-got").style.width=(g/tot*100)+"%";
+  document.getElementById("bar-shaky").style.width=(s/tot*100)+"%";
+  document.getElementById("bar-missed").style.width=(m/tot*100)+"%";
+  filter();
+}
+
+function filter(){
+  let shown=0;
+  qEls.forEach(el=>{
+    const okRole = role==="all" || el.dataset.roles.split(" ").includes(role);
+    const v=scores[el.dataset.i];
+    const okWeak = !weakOnly || v==="shaky" || v==="missed" || !v;
+    const ok=okRole&&okWeak;
+    el.hidden=!ok; if(ok)shown++;
+  });
+  document.getElementById("empty").hidden = shown>0;
+}
+
+document.getElementById("qlist").addEventListener("click",e=>{
+  const head=e.target.closest(".q-head");
+  if(head){
+    const card=head.closest(".q");
+    const open=card.classList.toggle("is-open");
+    head.setAttribute("aria-expanded",String(open));
+    return;
+  }
+  const btn=e.target.closest(".sbtn");
+  if(btn){
+    const card=btn.closest(".q"), i=card.dataset.i;
+    scores[i] = scores[i]===btn.dataset.v ? undefined : btn.dataset.v;
+    if(!scores[i]) delete scores[i];
+    persist(); paint();
+  }
+});
+
+function toggler(sel){
+  document.querySelectorAll(sel).forEach(el=>{
+    const go=()=>{const o=el.classList.toggle("is-open"); el.setAttribute("aria-expanded",String(o));};
+    el.addEventListener("click",go);
+    el.addEventListener("keydown",e=>{
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}
+    });
+  });
+}
+toggler(".got-c"); toggler(".sc");
+
+document.querySelectorAll(".chip[data-role]").forEach(c=>{
+  c.addEventListener("click",()=>{
+    role=c.dataset.role;
+    document.querySelectorAll(".chip[data-role]").forEach(o=>
+      o.setAttribute("aria-pressed",String(o===c)));
+    filter();
+  });
+});
+document.getElementById("weak-only").addEventListener("click",e=>{
+  weakOnly=!weakOnly; e.currentTarget.setAttribute("aria-pressed",String(weakOnly)); filter();
+});
+document.getElementById("collapse").addEventListener("click",()=>{
+  document.querySelectorAll(".q.is-open").forEach(c=>{
+    c.classList.remove("is-open");
+    c.querySelector(".q-head").setAttribute("aria-expanded","false");
+  });
+});
+document.getElementById("reset").addEventListener("click",()=>{
+  scores={}; persist(); paint();
+});
+
+paint();
+
+/* durable progress when the viewer can run it; localStorage otherwise */
+(async()=>{
+  if(!window.claude||!claude.use) return;
+  try{
+    const d=await claude.use("db");
+    if(!d) return;
+    db=d;
+    const snap=await d.doc("progress/self_scores").get();
+    if(snap&&snap.scores&&Object.keys(scores).length===0){
+      scores=snap.scores; paint();
+    }
+    document.getElementById("persist").textContent="progress: synced across devices";
+  }catch(e){}
+})();
+</script>

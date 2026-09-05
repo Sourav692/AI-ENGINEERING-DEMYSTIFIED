@@ -66,37 +66,68 @@ run, interrupting for human approval, or checkpointing intermediate stages.
 
 ## Setup
 
-Notebooks 6.1, 6.2, 6.4 and 6.5 need only the core install plus a model API key.
-
-Notebook 6.3's final section calls Wikipedia and Tavily, which live outside the
-core install:
+Notebooks 6.1, 6.2, 6.4 and 6.5 need only the core install plus an
+`OPENAI_API_KEY`. Notebook 6.3's Wikipedia and Tavily section additionally needs
+three packages, **already installed** in the repo venv:
 
 ```bash
 uv pip install langchain-community wikipedia langchain-tavily
 ```
 
-Note the modern import. The LangGraph original used `TavilySearchResults` from
-`langchain_community`, which is deprecated; these notebooks use `TavilySearch`
-from the `langchain-tavily` package.
+Note the modern Tavily import. The LangGraph original used `TavilySearchResults`
+from `langchain_community`; these notebooks use `TavilySearch` from the
+`langchain-tavily` package. `langchain-community` itself is now being sunset
+upstream and warns on import, which is why only `WikipediaLoader` still comes
+from it.
+
+> **Do not run a bare `uv pip install -r requirements.txt` on Windows with a
+> Jupyter kernel open.** That file pins `pydantic==2.12.5` against the 2.13.5
+> currently installed, so the install tries to replace
+> `_pydantic_core.cp312-win_amd64.pyd` — a file any running kernel holds open.
+> The install then aborts partway through and leaves `pydantic_core` unimportable,
+> which breaks the whole langchain stack. Shut the kernels down first.
+
+### Model setup
+
+Every notebook instantiates the client directly, the convention throughout
+`LangChain_Fundamentals`:
+
+```python
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+```
+
+The platform-aware `helpers` factory setup is kept at the bottom of each setup
+cell, commented out, if you would rather route by platform. Swapping either way
+is a one-line change and nothing else in any notebook moves.
+
+Two notes on `temperature=0.7`:
+
+- **6.2's classifier stays reliable** because `with_structured_output` constrains
+  it to the three valid labels. Drop to `0` if you want the routing decision to
+  be bit-for-bit repeatable.
+- **6.5 requires a non-zero temperature.** A deterministic generator returns the
+  same draft on every refinement pass, so the loop could never converge.
 
 Environment variables, in a `.env` file at the repo root:
 
 - `OPENAI_API_KEY` — every notebook
-- `TAVILY_API_KEY` — notebook 6.3 only
-
-Each notebook builds its model with `init_chat_model("openai:gpt-4o-mini")`.
-That string is provider-agnostic, so swapping to
-`groq:llama-3.3-70b-versatile`, `google_genai:gemini-2.0-flash` or
-`anthropic:claude-sonnet-4-5` is a one-line change and nothing else in the
-notebook moves.
+- `TAVILY_API_KEY` — notebook 6.3, Part 4 only
 
 > **Optional chain diagrams.** `chain.get_graph().draw_mermaid()` needs no extra
 > packages. Its sibling `print_ascii()` requires `pip install grandalf`.
 
 ## Verification status
 
-Every code cell was AST-parsed, and all LLM-free logic was executed against
-`langchain 1.4.0` / `langchain-core 1.6.1`:
+Every code cell was AST-parsed. Each notebook's setup cell was executed for real
+and built a live `ChatOpenAI(gpt-4o-mini, temperature=0.7)`. All remaining
+LLM-free logic was executed against `langchain 1.4.0` / `langchain-core 1.6.1`,
+with a scripted fake model swapped in after the setup cell so no API calls were
+billed:
 
 - 6.1 — both test cases run end to end on a scripted fake model. The gate passes
   on attempt 1 for the concrete topic, and the abstract topic exhausts exactly 3
