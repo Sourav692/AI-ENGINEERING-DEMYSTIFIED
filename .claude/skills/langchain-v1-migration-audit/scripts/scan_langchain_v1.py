@@ -104,6 +104,16 @@ RULES: list[Rule] = [
       r"\bfrom\s+langchain\.text_splitter\b",
       "`langchain.text_splitter` moved to its own package.",
       "`from langchain_text_splitters import RecursiveCharacterTextSplitter, ...`"),
+    R("IMP-toplevel", "BLOCKING", "Imports moved to langchain-core",
+      r"^\s*from\s+langchain\s+import\s+(?!agents|messages|tools|chat_models|"
+      r"embeddings|mcp|rate_limiters|hub\b)",
+      "1.x's `langchain/__init__.py` exports essentially nothing — only the "
+      "submodules `agents`, `messages`, `tools`, `chat_models`, `embeddings`, "
+      "`mcp`, `rate_limiters` resolve. Anything else raises `ImportError: cannot "
+      "import name 'X' from 'langchain'` (note: ImportError, NOT ModuleNotFoundError).",
+      "Import from the real home: `langchain_core.prompts` for PromptTemplate, "
+      "`langchain_classic.chains` for chain classes, `langchain_core.messages` for "
+      "messages. `from langchain import hub` has its own rule (IMP-hub)."),
     R("IMP-prompts", "BLOCKING", "Imports moved to langchain-core",
       r"\bfrom\s+langchain\.(prompts|docstore)\b|\bimport\s+langchain\.(prompts|docstore)\b",
       "`langchain.prompts` / `langchain.docstore` no longer exist in the 1.x package.",
