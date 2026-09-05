@@ -61,7 +61,7 @@ Python prerequisites for agent work (not LangChain, not Hugging Face Hub). From 
 
 | # | Module | Topic |
 |---|---|---|
-| 1 | `01_Getting_Started/` | Commercial + open-source LLMs, natively and via LangChain (8 nb) |
+| 1 | `01_Getting_Started/` | Commercial + open-source LLMs, natively and via LangChain; LangChain 1.x package split & moved imports (9 nb) |
 | 2 | `02_Inputs_Outputs_Prompts/` | Inputs/outputs, prompt templates, LLM vs ChatModel, output parsers (6 nb) |
 | 3 | `03_LCEL/` | LangChain Expression Language, Runnables, chain migrations (7 nb) |
 | 4 | `04_Chains/` | Chain basics, advanced chains, branching/routing/merging (4 nb) |

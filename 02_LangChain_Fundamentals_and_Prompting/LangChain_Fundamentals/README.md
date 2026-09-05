@@ -6,7 +6,7 @@ Merged in from the standalone `LangChain_Demystified` repo, trimmed to true fund
 
 | # | Module | Topic |
 |---|---|---|
-| 1 | `01_Getting_Started/` | Commercial + open-source LLMs, natively and via LangChain |
+| 1 | `01_Getting_Started/` | Commercial + open-source LLMs, natively and via LangChain; LangChain 1.x package split & moved imports |
 | 2 | `02_Inputs_Outputs_Prompts/` | Inputs/outputs, prompt templates, LLM vs ChatModel, output parsers |
 | 3 | `03_LCEL/` | LangChain Expression Language, Runnables, chain migrations |
 | 4 | `04_Chains/` | Chain basics, advanced chains, branching/routing/merging |

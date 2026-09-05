@@ -86,10 +86,10 @@ def _cell(kind: str, source: str, noexec: bool = False) -> dict:
 def md_to_cells(text: str) -> list[dict]:
     cells: list[dict] = []
     buf: list[str] = []
-    in_code = False
+    in_code = False          # inside a ```python / ```python-noexec fence
+    in_plain_fence = False   # inside any other fence (bash, text, json, ...)
     code_lang = ""
     code_buf: list[str] = []
-    fence_stack_lang = ""
 
     def flush_md():
         nonlocal buf
@@ -99,30 +99,38 @@ def md_to_cells(text: str) -> list[dict]:
         buf = []
 
     for raw in text.splitlines():
-        m = FENCE_RE.match(raw)
-        if m and not in_code:
-            lang = (m.group(1) or "").lower()
+        fence = FENCE_RE.match(raw)
+
+        # --- inside a python fence: everything is code until the closer ---
+        if in_code:
+            if fence:
+                cells.append(_cell("code", "\n".join(code_buf),
+                                   noexec=code_lang == "python-noexec"))
+                in_code, code_lang, code_buf = False, "", []
+            else:
+                code_buf.append(raw)
+            continue
+
+        # --- inside a non-python fence: passthrough until the closer ---
+        # This branch MUST come before the "open a fence" branch below. A
+        # closing ``` also matches FENCE_RE, and treating it as an opening
+        # fence leaves the parser stuck in fence mode forever, silently
+        # swallowing every later `<!-- split -->` and `---`.
+        if in_plain_fence:
+            buf.append(raw)
+            if fence:
+                in_plain_fence = False
+            continue
+
+        # --- not in any fence ---
+        if fence:
+            lang = (fence.group(1) or "").lower()
             if lang in CODE_LANGS:
                 flush_md()
                 in_code, code_lang, code_buf = True, lang, []
             else:
-                # non-python fence: keep it inside the markdown cell
-                fence_stack_lang = lang or "_plain_"
+                in_plain_fence = True
                 buf.append(raw)
-            continue
-        if m and in_code:
-            cells.append(_cell("code", "\n".join(code_buf),
-                               noexec=code_lang == "python-noexec"))
-            in_code, code_lang, code_buf = False, "", []
-            continue
-        if in_code:
-            code_buf.append(raw)
-            continue
-        # not in a python fence
-        if fence_stack_lang:
-            buf.append(raw)
-            if FENCE_RE.match(raw):
-                fence_stack_lang = ""
             continue
         if SPLIT_RE.match(raw):
             flush_md()

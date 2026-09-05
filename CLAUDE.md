@@ -32,7 +32,7 @@ docs/                                    Static HTML tutorial microsite (LangGra
 
 **Why RAG and Advanced RAG are separate phases, not duplicated:** Phase 4 covers foundational RAG that doesn't require knowing agents. Phase 8 covers agentic/self-correcting RAG and CacheRAG/GraphRAG, which genuinely depend on Phase 5 (agents) and Phase 7 (advanced agentic systems) — so it's sequenced after both rather than bundled into Phase 4. This was a deliberate, explicit decision after the roadmap's structure went through three revisions in one day (see `NOTEBOOK_INDEX.md`'s Known Discrepancies) — don't re-merge these two phases.
 
-A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and should be consulted whenever new files/folders get dropped into this repo. A folder of not-yet-reviewed reusable Claude Code skills recovered from a merged-in repo lives at `.claude/skills-candidates/` — not auto-loaded, see its own `README.md`.
+A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and should be consulted whenever new files/folders get dropped into this repo.
 
 ### Phase 1 — `01_Theory_and_Foundations/` — internal tracks
 

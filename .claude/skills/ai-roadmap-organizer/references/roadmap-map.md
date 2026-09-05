@@ -140,7 +140,7 @@ Capstone/integration projects, kept flat (one folder per project, no grouping pa
 - `archive/` — retired/superseded notebooks, frozen, don't add to it proactively.
 - `docs/` — static HTML tutorial microsite, mirrors Phase 3's LangGraph-mechanics chapters + a few others; internal links point at current phase paths, keep in sync if those move again.
 - `helpers/`, `pyproject.toml`/`requirements.txt`/`uv.lock`/`databricks.yml`, `README.md`/`CLAUDE.md`/`NOTEBOOK_INDEX.md`, `links.md`, `LICENSE` — root scaffolding. `pyproject.toml`'s ruff `extend-exclude` hardcodes 3 JS frontend paths (LangGraph capstone, LangChain capstone, deep-agents app) — add a 4th if another JS app shows up.
-- `.claude/skills-candidates/` — reusable Claude Code skills recovered from merged-in repos, not auto-loaded, awaiting the user's review. Add to this (don't silently merge into `.claude/skills/` or delete) whenever a merged repo has its own genuinely reusable skills.
+- `.claude/skills/` — the project's live skills (see the list below). When a merged-in repo brings its *own* reusable Claude Code skills, don't silently merge them into `.claude/skills/` and don't delete them: stage them at `.claude/skills-candidates/`, creating that folder if it doesn't exist, and tell the user they're waiting on review. This is a convention, not a standing folder — it currently does not exist, and past candidates (`format-notebook`, `virtual-env-setup`) were reviewed and promoted into `.claude/skills/`.
 
 ## History: how we got to 13 phases (read before proposing another big restructuring)
 

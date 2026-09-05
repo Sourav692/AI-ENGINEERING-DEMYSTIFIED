@@ -37,8 +37,8 @@ environment. Flag the addition as a prereq task if any Wave-1 file needs it.
 | `from langchain.chains import X` | `from langchain_classic.chains import X` (or rewrite) |
 | `from langchain.retrievers import X` | `from langchain_classic.retrievers import X` |
 | `from langchain.indexes import index, SQLRecordManager` | `from langchain_classic.indexes import ...` |
-| `from langchain import hub` | `from langchain_classic import hub` (or inline the prompt) |
-| `from langchain.memory import X` | no equivalent — see §4 |
+| `from langchain import hub` | `from langchain_classic import hub` (or inline the prompt) — **use the `from ... import` form**: `langchain_classic/__init__.py` has a `__getattr__` that does not handle `hub`, so attribute access (`langchain_classic.hub` after a bare `import langchain_classic`) raises `AttributeError: Could not find: hub`. The statement form works via CPython's submodule fallback, as does `import langchain_classic.hub`. Verified on 1.0.8. |
+| `from langchain.memory import X` | `langchain_classic.memory` keeps every class (verified installed), **but** prefer §4 (checkpointers) |
 | `from langchain.schema import HumanMessage` | `from langchain_core.messages import HumanMessage` |
 | `from langchain.schema import Document` | `from langchain_core.documents import Document` |
 | `from langchain.schema.output_parser import StrOutputParser` | `from langchain_core.output_parsers import StrOutputParser` |

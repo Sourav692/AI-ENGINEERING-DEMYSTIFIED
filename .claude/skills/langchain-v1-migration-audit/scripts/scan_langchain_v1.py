@@ -75,15 +75,16 @@ RULES: list[Rule] = [
       "The indexing API moved to `langchain-classic`.",
       "`from langchain_classic.indexes import index, SQLRecordManager`."),
     R("IMP-hub", "BLOCKING", "Imports moved to langchain-classic",
-      r"\bfrom\s+langchain\s+import\s+hub\b|\bfrom\s+langchain\.hub\b|\bhub\.pull\(",
+      r"\bfrom\s+langchain\s+import\s+hub\b|\bfrom\s+langchain\.hub\b",
       "`langchain.hub` moved to `langchain-classic`.",
       "`from langchain_classic import hub` — or inline the prompt so the notebook has no "
       "network dependency."),
     R("IMP-memory", "BLOCKING", "Imports moved to langchain-classic",
       r"\bfrom\s+langchain\.memory\b|\bimport\s+langchain\.memory\b",
       "`langchain.memory` is gone from the 1.x package.",
-      "Replace with a LangGraph checkpointer + `thread_id`, or `SummarizationMiddleware`. "
-      "See §5 of the differences doc."),
+      "`langchain_classic.memory` still exports every class, so a repoint compiles. Prefer "
+      "the real replacement though: a LangGraph checkpointer + `thread_id`, or "
+      "`SummarizationMiddleware`. See §5 of the differences doc."),
     R("IMP-schema", "BLOCKING", "Imports moved to langchain-core",
       r"\bfrom\s+langchain\.schema\b",
       "`langchain.schema` was the 0.1-era home for messages/documents/parsers.",
@@ -103,6 +104,11 @@ RULES: list[Rule] = [
       r"\bfrom\s+langchain\.text_splitter\b",
       "`langchain.text_splitter` moved to its own package.",
       "`from langchain_text_splitters import RecursiveCharacterTextSplitter, ...`"),
+    R("IMP-prompts", "BLOCKING", "Imports moved to langchain-core",
+      r"\bfrom\s+langchain\.(prompts|docstore)\b|\bimport\s+langchain\.(prompts|docstore)\b",
+      "`langchain.prompts` / `langchain.docstore` no longer exist in the 1.x package.",
+      "`from langchain_core.prompts import PromptTemplate, ChatPromptTemplate, ...` "
+      "(docstore -> `langchain_classic.docstore`). Verified gone on langchain 1.4.0."),
     R("IMP-parsers", "MODERNIZE", "Imports moved to langchain-classic",
       r"\bfrom\s+langchain\.output_parsers\b",
       "`langchain.output_parsers` moved; the core ones live in `langchain_core`.",
@@ -217,6 +223,14 @@ RULES: list[Rule] = [
       r"\bfunction_call\b|\bFunctionMessage\b",
       "OpenAI `function_call` era API.",
       "Use `tool_calls` / `ToolMessage`, and `model.bind_tools(...)`."),
+    R("MOD-direct-call", "BREAKING", "Model invocation",
+      r"^\s*\w+\s*=\s*(llm|chat|chat_model|model|chat_llm)\s*\(",
+      "Calling a chat model directly (`llm(messages)`). `BaseChatModel.__call__` was "
+      "removed in 1.x — verified absent on langchain-core 1.6.1, so this raises "
+      "`TypeError: '<Model>' object is not callable`.",
+      "Use `llm.invoke(messages)` (or `.batch()` / `.stream()`). Deliberately narrow: it "
+      "only matches assignment from a variable literally named llm/chat/model, so a "
+      "constructor call like `llm = ChatGroq(...)` is not flagged."),
 
     # ---- 6. Agent state / streaming / runtime ----
     R("ST-pydantic-state", "BREAKING", "Agent state",
@@ -339,6 +353,11 @@ def notebook_segments(path: Path):
     for i, cell in enumerate(nb.get("cells", [])):
         if cell.get("cell_type") != "code":
             continue
+        tags = set(cell.get("metadata", {}).get("tags", []) or [])
+        if "langchain-0x-contrast" in tags:
+            # Deliberate 0.x contrast in a teaching notebook -- showing the old
+            # import IS the lesson, so it is not migration debt.
+            continue
         n += 1
         src = cell.get("source", "")
         if isinstance(src, list):
@@ -450,8 +469,9 @@ def render_markdown(reports: list[FileReport], roots: list[Path], min_sev: str) 
          "chain) vs rewrite as LCEL (if the lesson is the task).",
          lambda h: h.rule.category == "Legacy chains"),
         ("Wave 5 — polish",
-         "Message API, content blocks, runtime context, pip cells.",
-         lambda h: h.rule.category in ("Message API", "Runtime context", "Misc", "Environment")),
+         "Message API, model invocation, content blocks, runtime context, pip cells.",
+         lambda h: h.rule.category in ("Message API", "Model invocation", "Runtime context",
+                                       "Misc", "Environment")),
     ]
     for title, why, pred in waves:
         files = sorted(
