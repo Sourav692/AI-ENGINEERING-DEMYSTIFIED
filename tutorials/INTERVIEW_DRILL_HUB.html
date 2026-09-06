@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>AI Engineering Interview Drill</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1028,7 +1029,55 @@ def handle(proposed_action, user):
     assert isinstance(result, Analysis)
     assert result.sentiment in {"positive", "negative", "neutral"}
     assert 0.0 <= result.confidence <= 1.0`,
-   say:"Property assertions first because they're deterministic and free. A judge last, and only after checking it against human labels."}],
+   say:"Property assertions first because they're deterministic and free. A judge last, and only after checking it against human labels."},
+  {t:"Failure handling is a stack, not a switch",
+   b:"Four failures need four mechanisms, and each exists because the layer below cannot solve the case above. <b>Retry</b> fixes a transient blip but not a provider that is genuinely down. <b>Fallback</b> fixes a structural failure but not every provider failing at once. <b>Degradation</b> is the floor. Retry and fallback are both <i>per-call</i> and stateless &mdash; and that is the gap a <b>circuit breaker</b> fills.",
+   diagram:`flowchart TD
+  A["Call failed"] --> B{"Would the same call<br/>work if retried?"}
+  B -->|"Yes: rate limit"| C["Retry with backoff"]
+  B -->|"No: provider down"| D["Fall back to another model"]
+  D --> E{"Failed repeatedly,<br/>across requests?"}
+  E -->|"Yes"| F["Breaker: stop calling it"]
+  D --> H{"Every option exhausted?"}
+  H -->|"Yes"| I["Degrade: labelled answer"]`,
+   code:`# safe_answer -> fallback -> retry -> breaker -> provider
+#   outermost                                    innermost`,
+   say:"Retry for transient, fallback for structural, a breaker so I only discover the outage once, and degradation so the user never sees a stack trace."},
+  {t:"A circuit breaker is the memory retry doesn't have",
+   b:"Your provider goes down at 2am. Request 1 burns three retries with backoff, then fails over. So does request 2. So does request 500 &mdash; each one re-paying full latency and quota to learn a fact the system already knows. Retry is stateless, so it <i>cannot</i> learn that the provider is down. <code>HALF_OPEN</code> is the state candidates forget: without it you either stay open forever, or restore full traffic the instant cooldown ends and knock over a provider that was only just recovering.",
+   diagram:`flowchart LR
+  C["CLOSED<br/>calls pass, failures counted"] -->|"failures >= threshold"| O["OPEN<br/>rejected instantly, no network call"]
+  O -->|"cooldown elapsed"| H["HALF_OPEN<br/>exactly one probe allowed"]
+  H -->|"probe succeeds"| C
+  H -->|"probe fails"| O`,
+   code:`def call(self, func, *args, **kwargs):
+    self._maybe_half_open()          # lazy: no timer, checked on next call
+    if self.state == CircuitState.OPEN:
+        raise RuntimeError("circuit is OPEN - short-circuited")
+    try:
+        result = func(*args, **kwargs)
+    except Exception:
+        self.failure_count += 1
+        # one failed probe is enough evidence: HALF_OPEN re-opens at once
+        if self.state == CircuitState.HALF_OPEN or self.failure_count >= self.failure_threshold:
+            self.state = CircuitState.OPEN
+            self.opened_at = time.time()
+        raise                        # observe and decide, never swallow
+    else:
+        self.state = CircuitState.CLOSED
+        self.failure_count = 0
+        return result`,
+   say:"A breaker is the cross-call layer. It remembers a dependency is down so request 500 doesn't re-pay the discovery cost request 1 already paid."},
+  {t:"Nesting order is what separates read-about-it from built-it",
+   b:"Breaker <b>inside</b> retry means attempt 3 trips it, and every <i>subsequent request</i> short-circuits at attempt 1 in microseconds. Invert it and the breaker sees one failure per fully exhausted retry loop &mdash; three times slower to trip, nine real network calls paid to learn nothing. Production adds three more things: shared state (in-process means N workers is N breakers, so your real threshold is N times what you configured), 4xx failing fast without tripping it, and jittered backoff so retries don't resync into a herd.",
+   code:`@retry_with_backoff(max_attempts=3, base_delay=0.2)
+def _primary_with_retry(q):
+    return breaker.call(primary_call, q)     # breaker INSIDE retry
+
+# production: 4xx is MY bug, not their outage - fail fast, never trip
+if getattr(e, "status_code", 500) < 500:
+    raise LLMUnavailable(f"{purpose}: non-retryable API error: {e}") from e`,
+   say:"Breaker inside the retry loop so it trips fast, only real provider outages count toward the threshold, and the state lives in Redis because in-process means N workers is N breakers."}],
  gotchas:[
   {t:"Averages hide your worst users",s:"Dashboards look healthy while support tickets pile up.",c:"Alerting on mean latency. A slow tail disappears into a good average.",f:"Alert on p95 and p99. Separate time to first token from total.",a:"\"Mean latency is 1.2s and users say it's slow. Explain.\""},
   {t:"The complexity classifier can cost more than it saves",s:"Routing is live and the bill barely moved, or went up.",c:"Every request now pays for classification. If most traffic is complex, that's pure overhead.",f:"Measure the split before building. Prefer a heuristic router when a free signal exists.",a:"\"When does model routing lose money?\""},
@@ -1038,7 +1087,10 @@ def handle(proposed_action, user):
   {t:"Exact-match assertions make flaky tests",s:"CI fails randomly; the team disables the test.",c:"Asserting an exact string from a non-deterministic system. Even temperature=0 isn't reproducible.",f:"Assert properties — schema, ranges, refusal behaviour. Save quality for the eval set.",a:"\"How do you test a system that answers differently each run?\""},
   {t:"An unvalidated judge automates an opinion",s:"Judge scores improve while users complain more.",c:"The judge was never checked against human labels, and measures something adjacent — often verbosity.",f:"Label a sample by hand, measure agreement, then trust it. Re-check on judge model changes.",a:"\"Eval scores went up and satisfaction went down. What happened?\""},
   {t:"Tracing exports customer data",s:"A security review blocks the deployment late.",c:"Tracing ships prompts and completions, including customer content, to an external service.",f:"Know your configuration before the meeting. Self-hosted, redaction, or sampling.",a:"\"Your customer is in healthcare. What breaks about your observability?\""},
-  {t:"Cost alerts on absolute thresholds fire late",s:"You find out about a runaway loop from the monthly invoice.",c:"A fixed monthly threshold can't distinguish growth from a bug.",f:"Alert on a rolling baseline — daily spend above 120% of the 7-day average — plus a per-request ceiling.",a:"\"An agent loops overnight. When do you find out?\""}],
+  {t:"Cost alerts on absolute thresholds fire late",s:"You find out about a runaway loop from the monthly invoice.",c:"A fixed monthly threshold can't distinguish growth from a bug.",f:"Alert on a rolling baseline — daily spend above 120% of the 7-day average — plus a per-request ceiling.",a:"\"An agent loops overnight. When do you find out?\""},
+  {t:"The breaker is nested inside the wrong layer",s:"A breaker is configured and an outage still costs full retry latency on every request.",c:"Retry wrapped inside the breaker instead of the reverse. It sees one failure per exhausted retry loop, so it needs 3x the requests to trip.",f:"Breaker innermost, retry around it, fallback around that, degradation outermost.",a:"\"Where exactly does the breaker go relative to the retry?\""},
+  {t:"A 4xx trips the breaker and you take yourself down",s:"One malformed-prompt bug in a new feature makes every other feature start failing instantly.",c:"The breaker counts all exceptions. A 400 is a bug in your own request but looks identical to a provider outage.",f:"5xx, rate limits and timeouts count toward the threshold. 4xx fails fast and never trips it.",a:"\"Which failures should NOT trip your breaker?\""},
+  {t:"An in-process breaker doesn't hold across workers",s:"The threshold is 3 but the provider is hammered far past that.",c:"The breaker is module-global to one process. Eight workers means eight independent breakers.",f:"Shared state in Redis, or wherever the rate limiter lives. Then say the quiet part: that store is now a dependency of your reliability layer.",a:"\"You run 8 replicas. What is your real failure threshold?\""}],
  trades:[
   {t:"Where to spend the latency budget",h:["Option","Costs you","Buys you","Pick when"],r:[
    ["Stream","Harder mid-response errors","Fast perceived response","A human reads the output"],
@@ -1062,7 +1114,13 @@ def handle(proposed_action, user):
    ["Roll your own","Engineering time, ongoing","Data stays in your network","Hard residency requirement"],
    ["Hosted","Data leaves your network","Working traces in an afternoon","No residency constraint"],
    ["Self-hosted vendor","Infrastructure to run","Both, at a price","The requirement is real and funded"]],
-   o:"Hosted until a customer's data residency says otherwise — and I ask that in week one, not at the security review."}],
+   o:"Hosted until a customer's data residency says otherwise — and I ask that in week one, not at the security review."},
+  {t:"Which failure layer to reach for",h:["Option","Costs you","Buys you","Pick when"],r:[
+   ["Retry with backoff","Latency multiplied on a real outage","Recovery from transient blips","The failure is a rate limit or timeout"],
+   ["Fallback chain","A second provider to maintain and pay for","Survives one provider being down","The failure is structural"],
+   ["Circuit breaker","State to share, a threshold to tune","Stops re-paying a known outage","Request N+1 volume makes it matter"],
+   ["Graceful degradation","Users get a worse answer","Nothing ever 500s","Always — this is the floor"]],
+   o:"Retry for transient, fallback for structural, a breaker so I discover the outage once, and degradation so nobody sees a stack trace."}],
  qs:[
   {r:["applied","fde"],q:"What do you monitor for an LLM application, beyond normal service metrics?",a:"<p>Requests, errors and latency as usual, with three additions. Latency splits into time to first token and total. Tokens split into input and output, because output costs several times more.</p><p>And quality signals — refusal rate, fallback rate, thumbs, edit rate — because an LLM service can be perfectly healthy by infrastructure metrics while producing nonsense.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
   {r:["applied","fde"],q:"How do you control cost without hurting quality?",a:"<p>Order by cheapness. Cap output length, since output tokens dominate. Cache prompt prefixes. Trim system prompts and retrieved context. Route easy queries to a cheaper model.</p><p>Then the discipline that makes it safe: every reduction ships alongside an eval number showing quality held. Cost work without evaluation is quality loss you haven't noticed yet.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
@@ -1073,7 +1131,9 @@ def handle(proposed_action, user):
   {r:["applied","fde"],q:"What is model routing and when does it pay off?",a:"<p>Classify the request and send easy ones to a cheap model. Usually the largest single cost lever, but the classifier is itself a model call, so it only pays when a meaningful share of traffic is genuinely simple.</p><p>Measure the split first. A heuristic router — query length, retrieval confidence — costs nothing and is often enough.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
   {r:["fde","applied"],q:"Your p95 latency doubled overnight. Walk me through it.",a:"<p>Establish what changed: a deploy, a provider incident, or a traffic shift. Split latency by stage — retrieval, prefill, decode, tools — because the aggregate says nothing about which moved.</p><p>Check whether it's all requests or a segment, since a new customer with larger documents looks identical to a regression in aggregate. Then compare traces from before and after.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
   {r:["fde"],q:"How do you handle PII in an LLM pipeline?",a:"<p>Know where it enters and everywhere it lands. It enters through user input and documents; it lands in prompts, completions, logs, traces and vector stores.</p><p>Detect and redact before it reaches any of those, and remember embeddings of PII are still PII. The vector store is the one people forget, because deleting a source document doesn't delete its vectors.</p>",s:[["LLMOps","https://createif-labs.de/en/journal/llmops-llm-betrieb"]]},
-  {r:["fde","applied"],q:"What does release readiness mean for an LLM feature?",a:"<p>A frozen eval set with an agreed pass bar. Monitoring and cost alerts live before launch, not after. A documented failure mode and fallback behaviour. Injection and PII handling reviewed.</p><p>A rollback that doesn't depend on a model provider. And a named owner for the quality metric, because unowned metrics stop being watched within weeks.</p>",s:[["Release readiness","https://arxiv.org/pdf/2403.18958"]]}],
+  {r:["fde","applied"],q:"What does release readiness mean for an LLM feature?",a:"<p>A frozen eval set with an agreed pass bar. Monitoring and cost alerts live before launch, not after. A documented failure mode and fallback behaviour. Injection and PII handling reviewed.</p><p>A rollback that doesn't depend on a model provider. And a named owner for the quality metric, because unowned metrics stop being watched within weeks.</p>",s:[["Release readiness","https://arxiv.org/pdf/2403.18958"]]},
+  {r:["applied","fde"],q:"Why isn't a retry enough?",a:"<p>Retry is per-call and stateless. It fixes a transient blip and cannot fix a provider that is genuinely down &mdash; it just fails N times more slowly.</p><p>It also carries no memory, so every request re-discovers the same outage from scratch. Fallback covers the structural case; a circuit breaker supplies the memory.</p>",s:[["Notebook","../12_Production_and_Observability/LLMOps_and_AI_Infrastructure/Reliability_and_Fallbacks/01_Exception_Handling_and_Fallback_Chains.ipynb"]]},
+  {r:["applied","fde","agentic"],q:"Walk me through a circuit breaker.",a:"<p>Three states. <code>CLOSED</code> passes calls through and counts consecutive failures. At the threshold it trips to <code>OPEN</code>, where calls are rejected instantly with no network attempt. After a cooldown it moves to <code>HALF_OPEN</code> and lets exactly one probe through &mdash; success closes it, failure re-opens it immediately without waiting for the threshold again.</p><p>The value is that request 500 doesn't re-pay the discovery cost request 1 already paid. Three details show you have actually built one: shared state across workers, not tripping on 4xx, and nesting it inside the retry loop rather than around it.</p>",s:[["Notebook","../12_Production_and_Observability/LLMOps_and_AI_Infrastructure/Reliability_and_Fallbacks/01_Exception_Handling_and_Fallback_Chains.ipynb"]]}],
  self:[["Why split input and output tokens?","Output costs several times more."],
   ["p95 or mean, and why?","p95 — the mean hides the tail users feel."],
   ["Two latency metrics for LLMs?","Time to first token, and total time."],
@@ -1085,7 +1145,13 @@ def handle(proposed_action, user):
   ["How do you test non-deterministic output?","Property assertions, then a frozen regression set."],
   ["Before trusting an LLM judge?","Validate it against human labels on a sample."],
   ["How do you alert on cost?","A rolling baseline plus a per-request ceiling."],
-  ["Where does PII land besides the prompt?","Logs, traces, and the vector store."]]}
+  ["Where does PII land besides the prompt?","Logs, traces, and the vector store."],
+  ["Retry or fallback for a revoked API key?","Fallback. Retry repeats the same failure."],
+  ["Name the three circuit-breaker states.","Closed, open, half-open."],
+  ["Why does half-open exist?","One probe tests recovery without restoring full traffic."],
+  ["Breaker inside the retry loop or around it?","Inside \u2014 outside, it trips three times slower."],
+  ["Which errors must not trip the breaker?","4xx. That is your bug, not a provider outage."],
+  ["Eight workers, in-process breaker. Real threshold?","Eight times what you configured."]]}
 ];
 
 const MATRIX=[
@@ -1099,7 +1165,8 @@ const MATRIX=[
  ["Checkpointing and durability", [0,0,1,0,0]],
  ["Tool calling / agent loop",    [0,0,1,0,0]],
  ["Human-in-the-loop",            [0,0,1,1,0]],
- ["Retries and fallbacks",        [1,0,1,0,0]],
+ ["Retries and fallbacks",        [1,0,1,0,1]],
+ ["Circuit breaker, degradation", [0,0,0,0,1]],
  ["Multi-agent coordination",     [0,0,0,1,0]],
  ["Tracing and observability",    [1,0,1,0,1]],
  ["Cost control and routing",     [0,1,0,0,1]],

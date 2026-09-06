@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Agent Coordination Patterns — Execution Flow & Use Cases</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#161922;
+    --panel-2:#1b1f2a;
+    --border:#2a2f3d;
+    --border-soft:#232735;
+    --text:#dfe3ee;
+    --text-dim:#9aa2b8;
+    --text-faint:#6b7285;
+    --accent-orch:#7f9cf5;
+    --accent-multi:#5fd0b8;
+    --accent-eval:#e8a34a;
+    --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+    --sans:'Inter','Segoe UI',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.65;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:56px 24px 120px;}
+
+  header.doc-head{margin-bottom:56px;}
+  .kicker{
+    font-size:12px;
+    letter-spacing:.08em;
+    color:var(--text-faint);
+    font-family:var(--mono);
+    margin-bottom:14px;
+  }
+  h1{
+    font-size:34px;
+    font-weight:600;
+    margin:0 0 16px;
+    letter-spacing:-0.01em;
+    line-height:1.2;
+  }
+  .lede{color:var(--text-dim);font-size:16px;max-width:640px;margin:0;}
+
+  nav.toc{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:32px;
+  }
+  nav.toc a{
+    font-size:13px;
+    padding:8px 14px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    color:var(--text-dim);
+    text-decoration:none;
+    font-family:var(--mono);
+    transition:border-color .15s, color .15s;
+  }
+  nav.toc a:hover{border-color:var(--text-dim);color:var(--text);}
+
+  section.pattern{
+    margin-bottom:72px;
+    padding-top:8px;
+    border-top:1px solid var(--border-soft);
+  }
+  section.pattern:first-of-type{border-top:none;}
+
+  .pattern-head{display:flex;align-items:baseline;gap:14px;margin:36px 0 8px;}
+  .pattern-num{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text-faint);
+  }
+  h2{font-size:24px;font-weight:600;margin:0;letter-spacing:-0.005em;}
+  .pattern-tag{
+    font-family:var(--mono);
+    font-size:11px;
+    padding:3px 10px;
+    border-radius:12px;
+    margin-left:auto;
+  }
+  .tag-orch{background:rgba(127,156,245,.12);color:var(--accent-orch);border:1px solid rgba(127,156,245,.3);}
+  .tag-multi{background:rgba(95,208,184,.12);color:var(--accent-multi);border:1px solid rgba(95,208,184,.3);}
+  .tag-eval{background:rgba(232,163,74,.12);color:var(--accent-eval);border:1px solid rgba(232,163,74,.3);}
+
+  .overview{color:var(--text-dim);font-size:15px;margin:0 0 28px;max-width:680px;}
+
+  h3{
+    font-size:14px;
+    text-transform:none;
+    color:var(--text);
+    font-weight:600;
+    margin:32px 0 14px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--border-soft);
+  }
+
+  ol.steps{padding-left:20px;margin:0 0 8px;}
+  ol.steps li{margin-bottom:10px;font-size:14.5px;color:var(--text-dim);}
+  ol.steps li strong{color:var(--text);font-weight:600;}
+  ol.steps li code{
+    font-family:var(--mono);
+    font-size:13px;
+    background:var(--panel-2);
+    padding:1px 6px;
+    border-radius:4px;
+    color:var(--text);
+  }
+  ol.steps ul{margin-top:6px;padding-left:18px;}
+  ol.steps ul li{margin-bottom:4px;font-size:14px;}
+
+  .mermaid-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px 16px 8px;
+    margin:16px 0 28px;
+    overflow-x:auto;
+  }
+
+  pre{
+    background:var(--panel) !important;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+    font-size:13px;
+    overflow-x:auto;
+    margin:12px 0 28px;
+  }
+  code{font-family:var(--mono);}
+
+  .usecase{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-left:3px solid var(--case-color, var(--accent-orch));
+    border-radius:10px;
+    padding:22px 24px;
+    margin-top:8px;
+  }
+  .orch .usecase{--case-color:var(--accent-orch);}
+  .multi .usecase{--case-color:var(--accent-multi);}
+  .eval .usecase{--case-color:var(--accent-eval);}
+
+  .usecase .scenario{
+    font-size:14px;
+    color:var(--text);
+    margin:0 0 16px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .usecase .scenario b{font-weight:600;}
+  .usecase ol{padding-left:20px;margin:0;}
+  .usecase ol li{margin-bottom:12px;font-size:14.5px;color:var(--text-dim);}
+  .usecase ol li strong{color:var(--text);}
+  .usecase ol li.why{
+    list-style:none;
+    margin-left:-20px;
+    margin-top:16px;
+    padding:12px 14px;
+    background:var(--panel-2);
+    border-radius:8px;
+    font-size:13.5px;
+  }
+  .usecase ol li.why strong{color:var(--case-color, var(--accent-orch));}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0 40px;
+    font-size:13.5px;
+  }
+  table th{
+    text-align:left;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    font-weight:500;
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
+  }
+  table td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--border-soft);
+    color:var(--text-dim);
+  }
+  table tr td:first-child{color:var(--text);font-weight:500;}
+
+  footer{
+    margin-top:60px;
+    padding-top:24px;
+    border-top:1px solid var(--border-soft);
+    color:var(--text-faint);
+    font-size:12.5px;
+    font-family:var(--mono);
+  }
+
+  @media (max-width:600px){
+    .wrap{padding:36px 16px 80px;}
+    h1{font-size:26px;}
+    .pattern-head{flex-wrap:wrap;}
+    .pattern-tag{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc-head">
+    <div class="kicker">LANGGRAPH / MULTI-AGENT SYSTEMS &mdash; SECTION 4 REFERENCE</div>
+    <h1>Multi-Agent Coordination Patterns</h1>
+    <p class="lede">Step-by-step internal execution flow for the three core coordination patterns, each paired with a production-style use case showing exactly how the agents communicate and hand off work.</p>
+    <nav class="toc">
+      <a href="#orchestrator">01 &middot; Orchestrator-Workers</a>
+      <a href="#supervisor">02 &middot; Multi-Agent Supervisor</a>
+      <a href="#evaluator">03 &middot; Evaluator-Optimizer</a>
+      <a href="#comparison">Comparison table</a>
+    </nav>
+  </header>
+
+  <!-- ============ PATTERN 1: ORCHESTRATOR-WORKERS ============ -->
+  <section class="pattern orch" id="orchestrator">
+    <div class="pattern-head">
+      <span class="pattern-num">01</span>
+      <h2>Orchestrator-Workers</h2>
+      <span class="pattern-tag tag-orch">runtime decomposition</span>
+    </div>
+    <p class="overview">A single orchestrator inspects the task and decides <em>at runtime</em> how many subtasks it needs and what each one is, dispatching them to generic, disposable worker agents that share no context with one another.</p>
+
+    <h3>Step-by-step execution flow</h3>
+    <ol class="steps">
+      <li><strong>Task ingestion</strong> &mdash; orchestrator receives the raw request as a single payload.</li>
+      <li><strong>Task analysis</strong> &mdash; an LLM call reasons about the task's internal structure and whether it decomposes into independent parts.</li>
+      <li><strong>Dynamic decomposition</strong> &mdash; orchestrator emits a structured plan: a list of subtasks with scoped inputs. The <em>count</em> is decided here, not hardcoded.</li>
+      <li><strong>Worker dispatch</strong> &mdash; subtasks go out in parallel (independent work) or sequentially (dependent chain).</li>
+      <li><strong>Isolated execution</strong> &mdash; each worker gets only its own task-scoped payload &mdash; no shared history, no visibility into other workers.</li>
+      <li><strong>Result collection</strong> &mdash; orchestrator waits for all dispatched workers to return.</li>
+      <li><strong>Synthesis</strong> &mdash; orchestrator merges outputs, resolving conflicts and reconciling formatting.</li>
+      <li><strong>Quality gate (optional)</strong> &mdash; re-check merged output against the original brief; re-dispatch workers for any gaps.</li>
+      <li><strong>Final response</strong> &mdash; synthesized output returned to the caller.</li>
+    </ol>
+
+    <h3>Internal working &mdash; sequence diagram</h3>
+    <div class="mermaid-card">
+      <pre class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant O as Orchestrator
+    participant W1 as Worker 1
+    participant W2 as Worker 2
+    participant W3 as Worker 3
+
+    U->>O: "Refactor this 40-file legacy service"
+    O->>O: Analyze codebase structure
+    O->>O: Decompose into N file-groups (runtime decision)
+    par Parallel dispatch
+        O->>W1: Refactor files [1-13]
+        O->>W2: Refactor files [14-27]
+        O->>W3: Refactor files [28-40]
+    end
+    W1-->>O: Diff + test results (group 1)
+    W2-->>O: Diff + test results (group 2)
+    W3-->>O: Diff + test results (group 3)
+    O->>O: Reconcile shared interfaces across diffs
+    O->>U: Unified refactor PR + summary
+      </pre>
+    </div>
+
+    <h3>Real-time use case &mdash; enterprise codebase migration assistant</h3>
+    <div class="usecase">
+      <p class="scenario"><b>Scenario:</b> An engineering team asks the system: <em>"Migrate our 40-file Java payment module to Kotlin, preserving all existing test coverage."</em></p>
+      <ol>
+        <li><strong>Static analysis pass</strong> &mdash; the orchestrator walks the file tree and maps dependencies between files before deciding anything.</li>
+        <li><strong>Runtime clustering</strong> &mdash; it groups the 40 files into 3 clusters by dependency locality (core domain models, gateway adapters, test fixtures). A differently-shaped codebase would produce a different number of clusters &mdash; this isn't a fixed rule.</li>
+        <li><strong>Parallel dispatch</strong> &mdash; 3 workers are spun up, each given only its cluster's files and the target style guide &mdash; nothing about the other clusters.</li>
+        <li><strong>Independent ReAct loops</strong> &mdash; each worker runs: read file &rarr; propose Kotlin translation &rarr; run compiler check &rarr; fix errors &rarr; run unit tests &rarr; return diff.</li>
+        <li><strong>Conflict detection</strong> &mdash; because workers share no context, Worker 1 doesn't know Worker 2 renamed a shared interface. The orchestrator catches this mismatch during collection.</li>
+        <li><strong>Targeted follow-up</strong> &mdash; rather than redoing everything, the orchestrator issues one narrow follow-up task to Worker 2 alone to fix just the interface mismatch.</li>
+        <li><strong>Final assembly</strong> &mdash; one pull request is composed with a synthesized summary: files changed, test pass rate, flagged manual-review items.</li>
+        <li class="why"><strong>Why this pattern fits:</strong> the number of logical migration clusters can't be known until the repo is actually inspected &mdash; a fixed pipeline would over- or under-decompose the work.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ PATTERN 2: MULTI-AGENT SUPERVISOR ============ -->
+  <section class="pattern multi" id="supervisor">
+    <div class="pattern-head">
+      <span class="pattern-num">02</span>
+      <h2>Multi-Agent Supervisor</h2>
+      <span class="pattern-tag tag-multi">fixed specialist roles</span>
+    </div>
+    <p class="overview">Specialist agents exist with roles fixed at design time. A supervisor's only job is to <em>route</em> &mdash; not invent task structure &mdash; and every agent reads from and writes to one shared state object.</p>
+
+    <h3>Step-by-step execution flow</h3>
+    <ol class="steps">
+      <li><strong>Input received</strong> &mdash; supervisor gets the incoming message, appended to shared state.</li>
+      <li><strong>Intent classification</strong> &mdash; an LLM call reasons: which specialist domain does this belong to?</li>
+      <li><strong>Routing decision</strong> &mdash; supervisor emits a structured decision, e.g. <code>route: "billing_agent"</code>.</li>
+      <li><strong>Handoff</strong> &mdash; control and the full shared message history pass to the selected specialist.</li>
+      <li><strong>Specialist execution</strong> &mdash; the specialist runs its own tool-calling loop with domain-restricted tools.</li>
+      <li><strong>State update</strong> &mdash; the specialist appends its findings directly to the shared state, visible to any agent that reads next.</li>
+      <li><strong>Return to supervisor</strong> &mdash; control returns; supervisor checks whether the task is fully resolved.</li>
+      <li><strong>Re-routing (if needed)</strong> &mdash; supervisor may hand off to a second specialist, which now sees the first specialist's turn in shared history.</li>
+      <li><strong>Termination check</strong> &mdash; supervisor decides the task is resolved and returns the final response.</li>
+    </ol>
+
+    <h3>Internal working &mdash; sequence diagram</h3>
+    <div class="mermaid-card">
+      <pre class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant S as Supervisor
+    participant B as Billing Agent
+    participant R as Refund Agent
+    participant State as Shared State
+
+    U->>S: "I was double-charged for my subscription"
+    S->>State: append user message
+    S->>S: Classify intent -> billing
+    S->>B: handoff (full history)
+    B->>State: query payments DB
+    B->>State: append findings: duplicate charge confirmed
+    B-->>S: return control
+    S->>S: Re-evaluate: needs refund action
+    S->>R: handoff (sees billing agent's findings)
+    R->>State: initiate refund via payments API
+    R->>State: append confirmation
+    R-->>S: return control
+    S->>U: "Confirmed duplicate charge, refund issued"
+      </pre>
+    </div>
+
+    <h3>Real-time use case &mdash; customer support ticket resolution</h3>
+    <div class="usecase">
+      <p class="scenario"><b>Scenario:</b> A SaaS support inbox routes messages through a system with three specialists: <b>Billing Agent</b>, <b>Technical Agent</b>, <b>Refund Agent</b>.</p>
+      <ol>
+        <li><strong>Ticket arrives</strong> &mdash; <em>"I was charged twice this month and my dashboard won't load"</em> &mdash; appended as the first shared-state entry.</li>
+        <li><strong>Multi-issue detection</strong> &mdash; the supervisor recognizes two distinct issues bundled together and decides to sequence them, billing first.</li>
+        <li><strong>Scoped handoff</strong> &mdash; routes to the Billing Agent with the full shared state. This agent's tools are restricted to the payments system only &mdash; no ticketing or code access.</li>
+        <li><strong>Finding written to shared state</strong> &mdash; Billing Agent confirms a duplicate charge and appends the raw finding into the visible message history &mdash; not a private summary back to the supervisor.</li>
+        <li><strong>Re-evaluation</strong> &mdash; supervisor re-reads the updated state and decides a refund is owed &mdash; routes onward.</li>
+        <li><strong>Downstream reuse of context</strong> &mdash; the Refund Agent reads the same shared state, including the billing finding, and issues the refund without re-deriving it independently.</li>
+        <li><strong>Second routing thread</strong> &mdash; separately, the dashboard issue routes to the Technical Agent, which has log-query tools instead of payment tools.</li>
+        <li><strong>Unified reply</strong> &mdash; once both threads resolve, the supervisor composes one customer-facing response covering both issues.</li>
+        <li class="why"><strong>Why this pattern fits:</strong> the three domains are known in advance and benefit from deep specialization with restricted tool access &mdash; a dynamic orchestrator has no advantage since the roles never change shape.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ PATTERN 3: EVALUATOR-OPTIMIZER ============ -->
+  <section class="pattern eval" id="evaluator">
+    <div class="pattern-head">
+      <span class="pattern-num">03</span>
+      <h2>Evaluator-Optimizer</h2>
+      <span class="pattern-tag tag-eval">generate &rarr; judge &rarr; refine</span>
+    </div>
+    <p class="overview">A generator produces a candidate; an evaluator scores it against explicit criteria and returns structured feedback. The generator revises against that feedback &mdash; looping until it passes or hits a cap.</p>
+
+    <h3>Step-by-step execution flow</h3>
+    <ol class="steps">
+      <li><strong>Initial generation</strong> &mdash; generator produces a first draft from the task brief.</li>
+      <li><strong>Evaluation</strong> &mdash; evaluator scores the draft against a rubric, returning structured pass/fail plus specific issues.</li>
+      <li><strong>Branch check</strong> &mdash; pass &rarr; skip to finalization; fail &rarr; continue.</li>
+      <li><strong>Feedback-conditioned regeneration</strong> &mdash; generator receives its own draft <em>plus</em> the specific critique, and revises only what was flagged.</li>
+      <li><strong>Loop</strong> &mdash; return to evaluation with the new draft; repeat until pass or iteration cap.</li>
+      <li><strong>Finalization</strong> &mdash; the passing (or best-scoring) draft is returned, often with the evaluator's approval rationale attached.</li>
+    </ol>
+
+    <h3>Internal working &mdash; sequence diagram</h3>
+    <div class="mermaid-card">
+      <pre class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant G as Generator
+    participant E as Evaluator
+
+    U->>G: "Write ad copy for product launch"
+    G->>E: Draft v1
+    E->>E: Score against brand rubric
+    E-->>G: FAIL - tone too casual, missing CTA
+    G->>G: Revise using specific critique
+    G->>E: Draft v2
+    E->>E: Re-score
+    E-->>G: FAIL - CTA present, missing legal disclaimer
+    G->>G: Revise again
+    G->>E: Draft v3
+    E->>E: Re-score
+    E-->>G: PASS
+    G->>U: Final approved copy
+      </pre>
+    </div>
+
+    <h3>Real-time use case &mdash; brand-compliant marketing copy generation</h3>
+    <div class="usecase">
+      <p class="scenario"><b>Scenario:</b> A marketing team needs a product launch announcement that must pass a strict brand voice guide and legal disclaimer requirements.</p>
+      <ol>
+        <li><strong>First draft</strong> &mdash; the generator produces punchy, casual copy with a strong hook, from the raw brief.</li>
+        <li><strong>Rubric-based scoring</strong> &mdash; the evaluator, holding the brand rubric as its system context, finds two violations: tone too casual, no call-to-action.</li>
+        <li><strong>Structured critique</strong> &mdash; feedback isn't just "fail" &mdash; it returns exact line references and the rule violated, e.g. <code>{issue: "opening line uses slang", rule: "brand-voice-3.2"}</code>.</li>
+        <li><strong>Targeted revision</strong> &mdash; the generator receives its own draft plus this critique and revises only the flagged lines, not a full rewrite.</li>
+        <li><strong>Second pass, new issue found</strong> &mdash; tone and CTA now pass, but the evaluator catches a missing legal disclaimer for pricing changes.</li>
+        <li><strong>Third revision</strong> &mdash; generator inserts the disclaimer boilerplate while preserving the already-approved tone and CTA.</li>
+        <li><strong>Approval</strong> &mdash; evaluator scores v3 and returns pass; copy is released.</li>
+        <li class="why"><strong>Why this pattern fits:</strong> the task has an objective, checkable rubric that a second reasoning pass verifies better than the generator can self-check in one shot &mdash; separating "produce" from "judge" catches issues a single agent tends to miss scoring its own work.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ COMPARISON ============ -->
+  <section id="comparison">
+    <h2 style="margin-bottom:20px;">Cross-pattern comparison</h2>
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Orchestrator-Workers</th><th>Multi-Agent Supervisor</th><th>Evaluator-Optimizer</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Number of roles</td><td>1 orchestrator + N generic workers</td><td>Fixed N specialists + 1 router</td><td>2 fixed roles</td></tr>
+        <tr><td>Decomposition timing</td><td>Runtime, dynamic</td><td>Design-time, fixed</td><td>N/A &mdash; iterative refinement</td></tr>
+        <tr><td>Shared history</td><td>No &mdash; task-scoped only</td><td>Yes &mdash; shared state</td><td>Partial &mdash; own history + critique</td></tr>
+        <tr><td>Loop structure</td><td>Fan-out / fan-in, usually once</td><td>Route &rarr; act &rarr; re-route</td><td>Fixed generate &rarr; evaluate &rarr; revise</td></tr>
+        <tr><td>Best fit</td><td>Unpredictable task shape/size</td><td>Known domains, deep specialization</td><td>Objective, checkable quality criteria</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    multi_agent_coordination_patterns.html &middot; companion to multi_agent_coordination_patterns.md
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'dark',
+    themeVariables:{
+      background:'#161922',
+      primaryColor:'#1b1f2a',
+      primaryTextColor:'#dfe3ee',
+      primaryBorderColor:'#2a2f3d',
+      lineColor:'#6b7285',
+      secondaryColor:'#1b1f2a',
+      tertiaryColor:'#161922',
+      actorBkg:'#1b1f2a',
+      actorBorder:'#2a2f3d',
+      actorTextColor:'#dfe3ee',
+      signalColor:'#9aa2b8',
+      signalTextColor:'#dfe3ee',
+      labelBoxBkgColor:'#1b1f2a',
+      labelBoxBorderColor:'#2a2f3d',
+      labelTextColor:'#dfe3ee',
+      loopTextColor:'#dfe3ee',
+      noteBkgColor:'#1b1f2a',
+      noteTextColor:'#dfe3ee',
+      noteBorderColor:'#2a2f3d'
+    },
+    fontFamily:'Inter, system-ui, sans-serif'
+  });
+  document.addEventListener('DOMContentLoaded', function(){
+    if (window.hljs) { hljs.highlightAll(); }
+  });
+</script>
+</body>
+</html>

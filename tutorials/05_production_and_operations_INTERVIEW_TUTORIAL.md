@@ -44,6 +44,7 @@ concrete mechanism below.
 | Prompt injection detection, input sanitising | `03_security_patterns.ipynb` | **High** |
 | Output validation and PII | `03_security_patterns.ipynb` | **High** |
 | Testing non-deterministic systems | `04_testing_patterns.ipynb` | **High** |
+| Retry, fallback, circuit breaker, degradation | `12_Production_and_Observability/.../01_Exception_Handling_and_Fallback_Chains.ipynb` | **High** |
 | Tracing with LangSmith | all four | **High** |
 
 ## Coverage gaps
@@ -51,7 +52,7 @@ concrete mechanism below.
 | Gap | Where it lives |
 |---|---|
 | The things you're operating | [01](01_langchain_foundations_INTERVIEW_TUTORIAL.md), [02](02_rag_and_retrieval_INTERVIEW_TUTORIAL.md), [03](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md), [04](04_multi_agent_systems_INTERVIEW_TUTORIAL.md) |
-| Retries and fallbacks | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
+| Node-level retry inside a graph | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
 | Human-in-the-loop as a safety control | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
 | RAG-specific evaluation (recall@k, faithfulness) | [02 RAG](02_rag_and_retrieval_INTERVIEW_TUTORIAL.md) |
 | **Async and load testing** | **Nowhere in this repo — build it yourself** |
@@ -343,6 +344,127 @@ and free. Then a frozen regression set on every change. A judge last, and only a
 I've checked it against human labels — otherwise I've automated an opinion I can't
 defend."
 
+### 1.7 Failure handling is a stack, not a switch
+
+**Plain version.** "We'd add a retry" is the production answer that fails, for the same
+reason "we'd add logging" fails. Four different failures need four different mechanisms,
+and each exists because the layer below it cannot solve the case above it.
+
+| Layer | Fixes | Cannot fix |
+|---|---|---|
+| **Retry with backoff** | A transient blip — rate limit, timeout, connection reset | A provider that is genuinely down |
+| **Fallback chain** | A structural failure — outage, revoked key, deprecated model | Every provider being down at once |
+| **Circuit breaker** | *Repeatedly re-discovering* a known outage | The failure itself |
+| **Graceful degradation** | The user seeing a 500 | Anything — it is the floor |
+
+Retry and fallback are **per-call** decisions and carry no memory. That is the gap the
+circuit breaker fills.
+
+```mermaid
+flowchart TD
+  A["Call failed"] --> B{"Would the same call<br/>work if retried?"}
+  B -->|"Yes: rate limit, timeout"| C["Retry with backoff"]
+  B -->|"No: provider down"| D["Fall back to another model"]
+  D --> E{"Has this dependency failed<br/>repeatedly, across requests?"}
+  E -->|"Yes"| F["Circuit breaker: stop calling it"]
+  E -->|"No"| G["Keep trying it"]
+  D --> H{"Is every option exhausted?"}
+  H -->|"Yes"| I["Degrade: labelled answer, cached context"]
+```
+
+**Why a circuit breaker exists.** Your provider goes down at 2am. Request #1 burns three
+retries with exponential backoff — call it seven seconds — then fails over. So does
+request #2. So does request #500. Every request independently re-discovers the same
+outage, paying full latency and quota to learn a fact the system already knows. Retry
+logic is stateless, so it *cannot* learn "the provider is down." The breaker is that
+memory.
+
+It is a three-state machine:
+
+| State | Behaviour |
+|---|---|
+| `CLOSED` | Normal. Calls pass through; consecutive failures are counted. |
+| `OPEN` | Tripped. Calls are rejected instantly, **with no network attempt at all**. |
+| `HALF_OPEN` | Cooldown elapsed. Exactly one probe is allowed — success closes it, failure re-opens it. |
+
+```python
+# From 12_Production_and_Observability/LLMOps_and_AI_Infrastructure/
+#      Reliability_and_Fallbacks/01_Exception_Handling_and_Fallback_Chains.ipynb
+class CircuitBreaker:
+    def __init__(self, failure_threshold: int = 3, cooldown_seconds: float = 5.0):
+        self.state = CircuitState.CLOSED
+        self.failure_count = 0
+        self.opened_at: float | None = None
+
+    def _maybe_half_open(self):
+        # Lazy: no background timer. The transition is evaluated on the next call.
+        if self.state == CircuitState.OPEN and self.opened_at is not None:
+            if time.time() - self.opened_at >= self.cooldown_seconds:
+                self.state = CircuitState.HALF_OPEN
+
+    def call(self, func, *args, **kwargs):
+        self._maybe_half_open()
+        if self.state == CircuitState.OPEN:
+            raise RuntimeError("circuit is OPEN — call short-circuited")
+        try:
+            result = func(*args, **kwargs)
+        except Exception:
+            self.failure_count += 1
+            # A HALF_OPEN failure re-opens immediately, ignoring the threshold:
+            # one failed probe is enough evidence.
+            if self.state == CircuitState.HALF_OPEN or self.failure_count >= self.failure_threshold:
+                self.state = CircuitState.OPEN
+                self.opened_at = time.time()
+            raise                      # observe and decide, but never swallow
+        else:
+            self.state = CircuitState.CLOSED
+            self.failure_count = 0
+            return result
+```
+
+**`HALF_OPEN` is the state candidates forget.** Without it you either stay open forever,
+or you restore full traffic the instant the cooldown ends and knock over a provider that
+was only just recovering.
+
+**The detail that separates read-about-it from built-it: nesting order.**
+
+```python
+@retry_with_backoff(max_attempts=3, base_delay=0.2)
+def _primary_with_retry(q):
+    return breaker.call(primary_call, q)     # breaker INSIDE retry
+```
+
+Breaker inside retry means attempt 3 trips it, and then every *subsequent request*
+short-circuits at attempt 1 in microseconds instead of burning the whole retry budget.
+Invert it — retry inside the breaker — and the breaker sees only one failure per fully
+exhausted retry loop, so it takes three times as long to trip and you have paid nine real
+network calls to learn nothing new.
+
+The full stack, outermost to innermost: `safe_answer` → fallback → retry → breaker →
+provider.
+
+**What a production breaker adds.** Compare the teaching version above with
+`enterprise_rag/llm/client.py`, and with the third implementation in
+`production-course-main-code-main/03_LangGraph_Fundamentals/07_error_handling.ipynb`,
+which pushes the pattern down into LangGraph nodes:
+
+- **Shared, not per-caller.** "Is the provider down" is a fact about the outside world,
+  not about one object. In-process state means N workers is N independent breakers, so
+  your effective threshold is N× what you configured — put it in Redis.
+- **4xx fails fast and never trips the breaker.** A 400 is a bug in *your* request, not a
+  provider outage. Without that split, one malformed-prompt bug takes down every feature
+  sharing the client — a self-inflicted outage caused by the reliability machinery itself.
+- **Jittered backoff** (`min(8.0, 2 ** i) * random.random()`), so retries don't resync
+  into a thundering herd.
+- **Trip on retry-loop exhaustion**, not on individual failures.
+
+**Say this in an interview.** "Retry handles transient failures, fallback handles
+structural ones — but both are per-call and stateless. A circuit breaker is the
+cross-call layer: it remembers a dependency is down so request 500 doesn't re-pay the
+discovery cost request 1 already paid. I nest the breaker inside the retry loop so it
+trips fast, only count real provider outages toward the threshold — a 4xx is my bug, not
+theirs — and keep the state in Redis, because in-process means N workers is N breakers."
+
 ---
 
 ## 2. Gotchas
@@ -421,6 +543,32 @@ defend."
   plus a per-request cost ceiling so one pathological run is caught immediately.
 - **Interview angle**: "An agent loops overnight. When do you find out?"
 
+### **The breaker is nested inside the wrong layer**
+- **Symptom**: the breaker is configured and an outage still costs full retry latency on
+  every single request.
+- **Cause**: retry wrapped *inside* the breaker instead of the reverse. The breaker sees
+  one failure per exhausted retry loop, so it needs three times as many requests to trip.
+- **Fix**: breaker innermost, retry around it, fallback around that, degradation
+  outermost.
+- **Interview angle**: "Where exactly does the circuit breaker go relative to the retry?"
+
+### **A 4xx trips the breaker and you take yourself down**
+- **Symptom**: one malformed-prompt bug in a new feature makes every other feature start
+  failing instantly.
+- **Cause**: the breaker counts all exceptions. A 400 is a bug in your own request, but
+  it looks identical to a provider outage.
+- **Fix**: split retryable from non-retryable — 5xx, rate limits and timeouts count
+  toward the threshold; 4xx fails fast and never trips it.
+- **Interview angle**: "Which failures should *not* trip your breaker?"
+
+### **An in-process breaker doesn't hold across workers**
+- **Symptom**: the threshold is 3, but the provider is getting hammered far past that.
+- **Cause**: the breaker is module-global to one process. Eight workers means eight
+  independent breakers and an effective threshold of 24.
+- **Fix**: shared state — Redis, or wherever your rate limiter already lives. Then say
+  the quiet part: that store is now a dependency of your reliability layer.
+- **Interview angle**: "You run 8 replicas. What's your real failure threshold?"
+
 ---
 
 ## 3. Tradeoffs
@@ -467,6 +615,17 @@ and I put a human in front of anything irreversible."
 
 **The one-liner**: "Hosted until a customer's data residency says otherwise — and I ask
 that question in week one, not at the security review."
+
+### Which failure layer to reach for
+| Option | Costs you | Buys you | Pick when |
+|---|---|---|---|
+| Retry with backoff | Latency multiplied on a real outage | Recovery from transient blips | The failure is a rate limit or timeout |
+| Fallback chain | A second provider to maintain and pay for | Survives one provider being down | The failure is structural |
+| Circuit breaker | State to share, a threshold to tune | Stops re-paying a known outage | Traffic is high enough that request N+1 matters |
+| Graceful degradation | Users get a worse answer | Nothing ever 500s | Always — this is the floor |
+
+**The one-liner**: "Retry for transient, fallback for structural, a breaker so I only
+discover the outage once, and degradation so the user never sees a stack trace."
 
 ---
 
@@ -556,6 +715,25 @@ owner for the quality metric, because unowned metrics stop being watched within 
 [Source](https://arxiv.org/pdf/2403.18958) ·
 [Source](https://createif-labs.de/en/journal/llmops-llm-betrieb)
 
+### Bonus: reliability
+
+These didn't make the web-sourced top 10, but they come up constantly for Applied AI and
+FDE roles — and they are the questions section 1.7 is written to answer.
+
+**Why isn't a retry enough?** Retry is per-call and stateless. It fixes a transient blip
+and cannot fix a provider that is genuinely down — it just fails N times more slowly. It
+also carries no memory, so every request re-discovers the same outage from scratch.
+Fallback covers the structural case; the breaker supplies the memory.
+
+**Walk me through a circuit breaker.** Three states. `CLOSED` passes calls through and
+counts consecutive failures. At the threshold it trips to `OPEN`, where calls are rejected
+instantly with no network attempt. After a cooldown it moves to `HALF_OPEN` and lets
+exactly one probe through — success closes it, failure re-opens it immediately without
+waiting for the threshold again. The value is that request 500 doesn't re-pay the
+discovery cost request 1 already paid. The three details that show you've built one:
+shared state across workers, not tripping on 4xx, and nesting it inside the retry loop
+rather than around it.
+
 ---
 
 ## 5. Role tracks
@@ -635,6 +813,12 @@ Second home track. These questions are the FDE interview.
 10. What must you do before trusting an LLM judge? *Validate it against human labels on a sample.*
 11. How do you alert on cost? *A rolling baseline plus a per-request ceiling, not the invoice.*
 12. Where does PII land besides the prompt? *Logs, traces, and the vector store.*
+13. Retry or fallback for a revoked API key? *Fallback. Retry repeats the same failure.*
+14. Name the three circuit-breaker states. *Closed, open, half-open.*
+15. Why does half-open exist? *One probe tests recovery without restoring full traffic.*
+16. Breaker inside the retry loop or around it? *Inside — outside, it trips three times slower.*
+17. Which errors must not trip the breaker? *4xx. That's your bug, not a provider outage.*
+18. Eight workers, in-process breaker. Real threshold? *Eight times what you configured.*
 
 ---
 

@@ -10,7 +10,7 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://e2-demo-field-eng.cloud.databricks.com
+      host: https://dbc-c93bb198-aa21.cloud.databricks.com/
 
   ## Optionally, there could be 'staging' or 'prod' targets here.
   #
