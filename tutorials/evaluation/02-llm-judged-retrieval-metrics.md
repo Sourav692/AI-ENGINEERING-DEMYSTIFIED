@@ -38,6 +38,7 @@ The judge's only job is to label. The scoring is deterministic:
 - **Precision is rank-weighted.** A relevant chunk at position 1 contributes `1/1`; the same chunk at position 3 contributes at most `1/3`. That weighting is the entire reason reordering changes the score.
 - **Recall compares context to `expected_output`, not `actual_output`.** It asks whether enough was *fetched to support* the full answer, independent of whether the generator used it. This trips people up constantly.
 - **Relevancy is the simplest and the only referenceless one.** No ground truth, no order sensitivity — just what fraction of what you retrieved was on topic.
+- **Relevancy's formula is identical to Part 1's Precision@K** (`relevant/total`, unweighted, order-blind) — same math, different name. What's genuinely new here is Contextual *Precision*, which is the rank-weighted version of that same idea, which is why it and Relevancy can diverge (see the "bad ranking" row below, where Relevancy doesn't move but Precision drops by a third).
 
 ---
 

@@ -74,6 +74,7 @@ tbody tr:last-child td{border-bottom:none}
   <div class="eyebrow">RAG · Agent · Tool eval lab · 02</div>
   <h1>Three retrieval judges, <span style="color:var(--accent)">three different failures</span>.</h1>
   <p class="sub">Contextual Precision, Recall and Relevancy all score the same retrieved context, and each one is blind to what the other two catch. Inject a failure and watch exactly one number move — that separation is why DeepEval ships three metrics instead of one "retrieval quality" score.</p>
+  <p class="sub" style="font-size:12.5px">These are LLM-judged, not the classic set-overlap Precision/Recall: Contextual Precision is rank-weighted (chunk order matters directly), and Contextual Recall checks context coverage against <code style="font-family:var(--mono)">expected_output</code>, not a fixed relevant/irrelevant label set. For the deterministic definitions, see <a href="01-deterministic-retrieval-metrics.html" style="color:var(--accent)">01-deterministic-retrieval-metrics.html</a>.</p>
 
   <div class="panel">
     <h2>Inject a retrieval failure</h2>
@@ -113,6 +114,7 @@ tbody tr:last-child td{border-bottom:none}
         <tr><td><b>Contextual Relevancy</b></td><td>How much of what was retrieved is on-topic?</td><td><b>No</b></td><td>No</td><td>Noise diluting the context, independent of ranking</td></tr>
       </tbody>
     </table>
+    <p class="sub" style="font-size:12.5px;margin-top:10px">Note the formulas: Relevancy is <code style="font-family:var(--mono)">relevant/total</code> — unweighted, order-blind — which is exactly classic Precision@K from <a href="01-deterministic-retrieval-metrics.html" style="color:var(--accent)">01-deterministic-retrieval-metrics.html</a>. Contextual Precision above is the rank-weighted version of that same idea (<code style="font-family:var(--mono)">hits-so-far/i</code> summed over relevant positions), which is why it can diverge from Relevancy even when the two agree.</p>
   </div>
 
   <div class="panel">

@@ -10,6 +10,8 @@ Before any judge model, any API key, or any cost, there is a layer of retrieval 
 
 **Source module:** `01_Retrieval_Metrics_Deterministic.ipynb`
 
+> **Naming note:** Part 2 reuses "Precision" and "Recall" for its LLM-judged Contextual metrics, but the computations differ. Contextual Relevancy turns out to be the *same* unweighted `relevant/total` formula as Precision@K here; Contextual Precision is a different, rank-weighted metric. See Part 2's Core Mechanism section for the exact formulas.
+
 ---
 
 ## TL;DR

@@ -75,6 +75,7 @@ tbody tr:last-child td{border-bottom:none}
   <div class="eyebrow">RAG · Agent · Tool eval lab · 01</div>
   <h1>Four retrieval metrics, <span style="color:var(--accent)">and they disagree on purpose</span>.</h1>
   <p class="sub">Precision, Recall, MRR and nDCG all score the same ranked list and all move differently as you change K. Drag K and watch which ones react — that divergence is the whole reason you report four numbers instead of one.</p>
+  <p class="sub" style="font-size:12.5px">These are the classic set-overlap definitions — a chunk is relevant or not, checked against a fixed ground-truth set, no LLM involved. Tutorial 02's "Contextual Precision/Recall" reuse these names for a different, LLM-judged computation (rank-weighted precision, coverage-of-expected-output recall) — see <a href="02-llm-judged-retrieval-metrics.html" style="color:var(--accent)">02-llm-judged-retrieval-metrics.html</a>.</p>
 
   <div class="panel">
     <h2>Query: <span style="font-family:var(--mono);font-size:13px;color:var(--accent)">"What is the time complexity of BST delete?"</span></h2>
