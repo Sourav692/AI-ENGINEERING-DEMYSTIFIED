@@ -1,4 +1,6 @@
-# Deterministic Retrieval Metrics: Four Numbers That Are Supposed to Disagree
+=-
+
+# Deterministic Retrieval Metrics: Four Numbers That Are Supposed to Disagrees
 
 *RAG, Agent & Tool Evaluation — Part 1 of 5*
 
@@ -70,12 +72,12 @@ flowchart LR
 
 ## What the Numbers Actually Do as K Moves
 
-| K | Precision@K | Recall@K | MRR | nDCG@K |
-|---|---|---|---|---|
-| 1 | 0.00 | 0.00 | 0.50 | 0.00 |
-| 2 | 0.50 | 0.33 | 0.50 | 0.39 |
-| 3 | 0.33 | 0.33 | 0.50 | 0.41 |
-| 4 | 0.50 | 0.67 | 0.50 | 0.51 |
+| K | Precision@K    | Recall@K       | MRR            | nDCG@K         |
+| - | -------------- | -------------- | -------------- | -------------- |
+| 1 | 0.00           | 0.00           | 0.50           | 0.00           |
+| 2 | 0.50           | 0.33           | 0.50           | 0.39           |
+| 3 | 0.33           | 0.33           | 0.50           | 0.41           |
+| 4 | 0.50           | 0.67           | 0.50           | 0.51           |
 | 5 | **0.40** | **0.67** | **0.50** | **0.51** |
 
 Three things worth noticing:
@@ -88,13 +90,13 @@ Three things worth noticing:
 
 ## Reading the Four Together — a Triage Table
 
-| What you see | What it means | Where to look |
-|---|---|---|
-| Low recall, any precision | The answer isn't in the prompt | Chunking, embedding model, hybrid search, query rewriting |
-| Good recall, low MRR | It's in the prompt, buried | Reranker / cross-encoder |
-| Good recall, falling precision | K is too large for this query | Dynamic K, or retrieve wide and rerank narrow |
-| Good recall and MRR, low nDCG | Ranking ignores degrees of usefulness | Graded labels + a ranking-aware retriever |
-| Everything good, answer still wrong | Retrieval is fine — go look at generation | Part 3's faithfulness and correctness metrics |
+| What you see                        | What it means                              | Where to look                                             |
+| ----------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
+| Low recall, any precision           | The answer isn't in the prompt             | Chunking, embedding model, hybrid search, query rewriting |
+| Good recall, low MRR                | It's in the prompt, buried                 | Reranker / cross-encoder                                  |
+| Good recall, falling precision      | K is too large for this query              | Dynamic K, or retrieve wide and rerank narrow             |
+| Good recall and MRR, low nDCG       | Ranking ignores degrees of usefulness      | Graded labels + a ranking-aware retriever                 |
+| Everything good, answer still wrong | Retrieval is fine — go look at generation | Part 3's faithfulness and correctness metrics             |
 
 ---
 
@@ -121,6 +123,7 @@ Three things worth noticing:
 ### 1. Your support RAG serves 30k queries/day. Leadership asks for "one number" for retrieval quality on the exec dashboard. What do you put there, and what do you say about the request?
 
 **What a strong answer covers:**
+
 - Picks recall@K as the single number if forced, because it is the ceiling on everything downstream and its failure mode is the most severe
 - Explains what that single number hides — a good recall figure is compatible with the answer sitting at rank 8 under seven pieces of noise
 - Proposes recall@K on the dashboard with precision@K and MRR one click away, rather than refusing the request outright
@@ -129,6 +132,7 @@ Three things worth noticing:
 ### 2. Retrieval recall@5 is 0.94 on your eval set, but users keep reporting wrong answers for queries containing product SKUs like `SKU-88213`. Walk through the diagnosis.
 
 **What a strong answer covers:**
+
 - Immediately suspects the eval set's query distribution rather than the metric — a 0.94 average can hide a segment at 0.2
 - Segments recall by query type (natural language vs. exact identifier) before touching the retriever
 - Names the likely mechanism: dense embeddings blur rare literal tokens, so exact-ID queries need a sparse/BM25 channel
@@ -137,6 +141,7 @@ Three things worth noticing:
 ### 3. Your team wants to raise K from 5 to 20 "to be safe." Argue for or against, with the specific evidence you'd collect first.
 
 **What a strong answer covers:**
+
 - Requires the recall-vs-K curve first: if recall has plateaued, the extra 15 chunks add cost and latency for zero recall
 - Quantifies the cost side concretely — tokens per query times query volume, plus the latency impact on p95
 - Raises the quality risk, not just the cost: long noisy contexts make the generator likelier to ground on the wrong chunk
@@ -145,6 +150,7 @@ Three things worth noticing:
 ### 4. How would you know your retrieval eval set has gone stale, without waiting for a customer to complain?
 
 **What a strong answer covers:**
+
 - Compares the distribution of production queries against the eval set's queries on some cheap signal (embedding clusters, intent labels, length)
 - Watches for divergence between offline metrics and online proxies like click-through, thumbs-down rate, or escalation rate
 - Treats the golden set as versioned infrastructure alongside the index, refreshed from sampled real logs on a schedule
@@ -153,6 +159,7 @@ Three things worth noticing:
 ### 5. MRR is 0.50 and flat across every K you try. What is that telling you, and what would you change?
 
 **What a strong answer covers:**
+
 - Reads it correctly as a ranking problem, not a coverage problem — the right chunk is retrieved but never first
 - Explains why K is structurally incapable of fixing it: MRR only looks at the first relevant hit's position
 - Proposes a cross-encoder reranker over a wide candidate set as the standard fix, and names the latency cost it adds
@@ -168,4 +175,5 @@ Three things worth noticing:
 - **These metrics are free, and that is the point.** Run them on every commit. Save the judge calls for the questions arithmetic genuinely cannot answer.
 
 ---
+
 *Next: Part 2 — LLM-Judged Retrieval: Contextual Precision, Recall and Relevancy.*
