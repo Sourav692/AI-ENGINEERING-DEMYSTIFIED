@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chunking Techniques Across Document Types</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12141A;
+    --surface: #1A1D26;
+    --surface-2: #20242F;
+    --border: #2C303C;
+    --text: #E9E7E0;
+    --text-muted: #9A9DAA;
+    --teal: #5EEAD4;
+    --teal-dim: #2E5952;
+    --amber: #F2A65A;
+    --amber-dim: #4A3A24;
+    --violet: #9B95F5;
+    --overlap: #F2A65A;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.65;
+    font-size: 16px;
+  }
+  h1,h2,h3{
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    color: #FBFAF7;
+    line-height: 1.2;
+  }
+  code, pre, .mono{
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  a{ color: var(--teal); }
+
+  .layout{
+    display:grid;
+    grid-template-columns: 250px minmax(0,780px);
+    justify-content:center;
+    gap: 56px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 24px 120px;
+  }
+  nav.toc{
+    position: sticky;
+    top: 40px;
+    align-self: start;
+    font-size: 13.5px;
+  }
+  nav.toc .eyebrow{
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+  }
+  nav.toc ol{
+    list-style: none;
+    padding:0; margin:0;
+    border-left: 1px solid var(--border);
+  }
+  nav.toc li{ margin: 2px 0; }
+  nav.toc a{
+    display:block;
+    padding: 6px 0 6px 16px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    transition: color .15s, border-color .15s;
+  }
+  nav.toc a:hover{ color: var(--text); border-left-color: var(--border); }
+
+  main > header{ margin-bottom: 48px; }
+  main > header .kicker{
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--teal);
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+  }
+  main > header h1{ font-size: 40px; max-width: 14ch; margin: 0 0 14px; }
+  main > header p{ color: var(--text-muted); font-size: 17px; max-width: 56ch; margin:0; }
+
+  section{ margin-bottom: 56px; scroll-margin-top: 32px; }
+  section h2{
+    font-size: 24px;
+    margin: 0 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  section h3{
+    font-size: 17px;
+    color: var(--teal);
+    margin: 28px 0 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+  }
+  p{ margin: 0 0 14px; }
+  ul, ol.steps{ padding-left: 22px; margin: 0 0 14px; }
+  li{ margin-bottom: 6px; }
+  strong{ color: #FBFAF7; }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .pitfall{
+    border-left: 3px solid var(--amber);
+    background: linear-gradient(90deg, var(--amber-dim), var(--surface) 60%);
+  }
+  .pitfall .label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+    display:block;
+  }
+
+  pre{
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 12px 0 18px;
+  }
+  code.inline{
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 0.88em;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 14px 0 20px;
+  }
+  th, td{
+    text-align:left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th{
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+  }
+  tr:last-child td{ border-bottom:none; }
+
+  .checklist{ list-style:none; padding:0; }
+  .checklist li{
+    display:flex; gap:10px; align-items:flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist li:last-child{ border-bottom:none; }
+  .checklist .box{
+    flex:none;
+    width:16px; height:16px; margin-top:3px;
+    border:1.5px solid var(--teal-dim);
+    border-radius:4px;
+  }
+
+  /* ---- Decision diagram ---- */
+  .diagram-wrap{
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 18px 0;
+  }
+  .diagram-wrap svg{ width:100%; height:auto; display:block; }
+  .dnode rect{
+    fill: var(--surface-2);
+    stroke: var(--border);
+    stroke-width:1.5;
+    transition: stroke .15s, fill .15s;
+  }
+  .dnode text{
+    fill: var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+  }
+  .dnode .q{ fill: var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:10.5px; }
+  .dnode{ cursor:pointer; }
+  .dnode:hover rect{ stroke: var(--teal); fill: var(--teal-dim); }
+  .dedge{ stroke: var(--border); stroke-width:1.5; fill:none; }
+  .dlabel{ fill: var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:10px; }
+  #diagram-detail{
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-muted);
+    min-height: 20px;
+  }
+  #diagram-detail strong{ color: var(--teal); }
+
+  /* ---- Playground ---- */
+  .playground{
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+  }
+  .pg-controls{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items:flex-end;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pg-group label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .pg-pills{ display:flex; gap:6px; flex-wrap:wrap; }
+  .pg-pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    cursor:pointer;
+    transition: all .12s;
+  }
+  .pg-pill.active{
+    background: var(--teal-dim);
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .pg-slider-row{ display:flex; align-items:center; gap:10px; }
+  .pg-slider-row input[type=range]{
+    accent-color: var(--teal);
+    width: 140px;
+  }
+  .pg-slider-row .val{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--teal);
+    min-width: 44px;
+  }
+  .pg-stats{
+    display:flex; gap: 22px; flex-wrap:wrap;
+    margin-bottom: 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .pg-stats b{ color: var(--text); }
+  .pg-output{
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    max-height: 420px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .chunk-span{
+    padding: 1px 0;
+    border-radius: 3px;
+  }
+  .legend{
+    display:flex; gap:18px; margin-top:12px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color: var(--text-muted);
+  }
+  .legend span.dot{
+    display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px;
+  }
+  footer{
+    color: var(--text-muted);
+    font-size: 12.5px;
+    text-align:center;
+    margin-top: 60px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  @media (max-width: 880px){
+    .layout{ grid-template-columns: 1fr; padding: 32px 18px 100px; }
+    nav.toc{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="eyebrow">CONTENTS</div>
+    <ol>
+      <li><a href="#why">1. Why it isn't one-size-fits-all</a></li>
+      <li><a href="#params">2. Core parameters</a></li>
+      <li><a href="#types">3. Doc-type breakdown</a></li>
+      <li><a href="#compare">4. Comparison table</a></li>
+      <li><a href="#decision">5. Decision framework</a></li>
+      <li><a href="#playground">6. Chunking playground</a></li>
+      <li><a href="#databricks">7. Databricks RAG notes</a></li>
+      <li><a href="#checklist">8. Checklist</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header>
+      <div class="kicker">RAG / RETRIEVAL — TUTORIAL</div>
+      <h1>Chunking Techniques Across Document Types</h1>
+      <p>What changes, why it changes, and how to pick a strategy per document type — with a live playground to see the boundaries move.</p>
+    </header>
+
+    <section id="why">
+      <h2>1. Why Chunking Isn't One-Size-Fits-All</h2>
+      <p>Chunking decides what a retriever <em>can possibly find</em>. Get it wrong and no amount of embedding-model quality or reranking fixes it — the answer was never inside a single chunk to begin with.</p>
+      <ul>
+        <li><strong>Prose</strong> breaks cleanly at paragraph and sentence boundaries — sizing is the main lever.</li>
+        <li><strong>Markdown / structured docs</strong> carry a header hierarchy that <em>is</em> the semantic structure.</li>
+        <li><strong>Code</strong> becomes syntactically meaningless if a function is split in half by character count.</li>
+        <li><strong>PDFs</strong> interleave body text, tables, and multi-column layouts that rarely match reading order.</li>
+        <li><strong>HTML</strong> carries meaning in tags (<code class="inline">&lt;table&gt;</code>, <code class="inline">&lt;h2&gt;</code>) that plain-text splitting discards.</li>
+        <li><strong>Tabular data</strong> isn't prose at all — splitting a row in half produces two meaningless fragments.</li>
+      </ul>
+      <div class="card">
+        Rule of thumb: <strong>match the splitter's boundary awareness to the document's actual unit of meaning.</strong>
+      </div>
+    </section>
+
+    <section id="params">
+      <h2>2. Core Parameters</h2>
+      <p>Every splitter — regardless of doc type — tunes the same four knobs:</p>
+      <table>
+        <tr><th>Parameter</th><th>Controls</th><th>Typical range</th></tr>
+        <tr><td><code class="inline">chunk_size</code></td><td>Max unit length (chars or tokens)</td><td>200–1500</td></tr>
+        <tr><td><code class="inline">chunk_overlap</code></td><td>Shared text between adjacent chunks</td><td>10–20% of size</td></tr>
+        <tr><td>separators / boundary rules</td><td>Where splits are <em>allowed</em></td><td>doc-type specific</td></tr>
+        <tr><td>metadata preservation</td><td>Structural context riding along with the chunk</td><td>headers, pages, row IDs</td></tr>
+      </table>
+      <p>From <code class="inline">text_splitters.py</code>: <code class="inline">RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50, separators=["\n\n","\n"," ",""])</code> tries each separator in order — paragraph breaks first, falling back to words, then raw characters. That fallback order <em>is</em> the boundary-awareness strategy every variant below builds on.</p>
+    </section>
+
+    <section id="types">
+      <h2>3. Document-Type Breakdown</h2>
+
+      <h3>3.1 Plain Prose</h3>
+      <p><strong>Splitter:</strong> <code class="inline">RecursiveCharacterTextSplitter</code> · <strong>Boundary:</strong> paragraph → sentence → word → char · <strong>Size:</strong> 500–1000 chars · <strong>Overlap:</strong> 10–20%</p>
+      <pre>splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=50,
+    separators=["\n\n", "\n", " ", ""],
+)</pre>
+      <div class="card pitfall"><span class="label">PITFALL</span>Zero overlap silently breaks retrieval for facts that straddle a boundary — your own <code class="inline">overlap_importance()</code> demo shows the sentence split mid-thought at overlap=0.</div>
+
+      <h3>3.2 Markdown / Structured Docs</h3>
+      <p><strong>Splitter:</strong> <code class="inline">MarkdownHeaderTextSplitter</code> + recursive second pass · <strong>Boundary:</strong> header hierarchy → char · <strong>Size:</strong> 500–800/section</p>
+      <pre>headers = [("#","h1"), ("##","h2"), ("###","h3")]
+splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers)
+chunks = splitter.split_text(markdown_text)
+# chunk.metadata -> {"h1": "...", "h2": "..."} — free, retrievable context</pre>
+      <div class="card pitfall"><span class="label">PITFALL</span>A lone header-split pass can still yield a 5,000-char chunk if a section has no sub-headers — always chain a size-bounded second pass.</div>
+
+      <h3>3.3 Source Code</h3>
+      <p><strong>Splitter:</strong> <code class="inline">RecursiveCharacterTextSplitter.from_language()</code> · <strong>Boundary:</strong> class → function → block · <strong>Size:</strong> 300–800 chars</p>
+      <pre>python_splitter = RecursiveCharacterTextSplitter.from_language(
+    language=Language.PYTHON, chunk_size=500, chunk_overlap=50
+)</pre>
+      <div class="card pitfall"><span class="label">PITFALL</span>Even language-aware splitters don't understand indentation-scoped logic in a large class — consider AST-based chunking (one chunk per function/class) for big files.</div>
+
+      <h3>3.4 PDFs (Mixed Layout)</h3>
+      <p><strong>Loader:</strong> <code class="inline">PyPDFLoader</code> / layout-aware alt · <strong>Splitter:</strong> recursive, on loaded <code class="inline">Document</code>s · <strong>Boundary:</strong> page → paragraph → char</p>
+      <pre>docs = PyPDFLoader("./docs/demo.pdf").load()  # metadata={"page": N}
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+split_docs = splitter.split_documents(docs)  # metadata propagates</pre>
+      <div class="card pitfall"><span class="label">PITFALL</span>Multi-column PDFs extract left-then-right columns interleaved wrong; tables flatten into disconnected fragments. Extract tables separately and chunk them as structured data (§3.6).</div>
+
+      <h3>3.5 HTML</h3>
+      <p><strong>Splitter:</strong> <code class="inline">HTMLHeaderTextSplitter</code> · <strong>Boundary:</strong> DOM heading hierarchy → char</p>
+      <pre>headers = [("h1","Header 1"), ("h2","Header 2")]
+splitter = HTMLHeaderTextSplitter(headers_to_split_on=headers)
+chunks = splitter.split_text(html_string)</pre>
+      <div class="card pitfall"><span class="label">PITFALL</span>Nav bars, footers, and ads get chunked alongside real content unless boilerplate DOM nodes are stripped first (target <code class="inline">&lt;main&gt;</code>/<code class="inline">&lt;article&gt;</code>).</div>
+
+      <h3>3.6 Tabular / CSV Data</h3>
+      <p><strong>Splitter:</strong> none of the above — chunk <strong>by row</strong>, never by character count. <strong>Overlap:</strong> usually zero.</p>
+      <pre>docs = [
+    Document(page_content=row.to_json(), metadata={"row_id": i})
+    for i, row in df.iterrows()
+]</pre>
+      <div class="card pitfall"><span class="label">PITFALL</span>The single most common mistake: running a character splitter over a CSV, detaching the header row from data rows or cutting a row mid-column.</div>
+
+      <h3>3.7 Semantic Chunking (Cross-Cutting)</h3>
+      <p>Embed consecutive sentences, cut where similarity between neighbors drops — boundaries track <em>topic</em>, not character count. Best for transcripts and long-form docs where topic shifts ignore paragraph breaks. Trade-off: an extra embedding pass at chunking time.</p>
+      <pre>splitter = SemanticChunker(OpenAIEmbeddings(), breakpoint_threshold_type="percentile")
+chunks = splitter.split_text(long_text)</pre>
+    </section>
+
+    <section id="compare">
+      <h2>4. Comparison Table</h2>
+      <table>
+        <tr><th>Doc Type</th><th>Splitter</th><th>Boundary</th><th>Size</th><th>Overlap</th></tr>
+        <tr><td>Prose</td><td>Recursive char</td><td>¶ → sentence → word</td><td>500–1000c</td><td>10–20%</td></tr>
+        <tr><td>Markdown</td><td>Header + recursive</td><td>headers → char</td><td>500–800c</td><td>low</td></tr>
+        <tr><td>Code</td><td><code class="inline">from_language()</code></td><td>class → fn → block</td><td>300–800c</td><td>small</td></tr>
+        <tr><td>PDF</td><td>Loader + recursive</td><td>page → ¶ → char</td><td>500–1000c</td><td>10–20%</td></tr>
+        <tr><td>HTML</td><td>HTML header splitter</td><td>DOM heading → char</td><td>500–800c</td><td>10–15%</td></tr>
+        <tr><td>CSV / tabular</td><td>Row-based (custom)</td><td>row (never split)</td><td>rows, not chars</td><td>~0%</td></tr>
+        <tr><td>Semantic (any)</td><td><code class="inline">SemanticChunker</code></td><td>embedding similarity drop</td><td>adaptive</td><td>n/a</td></tr>
+      </table>
+    </section>
+
+    <section id="decision">
+      <h2>5. Decision Framework</h2>
+      <p>Click a node to see the reasoning behind it.</p>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 720 360" id="decision-svg">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#2C303C"/>
+            </marker>
+          </defs>
+          <path class="dedge" d="M360,42 L360,72" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M300,100 L180,140" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M420,100 L420,140" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M180,178 L180,218" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M420,178 L300,218" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M420,178 L540,218" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M300,256 L300,296" marker-end="url(#arrow)"/>
+          <path class="dedge" d="M540,256 L540,296" marker-end="url(#arrow)"/>
+
+          <text x="150" y="132" class="dlabel">yes</text>
+          <text x="430" y="132" class="dlabel">no</text>
+          <text x="120" y="210" class="dlabel">yes</text>
+          <text x="330" y="210" class="dlabel">yes</text>
+          <text x="560" y="210" class="dlabel">no</text>
+
+          <g class="dnode" data-detail="Atomic record unit: rows in a CSV, fields in a form, entries in a table. If present, character-count splitting will cut records in half — chunk by record instead.">
+            <rect x="240" y="8" width="240" height="34" rx="8"/>
+            <text x="360" y="30" text-anchor="middle">Has an atomic record unit?</text>
+          </g>
+
+          <g class="dnode" data-detail="Row-based chunking: group N rows per chunk, or one chunk per logical entity. Overlap is usually zero — rows are independent records.">
+            <rect x="60" y="72" width="180" height="28" rx="8"/>
+            <text x="150" y="90" text-anchor="middle" class="q">→ Row-based chunking</text>
+          </g>
+
+          <g class="dnode" data-detail="Explicit structural markup: Markdown headers, HTML tags, PDF page structure. If present, split on structure first, then character-bound any oversized leftovers.">
+            <rect x="330" y="72" width="240" height="34" rx="8"/>
+            <text x="450" y="94" text-anchor="middle">Has structural markup (headers/tags)?</text>
+          </g>
+
+          <g class="dnode" data-detail="Header/tag-aware splitting: MarkdownHeaderTextSplitter or HTMLHeaderTextSplitter, chained with a size-bounded recursive pass on oversized sections.">
+            <rect x="90" y="140" width="180" height="34" rx="8"/>
+            <text x="180" y="162" text-anchor="middle" class="q">→ Header/tag-aware split</text>
+          </g>
+
+          <g class="dnode" data-detail="Single language grammar (source code): use a language-aware splitter that respects class/function boundaries instead of raw character counts.">
+            <rect x="330" y="140" width="180" height="34" rx="8"/>
+            <text x="420" y="162" text-anchor="middle">Single code grammar?</text>
+          </g>
+
+          <g class="dnode" data-detail="Language-aware splitter: RecursiveCharacterTextSplitter.from_language(). For very large files, consider AST-based chunking (one chunk per function/class).">
+            <rect x="210" y="218" width="180" height="34" rx="8"/>
+            <text x="300" y="240" text-anchor="middle" class="q">→ Language-aware split</text>
+          </g>
+
+          <g class="dnode" data-detail="Unreliable layout: scanned PDFs, multi-column documents. Extract carefully first (loader / OCR / table extraction), then apply the type-appropriate splitter, and always keep page/position metadata as a safety net.">
+            <rect x="450" y="140" width="180" height="34" rx="8"/>
+            <text x="540" y="162" text-anchor="middle">Layout unreliable (PDF/scan)?</text>
+          </g>
+
+          <g class="dnode" data-detail="Extract first: layout-aware loader, OCR, or table extraction — then chunk with the type-appropriate strategy above. Preserve page numbers as your anchor back to source when extraction is imperfect.">
+            <rect x="450" y="218" width="180" height="34" rx="8"/>
+            <text x="540" y="240" text-anchor="middle" class="q">→ Extract, then re-route</text>
+          </g>
+
+          <g class="dnode" data-detail="Plain prose, the default case: RecursiveCharacterTextSplitter with paragraph → sentence → word → char fallback, sensible size (500–1000 chars) and 10–20% overlap.">
+            <rect x="360" y="296" width="180" height="34" rx="8"/>
+            <text x="450" y="318" text-anchor="middle" class="q">→ Recursive char split (prose default)</text>
+          </g>
+        </svg>
+        <div id="diagram-detail">Click any box in the diagram to see the reasoning behind that branch.</div>
+      </div>
+    </section>
+
+    <section id="playground">
+      <h2>6. Chunking Playground</h2>
+      <p>Pick a document type and drag the sliders — chunk boundaries update live on the sample text below. This runs a simplified version of the same boundary logic as the LangChain splitters above (not the exact library implementation).</p>
+
+      <div class="playground">
+        <div class="pg-controls">
+          <div class="pg-group">
+            <label>DOCUMENT TYPE</label>
+            <div class="pg-pills" id="type-pills">
+              <div class="pg-pill active" data-type="prose">Prose</div>
+              <div class="pg-pill" data-type="markdown">Markdown</div>
+              <div class="pg-pill" data-type="code">Code</div>
+              <div class="pg-pill" data-type="csv">CSV / Table</div>
+            </div>
+          </div>
+          <div class="pg-group" id="size-group">
+            <label>CHUNK SIZE (chars)</label>
+            <div class="pg-slider-row">
+              <input type="range" id="size-slider" min="60" max="400" value="160" step="10">
+              <span class="val" id="size-val">160</span>
+            </div>
+          </div>
+          <div class="pg-group" id="overlap-group">
+            <label>OVERLAP (chars)</label>
+            <div class="pg-slider-row">
+              <input type="range" id="overlap-slider" min="0" max="80" value="20" step="5">
+              <span class="val" id="overlap-val">20</span>
+            </div>
+          </div>
+          <div class="pg-group" id="rows-group" style="display:none">
+            <label>ROWS PER CHUNK</label>
+            <div class="pg-slider-row">
+              <input type="range" id="rows-slider" min="1" max="6" value="2" step="1">
+              <span class="val" id="rows-val">2</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pg-stats">
+          <span>chunks: <b id="stat-chunks">–</b></span>
+          <span>avg size: <b id="stat-avg">–</b></span>
+          <span>splitter: <b id="stat-splitter">–</b></span>
+        </div>
+
+        <div class="pg-output" id="pg-output"></div>
+
+        <div class="legend">
+          <span><span class="dot" style="background:#3a5a52"></span>chunk A</span>
+          <span><span class="dot" style="background:#2f4a63"></span>chunk B</span>
+          <span><span class="dot" style="background:#F2A65A"></span>overlap region</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="databricks">
+      <h2>7. Databricks RAG Considerations</h2>
+      <ul>
+        <li><strong>Vector Search granularity:</strong> chunk size determines what a single index hit returns — smaller chunks improve precision but can fragment context an LLM needs downstream.</li>
+        <li><strong>Golden dataset alignment:</strong> re-run offline RAGAS/MLflow evaluation whenever chunking strategy changes — retrieval metrics are chunking-strategy-specific, not portable across strategies.</li>
+        <li><strong>Lakehouse Monitoring / drift:</strong> a strategy that worked on early documents can silently degrade as new document types (e.g. table-heavy filings) enter the corpus — track this as a distinct drift signal.</li>
+        <li><strong>Unverified boundary:</strong> table-heavy / multi-column PDF handling via <code class="inline">Unstructured</code> or Spark UDFs is worth flagging <code class="inline">UNVERIFIED</code> in accelerator docs until tested on the actual client corpus.</li>
+      </ul>
+    </section>
+
+    <section id="checklist">
+      <h2>8. Pitfalls &amp; Best Practices Checklist</h2>
+      <ul class="checklist">
+        <li><span class="box"></span>Match splitter to the document's real unit of meaning — don't default to character-count splitting for structured or tabular content.</li>
+        <li><span class="box"></span>Never use zero overlap for prose; do use zero overlap for independent tabular rows.</li>
+        <li><span class="box"></span>Preserve structural metadata (headers, page numbers, row IDs) through the split.</li>
+        <li><span class="box"></span>For PDFs, validate extraction order before trusting chunk boundaries.</li>
+        <li><span class="box"></span>Re-run offline evaluation after any chunking strategy change.</li>
+        <li><span class="box"></span>For code, prefer language-aware or AST-based chunking over generic character splitting.</li>
+        <li><span class="box"></span>For tables embedded in prose/PDF, extract and chunk them separately from narrative text.</li>
+      </ul>
+    </section>
+
+    <footer>chunking-by-doc-type · companion to text_splitters.py</footer>
+  </main>
+</div>
+
+<script>
+// ---------- Decision diagram ----------
+document.querySelectorAll('.dnode').forEach(node => {
+  node.addEventListener('click', () => {
+    document.getElementById('diagram-detail').innerHTML = '<strong>›</strong> ' + node.getAttribute('data-detail');
+  });
+});
+
+// ---------- Chunking playground ----------
+const SAMPLES = {
+  prose: `Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed. Supervised learning uses labeled data to train models, mapping inputs to outputs from example pairs. Unsupervised learning finds hidden patterns in unlabeled data without predefined labels. These techniques power image recognition, natural language processing, recommendation systems, fraud detection, and autonomous vehicles.`,
+  markdown: `# Introduction to ML\n\nMachine learning enables systems to learn from experience.\n\n## Supervised Learning\n\nUses labeled data to train models. Common algorithms include linear regression and decision trees.\n\n## Unsupervised Learning\n\nFinds hidden patterns in unlabeled data. Common algorithms include k-means and PCA.\n\n## Applications\n\nUsed in image recognition, NLP, and fraud detection.`,
+  code: `def quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    right = [x for x in arr if x > pivot]\n    return quicksort(left) + [pivot] + quicksort(right)\n\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1`,
+  csv: `id,name,region,revenue\n1,Acme Corp,West,102400\n2,Globex,East,88250\n3,Initech,North,54100\n4,Umbrella,South,121900\n5,Soylent,West,76300\n6,Stark Industries,East,203400`,
+};
+
+const typeGroups = { size: document.getElementById('size-group'), overlap: document.getElementById('overlap-group'), rows: document.getElementById('rows-group') };
+let currentType = 'prose';
+
+function naiveSplit(text, type, chunkSize, overlap, rowsPerChunk){
+  if(type === 'csv'){
+    const lines = text.split('\n');
+    const header = lines[0];
+    const rows = lines.slice(1);
+    const chunks = [];
+    for(let i=0;i<rows.length;i+=rowsPerChunk){
+      const group = rows.slice(i, i+rowsPerChunk);
+      chunks.push({ text: header + '\n' + group.join('\n'), overlapPrefix: 0 });
+    }
+    return chunks;
+  }
+
+  let atoms;
+  if(type === 'markdown'){
+    // split into sections by header lines, keep header attached to following text
+    atoms = text.split(/\n(?=#{1,3} )/g);
+  } else if(type === 'code'){
+    atoms = text.split(/\n(?=def |class )/g);
+  } else {
+    atoms = text.split(/(?<=[.!?])\s+/g);
+  }
+
+  const chunks = [];
+  let current = '';
+  for(const atom of atoms){
+    const candidate = current ? current + (type==='prose' ? ' ' : '\n') + atom : atom;
+    if(candidate.length > chunkSize && current){
+      chunks.push(current);
+      // start next chunk with overlap tail from previous
+      const tail = current.slice(Math.max(0, current.length - overlap));
+      current = tail ? tail + (type==='prose' ? ' ' : '\n') + atom : atom;
+    } else {
+      current = candidate;
+    }
+  }
+  if(current) chunks.push(current);
+  return chunks.map((c, i) => ({ text: c, overlapPrefix: i===0 ? 0 : overlap }));
+}
+
+const CHUNK_COLORS = ['#3a5a52', '#2f4a63', '#4a3f5c', '#5c4a2f'];
+
+function render(){
+  const type = currentType;
+  const text = SAMPLES[type];
+  const chunkSize = parseInt(document.getElementById('size-slider').value, 10);
+  const overlap = parseInt(document.getElementById('overlap-slider').value, 10);
+  const rowsPerChunk = parseInt(document.getElementById('rows-slider').value, 10);
+
+  const chunks = naiveSplit(text, type, chunkSize, overlap, rowsPerChunk);
+
+  const splitterNames = {
+    prose: 'RecursiveCharacterTextSplitter',
+    markdown: 'MarkdownHeaderTextSplitter + recursive',
+    code: 'from_language(PYTHON)',
+    csv: 'row-based (custom)'
+  };
+  document.getElementById('stat-splitter').textContent = splitterNames[type];
+  document.getElementById('stat-chunks').textContent = chunks.length;
+  const avg = Math.round(chunks.reduce((s,c)=>s+c.text.length,0) / chunks.length) || 0;
+  document.getElementById('stat-avg').textContent = avg + ' chars';
+
+  const out = document.getElementById('pg-output');
+  out.innerHTML = '';
+  chunks.forEach((c, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '10px';
+
+    const tag = document.createElement('div');
+    tag.style.color = '#6b6f7d';
+    tag.style.fontSize = '10.5px';
+    tag.style.marginBottom = '3px';
+    tag.textContent = `chunk ${i+1} · ${c.text.length} chars`;
+    wrap.appendChild(tag);
+
+    const body = document.createElement('span');
+    body.className = 'chunk-span';
+    body.style.background = CHUNK_COLORS[i % CHUNK_COLORS.length];
+    body.style.padding = '6px 8px';
+    body.style.display = 'inline-block';
+    body.style.borderRadius = '5px';
+
+    if(c.overlapPrefix > 0){
+      const overlapText = c.text.slice(0, c.overlapPrefix);
+      const restText = c.text.slice(c.overlapPrefix);
+      const ov = document.createElement('span');
+      ov.textContent = overlapText;
+      ov.style.background = '#F2A65A';
+      ov.style.color = '#20242F';
+      ov.style.borderRadius = '3px';
+      ov.style.padding = '0 2px';
+      body.appendChild(ov);
+      body.appendChild(document.createTextNode(restText));
+    } else {
+      body.textContent = c.text;
+    }
+    wrap.appendChild(body);
+    out.appendChild(wrap);
+  });
+}
+
+document.querySelectorAll('.pg-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.pg-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    currentType = pill.getAttribute('data-type');
+    if(currentType === 'csv'){
+      typeGroups.size.style.display = 'none';
+      typeGroups.overlap.style.display = 'none';
+      typeGroups.rows.style.display = '';
+    } else {
+      typeGroups.size.style.display = '';
+      typeGroups.overlap.style.display = '';
+      typeGroups.rows.style.display = 'none';
+    }
+    render();
+  });
+});
+
+document.getElementById('size-slider').addEventListener('input', e => {
+  document.getElementById('size-val').textContent = e.target.value;
+  render();
+});
+document.getElementById('overlap-slider').addEventListener('input', e => {
+  document.getElementById('overlap-val').textContent = e.target.value;
+  render();
+});
+document.getElementById('rows-slider').addEventListener('input', e => {
+  document.getElementById('rows-val').textContent = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

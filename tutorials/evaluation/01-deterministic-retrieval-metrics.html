@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deterministic Retrieval Metrics — Eval Lab 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --accent:#3fd6ce; --hit:#3fd67a; --miss:#ef5b93; --noise:#f0a03c; --dead:#3a4258;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text);font-family:var(--disp);line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:66ch;margin:0 0 22px}
+h2{font-size:15px;margin:0 0 12px;font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+input[type=range]{accent-color:var(--accent);flex:1;min-width:150px}
+input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.valpill{font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:99px;padding:4px 12px;min-width:48px;text-align:center;color:var(--accent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:6px 10px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#12352f;border-color:var(--accent);color:#8ff0e8}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 0}
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat .kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat b{display:block;font-size:24px;margin:4px 0 8px;letter-spacing:-.02em}
+.stat .note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px}
+.bar{height:6px;border-radius:99px;background:#1d2434;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .4s cubic-bezier(.22,.7,.3,1)}
+.crow{background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--dead);border-radius:8px;
+  padding:9px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px;transition:opacity .3s,border-color .3s,background .3s}
+.crow.out{opacity:.32}
+.crow.hit{border-left-color:var(--hit)}
+.crow.noise{border-left-color:var(--noise)}
+.crow.missed{border-left-color:var(--miss);background:#2a1620;border-style:dashed}
+.rank{font-family:var(--mono);font-size:11px;color:var(--muted);width:34px;flex:none}
+.cid{font-family:var(--mono);font-size:12px;width:76px;flex:none}
+.ctxt{font-size:12.5px;flex:1;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grade{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:99px;flex:none;background:#151a26;border:1px solid var(--line);color:var(--muted)}
+.grade.g3{color:#8ff0e8;border-color:#2c5a56}.grade.g2{color:#9fe6b8;border-color:#24523a}.grade.g1{color:#f0c07a;border-color:#6b4c18}
+.callout{margin-top:16px;background:linear-gradient(90deg,#12302e,#151a26 70%);border:1px solid #2c5a56;border-left:3px solid var(--accent);border-radius:8px;padding:13px 15px;font-size:13.5px;color:#cfd4e6}
+.callout b{color:#fff}
+.callout.warn{background:linear-gradient(90deg,#301722,#151a26 70%);border-color:#5c2b40;border-left-color:var(--miss)}
+pre{background:#0f131d;border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:11.5px;color:#c8d0e4;margin:0}
+.cmt{color:#5f6b86}.kw{color:#a487f5}.str{color:#3fd67a}.num{color:#f0a03c}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+tbody td{padding:10px 12px;font-size:12.5px;border-bottom:1px solid #1e2434;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:12px}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.foot{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:28px;text-align:center}
+@media (max-width:820px){.grid4{grid-template-columns:1fr 1fr}.ctxt{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG · Agent · Tool eval lab · 01</div>
+  <h1>Four retrieval metrics, <span style="color:var(--accent)">and they disagree on purpose</span>.</h1>
+  <p class="sub">Precision, Recall, MRR and nDCG all score the same ranked list and all move differently as you change K. Drag K and watch which ones react — that divergence is the whole reason you report four numbers instead of one.</p>
+
+  <div class="panel">
+    <h2>Query: <span style="font-family:var(--mono);font-size:13px;color:var(--accent)">"What is the time complexity of BST delete?"</span></h2>
+    <div class="row">
+      <label for="k">K — how many chunks reach the prompt</label>
+      <input type="range" id="k" min="1" max="5" step="1" value="5">
+      <span class="valpill" id="kVal">5</span>
+    </div>
+    <div class="chips" id="presets">
+      <button class="chip" data-k="1">K=1 · nothing relevant yet</button>
+      <button class="chip" data-k="3">K=3 · precision dips</button>
+      <button class="chip" data-k="4">K=4 · recall jumps</button>
+      <button class="chip" data-k="5" aria-pressed="true">K=5 · notebook default</button>
+    </div>
+
+    <div class="grid4">
+      <div class="stat"><div class="kicker">Precision@K</div><b id="sP">0.40</b><div class="bar"><i id="bP" style="background:var(--noise)"></i></div><div class="note" id="nP">2 of 5 retrieved are relevant</div></div>
+      <div class="stat"><div class="kicker">Recall@K</div><b id="sR">0.67</b><div class="bar"><i id="bR" style="background:var(--hit)"></i></div><div class="note" id="nR">2 of 3 relevant chunks found</div></div>
+      <div class="stat"><div class="kicker">MRR</div><b id="sM">0.50</b><div class="bar"><i id="bM" style="background:var(--accent)"></i></div><div class="note" id="nM">first hit at rank 2</div></div>
+      <div class="stat"><div class="kicker">nDCG@K</div><b id="sN">0.51</b><div class="bar"><i id="bN" style="background:#a487f5"></i></div><div class="note">graded relevance, rank-discounted</div></div>
+    </div>
+
+    <div class="callout" id="callout"></div>
+  </div>
+
+  <div class="panel">
+    <h2>The ranked list — <code style="font-family:var(--mono);font-size:12px">chunk_5</code> is relevant and was never retrieved at all</h2>
+    <div id="clist"></div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--hit)"></i>relevant and inside K</span>
+      <span><i class="swatch" style="background:var(--noise)"></i>retrieved but not relevant</span>
+      <span><i class="swatch" style="background:var(--miss)"></i>relevant, never retrieved — pure recall loss</span>
+      <span>grade = graded relevance 0–3, used only by nDCG</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Which metric answers which question</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Question</th><th>Blind to</th><th>Reach for it when</th></tr></thead>
+      <tbody>
+        <tr><td><b>Precision@K</b></td><td>Of the K retrieved, how many are relevant?</td><td>Relevant chunks that were never retrieved</td><td>Context windows are expensive and noise is diluting the prompt</td></tr>
+        <tr><td><b>Recall@K</b></td><td>Of all relevant chunks, how many did we find?</td><td>Where in the ranking they landed</td><td>Anything downstream is capped by this — check it first</td></tr>
+        <tr><td><b>MRR</b></td><td>How early does the first relevant chunk appear?</td><td>Everything after the first hit</td><td>One best chunk exists and position matters</td></tr>
+        <tr><td><b>nDCG@K</b></td><td>Is the ranking good under <i>graded</i> relevance?</td><td>Nothing much — it's the most complete, and the hardest to label</td><td>Multiple relevant chunks with different degrees of usefulness</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>The whole implementation — no LLM, no API key, no cost</h2>
+<pre><span class="kw">def</span> precision_at_k(retrieved, relevant, k):
+    top_k = retrieved[:k]
+    <span class="kw">return</span> len([d <span class="kw">for</span> d <span class="kw">in</span> top_k <span class="kw">if</span> d <span class="kw">in</span> relevant]) / k
+
+<span class="kw">def</span> recall_at_k(retrieved, relevant, k):
+    top_k = retrieved[:k]
+    <span class="kw">return</span> len([d <span class="kw">for</span> d <span class="kw">in</span> top_k <span class="kw">if</span> d <span class="kw">in</span> relevant]) / len(relevant)
+
+<span class="kw">def</span> mrr(retrieved, relevant):
+    <span class="kw">for</span> rank, doc <span class="kw">in</span> enumerate(retrieved, start=<span class="num">1</span>):
+        <span class="kw">if</span> doc <span class="kw">in</span> relevant: <span class="kw">return</span> <span class="num">1.0</span> / rank
+    <span class="kw">return</span> <span class="num">0.0</span>
+
+<span class="kw">def</span> ndcg_at_k(retrieved, grades, k):
+    dcg  = sum(grades.get(d, <span class="num">0</span>) / math.log2(i + <span class="num">2</span>) <span class="kw">for</span> i, d <span class="kw">in</span> enumerate(retrieved[:k]))
+    <span class="cmt"># the ideal ranking includes chunk_5 (grade 3) — which is why nDCG</span>
+    <span class="cmt"># stays capped at 0.51 no matter how you reorder what WAS retrieved</span>
+    ideal = sorted(grades.values(), reverse=<span class="kw">True</span>)[:k]
+    idcg = sum(rel / math.log2(i + <span class="num">2</span>) <span class="kw">for</span> i, rel <span class="kw">in</span> enumerate(ideal))
+    <span class="kw">return</span> dcg / idcg <span class="kw">if</span> idcg &gt; <span class="num">0</span> <span class="kw">else</span> <span class="num">0.0</span>
+</pre>
+  </div>
+
+  <div class="foot">Eval Lab 01 · next → 02 LLM-Judged Retrieval</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* The exact toy eval set from 01_Retrieval_Metrics_Deterministic.ipynb.
+   Every number on this page is computed by the functions below, not hard-coded. */
+const RETRIEVED=["chunk_3","chunk_1","chunk_7","chunk_2","chunk_9"];
+const RELEVANT=["chunk_1","chunk_2","chunk_5"];
+const GRADES={chunk_1:3,chunk_2:2,chunk_3:0,chunk_5:3,chunk_7:1,chunk_9:0};
+const TEXT={
+ chunk_1:"BST delete is O(h), where h is the height of the tree.",
+ chunk_2:"A balanced BST has height O(log n); degenerate trees reach O(n).",
+ chunk_3:"Binary search trees keep keys in sorted order for in-order traversal.",
+ chunk_5:"Deletion has three cases: leaf, one child, two children (successor swap).",
+ chunk_7:"Tree rotations rebalance an AVL tree after insertion or deletion.",
+ chunk_9:"Hash tables offer O(1) average lookup but no ordering guarantees.",
+};
+
+function precisionAtK(k){
+  const top=RETRIEVED.slice(0,k);
+  return k? top.filter(d=>RELEVANT.includes(d)).length/k : 0;
+}
+function recallAtK(k){
+  const top=RETRIEVED.slice(0,k);
+  return top.filter(d=>RELEVANT.includes(d)).length/RELEVANT.length;
+}
+function mrr(){
+  for(let i=0;i<RETRIEVED.length;i++) if(RELEVANT.includes(RETRIEVED[i])) return 1/(i+1);
+  return 0;
+}
+function dcgAtK(k){
+  return RETRIEVED.slice(0,k).reduce((s,d,i)=>s+(GRADES[d]||0)/Math.log2(i+2),0);
+}
+function ndcgAtK(k){
+  const ideal=Object.values(GRADES).sort((a,b)=>b-a).slice(0,k);
+  const idcg=ideal.reduce((s,g,i)=>s+g/Math.log2(i+2),0);
+  return idcg? dcgAtK(k)/idcg : 0;
+}
+
+/* build rows once: the 5 retrieved chunks, then the un-retrieved relevant one */
+const ORDER=[...RETRIEVED,"chunk_5"];
+const list=$('clist');
+const rowEls=ORDER.map((id,i)=>{
+  const d=document.createElement('div');
+  const retrieved=i<RETRIEVED.length;
+  const g=GRADES[id];
+  d.className='crow';
+  d.innerHTML=`<span class="rank">${retrieved?'#'+(i+1):'—'}</span>
+    <span class="cid">${id}</span>
+    <span class="ctxt">${TEXT[id]}</span>
+    <span class="grade g${g}">grade ${g}</span>`;
+  list.appendChild(d);
+  return d;
+});
+
+function render(){
+  const k=+$('k').value;
+  const P=precisionAtK(k), R=recallAtK(k), M=mrr(), N=ndcgAtK(k);
+  const hits=RETRIEVED.slice(0,k).filter(d=>RELEVANT.includes(d)).length;
+
+  $('kVal').textContent=k;
+
+  ORDER.forEach((id,i)=>{
+    const el=rowEls[i];
+    const retrieved=i<RETRIEVED.length;
+    if(!retrieved){ el.className='crow missed'; return; }
+    const inK=i<k, rel=RELEVANT.includes(id);
+    el.className='crow '+(inK?(rel?'hit':'noise'):'out');
+  });
+
+  $('sP').textContent=P.toFixed(2); $('bP').style.width=(P*100)+'%';
+  $('nP').textContent=`${hits} of ${k} retrieved are relevant`;
+  $('sR').textContent=R.toFixed(2); $('bR').style.width=(R*100)+'%';
+  $('nR').textContent=`${hits} of ${RELEVANT.length} relevant chunks found`;
+  $('sM').textContent=M.toFixed(2); $('bM').style.width=(M*100)+'%';
+  $('nM').textContent=`first hit at rank ${RETRIEVED.findIndex(d=>RELEVANT.includes(d))+1} — K cannot change this`;
+  $('sN').textContent=N.toFixed(2); $('bN').style.width=(N*100)+'%';
+
+  document.querySelectorAll('#presets .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(+b.dataset.k===k)));
+
+  const c=$('callout');
+  if(R===0){
+    c.className='callout warn';
+    c.innerHTML=`<b>At K=${k} recall is 0.00 — the prompt contains no relevant chunk at all.</b>
+      The top-ranked result is about sorted-order traversal, not deletion cost. Anything the generator says here is invention,
+      and a team watching only answer quality would log this as a hallucination bug and go tune the prompt.`;
+  } else if(k===3){
+    c.className='callout';
+    c.innerHTML=`<b>Precision just fell from 0.50 to ${P.toFixed(2)} while recall stayed at ${R.toFixed(2)}.</b>
+      Adding <code>chunk_7</code> (AVL rotations — grade 1, but not in the relevant set) bought nothing and diluted the context.
+      This is the shape of the trade-off: every K you add is a precision cost paid up front against a recall gain that may never arrive.`;
+  } else if(k>=4 && R>=0.66){
+    c.className='callout';
+    c.innerHTML=`<b>Recall is ${R.toFixed(2)} and it will not go higher.</b>
+      <code>chunk_5</code> — the chunk that actually explains the three deletion cases, graded 3 — was never retrieved,
+      so no value of K reaches it. MRR is stuck at ${M.toFixed(2)} for the same structural reason: the first relevant hit sits at rank 2 and K cannot move it.
+      nDCG@${k} of ${N.toFixed(2)} is measured against an ideal ranking that <i>includes</i> the missing chunk, which is why it stays capped well below 1.0.
+      Precision, meanwhile, is down to ${P.toFixed(2)}. Three of these four numbers are telling you to fix the retriever, not the K.`;
+  } else {
+    c.className='callout';
+    c.innerHTML=`<b>K=${k}: precision ${P.toFixed(2)}, recall ${R.toFixed(2)}, nDCG ${N.toFixed(2)}.</b>
+      Precision and recall are moving in opposite directions — that is the entire reason both exist.
+      Keep dragging: watch recall stall at 0.67 while precision keeps sliding.`;
+  }
+}
+
+$('k').addEventListener('input',render);
+document.querySelectorAll('#presets .chip').forEach(b=>
+  b.addEventListener('click',()=>{ $('k').value=b.dataset.k; render(); }));
+render();
+</script>
+</body>
+</html>

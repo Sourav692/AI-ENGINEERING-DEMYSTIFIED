@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chunking Strategies by Document Type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --prose:#3fd6ce; --markdown:#f0a03c; --code:#a487f5; --table:#ef5b93; --chat:#5b9bef;
+  --good:#3fd67a; --warn:#e8615a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text); font-family:var(--disp); line-height:1.5;
+}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:68ch;margin:0 0 22px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{font-family:var(--mono);font-size:12px;padding:8px 14px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#20263a;border-color:var(--accent);color:var(--text)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+@media (max-width:760px){ .grid3{grid-template-columns:1fr} .cols2{grid-template-columns:1fr !important} }
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat .kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat b{display:block;font-size:24px;margin:4px 0 8px;letter-spacing:-.02em}
+.bar{height:6px;border-radius:99px;background:#1d2434;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .4s cubic-bezier(.22,.7,.3,1)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.colhead{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.colhead .dot{width:8px;height:8px;border-radius:99px}
+.chunk{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-family:var(--mono);font-size:11.5px;color:#cfd4e6;white-space:pre-wrap;word-break:break-word}
+.chunk.broken{border-color:var(--warn);border-left:3px solid var(--warn)}
+.chunk.clean{border-color:var(--good);border-left:3px solid var(--good)}
+.tag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;margin-bottom:6px}
+.tag.warn{background:#3a1c22;color:var(--warn)}
+.tag.good{background:#123028;color:var(--good)}
+.callout{margin-top:6px;background:linear-gradient(90deg,#1c1730,#151a26 70%);border:1px solid #3a3060;border-left:3px solid var(--accent);border-radius:8px;padding:13px 15px;font-size:13.5px;color:#cfd4e6}
+.callout b{color:#fff}
+@media (prefers-reduced-motion:reduce){ *{transition:none !important;animation:none !important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG retrieval lab &middot; 01</div>
+  <h1>Same splitter, five different ways to break your data</h1>
+  <p class="sub">Pick a document type. Watch a naive fixed-size splitter cut through sentences, headers, functions, rows, and conversation turns &mdash; and see how a structure-aware splitter avoids every one of those cuts.</p>
+
+  <div class="chiprow" role="tablist" aria-label="Document type">
+    <button class="chip" data-type="prose" role="tab" aria-pressed="true">Prose / narrative</button>
+    <button class="chip" data-type="markdown" role="tab" aria-pressed="false">Markdown docs</button>
+    <button class="chip" data-type="code" role="tab" aria-pressed="false">Code</button>
+    <button class="chip" data-type="table" role="tab" aria-pressed="false">Tabular data</button>
+    <button class="chip" data-type="chat" role="tab" aria-pressed="false">Chat / conversational</button>
+  </div>
+
+  <div class="grid3">
+    <div class="stat">
+      <div class="kicker">Source length</div>
+      <b id="statLen">-</b>
+      <div class="bar"><i style="width:100%;background:var(--muted)"></i></div>
+    </div>
+    <div class="stat">
+      <div class="kicker">Naive fixed-size (130 chars)</div>
+      <b id="statNaive">-</b>
+      <div class="bar"><i id="statNaiveBar" style="width:0%;background:var(--warn)"></i></div>
+    </div>
+    <div class="stat">
+      <div class="kicker">Structure-aware</div>
+      <b id="statAware">-</b>
+      <div class="bar"><i id="statAwareBar" style="width:0%;background:var(--good)"></i></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cols2">
+      <div>
+        <div class="colhead"><span class="dot" style="background:var(--warn)"></span>Naive fixed-size splitter</div>
+        <div id="naiveList"></div>
+      </div>
+      <div>
+        <div class="colhead"><span class="dot" style="background:var(--good)"></span>Structure-aware splitter</div>
+        <div id="awareList"></div>
+      </div>
+    </div>
+    <div class="callout" id="callout"></div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+const SOURCES = {
+  prose: `Chunking is the process of splitting a long document into smaller pieces before it gets embedded and stored in a vector database. If chunks are too large, irrelevant content dilutes the embedding and the retriever returns noisy matches. If chunks are too small, a single chunk loses the surrounding context a reader would need to make sense of it. Most production RAG systems settle on a chunk size between two hundred and eight hundred tokens, tuned to the shape of the source documents themselves. There is no universal chunk size that works well across every document type. A support ticket, a legal contract, and a codebase all have completely different internal structures, and a splitter that ignores that structure will cut sentences, functions, and table rows right down the middle.`,
+  markdown: `## Overview
+This library provides a lightweight client for the internal search API. It handles authentication, retries, and response pagination automatically.
+
+## Installation
+Install the package from the internal registry using pip. Python 3.10 or later is required for the async client.
+
+## Usage
+Create a client instance with your API key, then call the search method with a query string and an optional filter dictionary. Results are returned as a list of typed result objects.
+
+## Error Handling
+The client raises a RateLimitError when the API returns a 429 status, and a AuthError when credentials are rejected. Both errors include a retry_after field where applicable.`,
+  code: `def quicksort(arr):
+    """Quicksort implementation. O(n log n) average, O(n^2) worst case."""
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+
+def binary_search(arr, target):
+    """Binary search. Requires a sorted array. O(log n)."""
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1`,
+  table: `order_id,customer,item,qty,status
+ORD-1001,Amara Singh,Wireless Mouse,2,Shipped
+ORD-1002,Ben Ortiz,USB-C Hub,1,Processing
+ORD-1003,Chen Wei,Mechanical Keyboard,1,Shipped
+ORD-1004,Dana Volkov,Webcam 1080p,3,Delayed
+ORD-1005,Elif Kaya,Monitor Stand,2,Shipped
+ORD-1006,Femi Adebayo,Laptop Sleeve,1,Processing
+ORD-1007,Grace Liu,Noise Cancelling Headphones,1,Shipped
+ORD-1008,Hana Suzuki,Desk Lamp,4,Delayed`,
+  chat: `Customer: Hi, my order ORD-1004 says delayed but I need it by Friday for a trip.
+Agent: I'm sorry about that! Let me pull up ORD-1004 and check the carrier status for you.
+Customer: Thanks, I appreciate it. It's the webcam order.
+Agent: I see it now — the delay is on the carrier side, currently estimated to arrive Thursday. I can also expedite shipping on a replacement at no extra cost if you'd like a backup.
+Customer: Yes please, let's do the replacement just in case.
+Agent: Done — a replacement is going out overnight and will arrive by Wednesday. You'll get both if the original also shows up, no charge either way.`
+};
+
+const ACCENT = { prose:'var(--prose)', markdown:'var(--markdown)', code:'var(--code)', table:'var(--table)', chat:'var(--chat)' };
+const NAIVE_SIZE = 130;
+
+const SAFE_CHECK = {
+  prose: (t,i)=> /[.!?]\s$/.test(t.slice(Math.max(0,i-2),i)) || t[i-1]==='\n',
+  markdown: (t,i)=> t[i-1]==='\n' && (t[i]==='#' || t.slice(i-2,i)==='\n\n'),
+  code: (t,i)=> t.slice(Math.max(0,i-2),i)==='\n\n',
+  table: (t,i)=> t[i-1]==='\n',
+  chat: (t,i)=> t[i-1]==='\n' && /^(Customer:|Agent:)/.test(t.slice(i,i+9)),
+};
+
+const BROKEN_LABEL = {
+  prose:'cuts mid-sentence', markdown:'cuts mid-section', code:'cuts mid-function',
+  table:'cuts mid-row', chat:'cuts mid-turn'
+};
+
+function chunkNaive(text,size){
+  const chunks=[];
+  for(let i=0;i<text.length;i+=size) chunks.push(text.slice(i,i+size));
+  return chunks;
+}
+function scoreNaive(text,size,type){
+  const chunks=chunkNaive(text,size);
+  const flags=chunks.map(()=>false);
+  for(let i=1;i<chunks.length;i++){
+    const cutIdx=i*size;
+    if(!SAFE_CHECK[type](text,cutIdx)) flags[i-1]=true, flags[i]=flags[i]; // mark the chunk ending at the bad cut
+  }
+  // recompute properly: a chunk is "broken" if the cut immediately after it (or before it) is unsafe
+  const broken=chunks.map(()=>false);
+  for(let i=1;i<chunks.length;i++){
+    const cutIdx=i*size;
+    if(!SAFE_CHECK[type](text,cutIdx)){ broken[i-1]=true; broken[i]=true; }
+  }
+  return { chunks, broken, brokenCount: broken.filter(Boolean).length ? new Set(chunks.map((c,i)=>i).filter(i=>broken[i])).size : 0 };
+}
+
+function chunkAwareProse(text,target){
+  const paras=text.split(/\n\n+/);
+  const chunks=[];
+  for(const para of paras){
+    if(para.length<=target){ chunks.push(para); continue; }
+    const sentences=para.match(/[^.!?]+[.!?]+\s*/g)||[para];
+    let cur='';
+    for(const s of sentences){
+      if(cur.length+s.length>target && cur){ chunks.push(cur.trim()); cur=s; } else cur+=s;
+    }
+    if(cur.trim()) chunks.push(cur.trim());
+  }
+  return chunks;
+}
+function chunkAwareMarkdown(text){ return text.split(/\n(?=##\s)/).map(s=>s.trim()).filter(Boolean); }
+function chunkAwareCode(text){ return text.split(/\n\n+(?=def\s)/).map(s=>s.trim()).filter(Boolean); }
+function chunkAwareTable(text,rowsPerChunk){
+  const lines=text.split('\n'); const header=lines[0]; const rows=lines.slice(1);
+  const chunks=[];
+  for(let i=0;i<rows.length;i+=rowsPerChunk) chunks.push(header+'\n'+rows.slice(i,i+rowsPerChunk).join('\n'));
+  return chunks;
+}
+function chunkAwareChat(text,target){
+  const turns=text.split(/\n(?=(?:Customer|Agent):)/).map(s=>s.trim()).filter(Boolean);
+  const chunks=[]; let cur='';
+  for(const turn of turns){
+    if(cur.length+turn.length>target && cur){ chunks.push(cur.trim()); cur=turn; } else cur+=(cur?'\n':'')+turn;
+  }
+  if(cur.trim()) chunks.push(cur.trim());
+  return chunks;
+}
+
+function getAware(type,text){
+  if(type==='prose') return chunkAwareProse(text,150);
+  if(type==='markdown') return chunkAwareMarkdown(text);
+  if(type==='code') return chunkAwareCode(text);
+  if(type==='table') return chunkAwareTable(text,3);
+  if(type==='chat') return chunkAwareChat(text,220);
+}
+
+let currentType='prose';
+
+function chunkCard(text,broken,accent){
+  const cls = broken ? 'chunk broken' : 'chunk clean';
+  const tag = broken
+    ? `<span class="tag warn">${BROKEN_LABEL[currentType]}</span><br/>`
+    : `<span class="tag good">clean boundary</span><br/>`;
+  const safeText = text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<div class="${cls}" style="border-top:2px solid ${accent}">${tag}${safeText}</div>`;
+}
+
+function render(){
+  const text = SOURCES[currentType];
+  const accent = ACCENT[currentType];
+  const { chunks: naiveChunks, broken } = scoreNaive(text, NAIVE_SIZE, currentType);
+  const awareChunks = getAware(currentType, text);
+  const brokenCount = broken.filter(Boolean).length;
+
+  $('statLen').textContent = text.length + ' chars';
+  $('statNaive').textContent = naiveChunks.length + ' chunks';
+  $('statAware').textContent = awareChunks.length + ' chunks, 0 broken';
+  $('statNaiveBar').style.width = Math.round((brokenCount/naiveChunks.length)*100) + '%';
+  $('statAwareBar').style.width = '100%';
+
+  $('naiveList').innerHTML = naiveChunks.map((c,i)=>chunkCard(c, broken[i], accent)).join('');
+  $('awareList').innerHTML = awareChunks.map(c=>chunkCard(c, false, accent)).join('');
+
+  const label = BROKEN_LABEL[currentType];
+  $('callout').innerHTML = `At a fixed <b>130-character</b> chunk size, the naive splitter produces <b>${naiveChunks.length} chunks</b> and <b>${brokenCount} of them ${label}</b> — a retriever hands that half-cut fragment straight to the LLM. The structure-aware splitter instead only cuts at safe boundaries for this document type, producing <b>${awareChunks.length} clean chunks</b> with zero broken cuts.`;
+
+  document.querySelectorAll('.chip').forEach(chip=>{
+    const pressed = chip.dataset.type===currentType;
+    chip.setAttribute('aria-pressed', pressed);
+    chip.style.borderColor = pressed ? accent : '';
+    chip.style.color = pressed ? '#fff' : '';
+  });
+}
+
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{ currentType = chip.dataset.type; render(); });
+});
+
+render();
+</script>
+</body>
+</html>

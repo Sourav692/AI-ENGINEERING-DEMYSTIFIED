@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM-Judged Retrieval Metrics — Eval Lab 02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --accent:#a487f5; --prec:#3fd6ce; --rec:#3fd67a; --rel:#f0a03c; --bad:#ef5b93; --dead:#3a4258;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text);font-family:var(--disp);line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:66ch;margin:0 0 22px}
+h2{font-size:15px;margin:0 0 12px;font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#2a2140;border-color:var(--accent);color:#d9caff}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.scen{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;padding-left:11px;border-left:2px solid var(--accent)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 0}
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat.p{border-top:2px solid var(--prec)}.stat.r{border-top:2px solid var(--rec)}.stat.v{border-top:2px solid var(--rel)}
+.stat .kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat b{display:block;font-size:26px;margin:4px 0 8px;letter-spacing:-.02em;transition:color .3s}
+.stat b.fail{color:var(--bad)}
+.stat .note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px}
+.bar{height:6px;border-radius:99px;background:#1d2434;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .45s cubic-bezier(.22,.7,.3,1)}
+.crow{background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--dead);border-radius:8px;
+  padding:9px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px;transition:border-color .3s,background .3s}
+.crow.rel{border-left-color:var(--rec)}
+.crow.irr{border-left-color:var(--rel);background:#241d12}
+.rank{font-family:var(--mono);font-size:11px;color:var(--muted);width:30px;flex:none}
+.ctxt{font-size:12.5px;flex:1}
+.verdict{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:99px;flex:none;width:78px;text-align:center}
+.verdict.yes{background:#14261c;color:var(--rec);border:1px solid #24523a}
+.verdict.no{background:#241d12;color:var(--rel);border:1px solid #6b4c18}
+.claims{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.claim{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:6px;background:#151a26;border:1px solid var(--line);color:var(--muted)}
+.claim.covered{border-color:#24523a;color:#9fe6b8}
+.claim.uncovered{border-color:#5c2b40;color:#f4a0bd;background:#2a1620}
+.callout{margin-top:16px;background:linear-gradient(90deg,#1c1730,#151a26 70%);border:1px solid #3a3060;border-left:3px solid var(--accent);border-radius:8px;padding:13px 15px;font-size:13.5px;color:#cfd4e6}
+.callout b{color:#fff}
+.callout.warn{background:linear-gradient(90deg,#301722,#151a26 70%);border-color:#5c2b40;border-left-color:var(--bad)}
+pre{background:#0f131d;border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:11.5px;color:#c8d0e4;margin:0}
+.cmt{color:#5f6b86}.kw{color:#a487f5}.str{color:#3fd67a}.num{color:#f0a03c}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+tbody td{padding:10px 12px;font-size:12.5px;border-bottom:1px solid #1e2434;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+.foot{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:28px;text-align:center}
+@media (max-width:820px){.grid3{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG · Agent · Tool eval lab · 02</div>
+  <h1>Three retrieval judges, <span style="color:var(--accent)">three different failures</span>.</h1>
+  <p class="sub">Contextual Precision, Recall and Relevancy all score the same retrieved context, and each one is blind to what the other two catch. Inject a failure and watch exactly one number move — that separation is why DeepEval ships three metrics instead of one "retrieval quality" score.</p>
+
+  <div class="panel">
+    <h2>Inject a retrieval failure</h2>
+    <div class="tabs" id="tabs">
+      <button class="chip" data-s="0" aria-pressed="true">healthy retrieval</button>
+      <button class="chip" data-s="1">bad ranking</button>
+      <button class="chip" data-s="2">thin coverage</button>
+      <button class="chip" data-s="3">noise dilution</button>
+    </div>
+    <div class="scen" id="scen"></div>
+
+    <div class="grid3">
+      <div class="stat p"><div class="kicker">Contextual Precision</div><b id="sP">1.00</b><div class="bar"><i id="bP" style="background:var(--prec)"></i></div><div class="note">are relevant chunks ranked first?</div></div>
+      <div class="stat r"><div class="kicker">Contextual Recall</div><b id="sR">1.00</b><div class="bar"><i id="bR" style="background:var(--rec)"></i></div><div class="note">does context cover the expected answer?</div></div>
+      <div class="stat v"><div class="kicker">Contextual Relevancy</div><b id="sV">0.67</b><div class="bar"><i id="bV" style="background:var(--rel)"></i></div><div class="note">how much of it is on-topic?</div></div>
+    </div>
+
+    <div class="callout" id="callout"></div>
+  </div>
+
+  <div class="panel">
+    <h2>The retrieval context the judge sees</h2>
+    <div id="clist"></div>
+    <div style="margin-top:14px">
+      <label>Claims in <code style="font-family:var(--mono)">expected_output</code> — Contextual Recall checks each one against the context</label>
+      <div class="claims" id="claims"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>What separates the three</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Question</th><th>Needs <code>expected_output</code>?</th><th>Cares about order?</th><th>Catches</th></tr></thead>
+      <tbody>
+        <tr><td><b>Contextual Precision</b></td><td>Are relevant chunks ranked above irrelevant ones?</td><td>Yes</td><td><b>Yes</b></td><td>A good chunk buried under noise</td></tr>
+        <tr><td><b>Contextual Recall</b></td><td>Does the context cover everything the answer needs?</td><td>Yes</td><td>No</td><td>Missing information — retrieved something, not enough</td></tr>
+        <tr><td><b>Contextual Relevancy</b></td><td>How much of what was retrieved is on-topic?</td><td><b>No</b></td><td>No</td><td>Noise diluting the context, independent of ranking</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>The judge produces verdicts; the score is arithmetic</h2>
+<pre><span class="cmt"># The LLM decides which chunks are relevant and which claims are covered.</span>
+<span class="cmt"># Everything after that is deterministic — which is why the same verdicts</span>
+<span class="cmt"># always produce the same score, but two judge runs may not agree on verdicts.</span>
+
+<span class="kw">from</span> deepeval.metrics <span class="kw">import</span> ContextualPrecisionMetric, ContextualRecallMetric, ContextualRelevancyMetric
+<span class="kw">from</span> deepeval.test_case <span class="kw">import</span> LLMTestCase
+
+case = LLMTestCase(
+    input=<span class="str">"What is Apache Spark used for?"</span>,
+    actual_output=<span class="str">"Apache Spark is a unified analytics engine for large-scale processing."</span>,
+    expected_output=<span class="str">"Apache Spark is used for big data processing, real-time analytics, and ML."</span>,
+    retrieval_context=[...],            <span class="cmt"># the chunks your retriever actually returned</span>
+)
+
+<span class="cmt"># Precision is rank-weighted: a relevant chunk at position i contributes</span>
+<span class="cmt"># precision@i, so moving noise to the front is penalised even though</span>
+<span class="cmt"># the set of chunks never changed.</span>
+ContextualPrecisionMetric(threshold=<span class="num">0.5</span>, model=<span class="str">"gpt-4o"</span>, include_reason=<span class="kw">True</span>).measure(case)
+
+<span class="cmt"># Recall checks retrieval_context against expected_output — NOT actual_output.</span>
+<span class="cmt"># It asks "was enough fetched to SUPPORT the full answer", regardless of</span>
+<span class="cmt"># whether the generator actually used it.</span>
+ContextualRecallMetric(threshold=<span class="num">0.5</span>, model=<span class="str">"gpt-4o"</span>, include_reason=<span class="kw">True</span>).measure(case)
+
+<span class="cmt"># Relevancy needs no ground truth at all — the only one of the three</span>
+<span class="cmt"># you can run against arbitrary production traffic.</span>
+ContextualRelevancyMetric(threshold=<span class="num">0.5</span>, model=<span class="str">"gpt-4o"</span>, include_reason=<span class="kw">True</span>).measure(case)
+</pre>
+  </div>
+
+  <div class="foot">Eval Lab 02 · prev ← 01 Deterministic Retrieval · next → 03 Generator Metrics</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* One query, four retrieval outcomes. The chunk relevance verdicts and claim-coverage
+   verdicts are what an LLM judge produces; the three scores below are computed from
+   those verdicts with DeepEval's own arithmetic. */
+const QUESTION="What is Apache Spark used for?";
+const CLAIMS=["big data processing","real-time analytics","machine learning workloads","unified engine"];
+
+const SCEN=[
+ {name:"healthy retrieval",
+  desc:"Three chunks, the two on-topic ones ranked first. This is what you want, and it still doesn't score 1.00 on all three.",
+  ctx:[["Apache Spark is a unified analytics engine for large-scale data processing.",true],
+       ["Spark is widely used for real-time stream processing, analytics and MLlib workloads.",true],
+       ["Spark was originally developed at UC Berkeley's AMPLab in 2009.",false]],
+  covered:[true,true,true,true]},
+ {name:"bad ranking",
+  desc:"The exact same three chunks, reordered so the off-topic trivia comes first. Nothing was added or removed.",
+  ctx:[["Spark was originally developed at UC Berkeley's AMPLab in 2009.",false],
+       ["Apache Spark is a unified analytics engine for large-scale data processing.",true],
+       ["Spark is widely used for real-time stream processing, analytics and MLlib workloads.",true]],
+  covered:[true,true,true,true]},
+ {name:"thin coverage",
+  desc:"One chunk, perfectly on-topic, ranked first. Precision and relevancy are ideal — and the answer still cannot be written.",
+  ctx:[["Apache Spark is a unified analytics engine for large-scale data processing.",true]],
+  covered:[true,false,false,true]},
+ {name:"noise dilution",
+  desc:"Four chunks, only one on-topic and it lands at position 3. The relevant information is present and drowning.",
+  ctx:[["The Hadoop ecosystem includes HDFS, YARN and MapReduce.",false],
+       ["Databricks was founded by the original creators of Spark.",false],
+       ["Spark is used for big data processing, real-time analytics and machine learning.",true],
+       ["Spark clusters can run on YARN, Mesos, Kubernetes or standalone.",false]],
+  covered:[true,true,true,true]},
+];
+
+/* --- DeepEval's own formulas, computed for real from the verdicts above --- */
+function contextualPrecision(rel){
+  const n=rel.filter(Boolean).length;
+  if(!n) return 0;
+  let total=0;
+  for(let i=0;i<rel.length;i++){
+    if(rel[i]){
+      const hitsUpTo=rel.slice(0,i+1).filter(Boolean).length;
+      total += hitsUpTo/(i+1);              // precision@i at each relevant position
+    }
+  }
+  return total/n;
+}
+const contextualRecall = covered => covered.filter(Boolean).length/covered.length;
+const contextualRelevancy = rel => rel.filter(Boolean).length/rel.length;
+
+const listEl=$('clist'), claimsEl=$('claims');
+
+function render(){
+  const i=+document.querySelector('#tabs .chip[aria-pressed="true"]').dataset.s;
+  const s=SCEN[i];
+  const rel=s.ctx.map(c=>c[1]);
+  const P=contextualPrecision(rel), R=contextualRecall(s.covered), V=contextualRelevancy(rel);
+
+  $('scen').innerHTML=`<b style="color:var(--text)">${s.name}</b> — ${s.desc}`;
+
+  listEl.innerHTML=s.ctx.map((c,j)=>
+    `<div class="crow ${c[1]?'rel':'irr'}">
+       <span class="rank">#${j+1}</span>
+       <span class="ctxt">${c[0]}</span>
+       <span class="verdict ${c[1]?'yes':'no'}">${c[1]?'relevant':'off-topic'}</span>
+     </div>`).join('');
+
+  claimsEl.innerHTML=CLAIMS.map((c,j)=>
+    `<span class="claim ${s.covered[j]?'covered':'uncovered'}">${s.covered[j]?'✓':'✗'} ${c}</span>`).join('');
+
+  const set=(id,bid,val)=>{
+    const b=$(id); b.textContent=val.toFixed(2);
+    b.className = val<0.5 ? 'fail' : '';
+    $(bid).style.width=(val*100)+'%';
+  };
+  set('sP','bP',P); set('sR','bR',R); set('sV','bV',V);
+
+  const c=$('callout');
+  if(i===0){
+    c.className='callout';
+    c.innerHTML=`<b>Precision ${P.toFixed(2)}, recall ${R.toFixed(2)}, relevancy ${V.toFixed(2)}.</b>
+      Even healthy retrieval scores only ${V.toFixed(2)} on relevancy, because one of three chunks is history trivia.
+      That is not a bug — relevancy is a signal-to-noise ratio, and a perfect 1.00 usually means K is too small rather than retrieval being flawless.`;
+  } else if(i===1){
+    c.className='callout warn';
+    c.innerHTML=`<b>Same three chunks. Same coverage. Precision fell to ${P.toFixed(2)}.</b>
+      Recall is still ${R.toFixed(2)} and relevancy is still ${V.toFixed(2)} — neither can see order at all.
+      Only Contextual Precision is rank-aware, which is exactly the failure a single averaged "retrieval score" would smooth into invisibility.`;
+  } else if(i===2){
+    c.className='callout warn';
+    c.innerHTML=`<b>Precision ${P.toFixed(2)} and relevancy ${V.toFixed(2)} — both perfect. Recall is ${R.toFixed(2)}.</b>
+      The one chunk retrieved is on-topic and ranked first, so two of three metrics call this ideal retrieval.
+      But two of the four claims in the expected answer have no supporting chunk, so a complete answer is unwriteable no matter how good the generator is.
+      Note where recall lands: <i>exactly</i> on the default threshold of 0.50. A judge run that flips one claim verdict flips this test case between pass and fail —
+      which is why a score sitting on its threshold should be treated as a coin toss, not a pass.`;
+  } else {
+    c.className='callout warn';
+    c.innerHTML=`<b>Relevancy collapses to ${V.toFixed(2)} and precision drags down with it to ${P.toFixed(2)}.</b>
+      Recall stays at ${R.toFixed(2)} — everything the answer needs <i>is</i> in the context, sitting at position 3 under two chunks of noise.
+      Note that relevancy and precision fail together here: noise ranked above signal is both a ranking failure and a signal-to-noise failure. They decouple in the "bad ranking" case, not this one.`;
+  }
+
+  document.querySelectorAll('#tabs .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(+b.dataset.s===i)));
+}
+
+document.querySelectorAll('#tabs .chip').forEach(b=>
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tabs .chip').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));
+    render();
+  }));
+render();
+</script>
+</body>
+</html>
