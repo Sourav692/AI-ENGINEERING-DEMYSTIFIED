@@ -15,7 +15,6 @@
 
 [www.udemy.com/course/multi-agents-with-langchain-langgraph/?couponCode=PMNVD2025](https://www.udemy.com/course/multi-agents-with-langchain-langgraph/?couponCode=PMNVD2025)
 
-
 * [OpenCode Beginner to Pro: Agentic Coding with Free AI Models]([www.udemy.com/course/opencode/?couponCode=PMNVD2025]())
 * [LangChain 20 Drills: Build AI Agents with create_agent &amp; RAG](https://www.udemy.com/course/langchain-20-drills-build-ai-agents-with-create_agent-rag/?couponCode=PMNVD2025)
 * [The Complete Full Stack AI Engineering Bootcamp](https://www.udemy.com/course/full-stack-ai-engineering-bootcamp/?couponCode=PMNVD2025)
@@ -37,6 +36,7 @@
 * [AI Engineer Core Track: LLM Engineering, RAG, QLoRA, Agents](https://www.udemy.com/course/llm-engineering-master-ai-and-large-language-models/?couponCode=PMNVD2025)
 * [Ultimate RAG Bootcamp Using Langchain,LangGraph &amp; Langsmith](https://www.udemy.com/course/ultimate-rag-bootcamp-using-langchainlanggraph-langsmith/?couponCode=PMNVD2025)
 * [Production AI Agents with LangChain + LangGraph [2026]](https://www.udemy.com/course/production-ai-agents/?couponCode=PMNVD2025)
-
 * [Complete Agentic AI Bootcamp With LangGraph and Langchain](https://www.udemy.com/course/complete-agentic-ai-bootcamp-with-langgraph-and-langchain/?couponCode=PMNVD2025)
-*
+* [LangChain in Action: Develop LLM-Powered Applications](https://www.udemy.com/course/langchain-in-action-develop-llm-powered-applications)
+* [Introduction to LangChain for Agentic AI](https://courses.analyticsvidhya.com/courses/take/introduction-to-langchain-for-agentic-ai/lessons/61748853-course-introduction)
+* [Building AI Agents with LangChain](https://courses.analyticsvidhya.com/courses/take/building-ai-agents-with-langchain/lessons/64877940-course-introduction)
