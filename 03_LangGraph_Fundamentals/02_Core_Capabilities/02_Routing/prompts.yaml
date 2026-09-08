@@ -1,0 +1,95 @@
+# Prompts used by 01_Router_Agentic_RAG_System.ipynb and
+# 04_Router_Agentic_RAG_System_Modular.ipynb
+#
+# Each key is loaded by the notebook's node functions via PROMPTS["<key>"] instead
+# of being hardcoded inline. Templates use {customer_query} / {retrieved_content}
+# placeholders that get filled in via str.format() or ChatPromptTemplate.
+#
+# technical_response / billing_response / general_response are kept for
+# 01_Router_Agentic_RAG_System.ipynb. 04_Router_Agentic_RAG_System_Modular.ipynb
+# uses the single parameterized response_generation template instead.
+
+route_category: |
+  Act as a customer support agent trying to best categorize the customer query.
+  You are an agent for an AI products and hardware company.
+
+  Please read the customer query below and
+  determine the best category from the following list:
+
+  'Technical', 'Billing', or 'General'.
+
+  Remember:
+   - Technical queries will focus more on technical aspects like AI models, hardware, software related queries etc.
+   - General queries will focus more on general aspects like contacting support, finding things, policies etc.
+   - Billing queries will focus more on payment and purchase related aspects
+
+  Return just the category name (from one of the above)
+
+  Query:
+  {customer_query}
+
+sentiment_category: |
+  Act as a customer support agent trying to best categorize the customer query's sentiment.
+  You are an agent for an AI products and hardware company.
+
+  Please read the customer query below,
+  analyze its sentiment which should be one from the following list:
+
+  'Positive', 'Neutral', or 'Negative'.
+
+  Return just the sentiment (from one of the above)
+
+  Query:
+  {customer_query}
+
+technical_response: |
+  Craft a clear and detailed technical support response for the following customer query.
+  Use the provided knowledge base information to enrich your response.
+  In case there is no knowledge base information or you do not know the answer just say:
+
+  Apologies I was not able to answer your question, please reach out to +1-xxx-xxxx
+
+  Customer Query:
+  {customer_query}
+
+  Relevant Knowledge Base Information:
+  {retrieved_content}
+
+billing_response: |
+  Craft a clear and detailed billing support response for the following customer query.
+  Use the provided knowledge base information to enrich your response.
+  In case there is no knowledge base information or you do not know the answer just say:
+
+  Apologies I was not able to answer your question, please reach out to +1-xxx-xxxx
+
+  Customer Query:
+  {customer_query}
+
+  Relevant Knowledge Base Information:
+  {retrieved_content}
+
+general_response: |
+  Craft a clear and detailed general support response for the following customer query.
+  Use the provided knowledge base information to enrich your response.
+  In case there is no knowledge base information or you do not know the answer just say:
+
+  Apologies I was not able to answer your question, please reach out to +1-xxx-xxxx
+
+  Customer Query:
+  {customer_query}
+
+  Relevant Knowledge Base Information:
+  {retrieved_content}
+
+response_generation: |
+  Craft a clear and detailed {support_type} support response for the following customer query.
+  Use the provided knowledge base information to enrich your response.
+  In case there is no knowledge base information or you do not know the answer just say:
+
+  Apologies I was not able to answer your question, please reach out to +1-xxx-xxxx
+
+  Customer Query:
+  {customer_query}
+
+  Relevant Knowledge Base Information:
+  {retrieved_content}

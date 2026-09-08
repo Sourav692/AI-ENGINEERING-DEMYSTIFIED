@@ -1,0 +1,43 @@
+# Dependencies for 03_LangGraph_Fundamentals notebooks
+# Versions mirror the pins in the repo root requirements.txt for consistency.
+
+# LangChain / LangGraph core
+langchain==1.4.0
+langchain-core==1.6.1
+langchain-community==0.4.2
+langchain-openai==1.6.0
+langchain-anthropic==1.7.1
+langchain-chroma==1.1.0
+langgraph==1.2.11
+langsmith==0.12.1
+
+# Databricks (macOS default provider in helpers/)
+databricks-langchain==0.20.0
+databricks-sdk==0.135.0
+
+# Data / utilities
+numpy==2.5.2
+pandas==3.0.5
+pydantic==2.12.5
+typing-extensions==4.16.0
+python-dotenv==1.2.3
+requests==2.34.2
+rich==14.3.4
+tqdm==4.70.0
+
+# Notebook environment
+# ipykernel (not the full `jupyter` metapackage) is enough to register this
+# venv as a kernel for VS Code / an existing Jupyter Lab install — it skips
+# ~80-100 packages (notebook, jupyterlab, nbconvert, jupyter-server, etc.)
+# that a standalone Jupyter Lab server would need but this repo doesn't.
+ipython==9.17.1
+ipykernel
+
+# NOTE: notebooks also import the local `helpers` package (from helpers import
+# get_llm, get_embeddings). It is NOT listed here as `-e ..` on purpose: the
+# root pyproject.toml's dependency list applies to the whole monorepo package,
+# so an editable install of `..` pulls in ~65 unrelated packages (chromadb,
+# mcp, deepagents, every provider integration, etc.) instead of just the deps
+# above. Install it separately, without its declared deps:
+#
+#   uv pip install -e .. --no-deps --python .venv
