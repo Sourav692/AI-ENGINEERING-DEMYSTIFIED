@@ -1,5 +1,0 @@
-streamlit
-openai
-python-dotenv
-yfinance
-autogen
