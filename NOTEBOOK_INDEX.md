@@ -69,6 +69,24 @@ Python prerequisites for agent work (not LangChain, not Hugging Face Hub). From 
 
 Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`. Tool-calling/agents, memory, RAG, LangSmith, advanced features, and microservices deployment moved to their own dedicated phases (see Known Discrepancies).
 
+### `08_Production_Course_Foundations/` (added 2026-09-08)
+
+10 notebooks + a connectivity-check entry point, from a merged-in standalone "production-course" split by topic across the roadmap (see `.cleanup/production-course-main-code-main_cleanup_plan.md`). Kept as one added track rather than micro-split further, even though `08_conversation_memory.ipynb`/`09_langsmith_setup.ipynb` arguably belong to Phase 7/12 by strict topic — see `references/roadmap-map.md` History for the reasoning.
+
+| Notebook | Topic |
+|---|---|
+| `00_main_connectivity_check.ipynb` (+ `.py`) | Environment/API connectivity check — course entry point |
+| `01_core_concepts.ipynb` | Core LangChain concepts |
+| `02_working_with_llms.ipynb` | Working with LLMs |
+| `03_prompt_messages.ipynb` | Prompt messages |
+| `04_prompt_templates_all.ipynb` | Prompt templates |
+| `05_output_parsers_demo.ipynb` | Output parsers — intro pass |
+| `06_output_parsers_final.ipynb` | Output parsers — deeper structured-extraction follow-on |
+| `07_chains_v1.ipynb` | Chains |
+| `08_conversation_memory.ipynb` | Conversation memory via `RunnableWithMessageHistory` |
+| `09_langsmith_setup.ipynb` | LangSmith setup |
+| `10_smart_bot_section1.ipynb` | Applied chatbot build |
+
 ## `Prompt_and_Context_Engineering/Prompt_Engineering/`
 
 | Section | Notebook | Topic |
@@ -119,6 +137,23 @@ Memory lives in Phase 7 instead — see below.
 | `07_Retries/` | `01_Retries.ipynb` | Fault-tolerant nodes with `RetryPolicy` |
 
 Note: `02_Routing/`'s notebooks are also agentic RAG examples — kept here rather than moved to Phase 4/8 since they're the only routing-mechanics demo in this phase (see Known Discrepancies).
+
+## `03_Production_Course/` (added 2026-09-08)
+
+8 notebooks from a merged-in standalone "production-course" split by topic across the roadmap (see `.cleanup/production-course-main-code-main_cleanup_plan.md`). Own internal numbering kept as-is.
+
+| Notebook | Topic |
+|---|---|
+| `01_langgraph_core.ipynb` | LangGraph core concepts |
+| `02_first_graph.ipynb` | First graph build |
+| `03_conditional_edges.ipynb` | Conditional edges |
+| `04_cycles_loops.ipynb` | Cycles & loops |
+| `05_checkpointing.ipynb` | `MemorySaver`/`SqliteSaver`, checkpoint internals, time travel (carries a MIG-001 markdown note on `config['configurable']` usage) |
+| `06_human_in_loop.ipynb` | Human-in-the-loop |
+| `07_error_handling.ipynb` | Retry/backoff, circuit breaker, fallback chain, self-healing graph |
+| `08_tool_calling_agent.ipynb` | Tool-calling agent |
+
+Also `graph_code.png`, `graph_complex.png`.
 
 # Phase 4 — Retrieval & RAG (`04_Retrieval_and_RAG/`)
 
@@ -196,6 +231,22 @@ Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
 ## `RAG_with_LlamaIndex/`
 
 Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipages.py`, `utils.py`). From `LlamaIndex_Demystified`. Distinct from Phase 8 NirDiamant `*_with_llamaindex.ipynb` notebooks.
+
+## `RAG_Production_Course/` (added 2026-09-08)
+
+7 notebooks from the same merged-in "production-course" as `03_LangGraph_Fundamentals/03_Production_Course/` (see `.cleanup/production-course-main-code-main_cleanup_plan.md`).
+
+| Notebook | Topic |
+|---|---|
+| `01_document_loaders.ipynb` | Document loaders |
+| `02_text_splitters.ipynb` | Text splitters |
+| `04_embeddings_deep.ipynb` | `embed_query`/`embed_documents`, cosine similarity, `CacheBackedEmbeddings` |
+| `05_vector_stores.ipynb` | Vector stores |
+| `06_rag_pipeline.ipynb` | RAG pipeline (execution counts out of order — FMT-002, deferred, needs a top-to-bottom re-run) |
+| `07_advanced_rag.ipynb` | Advanced RAG |
+| `08_research_assistant.ipynb` (+ `08_research_assistant.py`) | Research-assistant app |
+
+`03_embeddings.ipynb` (an abandoned 3-cell first draft superseded by `04_embeddings_deep.ipynb`) was retired to `archive/04_Retrieval_and_RAG/RAG_Production_Course/` — see `archive/RETIRED_MANIFEST.md`. Also has its own `docs/` folder.
 
 # Phase 5 — AI Agent Fundamentals (`05_AI_Agent_Fundamentals/`)
 
@@ -286,6 +337,7 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 |---|---|---|
 | `01_Agent_Patterns/` | `01_Agent_Patterns.ipynb`, `02_Supervisor_Multi_Agent_Alt.ipynb`, `03_Multi_Agent_Overview_Alt.ipynb` | Supervisor pattern + alternates |
 | `02_Multi_Agent_Swarm/` | `01_Multi_Agent_Swarm.ipynb` | Peer-to-peer/swarm multi-agent architecture |
+| `Production_Course_Multi_Agent/` (added 2026-09-08) | `01_multi_agent.ipynb`, `02_supervisor_agent.ipynb`, `03_agent_handoffs.ipynb`, `04_agent_communication.ipynb`, `05_parallel_agents.ipynb`, `06_hierarchical_agents.ipynb`, `07_multi_agent_research_system.ipynb` | 7 notebooks from the same merged-in "production-course" as the Phase 3/4 additions above — see `.cleanup/production-course-main-code-main_cleanup_plan.md` |
 
 ## `Deep_Agents_and_Harness_Engineering/`
 
@@ -435,6 +487,17 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 | `Cost_Monitoring/` | `01_LLM_Cost_Monitoring.ipynb` | Tracking LLM API costs |
 
 Also `00_Advanced_LangChain_Overview.ipynb`.
+
+## `Production_Course_Ops/` (added 2026-09-08)
+
+4 notebooks from the same merged-in "production-course" as the Phase 3/4/7 additions above — see `.cleanup/production-course-main-code-main_cleanup_plan.md`.
+
+| Notebook | Topic |
+|---|---|
+| `01_monitoring.ipynb` | Monitoring |
+| `02_cost_optimization.ipynb` | Cost optimization (execution counts out of order — FMT-003, deferred, needs a top-to-bottom re-run) |
+| `03_security_patterns.ipynb` | Security patterns (prompt-injection/guardrail pedagogy) |
+| `04_testing_patterns.ipynb` | Testing patterns |
 
 ## `Safety_and_Alignment/`
 
