@@ -53,7 +53,18 @@
     "notebook.markup.fontSize": 12,
     "notebook.output.fontSize": 11,
     "notebook.markdown.lineHeight": 18,
-    "notebook.output.lineHeight": 16
+    "notebook.output.lineHeight": 16,
+    "cursorpyright.analysis.exclude": [
+        "**/archive/**",
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/.venv/**/node_modules/**",
+        "**/__pycache__/**"
+    ],
+    "cursorpyright.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
+    "cursorpyright.analysis.useLibraryCodeForTypes": true
 
     // Note: notebook CODE cells have no per-notebook font setting -- they follow
     // "editor.fontSize", which is global. To shrink those too, either set

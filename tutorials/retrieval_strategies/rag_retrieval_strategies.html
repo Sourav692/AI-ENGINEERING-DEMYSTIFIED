@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Retrieval Strategies</title>
+<style>
+  :root {
+    --bg: #11131a;
+    --bg-panel: #171a23;
+    --ink: #e9e7e0;
+    --ink-dim: #9ca0ad;
+    --rule: #2a2e3a;
+    --amber: #d5a75a;
+    --teal: #6bb3a8;
+    --code-bg: #0c0e13;
+    --code-border: #262a35;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    padding: 0 20px 80px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  header.hero {
+    padding: 56px 0 32px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 40px;
+  }
+  h1 {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 2.1rem;
+    line-height: 1.2;
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .dek {
+    color: var(--ink-dim);
+    font-size: 1.05rem;
+    max-width: 62ch;
+    margin: 0;
+  }
+  h2 {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin: 48px 0 14px;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  h2 .num {
+    color: var(--amber);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.1rem;
+  }
+  h3 {
+    font-size: 0.82rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: var(--teal);
+    margin: 22px 0 6px;
+    font-weight: 600;
+  }
+  p { margin: 0 0 14px; }
+  ul { margin: 0 0 14px; padding-left: 1.3em; }
+  li { margin-bottom: 6px; }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--code-border);
+    color: #e3c589;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 10px 0 20px;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #dcdcdc;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+  .kw { color: #6bb3a8; }
+  .str { color: #c9a96e; }
+  .cm { color: #6b7080; font-style: italic; }
+  .fn { color: #d5a75a; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 28px;
+    font-size: 0.88rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  th { color: var(--ink-dim); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  td:first-child, th:first-child { color: var(--teal); font-weight: 500; }
+
+  .note {
+    border-left: 2px solid var(--amber);
+    padding: 4px 0 4px 16px;
+    color: var(--ink-dim);
+    font-size: 0.92rem;
+    margin: 16px 0 24px;
+  }
+
+  /* Interactive strategy picker */
+  .picker {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 24px 24px 28px;
+    margin: 40px 0 48px;
+  }
+  .picker-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    margin-bottom: 14px;
+  }
+  .picker-question {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .chip {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    color: var(--ink);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { border-color: var(--teal); color: var(--teal); }
+  .chip.active { border-color: var(--amber); color: var(--amber); background: rgba(213,167,90,0.08); }
+
+  .result {
+    display: none;
+    border-top: 1px solid var(--rule);
+    padding-top: 18px;
+    margin-top: 6px;
+  }
+  .result.visible { display: block; }
+  .result-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-dim);
+    margin-bottom: 6px;
+  }
+  .result-strategy {
+    font-family: Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+  .result-why { color: var(--ink); font-size: 0.95rem; }
+
+  /* Pipeline diagram */
+  .pipeline {
+    margin: 20px 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stage {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: default;
+    transition: border-color 0.15s ease;
+  }
+  .stage:hover { border-color: var(--teal); }
+  .stage-num {
+    color: var(--amber);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    width: 1.4em;
+    flex-shrink: 0;
+  }
+  .stage-name { font-weight: 600; font-size: 0.94rem; min-width: 190px; }
+  .stage-desc { color: var(--ink-dim); font-size: 0.86rem; }
+  .arrow-down {
+    text-align: center;
+    color: var(--rule);
+    font-size: 0.9rem;
+    padding: 2px 0;
+  }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-dim);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>RAG Retrieval Strategies</h1>
+    <p class="dek">A retriever decides what context the LLM sees — everything downstream is bounded by it. Nine strategies, from naive top-k search to reranked hybrid pipelines, with runnable LangChain code.</p>
+  </header>
+
+  <div class="picker">
+    <div class="picker-title">Strategy Picker</div>
+    <div class="picker-question">What's the actual problem with your retrieval right now?</div>
+    <div class="chips" id="chips">
+      <div class="chip" data-key="baseline">Just starting out</div>
+      <div class="chip" data-key="redundant">Results are near-duplicates</div>
+      <div class="chip" data-key="recall">Right answer isn't retrieved at all</div>
+      <div class="chip" data-key="filter">Users ask for date/author/category filters</div>
+      <div class="chip" data-key="noisy">Chunks are long and full of filler</div>
+      <div class="chip" data-key="exact">Queries include IDs, code, or exact terms</div>
+      <div class="chip" data-key="context">Chunks too small for context, or too big for precision</div>
+      <div class="chip" data-key="vague">Queries are short and vague</div>
+      <div class="chip" data-key="ranking">Right chunk retrieved, but ranked low</div>
+    </div>
+    <div class="result" id="result">
+      <div class="result-label">Recommended</div>
+      <div class="result-strategy" id="result-strategy"></div>
+      <div class="result-why" id="result-why"></div>
+    </div>
+  </div>
+
+  <h2><span class="num">01</span> Basic Similarity Search</h2>
+  <p><strong>What it is:</strong> Embed the query, run a nearest-neighbor search against the vector store, return the top-k chunks. The default retriever every vector store exposes.</p>
+  <p><strong>When to use it:</strong> Baseline for any RAG system — measure this before reaching for anything below.</p>
+  <p><strong>Limitation:</strong> The top-k results are often near-duplicates of each other, wasting context budget.</p>
+  <pre><code><span class="kw">vectorstore</span> = Chroma.from_documents(docs, embedding=embeddings)
+<span class="kw">retriever</span> = vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: 4})
+<span class="kw">results</span> = retriever.invoke(<span class="str">"What is LangGraph used for?"</span>)</code></pre>
+
+  <h2><span class="num">02</span> Maximal Marginal Relevance (MMR)</h2>
+  <p><strong>What it is:</strong> Retrieves a larger candidate pool, then greedily selects results that balance relevance against diversity from what's already selected.</p>
+  <p><strong>When to use it:</strong> Overlapping or redundant corpus content keeps producing near-identical top-k results.</p>
+  <pre><code><span class="kw">retriever</span> = vectorstore.as_retriever(
+    search_type=<span class="str">"mmr"</span>,
+    search_kwargs={<span class="str">"k"</span>: 4, <span class="str">"fetch_k"</span>: 20, <span class="str">"lambda_mult"</span>: 0.5},
+)</code></pre>
+
+  <h2><span class="num">03</span> Multi-Query Retrieval</h2>
+  <p><strong>What it is:</strong> An LLM rewrites the query into several phrasings, each is searched independently, and the unique union of results is returned.</p>
+  <p><strong>When to use it:</strong> Recall problems from vocabulary mismatch between the user's phrasing and the corpus.</p>
+  <pre><code><span class="cm"># from langchain.retrievers.multi_query import MultiQueryRetriever</span>
+<span class="kw">multi_query_retriever</span> = MultiQueryRetriever.from_llm(
+    retriever=vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: 3}),
+    llm=llm,
+)
+<span class="kw">docs</span> = multi_query_retriever.invoke(<span class="str">"How do I persist embeddings?"</span>)</code></pre>
+  <div class="note">Tradeoff: one extra LLM call to generate variations, plus N searches instead of one.</div>
+
+  <h2><span class="num">04</span> Self-Query Retrieval</h2>
+  <p><strong>What it is:</strong> An LLM parses the query into a structured metadata filter plus a semantic search string, using a schema you define over your metadata.</p>
+  <p><strong>When to use it:</strong> Documents carry rich metadata and users mix semantic intent with hard filters ("papers after 2019 about attention").</p>
+  <pre><code><span class="cm"># from langchain.retrievers.self_query.base import SelfQueryRetriever</span>
+<span class="kw">metadata_field_info</span> = [
+    AttributeInfo(name=<span class="str">"topic"</span>, description=<span class="str">"'rag', 'agents', or 'langgraph'"</span>, type=<span class="str">"string"</span>),
+    AttributeInfo(name=<span class="str">"year"</span>, description=<span class="str">"publication year"</span>, type=<span class="str">"integer"</span>),
+]
+<span class="kw">self_query_retriever</span> = SelfQueryRetriever.from_llm(
+    llm=llm, vectorstore=vectorstore,
+    document_contents=<span class="str">"Technical notes on LLM frameworks"</span>,
+    metadata_field_info=metadata_field_info,
+)</code></pre>
+
+  <h2><span class="num">05</span> Contextual Compression</h2>
+  <p><strong>What it is:</strong> Wraps a base retriever; after retrieval, an LLM strips each chunk down to only the sentences relevant to the query.</p>
+  <p><strong>When to use it:</strong> Chunks are long and only a fraction is actually relevant — compression reduces prompt size and noise.</p>
+  <pre><code><span class="cm"># from langchain.retrievers import ContextualCompressionRetriever
+# from langchain.retrievers.document_compressors import LLMChainExtractor</span>
+<span class="kw">compressor</span> = LLMChainExtractor.from_llm(llm)
+<span class="kw">compression_retriever</span> = ContextualCompressionRetriever(
+    base_compressor=compressor,
+    base_retriever=vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: 4}),
+)</code></pre>
+  <div class="note">Tradeoff: one LLM call per retrieved document — the most expensive strategy here per query.</div>
+
+  <h2><span class="num">06</span> Hybrid Search (BM25 + Semantic)</h2>
+  <p><strong>What it is:</strong> Combines a sparse keyword retriever (BM25) with dense semantic search, merging ranked results via <code>EnsembleRetriever</code>.</p>
+  <p><strong>When to use it:</strong> Queries mix natural language with exact-match needs — product codes, error messages, function names.</p>
+  <pre><code><span class="cm"># from langchain_community.retrievers import BM25Retriever
+# from langchain.retrievers import EnsembleRetriever</span>
+<span class="kw">bm25_retriever</span> = BM25Retriever.from_documents(docs)
+<span class="kw">bm25_retriever</span>.k = 3
+<span class="kw">ensemble_retriever</span> = EnsembleRetriever(
+    retrievers=[bm25_retriever, vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: 3})],
+    weights=[0.4, 0.6],
+)</code></pre>
+
+  <h2><span class="num">07</span> Parent-Document Retriever</h2>
+  <p><strong>What it is:</strong> Indexes small child chunks for precise matching, but returns the larger parent chunk they belong to.</p>
+  <p><strong>When to use it:</strong> Small chunks retrieve precisely but lack context; large chunks have the opposite problem.</p>
+  <pre><code><span class="cm"># from langchain.retrievers import ParentDocumentRetriever
+# from langchain.storage import InMemoryStore</span>
+<span class="kw">parent_doc_retriever</span> = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=InMemoryStore(),
+    child_splitter=RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=20),
+    parent_splitter=RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100),
+)</code></pre>
+
+  <h2><span class="num">08</span> HyDE (Hypothetical Document Embeddings)</h2>
+  <p><strong>What it is:</strong> An LLM generates a hypothetical answer to the query first; that hypothetical answer is embedded and used for the similarity search instead of the raw query.</p>
+  <p><strong>When to use it:</strong> Short, vague queries that don't share vocabulary with dense technical documents.</p>
+  <pre><code><span class="kw">hyde_chain</span> = hyde_prompt | llm | StrOutputParser()
+
+<span class="kw">def</span> <span class="fn">hyde_retrieve</span>(question, k=4):
+    hypothetical_doc = hyde_chain.invoke({<span class="str">"question"</span>: question})
+    <span class="kw">return</span> vectorstore.similarity_search(hypothetical_doc, k=k)</code></pre>
+
+  <h2><span class="num">09</span> Reranking (Cross-Encoder)</h2>
+  <p><strong>What it is:</strong> A two-stage pipeline — cheap vector search casts a wide net (k=20-50), then a cross-encoder scores each (query, document) pair jointly and reorders by that more accurate score.</p>
+  <p><strong>When to use it:</strong> The right chunk is retrieved but ranked too low at small k — the standard fix in production search.</p>
+  <pre><code><span class="cm"># from langchain_community.cross_encoders import HuggingFaceCrossEncoder
+# from langchain.retrievers.document_compressors import CrossEncoderReranker</span>
+<span class="kw">cross_encoder</span> = HuggingFaceCrossEncoder(model_name=<span class="str">"BAAI/bge-reranker-base"</span>)
+<span class="kw">reranker</span> = CrossEncoderReranker(model=cross_encoder, top_n=3)
+<span class="kw">reranking_retriever</span> = ContextualCompressionRetriever(
+    base_compressor=reranker,
+    base_retriever=vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: 20}),
+)</code></pre>
+
+  <h2>Production Composite Pipeline</h2>
+  <p>Real systems rarely use one strategy alone. A common, battle-tested pipeline:</p>
+  <div class="pipeline">
+    <div class="stage"><span class="stage-num">1</span><span class="stage-name">Hybrid Retrieval</span><span class="stage-desc">BM25 + semantic, wide candidate pool (k≈10 each)</span></div>
+    <div class="arrow-down">↓</div>
+    <div class="stage"><span class="stage-num">2</span><span class="stage-name">Cross-Encoder Rerank</span><span class="stage-desc">Score candidates jointly, keep top 5</span></div>
+    <div class="arrow-down">↓</div>
+    <div class="stage"><span class="stage-num">3</span><span class="stage-name">Contextual Compression</span><span class="stage-desc">Trim each chunk to the relevant sentences</span></div>
+    <div class="arrow-down">↓</div>
+    <div class="stage"><span class="stage-num">4</span><span class="stage-name">Generation</span><span class="stage-desc">LLM answers from compressed, reranked context</span></div>
+  </div>
+  <pre><code><span class="kw">hybrid</span> = EnsembleRetriever(retrievers=[bm25, semantic], weights=[0.3, 0.7])
+<span class="kw">reranker</span> = CrossEncoderReranker(model=cross_encoder, top_n=5)
+<span class="kw">production_retriever</span> = ContextualCompressionRetriever(
+    base_compressor=reranker, base_retriever=hybrid,
+)</code></pre>
+
+  <table>
+    <tr><th>Strategy</th><th>Solves</th><th>Cost</th></tr>
+    <tr><td>Similarity</td><td>Baseline</td><td>1 embed call</td></tr>
+    <tr><td>MMR</td><td>Redundant chunks</td><td>1 embed call</td></tr>
+    <tr><td>Multi-Query</td><td>Vocabulary mismatch</td><td>+N LLM calls</td></tr>
+    <tr><td>Self-Query</td><td>Metadata filtering</td><td>+1 LLM call</td></tr>
+    <tr><td>Compression</td><td>Noisy long chunks</td><td>+1 LLM call/doc</td></tr>
+    <tr><td>Hybrid</td><td>Exact-match terms</td><td>Cheap, no LLM</td></tr>
+    <tr><td>Parent-Document</td><td>Precision vs. context</td><td>1 embed call</td></tr>
+    <tr><td>HyDE</td><td>Vague short queries</td><td>+1 LLM call</td></tr>
+    <tr><td>Reranking</td><td>Poor top-k ordering</td><td>+1 model call</td></tr>
+  </table>
+
+  <footer>
+    Pair any retrieval change with offline evaluation (RAGAS / golden datasets) before shipping — measure, don't assume.
+  </footer>
+</div>
+
+<script>
+const strategies = {
+  baseline: { name: "Basic Similarity Search", why: "Start here and measure before adding complexity. Every strategy below is a targeted fix for a specific failure mode." },
+  redundant: { name: "Maximal Marginal Relevance (MMR)", why: "Near-zero extra cost — retrieves a wider pool, then diversifies the final selection instead of returning near-duplicates." },
+  recall: { name: "Multi-Query Retrieval", why: "Generates several phrasings of the query so recall doesn't depend on the user's exact wording matching the corpus." },
+  filter: { name: "Self-Query Retrieval", why: "Parses hard filters (date, author, category) out of the query automatically instead of forcing users into a filter UI." },
+  noisy: { name: "Contextual Compression", why: "Strips each retrieved chunk down to only the query-relevant sentences before it hits the prompt." },
+  exact: { name: "Hybrid Search (BM25 + Semantic)", why: "BM25 catches exact-match terms — IDs, code, acronyms — that dense embeddings often under-rank." },
+  context: { name: "Parent-Document Retriever", why: "Searches small precise chunks but returns their larger parent, giving the LLM full context without losing retrieval precision." },
+  vague: { name: "HyDE", why: "Embeds a hypothetical answer instead of the raw short query, closing the vocabulary gap with dense technical prose." },
+  ranking: { name: "Reranking (Cross-Encoder)", why: "A cross-encoder scores each candidate jointly with the query, fixing cases where the right chunk was retrieved but ranked too low." },
+};
+
+const chips = document.querySelectorAll(".chip");
+const resultBox = document.getElementById("result");
+const resultStrategy = document.getElementById("result-strategy");
+const resultWhy = document.getElementById("result-why");
+
+chips.forEach(chip => {
+  chip.addEventListener("click", () => {
+    chips.forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    const key = chip.dataset.key;
+    const s = strategies[key];
+    resultStrategy.textContent = s.name;
+    resultWhy.textContent = s.why;
+    resultBox.classList.add("visible");
+  });
+});
+</script>
+</body>
+</html>

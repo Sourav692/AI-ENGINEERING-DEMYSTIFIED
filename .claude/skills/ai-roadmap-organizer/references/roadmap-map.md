@@ -10,9 +10,11 @@ Owns: LangChain's core building blocks + prompting. Does NOT own: RAG, tool-use/
 
 | Track | Status | Content |
 |---|---|---|
-| `LangChain_Fundamentals/` | ✅ Built | `01_Getting_Started` … `05_Summarization` — trimmed to true fundamentals |
+| `LangChain_Fundamentals/` | ✅ Built | `01_Getting_Started` … `07_LangChain_1x_Agents_and_Middleware` — trimmed to true fundamentals, plus `08_Production_Course_Foundations/` (added 2026-09-08, see History §18) — 10 nb + connectivity check from a merged-in "production-course", kept as one added track rather than micro-split (its `08_conversation_memory.ipynb`/`09_langsmith_setup.ipynb` arguably belong to Phase 7/12 by strict topic-ownership, but splitting a single 10-notebook course three ways for two notebooks wasn't judged worth it — revisit if more memory/observability content merges in later) |
 | `Prompt_and_Context_Engineering/Prompt_Engineering/` | ✅ Built | Regrouped by technique from `Prompt-Engineering-Demystified` |
 | `Prompt_and_Context_Engineering/Context_Engineering/` | 🚧 Planned | |
+
+Note: on disk this phase is currently at `01_LangChain_Fundamentals/` (flat, not nested under a `02_LangChain_Fundamentals_and_Prompting/` parent) — the repo's top-level phase numbering was changed outside this skill's own restructurings (see `.cleanup/01_LangChain_Fundamentals_cleanup_plan.md`, Q-001). This map's phase numbers/paths are not fully reconciled to that renumbering yet; treat the *topic ownership* table as authoritative and the literal paths as needing a disk-check.
 
 ## Phase 3 — `03_LangGraph_Fundamentals/` — ✅ Built
 
@@ -22,6 +24,7 @@ Owns: LangGraph mechanics only. Does NOT own: RAG, agent builds, design patterns
 |---|---|---|
 | `01_Foundations/` | ✅ Built | State/graph basics through Command objects (11 nb) |
 | `02_Core_Capabilities/` | ✅ Built | Routing, HITL, advanced state, subgraphs, async/streaming, retries. Memory moved to Phase 7. |
+| `03_Production_Course/` | ✅ Built | 8 nb from the same merged-in "production-course" as the Phase 2/4/7/12 additions (added 2026-09-08, History §18) — LangGraph core through tool-calling agent, including checkpointing internals |
 
 Note: `02_Routing/` contains 3 "Agentic RAG System" notebooks. By the topic-ownership rule these arguably belong in Phase 4 or 8, but the user explicitly chose to keep them here since they're this phase's only routing-mechanics demo — a deliberate exception, not an oversight. Don't move them without asking.
 
@@ -39,6 +42,7 @@ Owns: **foundational** RAG — theory + straightforward framework implementation
 | `RAG_with_LangGraph/` | ✅ Built | 2 nb — basic agentic RAG (simple + Databricks variant) |
 | `RAG_with_LangChain/` | ✅ Built | 4 nb — essentials, comprehensive, filtered search, indexing API |
 | `RAG_with_LlamaIndex/` | ✅ Built | Chainlit ReAct RAG over Wikipedia — from `LlamaIndex_Demystified`; not the Phase 8 NirDiamant LlamaIndex notebooks |
+| `RAG_Production_Course/` | ✅ Built | 7 nb (+ retired `03_embeddings.ipynb`) from the same merged-in "production-course" as the Phase 2/3/7/12 additions (added 2026-09-08, History §18) — document loaders through a research-assistant app |
 
 Also `shared_data/` at this phase's root — a copy of `RAG_Demystified`'s shared `data/` folder, since several `RAG_Naive_to_Production/` notebooks reference it via relative paths. Path depth wasn't reconstructed exactly after the move (would require editing notebook content) — flag this if a notebook can't find its data file.
 
@@ -65,7 +69,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | Track | Status | Content |
 |---|---|---|
 | `Memory_and_State/` | ✅ Built | `LangGraph/` + `LangChain/` (from `LangChain_Demystified`'s module 05) — both frameworks' memory content consolidated here, not left in their fundamentals phases. `LangGraph/01_Memory/memory/` also holds a LangGraph-native memory-layers tutorial series (`00_Memory_Layers_Guide.md` + one runnable LangGraph-agent notebook per layer, each built on a distinct LangGraph mechanism: short-term via `SqliteSaver`, session via `SqliteStore`+`TTLConfig`, semantic/episodic via `Store` namespaces, procedural via `Store`+`interrupt()`/`Command`) alongside the original combined LangGraph+SqliteSaver demo (`02_Agent_Memory_Types_SQLite.ipynb`) |
-| `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + swarm |
+| `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + swarm, plus `Production_Course_Multi_Agent/` (added 2026-09-08, History §18) — 7 nb from the same merged-in "production-course" as the Phase 2/3/4/12 additions |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | The `deepagents` multi-agent framework — own `CLAUDE.md`, `app/`, `examples/`, `skills/`, `docs/`. **This directory (specifically its `app/` subfolder) has hit a Windows file lock 3 separate times** across different restructurings — always drain-contents-then-remove-shell, never assume `mv`/`git mv` will just work on it. |
 | `Evaluation_and_Eval_Harnesses/` | ✅ Built | `RAG_Evaluation/` (retriever/generator/end-to-end metrics, LLM-as-judge G-Eval from `RAG_Demystified`; DeepEval metric drills + RAGAS from `Agents_Evaluation_Demystified`); `Agent_Evaluation/` (DeepLearning.AI + Arize labs kept whole, plus CrewAI travel-planner eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
 
@@ -130,6 +134,7 @@ Owns: deployment, LLMOps, observability, security, safety.
 | `LLMOps_and_AI_Infrastructure/` | ✅ Partially built | `Tracing_and_Observability/` (LangSmith built, LangFuse planned sibling, callbacks), `Caching_and_Performance/`, `Cost_Monitoring/` — all split out of `LangChain_Demystified`'s module 09 + 11 |
 | `Safety_and_Alignment/` | ✅ Partially built | Content moderation (from module 09) |
 | `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned | |
+| `Production_Course_Ops/` | ✅ Built | 4 nb from the same merged-in "production-course" as the Phase 2/3/4/7 additions (added 2026-09-08, History §18) — monitoring, cost optimization, security patterns, testing patterns |
 
 ## Phase 13 — `13_Projects/` — ✅ Built (12 projects)
 
@@ -180,3 +185,5 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 16. **2026-08-17 — `AI-Interview-Coach` was the existing Phase 13 interview app, not a new project.** Unique `architecture.excalidraw` merged in; local `app.py` kept (more complete than the GitHub copy).
 
 17. **2026-08-17 — `Resume-Genie` added as Phase 13 `Resume_Genie/`.** Streamlit + LangGraph career suite. Not CrewAI job-tailoring and not the AutoGen interview coach. GitHub source repo deleted after merge.
+
+18. **2026-09-08 — `production-course-main-code-main` (a standalone 38-notebook, 5-track course) split by topic across 5 already-built phases, not kept as a second top-level home.** Its own cleanup plan (`.cleanup/production-course-main-code-main_cleanup_plan.md`, Q-001) flagged it as sitting outside the roadmap entirely even though its 5 folders (LangChain foundations, RAG, LangGraph fundamentals, multi-agent, production/ops) each shadow the *shape* of an existing phase. Unlike `Comprehensive_RAG_Techniques`/`GraphRAG` (kept whole because notebooks share `helper_functions.py`/`data/`/`images/` via relative paths), this course's 5 folders have no cross-folder shared internals — each is self-contained — so the "split a multi-topic course by topic" pattern (History §4, §12) applied instead of the "keep a shared-internals collection whole" pattern (History §5, §7). Moved: `01_LangChain_Foundations/` → `01_LangChain_Fundamentals/08_Production_Course_Foundations/`; `02_RAG_and_Retrieval/` → `04_Retrieval_and_RAG/RAG_Production_Course/`; `03_LangGraph_Fundamentals/` → `03_LangGraph_Fundamentals/03_Production_Course/`; `04_Multi_Agent_Systems/` → `07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/`; `05_Production_and_Operations/` → `12_Production_and_Observability/Production_Course_Ops/`. `main.ipynb`/`main.py` (the course's connectivity-check entry point) went with the LangChain-foundations track as `00_main_connectivity_check.*`. Filename-checked against each target phase's existing notebooks first — no near-duplicate names found, so nothing was skipped. Root scaffolding (`pyproject.toml`, `uv.lock`, `README.md`, `graph*.png`, `.python-version`, `.gitignore`) was left in place at `production-course-main-code-main/` (now emptied of notebooks) rather than deleted, per the "never delete, only retire" convention — that folder is now just inert scaffolding, not a phase or track. Also applied the source cleanup plan's non-blocked items in the same pass: retired `03_embeddings.ipynb` (abandoned draft, superseded by `04_embeddings_deep.ipynb`) to `archive/`; added a short markdown note (not a code rewrite) to `05_checkpointing.ipynb` documenting the `config['configurable']`-vs-`context=` distinction (MIG-001); cleared a stale saved `ModuleNotFoundError` traceback from `07_error_handling.ipynb` (FMT-001); left `06_rag_pipeline.ipynb` and `02_cost_optimization.ipynb`'s out-of-order execution counts deferred (FMT-002/003) since no working Jupyter/kernel was available in this session to re-run them live.

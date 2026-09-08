@@ -31,7 +31,7 @@ from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from databricks_langchain import ChatDatabricks, DatabricksEmbeddings
 from langchain_groq import ChatGroq
-
+from openai import OpenAI
 # python-dotenv: Loads environment variables from a .env file
 # This keeps API keys secure and out of source code
 from dotenv import load_dotenv
@@ -156,8 +156,15 @@ def get_databricks_llm(model_name: str = "databricks-gpt-5-2", temperature: floa
     """
     Create and return a Databricks Chat LLM instance.
     """
-    return ChatDatabricks(
-        endpoint=model_name,
+
+    DATABRICKS_TOKEN = os.environ.get('DATABRICKS_TOKEN')
+
+    client = OpenAI(
+    api_key=DATABRICKS_TOKEN,
+    base_url="https://dbc-c93bb198-aa21.cloud.databricks.com/ai-gateway/mlflow/v1"
+    )
+    return client.responses.create(
+        model="system.ai.gemma-3-12b",
         temperature=temperature
     )
 

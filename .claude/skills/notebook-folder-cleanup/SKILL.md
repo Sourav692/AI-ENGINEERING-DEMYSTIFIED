@@ -7,9 +7,12 @@ description: >-
   the dedicated audit skill), reformats everything to the Format_Python_Notebook contract,
   and reports what changed and why. Use when the user names a folder and asks to "clean
   up", "organize", "tidy", "deduplicate", "remove dead notebooks", "modernize the
-  libraries", or "make these notebooks production/enterprise grade". Retires notebooks by
-  moving them to `archive/` with a manifest — never deletes — and requires explicit
-  approval before any file moves.
+  libraries", or "make these notebooks production/enterprise grade". Does not clean on
+  first contact: it delegates to `notebook-folder-cleanup-planner`, which writes
+  `.cleanup/<slug>_cleanup_plan.md`, and only executes once that plan and its paired
+  `.cleanup/<slug>_cleanup_decisions.md` exist. Retires notebooks by moving them to
+  `archive/` with a manifest — never deletes — and never removes anything without a
+  recorded decision.
 ---
 
 # Notebook Folder Cleanup
@@ -17,17 +20,29 @@ description: >-
 Takes one folder and returns a clean, non-redundant, current, consistently formatted set of
 notebooks — plus a report of every removal, consolidation and code change.
 
+**It does not start by cleaning.** Stage 1 produces a plan on disk and stops; the cleaning
+runs on the next invocation, against that plan and the decisions recorded on it:
+
+```
+notebook-folder-cleanup (1st call) → planner → .cleanup/<slug>_cleanup_plan.md   [stop]
+user responds                      → planner → .cleanup/<slug>_cleanup_decisions.md
+notebook-folder-cleanup (2nd call) → merge both → retire / migrate / reformat / review
+```
+
 This skill **composes** the others rather than reimplementing them:
 
 | Need | Skill it delegates to |
 | --- | --- |
+| Inventory, triage, and the plan itself | `notebook-folder-cleanup-planner` |
 | LangChain/LangGraph 0.x → 1.x | `langchain-v1-migration-audit` (its scanner + rewrite map) |
 | Formatting contract | `Format_Python_Notebook` |
 | Independent sign-off | `notebook-review` |
 | Where a notebook belongs in the roadmap | `ai-roadmap-organizer` |
 
-Only the triage (dead-end / duplicate) logic and the non-LangChain deprecation map
-(`references/library-migration-map.md`) are its own.
+Only the execution of an approved plan and the non-LangChain deprecation map
+(`references/library-migration-map.md`) are its own. The triage rules — what counts as
+evidence of abandonment, what is never a reason to retire — live in the planner, because
+that is where the judgment is made.
 
 ## Two rules that are not negotiable
 
@@ -36,63 +51,61 @@ notebooks. A "dead-end" judgment is a *guess about intent* made from the outside
 guesses about someone's learning material should be reversible. Move to
 `archive/<original-path>/`, write a manifest row, never `rm`.
 
-**2. Nothing moves without explicit approval.** Stage 2 stops and shows the triage table.
-This is the one blocking checkpoint even when the user asked for full automation — the
-`langchain-v1-pipeline` skill can run unattended precisely because it only *adds* files;
-this one removes them.
-
-Before any move, confirm the working tree is clean (`git status --porcelain`). If it is
-dirty, say so and offer to stop — an un-committed change plus a bulk move is unrecoverable
-without a stash the user didn't ask for.
+**2. Nothing moves without a recorded decision.** Approval is a file
+(`.cleanup/<slug>_cleanup_decisions.md`), not a message in a transcript. No plan, no run —
+and within a plan, an ID with no decision row is **not** approved: `keep` and `consolidate`
+proceed, `retire` does not. That is what lets this skill run unattended without becoming
+the one skill that quietly removes files nobody agreed to remove.
 
 ## Process
 
-### 1. Inventory
+### 1. Plan first — always
 
-```bash
-python .claude/skills/notebook-folder-cleanup/scripts/inventory.py "<folder>" --json
-```
+Derive the slug (last path segment of the target, phase-prefixed when it is a name that
+recurs across phases) and look for `.cleanup/<slug>_cleanup_plan.md`.
 
-Read-only. Returns per notebook: cell counts, title/summary presence, markdown ratio, empty
-and fully-commented cells, syntax-error cells, abandonment markers (TODO/FIXME/scratch
-names), saved error outputs, out-of-order execution counts, and a fingerprint (imports,
-defined names, called symbols, normalized headings). Then it clusters notebooks by
-fingerprint similarity and lists pairs above the threshold.
+**No plan?** Load `notebook-folder-cleanup-planner`, let it inventory and triage the folder
+and write the plan, then **stop**. Report the plan path and what it proposes. Do not clean.
+This holds even when the user asked for the whole thing in one go — the planner is fast,
+costs no notebook edits, and the plan is what makes the run reversible and reviewable.
 
-`dead_end_score` is a **heuristic, not a verdict.** Treat it as a reading order: open the
-high scorers first. Then also run the LangChain scanner over the folder, since a notebook's
-migration burden is part of the keep/retire decision:
+**Plan exists but `status: draft` and no decisions file?** The user has not ruled on it yet.
+Show the outstanding items and stop. If they respond now, hand back to the planner to record
+the decisions properly, then continue.
 
-```bash
-python .claude/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py "<folder>" --json
-```
+**Plan exists and is `decided`?** Continue to stage 2.
 
-### 2. Triage — and stop
+A user who explicitly says "skip the plan, just do it" is asking you to remove files with no
+record of why. Write the plan anyway — it takes one pass — and tell them it is written; then
+ask for the one thing you still need, which is their approval of the retire list.
 
-Open every notebook the inventory flags, plus every member of a duplicate pair. Read the
-markdown, not just the code: a notebook with two code cells and a long careful explanation
-is a lesson, not a stub.
+### 2. Merge the plan with the decisions
 
-Classify each notebook **keep / consolidate / retire**, and present one table:
+Read `.cleanup/<slug>_cleanup_plan.md` and `.cleanup/<slug>_cleanup_decisions.md`, and build
+the work list by this contract — the planner's `## How the two files merge` section is
+authoritative, and this is its short form:
 
-| Notebook | Verdict | Evidence | Merge target |
+1. **Decisions win over the plan**, always. If a decision looks wrong, say so once and
+   follow it.
+2. **An ID with no decision defaults to the safe side of its verdict**: `keep` and
+   `consolidate`-into-target proceed; **`retire` does not.**
+3. **`scope: all`** in the decisions frontmatter approves every ID, minus any row that
+   carves one out. Those rows win over the blanket approval.
+4. **An unruled `Q-###` blocks only the items it lists**, not the run.
+5. **A decision for an unknown ID is an error, not a guess.** Report it and continue.
+6. **`## Additional instructions` apply to the whole run**, after the per-ID decisions.
 
-Rules for the judgment the score can't make:
+Then re-verify the plan against reality before acting on it: a plan can be days old.
+Confirm every notebook it names still exists at that path, and that nothing new has appeared
+in the folder. If it has drifted, refresh the plan through the planner rather than executing
+a stale one.
 
-- **Retire** only with positive evidence of abandonment: syntax errors, saved tracebacks
-  never fixed, TODO markers on the core path, a title promising content the notebook never
-  delivers, scratch identifiers throughout.
-- **Never retire for being short.** A focused 6-cell notebook that teaches one thing well is
-  the goal, not a defect.
-- **Never retire the only coverage of a concept**, however rough — mark it `keep (needs
-  work)` and let it become a migration task instead.
-- **Consolidate** means: keep the more complete version, port anything unique from the other
-  into it, *then* retire the other. Say explicitly what gets ported. A high similarity score
-  with genuinely different framings (e.g. LCEL-first vs agent-first) is **not** a duplicate.
-- If a notebook is fine but sits in the wrong phase, that is `ai-roadmap-organizer`'s call,
-  not a retirement. Flag it, don't move it.
+Confirm the working tree is clean (`git status --porcelain`). If it is dirty, say so and
+offer to stop — an un-committed change plus a bulk move is unrecoverable without a stash the
+user didn't ask for.
 
-Get approval. Then, and only then, continue.
+Print the resolved work list — what will be retired, consolidated, migrated, reformatted,
+and what was skipped for want of a decision — then proceed.
 
 ### 3. Retire the approved set
 
@@ -105,15 +118,24 @@ Use `git mv` so history follows the file. Append a row per notebook to
 `archive/RETIRED_MANIFEST.md` (create it if absent):
 
 ```markdown
-| Date | Notebook | From | Reason | Superseded by |
-| --- | --- | --- | --- | --- |
-| 2026-09-04 | 4.4_Chains_Scratch.ipynb | 02_.../04_Chains/ | 3 cells with saved tracebacks, TODO on core path | 4.2_Advanced_Chains.ipynb |
+| Date | Notebook | From | Reason | Superseded by | Plan |
+| --- | --- | --- | --- | --- | --- |
+| 2026-09-04 | 4.4_Chains_Scratch.ipynb | 02_.../04_Chains/ | 3 cells with saved tracebacks, TODO on core path | 4.2_Advanced_Chains.ipynb | 04_Chains NB-007 |
 ```
+
+The `Plan` column is the link back to the evidence and to the decision that approved this —
+`.cleanup/<slug>_cleanup_plan.md` plus its `_decisions.md`. The manifest says *what* was
+retired; the plan says why it was the right call and who agreed.
 
 The manifest is the whole reason this is reversible — a move with no recorded reason is a
 deletion with extra steps.
 
 ### 4. Migrate the libraries
+
+Work the approved `MIG-###` items. The plan already recorded the old API, the new one, and
+the rewrite-vs-repoint call per notebook — apply that, don't re-derive it. If a notebook
+turns out to need a migration the plan never listed, add it to the plan as a new ID and
+carry it as unapproved work: report it, don't silently do it.
 
 Per retained notebook, in this order:
 
@@ -232,22 +254,33 @@ rounds**; after that, report the unresolved findings rather than forcing it thro
 
 ### 7. Report
 
-Structure the final report as:
+Cite the plan ID beside every item, so the report and the plan can be read against each
+other. Structure it as:
 
-1. **Retired** — notebook, reason, archive path. Presented as reversible: give the
+1. **Retired** — ID, notebook, reason, archive path. Presented as reversible: give the
    `git mv` needed to restore any one of them.
 2. **Consolidated** — kept vs retired, and exactly what content was ported across.
 3. **Migrated** — per notebook, per library: old API → new API, with cell references.
    Separate "changed" from "already current" from "left alone because the pin says so".
 4. **Reformatted** — which rules were violated before, and the `--check` result after.
 5. **Reviewed** — rounds and verdict per notebook; anything still unresolved.
-6. **Not done** — anything you deliberately left, and why.
+6. **Skipped for want of a decision** — every ID that was planned but had no approval,
+   named individually. This section is the point of the whole two-file design: it is how
+   the user sees what is still waiting on them. Never fold it into "not done".
+7. **Not done** — anything you deliberately left, and why.
+
+Then close the loop on the plan: set its frontmatter `status: applied`, append a
+`## Changelog` row with the date and a one-line summary of the run, and leave every unruled
+ID exactly as it was so the next round can pick it up.
 
 Report failures as plainly as successes. A cleanup that overstates itself is worse than one
 that stops early, because the next person trusts it.
 
-## When to use the pipeline instead
+## When to use something else instead
 
-If the folder's only problem is LangChain 0.x code and you want plan → tasks → notebooks →
-review tracked on a board, use `langchain-v1-pipeline`. Use **this** skill when the folder
-also needs pruning, deduplication, non-LangChain migrations, or a formatting pass.
+| Situation | Use |
+| --- | --- |
+| You only want to know what *would* change | `notebook-folder-cleanup-planner` on its own — it writes the plan and stops |
+| The user is answering an existing plan | `notebook-folder-cleanup-planner`, which records the decisions file; then come back here |
+| The folder's only problem is LangChain 0.x, tracked on a board | `langchain-v1-pipeline` (plan → tasks → notebooks → review) |
+| The folder also needs pruning, deduplication, non-LangChain migrations or reformatting | **this skill** |
