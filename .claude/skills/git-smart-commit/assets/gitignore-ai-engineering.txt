@@ -1,0 +1,116 @@
+# ============================================================
+# .gitignore — Python / Agentic AI Engineering repo
+# Generated/maintained by the git-smart-commit skill
+# ============================================================
+
+# --- Python runtime cruft ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+.conda/
+conda-meta/
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+secrets.json
+
+# --- Jupyter / notebooks ---
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# --- Vector stores & embeddings (local persistence) ---
+# Chroma
+chroma_db/
+**/chroma_db/
+.chroma/
+chroma.sqlite3
+
+# FAISS
+*.faiss
+*.index
+faiss_index/
+**/faiss_index/
+
+# Qdrant (local mode)
+qdrant_storage/
+**/qdrant_storage/
+
+# Weaviate (local/embedded)
+weaviate_data/
+
+# LanceDB
+.lancedb/
+
+# Generic "local vector store" naming conventions
+vectorstore/
+vector_store/
+**/vectorstore/
+**/vector_store/
+*.vecs
+
+# --- Model / embedding artifacts ---
+*.safetensors
+*.gguf
+*.bin
+*.ckpt
+*.pt
+*.onnx
+models/downloaded/
+.cache/huggingface/
+.cache/torch/
+
+# --- LangChain / LangGraph / agent framework runtime state ---
+.langgraph_api/
+.langsmith/
+*.langchain_cache
+
+# --- Logs, data dumps, run artifacts ---
+*.log
+logs/
+runs/
+outputs/
+*.tmp
+*.bak
+tmp/
+scratch/
+
+# --- MLflow / experiment tracking ---
+mlruns/
+mlflow.db
+.mlflow/
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- Testing / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Package manager lockfile noise (uncomment if desired) ---
+# .python-version
