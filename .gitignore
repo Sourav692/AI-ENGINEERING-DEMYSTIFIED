@@ -1,27 +1,145 @@
-.DS_Store
+# ============================================================
+# .gitignore — Python / Agentic AI Engineering repo
+# Maintained via the git-smart-commit skill
+# ============================================================
+
+# --- Python runtime cruft ---
 __pycache__/
-*.pyc
-*.pyo
-.env
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+
+# --- Virtual environments ---
 .venv/
 venv/
-*.egg-info/
-dist/
-build/
+env/
+ENV/
+.conda/
+conda-meta/
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+secrets.json
+
+# --- Jupyter / notebooks ---
 .ipynb_checkpoints/
-.cursor/
-projects/
-large_tool_results/
-.databricks
+*.nbconvert.ipynb
+
+# --- Vector stores & embeddings (local persistence) ---
+# Chroma
+chroma_db/
+**/chroma_db/
+chroma_data/
+**/chroma_data/
+.chroma/
+chroma.sqlite3
+chroma/
+
+# FAISS
+*.faiss
+*.index
+faiss_index/
+**/faiss_index/
+
+# Qdrant (local mode)
+qdrant_storage/
+**/qdrant_storage/
+
+# Weaviate (local/embedded)
+weaviate_data/
+
+# LanceDB
+.lancedb/
+
+# Generic "local vector store" naming conventions
+vectorstore/
+vector_store/
+**/vectorstore/
+**/vector_store/
+*.vecs
+my_db/
+
+# --- Model / embedding artifacts ---
+*.safetensors
+*.gguf
+*.bin
+*.ckpt
+*.pt
+*.onnx
+models/downloaded/
+.cache/huggingface/
+.cache/torch/
+
+# --- LangChain / LangGraph / agent framework runtime state ---
+.langgraph_api/
+.langsmith/
+*.langchain_cache
+.deepeval/
+
+# --- Databases (local dev / notebook state) ---
 *.db
-*.db-shm    
+*.db-shm
 *.db-wal
-graphify-out
-.deepeval
-mlflow.db
 *.sqlite3
-my_db
-*log
+mlflow.db
+
+# --- Logs, data dumps, run artifacts ---
+*.log
+logs/
+runs/
+outputs/
+*.tmp
+*.bak
+!archive/requirements_files/*.bak
+tmp/
+scratch/
+large_tool_results/
+
+# --- MLflow / experiment tracking ---
+mlruns/
+.mlflow/
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.cursor/
+*.swp
+
+# --- Testing / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Databricks ---
+.databricks
+
+# --- Graphify code-graph snapshot (regenerated locally, not source) ---
+graphify-out/
+
+# --- Repo-specific: personal/local state, not repo content ---
+projects/
+cell_*.txt
+
+# Personal learning-progress tracker (see .claude/skills/learning-tracker/).
+# Local study state, not repo content — never shared/committed.
+.tracker/
+
 # Notebook-generated artifacts. 2.2_Prompt_Templates.ipynb writes prompt.json from
 # its serialization cell; committed copies go stale the moment anyone runs the
 # notebook, and the copies that WERE committed (dad1931) are old `.save()` output —
@@ -29,12 +147,3 @@ my_db
 # bare `prompt.json` so an unrelated file of that name elsewhere is unaffected.
 02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.json
 02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.yaml
-chroma_db/
-chroma_data/
-chroma
-runs
-cell_*.txt
-
-# Personal learning-progress tracker (see .claude/skills/learning-tracker/).
-# Local study state, not repo content — never shared/committed.
-.tracker/
