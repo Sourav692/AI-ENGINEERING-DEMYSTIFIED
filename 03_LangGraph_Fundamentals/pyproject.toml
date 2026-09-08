@@ -1,0 +1,37 @@
+[project]
+name = "langgraph-fundamentals"
+version = "0.1.0"
+description = "Standalone env for 03_LangGraph_Fundamentals notebooks"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain==1.4.0",
+    "langchain-core==1.6.1",
+    "langchain-community==0.4.2",
+    "langchain-openai==1.6.0",
+    "langchain-anthropic==1.7.1",
+    "langchain-chroma==1.1.0",
+    "langgraph==1.2.11",
+    "langsmith==0.12.1",
+    "databricks-langchain==0.20.0",
+    "databricks-sdk==0.135.0",
+    "numpy==2.5.2",
+    "pandas==3.0.5",
+    "pydantic==2.12.5",
+    "typing-extensions==4.16.0",
+    "python-dotenv==1.2.3",
+    "requests==2.34.2",
+    "rich==14.3.4",
+    "tqdm==4.70.0",
+    "ipython==9.17.1",
+    "ipykernel",
+]
+
+# NOTE: notebooks also import the local `helpers` package (from helpers import
+# get_llm, get_embeddings). It is deliberately NOT declared as a dependency
+# here (e.g. via [tool.uv.sources]) because the root pyproject.toml's
+# dependency list applies to the whole monorepo package, so an editable
+# install of the repo root would pull in ~65 unrelated packages (chromadb,
+# mcp, deepagents, every provider integration, etc.). Install it separately,
+# without its declared deps, after `uv sync`:
+#
+#   uv pip install -e .. --no-deps --python .venv
