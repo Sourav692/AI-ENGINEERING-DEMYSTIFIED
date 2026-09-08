@@ -27,7 +27,7 @@ quality — it's that the folder's placement relative to the roadmap is undecide
 | consolidate | 0 |
 | retire | 1 |
 
-Blocking questions: 1 — Q-001 resolved/applied 2026-09-08, Q-002 still open (see [Open questions](#open-questions))
+Blocking questions: 0 — Q-001 and Q-002 both resolved/applied 2026-09-08 (see [Open questions](#open-questions))
 
 ## 1. Triage
 
@@ -130,7 +130,7 @@ Things a human has to answer. Each blocks only the items listed.
 | ID | Question | Blocks |
 | --- | --- | --- |
 | Q-001 | **Answered and applied, 2026-09-08.** `ai-roadmap-organizer` decided: split by topic across the 5 phases that already own each topic, rather than keep the course standalone — its 5 folders have no shared cross-folder internals (unlike `Comprehensive_RAG_Techniques`/`GraphRAG`, which are kept whole because they share `helper_functions.py`/`data/`/`images/`), so the "split a multi-topic course by topic" precedent (roadmap-map.md History §4/§12) applied. Filename-checked against each target phase first — no near-duplicate names found, nothing skipped. Moved: `01_LangChain_Foundations/` → `01_LangChain_Fundamentals/08_Production_Course_Foundations/`; `02_RAG_and_Retrieval/` → `04_Retrieval_and_RAG/RAG_Production_Course/`; `03_LangGraph_Fundamentals/` → `03_LangGraph_Fundamentals/03_Production_Course/`; `04_Multi_Agent_Systems/` → `07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/`; `05_Production_and_Operations/` → `12_Production_and_Observability/Production_Course_Ops/`; `main.ipynb`/`main.py` → `01_LangChain_Fundamentals/08_Production_Course_Foundations/00_main_connectivity_check.*`. Root scaffolding (`pyproject.toml`, `uv.lock`, `README.md`, `graph*.png`, `.python-version`, `.gitignore`) left in place at the now-emptied `production-course-main-code-main/` folder, not deleted. `NOTEBOOK_INDEX.md` and `references/roadmap-map.md` (History §18) updated accordingly. | none — resolved |
-| Q-002 | Two original `.py` source files remain alongside their converted notebooks — now at `01_LangChain_Fundamentals/08_Production_Course_Foundations/00_main_connectivity_check.py` (↔ `00_main_connectivity_check.ipynb`) and `04_Retrieval_and_RAG/RAG_Production_Course/08_research_assistant.py` (↔ `08_research_assistant.ipynb`), moved along with their notebooks per the Q-001 split. Every notebook in the folder carries a "> Converted from `X.py`" markdown note, implying more `.py` originals existed and were already removed elsewhere — these two are the only survivors. Keep as source-of-truth originals, or remove now that the notebooks are the maintained copy? Still open — out of scope for this pass, which only executed Q-001 and the non-blocked items. | none |
+| Q-002 | **Answered and applied, 2026-09-08.** User: "Remove both" — matches this course's own established convention (every other `.py` original was already removed elsewhere after conversion; these two were just the survivors). Removed via `git rm`: `01_LangChain_Fundamentals/08_Production_Course_Foundations/00_main_connectivity_check.py` and `04_Retrieval_and_RAG/RAG_Production_Course/08_research_assistant.py`. Their notebooks remain as the maintained copies. | none — resolved |
 
 ## 6. Not planned
 
@@ -151,3 +151,4 @@ Things a human has to answer. Each blocks only the items listed.
 | 2026-09-08 | MIG-001 applied — markdown note added to `05_checkpointing.ipynb`, no code changes |
 | 2026-09-08 | FMT-001 applied — stale error output cleared from `07_error_handling.ipynb` cell 2 |
 | 2026-09-08 | FMT-002, FMT-003 deferred — no working Jupyter/kernel available in this session; need a manual top-to-bottom re-run |
+| 2026-09-08 | Q-002 answered and applied — both orphaned `.py` originals removed via `git rm`, matching the course's own convention |
