@@ -10,6 +10,21 @@ This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
+## Navigating This Repo — Check `graphify-out/` First
+
+This repo has a local, gitignored code-graph snapshot at `graphify-out/` (produced by an external "Graphify" tool, last generated 2026-08-17 over ~554 files). **Before running a broad `Glob`/`Grep` sweep or opening files to find where something lives, check it first** — it exists specifically to cut down the exploration needed to answer "where is X" / "what touches Y" questions, which otherwise burns a lot of context on this large a repo:
+
+- `graphify-out/GRAPH_REPORT.md` — human-readable: 225 named communities (clusters of related files/functions, e.g. "Adaptive RAG Retrieval Strategies", "Deep Agent Backend & Orchestrator"), god-nodes (most-connected core files), and cross-phase "surprising connections."
+  Skim this first to identify which community/area owns the thing you're looking for.
+- `graphify-out/graph.json` — the full node/edge graph (files, functions, classes, docs) with relationships (calls, imports, semantic similarity). Use this once you know the rough area, to pinpoint exact files/symbols before reading them.
+
+**How to use it in practice:** grep or read `GRAPH_REPORT.md`/`graph.json` for the concept/file you care about, use what it points to in order to target your actual `Read`/`Edit`/`Grep` calls, instead of guessing paths or globbing wide directory trees.
+
+**Caveats — this is a navigation aid, not a source of truth:**
+- It's a snapshot from 2026-08-17. Anything added, moved, or edited since then (including everything reorganized in this session) won't appear in it, or may point at a stale path — if a lookup comes back empty or looks wrong, fall back to normal `Glob`/`Grep`/`Read` rather than assuming the file doesn't exist.
+- Never edit based on what the graph *says* a file contains — always `Read` the actual current file before editing it. The graph tells you *where to look*, not what's currently there.
+- If `graphify-out/` is ever missing (e.g. a fresh clone — it's `.gitignore`'d), just fall back to `Glob`/`Grep` as normal; regenerating it requires the external Graphify tool, which isn't part of this repo's own tooling.
+
 ## Roadmap Structure
 
 ```

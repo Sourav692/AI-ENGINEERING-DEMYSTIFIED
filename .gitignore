@@ -33,3 +33,8 @@ chroma_db/
 chroma_data/
 chroma
 runs
+cell_*.txt
+
+# Personal learning-progress tracker (see .claude/skills/learning-tracker/).
+# Local study state, not repo content — never shared/committed.
+.tracker/

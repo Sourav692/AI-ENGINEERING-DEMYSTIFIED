@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG, Agent &amp; Tool Evaluation — Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --accent:#8ba4ff; --det:#3fd6ce; --judge:#a487f5; --gen:#ef5b93; --tool:#c2e04a; --traj:#f0a03c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text);font-family:var(--disp);line-height:1.5}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:70ch;margin:0 0 22px}
+h2{font-size:15px;margin:0 0 12px;font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#1b2547;border-color:var(--accent);color:#c5d2ff}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.headline{font-size:15px;font-weight:600;margin:16px 0 4px}
+.symptom{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.box .kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.box ul{margin:0;padding-left:16px}
+.box li{font-size:12.5px;margin-bottom:5px}
+.box code{font-family:var(--mono);font-size:11.5px;color:#c5d2ff}
+.note{margin-top:14px;background:linear-gradient(90deg,#1b2547,#151a26 70%);border:1px solid #33406b;border-left:3px solid var(--accent);border-radius:8px;padding:12px 14px;font-size:13px;color:#cfd4e6}
+.note b{color:#fff}
+.card{display:block;text-decoration:none;color:inherit;background:var(--panel-2);border:1px solid var(--line);
+  border-left:3px solid var(--dead);border-radius:10px;padding:13px 15px;margin-bottom:10px;transition:transform .2s,background .2s}
+.card:hover{transform:translateX(3px);background:#1f2637}
+.card.d{border-left-color:var(--det)} .card.j{border-left-color:var(--judge)}
+.card.g{border-left-color:var(--gen)} .card.t{border-left-color:var(--tool)} .card.a{border-left-color:var(--traj)}
+.card .num{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.card h3{margin:3px 0 5px;font-size:15px;font-weight:600}
+.card p{margin:0 0 8px;font-size:12.5px;color:var(--muted)}
+.card .drag{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.card .files{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+tbody td{padding:9px 12px;font-size:12.5px;border-bottom:1px solid #1e2434;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+code{font-family:var(--mono);font-size:11.5px}
+.foot{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:28px;text-align:center}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG · Agent · Tool eval · index</div>
+  <h1>Five evaluation surfaces. <span style="color:var(--accent)">One bad answer.</span></h1>
+  <p class="sub">A five-part interactive tutorial built from the <code>Tutorial_RAG_Agent_Tool_Evaluation</code> notebooks. Each part pairs a lab you can manipulate with a written companion. Tap a surface below to see what breaks there, what it costs to measure, and which notebook it comes from.</p>
+
+  <div class="panel">
+    <h2>The pipeline and where each surface sits</h2>
+    <svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RAG agent pipeline with five evaluation surfaces">
+      <defs>
+        <marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 z" fill="#4a5573"/>
+        </marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#e7eaf3">
+        <rect x="4" y="18" width="92" height="32" rx="8" fill="#1b2130" stroke="#283043"/>
+        <text x="50" y="38" text-anchor="middle">question</text>
+        <rect x="122" y="18" width="122" height="32" rx="8" fill="#12352f" stroke="#3fd6ce"/>
+        <text x="183" y="38" text-anchor="middle" fill="#7fe6e0">retriever</text>
+        <rect x="270" y="18" width="122" height="32" rx="8" fill="#2f1522" stroke="#ef5b93"/>
+        <text x="331" y="38" text-anchor="middle" fill="#ffb3cf">generator</text>
+        <rect x="418" y="18" width="122" height="32" rx="8" fill="#33260f" stroke="#f0a03c"/>
+        <text x="479" y="38" text-anchor="middle" fill="#ffc987">agent loop</text>
+        <rect x="566" y="18" width="122" height="32" rx="8" fill="#2a3313" stroke="#c2e04a"/>
+        <text x="627" y="38" text-anchor="middle" fill="#dcefa0">tools</text>
+
+        <line x1="98" y1="34" x2="116" y2="34" stroke="#4a5573" marker-end="url(#ar)"/>
+        <line x1="246" y1="34" x2="264" y2="34" stroke="#4a5573" marker-end="url(#ar)"/>
+        <line x1="394" y1="34" x2="412" y2="34" stroke="#4a5573" marker-end="url(#ar)"/>
+        <line x1="542" y1="34" x2="560" y2="34" stroke="#4a5573" marker-end="url(#ar)"/>
+        <path d="M627 50 L627 66 L479 66 L479 54" fill="none" stroke="#f0a03c" stroke-dasharray="3 3" marker-end="url(#ar)"/>
+        <text x="553" y="80" text-anchor="middle" font-size="9" fill="#8b93ab">tool results loop back</text>
+
+        <path d="M122 100 L122 92 L244 92 L244 100" fill="none" stroke="#3fd6ce" stroke-width="1.2"/>
+        <text x="183" y="115" text-anchor="middle" font-size="10" fill="#3fd6ce">LAB 01 · P@K R@K MRR nDCG</text>
+        <text x="183" y="128" text-anchor="middle" font-size="9" fill="#8b93ab">free · needs labelled chunk ids</text>
+        <text x="183" y="146" text-anchor="middle" font-size="10" fill="#a487f5">LAB 02 · Contextual P/R/Relevancy</text>
+        <text x="183" y="159" text-anchor="middle" font-size="9" fill="#8b93ab">judged · no chunk labels needed</text>
+
+        <path d="M270 100 L270 92 L392 92 L392 100" fill="none" stroke="#ef5b93" stroke-width="1.2"/>
+        <text x="331" y="115" text-anchor="middle" font-size="10" fill="#ef5b93">LAB 03 · Faithfulness</text>
+        <text x="331" y="128" text-anchor="middle" font-size="9" fill="#8b93ab">+ Relevancy · Correctness</text>
+
+        <path d="M418 100 L418 92 L540 92 L540 100" fill="none" stroke="#f0a03c" stroke-width="1.2"/>
+        <text x="479" y="115" text-anchor="middle" font-size="10" fill="#f0a03c">LAB 05 · trajectory</text>
+        <text x="479" y="128" text-anchor="middle" font-size="9" fill="#8b93ab">9 trace-level metrics</text>
+
+        <path d="M566 100 L566 92 L688 92 L688 100" fill="none" stroke="#c2e04a" stroke-width="1.2"/>
+        <text x="627" y="115" text-anchor="middle" font-size="10" fill="#c2e04a">LAB 04 · tool use</text>
+        <text x="627" y="128" text-anchor="middle" font-size="9" fill="#8b93ab">selection · arguments</text>
+
+        <text x="360" y="190" text-anchor="middle" font-size="9.5" fill="#5f6b86">each surface caps the ones downstream — verify left to right, then look underneath the agent</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="panel">
+    <h2>What breaks where</h2>
+    <div class="chips" id="tabs">
+      <button class="chip" data-l="0" aria-pressed="true">① Retrieval — deterministic</button>
+      <button class="chip" data-l="1">② Retrieval — judged</button>
+      <button class="chip" data-l="2">③ Generation</button>
+      <button class="chip" data-l="3">④ Tool use</button>
+      <button class="chip" data-l="4">⑤ Trajectory</button>
+    </div>
+    <p class="headline" id="lHead"></p>
+    <p class="symptom" id="lSym"></p>
+    <div class="grid2">
+      <div class="box"><span class="kicker">What you measure</span><ul id="lMetrics"></ul></div>
+      <div class="box"><span class="kicker">What it costs to run</span><ul id="lCost"></ul></div>
+      <div class="box"><span class="kicker">Fixes it points to</span><ul id="lFix"></ul></div>
+      <div class="box"><span class="kicker">Source notebooks</span><ul id="lFiles"></ul></div>
+    </div>
+    <div class="note" id="lNote"></div>
+  </div>
+
+  <div class="panel">
+    <h2>The five parts</h2>
+
+    <a class="card d" href="01-deterministic-retrieval-metrics.html">
+      <div class="num">Part 01</div>
+      <h3>Deterministic Retrieval Metrics — four numbers that disagree on purpose</h3>
+      <p>Precision@K, Recall@K, MRR and nDCG@K over the notebook's exact toy eval set. No LLM, no key, no cost — and one relevant chunk that was never retrieved, which caps three of the four metrics permanently.</p>
+      <div class="drag">→ drag K from 1 to 5 and watch MRR refuse to move</div>
+      <div class="files">01-deterministic-retrieval-metrics.html · .md</div>
+    </a>
+
+    <a class="card j" href="02-llm-judged-retrieval-metrics.html">
+      <div class="num">Part 02</div>
+      <h3>LLM-Judged Retrieval — Contextual Precision, Recall and Relevancy</h3>
+      <p>The same "is retrieval working" question without hand-labelled chunk IDs. Three metrics because there are three failures: order, coverage, and signal-to-noise.</p>
+      <div class="drag">→ switch to "bad ranking" — same chunks reordered, precision falls to 0.58 alone</div>
+      <div class="files">02-llm-judged-retrieval-metrics.html · .md</div>
+    </a>
+
+    <a class="card g" href="03-generator-metrics.html">
+      <div class="num">Part 03</div>
+      <h3>Generator Metrics — referenceless vs reference-based</h3>
+      <p>Faithfulness, Answer Relevancy, Hallucination, Answer Correctness and Semantic Similarity on four answers to one question — including one that scores 1.00 on both referenceless metrics while being flatly false.</p>
+      <div class="drag">→ open "faithful to bad context" and read the two perfect scores</div>
+      <div class="files">03-generator-metrics.html · .md</div>
+    </a>
+
+    <a class="card t" href="04-tool-use-evaluation.html">
+      <div class="num">Part 04</div>
+      <h3>Tool-Use Evaluation — the metric is only as strict as its constructor</h3>
+      <p><code>ToolCorrectnessMetric</code> scores six traces. With the default name-only comparison, an extra billed call, a reversed sequence and a wrong booking date all pass at 1.00.</p>
+      <div class="drag">→ start on config A, mean 0.92, then switch to C and watch it hit 0.17</div>
+      <div class="files">04-tool-use-evaluation.html · .md</div>
+    </a>
+
+    <a class="card a" href="05-agent-trajectory-evaluation.html">
+      <div class="num">Part 05</div>
+      <h3>Agent Trajectory Evaluation — nine metrics, five of which never move</h3>
+      <p>A refund agent's five-step trace with one error, one recovery and one redundant call. Task success, end-state and trajectory match all report a clean pass while 40% of the steps were waste.</p>
+      <div class="drag">→ step through all four variants and watch rows 1, 2, 5, 6 and 7 stay frozen</div>
+      <div class="files">05-agent-trajectory-evaluation.html · .md</div>
+    </a>
+  </div>
+
+  <div class="panel">
+    <h2>Reference-based vs referenceless — the axis that decides your cost</h2>
+    <table>
+      <thead><tr><th></th><th>Reference-based</th><th>Referenceless</th></tr></thead>
+      <tbody>
+        <tr><td><b>Compares against</b></td><td><code>expected_output</code>, <code>expected_tools</code>, a gold trajectory</td><td>Internal consistency, or an LLM judging against a rubric</td></tr>
+        <tr><td><b>Someone must write</b></td><td>The reference, per case, and keep it current</td><td>Nothing</td></tr>
+        <tr><td><b>Scales to production traffic</b></td><td>No — curated test sets only</td><td>Yes, at any volume</td></tr>
+        <tr><td><b>Precision of the signal</b></td><td>High, and repeatable</td><td>Lower, and dependent on judge quality</td></tr>
+        <tr><td><b>Belongs in</b></td><td>Development and CI, as a hard pass/fail bar</td><td>Production monitoring</td></tr>
+        <tr><td><b>Examples here</b></td><td>P@K · R@K · nDCG · Contextual Precision/Recall · Answer Correctness · <code>ToolCorrectnessMetric</code></td><td>Contextual Relevancy · Faithfulness · Answer Relevancy · <code>ArgumentCorrectnessMetric</code> · <code>TaskCompletionMetric</code></td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Mature setups run both, at different points in the lifecycle</b> — not as a choice between them. Reference-based gates the deploy; referenceless watches what happens after it.</div>
+  </div>
+
+  <div class="panel">
+    <h2>Where LLM-as-judge actually breaks</h2>
+    <table>
+      <thead><tr><th>Failure mode</th><th>What it looks like</th><th>What to do about it</th></tr></thead>
+      <tbody>
+        <tr><td><b>Weak judge model</b></td><td>Noisy scores that don't track human judgement</td><td>The judge must be at least as capable as the task requires, sometimes more than the system it grades</td></tr>
+        <tr><td><b>Non-determinism</b></td><td>Two runs on identical input disagree, especially near the threshold</td><td>Treat <code>metric.score</code> as a noisy estimate; set thresholds away from where scores cluster</td></tr>
+        <tr><td><b>Criteria sensitivity</b></td><td>A vague <code>GEval</code> criteria string produces a vague judge</td><td>Write <code>evaluation_steps</code> explicitly; the rubric's specificity is the judgement's specificity</td></tr>
+        <tr><td><b>Cost compounding</b></td><td>5 metrics × 500 cases = 2,500+ judge calls per run</td><td>Deterministic checks first; judge only what arithmetic can't decide</td></tr>
+        <tr><td><b>Gamed by fluency</b></td><td>A confident, well-written sentence scores well regardless of truth</td><td>End-state verification — read the system of record, not the agent's summary</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>The 15 source notebooks, and where each lands</h2>
+    <table>
+      <thead><tr><th>Notebook</th><th>Covers</th><th>Lab</th></tr></thead>
+      <tbody>
+        <tr><td><code>00_Evaluation_Landscape</code></td><td>Taxonomy, reference-based vs referenceless, judge failure modes, tooling map</td><td>this index</td></tr>
+        <tr><td><code>01_Retrieval_Metrics_Deterministic</code></td><td>Precision@K, Recall@K, MRR, nDCG — no API calls</td><td><b>01</b></td></tr>
+        <tr><td><code>02_Retrieval_Metrics_LLM_Judged</code></td><td>Contextual Precision / Recall / Relevancy</td><td><b>02</b></td></tr>
+        <tr><td><code>03_Generator_Metrics_Referenceless</code></td><td>Faithfulness, Answer Relevancy, Hallucination</td><td><b>03</b></td></tr>
+        <tr><td><code>04_Generator_Metrics_Reference_Based</code></td><td>Answer Correctness via <code>GEval</code>, Answer Semantic Similarity</td><td><b>03</b></td></tr>
+        <tr><td><code>05_RAG_Eval_Inside_the_Pipeline</code></td><td>Evaluation wired in as LangGraph nodes — gates, not after-the-fact scoring</td><td>03 · 05</td></tr>
+        <tr><td><code>06_RAGAS_in_Practice</code></td><td>RAGAS quickstart, multi-metric, the pytest/Excel/CI pattern</td><td>03</td></tr>
+        <tr><td><code>07_RAG_Capstone_Build_and_Evaluate</code></td><td>Build a real RAG system, synthesize a golden dataset, run the full suite</td><td>01 · 02 · 03</td></tr>
+        <tr><td><code>08_MultiTurn_Conversational_Evaluation</code></td><td><code>ConversationalGEval</code>, turn relevancy, knowledge retention</td><td>—</td></tr>
+        <tr><td><code>09_Tool_Use_Evaluation</code></td><td><code>ToolCorrectnessMetric</code>, <code>ArgumentCorrectnessMetric</code>, <code>ToolUseMetric</code></td><td><b>04</b></td></tr>
+        <tr><td><code>10_Task_Completion_Evaluation</code></td><td><code>TaskCompletionMetric</code>, custom <code>GEval</code> rubrics, outcome verification</td><td><b>04</b></td></tr>
+        <tr><td><code>11_Same_Evals_with_MLflow</code></td><td>The same questions through <code>mlflow.genai.evaluate()</code> scorers over traces</td><td>04 · 05</td></tr>
+        <tr><td><code>12_Agent_Trajectory_Evaluation</code></td><td>The 9-metric trace-level suite on a refund-agent scenario</td><td><b>05</b></td></tr>
+        <tr><td><code>13_Production_Grade_Agent_Eval_Overview</code></td><td>Live tracing + offline experiments (Arize Phoenix)</td><td>05</td></tr>
+        <tr><td><code>14_Capstone_CrewAI_Travel_Planner_Eval</code></td><td>Task completion scored against a real running 3-agent app</td><td>04 · 05</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="foot">If you only have an hour: index → Lab 02 → Lab 04 → Lab 05</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+const LAYERS=[
+ {
+  head:"Retrieval, measured with arithmetic — did the answer even reach the prompt?",
+  sym:"Symptom: \"the model hallucinated\" — when the relevant chunk was never retrieved.",
+  metrics:["<code>Precision@K</code> — how much of the context is noise","<code>Recall@K</code> — the ceiling on everything downstream","<code>MRR</code> — is the best chunk at the top","<code>nDCG@K</code> — ranking quality under graded relevance"],
+  cost:["Zero LLM calls, milliseconds per query","Needs labelled <code>relevant_ids</code> per query","Fully deterministic — safe as a CI gate","Cheap enough to run on every commit"],
+  fix:["Hybrid sparse + dense for exact identifiers","Query rewriting for phrasing mismatch","Reranking when recall is fine but MRR is low","Chunk-boundary work when a chunk is unreachable"],
+  files:["<code>01_Retrieval_Metrics_Deterministic</code>","<code>07_RAG_Capstone_Build_and_Evaluate</code>"],
+  note:"<b>Start here, always.</b> Generation metrics are bounded by retrieval metrics — measuring faithfulness while recall sits at 0.67 tells you nothing about the generator.",
+  c:"--det"
+ },
+ {
+  head:"Retrieval, measured with a judge — what if you have no chunk labels?",
+  sym:"Symptom: retrieval is clearly the problem, and nobody has time to hand-label production traffic.",
+  metrics:["<code>ContextualPrecisionMetric</code> — ranking (needs <code>expected_output</code>)","<code>ContextualRecallMetric</code> — coverage (needs <code>expected_output</code>)","<code>ContextualRelevancyMetric</code> — signal-to-noise (needs nothing)"],
+  cost:["One judge call per metric per test case","Non-deterministic — scores at the threshold flip","Two of three still need a reference answer","Reason strings included, often more useful than the score"],
+  fix:["Reranker when precision alone falls","Larger K or better chunking when recall alone falls","Tighter retriever or smaller K when relevancy falls","Validate the judge against human labels before trusting any of it"],
+  files:["<code>02_Retrieval_Metrics_LLM_Judged</code>"],
+  note:"<b>Three metrics because there are three failures.</b> Reordering three chunks — adding nothing, removing nothing — drops precision from 1.00 to 0.58 while recall and relevancy don't move at all.",
+  c:"--judge"
+ },
+ {
+  head:"Generation — is the answer grounded, on-topic, and actually right?",
+  sym:"Symptom: retrieval verified, answer still wrong — or worse, answer wrong and every referenceless metric green.",
+  metrics:["<code>AnswerRelevancyMetric</code> — vs the <code>input</code>","<code>FaithfulnessMetric</code> — vs <code>retrieval_context</code>","<code>HallucinationMetric</code> — vs a trusted <code>context</code> (inverted!)","Answer Correctness via custom <code>GEval</code>","Answer Semantic Similarity — embeddings, no judge"],
+  cost:["1–3 judge calls per example per metric","Semantic similarity is embeddings only — near free","Correctness needs a written <code>expected_output</code>","A 5-metric suite over 500 cases is 2,500+ judge calls"],
+  fix:["Explicit grounding instructions and an allowed abstention","Sharper <code>evaluation_steps</code> when the rubric is vague","Index repair when answers are faithful to bad context","Never substitute similarity for correctness"],
+  files:["<code>03_Generator_Metrics_Referenceless</code>","<code>04_Generator_Metrics_Reference_Based</code>","<code>06_RAGAS_in_Practice</code>"],
+  note:"<b>An answer can be perfectly faithful and completely wrong.</b> Faithfulness is defined relative to the retrieved context, so it structurally cannot evaluate that context. Only a reference catches a corrupted knowledge base.",
+  c:"--gen"
+ },
+ {
+  head:"Tool use — did it call the right thing, with the right arguments?",
+  sym:"Symptom: \"Your flight is booked!\" — and the booking API was never called.",
+  metrics:["<code>ToolCorrectnessMetric</code> — deterministic, vs <code>expected_tools</code>","<code>ArgumentCorrectnessMetric</code> — judged, referenceless","<code>ToolUseMetric</code> — multi-turn, scores the <b>min</b> of selection and arguments","<code>TaskCompletionMetric</code> — did the user actually get what they asked for"],
+  cost:["Tool correctness is free and deterministic","Schema validation is free and catches malformed calls first","Argument correctness is one judge call per case","Task completion prefers a full trace when one exists"],
+  fix:["Add <code>ToolCallParams.INPUT_PARAMETERS</code> — the default checks names only","Typed signatures so malformed calls fail before executing","Idempotency keys on write tools","A custom <code>GEval</code> rubric when \"done\" is domain-specific"],
+  files:["<code>09_Tool_Use_Evaluation</code>","<code>10_Task_Completion_Evaluation</code>","<code>14_Capstone_CrewAI_Travel_Planner_Eval</code>"],
+  note:"<b>A tool-correctness score without its configuration is not a number.</b> With name-only matching, an extra billed call, a reversed sequence and a wrong booking date all score 1.00.",
+  c:"--tool"
+ },
+ {
+  head:"Trajectory — was the path sound, or did it get lucky?",
+  sym:"Symptom: 99% task success and per-request cost tripling, with no quality complaints.",
+  metrics:["Step-wise accuracy · redundant-call count","Recovery / self-correction rate","Fuzzy trajectory match vs exact sequence","<b>End-state verification</b> — read the system of record","Cost / efficiency proxy"],
+  cost:["Full graph execution per test case — the most expensive tier","Nine metrics from one trace: run once, score many ways","Four of the nine need no gold trajectory at all","Repeat runs to measure variance, not just the mean"],
+  fix:["Log every step's status and redundancy flag","Typed tool signatures to make argument errors impossible","Cache at the tool boundary for redundant reads","Diff the system of record across the run, not the final message"],
+  files:["<code>12_Agent_Trajectory_Evaluation</code>","<code>11_Same_Evals_with_MLflow</code>","<code>13_Production_Grade_Agent_Eval_Overview</code>"],
+  note:"<b>Five of the nine metrics never move</b> between a wasteful five-step run and a clean three-step one. Outcome metrics saturate; step metrics keep discriminating.",
+  c:"--traj"
+ },
+];
+
+function render(i){
+  const L=LAYERS[i];
+  $('lHead').textContent=L.head;
+  $('lSym').textContent=L.sym;
+  const fill=(id,arr)=>$(id).innerHTML=arr.map(x=>`<li>${x}</li>`).join('');
+  fill('lMetrics',L.metrics); fill('lCost',L.cost); fill('lFix',L.fix); fill('lFiles',L.files);
+  $('lNote').innerHTML=L.note;
+  $('lNote').style.borderLeftColor=`var(${L.c})`;
+  document.querySelectorAll('#tabs .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(+b.dataset.l===i)));
+}
+document.querySelectorAll('#tabs .chip').forEach(b=>
+  b.addEventListener('click',()=>render(+b.dataset.l)));
+render(0);
+</script>
+</body>
+</html>

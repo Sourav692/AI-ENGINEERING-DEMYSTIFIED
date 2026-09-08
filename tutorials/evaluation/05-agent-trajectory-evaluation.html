@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Trajectory Evaluation — Eval Lab 05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --accent:#f0a03c; --ok:#3fd67a; --err:#ef5b93; --red:#a487f5; --outcome:#3fd6ce; --dead:#3a4258;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text);font-family:var(--disp);line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:66ch;margin:0 0 22px}
+h2{font-size:15px;margin:0 0 12px;font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#33260f;border-color:var(--accent);color:#ffd9a3}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.scen{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;padding-left:11px;border-left:2px solid var(--accent)}
+.srow{background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:8px;
+  padding:8px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.srow.error{border-left-color:var(--err);background:#2a1620}
+.srow.redundant{border-left-color:var(--red);background:#221c33}
+.sidx{font-family:var(--mono);font-size:11px;color:var(--muted);width:26px;flex:none}
+.stool{font-family:var(--mono);font-size:11.5px;flex:1 1 300px}
+.stag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:99px;flex:none}
+.stag.ok{background:#14261c;color:var(--ok);border:1px solid #24523a}
+.stag.error{background:#2a1620;color:var(--err);border:1px solid #5c2b40}
+.stag.redundant{background:#221c33;color:var(--red);border:1px solid #3f3560}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.m{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px}
+.m.outcome{border-top:2px solid var(--outcome)}
+.m.step{border-top:2px solid var(--accent)}
+.m .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;min-height:22px}
+.m b{display:block;font-size:20px;margin:3px 0 6px;letter-spacing:-.02em;transition:color .35s}
+.m b.good{color:var(--ok)} .m b.warn{color:var(--accent)} .m b.na{color:var(--dead)}
+.bar{height:5px;border-radius:99px;background:#1d2434;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .45s cubic-bezier(.22,.7,.3,1)}
+.callout{margin-top:16px;background:linear-gradient(90deg,#2c2415,#151a26 70%);border:1px solid #584523;border-left:3px solid var(--accent);border-radius:8px;padding:13px 15px;font-size:13.5px;color:#cfd4e6}
+.callout b{color:#fff}
+.callout.good{background:linear-gradient(90deg,#12302e,#151a26 70%);border-color:#2c5a56;border-left-color:var(--outcome)}
+pre{background:#0f131d;border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:11.5px;color:#c8d0e4;margin:0}
+.cmt{color:#5f6b86}.kw{color:#a487f5}.str{color:#3fd67a}.num{color:#f0a03c}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+tbody td{padding:10px 12px;font-size:12.5px;border-bottom:1px solid #1e2434;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:12px}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.foot{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:28px;text-align:center}
+@media (max-width:860px){.mgrid{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG · Agent · Tool eval lab · 05</div>
+  <h1>Five of these nine metrics <span style="color:var(--accent)">never move</span>.</h1>
+  <p class="sub">A refund agent takes five steps: one fails, one is redundant, three do real work. Remove the waste one piece at a time and watch the outcome metrics report success the entire way — while step-level metrics swing from 0.60 to 1.00.</p>
+
+  <div class="panel">
+    <h2>Task: <span style="font-family:var(--mono);font-size:13px;color:var(--accent)">"My order #4521 arrived broken, can I get a refund?"</span></h2>
+    <div class="tabs" id="tabs">
+      <button class="chip" data-v="0" aria-pressed="true">as traced</button>
+      <button class="chip" data-v="1">without the redundant call</button>
+      <button class="chip" data-v="2">without the typo'd ID</button>
+      <button class="chip" data-v="3">minimal clean path</button>
+    </div>
+    <div class="scen" id="scen"></div>
+
+    <div style="margin-top:14px" id="trace"></div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--ok)"></i>real forward progress</span>
+      <span><i class="swatch" style="background:var(--err)"></i>tool error</span>
+      <span><i class="swatch" style="background:var(--red)"></i>redundant — identical call already succeeded</span>
+    </div>
+
+    <div class="mgrid">
+      <div class="m outcome"><span class="k">1 · Tool selection<br>accuracy</span><b id="m1">✓</b><div class="bar"><i id="b1" style="background:var(--outcome)"></i></div></div>
+      <div class="m outcome"><span class="k">2 · Tool call<br>correctness (args)</span><b id="m2">✓</b><div class="bar"><i id="b2" style="background:var(--outcome)"></i></div></div>
+      <div class="m step"><span class="k">3 · Redundant<br>calls</span><b id="m3">1</b><div class="bar"><i id="b3" style="background:var(--red)"></i></div></div>
+      <div class="m step"><span class="k">4 · Step-wise<br>accuracy</span><b id="m4">0.60</b><div class="bar"><i id="b4" style="background:var(--accent)"></i></div></div>
+      <div class="m outcome"><span class="k">5 · Task<br>success</span><b id="m5">✓</b><div class="bar"><i id="b5" style="background:var(--outcome)"></i></div></div>
+      <div class="m outcome"><span class="k">6 · Trajectory match<br>(fuzzy)</span><b id="m6">✓</b><div class="bar"><i id="b6" style="background:var(--outcome)"></i></div></div>
+      <div class="m outcome"><span class="k">7 · End-state<br>verification</span><b id="m7">✓</b><div class="bar"><i id="b7" style="background:var(--outcome)"></i></div></div>
+      <div class="m step"><span class="k">8 · Recovery /<br>self-correction</span><b id="m8">1.00</b><div class="bar"><i id="b8" style="background:var(--ok)"></i></div></div>
+      <div class="m step"><span class="k">9 · Cost /<br>efficiency proxy</span><b id="m9">0.60</b><div class="bar"><i id="b9" style="background:var(--accent)"></i></div></div>
+    </div>
+
+    <div class="callout" id="callout"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Which failure each metric exists to catch</h2>
+    <table>
+      <thead><tr><th>#</th><th>Metric</th><th>Catches</th><th>Level</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tool Selection Accuracy</td><td>A tool missing entirely, or one that was never needed</td><td>Outcome — coverage only, order-blind</td></tr>
+        <tr><td>2</td><td>Tool Call Correctness</td><td>Right tool, malformed or wrong arguments</td><td>Outcome</td></tr>
+        <tr><td>3</td><td>Redundant Tool Calls</td><td>The same <code>(tool, args)</code> pair succeeding twice</td><td>Step</td></tr>
+        <tr><td>4</td><td>Step-wise Accuracy</td><td>Wasted steps dragging down an otherwise-fine run</td><td>Step</td></tr>
+        <tr><td>5</td><td>Task Success Rate</td><td>The ground-truth outcome, per task</td><td>Outcome</td></tr>
+        <tr><td>6</td><td>Trajectory Match (fuzzy)</td><td>A wrong path that still hit the right tools overall</td><td>Outcome — set-based, forgiving of retries</td></tr>
+        <tr><td>7</td><td><b>End-State Verification</b></td><td>A confident final message that misrepresents what happened</td><td>Outcome — reads the system of record</td></tr>
+        <tr><td>8</td><td>Recovery / Self-Correction</td><td>An error the agent noticed and fixed, vs one it didn't</td><td>Step</td></tr>
+        <tr><td>9</td><td>Cost / Efficiency proxy</td><td>Excess calls standing in for tokens and latency</td><td>Step</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>The two metrics that cannot be fooled by a fluent sentence</h2>
+<pre><span class="cmt"># 7 — End-State Verification. Do NOT read result["final_answer"]; the agent</span>
+<span class="cmt"># wrote that string and it can be wrong. Read the system of record instead.</span>
+<span class="kw">def</span> end_state_verified(order_db_after, order_id, expected_amount):
+    order = order_db_after[order_id]
+    <span class="kw">return</span> order[<span class="str">"refund_issued"</span>] <span class="kw">is</span> <span class="kw">True</span> <span class="kw">and</span> order[<span class="str">"refund_amount"</span>] == expected_amount
+
+<span class="cmt"># 8 — Recovery. For every errored step, did a LATER step call the same tool</span>
+<span class="cmt"># and succeed? That is the difference between self-correction and blind retry.</span>
+<span class="kw">def</span> recovery_rate(trace):
+    errors = [(i, s) <span class="kw">for</span> i, s <span class="kw">in</span> enumerate(trace) <span class="kw">if</span> s[<span class="str">"status"</span>] == <span class="str">"error"</span>]
+    <span class="kw">if</span> <span class="kw">not</span> errors: <span class="kw">return</span> <span class="kw">None</span>          <span class="cmt"># None, not 1.0 — nothing to recover from</span>
+    recovered = sum(
+        <span class="num">1</span> <span class="kw">for</span> i, s <span class="kw">in</span> errors
+        <span class="kw">if</span> any(l[<span class="str">"tool"</span>] == s[<span class="str">"tool"</span>] <span class="kw">and</span> l[<span class="str">"status"</span>] == <span class="str">"ok"</span> <span class="kw">for</span> l <span class="kw">in</span> trace[i+<span class="num">1</span>:])
+    )
+    <span class="kw">return</span> recovered / len(errors)
+</pre>
+  </div>
+
+  <div class="panel">
+    <h2>Where each of these comes from in production</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Production source</th></tr></thead>
+      <tbody>
+        <tr><td>Tool selection / trajectory match</td><td>Gold tool sets in a Delta table, compared against tool spans from MLflow Tracing autolog</td></tr>
+        <tr><td>Tool call correctness</td><td>Unity Catalog Functions with typed signatures — a malformed call fails before it executes</td></tr>
+        <tr><td>Redundant calls</td><td>Query the trace table for duplicate <code>(tool, inputs)</code> spans inside one <code>request_id</code></td></tr>
+        <tr><td>Step-wise accuracy</td><td>Custom per-step scorer passed to <code>mlflow.genai.evaluate()</code>, iterating spans</td></tr>
+        <tr><td>End-state verification</td><td>Delta time-travel diff (<code>VERSION AS OF</code>) across the agent run, in the same workflow</td></tr>
+        <tr><td>Recovery rate</td><td>Error-status spans are marked automatically; pattern-match them against later successful spans</td></tr>
+        <tr><td>Cost / efficiency</td><td>Token usage and latency captured per span — no manual instrumentation, just query the table</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="foot">Eval Lab 05 · prev ← 04 Tool-Use Evaluation · series start → 01 Deterministic Retrieval</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* The refund-agent trace from 12_Agent_Trajectory_Evaluation.ipynb, Part B.
+   All nine metrics are computed from the trace and the mutated order_db — nothing hard-coded. */
+const GOLD=["search_orders","get_refund_policy","issue_refund"];
+const FULL=[
+ {tool:"search_orders",     args:"order_id=4512",            status:"error", redundant:false, why:"typo'd order ID — no such order"},
+ {tool:"search_orders",     args:"order_id=4521",            status:"ok",    redundant:false, why:"corrected and succeeded"},
+ {tool:"get_refund_policy", args:"category=electronics",     status:"ok",    redundant:false, why:"policy fetched"},
+ {tool:"get_refund_policy", args:"category=electronics",     status:"ok",    redundant:true,  why:"identical call already succeeded"},
+ {tool:"issue_refund",      args:"order_id=4521, amount=45", status:"ok",    redundant:false, why:"mutates the order database"},
+];
+const VARIANTS=[
+ {name:"as traced", desc:"One error, one recovery, one redundant call. This is what the agent actually did.",
+  trace:FULL},
+ {name:"without the redundant call", desc:"Same run with the duplicate policy lookup removed. The error and its recovery remain.",
+  trace:FULL.filter(s=>!s.redundant)},
+ {name:"without the typo'd ID", desc:"Same run with the failed first call removed — so there is nothing left to recover from.",
+  trace:FULL.filter(s=>s.status!=="error")},
+ {name:"minimal clean path", desc:"Three steps, no waste. The best this task can be done in.",
+  trace:FULL.filter(s=>s.status!=="error" && !s.redundant)},
+];
+
+function metrics(trace){
+  const ok        = trace.filter(s=>s.status==="ok");
+  const errors    = trace.filter(s=>s.status==="error");
+  const redundant = trace.filter(s=>s.redundant);
+  const called    = [...new Set(trace.map(s=>s.tool))];
+  const okTools   = [...new Set(ok.map(s=>s.tool))];
+  const progress  = ok.filter(s=>!s.redundant);
+
+  let recovered=0;
+  trace.forEach((s,i)=>{
+    if(s.status==="error" && trace.slice(i+1).some(l=>l.tool===s.tool && l.status==="ok")) recovered++;
+  });
+
+  const refund = ok.find(s=>s.tool==="issue_refund");
+  return {
+    selection:  GOLD.every(t=>called.includes(t)),                    // 1 coverage
+    args:       !!refund && /order_id=4521/.test(refund.args) && /amount=45/.test(refund.args), // 2
+    redundant:  redundant.length,                                     // 3
+    stepwise:   progress.length/trace.length,                         // 4
+    success:    !!refund,                                             // 5 ground-truth outcome
+    trajectory: GOLD.every(t=>okTools.includes(t)) && okTools.length===GOLD.length, // 6
+    endState:   !!refund,                                             // 7 read from order_db, not final_answer
+    recovery:   errors.length ? recovered/errors.length : null,       // 8
+    cost:       1-(redundant.length+errors.length)/trace.length,      // 9
+    steps:      trace.length,
+  };
+}
+
+const traceEl=$('trace');
+
+function render(){
+  const i=+document.querySelector('#tabs .chip[aria-pressed="true"]').dataset.v;
+  const v=VARIANTS[i];
+  const m=metrics(v.trace);
+
+  $('scen').innerHTML=`<b style="color:var(--text)">${v.name}</b> — ${v.desc} <b style="color:var(--accent)">${m.steps} steps.</b>`;
+
+  traceEl.innerHTML=v.trace.map((s,j)=>{
+    const cls = s.status==="error" ? "error" : s.redundant ? "redundant" : "";
+    const tag = s.status==="error" ? "error" : s.redundant ? "redundant" : "ok";
+    return `<div class="srow ${cls}">
+      <span class="sidx">${j}</span>
+      <span class="stool">${s.tool}(${s.args}) <span style="color:var(--muted)">— ${s.why}</span></span>
+      <span class="stag ${tag}">${tag}</span></div>`;
+  }).join('');
+
+  const boolM=(id,bid,val)=>{ const b=$(id); b.textContent=val?'✓':'✗'; b.className=val?'good':'warn'; $(bid).style.width=val?'100%':'0%'; };
+  const numM =(id,bid,val)=>{ const b=$(id); b.textContent=val.toFixed(2); b.className=val>=0.99?'good':'warn'; $(bid).style.width=(val*100)+'%'; };
+
+  boolM('m1','b1',m.selection);
+  boolM('m2','b2',m.args);
+  const b3=$('m3'); b3.textContent=m.redundant; b3.className=m.redundant?'warn':'good';
+  $('b3').style.width=(100*m.redundant/2)+'%';
+  numM('m4','b4',m.stepwise);
+  boolM('m5','b5',m.success);
+  boolM('m6','b6',m.trajectory);
+  boolM('m7','b7',m.endState);
+  const b8=$('m8');
+  if(m.recovery===null){ b8.textContent='n/a'; b8.className='na'; $('b8').style.width='0%'; }
+  else { b8.textContent=m.recovery.toFixed(2); b8.className=m.recovery>=0.99?'good':'warn'; $('b8').style.width=(m.recovery*100)+'%'; }
+  numM('m9','b9',m.cost);
+
+  const c=$('callout');
+  const waste=Math.round((1-m.cost)*100);
+  if(i===0){
+    c.className='callout';
+    c.innerHTML=`<b>Task success ✓. End-state verified ✓. Trajectory match ✓. Step-wise accuracy ${m.stepwise.toFixed(2)}.</b>
+      Two of five steps were waste — one error, one redundant lookup — so the task cost 40% more calls than it needed to.
+      Every outcome metric reports a clean pass. Recovery of ${m.recovery.toFixed(2)} is the genuinely good news here: the one error was noticed and corrected rather than retried blindly.`;
+  } else if(i===3){
+    c.className='callout good';
+    c.innerHTML=`<b>Step-wise accuracy ${m.stepwise.toFixed(2)}, cost efficiency ${m.cost.toFixed(2)}, ${m.steps} steps.</b>
+      Compare the outcome row against the first tab: selection, arguments, task success, trajectory and end-state are <i>identical</i> in both.
+      Five of the nine metrics never moved across all four variants — which is precisely the argument for running step-level metrics alongside them.
+      Recovery reads <b>n/a</b>, not 1.00: there were no errors to recover from, and reporting a perfect score for that would be a lie.`;
+  } else {
+    c.className='callout';
+    c.innerHTML=`<b>Step-wise accuracy ${m.stepwise.toFixed(2)}, cost efficiency ${m.cost.toFixed(2)} — ${waste}% of steps still wasted.</b>
+      Removing one source of waste moved both step-level numbers and left every outcome metric exactly where it was.
+      ${m.recovery===null
+        ? 'Recovery now reads <b>n/a</b> — with the error gone there is nothing to recover from, which is a different statement from "recovered perfectly".'
+        : 'Recovery still reads '+m.recovery.toFixed(2)+' — the error is still there and still corrected.'}`;
+  }
+
+  document.querySelectorAll('#tabs .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(+b.dataset.v===i)));
+}
+
+document.querySelectorAll('#tabs .chip').forEach(b=>
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tabs .chip').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));
+    render();
+  }));
+render();
+</script>
+</body>
+</html>

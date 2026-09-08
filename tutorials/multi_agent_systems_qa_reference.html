@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Agent Systems — Communication, Patterns &amp; Control Flow</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#161922;
+    --panel-2:#1b1f2a;
+    --border:#2a2f3d;
+    --border-soft:#232735;
+    --text:#dfe3ee;
+    --text-dim:#9aa2b8;
+    --text-faint:#6b7285;
+    --c-comm:#7f9cf5;
+    --c-pattern:#5fd0b8;
+    --c-diff:#e8a34a;
+    --c-msg:#c792ea;
+    --c-nuance:#f07178;
+    --c-control:#82aaff;
+    --c-flow:#89ddff;
+    --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+    --sans:'Inter','Segoe UI',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.65;}
+  .wrap{max-width:880px;margin:0 auto;padding:56px 24px 120px;}
+
+  header.doc-head{margin-bottom:48px;}
+  .kicker{font-size:12px;letter-spacing:.08em;color:var(--text-faint);font-family:var(--mono);margin-bottom:14px;}
+  h1{font-size:32px;font-weight:600;margin:0 0 16px;letter-spacing:-0.01em;line-height:1.2;}
+  .lede{color:var(--text-dim);font-size:16px;max-width:640px;margin:0;}
+
+  nav.toc{display:flex;flex-direction:column;gap:6px;margin-top:32px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  nav.toc a{font-size:13.5px;color:var(--text-dim);text-decoration:none;padding:4px 0;font-family:var(--mono);}
+  nav.toc a:hover{color:var(--text);}
+  nav.toc a span{color:var(--text-faint);margin-right:8px;}
+
+  section.block{margin:56px 0;padding-top:8px;border-top:1px solid var(--border-soft);}
+  section.block:first-of-type{border-top:none;}
+  .block-head{display:flex;align-items:baseline;gap:12px;margin:28px 0 8px;}
+  .block-num{font-family:var(--mono);font-size:13px;color:var(--text-faint);}
+  h2{font-size:22px;font-weight:600;margin:0;letter-spacing:-0.005em;}
+
+  h3{font-size:15px;color:var(--text);font-weight:600;margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border-soft);}
+  h4{font-size:13.5px;color:var(--text-dim);font-weight:600;margin:20px 0 8px;}
+
+  p{color:var(--text-dim);font-size:14.5px;margin:0 0 14px;}
+  p strong, li strong{color:var(--text);font-weight:600;}
+
+  ul.bullets, ol.steps{padding-left:20px;margin:0 0 16px;}
+  ul.bullets li, ol.steps li{margin-bottom:10px;font-size:14.5px;color:var(--text-dim);}
+
+  code{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);padding:1px 6px;border-radius:4px;color:var(--text);}
+  pre code{padding:0;background:none;}
+  pre{background:var(--panel) !important;border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-size:13px;overflow-x:auto;margin:12px 0 24px;}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0 28px;font-size:13.3px;}
+  table th{text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-faint);font-weight:500;padding:9px 11px;border-bottom:1px solid var(--border);}
+  table td{padding:9px 11px;border-bottom:1px solid var(--border-soft);color:var(--text-dim);}
+  table tr td:first-child{color:var(--text);font-weight:500;}
+
+  .callout{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--callout-color, var(--c-comm));border-radius:10px;padding:18px 20px;margin:16px 0 24px;}
+  .callout p{margin:0 0 8px;}
+  .callout p:last-child{margin-bottom:0;}
+
+  .mermaid-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 16px 8px;margin:16px 0 28px;overflow-x:auto;}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--border-soft);color:var(--text-faint);font-size:12.5px;font-family:var(--mono);}
+
+  @media (max-width:600px){
+    .wrap{padding:36px 16px 80px;}
+    h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc-head">
+    <div class="kicker">LANGGRAPH / MULTI-AGENT SYSTEMS &mdash; CONSOLIDATED Q&amp;A REFERENCE</div>
+    <h1>Multi-Agent Systems: Communication, Patterns &amp; Control Flow</h1>
+    <p class="lede">How agents talk to each other and transfer state, the full landscape of agent design patterns, the orchestrator-workers vs. multi-agent distinction, and where routing/chaining/parallelization sit relative to true agents.</p>
+    <nav class="toc">
+      <a href="#comm"><span>01</span>How subagents communicate &amp; state transfer</a>
+      <a href="#patterns"><span>02</span>Most common agent design patterns</a>
+      <a href="#distinction"><span>03</span>Orchestrator-workers vs. multi-agent</a>
+      <a href="#messages"><span>04</span>How messages are actually communicated</a>
+      <a href="#nuance"><span>05</span>The nuance &mdash; do both go through a hub?</a>
+      <a href="#routing"><span>06</span>Routing &amp; control flow patterns</a>
+      <a href="#workflow"><span>07</span>Workflow vs. agent, clarified</a>
+    </nav>
+  </header>
+
+  <!-- 1 -->
+  <section class="block" id="comm">
+    <div class="block-head"><span class="block-num">01</span><h2>How Subagents Communicate &amp; State Transfers</h2></div>
+
+    <h3>Core communication patterns</h3>
+    <ul class="bullets">
+      <li><strong>Message passing</strong> &mdash; agents exchange structured messages through a shared bus, queue, or direct calls, each carrying sender, content, and intent.</li>
+      <li><strong>Shared state / blackboard</strong> &mdash; agents read/write to one common state object (e.g., LangGraph's <code>StateGraph</code>); no direct agent-to-agent messages.</li>
+      <li><strong>Orchestrator-mediated</strong> &mdash; a central supervisor routes tasks and passes only relevant context to each subagent.</li>
+      <li><strong>Hierarchical / handoff</strong> &mdash; one agent explicitly hands off control to another, passing a task description and a relevant state slice.</li>
+    </ul>
+
+    <h3>How state gets transferred</h3>
+    <ul class="bullets">
+      <li><strong>Full state passing</strong> &mdash; the whole state object flows through every agent; simple but can bloat context.</li>
+      <li><strong>Selective/filtered state</strong> &mdash; only the fields a subagent needs are extracted and sent onward.</li>
+      <li><strong>Message history append</strong> &mdash; each agent's output is appended to a running message list (LangGraph's <code>MessagesState</code>).</li>
+      <li><strong>Scratchpad / external store</strong> &mdash; long-term memory lives in a vector/KV store; short-term state stays in-context.</li>
+    </ul>
+
+    <h3>Common architectures</h3>
+    <table>
+      <thead><tr><th>Pattern</th><th>Communication style</th><th>State handling</th></tr></thead>
+      <tbody>
+        <tr><td>Supervisor-Worker</td><td>Orchestrator routes, workers report back</td><td>Supervisor holds master state, workers get slices</td></tr>
+        <tr><td>Peer-to-Peer</td><td>Agents message each other directly</td><td>Local state per agent, synced via messages</td></tr>
+        <tr><td>Sequential Pipeline</td><td>Output of A is input to B</td><td>State transforms at each stage</td></tr>
+        <tr><td>Graph-based (LangGraph)</td><td>Edges define control flow</td><td>Shared state schema, updated via reducers</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="--callout-color:var(--c-comm)">
+      <p><strong>Key design tensions:</strong> context window pressure (full state gets expensive at scale), failure isolation (peer-to-peer is harder to trace than orchestrator patterns), and determinism vs. flexibility (explicit graph edges are predictable; free-form agent chat is flexible but less controllable).</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="block" id="patterns">
+    <div class="block-head"><span class="block-num">02</span><h2>Most Common Agent Design Patterns</h2></div>
+
+    <h4>Foundational patterns</h4>
+    <ul class="bullets">
+      <li><strong>ReAct</strong> &mdash; alternates between reasoning and acting, observing tool results before deciding the next step.</li>
+      <li><strong>Reflection</strong> &mdash; generates output, then critiques and revises its own work (or a separate critic does).</li>
+      <li><strong>Planning</strong> &mdash; decomposes a complex goal into subtasks before executing.</li>
+    </ul>
+
+    <h4>Routing &amp; control flow patterns</h4>
+    <ul class="bullets">
+      <li><strong>Routing</strong> &mdash; a classifier picks which predefined path/tool/subagent handles the input.</li>
+      <li><strong>Prompt chaining</strong> &mdash; output of one call feeds directly into the next, as a fixed pipeline.</li>
+      <li><strong>Parallelization</strong> &mdash; multiple calls run at once on different subtasks/perspectives, then get aggregated.</li>
+    </ul>
+
+    <h4>Multi-agent coordination patterns</h4>
+    <ul class="bullets">
+      <li><strong>Orchestrator-Workers</strong> &mdash; dynamically decomposes a task at runtime, delegates to generic workers, synthesizes results.</li>
+      <li><strong>Multi-Agent (Supervisor)</strong> &mdash; specialized agents collaborate, each owning a fixed domain.</li>
+      <li><strong>Evaluator-Optimizer</strong> &mdash; a generator and an evaluator loop until the output passes a rubric.</li>
+    </ul>
+
+    <table>
+      <thead><tr><th>Pattern</th><th>Best for</th><th>Key trait</th></tr></thead>
+      <tbody>
+        <tr><td>ReAct</td><td>Tool-using tasks, lookups</td><td>Interleaved thought + action</td></tr>
+        <tr><td>Reflection</td><td>Quality-sensitive output</td><td>Self-critique loop</td></tr>
+        <tr><td>Planning</td><td>Multi-step goals</td><td>Upfront decomposition</td></tr>
+        <tr><td>Routing</td><td>Varied input types</td><td>Conditional dispatch</td></tr>
+        <tr><td>Prompt Chaining</td><td>Predictable, linear workflows</td><td>Fixed sequential steps</td></tr>
+        <tr><td>Parallelization</td><td>Independent subtasks</td><td>Concurrent execution</td></tr>
+        <tr><td>Orchestrator-Workers</td><td>Unpredictable decomposition</td><td>Runtime task-splitting</td></tr>
+        <tr><td>Multi-Agent</td><td>Domain specialization</td><td>Distinct agent roles</td></tr>
+        <tr><td>Evaluator-Optimizer</td><td>Iterative refinement</td><td>Generate &rarr; judge &rarr; repeat</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3 -->
+  <section class="block" id="distinction">
+    <div class="block-head"><span class="block-num">03</span><h2>Orchestrator-Workers vs. Multi-Agent &mdash; Core Distinction</h2></div>
+    <ul class="bullets">
+      <li><strong>Orchestrator-Workers</strong> &mdash; one central brain decides <em>how to break down</em> the task at runtime, dispatching to interchangeable, stateless workers with no distinct identity.</li>
+      <li><strong>Multi-Agent (Supervisor)</strong> &mdash; agents have a <strong>fixed specialization</strong> decided in advance; the supervisor routes to the right specialist rather than inventing a decomposition.</li>
+    </ul>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Orchestrator-Workers</th><th>Multi-Agent (Supervisor)</th></tr></thead>
+      <tbody>
+        <tr><td>Decomposition</td><td>Dynamic, at runtime</td><td>Fixed roles at design time</td></tr>
+        <tr><td>Worker identity</td><td>Generic, interchangeable</td><td>Specialized, distinct tools</td></tr>
+        <tr><td>Flexibility</td><td>High &mdash; unpredictable shapes</td><td>Lower &mdash; known categories only</td></tr>
+        <tr><td>Worker awareness of peers</td><td>None</td><td>Often yes, via shared state</td></tr>
+        <tr><td>Misuse failure mode</td><td>Overkill for simple tasks</td><td>Rigid if task fits no specialist</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="--callout-color:var(--c-diff)">
+      <p><strong>When to use which:</strong> orchestrator-workers when the number/shape of subtasks isn't known ahead of time; multi-agent supervisor when domains are known and each agent should develop deep, tool-specific competence. They compose &mdash; a supervisor specialist can internally run orchestrator-workers itself.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="block" id="messages">
+    <div class="block-head"><span class="block-num">04</span><h2>How Messages Are Actually Communicated</h2></div>
+
+    <h3>Orchestrator-workers</h3>
+    <ul class="bullets">
+      <li><strong>No worker-to-worker communication</strong> &mdash; workers only ever talk to the orchestrator.</li>
+      <li><strong>Task-scoped payload</strong>, not full history &mdash; each worker gets a narrow, self-contained instruction.</li>
+      <li><strong>Sync or async collection</strong> &mdash; orchestrator dispatches N calls, waits, then aggregates.</li>
+      <li><strong>Stateless</strong> &mdash; every worker call is a fresh context window.</li>
+    </ul>
+<pre><code class="language-python"># Pseudocode: orchestrator-workers
+subtasks = orchestrator.plan(task)          # decompose
+results = [worker.run(t) for t in subtasks] # isolated calls
+final = orchestrator.synthesize(results)    # merge</code></pre>
+
+    <h3>Multi-agent supervisor</h3>
+    <ul class="bullets">
+      <li><strong>Shared state flows through every agent</strong> &mdash; typically a <code>MessagesState</code> that every agent reads and appends to.</li>
+      <li><strong>Agents see prior turns</strong> &mdash; the next agent can see what the previous one already said.</li>
+      <li><strong>Structured handoff</strong>, not raw chat &mdash; supervisor injects a directed instruction alongside the shared history.</li>
+      <li><strong>Centralized</strong> (hub-and-spoke, always through supervisor) or <strong>decentralized</strong> (direct agent-to-agent handoff, e.g. LangGraph's <code>Command(goto=...)</code>).</li>
+    </ul>
+<pre><code class="language-python"># Pseudocode: multi-agent supervisor (LangGraph-style)
+state["messages"].append(supervisor_instruction)
+state = coder_agent.invoke(state)      # appends its own message
+state = supervisor.route(state)        # decides next agent
+state = sql_agent.invoke(state)        # sees coder's prior message</code></pre>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Orchestrator-Workers</th><th>Multi-Agent Supervisor</th></tr></thead>
+      <tbody>
+        <tr><td>What's passed</td><td>Narrow task slice</td><td>Full/shared message history</td></tr>
+        <tr><td>Agents see each other</td><td>No</td><td>Often yes, via shared state</td></tr>
+        <tr><td>Message format</td><td>Ad-hoc input/output pairs</td><td>Structured message list</td></tr>
+        <tr><td>Coupling</td><td>Loose &mdash; stateless workers</td><td>Tighter &mdash; built on shared context</td></tr>
+        <tr><td>Failure visibility</td><td>Easy &mdash; isolated failures</td><td>Harder &mdash; shared history grows</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 5 -->
+  <section class="block" id="nuance">
+    <div class="block-head"><span class="block-num">05</span><h2>The Nuance &mdash; Do Both Really Go Through a Hub?</h2></div>
+    <p><strong>Yes</strong> &mdash; both are hub-and-spoke; neither has a direct worker/agent-to-agent wire. The real difference is what the hub <em>does</em> with a message as it passes through.</p>
+
+    <div class="mermaid-card">
+      <pre class="mermaid">
+flowchart LR
+    subgraph OW["Orchestrator-Workers"]
+        direction LR
+        WA["Worker A"] -- "raw output" --> O1["Orchestrator"]
+        O1 -- "manually re-packaged\nnew task" --> WB["Worker B"]
+    end
+    subgraph MS["Multi-Agent Supervisor"]
+        direction LR
+        AA["Agent A"] -- "appends to state" --> S1["Supervisor"]
+        S1 -- "routes, state passes\nthrough automatically" --> AB["Agent B"]
+    end
+      </pre>
+    </div>
+
+    <ul class="bullets">
+      <li><strong>Orchestrator-workers</strong> &mdash; the orchestrator is a <strong>translator/re-packager</strong>. If Worker A's output needs to reach Worker B, the orchestrator must manually extract, interpret, and re-inject it as a new task. Nothing flows automatically.</li>
+      <li><strong>Multi-agent supervisor</strong> &mdash; the supervisor is a <strong>pass-through router</strong>. Shared state flows automatically to whoever is routed to next &mdash; no reformatting needed.</li>
+    </ul>
+
+    <table>
+      <thead><tr><th></th><th>Orchestrator-Workers</th><th>Multi-Agent Supervisor</th></tr></thead>
+      <tbody>
+        <tr><td>Info passes through hub?</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Automatic or manual?</td><td>Manual &mdash; hub reconstructs context</td><td>Automatic &mdash; shared state carries forward</td></tr>
+        <tr><td>Next node sees raw prior output?</td><td>No &mdash; only what hub forwards</td><td>Yes &mdash; raw turn is in shared state</td></tr>
+        <tr><td>Typical rounds</td><td>Usually one fan-out/fan-in</td><td>Many rounds, evolving conversation</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="--callout-color:var(--c-nuance)">
+      <p>The simplest framing: it's not "communicate through the hub vs. don't" &mdash; it's whether the hub has to <em>do work</em> to share context, or whether context shares itself. (Some real orchestrator-worker systems give workers a shared scratchpad to reduce this manual burden &mdash; at which point the two patterns genuinely blur.)</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="block" id="routing">
+    <div class="block-head"><span class="block-num">06</span><h2>Routing &amp; Control Flow Patterns</h2></div>
+
+    <h3>Routing</h3>
+    <p>A classifier examines input and picks one of several <strong>predefined</strong> paths &mdash; paths are fixed; only which one gets picked is dynamic.</p>
+    <ol class="steps">
+      <li>Input received.</li>
+      <li>Classification call reasons which category the input falls into.</li>
+      <li>Route selection maps to one of N predefined branches.</li>
+      <li>Branch execution &mdash; the selected branch's fixed pipeline runs.</li>
+      <li>Response returned &mdash; no cross-branch synthesis.</li>
+    </ol>
+    <div class="callout" style="--callout-color:var(--c-control)">
+      <p><strong>Use case &mdash; support email auto-router:</strong> incoming emails classified into billing / bug-report / feature-request, each forwarded to a category-tuned template. Branches never talk to each other.</p>
+    </div>
+
+    <h3>Prompt Chaining</h3>
+    <p>Output of step N becomes input of step N+1 in a <strong>fixed, linear sequence</strong> &mdash; no branching, no dynamic decision.</p>
+    <ol class="steps">
+      <li>Step 1 transforms the raw input.</li>
+      <li>Optional gate check validates output before continuing.</li>
+      <li>Step 2 takes step 1's output verbatim.</li>
+      <li>Repeat through steps 3...N, each strictly dependent on the previous.</li>
+      <li>Final output returned.</li>
+    </ol>
+    <div class="callout" style="--callout-color:var(--c-control)">
+      <p><strong>Use case &mdash; blog post pipeline:</strong> outline &rarr; full prose &rarr; grammar/style pass &rarr; SEO metadata. Each step sees only the previous step's output; sequence never changes.</p>
+    </div>
+
+    <h3>Parallelization</h3>
+    <p>The same task runs multiple times <strong>simultaneously</strong> (sectioning or voting), then results are aggregated.</p>
+    <ol class="steps">
+      <li>Fan-out &mdash; task split into fixed, predetermined parallel calls.</li>
+      <li>Concurrent execution &mdash; all calls run independently at once.</li>
+      <li>Fan-in &mdash; results collected once every call returns.</li>
+      <li>Aggregation &mdash; merge via majority vote or LLM synthesis.</li>
+      <li>Final output returned.</li>
+    </ol>
+    <div class="callout" style="--callout-color:var(--c-control)">
+      <p><strong>Use case &mdash; content moderation voting:</strong> a flagged post sent to 3 identical moderation prompts at once; 2-of-3 flags trigger removal &mdash; a fixed voting rule aggregates 3 parallel, identical-role calls.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="block" id="workflow">
+    <div class="block-head"><span class="block-num">07</span><h2>Workflow vs. Agent, Clarified</h2></div>
+    <p><strong>Short answer: yes</strong> &mdash; and it goes further than routing/chaining/parallelization.</p>
+    <ul class="bullets">
+      <li>Routing, prompt chaining, and parallelization are <strong>workflows</strong>, not agents &mdash; the control flow is fixed by the developer in code; the LLM only fills content into fixed slots.</li>
+      <li>Per Anthropic's own taxonomy (<em>"Building Effective Agents"</em>), <strong>Orchestrator-Workers and Evaluator-Optimizer are also classified as workflows</strong> &mdash; even with one dynamic decision point each.</li>
+      <li>What earns the strict <strong>"agent"</strong> label is an <strong>open-ended loop</strong> where the LLM decides the entire trajectory &mdash; how many steps, which tools, in what order, and <strong>when to stop</strong> &mdash; with no predetermined path.</li>
+      <li>Multi-Agent Supervisor gets closest, since routing can continue indefinitely and the supervisor decides termination &mdash; but even it routes within a fixed <em>set</em> of specialists.</li>
+    </ul>
+
+    <div class="mermaid-card">
+      <pre class="mermaid">
+flowchart LR
+    A["Prompt Chaining\nfixed sequence"] --> B["Routing\nfixed branches"] --> C["Parallelization\nfixed fan-out"]
+    C --> D["Orchestrator-Workers\nruntime subtask count"]
+    D --> E["Evaluator-Optimizer\nLLM decides loop end"]
+    E --> F["Multi-Agent Supervisor\nLLM routes + decides done"]
+    F --> G["Fully Autonomous Agent\nLLM decides everything"]
+    style A fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+    style B fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+    style C fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+    style D fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+    style E fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+    style F fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+    style G fill:#1b1f2a,stroke:#2a2f3d,color:#dfe3ee
+      </pre>
+    </div>
+
+    <table>
+      <thead><tr><th>Pattern</th><th>Who decides path shape</th><th>Loop / termination</th><th>Classification</th></tr></thead>
+      <tbody>
+        <tr><td>Prompt Chaining</td><td>Developer (fixed)</td><td>No loop</td><td>Workflow</td></tr>
+        <tr><td>Routing</td><td>Developer (fixed branches)</td><td>No loop</td><td>Workflow</td></tr>
+        <tr><td>Parallelization</td><td>Developer (fixed fan-out)</td><td>No loop</td><td>Workflow</td></tr>
+        <tr><td>Orchestrator-Workers</td><td>Developer + LLM (subtask count)</td><td>Usually one round</td><td>Workflow (per Anthropic)</td></tr>
+        <tr><td>Evaluator-Optimizer</td><td>Developer (fixed 2 roles)</td><td>LLM decides loop end</td><td>Workflow (per Anthropic)</td></tr>
+        <tr><td>Multi-Agent Supervisor</td><td>LLM decides routing + done</td><td>Can loop indefinitely</td><td>Closest to "Agent"</td></tr>
+        <tr><td>Fully autonomous agent</td><td>LLM decides everything</td><td>LLM decides entirely</td><td>Agent</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="--callout-color:var(--c-flow)">
+      <p><strong>Rule of thumb:</strong> it's a workflow if you could draw its full possible control-flow diagram on a whiteboard before running it once. It's an agent if the diagram would differ every run because the model is inventing the path as it goes.</p>
+      <p><strong>Ties back to LangChain vs. LangGraph:</strong> this isn't about which library is used &mdash; LangGraph can build a strict workflow too (a fixed graph, no cycles). It's about whether the model or the code decides the trajectory and its stopping point.</p>
+    </div>
+  </section>
+
+  <footer>
+    multi_agent_systems_qa_reference.html &middot; see multi_agent_coordination_patterns.md/.html for the detailed per-pattern execution trace and use cases
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'dark',
+    themeVariables:{
+      background:'#161922',
+      primaryColor:'#1b1f2a',
+      primaryTextColor:'#dfe3ee',
+      primaryBorderColor:'#2a2f3d',
+      lineColor:'#6b7285',
+      secondaryColor:'#1b1f2a',
+      tertiaryColor:'#161922',
+      actorBkg:'#1b1f2a',
+      actorBorder:'#2a2f3d',
+      actorTextColor:'#dfe3ee',
+      signalColor:'#9aa2b8',
+      signalTextColor:'#dfe3ee',
+      labelBoxBkgColor:'#1b1f2a',
+      labelBoxBorderColor:'#2a2f3d',
+      labelTextColor:'#dfe3ee',
+      loopTextColor:'#dfe3ee',
+      noteBkgColor:'#1b1f2a',
+      noteTextColor:'#dfe3ee',
+      noteBorderColor:'#2a2f3d',
+      clusterBkg:'#161922',
+      clusterBorder:'#2a2f3d'
+    },
+    fontFamily:'Inter, system-ui, sans-serif'
+  });
+  document.addEventListener('DOMContentLoaded', function(){
+    if (window.hljs) { hljs.highlightAll(); }
+  });
+</script>
+</body>
+</html>

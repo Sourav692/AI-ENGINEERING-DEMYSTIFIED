@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generator Metrics — Eval Lab 03</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --accent:#ef5b93; --free:#3fd6ce; --ref:#a487f5; --ok:#3fd67a; --bad:#e8615a; --dead:#3a4258;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text);font-family:var(--disp);line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:66ch;margin:0 0 22px}
+h2{font-size:15px;margin:0 0 12px;font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#2f1522;border-color:var(--accent);color:#ffc0d8}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.answer{background:#0f131d;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 14px;margin-top:14px;font-size:13.5px}
+.answer .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.ctxbox{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:11px 13px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.ctxbox.tainted{border-color:#5c2b40;background:#2a1620;color:#f4a0bd}
+.ctxbox .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:6px;color:var(--muted)}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:16px 0 0}
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px}
+.stat.f{border-top:2px solid var(--free)}.stat.r{border-top:2px solid var(--ref)}
+.stat .kicker{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;min-height:24px}
+.stat b{display:block;font-size:22px;margin:4px 0 8px;letter-spacing:-.02em;transition:color .3s}
+.stat b.pass{color:var(--ok)} .stat b.fail{color:var(--bad)}
+.bar{height:5px;border-radius:99px;background:#1d2434;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .45s cubic-bezier(.22,.7,.3,1)}
+.stat .note{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px}
+.claims{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.claim{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:6px;background:#151a26;border:1px solid var(--line)}
+.claim.sup{border-color:#24523a;color:#9fe6b8}
+.claim.unsup{border-color:#5c2b40;color:#f4a0bd;background:#2a1620}
+.callout{margin-top:16px;background:linear-gradient(90deg,#2f1522,#151a26 70%);border:1px solid #5c2b40;border-left:3px solid var(--accent);border-radius:8px;padding:13px 15px;font-size:13.5px;color:#cfd4e6}
+.callout b{color:#fff}
+.callout.good{background:linear-gradient(90deg,#12302e,#151a26 70%);border-color:#2c5a56;border-left-color:var(--free)}
+pre{background:#0f131d;border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:11.5px;color:#c8d0e4;margin:0}
+.cmt{color:#5f6b86}.kw{color:#a487f5}.str{color:#3fd67a}.num{color:#f0a03c}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+tbody td{padding:10px 12px;font-size:12.5px;border-bottom:1px solid #1e2434;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:12px}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.foot{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:28px;text-align:center}
+@media (max-width:900px){.grid5{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG · Agent · Tool eval lab · 03</div>
+  <h1>An answer can be <span style="color:var(--accent)">perfectly faithful and completely wrong</span>.</h1>
+  <p class="sub">Faithfulness, Answer Relevancy and Hallucination all judge the generator without a reference answer — and there is one failure all three are structurally incapable of catching. Switch between four answers to the same question and find it.</p>
+
+  <div class="panel">
+    <h2>Question: <span style="font-family:var(--mono);font-size:13px;color:var(--accent)">"What is the time complexity of deleting a node from a BST?"</span></h2>
+    <div class="tabs" id="tabs">
+      <button class="chip" data-s="0" aria-pressed="true">grounded &amp; relevant</button>
+      <button class="chip" data-s="1">faithful but irrelevant</button>
+      <button class="chip" data-s="2">relevant but unfaithful</button>
+      <button class="chip" data-s="3">faithful to bad context</button>
+    </div>
+
+    <div class="ctxbox" id="ctxbox"><span class="lbl">retrieval_context — what this query's retriever returned</span><span id="ctxtext"></span></div>
+    <div class="answer"><span class="lbl">actual_output — what the generator said</span><span id="ans"></span></div>
+    <div class="claims" id="claims"></div>
+
+    <div class="grid5">
+      <div class="stat f"><span class="kicker">Answer Relevancy</span><b id="sAR">1.00</b><div class="bar"><i id="bAR" style="background:var(--free)"></i></div><div class="note">referenceless · input only</div></div>
+      <div class="stat f"><span class="kicker">Faithfulness</span><b id="sF">1.00</b><div class="bar"><i id="bF" style="background:var(--free)"></i></div><div class="note">referenceless · vs retrieval_context</div></div>
+      <div class="stat f"><span class="kicker">Hallucination ↓</span><b id="sH">0.00</b><div class="bar"><i id="bH" style="background:var(--bad)"></i></div><div class="note">vs trusted context · lower is better</div></div>
+      <div class="stat r"><span class="kicker">Answer Correctness</span><b id="sC">0.95</b><div class="bar"><i id="bC" style="background:var(--ref)"></i></div><div class="note">GEval · needs expected_output</div></div>
+      <div class="stat r"><span class="kicker">Semantic Similarity</span><b id="sS">0.94</b><div class="bar"><i id="bS" style="background:var(--ref)"></i></div><div class="note">embeddings · no LLM call</div></div>
+    </div>
+
+    <div class="callout" id="callout"></div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--free)"></i>referenceless — runs on live traffic</span>
+      <span><i class="swatch" style="background:var(--ref)"></i>reference-based — needs a written expected_output</span>
+      <span>↓ Hallucination runs inverted: higher = worse</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>The three most-confused metrics in RAG evaluation</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Question</th><th>Compares against</th><th>Cannot catch</th></tr></thead>
+      <tbody>
+        <tr><td><b>Answer Relevancy</b></td><td>Does the answer address the question asked?</td><td><code>input</code> only</td><td>A confidently wrong answer to the right question</td></tr>
+        <tr><td><b>Faithfulness</b></td><td>Is every claim grounded in what was retrieved?</td><td><code>retrieval_context</code></td><td>Context that was itself wrong</td></tr>
+        <tr><td><b>Hallucination</b></td><td>Does the answer contradict a trusted source?</td><td>a separate curated <code>context</code></td><td>Anything outside that curated source</td></tr>
+        <tr><td><b>Answer Correctness</b></td><td>Is it actually right?</td><td><code>expected_output</code> via <code>GEval</code></td><td>Queries with no written reference</td></tr>
+        <tr><td><b>Semantic Similarity</b></td><td>Is it topically close to the reference?</td><td><code>expected_output</code> embeddings</td><td>Wrong numbers and facts — it measures topic, not truth</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Answer Correctness has no DeepEval class — you write the rubric</h2>
+<pre><span class="cmt"># Faithfulness and Relevancy ship as classes because "grounded" and "on-topic"</span>
+<span class="cmt"># mean the same thing everywhere. "Correct" does not — so DeepEval's own</span>
+<span class="cmt"># recommended pattern is a custom GEval rubric instead of a generic class.</span>
+
+<span class="kw">from</span> deepeval.metrics <span class="kw">import</span> GEval
+<span class="kw">from</span> deepeval.test_case <span class="kw">import</span> LLMTestCaseParams
+
+<span class="cmt"># Style 1 — criteria: one sentence, DeepEval expands it into a procedure.</span>
+correctness = GEval(
+    name=<span class="str">"Answer Correctness"</span>,
+    criteria=<span class="str">"Determine whether actual_output is factually correct relative to expected_output."</span>,
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT,
+                       LLMTestCaseParams.EXPECTED_OUTPUT],
+    threshold=<span class="num">0.7</span>,
+)
+
+<span class="cmt"># Style 2 — evaluation_steps: you write the procedure. More controllable, and</span>
+<span class="cmt"># able to weave several test-case fields into a single rubric.</span>
+correctness_v2 = GEval(
+    name=<span class="str">"Answer Correctness"</span>,
+    evaluation_steps=[
+        <span class="str">"Check whether actual_output addresses the question in input."</span>,
+        <span class="str">"Compare every factual claim in actual_output against expected_output."</span>,
+        <span class="str">"Penalise a wrong complexity class heavily; penalise wording drift lightly."</span>,
+        <span class="str">"Verify each claim is also supported by retrieval_context."</span>,
+    ],
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT,
+                       LLMTestCaseParams.EXPECTED_OUTPUT, LLMTestCaseParams.RETRIEVAL_CONTEXT],
+    threshold=<span class="num">0.7</span>,
+)
+</pre>
+  </div>
+
+  <div class="foot">Eval Lab 03 · prev ← 02 LLM-Judged Retrieval · next → 04 Tool-Use Evaluation</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* One question, four answers. Claim-level verdicts are what an LLM judge produces;
+   Answer Relevancy, Faithfulness and Hallucination are computed from those verdicts
+   using DeepEval's own ratios. Correctness (GEval) and Semantic Similarity are shown
+   as illustrative judge/embedding outputs — both need a live model to compute. */
+const GOOD_CTX="Deleting a node from a BST requires locating it, which takes time proportional to the tree height h. A balanced BST has height O(log n); a degenerate one reaches O(n).";
+const BAD_CTX="Deletion in a BST is a constant-time operation, O(1), because the node reference is already known to the caller.";
+
+const CASES=[
+ {name:"grounded & relevant",
+  ctx:GOOD_CTX, tainted:false,
+  answer:"Deleting from a BST takes O(h) time, where h is the height of the tree — O(log n) when the tree is balanced, and O(n) in the worst case for a degenerate tree.",
+  claims:[["delete is O(h) where h is height",true,true],
+          ["balanced tree gives O(log n)",true,true],
+          ["degenerate worst case is O(n)",true,true]],
+  onTopic:[true,true,true],
+  correctness:0.95, similarity:0.94},
+
+ {name:"faithful but irrelevant",
+  ctx:GOOD_CTX, tainted:false,
+  answer:"A binary search tree stores keys in sorted order, and its height h determines how long it takes to locate any node. A balanced tree has height O(log n).",
+  claims:[["BSTs store keys in sorted order",true,true],
+          ["height h determines lookup time",true,true],
+          ["balanced tree has height O(log n)",true,true]],
+  onTopic:[false,false,true],
+  correctness:0.35, similarity:0.78},
+
+ {name:"relevant but unfaithful",
+  ctx:GOOD_CTX, tainted:false,
+  answer:"Deleting from a BST is O(log n), because the tree automatically self-balances on every deletion.",
+  claims:[["delete is O(log n)",true,true],
+          ["the tree self-balances on every deletion",false,false]],
+  onTopic:[true,true],
+  correctness:0.40, similarity:0.91},
+
+ {name:"faithful to bad context",
+  ctx:BAD_CTX, tainted:true,
+  answer:"Deleting from a BST is O(1) — constant time, since the node reference is already known.",
+  claims:[["delete is O(1) constant time",true,false],
+          ["the node reference is already known",true,false]],
+  onTopic:[true,true],
+  correctness:0.10, similarity:0.83},
+];
+
+/* DeepEval's ratios, computed from the verdicts above */
+const faithfulness   = claims => claims.filter(c=>c[1]).length/claims.length;   // supported by retrieval_context
+const answerRelevancy= onTopic => onTopic.filter(Boolean).length/onTopic.length; // statements addressing the input
+const hallucination  = claims => claims.filter(c=>!c[2]).length/claims.length;   // contradicting the TRUSTED context
+
+function render(){
+  const i=+document.querySelector('#tabs .chip[aria-pressed="true"]').dataset.s;
+  const c=CASES[i];
+  const F=faithfulness(c.claims), AR=answerRelevancy(c.onTopic), H=hallucination(c.claims);
+
+  $('ctxbox').className='ctxbox'+(c.tainted?' tainted':'');
+  $('ctxbox').querySelector('.lbl').textContent = c.tainted
+    ? 'retrieval_context — RETRIEVED SUCCESSFULLY, AND FACTUALLY WRONG'
+    : 'retrieval_context — what this query\u2019s retriever returned';
+  $('ctxtext').textContent=c.ctx;
+  $('ans').textContent=c.answer;
+
+  $('claims').innerHTML=c.claims.map(cl=>
+    `<span class="claim ${cl[1]?'sup':'unsup'}">${cl[1]?'✓ supported':'✗ unsupported'} — ${cl[0]}</span>`).join('');
+
+  const set=(id,bid,val,goodHigh)=>{
+    const b=$(id); b.textContent=val.toFixed(2);
+    const good = goodHigh ? val>=0.7 : val<=0.3;
+    b.className = good?'pass':'fail';
+    $(bid).style.width=(val*100)+'%';
+  };
+  set('sAR','bAR',AR,true); set('sF','bF',F,true); set('sH','bH',H,false);
+  set('sC','bC',c.correctness,true); set('sS','bS',c.similarity,true);
+
+  const out=$('callout');
+  if(i===0){
+    out.className='callout good';
+    out.innerHTML=`<b>All five agree, which is the only case where a single metric would have been enough.</b>
+      Every claim is supported, every statement addresses the question, nothing contradicts the trusted source.
+      Keep this tab in mind as a baseline — the next three all look fine on at least one metric.`;
+  } else if(i===1){
+    out.className='callout';
+    out.innerHTML=`<b>Faithfulness ${F.toFixed(2)}. Hallucination ${H.toFixed(2)}. Both perfect — and the question was never answered.</b>
+      Answer Relevancy drops to ${AR.toFixed(2)} because the output talks about BST structure instead of deletion cost.
+      Grounding and relevance are independent axes: an answer copied verbatim from the context is maximally faithful and can still be useless.
+      Note Semantic Similarity at ${c.similarity.toFixed(2)} — the vocabulary overlaps heavily, so embeddings barely register the problem.`;
+  } else if(i===2){
+    out.className='callout';
+    out.innerHTML=`<b>Answer Relevancy ${AR.toFixed(2)} — it answers the question directly. Faithfulness ${F.toFixed(2)}.</b>
+      Half the claims are unsupported: a plain BST does not self-balance, and nothing in the retrieved context says it does.
+      This is the classic hallucination-on-top-of-good-context, and it's the one case referenceless faithfulness is genuinely good at catching.`;
+  } else {
+    out.className='callout';
+    out.innerHTML=`<b>Faithfulness ${F.toFixed(2)}. Answer Relevancy ${AR.toFixed(2)}. Both referenceless metrics say this answer is perfect.</b>
+      Every claim is grounded — in a retrieved chunk that is itself false. BST deletion is not O(1).
+      Only the reference-based metrics see it: Correctness ${c.correctness.toFixed(2)}, and Hallucination ${H.toFixed(2)} against the <i>trusted</i> context rather than the retrieved one.
+      Semantic Similarity still reads ${c.similarity.toFixed(2)} — the answer is topically almost identical to the reference while being factually opposite.
+      <br><br>This is the structural blind spot: <b>no amount of referenceless evaluation can detect a corrupted knowledge base.</b>`;
+  }
+
+  document.querySelectorAll('#tabs .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(+b.dataset.s===i)));
+}
+
+document.querySelectorAll('#tabs .chip').forEach(b=>
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tabs .chip').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));
+    render();
+  }));
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tool-Use Evaluation — Eval Lab 04</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1017; --panel:#151a26; --panel-2:#1b2130; --line:#283043;
+  --text:#e7eaf3; --muted:#8b93ab;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+  --disp:'Space Grotesk', system-ui, sans-serif;
+  --accent:#c2e04a; --ok:#3fd67a; --part:#f0a03c; --bad:#ef5b93; --dead:#3a4258;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 10% -10%, #1a2440 0%, transparent 60%), var(--ink);
+  color:var(--text);font-family:var(--disp);line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h1{font-size:clamp(22px,4.5vw,32px);margin:0 0 8px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;max-width:66ch;margin:0 0 22px}
+h2{font-size:15px;margin:0 0 12px;font-weight:600;letter-spacing:-.01em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:99px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);text-align:left}
+.chip:hover{color:var(--text);border-color:#3c4762}
+.chip[aria-pressed="true"]{background:#2a3313;border-color:var(--accent);color:#e9f5b6}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cfg{font-family:var(--mono);font-size:11px;color:#c8d0e4;margin-top:14px;background:#0f131d;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:11px 13px;white-space:pre-wrap}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 0}
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat .kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat b{display:block;font-size:24px;margin:4px 0 8px;letter-spacing:-.02em}
+.stat .note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px}
+.bar{height:6px;border-radius:99px;background:#1d2434;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .4s cubic-bezier(.22,.7,.3,1)}
+.trow{background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--dead);border-radius:8px;
+  padding:9px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:border-color .3s,background .3s}
+.tname{font-size:12.5px;flex:0 0 150px;font-weight:500}
+.tcalls{display:flex;gap:5px;flex-wrap:wrap;flex:1 1 320px}
+.call{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:6px;background:#151a26;border:1px solid var(--line);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px}
+.call.flag{border-color:#5c2b40;background:#2a1620;color:#f4a0bd}
+.score{font-family:var(--mono);font-size:13px;flex:none;width:52px;text-align:right;transition:color .3s}
+.score.full{color:var(--ok)} .score.part{color:var(--part)} .score.zero{color:var(--bad)}
+.trow.full{border-left-color:var(--ok)}
+.trow.part{border-left-color:var(--part)}
+.trow.zero{border-left-color:var(--bad);background:#2a1620}
+.callout{margin-top:16px;background:linear-gradient(90deg,#242c12,#151a26 70%);border:1px solid #4b5a1f;border-left:3px solid var(--accent);border-radius:8px;padding:13px 15px;font-size:13.5px;color:#cfd4e6}
+.callout b{color:#fff}
+.callout.warn{background:linear-gradient(90deg,#301722,#151a26 70%);border-color:#5c2b40;border-left-color:var(--bad)}
+pre{background:#0f131d;border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:11.5px;color:#c8d0e4;margin:0}
+.cmt{color:#5f6b86}.kw{color:#a487f5}.str{color:#3fd67a}.num{color:#f0a03c}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+tbody td{padding:10px 12px;font-size:12.5px;border-bottom:1px solid #1e2434;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+.foot{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:28px;text-align:center}
+@media (max-width:860px){.grid3{grid-template-columns:1fr}.tname{flex:1 1 100%}.call{max-width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RAG · Agent · Tool eval lab · 04</div>
+  <h1>The same metric scores this trace <span style="color:var(--accent)">1.00 or 0.00</span> — you chose which.</h1>
+  <p class="sub">ToolCorrectnessMetric's strictness lives entirely in its constructor arguments. Switch configurations and watch six broken traces flip between passing and failing without a single line of agent code changing.</p>
+
+  <div class="panel">
+    <h2>Metric configuration</h2>
+    <div class="tabs" id="tabs">
+      <button class="chip" data-c="A" aria-pressed="true">A · names only (the default)</button>
+      <button class="chip" data-c="B">B · + INPUT_PARAMETERS</button>
+      <button class="chip" data-c="C">C · + OUTPUT, should_exact_match</button>
+    </div>
+    <div class="cfg" id="cfg"></div>
+
+    <div class="grid3">
+      <div class="stat"><div class="kicker">Traces scoring 1.00</div><b id="sPass">5 / 6</b><div class="bar"><i id="bPass" style="background:var(--ok)"></i></div><div class="note" id="nPass">out of 6, five of which are broken</div></div>
+      <div class="stat"><div class="kicker">Broken traces caught</div><b id="sCaught">1 / 5</b><div class="bar"><i id="bCaught" style="background:var(--bad)"></i></div><div class="note">5 of the 6 traces deviate from expected</div></div>
+      <div class="stat"><div class="kicker">Mean score</div><b id="sMean">0.92</b><div class="bar"><i id="bMean" style="background:var(--accent)"></i></div><div class="note">what a dashboard would report</div></div>
+    </div>
+
+    <div class="callout" id="callout"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Six traces against the same <code style="font-family:var(--mono);font-size:12px">expected_tools</code></h2>
+    <div id="traces"></div>
+    <div class="cfg" style="border-left-color:var(--dead);margin-top:14px">expected_tools = [
+  FlightSearch(origin=NYC, destination=London, date=2026-03-13) → output recorded
+  WeatherCheck(city=London, date=2026-03-13)
+]</div>
+  </div>
+
+  <div class="panel">
+    <h2>Three tool metrics, three different jobs</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Type</th><th>Needs</th><th>Use it for</th></tr></thead>
+      <tbody>
+        <tr><td><b><code>ToolCorrectnessMetric</code></b></td><td>Reference-based, deterministic</td><td><code>expected_tools</code></td><td>Regression and CI, where correct behaviour is known in advance</td></tr>
+        <tr><td><b><code>ArgumentCorrectnessMetric</code></b></td><td>Referenceless, LLM-judged</td><td>Tool descriptions only</td><td>Dynamic workflows and production monitoring, where argument values can't be predetermined</td></tr>
+        <tr><td><b><code>ToolUseMetric</code></b></td><td>Multi-turn, LLM-judged</td><td><code>available_tools</code> (required)</td><td>Conversational agents; final score is the <b>min</b> of selection and argument sub-scores</td></tr>
+        <tr><td><b><code>TaskCompletionMetric</code></b></td><td>Referenceless, outcome-level</td><td><code>input</code> + <code>actual_output</code></td><td>The question the mechanics metrics never ask: did the user get what they wanted?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Validate deterministically first, then judge</h2>
+<pre><span class="cmt"># The pattern from the notebook: a hard schema check runs BEFORE the LLM metric.</span>
+<span class="cmt"># A structurally malformed call is worth zero — no point spending a judge call</span>
+<span class="cmt"># to have a model tell you the date field isn't a date.</span>
+
+TOOL_SCHEMAS = {
+    <span class="str">"FlightSearch"</span>: {
+        <span class="str">"required_keys"</span>: {<span class="str">"origin"</span>, <span class="str">"destination"</span>, <span class="str">"date"</span>},
+        <span class="str">"validators"</span>: {<span class="str">"date"</span>: (<span class="kw">lambda</span> v: datetime.strptime(v, <span class="str">"%Y-%m-%d"</span>), <span class="str">"YYYY-MM-DD"</span>)},
+    }
+}
+
+<span class="kw">def</span> validate_args(tools_called) -> tuple[bool, str]:
+    <span class="kw">for</span> tool <span class="kw">in</span> tools_called:
+        schema = TOOL_SCHEMAS.get(tool.name)
+        <span class="kw">if</span> <span class="kw">not</span> schema: <span class="kw">continue</span>
+        actual = set(tool.input_parameters.keys())
+        missing, extra = schema[<span class="str">"required_keys"</span>] - actual, actual - schema[<span class="str">"required_keys"</span>]
+        <span class="kw">if</span> missing: <span class="kw">return</span> <span class="kw">False</span>, <span class="str">f"{tool.name}: missing {missing}"</span>
+        <span class="kw">if</span> extra:   <span class="kw">return</span> <span class="kw">False</span>, <span class="str">f"{tool.name}: unexpected {extra}"</span>
+        <span class="kw">for</span> field, (validator, fmt) <span class="kw">in</span> schema[<span class="str">"validators"</span>].items():
+            <span class="kw">try</span>: validator(tool.input_parameters.get(field))
+            <span class="kw">except</span> (ValueError, TypeError):
+                <span class="kw">return</span> <span class="kw">False</span>, <span class="str">f"{tool.name}: '{field}' must be {fmt}"</span>
+    <span class="kw">return</span> <span class="kw">True</span>, <span class="str">"ok"</span>
+
+valid, reason = validate_args(test_case.tools_called)
+<span class="kw">if</span> <span class="kw">not</span> valid:
+    print(<span class="str">f"Score: 0\nReason: {reason}"</span>)        <span class="cmt"># judge never runs — free rejection</span>
+<span class="kw">else</span>:
+    metric.measure(test_case)                    <span class="cmt"># now spend the LLM call</span>
+</pre>
+  </div>
+
+  <div class="foot">Eval Lab 04 · prev ← 03 Generator Metrics · next → 05 Agent Trajectory Evaluation</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* One expected trajectory, six actual traces, three metric configurations.
+   Scores are computed by the matcher below — the same comparison
+   ToolCorrectnessMetric performs when its LLM-judge option is left off. */
+const EXPECTED=[
+ {name:"FlightSearch", p:{origin:"NYC",destination:"London",date:"2026-03-13"}, out:true},
+ {name:"WeatherCheck", p:{city:"London",date:"2026-03-13"}, out:false},
+];
+
+const TRACES=[
+ {name:"exact match", note:"identical to expected_tools",
+  calls:[{name:"FlightSearch",p:{origin:"NYC",destination:"London",date:"2026-03-13"},out:true},
+         {name:"WeatherCheck",p:{city:"London",date:"2026-03-13"},out:false}], flag:-1},
+ {name:"extra tool", note:"correct work plus an unrequested currency conversion",
+  calls:[{name:"FlightSearch",p:{origin:"NYC",destination:"London",date:"2026-03-13"},out:true},
+         {name:"WeatherCheck",p:{city:"London",date:"2026-03-13"},out:false},
+         {name:"CurrencyConvert",p:{from:"USD",to:"GBP",amount:500},out:false}], flag:2},
+ {name:"wrong order", note:"weather checked before the flight was found",
+  calls:[{name:"WeatherCheck",p:{city:"London",date:"2026-03-13"},out:false},
+         {name:"FlightSearch",p:{origin:"NYC",destination:"London",date:"2026-03-13"},out:true}], flag:0},
+ {name:"output dropped", note:"right call, result never recorded on the span",
+  calls:[{name:"FlightSearch",p:{origin:"NYC",destination:"London",date:"2026-03-13"},out:false},
+         {name:"WeatherCheck",p:{city:"London",date:"2026-03-13"},out:false}], flag:0},
+ {name:"wrong argument", note:"date transposed: 03-31 instead of 03-13",
+  calls:[{name:"FlightSearch",p:{origin:"NYC",destination:"London",date:"2026-03-31"},out:true},
+         {name:"WeatherCheck",p:{city:"London",date:"2026-03-13"},out:false}], flag:0},
+ {name:"tool missing", note:"weather never checked at all",
+  calls:[{name:"FlightSearch",p:{origin:"NYC",destination:"London",date:"2026-03-13"},out:true}], flag:-1},
+];
+
+const CONFIG={
+ A:{label:`ToolCorrectnessMetric(\n    # evaluation_params defaults to tool NAME only\n    should_exact_match=False,\n)`,
+    desc:"Names only. Order, arguments, outputs and extra calls are all invisible."},
+ B:{label:`ToolCorrectnessMetric(\n    evaluation_params=[ToolCallParams.INPUT_PARAMETERS],\n    should_exact_match=False,\n)`,
+    desc:"Names and arguments must match. Order and extra calls are still invisible."},
+ C:{label:`ToolCorrectnessMetric(\n    evaluation_params=[ToolCallParams.INPUT_PARAMETERS,\n                       ToolCallParams.OUTPUT],\n    should_exact_match=True,\n)`,
+    desc:"Exact list equality — same tools, same arguments, same recorded outputs, same order. Binary pass or fail."},
+};
+
+const sameParams=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+
+function score(calls,cfg){
+  if(cfg==="C"){
+    if(calls.length!==EXPECTED.length) return 0;
+    for(let i=0;i<calls.length;i++){
+      const a=calls[i], e=EXPECTED[i];
+      if(a.name!==e.name || !sameParams(a.p,e.p) || a.out!==e.out) return 0;
+    }
+    return 1;
+  }
+  let hit=0;
+  EXPECTED.forEach(e=>{
+    if(calls.some(c=>c.name===e.name && (cfg==="A" || sameParams(c.p,e.p)))) hit++;
+  });
+  return hit/EXPECTED.length;
+}
+
+const fmt=c=>`${c.name}(${Object.entries(c.p).map(([k,v])=>k+"="+v).join(", ")})${c.out?" ✓out":""}`;
+
+const tracesEl=$('traces');
+const rowEls=TRACES.map(t=>{
+  const d=document.createElement('div');
+  d.className='trow';
+  d.innerHTML=`<span class="tname">${t.name}<br><span style="font-size:10.5px;color:var(--muted);font-weight:400">${t.note}</span></span>
+    <span class="tcalls">${t.calls.map((c,i)=>`<span class="call${i===t.flag?' flag':''}">${fmt(c)}</span>`).join('')}</span>
+    <span class="score"></span>`;
+  tracesEl.appendChild(d);
+  return d;
+});
+
+function render(){
+  const cfg=document.querySelector('#tabs .chip[aria-pressed="true"]').dataset.c;
+  $('cfg').textContent=CONFIG[cfg].label+"\n\n# "+CONFIG[cfg].desc;
+
+  const scores=TRACES.map(t=>score(t.calls,cfg));
+  scores.forEach((s,i)=>{
+    const cls = s===1?'full' : s===0?'zero' : 'part';
+    rowEls[i].className='trow '+cls;
+    const el=rowEls[i].querySelector('.score');
+    el.className='score '+cls;
+    el.textContent=s.toFixed(2);
+  });
+
+  const full=scores.filter(s=>s===1).length;
+  const brokenIdx=[1,2,3,4,5];                       // every trace except #0 deviates
+  const caught=brokenIdx.filter(i=>scores[i]<1).length;
+  const mean=scores.reduce((a,b)=>a+b,0)/scores.length;
+
+  $('sPass').textContent=`${full} / 6`;   $('bPass').style.width=(100*full/6)+'%';
+  $('nPass').textContent = full>1 ? `${full-1} of them are broken traces` : 'only the genuinely correct trace';
+  $('sCaught').textContent=`${caught} / 5`; $('bCaught').style.width=(100*caught/5)+'%';
+  $('sMean').textContent=mean.toFixed(2); $('bMean').style.width=(mean*100)+'%';
+
+  const c=$('callout');
+  if(cfg==="A"){
+    c.className='callout warn';
+    c.innerHTML=`<b>Five of six traces score 1.00, and four of those five are broken.</b>
+      An extra billed API call, a reversed sequence, a dropped output and a wrong travel date all score perfectly,
+      because the default comparison only asks whether a tool with that <i>name</i> appears somewhere in the list.
+      A dashboard reading ${mean.toFixed(2)} here is not measuring tool correctness — it is measuring whether the agent knows the tool exists.`;
+  } else if(cfg==="B"){
+    c.className='callout';
+    c.innerHTML=`<b>Adding one enum value catches the wrong date.</b>
+      <code>ToolCallParams.INPUT_PARAMETERS</code> drops the transposed <code>2026-03-31</code> trace to 0.50 — the flight was booked for the wrong day and now the metric says so.
+      Still invisible: the extra CurrencyConvert call, the reversed order, and the dropped output, all of which still score 1.00.
+      Mean is ${mean.toFixed(2)}.`;
+  } else {
+    c.className='callout';
+    c.innerHTML=`<b>Exact matching catches all five — and turns the metric binary.</b>
+      Every deviation is now 0.00, including the reversed order and the missing <code>output</code> field on a call that was otherwise correct.
+      Mean collapses to ${mean.toFixed(2)}. That strictness is right for a CI regression gate and wrong for production monitoring,
+      where a legitimately different-but-valid path would fail every time. <b>The metric didn't change — the contract you asked it to enforce did.</b>`;
+  }
+
+  document.querySelectorAll('#tabs .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(b.dataset.c===cfg)));
+}
+
+document.querySelectorAll('#tabs .chip').forEach(b=>
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tabs .chip').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));
+    render();
+  }));
+render();
+</script>
+</body>
+</html>
