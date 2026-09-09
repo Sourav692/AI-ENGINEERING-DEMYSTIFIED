@@ -113,7 +113,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | Track | Content |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `RAG_with_LangGraph_Advanced/` | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
-| `Comprehensive_RAG_Techniques/` | The NirDiamant `RAG_Techniques` anthology (~35 notebooks, kept whole — see its `README_ROADMAP.md`) |
+| `Comprehensive_RAG_Techniques/` | The NirDiamant `RAG_Techniques` anthology (42 notebooks, kept whole — see its `README_ROADMAP.md`) |
 | `RAG_Ecosystem/`              | Single-notebook RAG stack (basic → query transforms → RAPTOR/ColBERT → CRAG pointers → RAGAS) |
 | `GraphRAG/`                   | Full knowledge-graph + RAG course |
 | `CacheRAG/`                   | 🚧 Planned |
