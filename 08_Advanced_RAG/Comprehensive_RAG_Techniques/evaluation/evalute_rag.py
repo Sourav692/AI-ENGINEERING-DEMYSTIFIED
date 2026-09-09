@@ -105,7 +105,7 @@ def evaluate_rag(retriever, num_questions: int = 5) -> Dict[str, Any]:
     """
     
     # Initialize LLM
-    llm = ChatOpenAI(temperature=0, model_name="gpt-4-turbo-preview")
+    llm = ChatOpenAI(temperature=0, model_name="gpt-4-turbo")
     
     # Create evaluation prompt
     eval_prompt = PromptTemplate.from_template("""
@@ -141,7 +141,7 @@ def evaluate_rag(retriever, num_questions: int = 5) -> Dict[str, Any]:
     results = []
     for question in questions:
         # Get retrieval results
-        context = retriever.get_relevant_documents(question)
+        context = retriever.invoke(question)
         context_text = "\n".join([doc.page_content for doc in context])
         
         # Evaluate results
