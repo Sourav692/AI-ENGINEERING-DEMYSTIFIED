@@ -49,7 +49,7 @@ Pending Topics
 2. LLM Structured Output using Pydantic, TypedDict - Krish Naik Agent Course ---------> ***9th Sep***
 3. Human in the Loop - Krish Naik Agentic Project  ---------> ***10th Sep***
 4. Guardrails in LangChain - Krish Naik Agent Course ---------> ***10th Sep***
-5. Advanced Chunking - Krish Naik RAG  ---------> ***9th Sep***
+5. ~~Advanced Chunking - Krish Naik RAG  ---------> ***9th Sep***~~
 6. Hybrid Search - Krish Naik RAG   ---------> ***9th Sep***
 7. Different Streaming Technique - Krsih Naik RAG
 8. Agentic RAG - Krish Naik RAG Course ---------> ***9th Sep***
