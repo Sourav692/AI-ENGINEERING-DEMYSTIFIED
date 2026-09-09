@@ -45,17 +45,19 @@
 
 Pending Topics
 
-1. End to End Agent Project - Krish Naik Agent Course
-3. LLM Structured Output using Pydantic, TypedDict - Krish Naik Agent Course
-4. Human in the Loop - Krish Naik Agentic Project
-5. Guardrails in LangChain - Krish Naik Agent Course
-6. Advanced Chunking - Krish Naik RAG
-7. Hybrid Search - Krish Naik RAG
-8. Different Streaming Technique - Krsih Naik RAG
-9. Agentic RAG - Krish Naik RAG Course
-10. Autonomous RAG - Krish Naik RAG
-11. Multi Agent RAG - Krish Naik RAG
-12. Corrective RAG -Krish Naik RAG
-13. Adaptive RAG - Krish Naik RAG
-14. RAG With Memory - Krish Naik RAG
-15. RAG Project - Krish Naik RAG
+1. End to End Agent Project - Krish Naik Agent Course ---------> ***10th Sep***
+2. LLM Structured Output using Pydantic, TypedDict - Krish Naik Agent Course ---------> ***9th Sep***
+3. Human in the Loop - Krish Naik Agentic Project  ---------> ***10th Sep***
+4. Guardrails in LangChain - Krish Naik Agent Course ---------> ***10th Sep***
+5. Advanced Chunking - Krish Naik RAG  ---------> ***9th Sep***
+6. Hybrid Search - Krish Naik RAG   ---------> ***9th Sep***
+7. Different Streaming Technique - Krsih Naik RAG
+8. Agentic RAG - Krish Naik RAG Course ---------> ***9th Sep***
+9. Autonomous RAG - Krish Naik RAG ---------> ***9th Sep***
+10. Multi Agent RAG - Krish Naik RAG ---------> ***9th Sep***
+11. Corrective RAG -Krish Naik RAG ---------> ***9th Sep***
+12. Adaptive RAG - Krish Naik RAG ---------> ***9th Sep***
+13. RAG With Memory - Krish Naik RAG ---------> ***10th Sep***
+14. RAG Project - Krish Naik RAG ---------> ***10th Sep***
+15. Agent Evaluation ---------> ***10th Sep***
+16. Retry , Backoff and Failure/Error Handling in Agentic Application ---------> ***10th Sep***

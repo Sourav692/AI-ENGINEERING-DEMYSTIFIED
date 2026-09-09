@@ -12,6 +12,7 @@ dependencies = [
     "langchain-anthropic==1.7.1",
     "langchain-chroma==1.1.0",
     "langgraph==1.2.11",
+    "rank-bm25==0.2.2",
     "langsmith==0.12.1",
     "databricks-langchain==0.20.0",
     "databricks-sdk==0.135.0",
