@@ -198,9 +198,26 @@ Foundational RAG only. Agentic/advanced RAG lives in Phase 8.
 |---|---|
 | `Naive_RAG.ipynb` / `Naive_RAG_Alt.ipynb` | Baseline naive RAG |
 | `Multi_Query.ipynb`, `RAG_Fusion.ipynb`, `Decomposition.ipynb`, `Step_Back_Prompting.ipynb`, `HyDE.ipynb` | Query transformation techniques |
-| `Multi_Representation_Indexing.ipynb`, `Parent_Document_Retrieval.ipynb`, `Self_Querying_Retrieval.ipynb` | Indexing/retrieval strategies |
+| `Self_Querying_Retrieval.ipynb` | Self-querying retrieval |
 | `Routing_LLM_Classifier.ipynb`, `Semantic_Routing.ipynb` | Query routing |
-| `CrossEncoder_Reranking.ipynb` | Cross-encoder reranking |
+
+## `Indexing_Techniques/`
+
+Split out of `Query_Transformation_Techniques/` — these change the index rather than transform
+the query; see that folder's README for the full stage breakdown.
+
+| Notebook | Topic |
+|---|---|
+| `Multi_Representation_Indexing.ipynb`, `Parent_Document_Retrieval.ipynb` | Indexing-stage retrieval strategies |
+
+## `Post_Retrieval_Techniques/`
+
+Also split out of `Query_Transformation_Techniques/` — this re-scores already-retrieved
+results rather than transforming the query.
+
+| Notebook | Topic |
+|---|---|
+| `CrossEncoder_Reranking.ipynb` | Post-retrieval cross-encoder reranking |
 
 ## `Multimodal_and_Document_Intelligence/`
 

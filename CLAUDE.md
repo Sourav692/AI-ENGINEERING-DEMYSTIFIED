@@ -80,7 +80,9 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 | `Introduction_to_RAG/`        | RAG overview, indexing, LangChain+RAG |
 | `Embeddings_and_Vector_Databases/` | Embedding models, vector DB options, retrievers |
 | `RAG_Naive_to_Production/`    | Loading → chunking → hybrid search → query enhancement → parent-doc retrieval → postprocessing → full pipelines |
-| `Query_Transformation_Techniques/` | Multi-query, RAG-Fusion, decomposition, HyDE, routing, reranking |
+| `Query_Transformation_Techniques/` | Multi-query, RAG-Fusion, decomposition, step-back prompting, HyDE, query routing, self-querying retrieval |
+| `Indexing_Techniques/` | Multi-representation indexing, parent-document retrieval — split out from `Query_Transformation_Techniques/` since these change the index rather than transform the query |
+| `Post_Retrieval_Techniques/` | Cross-encoder reranking — split out from `Query_Transformation_Techniques/` since this re-scores already-retrieved results rather than transforming the query |
 | `Multimodal_and_Document_Intelligence/` | Multimodal RAG |
 | `RAG_with_LangGraph/`         | Basic agentic RAG (2 notebooks) |
 | `RAG_with_LangChain/`         | RAG essentials, comprehensive, filtered search, indexing API (4 notebooks) |
