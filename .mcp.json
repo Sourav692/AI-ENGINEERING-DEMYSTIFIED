@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "langsmith": {
+      "type": "http",
+      "url": "https://api.smith.langchain.com/mcp"
+    },
+    "chroma": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "chroma-mcp",
+        "--client-type",
+        "persistent",
+        "--data-dir",
+        "D:/AI ENGINEERING/.mcp_data/chroma"
+      ],
+      "env": {}
+    }
+  }
+}
