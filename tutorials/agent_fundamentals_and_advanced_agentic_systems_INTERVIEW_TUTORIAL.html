@@ -1,0 +1,961 @@
+<title>Agentic Systems Drillbook</title>
+<style>
+:root{
+  --paper:#F2F5F3; --surface:#FFFFFF; --surface-2:#E9EEEC; --ink:#10181A; --ink-soft:#445055; --ink-faint:#6B7A78;
+  --line:#D3DAD7; --accent:#1F6F78; --accent-ink:#FFFFFF; --accent-soft:#DCEBE9;
+  --violet:#6B5FA6; --violet-soft:#E8E4F3;
+  --good:#2E7D4F; --good-soft:#DFF0E4; --warn:#9A6A1E; --warn-soft:#F5E7CE; --bad:#A5382F; --bad-soft:#F6DEDB;
+  --code-bg:#0F1C1E; --code-ink:#D8E6E3;
+  --shadow: 0 1px 2px rgba(16,24,26,.06), 0 8px 24px -12px rgba(16,24,26,.18);
+  --radius: 10px;
+  --font-display:'Spectral',Georgia,'Times New Roman',serif;
+  --font-body:'IBM Plex Sans',-apple-system,Segoe UI,sans-serif;
+  --font-mono:'IBM Plex Mono',SFMono-Regular,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1315; --surface:#141E20; --surface-2:#182325; --ink:#E7ECEA; --ink-soft:#A9B8B5; --ink-faint:#7E908D;
+    --line:#243330; --accent:#57BDAF; --accent-ink:#08211E; --accent-soft:#173330;
+    --violet:#A79BE0; --violet-soft:#221E3A;
+    --good:#5BC48A; --good-soft:#153A28; --warn:#E0AC4F; --warn-soft:#3A2E12; --bad:#E17A70; --bad-soft:#3A1A17;
+    --code-bg:#08151A; --code-ink:#CFE6E1;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -16px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1315; --surface:#141E20; --surface-2:#182325; --ink:#E7ECEA; --ink-soft:#A9B8B5; --ink-faint:#7E908D;
+  --line:#243330; --accent:#57BDAF; --accent-ink:#08211E; --accent-soft:#173330;
+  --violet:#A79BE0; --violet-soft:#221E3A;
+  --good:#5BC48A; --good-soft:#153A28; --warn:#E0AC4F; --warn-soft:#3A2E12; --bad:#E17A70; --bad-soft:#3A1A17;
+  --code-bg:#08151A; --code-ink:#CFE6E1;
+}
+*{box-sizing:border-box;}
+body{background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.55; -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:var(--font-display); text-wrap:balance; margin:0; color:var(--ink);}
+p{margin:0 0 .7em; color:var(--ink-soft);}
+code, .mono{font-family:var(--font-mono);}
+a{color:var(--accent);}
+::selection{background:var(--accent-soft);}
+@media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important;} }
+
+/* ---- shell ---- */
+.topbar{position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.topbar-inner{max-width:1180px; margin:0 auto; padding:.7rem 1.25rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;}
+.brand{display:flex; align-items:baseline; gap:.55rem; margin-right:auto;}
+.brand .mark{width:9px; height:9px; border-radius:2px; background:var(--accent); display:inline-block; transform:rotate(45deg);}
+.brand-name{font-family:var(--font-display); font-weight:600; font-size:1.05rem; letter-spacing:.01em;}
+.brand-sub{color:var(--ink-faint); font-size:.78rem;}
+.tally{display:flex; align-items:center; gap:.5rem; font-family:var(--font-mono); font-size:.78rem; color:var(--ink-soft);}
+.tally .pip{display:inline-flex; align-items:center; gap:.3rem; padding:.15rem .5rem; border-radius:99px; border:1px solid var(--line); background:var(--surface);}
+.tally .pip b{font-weight:600; color:var(--ink);}
+.pip.good{border-color:color-mix(in srgb, var(--good) 45%, var(--line));} .pip.good b{color:var(--good);}
+.pip.warn{border-color:color-mix(in srgb, var(--warn) 45%, var(--line));} .pip.warn b{color:var(--warn);}
+.pip.bad{border-color:color-mix(in srgb, var(--bad) 45%, var(--line));} .pip.bad b{color:var(--bad);}
+.reset-btn{font-family:var(--font-mono); font-size:.72rem; color:var(--ink-faint); background:none; border:1px solid var(--line); border-radius:99px; padding:.25rem .6rem; cursor:pointer;}
+.reset-btn:hover{color:var(--ink); border-color:var(--ink-faint);}
+
+.rolebar{max-width:1180px; margin:0 auto; padding:0 1.25rem .7rem; display:flex; gap:.4rem; flex-wrap:wrap; align-items:center;}
+.rolebar span.lbl{font-size:.72rem; color:var(--ink-faint); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em; margin-right:.3rem;}
+.role-btn{font-family:var(--font-body); font-size:.82rem; padding:.32rem .75rem; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;}
+.role-btn[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600;}
+.role-btn:focus-visible, button:focus-visible, summary:focus-visible, a:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+/* ---- layout ---- */
+.wrap{max-width:1180px; margin:0 auto; padding:1.5rem 1.25rem 6rem; display:grid; grid-template-columns:220px minmax(0,1fr); gap:2.5rem;}
+@media (max-width:920px){ .wrap{grid-template-columns:1fr;} .toc{display:none;} }
+.toc{position:sticky; top:5.2rem; align-self:start; display:flex; flex-direction:column; gap:.15rem; font-size:.85rem;}
+.toc a{color:var(--ink-faint); text-decoration:none; padding:.32rem .6rem; border-radius:7px; border-left:2px solid transparent;}
+.toc a:hover{color:var(--ink); background:var(--surface-2);}
+.toc .n{font-family:var(--font-mono); color:var(--ink-faint); margin-right:.4rem; font-size:.75rem;}
+
+section.block{padding-top:1.6rem; margin-bottom:.5rem; scroll-margin-top:5.5rem;}
+.block > .head{margin-bottom:1.1rem;}
+.block h2{font-size:1.5rem; font-weight:600;}
+.block .kicker{font-family:var(--font-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:.35rem; display:block;}
+.block .dek{max-width:62ch; margin-top:.4rem;}
+hr.rule{border:none; border-top:1px solid var(--line); margin:2.4rem 0;}
+
+/* hero */
+.hero{padding:2.1rem 0 .6rem;}
+.hero h1{font-size:clamp(1.7rem,3.4vw,2.5rem); font-weight:700; line-height:1.12; max-width:20ch;}
+.hero .meta{margin-top:.9rem; color:var(--ink-faint); font-size:.85rem; max-width:70ch;}
+.hero .gaps{margin-top:1.1rem; background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, var(--line)); border-radius:var(--radius); padding:.85rem 1rem; font-size:.85rem; max-width:70ch;}
+.hero .gaps b{color:var(--warn);}
+
+/* concept cards */
+.concept{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:1.2rem 1.3rem; margin-bottom:1rem; box-shadow:var(--shadow);}
+.concept h3{font-size:1.12rem; font-weight:600; margin-bottom:.15rem;}
+.concept .idx{font-family:var(--font-mono); font-size:.72rem; color:var(--accent); display:block; margin-bottom:.2rem;}
+.concept .field{margin-top:.7rem;}
+.concept .field-label{font-family:var(--font-mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin-bottom:.3rem;}
+.concept pre{background:var(--code-bg); color:var(--code-ink); border-radius:8px; padding:.85rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.55; margin:0;}
+.concept .say{background:var(--accent-soft); border-radius:8px; padding:.7rem .9rem; font-size:.87rem; color:var(--ink);}
+.concept .src{font-size:.78rem; color:var(--ink-faint);}
+.concept .src code{background:var(--surface-2); padding:.1rem .35rem; border-radius:4px;}
+details.concept-more{margin-top:.6rem;}
+details.concept-more summary{cursor:pointer; font-size:.82rem; color:var(--accent); font-weight:600; list-style:none; display:flex; align-items:center; gap:.3rem;}
+details.concept-more summary::-webkit-details-marker{display:none;}
+details.concept-more summary::before{content:"▸"; font-size:.7rem; transition:transform .15s;}
+details.concept-more[open] summary::before{transform:rotate(90deg);}
+details.concept-more .inner{padding-top:.7rem; display:flex; flex-direction:column; gap:.7rem;}
+
+.diagram-wrap{background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); padding:1rem; margin:1rem 0 1.4rem;}
+.diagram-wrap .cap{font-family:var(--font-mono); font-size:.72rem; color:var(--ink-faint); margin-top:.5rem;}
+pre.mermaid{background:transparent; color:var(--ink);}
+
+/* grid of cards (gotchas / questions) */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:.9rem;}
+
+/* flip gotcha card */
+.flip{perspective:1400px; height:auto;}
+.flip-card{position:relative; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); cursor:pointer; min-height:190px; padding:1rem 1.1rem; transition:border-color .15s;}
+.flip-card:hover{border-color:var(--accent);}
+.flip-card .name{font-weight:600; font-size:.96rem; margin-bottom:.55rem;}
+.flip-card .line{font-size:.83rem; margin-bottom:.5rem;}
+.flip-card .line b{font-family:var(--font-mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); display:block; margin-bottom:.15rem; font-weight:600;}
+.flip-card .back{display:none;}
+.flip-card.open .back{display:block;}
+.flip-card.open .front-hint{display:none;}
+.flip-card .front-hint{font-size:.76rem; color:var(--accent); font-family:var(--font-mono);}
+.flip-card .interview-angle{background:var(--violet-soft); border-radius:7px; padding:.5rem .7rem; font-size:.79rem; margin-top:.4rem;}
+.flip-card .interview-angle b{color:var(--violet);}
+
+/* tradeoff tables */
+.tradeoff{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:1.1rem 1.2rem; margin-bottom:1rem; box-shadow:var(--shadow);}
+.tradeoff h4{font-size:1.02rem; font-weight:600; margin-bottom:.7rem;}
+.tt-table{width:100%; border-collapse:collapse; font-size:.83rem;}
+.tt-table th{text-align:left; font-family:var(--font-mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); padding:.4rem .6rem; border-bottom:1px solid var(--line);}
+.tt-table td{padding:.55rem .6rem; border-bottom:1px solid var(--line); color:var(--ink-soft); vertical-align:top;}
+.tt-table td:first-child{font-weight:600; color:var(--ink); white-space:nowrap;}
+.tt-table tr:last-child td{border-bottom:none;}
+.oneliner{margin-top:.7rem; padding:.6rem .8rem; background:var(--accent-soft); border-radius:7px; font-size:.85rem;}
+.oneliner b{color:var(--accent);}
+.tt-scroll{overflow-x:auto;}
+
+/* Q&A click-to-reveal */
+.qa{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:.7rem; overflow:hidden;}
+.qa-q{width:100%; text-align:left; background:none; border:none; padding:.9rem 1.05rem; cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start; gap:.8rem; font-family:var(--font-body); font-size:.92rem; color:var(--ink); font-weight:600;}
+.qa-q .arrow{font-family:var(--font-mono); color:var(--accent); flex-shrink:0; transition:transform .15s;}
+.qa.open .qa-q .arrow{transform:rotate(90deg);}
+.qa-a{display:none; padding:0 1.05rem 1rem; font-size:.86rem; color:var(--ink-soft);}
+.qa.open .qa-a{display:block;}
+.qa-src{font-size:.72rem; color:var(--ink-faint); margin-top:.5rem; display:block;}
+.qa-src a{color:var(--ink-faint); text-decoration:underline;}
+.score-row{display:flex; gap:.4rem; margin-top:.7rem;}
+.score-btn{font-family:var(--font-mono); font-size:.72rem; padding:.28rem .65rem; border-radius:99px; border:1px solid var(--line); background:var(--surface-2); color:var(--ink-soft); cursor:pointer;}
+.score-btn[data-v="good"].active{background:var(--good-soft); border-color:var(--good); color:var(--good);}
+.score-btn[data-v="shaky"].active{background:var(--warn-soft); border-color:var(--warn); color:var(--warn);}
+.score-btn[data-v="bad"].active{background:var(--bad-soft); border-color:var(--bad); color:var(--bad);}
+.qa[data-role]{display:none;}
+.qa[data-role].role-visible{display:block;}
+
+.track-toggle{display:flex; gap:.4rem; margin-bottom:.9rem;}
+.track-btn{font-family:var(--font-mono); font-size:.76rem; padding:.35rem .8rem; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;}
+.track-btn[aria-pressed="true"]{background:var(--violet); border-color:var(--violet); color:#fff; font-weight:600;}
+.track-panel{display:none;}
+.track-panel.active{display:block;}
+.track-desc{background:var(--violet-soft); border-radius:8px; padding:.85rem 1rem; font-size:.86rem; margin-bottom:.9rem;}
+.homework{margin-top:1rem; background:var(--surface-2); border-left:3px solid var(--violet); border-radius:0 8px 8px 0; padding:.8rem 1rem; font-size:.85rem;}
+.homework b{color:var(--violet);}
+
+/* mock design */
+.mock-box{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.2rem 1.35rem; margin-bottom:1rem;}
+.mock-box h4{font-size:1rem; margin-bottom:.5rem;}
+.mock-box .prompt{font-style:italic; color:var(--ink); border-left:3px solid var(--accent); padding-left:.9rem;}
+.rubric-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.4rem;}
+.rubric-list li{font-size:.85rem; padding-left:1.4rem; position:relative;}
+.rubric-list li::before{content:"✓"; position:absolute; left:0; color:var(--good); font-weight:700;}
+.answer-toggle-btn{margin-top:.4rem; font-family:var(--font-mono); font-size:.8rem; background:var(--accent); color:var(--accent-ink); border:none; border-radius:99px; padding:.5rem 1.05rem; cursor:pointer; font-weight:600;}
+.worked-answer{display:none; margin-top:1rem; font-size:.87rem;}
+.worked-answer.open{display:block;}
+.worked-answer p strong{color:var(--ink);}
+
+/* rapid fire */
+.rapid-item{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:.7rem .9rem; margin-bottom:.5rem; cursor:pointer;}
+.rapid-item .rq{font-size:.87rem; font-weight:600;}
+.rapid-item .ra{display:none; font-size:.83rem; color:var(--ink-soft); margin-top:.4rem; padding-top:.4rem; border-top:1px dashed var(--line);}
+.rapid-item.open .ra{display:block;}
+.staff-q{background:var(--violet-soft); border-radius:8px; padding:.7rem .9rem; font-size:.86rem; margin-bottom:.5rem;}
+
+footer.foot{max-width:1180px; margin:0 auto; padding:2rem 1.25rem 3rem; color:var(--ink-faint); font-size:.78rem; border-top:1px solid var(--line); margin-top:2rem;}
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="mark"></span><span class="brand-name">Agentic Systems Drillbook</span><span class="brand-sub">05 · 07 interview prep</span></div>
+    <div class="tally">
+      <span class="pip good">Got it <b id="tally-good">0</b></span>
+      <span class="pip warn">Shaky <b id="tally-shaky">0</b></span>
+      <span class="pip bad">Missed <b id="tally-bad">0</b></span>
+      <button class="reset-btn" id="redrill-btn" title="Show only Shaky + Missed">Redrill weak</button>
+      <button class="reset-btn" id="reset-btn" title="Clear all scores">Reset</button>
+    </div>
+  </div>
+  <div class="rolebar">
+    <span class="lbl">Filter by role</span>
+    <button class="role-btn" data-role="all" aria-pressed="true">All</button>
+    <button class="role-btn" data-role="applied" aria-pressed="false">Applied AI</button>
+    <button class="role-btn" data-role="agentic" aria-pressed="false">Agentic AI Engineer</button>
+    <button class="role-btn" data-role="fde" aria-pressed="false">Forward Deployed</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc">
+    <a href="#top"><span class="n">·</span>Overview</a>
+    <a href="#core"><span class="n">1</span>Core concepts</a>
+    <a href="#gotchas"><span class="n">2</span>Gotchas</a>
+    <a href="#tradeoffs"><span class="n">3</span>Tradeoffs</a>
+    <a href="#top10"><span class="n">4</span>Top 10 questions</a>
+    <a href="#tracks"><span class="n">5</span>Role tracks</a>
+    <a href="#mock"><span class="n">6</span>Mock design</a>
+    <a href="#selfcheck"><span class="n">7</span>Self-check</a>
+  </nav>
+
+  <main>
+    <section class="hero" id="top">
+      <span class="kicker" style="display:block">05_AI_Agent_Fundamentals · 07_Advanced_Agentic_Systems</span>
+      <h1>Agentic system design, drilled the way it'll be asked.</h1>
+      <p class="meta">Built from 162 notebooks across both phases on 2026-09-09. Weighted toward
+      architecture choices, state &amp; memory, tool design, failure handling, and evaluation —
+      the shape of an AI-assisted, system-design-style coding round. Click any card to reveal its
+      answer before you look; score yourself so weak spots resurface.</p>
+      <div class="gaps"><b>Coverage gap, honestly labelled:</b> streaming/async agent responses and
+      client-level retry &amp; reliability aren't demonstrated end-to-end in these notebooks — both
+      are taught from first principles in §1 and flagged inline as <em>not in your notebooks — build this</em>.</div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 1 — CORE CONCEPTS ============ -->
+    <section class="block" id="core">
+      <div class="head">
+        <span class="kicker">Section 1 — shared core</span>
+        <h2>Fifteen concepts every track needs</h2>
+        <p class="dek">Each card: what it is, how it works, a runnable snippet from your own notebooks,
+        and the line to say out loud in the room. Click a card's "Show detail" to expand the snippet and the spoken answer.</p>
+      </div>
+      <div id="concept-list"></div>
+
+      <div class="diagram-wrap">
+        <pre class="mermaid">flowchart TD
+    A["Planner: write/revise plan"] --> B["Executor: run next step"]
+    B --> C["Verifier: judge last result"]
+    C -->|"success, steps remain"| B
+    C -->|"success, plan done"| D["Synthesizer"]
+    C -->|"failure"| E{"retries less than limit?"}
+    E -->|"yes"| A
+    E -->|"no"| D</pre>
+        <div class="cap">Fig 1 — PEV's self-correction loop (§1.4). The retry cap is the termination guard.</div>
+      </div>
+
+      <div class="diagram-wrap">
+        <pre class="mermaid">flowchart TD
+    U["User request"] --> S["Supervisor"]
+    S -->|"route: billing"| B["Billing Agent"]
+    S -->|"route: content"| C["Content Agent"]
+    S -->|"route: dev"| D["Backend Dev Agent"]
+    B --> S
+    C --> S
+    D --> S
+    S -->|"FINISH"| E["Response"]</pre>
+        <div class="cap">Fig 2 — Supervisor topology (§1.6). Every routing decision passes back through one node.</div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 2 — GOTCHAS ============ -->
+    <section class="block" id="gotchas">
+      <div class="head">
+        <span class="kicker">Section 2 — gotchas</span>
+        <h2>Ten things that are true, surprising, and costly</h2>
+        <p class="dek">Click a card to flip it. Symptom first — try to guess the cause and fix before you read them.</p>
+      </div>
+      <div class="grid" id="gotcha-list"></div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 3 — TRADEOFFS ============ -->
+    <section class="block" id="tradeoffs">
+      <div class="head">
+        <span class="kicker">Section 3 — tradeoffs</span>
+        <h2>Eight decisions with a rule for choosing</h2>
+        <p class="dek">"It depends" fails an interview. Each table ends with the one-liner that actually settles it.</p>
+      </div>
+      <div id="tradeoff-list"></div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 4 — TOP 10 ============ -->
+    <section class="block" id="top10">
+      <div class="head">
+        <span class="kicker">Section 4 — live-sourced, 2026-09-09</span>
+        <h2>Top 10: real-time agentic system design</h2>
+        <p class="dek">Biased toward production and real-time concerns — the questions this round is most likely to lean on.</p>
+      </div>
+      <div id="top10-list"></div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 5 — ROLE TRACKS ============ -->
+    <section class="block" id="tracks">
+      <div class="head">
+        <span class="kicker">Section 5 — role tracks</span>
+        <h2>What each role is actually tested on</h2>
+        <p class="dek">Applied AI Engineers are asked whether the output is good. Agentic AI Engineers are asked whether the loop terminates. FDEs are asked whether it survives contact with a customer.</p>
+      </div>
+      <div class="track-toggle">
+        <button class="track-btn" data-track="applied" aria-pressed="true">Applied AI / AI Engineer</button>
+        <button class="track-btn" data-track="agentic" aria-pressed="false">Agentic AI Engineer</button>
+        <button class="track-btn" data-track="fde" aria-pressed="false">Forward Deployed Engineer</button>
+      </div>
+      <div id="track-panels"></div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 6 — MOCK DESIGN ============ -->
+    <section class="block" id="mock">
+      <div class="head">
+        <span class="kicker">Section 6 — mock system design</span>
+        <h2>Real-time customer support agent, travel booking</h2>
+      </div>
+      <div class="mock-box">
+        <h4>The prompt, as an interviewer would give it</h4>
+        <p class="prompt">"Design an AI agent for a travel booking company's customer support. Customers ask
+        about existing bookings, request cancellations/changes, and ask general policy questions. The system
+        must handle spikes during weather disruptions (thousands of concurrent conversations), never lose a
+        conversation mid-flight, and must not let the agent process a refund without a human checking anything
+        over $200. You have 45 minutes — whiteboard the architecture."</p>
+      </div>
+      <div class="mock-box">
+        <h4>Scoring rubric — what a strong answer covers</h4>
+        <ul class="rubric-list">
+          <li>Topology choice with justification (least autonomous shape that works)</li>
+          <li>Explicit approval gate — where it fires, and how the run resumes without double-processing</li>
+          <li>Memory design — thread-scoped vs. cross-session, on a durable backend</li>
+          <li>Termination and loop guards named explicitly</li>
+          <li>Failure handling at the tool layer, not left to the model</li>
+          <li>Concurrency &amp; streaming story for real-time scale</li>
+          <li>What gets traced, and how a bad run gets debugged after the fact</li>
+          <li>States where it would <em>not</em> use an agent at all</li>
+        </ul>
+        <button class="answer-toggle-btn" id="mock-toggle">Reveal the worked answer</button>
+        <div class="worked-answer" id="mock-answer">
+          <p><strong>Topology.</strong> A supervisor routes to three specialists: <code>booking_lookup</code> (read-only), <code>policy_qa</code> (RAG, no side effects), <code>change_or_cancel</code> (the only agent with write access). Not a swarm — every routing decision needs to be logged through one place for audit, since refunds are involved.</p>
+          <p><strong>Approval gate.</strong> <code>change_or_cancel</code> computes the refund amount as pure logic, and if it's over $200, raises a <code>NodeInterrupt</code> before calling the refund tool. The refund tool itself is idempotent (keyed by booking ID + a generated request ID), so an approved resume can't double-refund.</p>
+          <p><strong>Memory.</strong> <code>PostgresSaver</code> checkpointer, one thread per conversation — durable across restarts and shared across app instances. Cross-session customer memory lives in a separate <code>PostgresStore</code> keyed by customer ID, read once at thread start.</p>
+          <p><strong>Termination.</strong> Hard cap of 15 steps per conversation before forced resolution or human handoff, plus a per-conversation cost ceiling that's logged and alerted on.</p>
+          <p><strong>Failure handling.</strong> <code>RetryPolicy</code> on the booking-system API calls specifically, not on LLM calls; a malformed tool call routes back through the supervisor for a re-plan rather than a blind retry.</p>
+          <p><strong>Scale.</strong> Each conversation is an independent thread — horizontally scalable since state lives in Postgres, not process memory. <code>stream_mode="messages"</code> so customers see incremental responses during a disruption spike.</p>
+          <p><strong>Observability.</strong> Every tool/LLM call is a traced span; alert on span error rate per tool and on interrupt-approval wait time — a backlog of pending refund approvals during a disruption is itself an incident.</p>
+          <p><strong>Where I wouldn't use an agent.</strong> "What's your baggage allowance" is a direct RAG lookup wired as a workflow, not routed through the supervisor's decision-making.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- ============ SECTION 7 — SELF-CHECK ============ -->
+    <section class="block" id="selfcheck">
+      <div class="head">
+        <span class="kicker">Section 7 — self-check</span>
+        <h2>Fifteen rapid-fire, plus four for a skeptical staff engineer</h2>
+        <p class="dek">Tap a line to reveal its answer.</p>
+      </div>
+      <div id="rapid-list"></div>
+      <h3 style="font-size:1rem; margin:1.5rem 0 .7rem;">"Explain to a skeptical staff engineer"</h3>
+      <div class="staff-q">Why does this system need three different memory backends instead of just one database?</div>
+      <div class="staff-q">Convince me PEV's extra LLM call per step is worth the latency, with a number, not a vibe.</div>
+      <div class="staff-q">Why is a supervisor pattern more debuggable than a swarm, concretely — what would you actually grep for in a trace?</div>
+      <div class="staff-q">Your loop guard caps at 15 steps. Defend that number, or tell me how you'd actually pick it.</div>
+    </section>
+  </main>
+</div>
+
+<footer class="foot">Source: <code>tutorials/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md</code> in this repo. Progress stored locally in this browser only.</footer>
+
+<script>
+// ================= DATA =================
+const CONCEPTS = [
+{n:"1.1", t:"ReAct — reason, then act, in a loop",
+ what:"ReAct interleaves the model's reasoning (\"thought\") with an actual tool call (\"action\"), then feeds the tool's result back in before the next thought. It's the default loop underneath almost every \"agent\" you'll build.",
+ how:"The LLM is given a system prompt describing available tools and asked to emit either a final answer or a structured tool call. The runtime executes the tool, appends the result as a new message, and calls the LLM again — repeating until the model stops calling tools or a step cap is hit.",
+ code:`from langgraph.prebuilt import create_react_agent
+from helpers import get_llm
+
+llm = get_llm()
+agent = create_react_agent(llm, tools=[get_stock_price, get_weather, search_database])
+result = agent.invoke({"messages": [("user", "What's AAPL trading at, and is it raining in NYC?")]})`,
+ src:"6.2_Tool_Calling_Agents.ipynb, 3. Planning Pattern.ipynb",
+ say:"ReAct is thought-action-observation in a loop — the model reasons, calls a tool, sees the result, reasons again. Simplest agent architecture; default to it before anything fancier."},
+{n:"1.2", t:"Tool design — schemas and errors that teach the model to recover",
+ what:"A tool is a typed function the LLM can call: a name, a description, a JSON schema for arguments. The description is a prompt — it's what stands between a correct call and a guessed one.",
+ how:"Frameworks turn a Python function into a JSON schema sent to the model's function-calling API. When a tool errors, that error string becomes the model's next input — a vague \"Error\" teaches nothing; a specific one lets the model self-correct.",
+ code:`from pydantic import BaseModel, Field
+from langchain_core.tools import StructuredTool
+
+class CalculatorInput(BaseModel):
+    a: float = Field(description="first operand")
+    b: float = Field(description="second operand")
+
+calculator = StructuredTool.from_function(
+    func=lambda a, b: a + b, name="add", args_schema=CalculatorInput,
+    description="Add two numbers. Use for any arithmetic sum.",
+)`,
+ src:"6.1_Tool_Calling_LangChain.ipynb, 01_PEV.ipynb (flaky_web_search)",
+ say:"A tool's error message is part of the prompt. I design errors specific enough that the model's next action differs from its last — otherwise you get infinite retries of the same failing call."},
+{n:"1.3", t:"Plan → Execute → Replan",
+ what:"Instead of deciding one step at a time (ReAct), the agent writes a full plan up front, executes against it, and regenerates only the remaining plan if a step invalidates an assumption.",
+ how:"A Planner node emits an ordered step list. An Executor pops and runs the next step. A router checks whether the plan is exhausted, has steps left, or needs a Replanner pass triggered by a contradicting tool result.",
+ code:`class PlanExecuteState(TypedDict):
+    input: str
+    plan: list[str]
+    past_steps: list[tuple]
+    response: str | None
+
+def should_end(state: PlanExecuteState):
+    return "end" if state.get("response") else "agent"`,
+ src:"02_Planning_Decompose_Execute_Replan.ipynb, Planning_Agent_Deep_Research.ipynb",
+ say:"Plan-and-execute trades ReAct's per-step call for one planning call plus n execution calls — cheaper and predictable, but needs a replanning path or it breaks on surprises."},
+{n:"1.4", t:"Planner → Executor → Verifier (PEV) — the failure-recovery architecture",
+ what:"PEV adds a dedicated Verifier node after every execution step whose only job is judging whether the last tool result is usable — the pattern for unreliable tools where a wrong answer is expensive.",
+ how:"Plan → Execute → Verify → route. Success continues execution; failure clears the remaining plan and loops to the Planner with the failure context attached, so the new plan is informed. A retry counter caps re-plans so the loop terminates.",
+ code:`class VerificationResult(BaseModel):
+    is_successful: bool = Field(description="True if the tool output is valid, not an error.")
+    reasoning: str
+
+def verifier_node(state: PEVState):
+    verdict = llm.with_structured_output(VerificationResult).invoke(
+        f"Verify if this tool output is success or error: '{state['last_tool_result']}'"
+    )
+    if verdict.is_successful:
+        return {"intermediate_steps": state["intermediate_steps"] + [state["last_tool_result"]]}
+    return {"plan": [], "intermediate_steps": state["intermediate_steps"] + [f"Verification Failed: {state['last_tool_result']}"]}`,
+ src:"01_PEV.ipynb — real fail/recover trace + LLM-judge robustness scoring",
+ say:"PEV is what you reach for when tool failures are common and silent failure is unacceptable — one extra call per step turns 'confidently returned garbage' into 'noticed, retried differently, told me when it gave up.'"},
+{n:"1.5", t:"Reflection & Reflexion",
+ what:"Reflection is a generate-critique-revise loop where the same agent critiques and rewrites its own output. Reflexion persists that critique as a lesson carried into the next similar task, rather than discarding it.",
+ how:"A generate node produces a draft; a reflect node scores it and lists concrete problems; a router loops back with the critique attached until a quality bar is met or a max-iteration count is hit.",
+ code:`class Reflection(BaseModel):
+    missing: str = Field(description="What's missing from the answer")
+    superfluous: str = Field(description="What's unnecessary")
+
+class AdaptiveResponder(BaseModel):
+    answer: str
+    reflection: Reflection
+    search_queries: list[str] = Field(description="Queries to improve the answer next round")`,
+ src:"01_Reflection_Agents.ipynb, 02_Reflexion_Agents.ipynb",
+ say:"Reflection catches errors within one task; Reflexion carries the lesson across tasks. Plain reflection for one-shot generation; Reflexion only when the same agent handles a stream of similar tasks."},
+{n:"1.6", t:"Multi-agent topology — supervisor vs. swarm vs. hierarchical",
+ what:"Once one agent can't hold the job in its context or tool budget, split it across agents: supervisor (one router delegates and gets control back), swarm (specialists hand off directly, no central router), hierarchical (supervisors of supervisors).",
+ how:"A Supervisor node uses structured output to pick the next specialist by name; control always returns to it after a specialist runs, via a conditional edge, so it decides whether the task needs another pass.",
+ code:`class RouteDecision(BaseModel):
+    next_agent: Literal["billing_agent", "content_creator", "backend_dev", "FINISH"]
+    reasoning: str
+
+def route_to_agent(state: SupervisorState):
+    decision = llm.with_structured_output(RouteDecision).invoke(build_prompt(state))
+    return decision.next_agent`,
+ src:"02_supervisor_agent.ipynb, 01_Multi_Agent_Swarm.ipynb, 06_hierarchical_agents.ipynb, DEEP_AGENT_OVERVIEW.md",
+ say:"I default to a single agent with more tools first. When I do split, supervisor is default — every decision passes through one node I can log. Swarm buys lower latency at the cost of one place to see 'what happened.'"},
+{n:"1.7", t:"Blackboard coordination",
+ what:"A shared read/write workspace multiple agents contribute to, coordinated by a controller that decides who writes next — for when the right next contributor isn't knowable in advance.",
+ how:"State holds a Blackboard (named contributions). Each turn a ControllerDecision (structured output) picks the next contributor based on what's missing or weak on the board.",
+ code:`class ControllerDecision(BaseModel):
+    next_contributor: Literal["researcher", "critic", "writer", "DONE"]
+    reason: str
+
+class BlackboardState(TypedDict):
+    blackboard: Blackboard
+    contributions: list[Contribution]`,
+ src:"01_Blackboard.ipynb (x2 — Phase 5 and Phase 7 versions)",
+ say:"Blackboard is right when the sequence of contributors is genuinely data-dependent. The cost is a controller LLM call before every contribution — more expensive per unit of work than a fixed supervisor table."},
+{n:"1.8", t:"Short-term vs. long-term memory",
+ what:"Short-term memory is the message history for one thread — resets when the thread ends. Long-term memory persists facts across threads and restarts, and needs its own backend and eviction policy.",
+ how:"A checkpointer (MemorySaver, SqliteSaver, PostgresSaver) snapshots full graph state keyed by thread_id — that's short-term. A store (InMemoryStore, PostgresStore) is a separate layer the agent explicitly reads/writes via tools — that's long-term, not keyed by thread_id.",
+ code:`from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.store.sqlite import SqliteStore
+
+checkpointer = SqliteSaver.from_conn_string("checkpoints.db")   # short-term: per thread_id
+store = SqliteStore.from_conn_string("store.db")                 # long-term: cross-thread
+
+@tool
+def save_user_fact(user_id: str, fact: str):
+    store.put(("users", user_id, "facts"), key=str(uuid4()), value={"fact": fact})`,
+ src:"01_Long_Term_Memory.ipynb, 05/06/07_Long_Term_*_Memory_SQLite.ipynb, 02_Memory_Optimizations.ipynb",
+ say:"Checkpointer gives resumability within a conversation; store gives memory across conversations. MemorySaver/InMemoryStore are dev-only — anything durable needs Sqlite/Postgres equivalents."},
+{n:"1.9", t:"Deep agents: a real production multi-agent harness",
+ what:"An orchestrator that delegates to multiple named subagents, each with its own tools and system prompt, plus a dedicated long-term memory layer and filesystem/artifact backend — the shape most production agentic systems actually take.",
+ how:"The orchestrator is instructed to call recall_memories() at the start of every turn and save_memory() before finishing it — mandatory, not an afterthought. Subagents are invoked as tools; each has its own scoped toolset.",
+ code:`from deepagents import create_deep_agent
+from langgraph.checkpoint.memory import MemorySaver
+
+agent = create_deep_agent(
+    tools=[save_memory, recall_memories, forget_memory],
+    subagents=[senior_developer, code_reviewer, research_agent],
+    checkpointer=MemorySaver(),   # short-term, per thread
+)                                  # long-term memory lives in a JSON file / Delta table, not here`,
+ src:"DEEP_AGENT_OVERVIEW.md, MEMORY_TYPES.md — real deployed system, 8 subagents, 3 memory layers",
+ say:"A deep agent is supervisor-plus-three: a forced long-term memory contract, per-subagent tool scoping, and a real persistence backend for artifacts — the things notebooks usually skip."},
+{n:"1.10", t:"Human-in-the-loop: interrupts and safe resume",
+ what:"A deliberate pause where a human must approve, reject, or edit before the agent continues — for actions too risky, expensive, or ambiguous to leave to the model alone.",
+ how:"LangGraph exposes this via NodeInterrupt, raised inside a node to halt the graph. Checkpointed state means execution resumes from exactly that point once a human responds, without re-running earlier steps or re-triggering their side effects.",
+ code:`from langgraph.errors import NodeInterrupt
+
+def choose_next_node(state: MessagesState):
+    last = state["messages"][-1]
+    if any(w in last.content for w in ("violate", "illegal", "concern")):
+        raise NodeInterrupt(
+            "Warning! The user request violates our policies. "
+            "The conversation is forwarded to a human assistant for investigation."
+        )
+    return "__end__"`,
+ src:"5_Edge_Cases_and_Errors.ipynb — real SQL-injection-shaped booking request caught this way",
+ say:"The hard part isn't pausing, it's resuming without re-executing a side effect. The checkpointer means the interrupted node hasn't committed yet — if you build this yourself, you need the same guarantee via idempotency keys."},
+{n:"1.11", t:"Retries and node-level failure containment",
+ what:"A policy for what happens when a single execution step throws — how many times to retry, with what backoff, and what counts as retryable vs. fatal.",
+ how:"LangGraph's RetryPolicy wraps a node; on a matching exception it re-invokes up to max_attempts times with exponential backoff (initial_interval × backoff_factor^n, capped at max_interval), with jitter to avoid thundering-herd retries.",
+ code:`from langgraph.pregel import RetryPolicy
+
+builder.add_node(
+    "reservation_assistant",
+    sql_assistant,
+    retry=RetryPolicy(max_attempts=5),   # default: initial_interval=0.5, backoff_factor=2.0, jitter=True
+)`,
+ src:"5_Edge_Cases_and_Errors.ipynb — real crash-then-fix before/after trace",
+ say:"Not everything should retry — a malformed-tool-call error retrying with the same bad arguments just burns budget. Retry on transient/infra exceptions; route logic errors to a re-plan or a human."},
+{n:"1.12", t:"Orchestrator-worker with dynamic fan-out (Send API)",
+ what:"For parallel work whose count isn't known until runtime — e.g. one section per topic the planner decided on — as opposed to a fixed number of parallel branches wired at build time.",
+ how:"An orchestrator node returns a list of Send(node_name, payload) objects, one per dynamically-decided unit; LangGraph fans these out as parallel executions, then a reducer on shared state merges outputs when all complete.",
+ code:`from langgraph.types import Send
+
+def assign_workers(state: ReportState):
+    return [Send("write_section", {"section": s}) for s in state["sections"]]
+
+builder.add_conditional_edges("orchestrator", assign_workers, ["write_section"])`,
+ src:"Orchestrator_Worker.ipynb, 05_parallel_agents.ipynb",
+ say:"Send is for fan-out where worker count is data-dependent — I reach for it whenever the branching factor comes from a planner decision, not a static schema."},
+{n:"1.13", t:"Workflow patterns: routing, evaluator-optimizer, prompt chaining",
+ what:"Three narrower, more deterministic patterns below \"agent\" on the autonomy spectrum. Routing: an LLM call that only classifies and dispatches. Evaluator-optimizer: a generator paired with a separate grading evaluator. Prompt chaining: a fixed sequence with a validation gate between steps.",
+ how:"(evaluator-optimizer) A generate node produces output; an evaluate node scores it via structured output; a conditional edge loops back with feedback attached, or proceeds, until approval or a max-round cap.",
+ code:`class ContentEvaluation(BaseModel):
+    grade: Literal["pass", "fail"]
+    feedback: str
+
+def determine_next_action(state: WorkflowState):
+    return "END" if state["evaluation"].grade == "pass" else "generate"`,
+ src:"Routing.ipynb, Evaluator_Optimizer.ipynb, Prompt_Chaining.ipynb, Parallelization.ipynb",
+ say:"These are what I reach for before calling something an agent. I only escalate to a tool-calling loop when the model genuinely needs to decide what to do next, not just fill a template."},
+{n:"1.14", t:"Agent, RAG & tool evaluation",
+ what:"Three overlapping surfaces: retrieval metrics (is the right context pulled), generation metrics (is the answer faithful to that context), agent/tool metrics (right tool, right arguments, task finished).",
+ how:"Deterministic metrics (precision@k, recall@k, DCG@k) are cheap, need no LLM, run on every commit. LLM-as-judge metrics (faithfulness, G-Eval, contextual relevancy) score things formulas can't, at the cost of nondeterminism. Agent metrics (ToolCorrectnessMetric, TaskCompletionMetric) score the sequence of actions, not just final text.",
+ code:`from deepeval.metrics import ContextualPrecisionMetric, ToolCorrectnessMetric
+from deepeval.test_case import LLMTestCase, ToolCall
+
+retrieval_case = LLMTestCase(input=q, actual_output=a, retrieval_context=chunks, expected_output=ref)
+ContextualPrecisionMetric(threshold=0.7).measure(retrieval_case)
+
+tool_metric = ToolCorrectnessMetric()
+tool_metric.measure(LLMTestCase(input=q, actual_output=a,
+                                 tools_called=[ToolCall(name="search_flights")],
+                                 expected_tools=[ToolCall(name="search_flights")]))`,
+ src:"Agent_RAG_Tools_Evaluation_MASTER.ipynb (995 lines) — the most complete reference in the repo",
+ say:"I use a stack, not one metric: deterministic recall/precision on retrieval, LLM-judge faithfulness on generation, tool/trajectory correctness on the agent layer — a right final answer via the wrong tool call is still a bug."},
+{n:"1.15", t:"Observability: tracing an agent run",
+ what:"Structured, per-step visibility into what an agent did — which tool was called with what arguments, what the model reasoned, how long each span took — so a bad production run can be debugged from its trace instead of reproduced.",
+ how:"Each LLM/tool call becomes a span with a type, attributes, and a parent-child relationship to the turn that triggered it. A tracer collects spans into a trace per request; a UI (Phoenix, LangSmith, MLflow) lets you query traces by attribute.",
+ code:`from opentelemetry.trace import Status, StatusCode
+from openinference.semconv.trace import SpanAttributes
+
+with tracer.start_as_current_span("generate_sql_query", openinference_span_kind="chain") as span:
+    span.set_attribute(SpanAttributes.INPUT_VALUE, question)
+    try:
+        sql = generate_sql_query(question)
+        span.set_attribute(SpanAttributes.OUTPUT_VALUE, sql)
+        span.set_status(Status(StatusCode.OK))
+    except Exception as e:
+        span.set_status(Status(StatusCode.ERROR, str(e)))
+        raise`,
+ src:"Lab 2 - Tracing your Agent.ipynb (Arize Phoenix), mlflow_evaluation.ipynb",
+ say:"A bad agent run isn't reproducible by re-running the prompt — tool results and even sampling differ. The trace is the debugging artifact; instrument every call as a span before you need it, because you can't retroactively trace a run that already happened."},
+];
+
+const GOTCHAS = [
+{name:"RetryPolicy silently doesn't fire on the exception you expect",
+ symptom:"A node keeps failing on the same exception even with RetryPolicy(max_attempts=5) attached — or it retries a deterministic bug five times before the traceback finally surfaces.",
+ cause:"retry_on defaults to a specific retryable-exception predicate; a bare Exception subclass may or may not match, and a logic bug (not a transient failure) just fails identically five times.",
+ fix:"Pass an explicit retry_on predicate (e.g. only Timeout/ConnectionError) so retries target infra failures, not logic bugs.",
+ angle:"\"Your error rate looks the same with and without retries enabled — what's wrong?\" — usually: you're retrying a deterministic failure."},
+{name:"NodeInterrupt looks like it crashed the graph",
+ symptom:"The stream ends abruptly with an Interrupt(...) buried in state.tasks[0].interrupts — easy to mistake for an unhandled exception if you only read the printed message stream.",
+ cause:"NodeInterrupt is LangGraph's intentional pause mechanism, not an error path — it halts and checkpoints exactly where it stopped, waiting for a human response.",
+ fix:"Check graph.get_state(config).next and .tasks[*].interrupts to detect and handle an interrupt explicitly.",
+ angle:"\"How do you distinguish 'waiting for approval' from 'crashed' in your logs?\""},
+{name:"Structured output schema drift breaks silently across Pydantic versions",
+ symptom:"PydanticDeprecatedSince20: 'max_items' is deprecated ... use 'max_length' instead — a warning, not an error, easy to miss until a future major version turns it fatal.",
+ cause:"with_structured_output() schemas are Pydantic models; field-constraint names changed between v1/v2 semantics and still work today via a deprecation shim that isn't permanent.",
+ fix:"Use max_length (not max_items) on List fields under Pydantic v2.",
+ angle:"A cheap \"do you read your own warnings\" check — sitting directly in 01_PEV.ipynb's output."},
+{name:"A flaky tool teaches you nothing if nothing checks for its error string",
+ symptom:"A plain Planner-Executor confidently synthesizes \"~$186,969 R&D spend per employee\" using an estimated headcount, because the synthesizer received an error string as if it were valid data.",
+ cause:"Nothing in the pipeline distinguishes a tool's error-shaped string from its success-shaped string — both are just strings appended to intermediate_steps.",
+ fix:"Add a Verifier step whose only job is classifying tool output as success/failure before it enters synthesis context.",
+ angle:"\"Your system returns confident wrong answers — walk me through debugging it\" — this is a sourced, concrete example."},
+{name:"ChromaDB n_results warning when the collection is nearly empty",
+ symptom:"WARNING: Number of requested results 2 is greater than number of elements in index 1, updating n_results = 1 — appears repeatedly because the toy collection has exactly one document.",
+ cause:"A retriever configured for k=2 against a tiny collection silently clamps to the available count instead of erroring.",
+ fix:"Alert (don't just log) when retrieved count < requested k in production — harmless in a demo, a real signal your index is nearly empty in prod.",
+ angle:"Shows you actually read notebook output instead of skimming code."},
+{name:"MemorySaver / InMemoryStore amnesia on every restart",
+ symptom:"A multi-turn conversation works perfectly in the session, then the agent \"forgets everything\" the moment the kernel restarts or the app redeploys.",
+ cause:"MemorySaver and InMemoryStore are RAM-only — documented as such in MEMORY_TYPES.md: \"Lost when the script exits.\"",
+ fix:"SqliteSaver/PostgresSaver for the checkpointer, SqliteStore/PostgresStore for the long-term store, wherever state must survive a restart.",
+ angle:"\"Design an agent that remembers user preferences across sessions\" — candidates who stop at MemorySaver haven't solved it."},
+{name:"Loop-guard math surprises: retries > 3 still allows a 4th attempt",
+ symptom:"A retry limit meant to stop after \"3 retries\" actually runs 4 planning passes (0, 1, 2, 3) before the guard trips.",
+ cause:"Off-by-one in the boundary condition — if retries > 3, not if retries >= 3 — visible directly in 01_PEV.ipynb's planner node.",
+ fix:"Be explicit about whether \"max N retries\" is inclusive or exclusive of the first attempt, and write the guard to match.",
+ angle:"\"Your agent loops forever on 3% of requests, diagnose and fix\" — a wrong boundary condition is a realistic root cause to volunteer."},
+{name:"SQL-injection-shaped input reaching a text-to-SQL tool",
+ symptom:"A query like \"...Family Suite' OR '1'='1 from 22.04.2025...\" is passed straight into a booking flow; it's only caught because a separate compliance-checker RAG agent happens to flag \"security concerns\" in free text.",
+ cause:"SQLDatabaseToolkit's sql_db_query tool executes whatever SQL the LLM emits — safety depends entirely on the LLM choosing not to construct dangerous SQL.",
+ fix:"Parameterized queries / a read-only DB role / a query-allowlist at the tool layer, not LLM judgment, as the actual defense; treat an LLM-side check as defense-in-depth only.",
+ angle:"\"How do you stop an agent's SQL tool from being exploited?\" — the tool layer enforces safety, not the prompt."},
+{name:"A planner that returns free text instead of the promised JSON",
+ symptom:"OutputParserException on planner_llm.invoke(prompt) even though the prompt says \"return ONLY valid JSON.\"",
+ cause:"Instruction-following via prompt text alone is probabilistic — the model sometimes adds a preamble or trailing prose regardless.",
+ fix:"01_PEV.ipynb wraps the call in a 2-attempt retry with a stricter re-prompt, plus a hardcoded fallback plan; combine with true schema-constrained decoding (strict=True) where the provider supports it.",
+ angle:"\"Why use structured output/function-calling instead of parsing free text?\" — because free-text parsing needs exactly this scaffolding."},
+{name:"Summarization middleware runs silently — you won't see it in your own logs",
+ symptom:"Old conversation turns quietly disappear from the message list with no explicit call anywhere in your code.",
+ cause:"SummarizationMiddleware triggers automatically once history crosses a token/message threshold — by design, \"neither the user nor the agent explicitly triggers it\" (MEMORY_TYPES.md).",
+ fix:"Log or trace the middleware's own summarization event if you need to know when it fired, rather than assuming message count reflects full history.",
+ angle:"\"Cost/latency is fine most of the time but spikes on long conversations\" and \"why did the agent forget something from 40 turns ago\" are the same root cause, opposite symptom."},
+];
+
+const TRADEOFFS = [
+{h:"Single agent vs. multi-agent",
+ rows:[["Single agent, more tools","Bigger tool list to reason over; one context window to manage","Simpler to build, trace, and debug","Subtasks share context and don't need independent specialization"],
+       ["Multi-agent (supervisor/swarm)","Coordination overhead, harder tracing, compounding error risk","Each agent's context/tools/prompt stay small and specialized; independent subtasks parallelize","Subtasks are genuinely independent, or need domain-specific prompts/tools that would bloat one agent"]],
+ one:"I reach for multi-agent only after a single agent with more tools actually fails — not by default, because every extra agent is another place for errors to compound."},
+{h:"Supervisor vs. swarm topology",
+ rows:[["Supervisor","Extra hop through the router on every specialist call","One place to see and log every routing decision","You need auditability / a human approval gate"],
+       ["Swarm (peer handoff)","Harder to answer \"why did A hand off to B\" from a partial trace","Lower latency — no round-trip through a central router","Specialists have a natural conversational handoff and speed matters more than centralized audit"]],
+ one:"Supervisor is my default for anything I'll need to audit or add an approval gate to; swarm is for latency-sensitive handoffs between agents that trust each other."},
+{h:"Plain Planner-Executor vs. PEV (add a Verifier)",
+ rows:[["Planner-Executor only","Silent failure on bad tool output flows into synthesis","Fewer LLM calls, lower latency/cost","Tools are reliable and a wrong answer is cheap to catch downstream"],
+       ["PEV (+ Verifier)","One extra LLM call per step; more latency and cost","Catches and recovers from tool failures instead of hallucinating around them","Tools are flaky, or a confidently-wrong answer is expensive"]],
+ one:"PEV's extra LLM call is the price of not silently returning garbage — worth it exactly when 'wrong but confident' is worse than 'slow but right.'"},
+{h:"Checkpointer choice: MemorySaver vs SqliteSaver vs PostgresSaver",
+ rows:[["MemorySaver","Zero durability — lost on restart","Zero setup, fastest for local dev","Prototyping, unit tests"],
+       ["SqliteSaver","Single-writer, not built for concurrent multi-instance deployment","Durability, no external dependency","A single-process app that needs to survive restarts"],
+       ["PostgresSaver / PostgresStore","Operational overhead of running Postgres","Durable, concurrent, scales across instances","Production, multi-user, horizontally scaled"]],
+ one:"The checkpointer backend is a deployment decision, not a modeling decision — swap it without touching agent logic, and never ship MemorySaver to production."},
+{h:"ReAct vs. Plan-and-Execute",
+ rows:[["ReAct","One LLM call per step — cost/latency scale with steps taken","Adapts step-by-step to unexpected tool results","The task's shape is genuinely unknown ahead of time"],
+       ["Plan-and-Execute","Needs a replanning path or breaks on surprises","Fewer total LLM calls for tasks with a known shape; predictable trace","The task decomposes cleanly into a knowable sequence"]],
+ one:"If I can sketch the steps on a whiteboard before running anything, I plan first; if the next step genuinely depends on the last tool result, ReAct."},
+{h:"Workflow (deterministic) vs. agent (autonomous control flow)",
+ rows:[["Workflow (routing, chaining, evaluator-optimizer)","Doesn't handle cases outside the wired paths","Predictable, cheap to trace and test","The set of paths through the system is small and known"],
+       ["Agent (tool-calling loop)","Unpredictable step count, harder to bound cost/latency, needs loop guards","Handles open-ended tasks a fixed workflow can't anticipate","The model genuinely needs to decide what to do next"]],
+ one:"I pick the least autonomous option that solves the problem — every bit of autonomy you don't need is unpredictability you're signing up for."},
+{h:"Reflection vs. Reflexion",
+ rows:[["Reflection","Critique discarded after the task","Simple, self-contained per task","One-shot generation tasks"],
+       ["Reflexion","Needs a place to persist lessons across tasks","Compounds improvement across a stream of similar tasks","The same agent handles many similar tasks over time"]],
+ one:"Reflexion is Reflection plus long-term memory — don't build it unless you actually have a stream of related tasks for the lessons to apply to."},
+{h:"Deterministic retrieval metrics vs. LLM-as-judge metrics",
+ rows:[["Deterministic (precision@k, recall@k, DCG@k)","Needs labeled ground truth; can't judge semantic correctness","Cheap, fast, fully reproducible","You have a labeled eval set and want a CI-gateable signal"],
+       ["LLM-as-judge (faithfulness, G-Eval)","Nondeterministic, judge-model bias, an LLM call per eval","Judges things no formula can — is this actually supported by context","No ground truth exists yet, or the quality dimension is inherently semantic"]],
+ one:"I run both — deterministic metrics as a cheap CI gate, LLM-as-judge for the semantic dimensions nothing else can score — and never trust a judge without spot-checking it against a human."},
+];
+
+const TOP10 = [
+{q:"1. Design an autonomous research/coding/support agent — what's your architecture, and where does a human approve?",
+ a:"Pick the least autonomous shape that works (workflow → single agent → multi-agent, in that order). Name the specific irreversible actions (email, charge, delete) that get an approval gate, and describe how the run resumes after approval without re-executing anything already done.",
+ src:"levelup.gitconnected.com — Design an Agentic AI System", url:"https://levelup.gitconnected.com/design-an-agentic-ai-system-a-new-class-of-system-design-question-fdf692ac8825"},
+{q:"2. How do you prevent an agent from looping forever?",
+ a:"Name concrete mechanisms: a step/call budget, a cost ceiling, a wall-clock timeout, and a retry-with-context-attached cap on re-planning specifically — not just \"the model will figure out it's done.\"",
+ src:"systemdesignhandbook.com — Agentic System Design", url:"https://www.systemdesignhandbook.com/guides/agentic-system-design/"},
+{q:"3. What's your memory management strategy, and why is it the hardest part of a production agent?",
+ a:"Distinguish short-term (thread-scoped, checkpointer) from long-term (cross-thread, store) memory. Explain eviction/summarization, and what happens if the store is unavailable — graceful degrade or fail the whole request?",
+ src:"novelvista.com — Agentic AI Interview Questions", url:"https://www.novelvista.com/blogs/ai-and-ml/agentic-ai-interview-questions-answers"},
+{q:"4. Design guardrails for an agent that can take real-world actions (spend money, send messages, modify data).",
+ a:"An agent without guardrails is a liability — infinite-loop credit burn, PII leakage, acting on fabricated info. Guardrails belong at the tool layer (parameterized queries, allowlists, rate limits), not just in the prompt.",
+ src:"novelvista.com — Agentic AI Interview Questions", url:"https://www.novelvista.com/blogs/ai-and-ml/agentic-ai-interview-questions-answers"},
+{q:"5. When does multi-agent actually outperform a single strong agent — and when is it worse?",
+ a:"Wins when the task decomposes into independent, parallelizable subtasks. Worse when subtasks share heavy context, or coordination failures (miscommunication, compounding errors across handoffs) outweigh specialization.",
+ src:"orq.ai — Why Multi-Agent LLM Systems Fail (+ arXiv:2503.13657)", url:"https://orq.ai/blog/why-do-multi-agent-llm-systems-fail"},
+{q:"6. Design a real-time, low-latency agent pipeline — what do you optimize?",
+ a:"Stream responses instead of waiting for full completion, cache frequent tool results/embeddings, minimize round-trips, and use smaller/cheaper models for classification-shaped subtasks while reserving the largest model for steps that need deep reasoning.",
+ src:"novelvista.com — Agentic AI Interview Questions", url:"https://www.novelvista.com/blogs/ai-and-ml/agentic-ai-interview-questions-answers"},
+{q:"7. One worker in a parallel fan-out fails — what happens to the other nine?",
+ a:"State explicitly whether partial failure means partial results with an \"N of 10 failed\" signal, or an all-or-nothing abort. Either is defensible; not having an explicit answer isn't. Ties to Send-based fan-out needing a reducer that tolerates missing entries.",
+ src:"promptlayer.com — The Agentic System Design Interview", url:"https://blog.promptlayer.com/the-agentic-system-design-interview-how-to-evaluate-ai-engineers/"},
+{q:"8. Design the state machine for an agent's execution loop.",
+ a:"Name explicit states — PLANNING, EXECUTING, WAITING_FOR_APPROVAL, PROCESSING_RESULT, TERMINATED — and every transition, including every path that leads to TERMINATED (success, budget exhausted, fatal error, human rejection).",
+ src:"aiinterviewprep.substack.com — LLM Inference Interview Questions #8", url:"https://aiinterviewprep.substack.com/p/llm-inference-interview-questions-016"},
+{q:"9. How do you validate tool calls before executing them, especially ones with side effects?",
+ a:"Schema validation on arguments (type + range, not just \"is it JSON\"), an allowlist of callable tools per agent role, and a confirmation step (human or a second LLM check) before destructive/costly calls.",
+ src:"systemdesignhandbook.com — Agentic System Design", url:"https://www.systemdesignhandbook.com/guides/agentic-system-design/"},
+{q:"10. How do you debug a bad agent run in production with no repro and partial logs?",
+ a:"Trace-first: reconstruct the run from spans — which tool was called with what arguments, what the model's intermediate reasoning was, where latency went — rather than trying to reproduce non-deterministic model output from a prompt alone.",
+ src:"promptlayer.com — The Agentic System Design Interview", url:"https://blog.promptlayer.com/the-agentic-system-design-interview-how-to-evaluate-ai-engineers/"},
+];
+
+const TRACKS = {
+applied:{desc:"The job: make a model-backed feature work well and keep it working. Retrieval quality, output reliability, evaluation, cost and latency.",
+ qas:[
+ ["Your RAG system returns confident wrong answers. Walk me through debugging it.","Start with retrieval: are the right chunks even being retrieved (precision@k)? Then generation: is the answer faithful to what was retrieved? Only then suspect the prompt."],
+ ["How do you know your retriever got better after a change?","A frozen eval set with ContextualPrecisionMetric/ContextualRecallMetric run before and after, not vibes."],
+ ["Your p95 latency doubled after adding a reranker. What do you do?","Profile: is the reranker itself slow, or did it change what gets retrieved such that generation now needs more tokens? A cross-encoder reranker is O(k) extra model calls — first suspect."],
+ ["When would you not use RAG?","When the answer needs to be deterministic/computed (use a tool), the knowledge base fits in-context, or latency budget can't afford the retrieval round-trip."],
+ ["Compare deterministic and LLM-as-judge evaluation metrics for a generation task.","Deterministic: cheap, reproducible, needs ground truth. LLM-judge: judges semantic dimensions formulas can't, at the cost of nondeterminism and judge bias. Run both."],
+ ["What does FaithfulnessMetric actually measure, and where does it fail?","Whether claims in the answer are supported by retrieved context; it can be fooled by context that's topically relevant but doesn't actually support the specific claim made."],
+ ["Design an offline eval set for a customer-support RAG bot with no existing labeled data.","Mine real support tickets for Q&A pairs, or use synthetic golden generation (EvolutionConfig-style) as a bootstrap, then validate a sample by hand."],
+ ["Your chunking strategy uses fixed 512-token chunks. What's wrong with that as a default?","Chunk size is a recall/precision dial, not a config default — too large dilutes the embedding, too small loses the context a claim needs to be verifiable."],
+ ],
+ hw:"Given a support-ticket RAG bot with a FaithfulnessMetric score of 0.6, propose three concrete changes and how you'd measure whether each one helped."},
+agentic:{desc:"The job: design loops that terminate, tools that fail safely, and state that survives. Autonomy is the feature and the liability.",
+ qas:[
+ ["Your agent loops forever on 3% of requests. Diagnose and fix.","Check the loop-guard boundary condition first — a realistic root cause — then check whether the model is retrying an identical failing tool call because the error message gives it nothing new to act on."],
+ ["Design an agent that books travel. Where does a human approve?","Before any payment or irreversible booking confirmation; search/comparison steps don't need approval."],
+ ["One worker in your fan-out fails. What happens to the other nine?","Apply it concretely to Send-based fan-out: does the reducer tolerate a missing entry, and does the caller get a partial-failure signal?"],
+ ["How do you stop a tool from being called twice after a resume?","Idempotency: either the checkpointer guarantees the side-effecting node hasn't committed before the interrupt, or the tool itself is idempotent (keyed by a client-generated request ID)."],
+ ["When is multi-agent actively worse than one agent?","When subtasks share heavy context, or coordination/handoff failures compound errors faster than specialization helps."],
+ ["Walk me through PEV vs. plain Planner-Executor on a flaky tool, with the actual failure mode each produces.","Use the real trace: the plain agent synthesizes a plausible-sounding wrong answer from an error string; PEV's Verifier catches it and re-plans."],
+ ["Design the short-term/long-term memory split for a multi-user support agent.","Checkpointer per conversation thread; a PostgresStore keyed by user ID for cross-session facts; an explicit TTL/pruning policy for episodic memory so it doesn't grow unbounded."],
+ ["Your supervisor's routing decision is wrong half the time. How do you debug it?","Trace the supervisor's structured-output call directly — is the routing prompt ambiguous, or is the RouteDecision schema missing a category the router needs?"],
+ ["Design retry policy for a node that calls three different external APIs.","Per-API retry policies since each has different failure modes; distinguish 'infra failure, retry' from 'logic error, don't retry, re-plan or escalate.'"],
+ ["What did you make deterministic on purpose, and why?","Routing/classification steps — pin these to a workflow rather than letting the model own that decision, because determinism there is cheap to buy and valuable to keep."],
+ ],
+ hw:"Design (diagram + state schema) a multi-agent order-support system: one agent handles order lookup, one handles refunds (needs human approval above $50), one handles general Q&A. Specify the topology, the memory split, and every path that terminates the run."},
+fde:{desc:"The job: get a working system into a specific customer's environment, fast, then keep it alive while talking to the people who depend on it.",
+ qas:[
+ ["The customer wants an agent over their 40GB of Confluence. First two weeks?","Week 1: narrow scope to their top 10 actual questions, stand up retrieval + a small eval set from their own docs. Week 2: demo on that slice, get feedback, only then expand."],
+ ["It works in your demo and fails on their data. What's different, and how do you find out?","Their documents are probably structured differently (tables, scanned PDFs, inconsistent headers) — pull 20 real failing queries and manually trace each through retrieval before touching the prompt."],
+ ["The customer asks for 99% accuracy. How do you respond?","Ask what 'accuracy' means for their task specifically, propose an eval set from their examples, and set expectations that no LLM system ships at 99% without heavy guardrails and human review."],
+ ["They can't send data to OpenAI. Now what?","Self-hosted or VPC-scoped model options (Databricks Model Serving, Bedrock, on-prem open-weight models) — designing for provider swap from day one, not hardcoding one provider."],
+ ["Walk me through a deployment that went badly.","Have a real one ready — the FDE track explicitly red-flags 'no plan for customer-specific evaluation.'"],
+ ["The customer's compliance team asks what data leaves their network. What do you tell them?","Be specific: which calls go to which external endpoint, what's logged where, whether any PII crosses a boundary — 'I'd need to check' is worse than an honest gap you're closing."],
+ ["Design a customer-specific eval set when they have no labeled data, in the first week.","Same synthetic-golden bootstrap as the Applied AI track, but sourced from their actual documents/tickets, not a public benchmark."],
+ ["The system works, but the customer's usage pattern is nothing like what you tested. How do you find out before they tell you?","Trace/observability from day one — instrument before you need it, so real usage patterns show up in traces rather than complaint tickets."],
+ ],
+ hw:"A customer wants a Slack bot answering questions from their internal wiki, no data leaving their VPC, live in two weeks. Scope the smallest demonstrable slice, name what you'd deliberately fake for the demo, and name the first three things you'd measure once it's live."},
+};
+
+const RAPID = [
+["What's the difference between a checkpointer and a store in LangGraph?","Checkpointer = short-term, thread-scoped, snapshots full graph state. Store = long-term, cross-thread, explicitly read/written by tools."],
+["What does RetryPolicy retry, and what should it not retry?","Transient/infra exceptions; not logic errors or malformed model output — those need a re-plan, not a blind retry."],
+["What's the difference between NodeInterrupt and an unhandled exception?","NodeInterrupt is an intentional, checkpointed pause waiting for human input; an exception is a failure. Check state.next / state.tasks[*].interrupts to tell them apart."],
+["Name the three multi-agent topologies covered.","Supervisor, swarm, hierarchical."],
+["What does a Verifier node in PEV actually check?","Whether the last tool result is valid data, not an error — nothing about task progress."],
+["Why is MemorySaver unsafe for production?","It's RAM-only; state is lost on restart and doesn't share across multiple app instances."],
+["What's the Send API for?","Dynamic fan-out where the number of parallel workers is decided at runtime, not fixed at graph-build time."],
+["Name a deterministic retrieval metric and what it needs to run.","precision@k / recall@k / DCG@k; needs labeled ground-truth relevant documents."],
+["Why can FaithfulnessMetric still be fooled?","Retrieved context can be topically related without actually supporting the specific claim the answer makes."],
+["What's the actual difference between Reflection and Reflexion?","Reflexion persists the critique as a lesson across future tasks; Reflection's critique is discarded after the task."],
+["Why does a tool's error message matter for agent design?","It's the only signal the model gets to change its next action; a vague error produces identical retries."],
+["What three things does a production 'deep agent' typically add beyond a notebook demo agent?","Per-subagent tool scoping, a mandatory long-term memory contract, a real persistence backend for artifacts."],
+["When would you pick a workflow pattern over a full agent?","When the set of paths through the system is small and enumerable — you don't need the model deciding control flow."],
+["What's the idempotency concern with human-in-the-loop resume?","A side-effecting tool call must not re-execute (or must be safely repeatable) if the graph resumes after an interrupt."],
+["Why trace every tool/LLM call as a span instead of relying on reproducing the prompt?","LLM output and tool results aren't reproducible on re-run; the trace is the only faithful record of what actually happened."],
+];
+
+// ================= RENDER =================
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// concepts
+$("#concept-list").innerHTML = CONCEPTS.map((c,i)=>`
+<article class="concept">
+  <span class="idx">${c.n}</span>
+  <h3>${esc(c.t)}</h3>
+  <div class="field"><div class="field-label">What it is</div><p style="margin:0">${esc(c.what)}</p></div>
+  <div class="field"><div class="field-label">How it works</div><p style="margin:0">${esc(c.how)}</p></div>
+  <details class="concept-more">
+    <summary>Show code, source and the spoken answer</summary>
+    <div class="inner">
+      <div><div class="field-label" style="margin-bottom:.3rem">Code — ${esc(c.src)}</div><pre>${esc(c.code)}</pre></div>
+      <div class="say">${esc(c.say)}</div>
+    </div>
+  </details>
+</article>`).join("");
+
+// gotchas
+$("#gotcha-list").innerHTML = GOTCHAS.map((g,i)=>`
+<div class="flip" data-idx="g${i}">
+  <div class="flip-card" role="button" tabindex="0" aria-expanded="false">
+    <div class="name">${esc(g.name)}</div>
+    <div class="line"><b>Symptom</b>${esc(g.symptom)}</div>
+    <div class="front-hint">Click to see cause, fix &amp; interview angle →</div>
+    <div class="back">
+      <div class="line"><b>Cause</b>${esc(g.cause)}</div>
+      <div class="line"><b>Fix</b>${esc(g.fix)}</div>
+      <div class="interview-angle"><b>Interview angle:</b> ${esc(g.angle)}</div>
+    </div>
+  </div>
+</div>`).join("");
+$$(".flip-card").forEach(el=>{
+  const toggle=()=>{ el.classList.toggle("open"); el.setAttribute("aria-expanded", el.classList.contains("open")); };
+  el.addEventListener("click", toggle);
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } });
+});
+
+// tradeoffs
+$("#tradeoff-list").innerHTML = TRADEOFFS.map(t=>`
+<div class="tradeoff">
+  <h4>${esc(t.h)}</h4>
+  <div class="tt-scroll"><table class="tt-table">
+    <thead><tr><th>Option</th><th>Costs you</th><th>Buys you</th><th>Pick when</th></tr></thead>
+    <tbody>${t.rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+  </table></div>
+  <div class="oneliner"><b>The one-liner:</b> ${esc(t.one)}</div>
+</div>`).join("");
+
+// top10 + role tracks share qa rendering
+function qaHtml(id, q, a, srcHtml, role){
+  return `<div class="qa" id="${id}" ${role?`data-role="${role}"`:""}>
+    <button class="qa-q" aria-expanded="false"><span>${esc(q)}</span><span class="arrow">▸</span></button>
+    <div class="qa-a">
+      <p style="margin:0 0 .3rem">${esc(a)}</p>
+      ${srcHtml||""}
+      <div class="score-row">
+        <button class="score-btn" data-v="good">Got it</button>
+        <button class="score-btn" data-v="shaky">Shaky</button>
+        <button class="score-btn" data-v="bad">Missed</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+$("#top10-list").innerHTML = TOP10.map((t,i)=>qaHtml(`top10-${i}`, t.q, t.a,
+  `<span class="qa-src">Source: <a href="${t.url}" target="_blank" rel="noopener">${esc(t.src)}</a></span>`)).join("");
+
+// role tracks
+const trackOrder=["applied","agentic","fde"];
+$("#track-panels").innerHTML = trackOrder.map(k=>{
+  const tr=TRACKS[k];
+  return `<div class="track-panel${k==="applied"?" active":""}" data-track="${k}">
+    <div class="track-desc">${esc(tr.desc)}</div>
+    ${tr.qas.map((qa,i)=>qaHtml(`track-${k}-${i}`, qa[0], qa[1], "", k)).join("")}
+    <div class="homework"><b>Take-home style task:</b> ${esc(tr.hw)}</div>
+  </div>`;
+}).join("");
+// role-scoped cards should be visible by default within their own panel (not gated by top rolebar)
+$$(".track-panel .qa").forEach(el=>el.classList.add("role-visible"));
+
+// rapid fire
+$("#rapid-list").innerHTML = RAPID.map((r,i)=>`
+<div class="rapid-item" data-idx="r${i}" role="button" tabindex="0">
+  <div class="rq">${i+1}. ${esc(r[0])}</div>
+  <div class="ra">${esc(r[1])}</div>
+</div>`).join("");
+$$(".rapid-item").forEach(el=>{
+  const toggle=()=>el.classList.toggle("open");
+  el.addEventListener("click", toggle);
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } });
+});
+
+// qa click-to-reveal (top10 + tracks)
+$$(".qa-q").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const card = btn.closest(".qa");
+    card.classList.toggle("open");
+    btn.setAttribute("aria-expanded", card.classList.contains("open"));
+  });
+});
+
+// ================= SCORING (localStorage) =================
+const STORE_KEY = "agentic-drillbook-scores-v1";
+let scores = {};
+try{ scores = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); }catch(e){ scores = {}; }
+
+function saveScores(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(scores)); }catch(e){} }
+
+function applyScoreUI(card){
+  const id = card.id;
+  const v = scores[id];
+  $$(".score-btn", card).forEach(b=> b.classList.toggle("active", b.dataset.v === v));
+}
+
+function updateTally(){
+  const vals = Object.values(scores);
+  $("#tally-good").textContent = vals.filter(v=>v==="good").length;
+  $("#tally-shaky").textContent = vals.filter(v=>v==="shaky").length;
+  $("#tally-bad").textContent = vals.filter(v=>v==="bad").length;
+}
+
+$$(".qa").forEach(card=> applyScoreUI(card));
+updateTally();
+
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".score-btn");
+  if(!btn) return;
+  e.stopPropagation();
+  const card = btn.closest(".qa");
+  const v = btn.dataset.v;
+  if(scores[card.id] === v){ delete scores[card.id]; } else { scores[card.id] = v; }
+  applyScoreUI(card);
+  updateTally();
+  saveScores();
+});
+
+$("#reset-btn").addEventListener("click", ()=>{
+  scores = {};
+  saveScores();
+  $$(".qa").forEach(card=> applyScoreUI(card));
+  updateTally();
+  redrillOn = false;
+  applyRedrill();
+});
+
+let redrillOn = false;
+function applyRedrill(){
+  $("#redrill-btn").textContent = redrillOn ? "Show all questions" : "Redrill weak";
+  $$(".qa").forEach(card=>{
+    if(!redrillOn){ card.style.display = card.dataset.role ? (card.classList.contains("role-visible")?"":"none") : ""; return; }
+    const v = scores[card.id];
+    const weak = v === "shaky" || v === "bad" || !v;
+    card.style.display = weak ? "" : "none";
+  });
+}
+$("#redrill-btn").addEventListener("click", ()=>{ redrillOn = !redrillOn; applyRedrill(); });
+
+// ================= ROLE FILTER (top bar) — filters the top10 list's relevance is universal;
+// primarily filters which track panel is shown, mirroring the track buttons =================
+$$(".role-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    $$(".role-btn").forEach(b=>b.setAttribute("aria-pressed", b===btn ? "true":"false"));
+    const role = btn.dataset.role;
+    if(role !== "all"){
+      $$(".track-btn").forEach(b=> b.setAttribute("aria-pressed", b.dataset.track===role ? "true":"false"));
+      $$(".track-panel").forEach(p=> p.classList.toggle("active", p.dataset.track===role));
+      document.getElementById("tracks").scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  });
+});
+
+// ================= TRACK TOGGLE =================
+$$(".track-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    $$(".track-btn").forEach(b=>b.setAttribute("aria-pressed", b===btn ? "true":"false"));
+    $$(".track-panel").forEach(p=> p.classList.toggle("active", p.dataset.track===btn.dataset.track));
+  });
+});
+
+// ================= MOCK ANSWER TOGGLE =================
+$("#mock-toggle").addEventListener("click", ()=>{
+  const ans = $("#mock-answer");
+  ans.classList.toggle("open");
+  $("#mock-toggle").textContent = ans.classList.contains("open") ? "Hide the worked answer" : "Reveal the worked answer";
+});
+</script>

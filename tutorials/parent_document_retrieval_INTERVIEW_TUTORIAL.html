@@ -1,0 +1,1029 @@
+<title>Parent Document Retrieval</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#faf8f3;
+    --surface:#ffffff;
+    --surface-2:#f2efe6;
+    --border:#e2ddcf;
+    --border-strong:#c9c2ac;
+    --text:#241f18;
+    --text-dim:#6e6656;
+    --text-faint:#9d9682;
+    --accent:#2f5d62;        /* deep archive teal — "the shelf" */
+    --accent-strong:#1c4245;
+    --accent-soft:#dbe8e6;
+    --child:#b5651d;         /* terracotta — child chunk */
+    --child-soft:#f3e0cc;
+    --good:#3f6b3a;
+    --good-soft:#e2ecdc;
+    --warn:#a6461f;
+    --warn-soft:#f5ddce;
+    --shaky:#a6821f;
+    --shaky-soft:#f2e9cc;
+    --shadow: 0 1px 2px rgba(36,31,24,.06), 0 6px 20px -8px rgba(36,31,24,.18);
+    --radius: 10px;
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181613;
+      --surface:#211e19;
+      --surface-2:#28241d;
+      --border:#3a352b;
+      --border-strong:#524a3a;
+      --text:#f1ece0;
+      --text-dim:#b5ac96;
+      --text-faint:#847c68;
+      --accent:#7cb8ae;
+      --accent-strong:#a3d3c8;
+      --accent-soft:#233631;
+      --child:#e0a25f;
+      --child-soft:#3a2c1c;
+      --good:#93c088;
+      --good-soft:#233020;
+      --warn:#e39073;
+      --warn-soft:#3a2419;
+      --shaky:#e0c375;
+      --shaky-soft:#372f1a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -8px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181613;
+    --surface:#211e19;
+    --surface-2:#28241d;
+    --border:#3a352b;
+    --border-strong:#524a3a;
+    --text:#f1ece0;
+    --text-dim:#b5ac96;
+    --text-faint:#847c68;
+    --accent:#7cb8ae;
+    --accent-strong:#a3d3c8;
+    --accent-soft:#233631;
+    --child:#e0a25f;
+    --child-soft:#3a2c1c;
+    --good:#93c088;
+    --good-soft:#233020;
+    --warn:#e39073;
+    --warn-soft:#3a2419;
+    --shaky:#e0c375;
+    --shaky-soft:#372f1a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -8px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent-strong); }
+  code, pre{ font-family:var(--font-mono); }
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; text-wrap:balance; margin:0; }
+  .container{ max-width:920px; margin:0 auto; padding:0 20px; }
+
+  /* ---------- Header ---------- */
+  header.hero{
+    border-bottom:1px solid var(--border);
+    background:
+      linear-gradient(180deg, var(--surface-2), var(--bg));
+    padding:44px 0 28px;
+  }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--accent-strong); display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .eyebrow .dot{ width:6px;height:6px;border-radius:50%;background:var(--child); }
+  h1.title{ font-size:clamp(28px,4.4vw,42px); line-height:1.08; letter-spacing:-.01em; }
+  h1.title em{ font-style:normal; color:var(--accent-strong); }
+  .subtitle{ margin-top:12px; color:var(--text-dim); font-size:16px; max-width:60ch; }
+  .meta-line{
+    margin-top:18px; font-size:13px; color:var(--text-faint); font-family:var(--font-mono);
+    display:flex; flex-wrap:wrap; gap:6px 18px;
+  }
+
+  .rolebar{
+    position:sticky; top:0; z-index:40;
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .rolebar-inner{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:10px 0;
+  }
+  .role-group{ display:flex; gap:6px; flex-wrap:wrap; }
+  .role-btn{
+    font-family:var(--font-mono); font-size:12.5px; padding:7px 12px; border-radius:999px;
+    border:1px solid var(--border-strong); background:var(--surface); color:var(--text-dim);
+    cursor:pointer; transition:.15s;
+  }
+  .role-btn:hover{ border-color:var(--accent); color:var(--text); }
+  .role-btn.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .tally{
+    margin-left:auto; display:flex; gap:10px; font-family:var(--font-mono); font-size:12.5px;
+    color:var(--text-dim); align-items:center;
+  }
+  .tally b{ color:var(--text); font-variant-numeric:tabular-nums; }
+  .pip{ width:9px;height:9px;border-radius:2px; display:inline-block; margin-right:4px; }
+  .pip.got{ background:var(--good); } .pip.shaky{ background:var(--shaky); } .pip.missed{ background:var(--warn); }
+  .redrill-btn{
+    font-family:var(--font-mono); font-size:12px; padding:6px 10px; border-radius:6px;
+    border:1px dashed var(--border-strong); background:transparent; color:var(--text-dim); cursor:pointer;
+  }
+  .redrill-btn:hover{ color:var(--warn); border-color:var(--warn); }
+  .redrill-btn.on{ color:var(--warn); border-color:var(--warn); border-style:solid; background:var(--warn-soft); }
+
+  nav.jump{
+    display:flex; gap:4px; overflow-x:auto; padding-bottom:10px; margin-top:2px;
+    scrollbar-width:none;
+  }
+  nav.jump::-webkit-scrollbar{ display:none; }
+  nav.jump a{
+    font-family:var(--font-mono); font-size:12px; white-space:nowrap; text-decoration:none;
+    color:var(--text-dim); padding:5px 10px; border-radius:6px;
+  }
+  nav.jump a:hover{ background:var(--surface-2); color:var(--text); }
+
+  main{ padding:36px 0 100px; }
+  section{ margin-bottom:56px; }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+  .section-num{ font-family:var(--font-mono); color:var(--child); font-size:14px; }
+  h2.section-title{ font-size:26px; }
+  .section-desc{ color:var(--text-dim); font-size:14.5px; margin:8px 0 22px; max-width:66ch; }
+
+  /* ---------- coverage table ---------- */
+  table.cov{ width:100%; border-collapse:collapse; font-size:14px; }
+  table.cov th, table.cov td{ text-align:left; padding:9px 10px; border-bottom:1px solid var(--border); }
+  table.cov th{ font-family:var(--font-mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:600; }
+  table.cov td.weight-High{ color:var(--warn); font-weight:600; }
+  table.cov td.weight-Medium{ color:var(--shaky); }
+  .cov-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); }
+  .cov-wrap table{ margin:0; }
+  .cov-wrap th, .cov-wrap td{ padding:10px 14px; }
+
+  .gaps{
+    margin-top:18px; border:1px solid var(--warn); border-radius:var(--radius);
+    background:var(--warn-soft); padding:16px 18px;
+  }
+  .gaps h3{ font-size:14px; font-family:var(--font-mono); color:var(--warn); text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px;}
+  .gaps ul{ margin:0; padding-left:18px; font-size:14px; color:var(--text); }
+  .gaps li{ margin-bottom:5px; }
+  .gaps .tag{ font-family:var(--font-mono); font-size:11px; color:var(--warn); }
+
+  /* ---------- concept cards ---------- */
+  .concept{
+    border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);
+    box-shadow:var(--shadow); margin-bottom:16px; overflow:hidden;
+  }
+  .concept-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:15px 18px; cursor:pointer; user-select:none;
+  }
+  .concept-head:hover{ background:var(--surface-2); }
+  .concept-head h3{ font-size:17px; }
+  .concept-num{ font-family:var(--font-mono); font-size:12px; color:var(--child); margin-right:8px; }
+  .chev{ color:var(--text-faint); transition:transform .18s; flex-shrink:0; }
+  .concept.open .chev{ transform:rotate(90deg); }
+  .concept-body{ display:none; padding:0 18px 20px; }
+  .concept.open .concept-body{ display:block; }
+  .concept-body h4{ font-family:var(--font-mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:16px 0 6px; }
+  .concept-body h4:first-child{ margin-top:4px; }
+  .concept-body p{ margin:0; font-size:14.5px; color:var(--text); }
+  pre.code{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    padding:12px 14px; overflow-x:auto; font-size:12.6px; line-height:1.55; margin:6px 0 0;
+  }
+  .source-tag{ font-family:var(--font-mono); font-size:12.5px; color:var(--accent-strong); }
+  .say-it{
+    margin-top:6px; background:var(--accent-soft); border-left:3px solid var(--accent);
+    padding:10px 14px; border-radius:0 6px 6px 0; font-size:14px; font-style:italic;
+  }
+
+  /* ---------- mermaid ---------- */
+  .diagram-wrap{
+    border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);
+    padding:18px; margin:14px 0 20px; overflow-x:auto;
+  }
+  .diagram-wrap .cap{ font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+  pre.mermaid{ background:transparent; color:var(--text); margin:0; }
+
+  /* ---------- gotcha flip cards ---------- */
+  .gotcha-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+  .flip{ perspective:1200px; height:260px; cursor:pointer; }
+  .flip-inner{ position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flip.on .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--radius);
+    border:1px solid var(--border); box-shadow:var(--shadow); padding:16px; overflow-y:auto;
+  }
+  .flip-front{ background:var(--surface); display:flex; flex-direction:column; }
+  .flip-front .label{ font-family:var(--font-mono); font-size:11px; color:var(--warn); text-transform:uppercase; letter-spacing:.06em; }
+  .flip-front .name{ font-family:var(--font-display); font-weight:600; font-size:16.5px; margin:8px 0 10px; }
+  .flip-front .symptom{ font-size:13.5px; color:var(--text-dim); font-family:var(--font-mono); }
+  .flip-front .tap{ margin-top:auto; font-size:11.5px; color:var(--text-faint); }
+  .flip-back{ background:var(--warn-soft); transform:rotateY(180deg); font-size:13px; }
+  .flip-back b{ display:block; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; color:var(--warn); margin:8px 0 3px; }
+  .flip-back b:first-child{ margin-top:0; }
+
+  /* ---------- tradeoffs ---------- */
+  .tradeoff{ border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); margin-bottom:16px; box-shadow:var(--shadow); }
+  .tradeoff-head{ padding:14px 18px; font-family:var(--font-display); font-weight:600; font-size:16px; border-bottom:1px solid var(--border); }
+  .tradeoff-wrap{ overflow-x:auto; }
+  table.tw{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  table.tw th, table.tw td{ padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.tw th{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--text-faint); letter-spacing:.05em; }
+  table.tw td.pick{ color:var(--good); }
+  table.tw tr:last-child td{ border-bottom:none; }
+  .oneliner{ padding:12px 18px; font-size:14px; font-style:italic; color:var(--text-dim); background:var(--surface-2); border-top:1px dashed var(--border); }
+
+  /* ---------- Q&A cards ---------- */
+  .qcard{
+    border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);
+    box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden;
+  }
+  .qcard .qhead{ padding:16px 18px; cursor:pointer; display:flex; gap:12px; align-items:flex-start; }
+  .qnum{ font-family:var(--font-mono); color:var(--child); font-size:13px; flex-shrink:0; padding-top:2px; }
+  .qtext{ font-size:15px; font-weight:500; }
+  .qmeta{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint); margin-top:4px; text-transform:uppercase; letter-spacing:.04em;}
+  .qbody{ display:none; padding:0 18px 18px 45px; }
+  .qcard.open .qbody{ display:block; }
+  .qans{ font-size:14px; color:var(--text); border-top:1px solid var(--border); padding-top:12px; }
+  .qsrc{ margin-top:8px; font-size:12.5px; }
+  .reveal-hint{ font-family:var(--font-mono); font-size:11.5px; color:var(--accent-strong); padding:16px 18px 0 45px; }
+  .qcard.open .reveal-hint{ display:none; }
+  .score-row{ display:flex; gap:8px; margin-top:14px; }
+  .score-btn{
+    font-family:var(--font-mono); font-size:12px; padding:6px 12px; border-radius:6px;
+    border:1px solid var(--border-strong); background:var(--surface); color:var(--text-dim); cursor:pointer;
+  }
+  .score-btn[data-s="got"]:hover, .score-btn[data-s="got"].sel{ background:var(--good-soft); border-color:var(--good); color:var(--good); }
+  .score-btn[data-s="shaky"]:hover, .score-btn[data-s="shaky"].sel{ background:var(--shaky-soft); border-color:var(--shaky); color:var(--shaky); }
+  .score-btn[data-s="missed"]:hover, .score-btn[data-s="missed"].sel{ background:var(--warn-soft); border-color:var(--warn); color:var(--warn); }
+  .qcard[data-score="got"]{ border-left:3px solid var(--good); }
+  .qcard[data-score="shaky"]{ border-left:3px solid var(--shaky); }
+  .qcard[data-score="missed"]{ border-left:3px solid var(--warn); }
+  .qcard.hidden-by-filter{ display:none; }
+
+  /* ---------- role track blocks ---------- */
+  .track{ margin-bottom:34px; }
+  .track-head{
+    display:flex; align-items:center; gap:12px; padding:16px 18px; border-radius:var(--radius) var(--radius) 0 0;
+    background:var(--accent); color:#fff;
+  }
+  .track-head h3{ font-size:18px; color:#fff; }
+  .track-head p{ margin:2px 0 0; font-size:13px; color:rgba(255,255,255,.85); }
+  .track-body{ border:1px solid var(--border); border-top:none; border-radius:0 0 var(--radius) var(--radius); padding:16px 18px; background:var(--surface); }
+  .takehome{ margin-top:14px; padding:12px 14px; background:var(--child-soft); border-left:3px solid var(--child); border-radius:0 6px 6px 0; font-size:13.5px; }
+  .takehome b{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--child); display:block; margin-bottom:4px; }
+
+  /* ---------- mock design ---------- */
+  .mock-block{ border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); padding:20px 22px; margin-bottom:16px; }
+  .mock-block h4{ font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-strong); margin-bottom:10px; }
+  .rubric{ list-style:none; padding:0; margin:0; }
+  .rubric li{ padding:6px 0 6px 26px; position:relative; font-size:14px; border-bottom:1px dashed var(--border); }
+  .rubric li:last-child{ border-bottom:none; }
+  .rubric li::before{ content:"☐"; position:absolute; left:0; color:var(--accent); font-size:15px; }
+
+  /* ---------- rapid fire ---------- */
+  .rf-grid{ display:grid; grid-template-columns:1fr; gap:8px; }
+  .rf-card{ border:1px solid var(--border); border-radius:8px; background:var(--surface); padding:12px 14px; cursor:pointer; }
+  .rf-q{ font-size:13.5px; font-weight:500; }
+  .rf-a{ display:none; font-size:13.5px; color:var(--accent-strong); margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); }
+  .rf-card.open .rf-a{ display:block; }
+
+  footer{ text-align:center; padding:30px 0 60px; color:var(--text-faint); font-size:12.5px; font-family:var(--font-mono); }
+
+  @media (max-width:640px){
+    .qbody{ padding-left:18px; }
+    .reveal-hint{ padding-left:18px; }
+  }
+</style>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow"><span class="dot"></span>INTERVIEW DRILL &middot; RETRIEVAL &amp; RAG</div>
+    <h1 class="title">Parent Document Retrieval<br><em>small chunk in, whole context out.</em></h1>
+    <p class="subtitle">Click-to-reveal drills built from two of your own notebooks — the precision/context split, the two-store architecture, and the gotchas that show up the moment a docstore has to survive a restart.</p>
+    <div class="meta-line">
+      <span>Built from 2 notebooks</span>
+      <span>04_Retrieval_and_RAG/03_Indexing_Techniques + 06_RAG_Naive_to_Production</span>
+      <span>Updated 2026-09-09</span>
+    </div>
+  </div>
+</header>
+
+<div class="rolebar">
+  <div class="container">
+    <div class="rolebar-inner">
+      <div class="role-group" id="roleGroup">
+        <button class="role-btn active" data-role="all">All roles</button>
+        <button class="role-btn" data-role="applied">Applied AI</button>
+        <button class="role-btn" data-role="agentic">Agentic AI</button>
+        <button class="role-btn" data-role="fde">FDE</button>
+      </div>
+      <button class="redrill-btn" id="redrillBtn">redrill: shaky + missed only</button>
+      <div class="tally" id="tally">
+        <span><span class="pip got"></span><b id="cntGot">0</b> got it</span>
+        <span><span class="pip shaky"></span><b id="cntShaky">0</b> shaky</span>
+        <span><span class="pip missed"></span><b id="cntMissed">0</b> missed</span>
+      </div>
+    </div>
+    <nav class="jump">
+      <a href="#coverage">Coverage</a>
+      <a href="#concepts">Core Concepts</a>
+      <a href="#gotchas">Gotchas</a>
+      <a href="#tradeoffs">Tradeoffs</a>
+      <a href="#top10">Top 10</a>
+      <a href="#tracks">Role Tracks</a>
+      <a href="#mock">Mock Design</a>
+      <a href="#selfcheck">Self-Check</a>
+    </nav>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- ===================== COVERAGE ===================== -->
+  <section id="coverage">
+    <div class="section-head"><span class="section-num">00</span><h2 class="section-title">What this covers</h2></div>
+    <p class="section-desc">Every row below is grounded in a real cell in one of your two notebooks — nothing here is invented. The gap list is just as important: it's what an interviewer can ask that your notebooks don't yet answer.</p>
+    <div class="cov-wrap">
+      <table class="cov">
+        <thead><tr><th>Concept</th><th>Source notebook</th><th>Weight</th></tr></thead>
+        <tbody>
+          <tr><td>The precision/context split</td><td class="source-tag">Parent_Document_Retrieval.ipynb</td><td class="weight-High">High</td></tr>
+          <tr><td><code>ParentDocumentRetriever</code>, child-only mode</td><td class="source-tag">Parent_Document_Retrieval.ipynb §2</td><td class="weight-High">High</td></tr>
+          <tr><td>Two-splitter mode (parent + child)</td><td class="source-tag">Parent_Document_Retrieval.ipynb §3</td><td class="weight-High">High</td></tr>
+          <tr><td>The docstore (<code>InMemoryStore</code> / <code>yield_keys</code>)</td><td class="source-tag">Both notebooks</td><td class="weight-Medium">Medium</td></tr>
+          <tr><td>Wiring into <code>RetrievalQA</code></td><td class="source-tag">Parent_Document_Retrieval.ipynb §4</td><td class="weight-Medium">Medium</td></tr>
+          <tr><td>Persistent vector store (<code>PGVector</code>)</td><td class="source-tag">08_BetterRetriever.ipynb</td><td class="weight-High">High</td></tr>
+          <tr><td>Custom <code>BaseStore</code> over SQL</td><td class="source-tag">08_BetterRetriever.ipynb</td><td class="weight-High">High</td></tr>
+          <tr><td>Duplicate-parent results</td><td class="source-tag">08_BetterRetriever.ipynb, cell 11 output</td><td class="weight-High">High (gotcha)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gaps">
+      <h3>Coverage gaps — not in your notebooks, build these</h3>
+      <ul>
+        <li><span class="tag">gap</span> Agents &amp; tool calling — nothing here wraps the retriever as an agent tool.</li>
+        <li><span class="tag">gap</span> Evaluation — no recall@k, no eval set comparing this against naive chunking.</li>
+        <li><span class="tag">gap</span> Observability &amp; tracing — no logging of query → hits → resolved parents.</li>
+        <li><span class="tag">gap</span> Streaming &amp; async — every call in both notebooks is a blocking <code>.invoke()</code>.</li>
+        <li><span class="tag">gap</span> Retries &amp; reliability — no retry policy around embedding calls or the Postgres store.</li>
+        <li><span class="tag">gap</span> Human-in-the-loop &amp; multi-agent — only relevant once this retriever sits inside a larger agentic pipeline.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== CORE CONCEPTS ===================== -->
+  <section id="concepts">
+    <div class="section-head"><span class="section-num">01</span><h2 class="section-title">Core concepts</h2></div>
+    <p class="section-desc">Click a card to expand it. Every concept ends with a spoken line — read it out loud before you check it against your own words.</p>
+
+    <div class="diagram-wrap">
+      <div class="cap">The pipeline, end to end</div>
+      <pre class="mermaid">
+flowchart LR
+  A["Source document"] --> B["parent_splitter\n(e.g. 2000 chars)"]
+  B --> C["Parent chunks"]
+  C --> D["child_splitter\n(e.g. 400 chars)"]
+  D --> E["Child chunks"]
+  E --> F["Embed + index\n(vectorstore)"]
+  C --> G["mset by id\n(docstore)"]
+  H["Query"] --> I["Embed query"]
+  I --> J["similarity_search\nover child vectors"]
+  J --> K["Resolve doc_id,\ndedupe"]
+  K --> L["mget parents\n(docstore)"]
+  L --> M["Full-context parent\n-> LLM"]
+  F -.-> J
+  G -.-> L
+      </pre>
+    </div>
+
+    <div class="concept" id="c1">
+      <div class="concept-head" onclick="toggleConcept('c1')">
+        <h3><span class="concept-num">1.1</span>The precision/context split — why this pattern exists</h3>
+        <span class="chev">&#9656;</span>
+      </div>
+      <div class="concept-body">
+        <h4>What it is</h4>
+        <p>Standard RAG has one dial that fights itself: chunk size. Small chunks make similarity search precise but starve the LLM of context. Large chunks give the LLM context but blur the embedding, so search gets imprecise. Parent document retrieval breaks that coupling.</p>
+        <h4>How it works</h4>
+        <p>Split every source document into small <b>child chunks</b> and embed only those. Each child keeps a reference to its <b>parent</b> — the whole document, or a medium chunk containing it. Search over child vectors (sharp hits), then swap each hit for its parent before it reaches the LLM (full context). This is the "small-to-big" pattern.</p>
+        <h4>Code — <span class="source-tag">Parent_Document_Retrieval.ipynb</span></h4>
+        <pre class="code">child_splitter = RecursiveCharacterTextSplitter(chunk_size=400)
+vectorstore = Chroma(collection_name="full_documents",
+                      embedding_function=OpenAIEmbeddings())
+store = InMemoryStore()                # docstore: parent_id -> full Document
+
+full_doc_retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,           # only ever holds CHILD chunk vectors
+    docstore=store,                    # holds the PARENT documents
+    child_splitter=child_splitter,
+)
+full_doc_retriever.add_documents(docs) # splits, embeds children, stores parents</pre>
+        <h4>In your notebooks</h4>
+        <p><span class="source-tag">Parent_Document_Retrieval.ipynb</span>, cells 12–20 — a raw child hit is printed short; the retriever's own output for the same query is printed long.</p>
+        <div class="say-it">"Parent document retrieval decouples the retrieval unit from the generation unit — index small child chunks for precise search, but return the parent so the LLM gets full context. It's a two-tier store: a vector store for children, a docstore for parents, joined by an id."</div>
+      </div>
+    </div>
+
+    <div class="concept" id="c2">
+      <div class="concept-head" onclick="toggleConcept('c2')">
+        <h3><span class="concept-num">1.2</span>Child-only mode — the parent is the whole document</h3>
+        <span class="chev">&#9656;</span>
+      </div>
+      <div class="concept-body">
+        <h4>What it is</h4>
+        <p>The simplest config: no <code>parent_splitter</code>, only a <code>child_splitter</code>. The "parent" is the entire original <code>Document</code> — unbounded size.</p>
+        <h4>How it works</h4>
+        <p><code>add_documents()</code> splits each source into children, embeds them, and stores the whole source in the docstore keyed by an id every child carries in metadata. At query time, similarity search returns children, then a deduplicated <code>mget</code> fetches the unique parents behind the top hits.</p>
+        <h4>Code — <span class="source-tag">Parent_Document_Retrieval.ipynb, cells 18-20</span></h4>
+        <pre class="code">full_doc_retriever.add_documents(docs)
+print(list(store.yield_keys()))          # parent ids now in the docstore
+
+sub_docs = vectorstore.similarity_search("What is LangSmith?", k=2)
+print(len(sub_docs[0].page_content))     # short — a 400-char child
+
+retrieved_docs = full_doc_retriever.invoke("What is LangSmith?")
+print(len(retrieved_docs[0].page_content)) # long — the entire source doc</pre>
+        <div class="say-it">"In child-only mode the parent has no size limit, so large source files can blow your context window — that's exactly why the two-splitter mode exists."</div>
+      </div>
+    </div>
+
+    <div class="concept" id="c3">
+      <div class="concept-head" onclick="toggleConcept('c3')">
+        <h3><span class="concept-num">1.3</span>Two-splitter mode — bounding the parent size</h3>
+        <span class="chev">&#9656;</span>
+      </div>
+      <div class="concept-body">
+        <h4>What it is</h4>
+        <p>The production-shaped config: a <code>child_splitter</code> (small, ~400 chars) and a <code>parent_splitter</code> (medium, ~2000 chars). The parent is no longer the whole document — it's a bounded chunk.</p>
+        <h4>How it works</h4>
+        <p><code>add_documents()</code> runs <code>parent_splitter</code> first, storing each medium chunk in the docstore, then runs <code>child_splitter</code> on every parent chunk to make the searchable children. This caps prompt size per retrieved hit while still carrying real context.</p>
+        <h4>Code — <span class="source-tag">Parent_Document_Retrieval.ipynb §3</span></h4>
+        <pre class="code">parent_splitter = RecursiveCharacterTextSplitter(chunk_size=2000)
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=400)
+
+big_chunks_retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore, docstore=store,
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter,   # <- the only new argument
+)
+big_chunks_retriever.add_documents(docs)
+print(len(list(store.yield_keys())))   # many parent ids, not one per file</pre>
+        <div class="say-it">"Two-splitter mode is what you'd actually run in production — unbounded 'parent = whole document' risks the context window; capping the parent gives real context without an unbounded prompt."</div>
+      </div>
+    </div>
+
+    <div class="concept" id="c4">
+      <div class="concept-head" onclick="toggleConcept('c4')">
+        <h3><span class="concept-num">1.4</span>The docstore — a key-value store, never embedded</h3>
+        <span class="chev">&#9656;</span>
+      </div>
+      <div class="concept-body">
+        <h4>What it is</h4>
+        <p>A plain id &rarr; <code>Document</code> store holding parent content. Parents are never embedded or searched — only fetched by id after a child wins similarity search.</p>
+        <h4>How it works</h4>
+        <p><code>ParentDocumentRetriever</code> calls <code>docstore.mset(...)</code> on index and <code>docstore.mget([...])</code> on query. <code>InMemoryStore</code> is a Python dict — fast, gone on restart. <code>BaseStore</code> is the interface; swapping backends means implementing four methods.</p>
+        <h4>Code — <span class="source-tag">08_BetterRetriever.ipynb, cell 8</span></h4>
+        <pre class="code">from langchain_core.stores import BaseStore
+
+class PostgresStore(BaseStore[str, DocumentModel]):
+    def mget(self, keys): ...      # fetch parents by id, batched
+    def mset(self, key_value_pairs): ...  # write parents, batched
+    def mdelete(self, keys): ...   # remove parents by id
+    def yield_keys(self): ...      # iterate all ids</pre>
+        <div class="say-it">"The docstore is a separate concern from the vector index — a dumb key-value store. That's why you can put the index behind Chroma or PGVector while independently choosing where parents live."</div>
+      </div>
+    </div>
+
+    <div class="concept" id="c5">
+      <div class="concept-head" onclick="toggleConcept('c5')">
+        <h3><span class="concept-num">1.5</span>Chroma (in-memory) vs. PGVector — persistence is a choice</h3>
+        <span class="chev">&#9656;</span>
+      </div>
+      <div class="concept-body">
+        <h4>What it is</h4>
+        <p><code>Chroma</code>, as used in the first notebook, defaults to an ephemeral in-memory collection. <code>PGVector</code>, used in the second, stores vectors in a real Postgres table so the index survives restarts.</p>
+        <h4>How it works</h4>
+        <p>Both implement the same <code>VectorStore</code> interface, so <code>ParentDocumentRetriever</code> doesn't care which it holds — the swap is a one-line constructor change. What changes operationally: <code>PGVector</code> needs a running Postgres with <code>pgvector</code>, connection pooling, and index tuning (IVFFlat/HNSW).</p>
+        <h4>Code — <span class="source-tag">08_BetterRetriever.ipynb, cell 9</span></h4>
+        <pre class="code">from langchain_postgres import PGVector
+
+DATABASE_URL = "postgresql+psycopg://admin:admin@localhost:5432/vectordb"
+store = PGVector(
+    collection_name="vectordb",
+    connection=DATABASE_URL,
+    embeddings=OpenAIEmbeddings(),
+)  # ParentDocumentRetriever takes `store` here exactly where Chroma was</pre>
+        <div class="say-it">"The vector store and docstore are two independent persistence decisions. Chroma-in-memory plus InMemoryStore is a demo config — swap either for a persistent backend without touching the retriever's logic."</div>
+      </div>
+    </div>
+
+    <div class="concept" id="c6">
+      <div class="concept-head" onclick="toggleConcept('c6')">
+        <h3><span class="concept-num">1.6</span>Wiring into a chain — <code>RetrievalQA</code></h3>
+        <span class="chev">&#9656;</span>
+      </div>
+      <div class="concept-body">
+        <h4>What it is</h4>
+        <p><code>ParentDocumentRetriever</code> implements LangChain's standard <code>Retriever</code> interface, so it plugs into any chain expecting one.</p>
+        <h4>How it works</h4>
+        <p><code>chain_type="stuff"</code> concatenates every retrieved document's text directly into the prompt. Because the retriever already swapped children for parents, the LLM sees full parent-sized context, not fragments.</p>
+        <h4>Code — <span class="source-tag">Parent_Document_Retrieval.ipynb, cell 27</span></h4>
+        <pre class="code">qa = RetrievalQA.from_chain_type(
+    llm=OpenAI(),
+    chain_type="stuff",              # concatenate everything into one prompt
+    retriever=big_chunks_retriever,  # any Retriever works here
+)
+response = qa.invoke("What is LangSmith?")</pre>
+        <div class="say-it">"chain_type='stuff' is the naive strategy — fine for a couple of parent chunks, but with a large k or big parents you're one query away from blowing the context window."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GOTCHAS ===================== -->
+  <section id="gotchas">
+    <div class="section-head"><span class="section-num">02</span><h2 class="section-title">Gotchas</h2></div>
+    <p class="section-desc">Tap a card to flip it. These are things your notebooks actually hit — a real duplicate output, a real warning — not hypotheticals.</p>
+    <div class="gotcha-grid" id="gotchaGrid">
+      <!-- gotcha cards injected by JS from static array below, but kept in markup pattern per-card for safety -->
+    </div>
+  </section>
+
+  <!-- ===================== TRADEOFFS ===================== -->
+  <section id="tradeoffs">
+    <div class="section-head"><span class="section-num">03</span><h2 class="section-title">Tradeoffs</h2></div>
+    <p class="section-desc">Every row needs a "pick when." An interview answer that stops at "it depends" is not an answer.</p>
+
+    <div class="tradeoff">
+      <div class="tradeoff-head">Child-only mode vs. two-splitter mode</div>
+      <div class="tradeoff-wrap"><table class="tw">
+        <thead><tr><th>Option</th><th>Costs you</th><th>Buys you</th><th>Pick when</th></tr></thead>
+        <tbody>
+          <tr><td>Child-only</td><td>Unbounded parent size</td><td>Zero context loss</td><td class="pick">Source docs are already short (a ticket, an email)</td></tr>
+          <tr><td>Two-splitter</td><td>Some context cut at the parent boundary</td><td>Predictable, bounded prompt size</td><td class="pick">Source docs are long (manuals, contracts, wikis)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="oneliner">"Child-only mode is fine until someone uploads a 200-page PDF — then you need a parent splitter or your first retrieval blows the context window."</div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="tradeoff-head">InMemoryStore vs. a persistent custom BaseStore</div>
+      <div class="tradeoff-wrap"><table class="tw">
+        <thead><tr><th>Option</th><th>Costs you</th><th>Buys you</th><th>Pick when</th></tr></thead>
+        <tbody>
+          <tr><td>InMemoryStore</td><td>Wiped on every restart, single-process only</td><td>Zero setup, fastest to prototype</td><td class="pick">Local dev, a demo, a notebook</td></tr>
+          <tr><td>Custom BaseStore (Postgres/Redis/S3)</td><td>You write &amp; operate mget/mset/mdelete/yield_keys</td><td>Survives restarts, shareable across processes</td><td class="pick">Anything that must survive a deploy or be read by &gt;1 process</td></tr>
+        </tbody>
+      </table></div>
+      <div class="oneliner">"InMemoryStore is a demo default — the moment two processes need to share the docstore, you're writing a BaseStore subclass."</div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="tradeoff-head">Chroma in-memory vs. PGVector</div>
+      <div class="tradeoff-wrap"><table class="tw">
+        <thead><tr><th>Option</th><th>Costs you</th><th>Buys you</th><th>Pick when</th></tr></thead>
+        <tbody>
+          <tr><td>Chroma in-memory</td><td>No persistence, single-process</td><td>Fastest local iteration, no external service</td><td class="pick">Prototyping, notebooks, unit tests</td></tr>
+          <tr><td>PGVector</td><td>Requires Postgres + pgvector, index tuning at scale</td><td>Persistent, SQL-queryable, ACID alongside the docstore</td><td class="pick">Production, or the docstore is already Postgres too</td></tr>
+        </tbody>
+      </table></div>
+      <div class="oneliner">"If the docstore and vector store are both Postgres, you've cut your ops surface to one database instead of two."</div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="tradeoff-head">chain_type="stuff" vs. map_reduce / refine</div>
+      <div class="tradeoff-wrap"><table class="tw">
+        <thead><tr><th>Option</th><th>Costs you</th><th>Buys you</th><th>Pick when</th></tr></thead>
+        <tbody>
+          <tr><td>stuff</td><td>Breaks once retrieved text exceeds the context window</td><td>Simplest, cheapest, lowest latency</td><td class="pick">k is small and parents are bounded</td></tr>
+          <tr><td>map_reduce / refine</td><td>More LLM calls, more latency, weaker cross-doc synthesis</td><td>Scales past the context limit</td><td class="pick">k is large, parents are big, or sources are long</td></tr>
+        </tbody>
+      </table></div>
+      <div class="oneliner">"Stuff first because it's simplest — the moment k times parent_size can't fit under the context window, move to map_reduce or refine, or just cap k."</div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="tradeoff-head">Fixed chunk_size splitting vs. structure-aware chunking</div>
+      <div class="tradeoff-wrap"><table class="tw">
+        <thead><tr><th>Option</th><th>Costs you</th><th>Buys you</th><th>Pick when</th></tr></thead>
+        <tbody>
+          <tr><td>RecursiveCharacterTextSplitter</td><td>Can split mid-sentence or mid-table</td><td>Works on any plain text, zero setup</td><td class="pick">Unstructured sources, or you need it working today</td></tr>
+          <tr><td>Structure-aware (headings, HTML, layout)</td><td>More engineering, format-specific parsing</td><td>Boundaries align with real semantic units</td><td class="pick">Real document structure exists and quality matters more than setup speed</td></tr>
+        </tbody>
+      </table></div>
+      <div class="oneliner">"Recursive character splitting is the right default until retrieval quality plateaus — then the next lever is structure-aware chunking, not a bigger embedding model."</div>
+    </div>
+  </section>
+
+  <!-- ===================== TOP 10 ===================== -->
+  <section id="top10" data-section-role="all">
+    <div class="section-head"><span class="section-num">04</span><h2 class="section-title">Top 10: real-time agentic system design</h2></div>
+    <p class="section-desc">Web-sourced this run — each carries a link. Biased toward production and real-time concerns, the way "system design" is actually asked.</p>
+    <div id="top10List"></div>
+  </section>
+
+  <!-- ===================== ROLE TRACKS ===================== -->
+  <section id="tracks">
+    <div class="section-head"><span class="section-num">05</span><h2 class="section-title">Role tracks</h2></div>
+    <p class="section-desc">Same underlying material, different angle of attack. Use the role filter above to isolate one track.</p>
+
+    <div class="track" data-role="applied">
+      <div class="track-head">
+        <div>
+          <h3>Applied AI / AI Engineer</h3>
+          <p>Probes whether you can diagnose <em>where</em> retrieval failed, and whether chunk size is a deliberate dial, not a leftover default.</p>
+        </div>
+      </div>
+      <div class="track-body" id="track-applied"></div>
+    </div>
+
+    <div class="track" data-role="agentic">
+      <div class="track-head" style="background:var(--child)">
+        <div>
+          <h3>Agentic AI Engineer</h3>
+          <p>Probes whether the retriever behaves safely as a tool an agent calls repeatedly and autonomously.</p>
+        </div>
+      </div>
+      <div class="track-body" id="track-agentic"></div>
+    </div>
+
+    <div class="track" data-role="fde">
+      <div class="track-head" style="background:var(--good)">
+        <div>
+          <h3>Forward Deployed Engineer</h3>
+          <p>Probes whether you can stand this up inside a specific customer's constraints — their data, their infra, their timeline.</p>
+        </div>
+      </div>
+      <div class="track-body" id="track-fde"></div>
+    </div>
+  </section>
+
+  <!-- ===================== MOCK DESIGN ===================== -->
+  <section id="mock" data-section-role="all">
+    <div class="section-head"><span class="section-num">06</span><h2 class="section-title">Mock system design</h2></div>
+    <p class="section-desc">A real-time customer-support agent over a growing knowledge base.</p>
+
+    <div class="mock-block">
+      <h4>The prompt</h4>
+      <p style="font-size:14.5px">"Design a support agent that answers customer questions by retrieving from a knowledge base of ~5,000 internal articles, growing by ~20 new/edited articles per day. Answers need to include enough context to be trustworthy, p95 latency under 2 seconds, and the system must not degrade as the knowledge base grows to 50,000 articles over the next year."</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="cap">Latency budget at p95 — ≤ 2s total</div>
+      <pre class="mermaid">
+flowchart LR
+  A["Embed query\n~100-150ms"] --> B["Vector search\n(HNSW)\n~50-100ms"]
+  B --> C["Docstore mget\n~20-50ms"]
+  C --> D["LLM generation\n~1.5s budget"]
+      </pre>
+    </div>
+
+    <div class="mock-block">
+      <h4>Scoring rubric</h4>
+      <ul class="rubric">
+        <li>Chooses parent document retrieval (or justifies not needing it) and states the precision/context tradeoff</li>
+        <li>Specifies concrete child/parent chunk sizes tied to the embedding model and LLM context budget</li>
+        <li>Picks a persistent vector store + docstore — not InMemoryStore / in-memory Chroma</li>
+        <li>Handles incremental ingestion (20/day) with idempotent, content-derived ids — not a full nightly reindex</li>
+        <li>Breaks the latency budget down by stage, summing under 2s at p95</li>
+        <li>Names how retrieval quality is measured before/after any change — an eval set, not vibes</li>
+        <li>Handles zero/low-confidence hits without letting the LLM hallucinate ungrounded</li>
+        <li>Addresses scaling from 5k to 50k articles — index type, whether the docstore choice still holds</li>
+      </ul>
+    </div>
+
+    <div class="qcard" id="mockAnswer">
+      <div class="qhead" onclick="toggleQ('mockAnswer')">
+        <span class="qnum">&rarr;</span>
+        <div><div class="qtext">Reveal a worked strong answer</div></div>
+      </div>
+      <div class="qbody">
+        <div class="qans">
+          I'd use <code>ParentDocumentRetriever</code> with a <code>child_splitter</code> around 300–400 characters — precise matches against typical support-question phrasing — and a <code>parent_splitter</code> around 1500–2000 characters, bounding worst-case prompt size even for long articles. Vector store: <code>PGVector</code>, since we're already on Postgres for the docstore and I'd rather run one database than two; add an HNSW index once past a few thousand vectors. Docstore: a Postgres table keyed by a hash of article-id + last-modified timestamp, so the daily ingestion of ~20 changed articles <code>mset</code>s idempotently — reruns overwrite, they don't duplicate.
+          <br><br>
+          Latency budget at p95 ≤ 2s: query embedding ~100–150ms, HNSW vector search ~50–100ms even at 50k vectors, docstore <code>mget</code> ~20–50ms, leaving ~1.5s for generation — the dominant cost, where I'd stream the response so perceived latency drops even if total time doesn't.
+          <br><br>
+          For trust: cap k at 3–4 parents, and if the top similarity score is below a threshold, return "I don't have a confident answer" instead of forcing a generation. I'd build a 50–100 question eval set from real support tickets before launch, track recall@k weekly as the corpus grows, and only re-tune chunk sizes in response to eval regressions, not guesses.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SELF-CHECK ===================== -->
+  <section id="selfcheck" data-section-role="all">
+    <div class="section-head"><span class="section-num">07</span><h2 class="section-title">Self-check</h2></div>
+    <p class="section-desc">15 rapid-fire pairs — tap to reveal. Then explain each "skeptical staff engineer" prompt out loud, unscripted.</p>
+    <div class="rf-grid" id="rfGrid"></div>
+
+    <div class="mock-block" style="margin-top:22px">
+      <h4>Explain to a skeptical staff engineer</h4>
+      <ul class="rubric" style="list-style:disc; padding-left:20px;">
+        <li style="padding-left:6px">"Why not just always retrieve the whole document and skip chunking entirely?"</li>
+        <li style="padding-left:6px">"This adds a second data store — justify that operational cost instead of just embedding bigger chunks."</li>
+        <li style="padding-left:6px">"Your docstore and vector store can drift out of sync — why is that acceptable, and what's your actual mitigation?"</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>Built with the agentic-ai-interview-tutorial skill &middot; progress saved locally in this browser</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.15.0/mermaid.min.js"></script>
+<script>
+(function(){
+  const MERMAID = window.mermaid
+    || (window.__esbuild_esm_mermaid_nm && window.__esbuild_esm_mermaid_nm.mermaid)
+    || null;
+  if (MERMAID) {
+    const dark = (document.documentElement.getAttribute('data-theme') === 'dark') ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    MERMAID.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral' });
+    MERMAID.run({ querySelector: 'pre.mermaid' }).catch(()=>{});
+  }
+})();
+
+/* ---------------- data: gotchas ---------------- */
+const GOTCHAS = [
+  { name:"Duplicate parent documents", symptom:'retriever.invoke("who is the owner?") returns the SAME Document twice',
+    cause:"Two child chunks from the same parent both scored highly; no dedup by parent id after search.",
+    fix:'Dedupe by metadata["doc_id"] after retrieval, or raise child chunk size / lower k.',
+    angle:'"I retrieved 5 results but only 2 unique parents — why, and what do I do about it?"' },
+  { name:"InMemoryStore loses everything on restart", symptom:"Fresh process: retriever.invoke(...) returns nothing, store.yield_keys() is empty",
+    cause:"InMemoryStore is a Python dict wrapped in BaseStore — no disk, by design.",
+    fix:"Swap in a persistent BaseStore (Postgres, Redis) for anything beyond a demo.",
+    angle:'"Your retrieval works in the notebook, returns empty in prod — first 3 things you check?"' },
+  { name:"Vector store and docstore drift apart", symptom:"A child hit's doc_id has no matching docstore entry — mget returns None",
+    cause:"Two separate writes inside add_documents(); a crash or independent edit desyncs them.",
+    fix:"Treat add_documents()/delete() as needing to be atomic in practice; never touch the two stores independently.",
+    angle:'"What happens if the process dies halfway through indexing?"' },
+  { name:"Blank API key raises an opaque ValueError", symptom:'OPENAI_API_KEY = "" then raise ValueError(...) at cell 5',
+    cause:"Notebook is a template shipped with the key cleared, but no .env fallback.",
+    fix:"Use python-dotenv's load_dotenv() instead of hardcoding (as 08_BetterRetriever.ipynb does).",
+    angle:'"How do you manage API keys across notebooks vs. production?"' },
+  { name:"chunk_size is characters, not tokens", symptom:"chunk_size=400 does NOT mean 400 tokens sent to the embedding model",
+    cause:"RecursiveCharacterTextSplitter's default length function is len() — character count.",
+    fix:"Pass a tiktoken-based length_function if you need to bound actual token usage.",
+    angle:'"Embedding calls failed with a token-limit error on some docs but not others — why?"' },
+  { name:"libmagic warning on DirectoryLoader", symptom:'"libmagic is unavailable but assists in filetype detection" — printed 3x',
+    cause:"DirectoryLoader (via unstructured) tries libmagic for MIME sniffing; a system lib, often missing on Windows.",
+    fix:'Install libmagic (python-magic-bin on Windows), or be explicit with glob="**/*.txt" as the notebook already is.',
+    angle:'"This notebook prints a warning 3x — what does it mean, and does it matter here?"' },
+  { name:'Unbounded "stuff" chain blows the context window', symptom:"RetrievalQA raises a token-limit error, or silently truncates",
+    cause:'chain_type="stuff" concatenates every retrieved doc into ONE prompt, no batching.',
+    fix:"Bound parent_splitter's chunk_size, cap k, or move to map_reduce/refine.",
+    angle:'"Answer quality is fine on 3-doc queries and breaks on 8-doc queries — likely cause?"' },
+  { name:"Custom mget swallows errors as empty results", symptom:"PostgresStore.mget catches Exception and returns [] on ANY failure",
+    cause:"except Exception block can't distinguish a broken connection from 'no keys matched.'",
+    fix:"Log with enough detail to diagnose, and consider re-raising or a sentinel for connection failures.",
+    angle:'"How do you tell \'docstore is empty\' apart from \'docstore is broken,\' from the caller\'s side?"' },
+  { name:"ids=None duplicates parents on re-ingest", symptom:"Running add_documents(docs, ids=None) twice doubles the index",
+    cause:"With ids=None, a fresh UUID is generated every call — nothing checks for existing content.",
+    fix:"Pass stable, content-derived ids so re-ingestion overwrites instead of duplicating.",
+    angle:'"Your nightly ingestion job runs on the same files — how do you avoid the index growing forever?"' },
+];
+const grid = document.getElementById('gotchaGrid');
+GOTCHAS.forEach((g,i)=>{
+  const el = document.createElement('div');
+  el.className = 'flip';
+  el.onclick = ()=> el.classList.toggle('on');
+  el.innerHTML = `
+    <div class="flip-inner">
+      <div class="flip-face flip-front">
+        <div class="label">Gotcha ${i+1}</div>
+        <div class="name">${g.name}</div>
+        <div class="symptom">${g.symptom}</div>
+        <div class="tap">tap to flip &rarr;</div>
+      </div>
+      <div class="flip-face flip-back">
+        <b>Cause</b>${g.cause}
+        <b>Fix</b>${g.fix}
+        <b>Interview angle</b>${g.angle}
+      </div>
+    </div>`;
+  grid.appendChild(el);
+});
+
+/* ---------------- data: top 10 ---------------- */
+const TOP10 = [
+  { q:"Why does parent document retrieval index small chunks but return large ones — what breaks if you just index the large chunks directly?",
+    a:"Indexing large chunks directly blurs the embedding — a 2000-character chunk covering three topics produces a vector that's a poor match for a query about any one of them, so recall drops. Small child chunks give sharp, single-topic vectors; the parent swap recovers context only after the precise match is found.",
+    src:"DZone: Parent Document Retrieval", url:"https://dzone.com/articles/parent-document-retrieval-useful-technique-in-rag" },
+  { q:"Design a low-latency RAG system — where does parent document retrieval help or hurt your latency budget?",
+    a:"It adds one extra lookup (docstore mget after vector search) — sub-millisecond against an in-memory or indexed KV store, dwarfed by embedding+search. It helps indirectly: small child chunks keep the ANN search itself faster than embedding large chunks would. Production targets commonly aim for p99 ≤ 1.5s end-to-end.",
+    src:"Prachub: Design a low-latency RAG system", url:"https://prachub.com/interview-questions/design-a-low-latency-rag-system" },
+  { q:"Your embed API starts rate-limiting under load — where in a parent-document pipeline does that show up first, and what do you do?",
+    a:"First at ingestion (embedding every child chunk — more calls than naive per-document embedding), then at query time (embedding the incoming query). Mitigate with batched embedding calls, exponential backoff, and caching embeddings for unchanged content instead of re-embedding on every ingest run.",
+    src:"Redis: RAG at Scale", url:"https://redis.io/blog/rag-at-scale/" },
+  { q:"How do you keep the vector store and the docstore consistent under concurrent writes or partial failures?",
+    a:"Use idempotent, content-derived ids so a retried write overwrites instead of duplicating, and prefer a single transactional backend (e.g. Postgres for both index and docstore) over two independently-failing systems where atomicity actually matters.",
+    src:"Redis: RAG at Scale", url:"https://redis.io/blog/rag-at-scale/" },
+  { q:"When would an agent use parent document retrieval as a tool versus calling a plain vector search tool?",
+    a:"When it expects to need to reason over or quote substantial context (a full contract clause), not just confirm a fact exists. For quick fact lookups, raw child-chunk search is cheaper and faster. This is a genuinely agentic decision — the planning step should pick the tool by how much context the sub-task needs.",
+    src:"SoK: Agentic RAG survey", url:"https://arxiv.org/pdf/2603.07379" },
+  { q:"How do you evaluate whether parent document retrieval actually improved answer quality over naive chunking?",
+    a:"Build an offline eval set of (query, expected answer, expected source) triples. Measure retrieval quality (recall@k on parent ids) and generation quality (LLM-as-judge / exact match) separately. Compare naive fixed-chunk RAG against parent-document RAG on the same set and same k, holding the LLM constant. (Not in your notebooks — build this.)",
+    src:"DataCamp: Top 30 RAG Interview Questions", url:"https://www.datacamp.com/blog/rag-interview-questions" },
+  { q:"Your RAG system returns confident wrong answers even after switching to parent document retrieval — walk me through debugging it.",
+    a:"Isolate the stage: pull raw child-chunk hits separately from the parent-swapped output. Wrong child hits → retrieval/embedding problem. Right child, wrong/bloated parent → chunk-size/splitter-boundary problem. Both right, answer still wrong → generation/prompt problem, unrelated to retrieval strategy.",
+    src:"TopGenAIJobs: RAG Interview Questions", url:"https://www.topgenaijobs.com/blog/rag-interview-questions" },
+  { q:"A production reranking step doubles your p95 latency — how do you decide whether to keep it?",
+    a:"Measure the actual quality delta reranking buys (via your eval set) against its latency cost. Rerank only the top-N child hits before the parent swap rather than reranking full parent documents — cross-encoder cost scales with the length of text scored.",
+    src:"TopGenAIJobs: RAG Interview Questions", url:"https://www.topgenaijobs.com/blog/rag-interview-questions" },
+  { q:"How does multi-vector retrieval generalize beyond parent-child (e.g. summary-indexed retrieval)?",
+    a:"MultiVectorRetriever generalizes the pattern: index ANY derived representation of a document (a summary, hypothetical questions it answers, or child chunks) and return the original on a hit. Parent-document is the case where the derived representation is 'a smaller chunk of the same text'; summary-indexed swaps that for an LLM-generated summary, trading indexing cost for potentially higher-precision matches.",
+    src:"LangChain: MultiVectorRetriever reference", url:"https://reference.langchain.com/python/langchain-classic/retrievers/multi_vector/MultiVectorRetriever" },
+  { q:"The customer can't send their documents to OpenAI for embeddings — how do you adapt this pipeline?",
+    a:"Swap OpenAIEmbeddings for a self-hosted or in-VPC embedding model — ParentDocumentRetriever, the vector store, and the docstore don't care which embedding function backs them, since embedding_function is injected, not hardcoded. The harder part is usually the LLM generation call, not embeddings, since embeddings are cheaper to self-host well.",
+    src:"Hirist: Top RAG Interview Questions 2026", url:"https://www.hirist.tech/blog/top-rag-interview-questions-and-answers/" },
+];
+const top10List = document.getElementById('top10List');
+TOP10.forEach((item,i)=>{
+  top10List.appendChild(makeQCard(`t10-${i}`, item.q, item.a, item.src, item.url, 'all'));
+});
+
+/* ---------------- data: role tracks ---------------- */
+const TRACKS = {
+  applied: {
+    take: "Given a folder of 50 markdown files with real heading structure, build a parent-document retriever where the parent boundary follows ## headings instead of a fixed character count, and show recall@5 on a 10-question eval set versus the fixed-chunk_size baseline.",
+    qs: [
+      ["Walk me through what changes in your embedding index when you switch from chunk_size=400 naive chunking to child=400/parent=2000 parent-document.", "The index itself barely changes if child size matches the old naive chunk size — what changes is what gets returned after a hit."],
+      ["How do you pick child_splitter size vs. parent_splitter size independently?", "Child size is tuned for embedding precision against typical query length/specificity; parent size is tuned against the LLM's context budget divided by expected k."],
+      ["Recall@k improved after switching to parent-document retrieval but answer quality on one query type got worse — hypothesis?", "The parent now includes irrelevant surrounding text that distracts the LLM ('lost in the middle') — worth testing chain_type or a compression step."],
+      ["When would you NOT use parent document retrieval?", "When source documents are already short and self-contained — FAQ entries, short tickets — where naive chunking already gives full context."],
+      ["How would you A/B test parent-document retrieval against your current retriever in production?", "Shadow-run both against live traffic, log both outputs, score offline with an eval set or human review — don't ship on vibes."],
+      ["What's the failure mode if child_splitter chunk size is larger than parent_splitter's by mistake?", "A ValueError at construction — LangChain validates the child splitter's size is smaller than the parent's."],
+      ["How do you handle a source document already smaller than your child chunk size?", "The splitter returns it as a single chunk unchanged — no error, but worth confirming since it's easy to assume splitting always happens."],
+      ["PGVector read latency spikes under load — what do you check first?", "Whether the vector column has an appropriate index (IVFFlat/HNSW) vs. a sequential scan — EXPLAIN ANALYZE the query."],
+    ]
+  },
+  agentic: {
+    take: "Wrap ParentDocumentRetriever as a LangGraph tool node with a hard cap of 3 calls per run, structured (not raw exception) error output on docstore/vectorstore failure, and a trace log line per call showing query, hit count, and resolved parent ids.",
+    qs: [
+      ["You wrap this retriever as an agent tool. What stops an infinite loop of slightly-rephrased re-queries?", "A call cap or budget on retrieval tool calls per turn/task, enforced outside the model — the model can't be trusted to self-limit."],
+      ["The agent gets a duplicate-parent result and the LLM hallucinates 'a second source confirms this' — where do you fix that?", "Dedupe by parent id before the tool result reaches the model — fix it in code, don't rely on prompting the model to notice duplicates."],
+      ["Design the tool schema for this retriever as an agent tool — what does zero hits look like?", "Structured output — list of {content, source, doc_id} — with an explicit empty-list-is-valid case the agent's prompt is told to expect, rather than an exception that crashes the run."],
+      ["If ingestion is itself a tool the agent can call, what's your idempotency story?", "Content-derived ids — the agent might call ingest twice on retry, and you don't want duplicate parents."],
+      ["Where would a human approve, in a pipeline where an agent retrieves a contract clause then drafts an email using it?", "Before the action with real-world side effects — sending the email — not before retrieval, which is read-only and safe to let the agent do autonomously."],
+      ["One worker in a fan-out re-embedding 10,000 docs fails on one batch. What happens to the other nine?", "They should be independent transactions — one batch failing shouldn't roll back or block the others; log the failed batch's ids for retry."],
+      ["How do you make retrieval tool calls observable enough to debug a bad agent run?", "Log the query, child-chunk hits with scores, resolved parent ids, and final returned content — per call, tied to a trace/run id. (Not in your notebooks — build this.)"],
+      ["When is a dedicated 'retriever agent' actively worse than just giving one agent this tool directly?", "When there's no independent judgment being exercised — a plain tool call has no decision to delegate, so a separate agent adds latency and coordination overhead for no autonomy gained."],
+    ]
+  },
+  fde: {
+    take: "Given a mock customer requirement — 'no data leaves our AWS VPC, documents update daily, must survive pod restarts' — sketch the parent-document retrieval architecture (which pieces run where, which store backends, what the nightly ingestion job does) as a one-page design doc.",
+    qs: [
+      ["The customer wants this over their 40GB of internal wiki pages. What's realistic for week one vs. what you'll fake?", "Week one — parent-document retrieval over a representative subset with Chroma, to prove the pattern; persistent Postgres and full-corpus ingestion come after the demo lands."],
+      ["It works on your test docs and returns garbage on the customer's real data — what's different, and how do you find out?", "Check document structure first — scanned PDFs, tables, wildly different length distributions; pull actual failing queries and trace them through child-hit → parent-swap manually."],
+      ["Compliance says documents cannot leave their VPC for embedding. What changes?", "Self-hosted or in-VPC embedding model instead of an external API — same interface swap as top-10 #10 — plus the vector store and docstore both need to live inside their network boundary."],
+      ["The customer asks for '99% retrieval accuracy.' How do you respond?", "Push back on the number itself — ask what 'accuracy' means for their use case (recall@k? exact-answer correctness?) and propose building their eval set from real examples before promising a number."],
+      ["You need to re-ingest nightly because the customer edits pages constantly — what's missing from add_documents(docs, ids=None)?", "Stable content-derived ids so re-ingestion updates rather than duplicates — same gotcha as before, now a hard requirement."],
+      ["The customer's data has PII inside document content that becomes an indexed child chunk. What's your obligation?", "Know whether PII needs masking/redaction before embedding per their compliance requirements, and confirm whether the vector store/docstore need encryption-at-rest or access controls."],
+      ["Explain the cost of this pipeline to a non-engineer stakeholder.", "Embedding cost scales with number of child chunks at ingest — smaller chunks, more chunks, more calls. Generation cost scales with parent size × k at query time — bigger parents cost more per query."],
+      ["Walk me through a deployment you owned that went badly.", "No fixed answer — but for this stack, volunteering the docstore/vector-store drift gotcha as a real incident shape (not hypothetical) is a strong signal."],
+    ]
+  }
+};
+function buildTrack(role){
+  const body = document.getElementById('track-'+role);
+  const data = TRACKS[role];
+  data.qs.forEach((pair,i)=>{
+    body.appendChild(makeQCard(`${role}-${i}`, pair[0], pair[1], null, null, role));
+  });
+  const th = document.createElement('div');
+  th.className = 'takehome';
+  th.innerHTML = `<b>Take-home style task</b>${data.take}`;
+  body.appendChild(th);
+}
+['applied','agentic','fde'].forEach(buildTrack);
+
+/* ---------------- data: rapid fire ---------------- */
+const RF = [
+  ["What's a 'child chunk' in parent document retrieval?","A small split of a source document — the only thing actually embedded and searched."],
+  ["What's stored in the docstore?","The parent documents (or parent chunks), keyed by an id, never embedded."],
+  ["What happens with no parent_splitter?","The whole original document becomes the parent — unbounded size."],
+  ["What interface must a custom docstore implement?","BaseStore — mget, mset, mdelete, yield_keys."],
+  ["Why did 08_BetterRetriever.ipynb return the same document twice on one query?","Two child chunks from the same parent both scored highly; no dedup by parent id."],
+  ["What does chain_type='stuff' do?","Concatenates every retrieved document's full text into one prompt."],
+  ["Name one risk of InMemoryStore in production.","All parent data is lost on process restart."],
+  ["Why is RecursiveCharacterTextSplitter's chunk_size not a token count?","It counts characters via len(), not tokens."],
+  ["What breaks if add_documents(docs, ids=None) is called twice on the same content?","New random ids each time — duplicate parents and children accumulate."],
+  ["Name a persistent alternative to Chroma-in-memory used in the notebooks.","PGVector."],
+  ["What generalizes parent document retrieval to summaries or hypothetical questions?","MultiVectorRetriever."],
+  ["What's the main cost driver at ingestion time?","Number of child chunks × embedding calls."],
+  ["What's the main cost driver at query time?","Parent size × k, fed into the LLM."],
+  ["Why must a child chunk be smaller than its parent's chunk size?","LangChain validates it at construction — a child can't be bigger than the thing it's a piece of."],
+  ["Name one thing NOT in these notebooks a strong candidate should be ready to build anyway.","An evaluation harness (recall@k / LLM-as-judge) comparing parent-document retrieval against a baseline."],
+];
+const rfGrid = document.getElementById('rfGrid');
+RF.forEach((pair,i)=>{
+  const el = document.createElement('div');
+  el.className = 'rf-card';
+  el.onclick = ()=> el.classList.toggle('open');
+  el.innerHTML = `<div class="rf-q">${i+1}. ${pair[0]}</div><div class="rf-a">${pair[1]}</div>`;
+  rfGrid.appendChild(el);
+});
+
+/* ---------------- shared card builder ---------------- */
+function makeQCard(id, q, a, src, url, role){
+  const el = document.createElement('div');
+  el.className = 'qcard';
+  el.id = id;
+  el.dataset.role = role;
+  const srcLine = src ? `<div class="qsrc">Source: <a href="${url}" target="_blank" rel="noopener">${src}</a></div>` : '';
+  el.innerHTML = `
+    <div class="qhead" onclick="toggleQ('${id}')">
+      <span class="qnum">?</span>
+      <div>
+        <div class="qtext">${q}</div>
+      </div>
+    </div>
+    <div class="qbody">
+      <div class="qans">${a}${srcLine}</div>
+      <div class="score-row">
+        <button class="score-btn" data-s="got" onclick="score(event,'${id}','got')">Got it</button>
+        <button class="score-btn" data-s="shaky" onclick="score(event,'${id}','shaky')">Shaky</button>
+        <button class="score-btn" data-s="missed" onclick="score(event,'${id}','missed')">Missed</button>
+      </div>
+    </div>`;
+  return el;
+}
+
+/* ---------------- interactions ---------------- */
+function toggleConcept(id){ document.getElementById(id).classList.toggle('open'); }
+function toggleQ(id){ document.getElementById(id).classList.toggle('open'); }
+
+const SCORE_KEY = 'pdr_tutorial_scores_v1';
+function loadScores(){ try{ return JSON.parse(localStorage.getItem(SCORE_KEY) || '{}'); }catch(e){ return {}; } }
+function saveScores(s){ try{ localStorage.setItem(SCORE_KEY, JSON.stringify(s)); }catch(e){} }
+let scores = loadScores();
+
+function score(evt, id, val){
+  evt.stopPropagation();
+  scores[id] = (scores[id] === val) ? null : val;
+  if(scores[id] === null) delete scores[id];
+  saveScores(scores);
+  applyScoreUI();
+  updateTally();
+}
+function applyScoreUI(){
+  document.querySelectorAll('.qcard').forEach(card=>{
+    const s = scores[card.id];
+    if(s){ card.dataset.score = s; }
+    else { delete card.dataset.score; }
+    card.querySelectorAll('.score-btn').forEach(b=>{
+      b.classList.toggle('sel', b.dataset.s === s);
+    });
+  });
+}
+function updateTally(){
+  const vals = Object.values(scores);
+  document.getElementById('cntGot').textContent = vals.filter(v=>v==='got').length;
+  document.getElementById('cntShaky').textContent = vals.filter(v=>v==='shaky').length;
+  document.getElementById('cntMissed').textContent = vals.filter(v=>v==='missed').length;
+}
+
+let redrillOn = false;
+document.getElementById('redrillBtn').addEventListener('click', function(){
+  redrillOn = !redrillOn;
+  this.classList.toggle('on', redrillOn);
+  applyFilters();
+});
+
+let currentRole = 'all';
+document.getElementById('roleGroup').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.role-btn');
+  if(!btn) return;
+  currentRole = btn.dataset.role;
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  applyFilters();
+});
+
+function applyFilters(){
+  document.querySelectorAll('.track').forEach(t=>{
+    const show = currentRole === 'all' || t.dataset.role === currentRole;
+    t.style.display = show ? '' : 'none';
+  });
+  document.querySelectorAll('.qcard[data-role]').forEach(card=>{
+    const roleOk = currentRole === 'all' || card.dataset.role === 'all' || card.dataset.role === currentRole;
+    const s = scores[card.id];
+    const redrillOk = !redrillOn || s === 'shaky' || s === 'missed';
+    card.classList.toggle('hidden-by-filter', !(roleOk && redrillOk));
+  });
+}
+
+applyScoreUI();
+updateTally();
+applyFilters();
+</script>
