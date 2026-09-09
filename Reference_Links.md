@@ -40,3 +40,22 @@
 * [LangChain in Action: Develop LLM-Powered Applications](https://www.udemy.com/course/langchain-in-action-develop-llm-powered-applications)
 * [Introduction to LangChain for Agentic AI](https://courses.analyticsvidhya.com/courses/take/introduction-to-langchain-for-agentic-ai/lessons/61748853-course-introduction)
 * [Building AI Agents with LangChain](https://courses.analyticsvidhya.com/courses/take/building-ai-agents-with-langchain/lessons/64877940-course-introduction)
+* GenAI Application Architecture - Scalable and Secure AI Design  ***
+* LLM Obeservibility and Cost Management ***
+
+Pending Topics
+
+1. End to End Agent Project - Krish Naik Agent Course
+3. LLM Structured Output using Pydantic, TypedDict - Krish Naik Agent Course
+4. Human in the Loop - Krish Naik Agentic Project
+5. Guardrails in LangChain - Krish Naik Agent Course
+6. Advanced Chunking - Krish Naik RAG
+7. Hybrid Search - Krish Naik RAG
+8. Different Streaming Technique - Krsih Naik RAG
+9. Agentic RAG - Krish Naik RAG Course
+10. Autonomous RAG - Krish Naik RAG
+11. Multi Agent RAG - Krish Naik RAG
+12. Corrective RAG -Krish Naik RAG
+13. Adaptive RAG - Krish Naik RAG
+14. RAG With Memory - Krish Naik RAG
+15. RAG Project - Krish Naik RAG
