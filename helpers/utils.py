@@ -186,6 +186,21 @@ def get_databricks_gateway_llm(model_name: str = "system.ai.gemma-3-12b", temper
     )
 
 
+def get_experientiallabs_llm(model_name: str = "gpt-5.6-luna", temperature: float = 0):
+    """
+    Create and return a Chat LLM served through the Experiential Labs
+    OpenAI-compatible endpoint, via ChatOpenAI pointed at that base_url.
+
+    Requires EXPERIENTIALLABS_API_KEY environment variable to be set.
+    """
+    return ChatOpenAI(
+        model=model_name,
+        api_key=os.environ["EXPERIENTIALLABS_API_KEY"],
+        base_url="https://api.experientiallabs.ai/v1",
+        temperature=temperature,
+    )
+
+
 # ============================================================================
 # EMBEDDING FACTORY FUNCTIONS
 # ============================================================================
@@ -264,6 +279,7 @@ _FACTORIES = {
     "groq":               get_groq_llm,
     "databricks":         get_databricks_llm,
     "databricks_gateway": get_databricks_gateway_llm,
+    "experientiallabs":   get_experientiallabs_llm,
 }
 
 
