@@ -20,3 +20,13 @@ swapping the `From` and `archive/<From>` paths.
 | 2026-09-08 | 02_HITL_Interrupt_and_Resume.ipynb | `03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/` | Core `interrupt()`/`interrupt_before`/`interrupt_after`/resume-lifecycle content — the cleanest fundamentals reference of the original 4 — moved wholesale into the new mechanics-only notebook | `01_HITL_Mechanics.ipynb` |
 | 2026-09-08 | 03_HITL_State_Modification.ipynb | `03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/` | Approve/Reject and Edit/Review patterns merged into the applied-patterns notebook; their two separate `ChatOpenAI()` inits collapsed into one shared LLM setup cell reused by both patterns | `02_HITL_Patterns.ipynb` |
 | 2026-09-08 | 04_HITL_Dynamic_Breakpoints.ipynb | `03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/` | Tool-call review via `interrupt()`, `create_react_agent`, and the generic `add_human_in_the_loop` wrapper moved into the applied-patterns notebook; its toy `State{age}` input-validation-loop example (no LLM) moved into the mechanics notebook instead | `01_HITL_Mechanics.ipynb`, `02_HITL_Patterns.ipynb` |
+| 2026-09-10 | 6.0_Tools_Functions_Essentials.ipynb | `05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` | Every concept it taught is covered by a sibling in the same folder, and the one section that was locally unique belongs to another phase. Its `Tool(...)` wrapping, ReAct agent and multi-tool agent are covered by `6.1`/`6.2`; its Part 3 LCEL section (`RunnableParallel`/`RunnableLambda`) is Phase 01 material — `RunnableParallel` appears in 19 other notebooks, including the dedicated `01_LangChain_Fundamentals/04_LCEL/` track (4 notebooks) and `06_Workflow_Patterns/6.3_Parallelization.ipynb`. Teaching LCEL inside an agent-tools folder was a one-topic-one-phase violation. No inbound references existed. **Not ported: its `create_agent` usage** — see note below | `6.1_Tool_Calling_LangChain.ipynb`, `6.2_Tool_Calling_Agents.ipynb`; LCEL by `01_LangChain_Fundamentals/04_LCEL/` |
+
+> **Follow-up from the 2026-09-10 retirement of `6.0_Tools_Functions_Essentials.ipynb`.**
+> That notebook was the only one in `01_Tools_and_Functions/` using the current
+> `from langchain.agents import create_agent` API — it even carried the superseded
+> `from langgraph.prebuilt import create_react_agent` call commented out directly above it,
+> showing the migration had been done deliberately. The surviving `6.2_Tool_Calling_Agents.ipynb`
+> still uses the older `create_react_agent` in two cells. Archiving `6.0` therefore removed this
+> folder's only example of the newer API. `6.2` should be migrated to `create_agent`;
+> until it is, the folder teaches the older form.

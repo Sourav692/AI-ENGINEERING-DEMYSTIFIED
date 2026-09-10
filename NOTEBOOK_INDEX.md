@@ -273,9 +273,11 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 | # | Section | Topic |
 |---|---|---|
-| 1 | `01_Tools_and_Functions/` | Tool calling, tool-calling agents, OpenAI tool calling (4 nb) |
+| 1 | `01_Tools_and_Functions/` | Tool calling, tool-calling agents, OpenAI tool calling (3 nb) |
 | 2 | `02_Agents/` | Agents (1 nb) |
 | 3 | `03_Applied_Projects/` | 16 applied projects — see `03_Applied_Projects/README.md` for the full list (research assistant, multi-user conversational research, text-to-SQL, financial analyst, travel assistant, and 11 short exercises) |
+
+**Retired 2026-09-10** → `archive/` (see `archive/RETIRED_MANIFEST.md`): `6.0_Tools_Functions_Essentials.ipynb`. Every concept it taught is covered by `6.1`/`6.2` in the same folder; its one locally-unique section was LCEL (`RunnableParallel`), which belongs to — and is covered by — `01_LangChain_Fundamentals/04_LCEL/`. The numbering gap at `6.0` is intentional.
 
 ## `AI_Agents_with_LangGraph/`
 
