@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervisor to Swarm</title>
+<meta name="description" content="A five-session route through this repo's LangGraph multi-agent notebooks, ordered so each session adds exactly one coordination primitive.">
+<style>:root{color-scheme:light dark}html{-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+
+<style>
+  :root{
+    --ground:#F3F2F5; --surface:#FFFFFF; --surface-2:#FAF9FB;
+    --ink:#221D28; --muted:#6A6376; --rule:#DFDBE5;
+    --accent:#8A3F6D; --accent-soft:#F1E4EC; --done:#2E7D6E; --done-soft:#E0EFEB;
+    --shadow:0 1px 2px rgba(34,29,40,.05), 0 8px 24px -16px rgba(34,29,40,.25);
+    --display:"Bricolage Grotesque",system-ui,sans-serif;
+    --body:"Source Serif 4",Georgia,serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#16131A; --surface:#1F1B25; --surface-2:#241F2B;
+      --ink:#ECE7F0; --muted:#A69EB1; --rule:#332C3B;
+      --accent:#DE93C1; --accent-soft:#2E2130; --done:#63BCA8; --done-soft:#1C2B28;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#16131A; --surface:#1F1B25; --surface-2:#241F2B;
+    --ink:#ECE7F0; --muted:#A69EB1; --rule:#332C3B;
+    --accent:#DE93C1; --accent-soft:#2E2130; --done:#63BCA8; --done-soft:#1C2B28;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:var(--body); font-size:17px; line-height:1.6;
+    margin:0; padding-block:0; padding-inline:20px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px; margin:0 auto; padding-block:56px 96px}
+
+  h1,h2,h3,h4{font-family:var(--display); font-weight:800; text-wrap:balance; margin:0; line-height:1.15}
+  h1{font-size:clamp(2.3rem,6vw,3.4rem); letter-spacing:-.02em}
+  h2{font-size:1.55rem; letter-spacing:-.01em}
+  h3{font-size:1.05rem; font-weight:600}
+  p{margin:0}
+  a{color:var(--accent)}
+
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .lede{font-size:1.15rem; color:var(--muted); max-width:62ch}
+  code{
+    font-family:var(--mono); font-size:.86em; background:var(--accent-soft);
+    color:var(--ink); padding:.12em .38em; border-radius:3px;
+  }
+
+  header.top{display:flex; flex-direction:column; gap:18px; margin-bottom:14px}
+  .rule{height:1px; background:var(--rule); border:0; margin:40px 0}
+
+  /* progress meter */
+  .meter{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    background:var(--surface); border:1px solid var(--rule); border-radius:10px;
+    padding:16px 20px; box-shadow:var(--shadow); margin-top:8px;
+  }
+  .meter .count{font-family:var(--mono); font-size:.95rem; font-variant-numeric:tabular-nums; color:var(--muted)}
+  .meter .count b{color:var(--ink); font-weight:500}
+  .bar{flex:1 1 220px; height:6px; background:var(--rule); border-radius:99px; overflow:hidden; min-width:160px}
+  .bar>i{display:block; height:100%; width:0; background:var(--done); border-radius:99px; transition:width .3s ease}
+  .meter button{
+    font-family:var(--mono); font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+    background:none; border:1px solid var(--rule); color:var(--muted);
+    padding:7px 12px; border-radius:6px; cursor:pointer;
+  }
+  .meter button:hover{border-color:var(--accent); color:var(--accent)}
+  .meter button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  /* session bands */
+  .session{
+    display:grid; grid-template-columns:132px 1fr; gap:28px;
+    padding:32px 0; border-top:1px solid var(--rule);
+  }
+  .session:first-of-type{border-top:0}
+  .rail{display:flex; flex-direction:column; gap:12px; align-items:flex-start}
+  .num{
+    font-family:var(--display); font-weight:800; font-size:2.6rem; line-height:1;
+    color:var(--accent); font-variant-numeric:tabular-nums;
+  }
+  .rail .meta{font-family:var(--mono); font-size:.72rem; color:var(--muted); line-height:1.7}
+  svg.topo{width:110px; height:74px; overflow:visible}
+  svg.topo text{font-family:var(--mono); font-size:7px; fill:var(--muted)}
+
+  .body h2{margin-bottom:6px}
+  .nbpath{
+    font-family:var(--mono); font-size:.78rem; color:var(--muted);
+    word-break:break-all; margin:8px 0 16px; line-height:1.6;
+  }
+  .nbpath b{color:var(--ink); font-weight:500}
+  .goal{
+    border-left:3px solid var(--accent); padding:2px 0 2px 16px;
+    margin:0 0 18px; color:var(--ink);
+  }
+  .block{margin-bottom:18px}
+  .block h3{margin-bottom:6px; color:var(--muted); font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; font-weight:500}
+  .idents{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px}
+  .idents span{font-family:var(--mono); font-size:.76rem; background:var(--surface-2); border:1px solid var(--rule); padding:3px 8px; border-radius:5px; color:var(--ink)}
+
+  ul.tasks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+  ul.tasks li{display:flex; gap:11px; align-items:flex-start; padding:7px 10px; border-radius:7px}
+  ul.tasks li:hover{background:var(--surface-2)}
+  ul.tasks input{
+    appearance:none; flex:0 0 auto; width:17px; height:17px; margin-top:5px;
+    border:1.5px solid var(--muted); border-radius:4px; cursor:pointer; background:var(--surface);
+  }
+  ul.tasks input:checked{background:var(--done); border-color:var(--done)}
+  ul.tasks input:checked::after{content:"✓"; display:block; color:#fff; font-size:12px; line-height:14px; text-align:center; font-family:var(--display)}
+  ul.tasks input:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  ul.tasks label{cursor:pointer; flex:1}
+  ul.tasks input:checked + label{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--rule)}
+
+  .check{
+    background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--done);
+    border-radius:0 8px 8px 0; padding:14px 18px; margin-top:16px;
+  }
+  .check .k{font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--done); display:block; margin-bottom:4px}
+
+  /* gotchas */
+  .gotcha{
+    display:grid; grid-template-columns:auto 1fr; gap:14px 16px;
+    padding:16px 0; border-top:1px solid var(--rule); align-items:baseline;
+  }
+  .gotcha:first-of-type{border-top:0}
+  .gotcha .sym{font-family:var(--mono); font-size:.78rem; color:var(--accent); white-space:nowrap}
+  .gotcha p{color:var(--muted); font-size:.95rem}
+  .gotcha p b{color:var(--ink); font-weight:600}
+
+  /* coverage table */
+  .tablewrap{overflow-x:auto; margin-top:18px}
+  table{border-collapse:collapse; width:100%; font-size:.88rem; min-width:520px}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--rule)}
+  th{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:500}
+  td.c{text-align:center; font-family:var(--mono); color:var(--done); font-weight:500}
+  td.c.no{color:var(--rule)}
+  tbody tr:hover{background:var(--surface-2)}
+
+  footer{margin-top:56px; color:var(--muted); font-size:.9rem}
+
+  @media (max-width:640px){
+    .session{grid-template-columns:1fr; gap:16px}
+    .rail{flex-direction:row; align-items:center; gap:18px; flex-wrap:wrap}
+    .num{font-size:2rem}
+    .wrap{padding-block:36px 64px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <span class="eyebrow">Multi-agent systems · LangGraph · 5 notebooks</span>
+    <h1>Supervisor to Swarm</h1>
+    <p class="lede">A five-session route through the multi-agent notebooks in this repo, ordered so each session introduces exactly one new coordination primitive. Roughly 90 minutes a session; session 4 wants two sittings.</p>
+    <div class="meter">
+      <span class="count"><b id="done">0</b> / <span id="total">0</span> steps</span>
+      <span class="bar"><i id="fill"></i></span>
+      <button id="reset" type="button">Reset progress</button>
+    </div>
+  </header>
+
+  <hr class="rule">
+
+  <!-- ══ SESSION 1 ══ -->
+  <section class="session">
+    <div class="rail">
+      <span class="num">01</span>
+      <svg class="topo" viewBox="0 0 110 74" role="img" aria-label="Five small topologies: network, supervisor, tool-calling, hierarchy, custom">
+        <g stroke="var(--accent)" stroke-width="1.2" fill="none">
+          <circle cx="12" cy="12" r="4"/><circle cx="30" cy="8" r="4"/><circle cx="24" cy="26" r="4"/>
+          <path d="M12 12 30 8M30 8 24 26M24 26 12 12"/>
+          <circle cx="66" cy="10" r="4"/><circle cx="54" cy="26" r="3.4"/><circle cx="66" cy="26" r="3.4"/><circle cx="78" cy="26" r="3.4"/>
+          <path d="M66 14 54 23M66 14 66 23M66 14 78 23"/>
+          <circle cx="24" cy="48" r="4"/><circle cx="14" cy="66" r="3.4"/><circle cx="34" cy="66" r="3.4"/>
+          <path d="M24 52 14 63M24 52 34 63"/>
+          <circle cx="66" cy="46" r="4"/><circle cx="56" cy="60" r="3.4"/><circle cx="76" cy="60" r="3.4"/>
+          <circle cx="50" cy="72" r="2.6"/><circle cx="62" cy="72" r="2.6"/>
+          <path d="M66 50 56 57M66 50 76 57M56 63 50 70M56 63 62 70"/>
+        </g>
+        <text x="96" y="16">×5</text>
+      </svg>
+      <span class="meta">23 cells / 16 code<br>~90 min</span>
+    </div>
+    <div class="body">
+      <h2>The map of the territory</h2>
+      <p class="nbpath">07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/01_Agent_Patterns/<b>02_Supervisor_Multi_Agent_Alt.ipynb</b></p>
+      <p class="goal">Build the taxonomy first. This is the only notebook that constructs <em>all five</em> canonical architectures side by side, so every later session slots into a category you already recognise.</p>
+
+      <div class="block">
+        <h3>Read for</h3>
+        <p>The five numbered sections — Network, Supervisor, Supervisor&nbsp;with&nbsp;Tool-Calling, Hierarchical, Custom Workflow — and the one primitive that makes non-linear control possible: <code>Command(goto=...)</code>, which lets a node hand control to a named peer instead of falling through a fixed edge.</p>
+        <div class="idents">
+          <span>researcher_agent</span><span>writer_agent</span><span>reviewer_agent</span><span>supervisor</span><span>content_creator</span><span>editor</span><span>billing_agent</span><span>dev_supervisor</span><span>qa_supervisor</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Work through</h3>
+        <ul class="tasks">
+          <li><input type="checkbox" id="t1a"><label for="t1a">Run all five sections. Note which agent names appear in each — the cast changes deliberately per architecture.</label></li>
+          <li><input type="checkbox" id="t1b"><label for="t1b">Find every <code>Command(goto=)</code> call. Write down who decides the destination in each case.</label></li>
+          <li><input type="checkbox" id="t1c"><label for="t1c">Sketch all five topologies on paper from memory, then check yourself against the notebook.</label></li>
+        </ul>
+      </div>
+
+      <div class="check"><span class="k">You have it when</span>Given a new problem, you can name which of the five architectures fits and say what you would lose by choosing each of the other four.</div>
+    </div>
+  </section>
+
+  <!-- ══ SESSION 2 ══ -->
+  <section class="session">
+    <div class="rail">
+      <span class="num">02</span>
+      <svg class="topo" viewBox="0 0 110 74" role="img" aria-label="Star topology: one supervisor routing to three specialists">
+        <g stroke="var(--accent)" stroke-width="1.4" fill="none">
+          <path d="M55 24 27 50M55 24 55 50M55 24 83 50"/>
+          <circle cx="55" cy="18" r="9" fill="var(--accent-soft)"/>
+          <circle cx="27" cy="56" r="6.5"/><circle cx="55" cy="56" r="6.5"/><circle cx="83" cy="56" r="6.5"/>
+        </g>
+        <text x="41" y="72">researcher · writer · critic</text>
+      </svg>
+      <span class="meta">26 cells / 12 code<br>~90 min</span>
+    </div>
+    <div class="body">
+      <h2>Supervisor, built from parts</h2>
+      <p class="nbpath">07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/<b>01_multi_agent.ipynb</b></p>
+      <p class="goal">The state schema — not the agent prompts — is the real design decision in a multi-agent graph. This notebook builds one supervisor slowly enough to see that.</p>
+
+      <div class="block">
+        <h3>Read for</h3>
+        <p><code>RouteDecision</code> is the point of the session: the supervisor returns a <em>structured</em> routing decision rather than free text someone downstream has to parse. Trace how <code>route_to_agent</code> reads that decision back out to pick a conditional edge.</p>
+        <div class="idents">
+          <span>SupervisorState</span><span>RouteDecision</span><span>supervisor</span><span>researcher</span><span>writer</span><span>critic</span><span>finalize</span><span>route_to_agent</span><span>build_multi_agent_system</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Work through</h3>
+        <ul class="tasks">
+          <li><input type="checkbox" id="t2a"><label for="t2a">List every field on <code>SupervisorState</code> and name which node writes it. Any field written by two nodes needs a reducer — check whether it has one.</label></li>
+          <li><input type="checkbox" id="t2b"><label for="t2b">Add a fourth specialist. Note precisely what you had to change: state, routing enum, prompt, edges.</label></li>
+          <li><input type="checkbox" id="t2c"><label for="t2c">Break it on purpose — return a route name that is not a node — and read the error LangGraph gives you.</label></li>
+        </ul>
+      </div>
+
+      <div class="check"><span class="k">You have it when</span>You can explain why structured routing beats parsing the model's prose, and predict which state fields need reducers before you run the graph.</div>
+    </div>
+  </section>
+
+  <!-- ══ SESSION 3 ══ -->
+  <section class="session">
+    <div class="rail">
+      <span class="num">03</span>
+      <svg class="topo" viewBox="0 0 110 74" role="img" aria-label="Tree topology: a top supervisor over three department subgraphs">
+        <g stroke="var(--accent)" stroke-width="1.4" fill="none">
+          <path d="M55 16 22 34M55 16 55 34M55 16 88 34"/>
+          <circle cx="55" cy="11" r="7.5" fill="var(--accent-soft)"/>
+          <rect x="8" y="34" width="28" height="19" rx="4" stroke-dasharray="3 2"/>
+          <rect x="41" y="34" width="28" height="19" rx="4" stroke-dasharray="3 2"/>
+          <rect x="74" y="34" width="28" height="19" rx="4" stroke-dasharray="3 2"/>
+          <circle cx="17" cy="44" r="3"/><circle cx="27" cy="44" r="3"/>
+          <circle cx="55" cy="44" r="3"/><circle cx="88" cy="44" r="3"/>
+        </g>
+        <text x="20" y="66">compiled subgraph = one node</text>
+      </svg>
+      <span class="meta">24 cells / 10 code<br>~90 min</span>
+    </div>
+    <div class="body">
+      <h2>Nesting, and the shared contract</h2>
+      <p class="nbpath">07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/<b>06_hierarchical_agents.ipynb</b></p>
+      <p class="goal">Scaling past one level. A department is a normal <code>StateGraph</code>, compiled independently, then dropped into a parent graph as a single node — which only works because every level speaks the same state schema.</p>
+
+      <div class="block">
+        <h3>Read for</h3>
+        <p><code>TeamState</code> is the whole trick: one contract shared by the parent and every subgraph, which is what lets a compiled graph act as a node with no adapter code. Also note <code>demo_single_department</code> — each department is tested in isolation <em>before</em> being wired up.</p>
+        <div class="idents">
+          <span>TeamState</span><span>build_research_team</span><span>build_content_team</span><span>build_analysis_team</span><span>create_hierarchical_system</span><span>demo_single_department</span><span>demo_hierarchical_trace</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Work through</h3>
+        <ul class="tasks">
+          <li><input type="checkbox" id="t3a"><label for="t3a">Run <code>demo_single_department</code> on each team before running the full system — that isolation habit is the transferable lesson.</label></li>
+          <li><input type="checkbox" id="t3b"><label for="t3b">Run <code>demo_hierarchical_trace</code> and follow one message from the top supervisor down to a specialist and back.</label></li>
+          <li><input type="checkbox" id="t3c"><label for="t3c">Add a fourth department with its own internal fan-out. Confirm the parent graph needed no adapter code.</label></li>
+        </ul>
+      </div>
+
+      <div class="check"><span class="k">You have it when</span>You can say why one shared <code>TeamState</code> removes the need for adapter code between levels — and what would break if each team defined its own schema.</div>
+    </div>
+  </section>
+
+  <!-- ══ SESSION 4 ══ -->
+  <section class="session">
+    <div class="rail">
+      <span class="num">04</span>
+      <svg class="topo" viewBox="0 0 110 74" role="img" aria-label="Mesh topology: four peer agents each connected to the others, no central router">
+        <g stroke="var(--accent)" stroke-width="1.3" fill="none">
+          <path d="M26 20 84 20M26 20 26 52M84 20 84 52M26 52 84 52M26 20 84 52M84 20 26 52"/>
+          <circle cx="26" cy="20" r="7" fill="var(--accent-soft)"/><circle cx="84" cy="20" r="7" fill="var(--accent-soft)"/>
+          <circle cx="26" cy="52" r="7" fill="var(--accent-soft)"/><circle cx="84" cy="52" r="7" fill="var(--accent-soft)"/>
+        </g>
+        <text x="30" y="70">no central router</text>
+      </svg>
+      <span class="meta">46 cells / 29 code<br>~2 × 90 min</span>
+    </div>
+    <div class="body">
+      <h2>Swarm: control without a router</h2>
+      <p class="nbpath">07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/02_Multi_Agent_Swarm/<b>01_Multi_Agent_Swarm.ipynb</b></p>
+      <p class="goal">The decentralised counterpart to session 2, and the most realistic notebook of the five — real ReAct sub-agents over a real SQL database, with memory that survives turns. Split it across two sittings: sub-agents first, swarm assembly second.</p>
+
+      <div class="block">
+        <h3>Read for</h3>
+        <p><strong>Handoff tools.</strong> Control transfers because one agent <em>calls a tool</em> that moves the conversation to a peer — no supervisor decides. Then note what that costs: without a central router, nothing guarantees termination, which is why <code>MemorySaver</code> and turn limits matter here more than anywhere else.</p>
+        <div class="idents">
+          <span>State</span><span>RAGSystem</span><span>NL2SQLSystem</span><span>rag_tool</span><span>sql_tool</span><span>create_swarm</span><span>MemorySaver</span><span>start_chat</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Work through</h3>
+        <ul class="tasks">
+          <li><input type="checkbox" id="t4a"><label for="t4a">Sitting one — build and test each ReAct sub-agent alone (QA, NL2SQL, invoice) before any swarm exists.</label></li>
+          <li><input type="checkbox" id="t4b"><label for="t4b">Sitting two — assemble the swarm, then run the multi-turn conversation and watch which agent answers each turn.</label></li>
+          <li><input type="checkbox" id="t4c"><label for="t4c">Give session 2's supervisor system the same task this swarm handles. Write down where each architecture struggles.</label></li>
+        </ul>
+      </div>
+
+      <div class="check"><span class="k">You have it when</span>You can argue both sides of centralised vs decentralised — the supervisor's single point of failure against the swarm's lack of a termination guarantee — with a concrete example of each.</div>
+    </div>
+  </section>
+
+  <!-- ══ SESSION 5 ══ -->
+  <section class="session">
+    <div class="rail">
+      <span class="num">05</span>
+      <svg class="topo" viewBox="0 0 110 74" role="img" aria-label="Fan-out topology: one node dispatching to N parallel workers, merging, then a quality gate that loops back">
+        <g stroke="var(--accent)" stroke-width="1.4" fill="none">
+          <circle cx="14" cy="30" r="6" fill="var(--accent-soft)"/>
+          <path d="M20 30 36 14M20 30 36 30M20 30 36 46"/>
+          <circle cx="41" cy="14" r="4.5"/><circle cx="41" cy="30" r="4.5"/><circle cx="41" cy="46" r="4.5"/>
+          <path d="M46 14 62 30M46 30 62 30M46 46 62 30"/>
+          <circle cx="68" cy="30" r="6"/>
+          <path d="M74 30 88 30"/>
+          <rect x="88" y="23" width="15" height="15" rx="3" fill="var(--accent-soft)"/>
+          <path d="M95 38 95 58 14 58 14 36" stroke-dasharray="3 3"/>
+        </g>
+        <text x="4" y="70">Send() fan-out · quality gate loops back</text>
+      </svg>
+      <span class="meta">34 cells / 15 code<br>~90 min</span>
+    </div>
+    <div class="body">
+      <h2>Dynamic fan-out and a real cycle</h2>
+      <p class="nbpath">07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/<b>07_multi_agent_research_system.ipynb</b></p>
+      <p class="goal">The capstone. Adds the two things the first four never show: workers spawned at runtime rather than wired at build time, and a graph that sends work <em>backwards</em> for revision instead of running straight to <code>END</code>.</p>
+
+      <div class="block">
+        <h3>Read for</h3>
+        <p><code>dispatch_searches</code> uses <code>Send()</code> to spawn one worker per item in a list the supervisor produced — the count is unknown until runtime. Notice there are <em>two</em> state schemas: <code>ResearchState</code> for the whole run and <code>SearchTaskState</code> for each dispatched task. That separation is the pattern, not an accident.</p>
+        <div class="idents">
+          <span>ResearchState</span><span>SearchTaskState</span><span>QualityReview</span><span>supervisor</span><span>search_agent</span><span>dispatch_searches</span><span>analyst</span><span>report_writer</span><span>quality_checker</span><span>quality_gate</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Work through</h3>
+        <ul class="tasks">
+          <li><input type="checkbox" id="t5a"><label for="t5a">Run <code>demo_individual_search</code> first, then <code>demo_research_with_streaming</code> to watch the fan-out happen live.</label></li>
+          <li><input type="checkbox" id="t5b"><label for="t5b">Diff <code>SearchTaskState</code> against <code>ResearchState</code> field by field and explain why each field sits where it does.</label></li>
+          <li><input type="checkbox" id="t5c"><label for="t5c">Tighten the threshold in <code>quality_gate</code> until the graph loops. Confirm it terminates — then find what stops it.</label></li>
+          <li><input type="checkbox" id="t5d"><label for="t5d">Final exercise: rebuild session 2's supervisor system using <code>Send()</code> for the specialists. Decide whether it improved anything.</label></li>
+        </ul>
+      </div>
+
+      <div class="check"><span class="k">You have it when</span>You can explain why a fanned-out worker needs its own state schema, and what stops a quality-gate cycle from running forever.</div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ══ GOTCHAS ══ -->
+  <section>
+    <span class="eyebrow">Before you start</span>
+    <h2 style="margin:8px 0 6px">Four things that will bite you</h2>
+    <p style="color:var(--muted); max-width:64ch; margin-bottom:20px">All four are live in this repo right now, on LangChain 1.4. Recognising them saves an hour each.</p>
+
+    <div class="gotcha">
+      <span class="sym">ImportError</span>
+      <p><b>The legacy agent API moved.</b> <code>create_tool_calling_agent</code> and <code>AgentExecutor</code> are no longer in <code>langchain.agents</code> — that package now exports only <code>create_agent</code>. They live in <code>langchain_classic.agents</code>, the same relocation as <code>langchain.chains</code>.</p>
+    </div>
+    <div class="gotcha">
+      <span class="sym">Deprecated</span>
+      <p><b><code>create_react_agent</code> is on the way out.</b> Deprecated in LangGraph v1.0, removal planned for v2.0. The replacement is <code>create_agent</code> from <code>langchain.agents</code> — and the argument <code>prompt</code> was renamed <code>system_prompt</code>, so renaming only the function raises <code>TypeError</code>.</p>
+    </div>
+    <div class="gotcha">
+      <span class="sym">KeyError</span>
+      <p><b>A TypedDict does not create keys.</b> It is an annotation, nothing more. Invoke a graph with <code>{"query": q}</code> and a node reading <code>state["metadata"]</code> raises immediately — annotated-but-unset fields are simply absent. Fields with a reducer get a default; plain ones do not. Use <code>state.get(...)</code>.</p>
+    </div>
+    <div class="gotcha">
+      <span class="sym">Duplicates</span>
+      <p><b>Never mutate state in a node.</b> With an <code>Annotated[list, operator.add]</code> channel, appending to <code>state["messages"]</code> edits the channel's own list, and returning it makes the reducer add it a second time — every entry appears twice. Return a partial update containing only the new items.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ══ COVERAGE ══ -->
+  <section>
+    <span class="eyebrow">Why these five</span>
+    <h2 style="margin:8px 0 6px">Coverage without overlap</h2>
+    <p style="color:var(--muted); max-width:64ch">Each session owns at least one primitive no other session teaches, so nothing here is revision.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Primitive</th><th>01</th><th>02</th><th>03</th><th>04</th><th>05</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Five canonical architectures</td><td class="c">●</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td></tr>
+          <tr><td><code>Command(goto=)</code> handoff</td><td class="c">●</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td></tr>
+          <tr><td>Structured routing decision</td><td class="c no">·</td><td class="c">●</td><td class="c no">·</td><td class="c no">·</td><td class="c">●</td></tr>
+          <tr><td>State schema &amp; reducers</td><td class="c no">·</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td></tr>
+          <tr><td>Subgraph as a node</td><td class="c">●</td><td class="c no">·</td><td class="c">●</td><td class="c no">·</td><td class="c no">·</td></tr>
+          <tr><td>Handoff tools / <code>create_swarm</code></td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c">●</td><td class="c no">·</td></tr>
+          <tr><td>Checkpointer memory</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c">●</td><td class="c no">·</td></tr>
+          <tr><td><code>Send()</code> dynamic fan-out</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c">●</td></tr>
+          <tr><td>Cyclic quality gate</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c">●</td></tr>
+          <tr><td>Streaming execution</td><td class="c no">·</td><td class="c no">·</td><td class="c no">·</td><td class="c">●</td><td class="c">●</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted); font-size:.92rem; margin-top:18px; max-width:64ch">One deliberate gap: none of the five uses the prebuilt <code>create_supervisor</code> helper. It appears only in <code>Production_Course_Multi_Agent/02_supervisor_agent.ipynb</code> (16 cells) — skim that afterwards if you want the library shortcut, once sessions 1 and 2 have shown you the mechanism it wraps.</p>
+  </section>
+
+  <footer>Progress is saved in this browser only. Notebook paths are relative to the repository root.</footer>
+</div>
+
+<script>
+  (function () {
+    var KEY = "sts-progress-v1";
+    var boxes = Array.prototype.slice.call(document.querySelectorAll("ul.tasks input[type=checkbox]"));
+    var doneEl = document.getElementById("done");
+    var totalEl = document.getElementById("total");
+    var fill = document.getElementById("fill");
+    totalEl.textContent = boxes.length;
+
+    function load() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; }
+      catch (e) { return {}; }
+    }
+    function save(state) {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    }
+    function paint() {
+      var n = boxes.filter(function (b) { return b.checked; }).length;
+      doneEl.textContent = n;
+      fill.style.width = (boxes.length ? (n / boxes.length) * 100 : 0) + "%";
+    }
+
+    var state = load();
+    boxes.forEach(function (b) {
+      if (state[b.id]) b.checked = true;
+      b.addEventListener("change", function () {
+        var s = load();
+        if (b.checked) { s[b.id] = 1; } else { delete s[b.id]; }
+        save(s);
+        paint();
+      });
+    });
+    paint();
+
+    document.getElementById("reset").addEventListener("click", function () {
+      boxes.forEach(function (b) { b.checked = false; });
+      save({});
+      paint();
+    });
+  })();
+</script>
+</body>
+</html>

@@ -360,6 +360,8 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 | `02_Multi_Agent_Swarm/` | `01_Multi_Agent_Swarm.ipynb` | Peer-to-peer/swarm multi-agent architecture |
 | `Production_Course_Multi_Agent/` (added 2026-09-08) | `01_multi_agent.ipynb`, `02_supervisor_agent.ipynb`, `03_agent_handoffs.ipynb`, `04_agent_communication.ipynb`, `05_parallel_agents.ipynb`, `06_hierarchical_agents.ipynb`, `07_multi_agent_research_system.ipynb` | 7 notebooks from the same merged-in "production-course" as the Phase 3/4 additions above — see `.cleanup/production-course-main-code-main_cleanup_plan.md` |
 
+> **Study route (added 2026-09-11):** [`SUPERVISOR_TO_SWARM.html`](../SUPERVISOR_TO_SWARM.html) at the repository root is a five-session plan across the notebooks in this track — `01_Agent_Patterns/02_Supervisor_Multi_Agent_Alt.ipynb` → `Production_Course_Multi_Agent/01_multi_agent.ipynb` → `.../06_hierarchical_agents.ipynb` → `02_Multi_Agent_Swarm/01_Multi_Agent_Swarm.ipynb` → `.../07_multi_agent_research_system.ipynb`. Ordered so each session adds exactly one coordination primitive (`Command(goto=)` → structured routing → subgraph-as-node → handoff tools → `Send()` fan-out + cyclic gate). Open the file in a browser; progress ticks save to that browser's local storage.
+
 ## `Deep_Agents_and_Harness_Engineering/`
 
 Not notebooks — Python scripts + a `deepagents`-based multi-agent system:
