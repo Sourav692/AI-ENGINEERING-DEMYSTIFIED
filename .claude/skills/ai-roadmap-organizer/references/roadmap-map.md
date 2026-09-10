@@ -80,12 +80,14 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | Track | Status | Content |
 |---|---|---|
 | `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval + RAG-as-tool (agentic RAG), extended with `RAG_Demystified`'s corrective/adaptive/healthcare-router agentic RAG notebooks |
-| `Comprehensive_RAG_Techniques/` | ✅ Built | The NirDiamant `RAG_Techniques` collection (~35 nb) — kept whole rather than split by notebook, since it shares `helper_functions.py`/`data/`/`images/` across the collection via relative paths. Placed here (not Phase 4) because its own identity is an *advanced*-techniques anthology even though some individual notebooks are basic. |
+| `Comprehensive_RAG_Techniques/` | ✅ Built | The NirDiamant `RAG_Techniques` collection (42 technique notebooks) — kept whole rather than split by notebook, since it shares `helper_functions.py`/`data/`/`images/` across the collection via relative paths. The former nested upstream checkout was merged into this track on 2026-09-09; the track also has 5 evaluation notebooks, 21 runnable scripts, tests, data, images, and provenance/support files. |
 | `RAG_Ecosystem/` | ✅ Built | Fareed Khan single-notebook RAG stack (from `rag-ecosystem`). Kept whole; includes CRAG pointers + eval so it is not split into Phase 4/7. Distinct from NirDiamant. |
 | `GraphRAG/` | ✅ Built | Knowledge-graph + RAG course (from `RAG_Demystified`) |
 | `CacheRAG/` | 🚧 Planned | |
 
 Also two standalone apps merged from `RAG_Demystified`: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (an MCP+A2A agentic RAG app — kept RAG-first here rather than split to Phase 9, per user decision).
+
+The 2026-09-10 reorganization starts with a source registry and dependency-preserving migration manifest. Canonical concept extraction will proceed in bounded batches; the shared anthology remains intact until its support paths and donor destinations are validated.
 
 ## Phase 9 — `09_Agent_Protocols/` — ✅ Partially built
 
@@ -139,6 +141,18 @@ Owns: deployment, LLMOps, observability, security, safety.
 ## Phase 13 — `13_Projects/` — ✅ Built (12 projects)
 
 Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 apps from `AgenticAI_Projects_Demystified` + `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat) + `Resume_Genie/` (Streamlit + LangGraph career suite). More capstones get added here as new phases produce content worth integrating.
+
+## `RAG_Curriculum/` — in-progress consolidation, NOT a 14th phase
+
+Started 2026-09-10. A standalone top-level folder consolidating RAG content from Phases 4, 7 and 8 into one active lesson per concept (`00_Curriculum_Guide/` … `11_Applications_and_Capstones/`, plus `_support/` and `_archive/`). Plan: `RAG_CURRICULUM.md`. Execution record and per-source dispositions: `RAG_MIGRATION_MANIFEST.md`. Folder guide: `RAG_Curriculum/README.md`.
+
+**Currently 1 of 70 planned lessons built** (the basic-RAG pilot, fully validated — 27/27 cells execute). Its 7 source notebooks were retired into `RAG_Curriculum/_archive/` on 2026-09-10 with checksums verified, and every inbound reference repointed. Phase 4 is 67 notebooks as a result, down from 74. Treat the folder as in-flight, not as a phase:
+
+- **Do not route new RAG files here.** Phases 4, 7 and 8 are still the live homes for everything not yet migrated. New RAG content goes to its existing phase, and the migration picks it up later.
+- **Do not retire a Phase 4/7/8 notebook because a `RAG_Curriculum/` lesson looks like it supersedes it.** A source is superseded only once `RAG_MIGRATION_MANIFEST.md` records its disposition *and* the replacing lesson has passed validation. Retirement means a checksum-verified **move** into `RAG_Curriculum/_archive/` (original relative layout preserved), never a delete, and every inbound reference must be repointed in the same pass.
+- **Retiring a notebook means hunting its references.** The pilot's 7 retirements touched 8 other files. Grep for the filename across `*.md`, `*.ipynb` and `*.py` before moving anything — folder `README.md`s, `NOTEBOOK_INDEX.md`, `tutorials/`, and sibling notebooks' "next steps" cells all carry cross-references. The pilot found three documents that had been describing notebooks at paths they left in an *earlier* reorganization, so assume existing references are already partly wrong.
+- This is a user-approved exception to one-home-per-topic, chosen 2026-09-10 over distributing the numbered folders into existing phase homes. It temporarily creates two places RAG content can live; that resolves when the migration completes.
+- `_support/helpers/rag_paths.py` is the depth-independent asset resolver lessons use instead of `../../` paths. It is deliberately not named `utils` or `helpers` — both already collide in this repo (three different `utils.py` under Phase 4 alone).
 
 ## `archive/`, `docs/`, root scaffolding
 

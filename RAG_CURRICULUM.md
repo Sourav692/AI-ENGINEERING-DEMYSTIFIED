@@ -1,9 +1,11 @@
 # RAG Curriculum - Reorganization Plan
 
-- **Status:** Planning document only; notebook reorganization has not started.
-- **Audit date:** September 9, 2026.
-- **Scope of this change:** Create this plan file only. Moving, merging, rewriting, or archiving notebooks requires a separate go-ahead.
+- **Status:** Basic-RAG pilot consolidated (September 10, 2026). The curriculum lives in a standalone top-level `RAG_Curriculum/` folder; folders `00`–`11`, `_support/` and `_archive/` are scaffolded, and one canonical lesson is built. Remaining batches are paused pending review of the pilot.
+- **Audit date:** September 10, 2026. Notebook counts re-verified unchanged on the same date (Phase 4: 74, Phase 8: 61).
+- **Destination decision:** The numbered folders below are built as a **standalone top-level `RAG_Curriculum/`**, chosen by the user over distributing them into existing phase homes. Section 3's "Home" column and its warning against a competing home are therefore superseded on that point; Phases 4, 7 and 8 remain the live source of truth for every concept not yet migrated. See `RAG_Curriculum/README.md`.
+- **Scope of this change:** The pilot batch only — one canonical lesson, the folder scaffold, the path resolver, and the environment/path manifest. **No source notebook has been moved, archived, or deleted**, and no paid validation has been run.
 - **Recommendation:** Build a concept-first RAG curriculum with one authoritative active teaching notebook per concept. Preserve unique material and retain recoverable originals rather than permanently deleting content.
+- **Execution manifest:** [`RAG_MIGRATION_MANIFEST.md`][rag-migration-manifest]
 
 ## Contents
 
@@ -13,7 +15,7 @@
    - [Target product structure](#target-product-structure)
    - [Folder and notebook coverage](#folder-and-notebook-coverage)
 4. [Preferred canonical sources](#4-preferred-canonical-sources)
-5. [Anthologies, nested sources, and project boundaries](#5-anthologies-nested-sources-and-project-boundaries)
+5. [Anthologies, merged sources, and project boundaries](#5-anthologies-merged-sources-and-project-boundaries)
 6. [Standard structure for each canonical notebook](#6-standard-structure-for-each-canonical-notebook)
 7. [Dependency-preservation plan](#7-dependency-preservation-plan)
 8. [Implementation sequence after approval](#8-implementation-sequence-after-approval)
@@ -32,10 +34,12 @@ The read-only audit inventoried notebook files across the repository and inspect
 | Notebook files discovered                                              | 632                                                              |
 | Notebook files parseable as JSON                                       | 631                                                              |
 | Foundational RAG notebooks in`04_Retrieval_and_RAG/`                 | 74                                                               |
-| Advanced RAG notebooks outside the nested source checkout              | 52                                                               |
-| Notebooks inside the nested`RAG_TECHNIQUES` checkout                 | 46                                                               |
+| Current notebooks under `08_Advanced_RAG/`                             | 61                                                               |
+| Technique notebooks in `Comprehensive_RAG_Techniques/all_rag_techniques/` | 42                                                            |
+| Evaluation notebooks in the advanced anthology                         | 5                                                                |
+| Nested `RAG_TECHNIQUES` checkout                                      | 0; merged into the outer anthology on September 9, 2026          |
 | Byte-identical Enterprise RAG notebook pairs                           | 13 pairs between the handbook and interview-preparation projects |
-| Notebook titles in the nested checkout absent from the outer anthology | 9; a new title is not necessarily a new concept                  |
+| New technique notebooks brought into the outer anthology               | 7; these are now part of the 42-notebook technique collection    |
 | Zero-byte notebook files                                               | 1 project notebook                                               |
 
 These are the audit's final inventory counts, not a continuously updated inventory. The folder counts are subsets of the repository total. Re-scan before implementation because the working tree is changing.
@@ -44,10 +48,10 @@ These are the audit's final inventory counts, not a continuously updated invento
 
 - Basic RAG, embeddings, chunking, hybrid retrieval, query transformations, reranking, and evaluation have substantial conceptual overlap across courses and phases.
 - The handbook and interview-preparation Enterprise RAG projects contain 13 byte-identical notebook pairs. The handbook project should become the authoritative enterprise example, with interview-preparation links instead of duplicate lessons.
-- The nested checkout contains material absent from the outer anthology, including LightRAG, MemoRAG, graph attribution, and additional evaluation examples. Do not discard it as an entirely redundant copy.
+- The former nested checkout was merged into the outer anthology. Its unique material includes LightRAG, MemoRAG, graph attribution, JSON RAG, local RAG, multi-faceted filtering, Agentic RAG, and additional evaluation examples; these must remain represented in the source-to-destination mapping.
 - The [question-answering project placeholder][empty-qa-project] is zero bytes. The [short multimodal project placeholder][empty-multimodal-project] contains an empty code cell. Neither should count as a completed lesson.
 - Some document references are already fragile or incorrect. For example, loaders reference `../../data/dummy.txt` and `../../docs/layoutparser_paper.pdf`, while those assets live in `04_Retrieval_and_RAG/shared_data/`. The [notebook index][notebook-index] already records this issue in its known discrepancies.
-- The existing `semantic_chunking.ipynb` changed during the audit. At plan-creation time, there are also working-copy changes to `1-densesparse.ipynb` and `Reference_Links.md`, along with untracked local settings and the nested checkout. Preserve the current working state; do not overwrite it with an older audited copy.
+- The current advanced anthology includes deliberate local edits and an upstream verification record in `Comprehensive_RAG_Techniques/README_ROADMAP.md`. Preserve those edits and do not overwrite them with an older upstream or pre-merge copy.
 
 ### What the audit did not verify
 
@@ -345,30 +349,31 @@ Applications remain coherent bundles. They may link to canonical lessons and dem
 
 | Folder                                        | Contents and rule                                                                                                                           | Existing material                                                                                          |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `_support/shared_data/`                     | PDFs, text, images, CSV/JSON fixtures, and other inputs referenced by multiple lessons; preserve relative relationships through a manifest. | Phase 4`shared_data/` and anthology `data/`/`images/`.                                               |
-| `_support/helpers/`                         | Shared Python helpers, evaluation utilities, scripts, and setup modules; version and test them independently of lessons.                    | Anthology`helper_functions.py`, `evaluation/evalute_rag.py`, enterprise `src/`, and project helpers. |
-| `_support/evaluation_data/`                 | Goldens, labels, judge prompts, and regression fixtures; keep provenance and licensing metadata.                                            | Phase 7 evaluation assets and nested evaluation folders.                                                   |
+| `_support/shared_data/`                     | PDFs, text, images, CSV/JSON fixtures, and other inputs referenced by multiple lessons; preserve relative relationships through a manifest. | Phase 4 `shared_data/` and anthology `data/`/`images/`. |
+| `_support/helpers/`                         | Shared Python helpers, evaluation utilities, scripts, and setup modules; version and test them independently of lessons.                    | Anthology `helper_functions.py`, `evaluation/evalute_rag.py`, enterprise `src/`, GraphRAG `helpers/`, and project helpers. |
+| `_support/evaluation_data/`                 | Goldens, labels, judge prompts, and regression fixtures; keep provenance and licensing metadata.                                            | Phase 7 evaluation assets and the anthology `evaluation/` folder. |
 | `_support/environment_and_path_manifest.md` | Runtime matrix, package versions, environment variables, asset roots, generated-output policy, and source-to-target dependency mapping.     | To be created only during approved implementation.                                                         |
-| `_archive/`                                 | Original notebooks or superseded copies retained with stable source IDs, hashes, and an archive manifest; never imported as active lessons. | Existing duplicate donors, nested checkout, and byte-identical enterprise copies after migration approval. |
+| `_archive/`                                 | Original notebooks or superseded copies retained with stable source IDs, hashes, and an archive manifest; never imported as active lessons. | Existing duplicate donors and byte-identical enterprise copies after migration approval. |
 
 This catalogue intentionally does not turn every existing file into an active destination. For example, the 11 loader notebooks become sections of one ingestion lesson, the many backend notebooks become vector-store comparisons, and application notebooks remain bundled projects. A later migration manifest must list every source notebook as `canonical`, `donor`, `application`, `support`, `reference-only`, or `archive-candidate`, and must record the destination concept ID plus every data/helper dependency.
 
 ### Explicit coverage of `08_Advanced_RAG/`
 
-The advanced-RAG area was included in the audit and in the proposed mapping. The current snapshot contains **6 top-level folders and 98 notebooks**. The nested `RAG_TECHNIQUES` directory is treated as a source checkout/reference bundle, not as a second active curriculum. Counts should be rechecked immediately before migration.
+The advanced-RAG area was included in the audit and in the proposed mapping. The current snapshot contains **6 top-level folders and 61 notebooks**: 42 technique notebooks, 5 anthology evaluation notebooks, 7 GraphRAG notebooks, 1 ecosystem notebook, and 6 advanced LangGraph notebooks. The former nested `RAG_TECHNIQUES` checkout was merged into the outer anthology on September 9, 2026. Counts should be rechecked immediately before migration.
 
 | Existing folder | Notebook/source coverage in the proposed product | Treatment |
 | --- | --- | --- |
-| `Comprehensive_RAG_Techniques/all_rag_techniques/` | Baseline RAG, CSV RAG, reliable RAG, chunk-size experiments, proposition chunking, query transformations, HyDE, better queries, adaptive retrieval, context windows, contextual headers/compression, CRAG, Dartboard, augmentation, explainability, fusion, graph RAG, hierarchical indexes, HyPE, Microsoft GraphRAG, captioning, ColPali, RAPTOR, relevant-segment extraction, reranking, feedback loops, Self-RAG, semantic chunking, plus LlamaIndex variants. | Primary advanced-technique donor pool. Consolidate each concept into the corresponding `02`–`09` target folder; framework variants become sections or supporting examples. |
-| `Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/` | Includes the outer anthology duplicates plus unique `Agentic_RAG`, local graph attribution, JSON RAG, LightRAG, local HuggingFace/FAISS RAG, MemoRAG, multi-faceted filtering, and additional evaluation notebooks. | Preserve pending dependency mapping. Unique notebooks map to `01`, `03`, `06`, `07`, or `08`; duplicate notebooks remain donor/reference copies rather than active duplicates. |
-| `Comprehensive_RAG_Techniques/evaluation/` and nested `RAG_TECHNIQUES/evaluation/` | Evaluation definitions, DeepEval, G-Eval/Grouse-style meta-evaluation, end-to-end evaluation, open-RAG evaluation, completeness, golden benchmarks, judge calibration, hallucination, and citation evaluation. | Consolidate into `06_Evaluation/`; retain helper scripts, test fixtures, and evaluation data under `_support/`. |
-| `GraphRAG/` | Knowledge-graph CRUD, healthcare KG construction, manual Cypher through LangChain, vector indexing/embeddings, end-to-end graph-plus-vector RAG, entity/relation extraction, and an incomplete KG-from-text exercise. | Map completed material to `08_Advanced_Architectures/03`–`07`. Keep the incomplete exercise clearly labelled as an exercise/reference source; do not present it as a finished lesson. |
+| `Comprehensive_RAG_Techniques/all_rag_techniques/` | 42 technique notebooks, including the seven notebooks merged from the former nested checkout. | Primary advanced-technique donor pool. Consolidate each concept into the corresponding `01`–`09` target folder; framework variants become sections or support/reference examples. |
+| `Comprehensive_RAG_Techniques/all_rag_techniques_runnable_scripts/` | 21 standalone Python scripts mirroring selected techniques, including CRAG, RAPTOR, fusion, graph RAG, reranking, Self-RAG, and feedback retrieval. | Support/reference implementations; use for parity checks and runnable examples, not additional active notebooks. |
+| `Comprehensive_RAG_Techniques/evaluation/` | 5 evaluation notebooks: metric definitions, DeepEval, Grouse/meta-evaluation, end-to-end evaluation, and open-RAG evaluation. | Consolidate into `06_Evaluation/`; retain evaluation scripts and fixtures under `_support/`. |
+| `Comprehensive_RAG_Techniques/data/`, `images/`, `tests/`, `helper_functions.py`, and `evaluation/evalute_rag.py` | Shared data, visual assets, import tests, helper functions, and evaluation utilities used by the anthology. | Support; preserve as a coupled bundle and map all relative paths before any relocation. |
+| `GraphRAG/` | Knowledge-graph CRUD, healthcare KG construction, manual Cypher through LangChain, vector indexing/embeddings, end-to-end graph-plus-vector RAG, entity/relation extraction, helpers, and an incomplete KG-from-text exercise. | Map completed material to `08_Advanced_Architectures/03`–`07`; keep `helpers/` as support and label the incomplete exercise clearly. |
 | `RAG_Ecosystem/` | Omnibus RAG ecosystem overview, framework survey, and unique ColBERT material. | Use the overview as navigation/context and move the unique ColBERT insight to `09_Multimodal_RAG/04`; do not create another omnibus active notebook. |
-| `RAG_with_LangGraph_Advanced/` | Advanced conversational agent, retrieval-as-tool, healthcare router, CRAG, Adaptive RAG, and Self-RAG. | Map to `07_Agentic_RAG/`; preserve LangGraph implementation as a framework section or application donor. The healthcare router also supports `11_Applications_and_Capstones/02`. |
+| `RAG_with_LangGraph_Advanced/` | Advanced conversational agent, retrieval-as-tool, healthcare router, CRAG, Adaptive RAG, Self-RAG, and research-paper references. | Map notebooks to `07_Agentic_RAG/`; preserve LangGraph implementation and `research_papers/` as support/reference. The healthcare router also supports `11_Applications_and_Capstones/02`. |
 | `building-adaptive-rag/` | Adaptive-RAG application/protocol implementation files and supporting code. | Keep as an application/support bundle; use only conceptually relevant sections for `07_Agentic_RAG/04`. |
 | `CacheRAG/` | Planned CacheRAG area; no completed CacheRAG teaching notebook was verified. | Do not claim coverage or create a canonical lesson until a runnable source exists. Track as planned/missing content. |
 
-The 98-notebook count includes repeated anthology files in the nested checkout. Those repetitions are intentionally accounted for through the donor/reference treatment above; they are not intended to become 98 active lessons. The migration manifest must still enumerate every file individually, including notebooks that are ultimately classified as duplicates, applications, incomplete exercises, or support references.
+The current 61-notebook count reflects the merged repository state; there is no second nested copy to classify. The migration manifest must still enumerate every current source file individually, including notebooks classified as donors, applications, incomplete exercises, or support references.
 
 ### Source-to-destination mapping and disposition
 
@@ -418,11 +423,10 @@ This mapping makes the proposed treatment of `08_Advanced_RAG/` explicit. A dest
 | `self_rag.ipynb` | `07_Agentic_RAG/05_Self_RAG.ipynb` | Canonical source/donor. |
 | `semantic_chunking.ipynb` | `02_Chunking_and_Indexing/02_Semantic_Chunking.ipynb` | Donor; prefer the richer dedicated semantic-chunking source identified in Section 4. |
 
-#### Nested source checkout: `all_rag_techniques/RAG_TECHNIQUES/`
+#### Merged unique sources: `Comprehensive_RAG_Techniques/all_rag_techniques/`
 
 | Source notebook(s) | Proposed destination | Disposition and reason |
 | --- | --- | --- |
-| Duplicate copies of the outer anthology notebooks | Same destinations listed above | Support/reference and archive candidates after hash/dependency verification; do not create duplicate active lessons. |
 | `Agentic_RAG.ipynb` | `07_Agentic_RAG/01_Retrieval_as_an_Agent_Tool.ipynb` | Donor/support; preserve the managed SDK, parsing, reranking, and grounded-generation examples as an optional implementation. |
 | `graph_rag_local_attribution.ipynb` | `08_Advanced_Architectures/07_Graph_Attribution_and_Verifiable_Provenance.ipynb` | Canonical donor for local attribution and provenance. |
 | `json_rag.ipynb` | `01_Foundations/05_Structured_Data_RAG.ipynb` | Donor; preserve structured semantic retrieval, but do not claim it is a complete generation pipeline without adding and validating that section. |
@@ -440,7 +444,7 @@ This mapping makes the proposed treatment of `08_Advanced_RAG/` explicit. A dest
 | `Comprehensive_RAG_Techniques/evaluation/define_evaluation_metrics.ipynb` | `06_Evaluation/01_Deterministic_Retrieval_Metrics.ipynb` and `02_LLM_Judged_Retrieval_Metrics.ipynb` | Donor; split metric definitions by evaluation family. |
 | `Comprehensive_RAG_Techniques/evaluation/evaluation_deep_eval.ipynb` | `06_Evaluation/04_RAGAS_and_DeepEval_in_Practice.ipynb` | Donor. |
 | `Comprehensive_RAG_Techniques/evaluation/evaluation_grouse.ipynb` | `06_Evaluation/07_Evaluator_Calibration_and_Meta_Evaluation.ipynb` | Donor. |
-| Nested `RAG_TECHNIQUES/evaluation/` helper notebooks and evaluation scripts | `06_Evaluation/` plus `_support/evaluation_data/` and `_support/helpers/` | Support/reference; preserve imports, fixtures, judge prompts, and test utilities. |
+| `Comprehensive_RAG_Techniques/evaluation/` helper scripts and evaluation assets | `06_Evaluation/` plus `_support/evaluation_data/` and `_support/helpers/` | Support/reference; preserve imports, fixtures, judge prompts, and test utilities. |
 
 #### Graph, ecosystem, and LangGraph folders
 
@@ -463,7 +467,7 @@ This mapping makes the proposed treatment of `08_Advanced_RAG/` explicit. A dest
 | `building-adaptive-rag/` | `11_Applications_and_Capstones/` plus `_support/helpers/` | Application bundle; preserve protocol/app code, configuration, and tests. Extract only general adaptive-RAG teaching content. |
 | `CacheRAG/` | No active destination yet | Planned/missing; retain as reference/planning material and do not count it as completed CacheRAG coverage. |
 | Anthology `data/`, `images/`, `helper_functions.py`, `evaluation/`, runnable scripts, and `tests/` | `_support/shared_data/`, `_support/evaluation_data/`, `_support/helpers/` | Support; preserve hardcoded path relationships through the dependency manifest before any notebook move. |
-| Nested checkout repository metadata and package-specific helper files | `_support/helpers/` or source checkout reference | Support/reference; do not flatten or delete until imports and licensing/provenance are mapped. |
+| `README_ROADMAP.md`, upstream `README.md`, `LICENSE`, `CONTRIBUTING.md`, and package-specific helper files | `_support/helpers/` or source provenance record | Support/reference; preserve upstream provenance and local-sync decisions. |
 
 The same disposition model will be extended to the remaining repository phases during implementation: every source path receives one source ID, one destination concept or folder, one disposition, and a dependency list. This prevents a notebook being silently classified as “not needed” when it actually contains a required helper, dataset, test, or framework-specific implementation.
 
@@ -473,46 +477,46 @@ These are proposed starting points based on teaching content, not completed dest
 
 | Concept                                | Preferred existing source                                                                                      | Consolidation and preservation decision                                                                                                                                                                                                                                    |
 | -------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Basic RAG                              |                                                                                                                | Preserve the indexing/retrieval walkthrough from and the fallback, structured-output, and exercise material from . Move detailed component instruction to its canonical lesson instead of repeating it here.                                                               |
-| Document ingestion                     | The detailed[ lessons][loader-lessons]                                                                         | Preserve format-specific examples and custom-loader material. Consolidate repeated setup and loader introductions. Keep advanced multimodal extraction distinct from basic document-loading contracts.                                                                     |
-| Embeddings                             |                                                                                                                | Merge OpenAI examples from and batching/caching from . Keep model benchmarking as a distinct learning objective.                                                                                                                                                           |
-| Vector-store fundamentals              |                                                                                                                | Preserve useful Chroma/FAISS operations, persistence, and exercises. Other backends become optional comparisons rather than repeated basic-RAG tutorials.                                                                                                                  |
-| Chunking fundamentals                  |                                                                                                                | Incorporate focused examples/exercises from. Extract semantic and proposition chunking into their own lessons.                                                                                                                                                             |
-| Semantic chunking                      | The outer anthology's current                                                                                  | Preserve the user's current edits and incorporate the from-scratch threshold implementation from. Do not replace the working copy with the nested version automatically.                                                                                                   |
-| Query transformations                  | The eight dedicated notebooks in                                                                               | Retain their strong explanations, baselines, inspection steps, and tradeoffs. Merge useful additions from the production-course and ecosystem versions into the matching individual concept.                                                                               |
-| Hybrid retrieval                       |                                                                                                                | Preserve dense/sparse explanations, fusion implementations, and the Databricks comparison material. Carry forward current edits to. Do not conflate this with query-based RAG-Fusion.                                                                                      |
-| Parent-document retrieval              |                                                                                                                | Preserve the custom PostgreSQL document-store implementation from as an advanced section.                                                                                                                                                                                  |
-| Reranking                              | The outer anthology's                                                                                          | Merge useful cross-encoder examples, LCEL integration, provider comparisons, and the LlamaIndex variant. Route extraction/compression-specific material to contextual compression rather than mixing objectives.                                                           |
-| Corrective RAG                         |                                                                                                                | Preserve unique scoring/explanation material from the smaller.                                                                                                                                                                                                             |
-| Adaptive RAG                           |                                                                                                                | Preserve additional routing strategies, while distinguishing query-type strategy selection from the corrective graph workflow. Do not merge solely because both filenames contain adaptive.                                                                                |
-| Self-RAG                               |                                                                                                                | Preserve useful comparisons from the anthology version. Retain the dedicated lesson's separation of retrieval, relevance, groundedness, utility, and retry decisions.                                                                                                      |
-| Conversational and multi-user RAG      | The Phase 13 walkthrough                                                                                       | Extract separate conversational-RAG and multi-user-isolation lessons. Its SQL-backed session-history material is richer than the shorter notebook labeled Multi-user. Preserve the database/session behavior and shared pipeline dependencies.                             |
-| Captioning/multi-vector multimodal RAG |                                                                                                                | Preserve its text/table/image processing and document-store material. Keep shared text/image embedding retrieval and ColPali visual retrieval as separate techniques.                                                                                                      |
-| RAG evaluation                         | The[modular evaluation tutorial][evaluation-tutorial] plus the [detailed per-metric drills][evaluation-drills] | Use richer drills for contextual precision/recall/relevancy, together with modular explanations and offline/live examples. Distribute useful RAG material from repeated walkthroughs and the master notebook; retain unrelated agent/tool evaluation in its existing home. |
-| Enterprise RAG                         | The[handbook Enterprise RAG project][enterprise-handbook]                                                      | Make this the authoritative enterprise example. Replace the 13[interview-preparation notebook duplicates][enterprise-interview] with links after preserving originals. Keep project source, datasets, configuration, and tests intact.                                     |
+| Basic RAG                              | [`7.1_RAG_Comprehensive.ipynb`][rag-comprehensive] | Preserve the indexing/retrieval walkthrough from [`1_rag_overview.ipynb`][rag-overview] and fallback, structured-output, and exercise material from [`06_rag_pipeline.ipynb`][rag-pipeline]. |
+| Document ingestion                     | The detailed [`01_Loading_Data/` lessons][loader-lessons] | Preserve format-specific examples and custom-loader material. Consolidate repeated setup and loader introductions. Keep advanced multimodal extraction distinct from basic document-loading contracts. |
+| Embeddings                             | [`4. Embedding_Basics_Alt.ipynb`][embedding-basics] | Merge OpenAI examples from [`5. Openaiembeddings_Alt.ipynb`][openai-embeddings] and batching/caching from [`04_embeddings_deep.ipynb`][embeddings-deep]. |
+| Vector-store fundamentals              | [`05_vector_stores.ipynb`][vector-stores] | Preserve useful Chroma/FAISS operations, persistence, and exercises. Other backends become optional comparisons. |
+| Chunking fundamentals                  | [`1. Document_Splitters_and_Chunkers.ipynb`][chunking-comprehensive] | Incorporate focused examples from [`02_text_splitters.ipynb`][text-splitters]. Extract semantic and proposition chunking into their own lessons. |
+| Semantic chunking                      | [`semantic_chunking.ipynb`][semantic-chunking] | Preserve the current local edits and incorporate the threshold implementation from [`2. Semantichunking.ipynb`][semantic-chunking-manual]. Do not overwrite the current anthology copy. |
+| Query transformations                  | The eight dedicated notebooks in [`04_Query_Transformation_Techniques/`][query-transformations] | Retain their strong explanations, baselines, inspection steps, and tradeoffs. Merge useful additions from production-course and anthology versions into individual concepts. |
+| Hybrid retrieval                       | [`1.1. Hybrid_Search_RAG.ipynb`][hybrid-rag] and [`1-densesparse.ipynb`][dense-sparse] | Preserve dense/sparse explanations, fusion implementations, and comparisons. Do not conflate this with query-based RAG-Fusion. |
+| Parent-document retrieval              | [`Parent_Document_Retrieval.ipynb`][parent-document] | Preserve the custom PostgreSQL document-store implementation from [`08_BetterRetriever.ipynb`][postgres-parent] as an advanced section. |
+| Reranking                              | [`reranking.ipynb`][reranking] | Merge cross-encoder, LCEL, provider, and LlamaIndex examples. Route extraction/compression-specific material to contextual compression. |
+| Corrective RAG                         | [`2. Build_an_Agentic_Corrective_RAG_System_with_LangGraph.ipynb`][corrective-rag] and [`crag.ipynb`][crag-anthology] | Preserve unique scoring and explanation material from both implementations. |
+| Adaptive RAG                           | [`3. Build_an_Adaptive_RAG_System.ipynb`][adaptive-rag] | Preserve query-type routing strategies while distinguishing them from the corrective graph workflow. |
+| Self-RAG                               | [`4. Build_a_Self_RAG_System.ipynb`][self-rag] and anthology `self_rag.ipynb` | Preserve comparisons and the dedicated lesson's separation of retrieval, relevance, groundedness, utility, and retry decisions. |
+| Conversational and multi-user RAG      | The Phase 13 [`M8` walkthrough][conversational-m8] | Extract separate conversational-RAG and multi-user-isolation lessons. Its SQL-backed session-history material is richer than the shorter notebook labeled Multi-user. Preserve database/session behavior and shared pipeline dependencies. |
+| Captioning/multi-vector multimodal RAG | The Phase 13 [`GPT-4o multimodal walkthrough`][multimodal-m8] | Preserve text/table/image processing and document-store material. Keep shared image/text embeddings, ColPali, and ColBERT separate. |
+| RAG evaluation                         | The [`modular evaluation tutorial`][evaluation-tutorial] plus [`detailed per-metric drills`][evaluation-drills] | Use richer drills for contextual precision/recall/relevancy with modular explanations and offline/live examples. |
+| Enterprise RAG                         | The [`handbook Enterprise RAG project`][enterprise-handbook] | Make this the authoritative enterprise example. Replace the 13 interview-preparation duplicates with links after preserving originals and dependencies. |
 
 ### Dedicated query lessons to retain individually
 
-- : query variations and result union.
-- : reciprocal rank fusion across query results.
-- : abstraction and dual-context retrieval.
-- : hypothetical-document retrieval, including manual and packaged implementations.
-- : sub-question decomposition and synthesis.
-- : classifier-based routing.
-- : embedding-based routing and confidence inspection.
-- : natural-language query construction with metadata filters.
+- [`Multi_Query.ipynb`][multi-query]: query variations and result union.
+- [`RAG_Fusion.ipynb`][rag-fusion]: reciprocal-rank fusion across query results.
+- [`Step_Back_Prompting.ipynb`][step-back]: abstraction and dual-context retrieval.
+- [`HyDE.ipynb`][hyde]: hypothetical-document retrieval, including manual and packaged implementations.
+- [`Decomposition.ipynb`][decomposition]: sub-question decomposition and synthesis.
+- [`Routing_LLM_Classifier.ipynb`][classifier-routing]: classifier-based routing.
+- [`Semantic_Routing.ipynb`][semantic-routing]: embedding-based routing and confidence inspection.
+- [`Self_Querying_Retrieval.ipynb`][self-querying]: natural-language query construction with metadata filters.
 
 Give query rewriting/expansion its own canonical objective where it adds material beyond multi-query generation. Preserve relevant source sections rather than retaining a second broad query-techniques notebook.
 
-## 5. Anthologies, nested sources, and project boundaries
+## 5. Anthologies, merged sources, and project boundaries
 
 ### Broad notebooks become donors and navigation guides
 
-Map overlapping material in these notebooks to the relevant canonical concepts:
+Map overlapping material in these sources to the relevant canonical concepts:
 
-- .
-- .
-- .
+- `Comprehensive_RAG_Techniques/all_rag_techniques/6. query_transformations.ipynb` and `7_BetterQueries.ipynb`.
+- `Comprehensive_RAG_Techniques/all_rag_techniques/1. simple_rag.ipynb` and the LlamaIndex baseline variant.
+- `RAG_Ecosystem/rag_ecosystem.ipynb` and its ecosystem overview sections.
 
 Their overview/navigation role becomes Markdown documentation. Their original notebooks remain recoverable in the archive. Extract genuinely unique content, such as the ecosystem's ColBERT material, rather than dropping it when retiring the broad walkthrough.
 
@@ -520,29 +524,25 @@ Do not replace several duplicates with another oversized master notebook. For mi
 
 ### Unique advanced methods remain first-class lessons
 
-Explicitly preserve RAPTOR, HyPE, proposition chunking, relevant-segment extraction, Dartboard retrieval, feedback loops, graph attribution, and additional methods found in the nested source checkout.
+Explicitly preserve RAPTOR, HyPE, proposition chunking, relevant-segment extraction, Dartboard retrieval, feedback loops, graph attribution, and the seven technique notebooks merged from the former nested checkout.
 
 LightRAG's dual-level graph retrieval and MemoRAG's global-memory-guided retrieval warrant separate lessons, rather than generic GraphRAG or memory appendices. See the [LightRAG paper][lightrag-paper] and [MemoRAG paper][memorag-paper]. Where a notebook is a pedagogical reimplementation or a managed-service example, label that clearly rather than implying it implements an official research system unchanged.
 
-### Additional titles in the nested checkout
+### Former nested checkout now merged into the anthology
 
-The [nested source checkout][nested-checkout] has 46 notebooks. Nine titles were absent from the outer anthology during the audit:
+The former `all_rag_techniques/RAG_TECHNIQUES/` checkout was merged into `Comprehensive_RAG_Techniques/` on September 9, 2026 and removed. Its seven unique technique notebooks are now direct sources:
 
-| Nested notebook | Proposed treatment                                                                                                                                                         |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|                 | Preserve its managed RAG/component-evaluation material. Its larger size alone does not make it the best generic agentic-RAG foundation.                                    |
-|                 | Preserve verifiable graph attribution and multi-hop examples; distinguish the provenance objective from a mere local-model variant.                                        |
-|                 | Merge useful JSON-to-retrieval material into structured-data retrieval. Do not describe retrieval-only examples as a complete generation pipeline.                         |
-|                 | Retain a dedicated LightRAG concept lesson.                                                                                                                                |
-|                 | Preserve local execution, privacy/resource considerations, and useful implementation material. Separate optional cloud evaluation from any claim of fully local operation. |
-|                 | Retain memory-guided retrieval as a distinct concept from conversational history.                                                                                          |
-|                 | Preserve layered filtering examples in the canonical filtering lesson, with links to distinct diversity/retrieval concepts.                                                |
-|                 | Preserve completeness, benchmark, and evaluation material in the appropriate evaluation lessons.                                                                           |
-|                 | Preserve useful completeness, citation, and framework-integration examples without duplicating the whole evaluation curriculum.                                            |
+| Merged notebook | Proposed treatment |
+| --- | --- |
+| `all_rag_techniques/Agentic_RAG.ipynb` | Preserve managed RAG/component-evaluation material as a donor to `07_Agentic_RAG/01_Retrieval_as_an_Agent_Tool.ipynb`. |
+| `all_rag_techniques/graph_rag_local_attribution.ipynb` | Preserve verifiable graph attribution and multi-hop examples in `08_Advanced_Architectures/07_Graph_Attribution_and_Verifiable_Provenance.ipynb`. |
+| `all_rag_techniques/json_rag.ipynb` | Merge JSON-to-retrieval material into `01_Foundations/05_Structured_Data_RAG.ipynb`; do not describe retrieval-only cells as a complete generation pipeline. |
+| `all_rag_techniques/light_rag.ipynb` | Retain a dedicated `08_Advanced_Architectures/06_LightRAG.ipynb` lesson. |
+| `all_rag_techniques/local_rag_huggingface_faiss.ipynb` | Preserve local execution and resource considerations in `10_Production_RAG/05_Local_and_Provider_Agnostic_RAG.ipynb`. |
+| `all_rag_techniques/memorag.ipynb` | Retain memory-guided retrieval as `08_Advanced_Architectures/02_Memory_Guided_RAG.ipynb`, separate from conversational history. |
+| `all_rag_techniques/multi_faceted_filtering.ipynb` | Merge layered filtering into `03_Retrieval/02_Metadata_Filtering_and_Self_Query.ipynb`, with diversity concepts kept separate. |
 
-Some nested titles are implementation variants or donors for existing concepts, not nine additional mandatory canonical notebooks. Inspect source-level differences before selecting material.
-
-The nested checkout may supply live helper imports as well as teaching content. Resolve that dependency role before relocating, replacing, or archiving it. Do not copy a similarly named helper module into another bundle without checking its callers and interface.
+The merge also brought `evaluation/end-2-end_rag_evaluation.ipynb` and `evaluation/open-rag-eval-example.ipynb` into the anthology's top-level `evaluation/` folder, plus shared assets, scripts, and helper updates recorded in `README_ROADMAP.md`. The old nested path must not be used as a future dependency; update imports to the merged locations during implementation.
 
 ### Project boundaries
 
@@ -599,7 +599,7 @@ Before the first notebook move, record the following planned fields:
 | Validation and blockers                     | Record checks performed, existing failures, untested cloud paths, and unresolved dependencies honestly.                                        |
 | Archive/restore mapping                     | Make the original material recoverable without relying on memory or notebook titles.                                                           |
 
-The manifest must account for every affected source, including nested-checkout variants and mixed-topic notebooks. Do not select keepers solely by filename or move a donor to the archive before its unique material has a recorded destination.
+The manifest must account for every affected source, including merged anthology variants and mixed-topic notebooks. Do not select keepers solely by filename or move a donor to the archive before its unique material has a recorded destination.
 
 ### B. Keep assets stationary initially
 
@@ -609,7 +609,7 @@ Protect these dependency groups in particular:
 
 - [Phase 4 shared data][shared-data]: the 23 supporting files identified in the audit, including `dummy.txt`, `layoutparser_paper.pdf`, `Transformer.pdf`, and `wikidata_rag_demo.jsonl`.
 - [Outer anthology assets and helpers][anthology-root]: `data/`, `images/`, `helper_functions.py`, evaluation code, runnable scripts, and tests.
-- [Nested source checkout][nested-checkout]: its additional datasets, notebooks, helpers, and evaluation dependencies until the source-level comparison is complete.
+- The merged advanced anthology bundle: `data/`, `images/`, `helper_functions.py`, `evaluation/`, runnable scripts, tests, and the seven notebooks formerly supplied by the nested checkout.
 - GraphRAG's [entity-extraction bundle][graph-extraction-bundle]: co-located text, visualization helpers, and supporting application code.
 - [ShopUNow][shopunow]: department datasets, sample-data code, and the database-building sequence required by the agentic system.
 - [Enterprise RAG][enterprise-handbook]: `src/`, ACL manifests, identities, golden datasets, judge-calibration data, configuration, and tests.
@@ -663,7 +663,7 @@ Record pre-existing issues separately from migration regressions. A skipped clou
 
 ### Step 1 - Freeze and re-inventory the current working state
 
-- Re-scan the repository and nested checkout before relying on the audit counts.
+- Re-scan the repository and the merged advanced anthology before relying on the audit counts.
 - Capture recoverable copies and checksums of affected notebooks and assets, excluding secrets from content archives.
 - Preserve current uncommitted edits, including changes made after this plan was written.
 - Record baseline dependency problems without silently changing them.
@@ -747,7 +747,7 @@ These are future implementation criteria, not claims that the reorganization has
 - Reorganization or bug fixing unrelated to the RAG notebook task.
 - Overwriting user edits, stashing/resetting the working tree, creating branches, or making commits without a separate request.
 
-**The current request authorizes creation of this plan file only. Do not begin creating canonical notebooks or moving, merging, rewriting, or archiving sources until the user gives a separate go-ahead.**
+~~**The current request authorizes creation of this plan file only.**~~ **Superseded September 10, 2026.** The user authorized implementation, scoped to the basic-RAG pilot with a review gate before further batches. Within that scope, one canonical notebook was created; no source was moved, merged, rewritten, or archived, and no paid execution occurred. Everything in "Not implicitly authorized" above still stands.
 
 ## 11. Sources and repository references
 
@@ -764,6 +764,7 @@ The primary evidence is the local notebook/source audit. External references sup
 All source links below point to the locations observed during planning. Update them to the canonical locations or recorded archive/provenance destinations during implementation.
 
 [repo-guidance]: CLAUDE.md
+[rag-migration-manifest]: RAG_MIGRATION_MANIFEST.md
 [notebook-index]: NOTEBOOK_INDEX.md
 [requirements]: requirements.txt
 [empty-qa-project]: 13_Projects/RAG_Systems_Projects/4. Develop a RAG system for Question Answering.ipynb
@@ -807,16 +808,15 @@ All source links below point to the locations observed during planning. Update t
 [rag-ecosystem]: 08_Advanced_RAG/RAG_Ecosystem/rag_ecosystem.ipynb
 [advanced-rag-overview]: 04_Retrieval_and_RAG/RAG_Production_Course/07_advanced_rag.ipynb
 [evaluation-master]: 07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Agent_RAG_Tools_Evaluation_MASTER.ipynb
-[nested-checkout]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/
-[nested-agentic]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/Agentic_RAG.ipynb
-[nested-attribution]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/graph_rag_local_attribution.ipynb
-[nested-json]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/json_rag.ipynb
-[nested-lightrag]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/light_rag.ipynb
-[nested-local]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/local_rag_huggingface_faiss.ipynb
-[nested-memorag]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/memorag.ipynb
-[nested-filtering]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/multi_faceted_filtering.ipynb
-[nested-end-to-end]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/evaluation/end-2-end_rag_evaluation.ipynb
-[nested-open-eval]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/evaluation/open-rag-eval-example.ipynb
+[nested-agentic]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/Agentic_RAG.ipynb
+[nested-attribution]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/graph_rag_local_attribution.ipynb
+[nested-json]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/json_rag.ipynb
+[nested-lightrag]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/light_rag.ipynb
+[nested-local]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/local_rag_huggingface_faiss.ipynb
+[nested-memorag]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/memorag.ipynb
+[nested-filtering]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/multi_faceted_filtering.ipynb
+[nested-end-to-end]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/evaluation/end-2-end_rag_evaluation.ipynb
+[nested-open-eval]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/evaluation/open-rag-eval-example.ipynb
 [shopunow]: 13_Projects/ShopUNow_Agentic_RAG_Capstone/
 [cache-rag]: 08_Advanced_RAG/CacheRAG/README.md
 [shared-data]: 04_Retrieval_and_RAG/shared_data/

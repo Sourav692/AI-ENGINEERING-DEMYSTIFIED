@@ -4,6 +4,8 @@ A single, accurate table of every notebook in this repo, in the order they're me
 
 This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6, 11 are scaffolded placeholders with no content yet.
 
+> **In progress (2026-09-10): `RAG_Curriculum/`.** A standalone top-level folder consolidating RAG content from Phases 4, 7 and 8 into one active lesson per concept, per `RAG_CURRICULUM.md`. **Currently 5 lessons of a planned 70** — `01_Foundations/` is complete. Phases 4, 7 and 8 below remain the live source of truth for everything not yet migrated, and no notebook listed in this index has been moved, archived, or deleted. See [`RAG_Curriculum/`](#rag_curriculum--in-progress) at the end of this index.
+
 # Phase 1 — Theory & Foundations (`01_Theory_and_Foundations/`)
 
 Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/` — 🚧 Planned. `Coding_Essentials_for_Agents/` is built.
@@ -163,11 +165,11 @@ Foundational RAG only. Agentic/advanced RAG lives in Phase 8.
 
 | Notebook | Topic |
 |---|---|
-| `1_rag_overview.ipynb` | RAG overview |
-| `Basics of RAG.ipynb` | RAG basics |
 | `Indexing.ipynb` | Indexing |
 | `Langchain+Rag.ipynb` | RAG with LangChain |
 | `Retrieval Strategies.ipynb` | Retrieval strategies |
+
+**Retired 2026-09-10** → `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`: `1_rag_overview.ipynb`, `Basics of RAG.ipynb`, `Naive_RAG.ipynb`, `Naive_RAG_Alt.ipynb`. Preserved in `RAG_Curriculum/_archive/`.
 
 ## `Embeddings_and_Vector_Databases/`
 
@@ -194,9 +196,10 @@ Foundational RAG only. Agentic/advanced RAG lives in Phase 8.
 
 ## `Query_Transformation_Techniques/`
 
+The baseline these techniques transform is `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`. This folder's own README and explainer previously claimed `Naive_RAG.ipynb` / `Naive_RAG_Alt.ipynb` lived here; they had already moved to `01_Introduction_to_RAG/`, and were retired 2026-09-10. Both docs are corrected.
+
 | Notebook | Topic |
 |---|---|
-| `Naive_RAG.ipynb` / `Naive_RAG_Alt.ipynb` | Baseline naive RAG |
 | `Multi_Query.ipynb`, `RAG_Fusion.ipynb`, `Decomposition.ipynb`, `Step_Back_Prompting.ipynb`, `HyDE.ipynb` | Query transformation techniques |
 | `Self_Querying_Retrieval.ipynb` | Self-querying retrieval |
 | `Routing_LLM_Classifier.ipynb`, `Semantic_Routing.ipynb` | Query routing |
@@ -238,10 +241,10 @@ Also `shared_data/` at the phase root — supporting PDFs/data referenced by sev
 
 | # | Notebook | Topic |
 |---|---|---|
-| 1 | `7.0_RAG_Essentials.ipynb` | RAG essentials |
-| 2 | `7.1_RAG_Comprehensive.ipynb` | Comprehensive RAG |
-| 3 | `7.2_Filtered_Search.ipynb` | Filtered search |
-| 4 | `7.3_Indexing_API.ipynb` | Indexing API |
+| 1 | `7.2_Filtered_Search.ipynb` | Filtered search |
+| 2 | `7.3_Indexing_API.ipynb` | Indexing API |
+
+**Retired 2026-09-10** → `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`: `7.0_RAG_Essentials.ipynb`, `7.1_RAG_Comprehensive.ipynb`. Preserved in `RAG_Curriculum/_archive/`. Both used LangChain 0.x imports that no longer resolve on this repo's LangChain 1.4.
 
 Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
 
@@ -251,7 +254,7 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 ## `RAG_Production_Course/` (added 2026-09-08)
 
-7 notebooks from the same merged-in "production-course" as `03_LangGraph_Fundamentals/03_Production_Course/` (see `.cleanup/production-course-main-code-main_cleanup_plan.md`).
+6 notebooks from the same merged-in "production-course" as `03_LangGraph_Fundamentals/03_Production_Course/`. `06_rag_pipeline.ipynb` was **retired 2026-09-10** → `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb` (preserved in `RAG_Curriculum/_archive/`); `03_embeddings.ipynb` was retired 2026-09-08 to `archive/`. Both gaps in the numbering are intentional (see `.cleanup/production-course-main-code-main_cleanup_plan.md`).
 
 | Notebook | Topic |
 |---|---|
@@ -259,7 +262,6 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 | `02_text_splitters.ipynb` | Text splitters |
 | `04_embeddings_deep.ipynb` | `embed_query`/`embed_documents`, cosine similarity, `CacheBackedEmbeddings` |
 | `05_vector_stores.ipynb` | Vector stores |
-| `06_rag_pipeline.ipynb` | RAG pipeline (execution counts out of order — FMT-002, deferred, needs a top-to-bottom re-run) |
 | `07_advanced_rag.ipynb` | Advanced RAG |
 | `08_research_assistant.ipynb` (+ `08_research_assistant.py`) | Research-assistant app |
 
@@ -420,10 +422,13 @@ Depends on Phases 5 & 7 — sequenced after both.
 | 3 | `1. Build_a_Healthcare_Customer_Support_Router_Agentic_RAG_System.ipynb` | Healthcare customer-support router + agentic RAG |
 | 4 | `2. Build_an_Agentic_Corrective_RAG_System_with_LangGraph.ipynb` | Corrective RAG (CRAG) with LangGraph |
 | 5 | `3. Build_an_Adaptive_RAG_System.ipynb` | Adaptive RAG |
+| 6 | `4. Build_a_Self_RAG_System.ipynb` | Self-RAG |
 
 ## `Comprehensive_RAG_Techniques/`
 
 The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-notebook — its 42 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths). Ranges basic → advanced: simple RAG, CSV RAG, reliable RAG, proposition chunking, query transformations, HyDE, context enrichment, contextual compression, contextual chunk headers, CRAG, Self-RAG, RAPTOR, fusion retrieval, hierarchical indices, GraphRAG (incl. Microsoft GraphRAG, Milvus variant), adaptive retrieval, multimodal RAG (captioning, ColPali), reranking, explainable retrieval, relevant segment extraction, dartboard, document augmentation, retrieval with feedback loop, plus LightRAG, MemoRAG, JSON RAG, agentic RAG, multi-faceted filtering, local RAG (HuggingFace + FAISS) and graph RAG with local attribution — plus LlamaIndex variants of several. See `README_ROADMAP.md` for the full breakdown and why it wasn't split.
+
+The collection also includes `all_rag_techniques_runnable_scripts/` (21 standalone mirrors), `evaluation/` (5 evaluation notebooks plus `evalute_rag.py`), `data/`, `images/`, `tests/`, `helper_functions.py`, and upstream provenance files. These are coupled support assets, not additional curriculum tracks.
 
 ## `RAG_Ecosystem/`
 
@@ -570,6 +575,30 @@ Not notebooks-only — `01_create_vector_databases.ipynb`, `02_agentic_rag_syste
 Retired notebooks, kept for reference but not part of the learning path: `04_Reference_Course/` (9 notebooks) and `Ultimate_RAG_Bootcamp/` (6 notebooks + PDFs).
 
 ---
+
+# `RAG_Curriculum/` — in progress
+
+Consolidation target for RAG content currently spread across Phases 4, 7 and 8. Plan: `RAG_CURRICULUM.md`. Execution record and per-source dispositions: `RAG_MIGRATION_MANIFEST.md`. Folder guide: `RAG_Curriculum/README.md`.
+
+**Built (5 of 70 planned lessons) — `01_Foundations/` is complete:**
+
+| # | Notebook | Topic |
+|---|---|---|
+| 01 | `01_RAG_Lifecycle_and_Baseline.ipynb` | The full pipeline end to end at baseline depth — four components across two phases; retrieval built by hand with TF-IDF before any framework; load → split → embed → store → retrieve → augment → generate; source attribution, out-of-scope fallback, structured output; failure diagnosis with a routing table to the lesson fixing each mode. From 6 sources. |
+| 02 | `02_Document_Loading_and_Metadata.ipynb` | Text, Markdown, CSV, JSON/JSONL, PDF, Word, directories, web; choosing between competing PDF loaders; load granularity as a retrieval decision; validating a load for silent failures; deliberate metadata schema design. From the 11 loader notebooks. **Needs no API key.** |
+| 03 | `03_Embeddings_and_Model_Selection.ipynb` | `embed_query` vs `embed_documents`; normalization and what it means for the similarity metric; the `dimensions` trade measured with a margin metric; caching and the `namespace` trap; empirical model comparison; the index/query mismatch failure, measured. From 5 sources. |
+| 04 | `04_Vector_Stores_and_Index_Operations.ipynb` | The store as a database: add, search, filter, delete — and why update does not exist. Stable IDs and the duplicate trap; scores are backend-specific; pre- vs post-filtering; persistence and its two silent failures; the retriever adapter; backend selection. From 4 sources. |
+| 05 | `05_Structured_Data_RAG.ipynb` | Serializing records deliberately; semantic + exact hybrid; the three structural failures (aggregation, numeric comparison, exact lookup) demonstrated with wrong answers; self-query filters and query generation as the two fixes; nested JSON; routing by question type. From 4 sources. |
+
+Every code cell in all five executes end to end against live services.
+
+**Scaffolded, no content yet:** `00_Curriculum_Guide/`, `02_Chunking_and_Indexing/`, `03_Retrieval/`, `04_Query_Transformation_and_Routing/`, `05_Context_and_Generation/`, `06_Evaluation/`, `07_Agentic_RAG/`, `08_Advanced_Architectures/`, `09_Multimodal_RAG/`, `10_Production_RAG/`, `11_Applications_and_Capstones/`.
+
+**Support, not lessons:** `_support/helpers/rag_paths.py` (depth-independent asset resolver), `_support/environment_and_path_manifest.md` (runtime matrix, asset roots, LangChain 1.x import migration, validation status). `_support/shared_data/` and `_support/evaluation_data/` are empty — assets stay in their existing homes for now. `_archive/` is empty; nothing has been retired.
+
+**Runtime status:** all five lessons are fully validated by end-to-end execution (2026-09-10) — 27/27, 22/22, 11/11, 18/18, 19/19 code cells. LLM calls route through `helpers.get_experientiallabs_llm()` (`gpt-5.6-luna`); embeddings use `text-embedding-3-small`.
+
+**Sources:** lesson 01's seven sources were archived (see the Phase 4 sections above). Lessons 02–05's sources — the 11 loader notebooks, the embeddings/vector-DB notebooks, and the CSV/JSON technique notebooks — **remain in place and have not been retired.** Note that all 11 loader notebooks in `06_RAG_Naive_to_Production/01_Loading_Data/` are unrunnable as written: they reference `../../data/` and `../../docs/`, neither of which exists (the files are in `shared_data/`).
 
 ## Known Discrepancies
 

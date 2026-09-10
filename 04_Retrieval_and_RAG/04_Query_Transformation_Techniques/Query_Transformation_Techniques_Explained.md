@@ -1,6 +1,6 @@
 # Query Transformation Techniques
 
-This folder holds eight techniques (plus two `Naive_RAG` baselines) that all attack the same
+This folder holds eight techniques that all attack the same
 weak point in a RAG pipeline: **the raw user query is often a bad search query.** It may be
 ambiguous, too broad or too narrow, worded very differently from how the answer appears in the
 source documents, or actually bundle several sub-questions into one sentence. Query
@@ -81,8 +81,8 @@ query and each candidate route's description, and pick the route whose embedding
 ## Which RAG Stage Is This?
 
 **Retrieval stage** — every technique here transforms the *query*, before or as part of the
-similarity search, using an index that's already built. (`Naive_RAG.ipynb` /
-`Naive_RAG_Alt.ipynb` set up that baseline index and aren't themselves query transformation —
+similarity search, using an index that's already built. (That baseline index is built in
+`RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`, which isn't itself query transformation —
 see the folder's `README.md` for the full stage breakdown.)
 
 ## Quick Decision Guide

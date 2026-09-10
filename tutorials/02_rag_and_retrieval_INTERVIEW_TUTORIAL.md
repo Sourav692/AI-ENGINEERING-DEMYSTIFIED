@@ -70,7 +70,7 @@ naming the boxes matters.
 | Choosing an embedding model | `03_embeddings.ipynb` | Medium |
 | Vectors, similarity, caching | `04_embeddings_deep.ipynb` | **High** |
 | Vector stores, filtering, saving to disk | `05_vector_stores.ipynb` | **High** |
-| Building the full RAG chain | `06_rag_pipeline.ipynb` | **High** |
+| Building the full RAG chain | `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb` (was `06_rag_pipeline.ipynb`, retired 2026-09-10) | **High** |
 | Better retrieval: hybrid, multi-query, compression | `07_advanced_rag.ipynb` | **High** |
 | Multi-turn assistant with memory | `08_research_assistant.ipynb` | Medium |
 
@@ -258,7 +258,7 @@ don't know". It genuinely helps. It does not always work, because you are asking
 probabilistic system nicely, not enforcing a constraint.
 
 ```python
-# From 06_rag_pipeline.ipynb
+# From 06_rag_pipeline.ipynb (retired -> RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb)
 prompt = ChatPromptTemplate.from_template("""
 Answer the question based ONLY on the following context.
 If the answer is not in the context, respond with:
@@ -479,7 +479,7 @@ Here is the same retrieval both ways. The chain is what your notebooks build:
 
 ```python
 # CHAIN — your code decides. Retrieval always runs, exactly once.
-# This is 06_rag_pipeline.ipynb's demo_basic_rag().
+# This is 06_rag_pipeline.ipynb's demo_basic_rag() (now Part 4 of RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb).
 rag_chain = (
     {"context": retriever | format_docs, "question": RunnablePassthrough()}
     | prompt

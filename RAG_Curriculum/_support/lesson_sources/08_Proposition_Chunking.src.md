@@ -1,0 +1,526 @@
+%%markdown
+# Proposition Chunking
+
+The last two lessons both took the document's own words as fixed and argued only about where to cut them — by character count, or by where the meaning shifts. Proposition chunking abandons that constraint entirely.
+
+Instead of splitting the text, it **rewrites** it: an LLM converts each passage into a list of standalone atomic facts, each one self-contained enough to be understood with no surrounding context. Those propositions, not the original sentences, become what you index.
+
+This buys a real improvement in retrieval precision. It also costs an LLM call over your entire corpus, introduces a step that can hallucinate, and discards the original phrasing. This lesson builds it, measures what it gains, and is direct about when that trade is not worth making.
+
+## Learning objectives
+
+By the end of this notebook you will be able to:
+
+1. **Explain what a proposition is** — and why "atomic" and "self-contained" are two separate requirements, both necessary.
+2. **Generate propositions** from a passage with a structured-output LLM call.
+3. **Quality-check generated propositions**, because this step can and does fabricate.
+4. **Compare retrieval** over propositions against retrieval over conventional chunks, on the same corpus.
+5. **Account for the costs** — index-time LLM spend, lost phrasing, broken citation, index growth.
+6. **Decide when it is worth it**, which is a narrower set of cases than the technique's appeal suggests.
+
+%%markdown
+## Prerequisites
+
+**Lessons**
+
+- `02_Chunking_and_Indexing/01_Document_Splitting_and_Chunking.ipynb` — the conventional chunking this replaces.
+- `02_Chunking_and_Indexing/02_Semantic_Chunking.ipynb` — the previous escalation in cost and sophistication, and the same "is it worth it?" discipline.
+- `01_Foundations/04_Vector_Stores_and_Index_Operations.ipynb` — metadata, which is how propositions stay linked to their source.
+
+**Packages**
+
+`langchain-openai`, `langchain-chroma`, `langchain-text-splitters`, `langchain-core`, `pydantic`, `pandas`.
+
+**Services**
+
+`OPENAI_API_KEY` (embeddings) and `EXPERIENTIALLABS_API_KEY` (generation). **This technique needs an LLM call per chunk at index time** — that is its defining cost.
+
+**Cost**
+
+Roughly 10 generation calls plus two small embedding passes. The point of Part 5 is to extrapolate honestly from that to a real corpus.
+
+%%markdown
+## Provenance and runtime status
+
+Consolidated from `08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/5. proposition_chunking.ipynb` — proposition generation, the quality-check grading step, and the comparison against larger chunks.
+
+**That source cannot run on this repository's environment.** It uses:
+
+| Source import | Problem |
+| --- | --- |
+| `from langchain_core.pydantic_v1 import BaseModel` | **Removed in LangChain 1.x.** Raises `ModuleNotFoundError`. Use `pydantic` v2 directly. |
+| `from langchain.text_splitter import ...` | Moved to `langchain_text_splitters`. |
+| `from langchain_community.embeddings import ...` | Sunset path; use `langchain_openai`. |
+| `from langchain_community.vectorstores import ...` | Works, but `langchain_chroma` is the current package. |
+| `langchain_groq` | A different provider from this curriculum's configured one. |
+
+The technique and its quality-check idea are carried; the implementation is rebuilt on the current stack.
+
+**Added here:** the atomic-vs-self-contained distinction in Part 1, the measured comparison in Part 4, and the cost extrapolation in Part 5. The source demonstrates the technique and reports that it works.
+
+**Runtime status:** see `RAG_MIGRATION_MANIFEST.md`.
+
+%%markdown
+---
+
+## Part 0 — Setup
+
+%%code
+# ============ BOOTSTRAP: DEPTH-INDEPENDENT PATHS ============
+import pathlib
+import sys
+
+_p = pathlib.Path.cwd()
+while not (_p / "RAG_Curriculum").is_dir() and _p != _p.parent:
+    _p = _p.parent
+sys.path.insert(0, str(_p / "RAG_Curriculum" / "_support" / "helpers"))
+
+from rag_paths import repo_root
+
+%%code
+# ============ IMPORTS AND ENVIRONMENT ============
+import shutil
+import tempfile
+
+import numpy as np
+import pandas as pd
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field   # pydantic v2 directly - NOT langchain_core.pydantic_v1
+
+from helpers import get_experientiallabs_llm
+from langchain_chroma import Chroma
+from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+load_dotenv(repo_root() / ".env")
+
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+llm = get_experientiallabs_llm(temperature=0)   # deterministic: this is extraction, not writing
+
+print("Ready:", embeddings.model, "|", llm.model_name)
+
+%%code
+# ============ THE CORPUS ============
+# Written to contain the two things that break conventional chunking:
+# pronouns referring across sentences, and several distinct facts packed
+# into single sentences.
+document = """
+The Hubble Space Telescope was launched in April 1990 aboard the Space Shuttle
+Discovery. It orbits roughly 540 kilometres above Earth and completes one orbit
+every 95 minutes. Its primary mirror is 2.4 metres in diameter.
+
+Shortly after deployment, engineers discovered that the mirror had been ground
+to the wrong shape, blurring every image it produced. The flaw was corrected in
+1993 by a servicing mission that installed corrective optics, and the telescope
+has since been serviced five times in total.
+
+Hubble operates at ultraviolet, visible and near-infrared wavelengths. Its
+successor, the James Webb Space Telescope, launched in December 2021 and
+observes primarily in the infrared, allowing it to see through dust clouds that
+Hubble cannot penetrate. Webb orbits the Sun rather than the Earth, at the
+second Lagrange point.
+""".strip()
+
+chunks = RecursiveCharacterTextSplitter(chunk_size=350, chunk_overlap=0).split_text(document)
+print(f"{len(document)} characters -> {len(chunks)} conventional chunks\n")
+for i, c in enumerate(chunks):
+    print(f"--- chunk {i} ({len(c)} chars) ---")
+    print(" ".join(c.split()))
+    print()
+
+%%markdown
+---
+
+## Part 1 — What a proposition is
+
+A proposition is a single fact expressed so that it can stand entirely alone. Two requirements, and they are genuinely separate:
+
+**Atomic** — it asserts exactly one thing. `"Hubble launched in 1990 and orbits at 540 km"` is two facts, so it is not atomic.
+
+**Self-contained** — it resolves its own references. `"It orbits roughly 540 kilometres above Earth"` is atomic but not self-contained: `"It"` is meaningless in isolation, and a retrieved chunk *is* in isolation.
+
+That second requirement is the one that matters most, and it is invisible until you think about what retrieval actually returns. Look at chunk 0 above: three sentences, two of which begin with a pronoun. Retrieved on its own the chunk is fine — the antecedent is right there. But the moment you split more finely to get precision, the pronouns lose their referent.
+
+Proposition chunking sidesteps this: every proposition names its own subject.
+
+%%code
+# ============ THE PROBLEM, CONCRETELY ============
+# Split finely enough for precision, and the references break.
+fine = RecursiveCharacterTextSplitter(chunk_size=90, chunk_overlap=0).split_text(document)
+
+print("Finely split chunks that cannot stand alone:\n")
+for c in fine:
+    flat = " ".join(c.split())
+    starts_ambiguous = flat.split()[0].lower() in {"it", "its", "the", "this", "they", "he", "she"}
+    if starts_ambiguous:
+        print(f"  ? {flat[:78]}")
+
+print("\nEach of these is retrievable, and each is useless on its own.")
+print("'Its primary mirror is 2.4 metres' - whose mirror? The chunk cannot say.")
+
+%%markdown
+---
+
+## Part 2 — Generating propositions
+
+An LLM call per chunk, with structured output so the result is a validated list rather than text to parse.
+
+The prompt does the real work. Three instructions matter: split compound statements, **replace every pronoun with its referent**, and add no information that is not in the source.
+
+%%code
+# ============ PROPOSITION GENERATION ============
+class Propositions(BaseModel):
+    """Atomic, self-contained factual statements extracted from a passage."""
+
+    propositions: list[str] = Field(
+        description="Standalone facts. Each states exactly one thing and names "
+                    "its own subject explicitly - no pronouns, no references "
+                    "to other propositions."
+    )
+
+
+proposition_prompt = ChatPromptTemplate.from_template(
+    """Decompose the passage into atomic, self-contained propositions.
+
+Rules:
+1. Each proposition states exactly ONE fact.
+2. Replace every pronoun with the noun it refers to. A reader seeing only that
+   one proposition must understand it completely.
+3. Split compound sentences into separate propositions.
+4. Use ONLY information present in the passage. Add nothing.
+5. Preserve specific values - dates, numbers, names - exactly as written.
+
+Passage:
+{passage}"""
+)
+
+extractor = proposition_prompt | llm.with_structured_output(Propositions)
+
+all_props = []
+for i, chunk in enumerate(chunks):
+    result = extractor.invoke({"passage": chunk})
+    print(f"--- chunk {i} -> {len(result.propositions)} propositions ---")
+    for p in result.propositions:
+        print(f"   • {p}")
+        all_props.append({"text": p, "source_chunk": i})
+    print()
+
+print(f"{len(chunks)} chunks -> {len(all_props)} propositions "
+      f"({len(all_props) / len(chunks):.1f}x expansion)")
+
+%%markdown
+Read those and check the two requirements. Pronouns should be gone — "Hubble" and "the James Webb Space Telescope" appear by name rather than as "it". Compound sentences should be separated.
+
+Also note the **expansion factor**. Each chunk became several propositions, so the index grows correspondingly — more vectors, more storage, more search cost. That is one of this technique's real costs and Part 5 returns to it.
+
+%%markdown
+---
+
+## Part 3 — Quality checking
+
+This step is not optional, and it is what distinguishes proposition chunking from an ordinary splitter: **a splitter cannot invent text, and this can.** An LLM asked to rewrite facts may merge two into one, drop a qualifier, or state something the source only implied.
+
+Grade each proposition against the source before indexing it.
+
+%%code
+# ============ GRADING GENERATED PROPOSITIONS ============
+class PropositionGrade(BaseModel):
+    """Quality assessment of one generated proposition."""
+
+    supported: bool = Field(description="Is this fully supported by the source passage, "
+                                        "with nothing added or altered?")
+    self_contained: bool = Field(description="Is it understandable alone, with no "
+                                             "unresolved pronouns or references?")
+    atomic: bool = Field(description="Does it state exactly one fact?")
+    issue: str = Field(description="The problem in a few words, or 'none'")
+
+
+grade_prompt = ChatPromptTemplate.from_template(
+    "Source passage:\n{passage}\n\nProposition:\n{proposition}\n\n"
+    "Grade the proposition against the source."
+)
+grader = grade_prompt | llm.with_structured_output(PropositionGrade)
+
+graded = []
+for p in all_props:
+    g = grader.invoke({"passage": chunks[p["source_chunk"]], "proposition": p["text"]})
+    graded.append({**p, "supported": g.supported, "self_contained": g.self_contained,
+                   "atomic": g.atomic, "issue": g.issue})
+
+df = pd.DataFrame(graded)
+print(f"{'supported':>10} {'self_cont':>10} {'atomic':>7}   proposition")
+for r in graded:
+    print(f"{str(r['supported']):>10} {str(r['self_contained']):>10} "
+          f"{str(r['atomic']):>7}   {r['text'][:60]}")
+
+print(f"\npassed all three: {int((df.supported & df.self_contained & df.atomic).sum())}"
+      f"/{len(df)}")
+failures = df[~(df.supported & df.self_contained & df.atomic)]
+if len(failures):
+    print("\nRejected:")
+    for r in failures.itertuples():
+        print(f"  {r.text[:60]!r} -> {r.issue}")
+
+%%markdown
+> **The grader is the same class of component as the generator**, so it has the same failure modes — it can pass something it should reject. This is LLM-as-judge, and calibrating it against human labels is `06_Evaluation/07_Evaluator_Calibration_and_Meta_Evaluation.ipynb`. Treat it as a filter that catches obvious damage, not as a correctness guarantee.
+
+%%code
+# ============ INDEXING THE SURVIVORS ============
+# Keep the source chunk id in metadata. Without it a retrieved proposition is
+# an unattributable assertion - you cannot show the user where it came from.
+kept = [r for r in graded if r["supported"] and r["self_contained"] and r["atomic"]]
+
+prop_docs = [
+    Document(page_content=r["text"],
+             metadata={"source_chunk": r["source_chunk"], "kind": "proposition"})
+    for r in kept
+]
+chunk_docs = [
+    Document(page_content=c, metadata={"source_chunk": i, "kind": "chunk"})
+    for i, c in enumerate(chunks)
+]
+
+prop_dir, chunk_dir = tempfile.mkdtemp(prefix="rag_prop_"), tempfile.mkdtemp(prefix="rag_chunk_")
+prop_store = Chroma.from_documents(prop_docs, embeddings, collection_name="props",
+                                   persist_directory=prop_dir)
+chunk_store = Chroma.from_documents(chunk_docs, embeddings, collection_name="chunks",
+                                    persist_directory=chunk_dir)
+
+print(f"proposition index: {prop_store._collection.count()} vectors")
+print(f"chunk index      : {chunk_store._collection.count()} vectors")
+print(f"index growth     : {prop_store._collection.count() / chunk_store._collection.count():.1f}x")
+
+%%markdown
+---
+
+## Part 4 — Does it retrieve better?
+
+The claim is precision: a retrieved proposition is one fact, so the context handed to the model contains almost no irrelevant text. Measure it rather than assume it.
+
+%%code
+# ============ SIDE-BY-SIDE RETRIEVAL ============
+questions = [
+    "How wide is Hubble's primary mirror?",
+    "When was the mirror flaw fixed?",
+    "Where does the James Webb telescope orbit?",
+    "How long does Hubble take to circle the Earth?",
+]
+
+for q in questions:
+    print(f"Q: {q}")
+    p_hit = prop_store.similarity_search(q, k=1)[0]
+    c_hit = chunk_store.similarity_search(q, k=1)[0]
+    print(f"  proposition ({len(p_hit.page_content):>3} chars): {p_hit.page_content}")
+    print(f"  chunk       ({len(c_hit.page_content):>3} chars): "
+          f"{' '.join(c_hit.page_content.split())[:100]}...")
+    print()
+
+%%code
+# ============ MEASURING SIGNAL DENSITY ============
+# The precision claim in numbers: how much of the retrieved context is the
+# answer, versus surrounding material the model must read past?
+rows = []
+for q in questions:
+    p_len = len(prop_store.similarity_search(q, k=1)[0].page_content)
+    c_len = len(chunk_store.similarity_search(q, k=1)[0].page_content)
+    rows.append({"question": q[:38], "proposition_chars": p_len,
+                 "chunk_chars": c_len, "ratio": round(c_len / p_len, 1)})
+
+df2 = pd.DataFrame(rows)
+print(df2.to_string(index=False))
+print(f"\nMean: a chunk carries {df2.ratio.mean():.1f}x more text than the")
+print("proposition answering the same question. Most of that surplus is")
+print("other facts - correct, but irrelevant to this query.")
+
+%%code
+# ============ THE COST OF THAT PRECISION ============
+# Precision cuts both ways. Ask something needing TWO facts at once.
+q = "What problem did Hubble have at launch and when was it fixed?"
+print(f"Q: {q}\n")
+
+print("Propositions (k=3) - the answer is scattered across separate vectors:")
+for d in prop_store.similarity_search(q, k=3):
+    print(f"  • {d.page_content}")
+
+print("\nChunk (k=1) - both facts arrive together, in one retrieval:")
+print(f"  {' '.join(chunk_store.similarity_search(q, k=1)[0].page_content.split())}")
+
+print("\nThis is the completeness/precision tension from lesson 01, sharpened.")
+print("Propositions maximise precision and therefore make multi-fact questions")
+print("depend on retrieving several correct pieces instead of one.")
+
+%%markdown
+---
+
+## Part 5 — What it costs
+
+%%code
+# ============ EXTRAPOLATING THE INDEX-TIME COST ============
+import tiktoken
+
+enc = tiktoken.get_encoding("cl100k_base")
+doc_tokens = len(enc.encode(document))
+prop_tokens = sum(len(enc.encode(p["text"])) for p in all_props)
+
+print(f"source document        : {doc_tokens:>6} tokens")
+print(f"generated propositions : {prop_tokens:>6} tokens ({prop_tokens / doc_tokens:.2f}x)")
+print(f"LLM calls at index time: {len(chunks)} generation + {len(all_props)} grading "
+      f"= {len(chunks) + len(all_props)}")
+print(f"vectors indexed        : {len(prop_docs)} vs {len(chunk_docs)} conventional "
+      f"({len(prop_docs) / len(chunk_docs):.1f}x)")
+
+print("\nExtrapolated to a 1,000,000-token corpus at this ratio:")
+scale = 1_000_000 / doc_tokens
+print(f"  ~{len(chunks) * scale:,.0f} generation calls")
+print(f"  ~{len(all_props) * scale:,.0f} grading calls (skip grading and you index hallucinations)")
+print(f"  ~{len(prop_docs) * scale:,.0f} vectors instead of {len(chunk_docs) * scale:,.0f}")
+
+%%markdown
+That is the honest picture. Conventional chunking over a million tokens is free and instant. Proposition chunking over the same corpus is hundreds of thousands of LLM calls before you embed anything — and the grading pass, which you should not skip, roughly doubles it.
+
+Three further costs that do not show up in a token count:
+
+**Original phrasing is gone.** You index the model's paraphrase. A user searching for a distinctive phrase from the source may not find it, because that phrasing no longer exists in the index. For legal, medical or contractual text this is often disqualifying on its own.
+
+**Citation gets indirect.** A retrieved proposition is a generated sentence, not a quotation. Showing a user "here is the source" means following `source_chunk` back to the original — which is why that metadata is mandatory, not optional.
+
+**Hallucination enters the index.** Every other chunking method is text manipulation and cannot introduce a falsehood. This one can, and once a fabricated proposition is indexed it is indistinguishable from a real one at retrieval time. The grading pass is a mitigation, not a fix.
+
+%%markdown
+---
+
+## Part 6 — When to use it
+
+**Use proposition chunking when:**
+
+- Queries are **specific, factual lookups** — the case where precision genuinely pays.
+- Source text is **dense with pronouns and compound sentences**, so conventional chunks carry unresolvable references.
+- The corpus is **small and stable**, so the index-time LLM cost is paid once and rarely.
+- Exact source wording does not need to be preserved or quoted.
+
+**Do not use it when:**
+
+- The corpus is large or changes often — the cost recurs with every re-ingestion.
+- **Exact wording matters** — contracts, regulations, clinical guidance, code.
+- Questions need **synthesis across several facts**, as Part 4 showed.
+- You have not compared it against a cheaper option. Contextual chunk headers (`05_Context_and_Generation/02`) fix the pronoun problem for a fraction of the cost by *prepending* context rather than rewriting the text.
+
+**The honest comparison.** Proposition chunking sits at the expensive end of a ladder this batch has been climbing: character splitting is free, semantic chunking costs one embedding pass, proposition chunking costs an LLM pass plus a grading pass. Each step buys precision. Check that the cheaper rung has actually failed you before climbing to this one.
+
+%%code
+# ============ CLEANUP ============
+for d in (prop_dir, chunk_dir):
+    shutil.rmtree(d, ignore_errors=True)
+print("Temporary indexes removed.")
+
+%%markdown
+---
+
+## Limitations and tradeoffs
+
+**One short document, four questions.** A demonstration of method. The signal-density ratio in Part 4 depends entirely on this document's structure.
+
+**No retrieval-quality metric here.** Part 4 measured how much *text* each approach returns, not how often the right answer is retrieved. That needs a labelled set — `04_Choosing_Chunk_Size.ipynb` builds one, and `06_Evaluation/` does it properly.
+
+**Generation quality varies by model.** A weaker model produces propositions that are less atomic and more prone to drift. The technique's value is bounded by the model doing the extraction.
+
+**The grader shares the generator's blind spots.** Both are the same model. Independent verification means a different model, or a human.
+
+**Propositions lose ordering and structure.** Narrative flow, argument structure and document hierarchy all disappear. For a corpus where sequence matters — procedures, tutorials, legal reasoning — that is a real loss.
+
+%%markdown
+---
+
+## Exercise
+
+Build a `PropositionIndexer` with the two things a production version needs: batching, and a hard requirement that nothing unverified reaches the index.
+
+%%code
+# ============ EXERCISE: A PROPOSITION INDEXING PIPELINE ============
+class PropositionIndexer:
+    """Generate, grade and index propositions, keeping provenance intact."""
+
+    def __init__(self, llm, embeddings, chunk_size=350):
+        self.splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=0)
+        self.extractor = proposition_prompt | llm.with_structured_output(Propositions)
+        self.grader = grade_prompt | llm.with_structured_output(PropositionGrade)
+        self.embeddings = embeddings
+        self.report = {"chunks": 0, "generated": 0, "rejected": 0, "indexed": 0}
+
+    def build(self, text: str, source: str = "document") -> list[Document]:
+        pieces = self.splitter.split_text(text)
+        self.report["chunks"] = len(pieces)
+        out = []
+        for i, piece in enumerate(pieces):
+            for p in self.extractor.invoke({"passage": piece}).propositions:
+                self.report["generated"] += 1
+                g = self.grader.invoke({"passage": piece, "proposition": p})
+                if not (g.supported and g.self_contained and g.atomic):
+                    self.report["rejected"] += 1
+                    continue
+                out.append(Document(
+                    page_content=p,
+                    # Provenance is mandatory: a proposition is a paraphrase,
+                    # so the only way to cite it is to point back at the source.
+                    metadata={"source": source, "source_chunk": i, "kind": "proposition"},
+                ))
+        self.report["indexed"] = len(out)
+        return out
+
+    # TODO 1: batch it. One generation call per chunk is slow and serial.
+    #         Use llm.batch() over all chunks at once - how much wall time
+    #         does that save on a 100-chunk document?
+    #
+    # TODO 2: keep the original chunk text alongside the propositions, so
+    #         retrieval can match on a proposition but RETURN the source
+    #         passage. That recovers exact wording and citation - and it is
+    #         the same idea as 02_Chunking_and_Indexing/06 (parent-document
+    #         retrieval). Which store holds which?
+    #
+    # TODO 3: make rejections recoverable. Right now a rejected proposition is
+    #         silently dropped and its fact may exist nowhere in the index.
+    #         Detect that: which source chunks ended up with NO surviving
+    #         propositions, and what should happen to them?
+
+
+indexer = PropositionIndexer(llm, embeddings)
+docs = indexer.build(document, source="hubble.txt")
+
+for k, v in indexer.report.items():
+    print(f"  {k:<12} {v}")
+print(f"\nSample: {docs[0].page_content!r}")
+print(f"        {docs[0].metadata}")
+
+%%markdown
+---
+
+## Summary
+
+**Proposition chunking rewrites rather than splits.** An LLM converts passages into atomic, self-contained facts, and those become the indexed units.
+
+**Two requirements, both necessary.** *Atomic* — one fact per proposition. *Self-contained* — every pronoun resolved, because a retrieved chunk arrives with no surrounding context to resolve it from.
+
+**Grading is mandatory.** This is the only chunking method that can invent text. An unverified proposition pipeline indexes hallucinations that are indistinguishable from facts at retrieval time.
+
+**Keep provenance.** A proposition is a paraphrase, so `source_chunk` metadata is the only route back to something quotable.
+
+**It buys precision and spends completeness.** Retrieved propositions are almost pure signal; multi-fact questions now require retrieving several correct pieces rather than one good chunk.
+
+**The costs are substantial:** an LLM call per chunk plus a grading call per proposition at index time, several times more vectors, lost original phrasing, and indirect citation.
+
+**Check the cheaper rung first.** Contextual chunk headers solve the pronoun problem far more cheaply. Climb to propositions when specific factual lookup is the dominant query pattern and the corpus is small and stable.
+
+### Next lesson
+
+`02_Chunking_and_Indexing/04_Choosing_Chunk_Size.ipynb` — after three lessons of chunking strategies, how to actually pick the numbers, by measuring rather than guessing.
+
+%%markdown
+---
+
+### Migration record
+
+Canonical lesson for concept `RAG-CI-03` (proposition chunking), Chunking & Indexing batch.
+
+The source (`all_rag_techniques/5. proposition_chunking.ipynb`) cannot run on this environment: it imports `langchain_core.pydantic_v1`, removed in LangChain 1.x, alongside several other 0.x-era paths and a different LLM provider. The technique and its quality-check step are carried; the implementation is rebuilt on the current stack with `pydantic` v2. See `RAG_MIGRATION_MANIFEST.md`.

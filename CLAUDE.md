@@ -41,9 +41,22 @@ This repo has a local, gitignored code-graph snapshot at `graphify-out/` (produc
 11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
 13_Projects/                             ✅ Built — 12 projects: LangGraph/LangChain/RAG capstones + 9 more standalone full-stack apps
+RAG_Curriculum/                          🔨 In progress — standalone consolidation of RAG content from Phases 4/7/8 into one lesson per concept (1 of 70 lessons built; see below)
 archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
 docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
 ```
+
+### `RAG_Curriculum/` — active consolidation (started 2026-09-10)
+
+A **standalone top-level folder**, not a phase. It consolidates RAG content currently spread across Phases 4, 7 and 8 into one active teaching notebook per concept, organized as `00_Curriculum_Guide/` … `11_Applications_and_Capstones/` plus `_support/` and `_archive/`. The plan is `RAG_CURRICULUM.md`; the execution record, per-source dispositions and dependency mapping are in `RAG_MIGRATION_MANIFEST.md`.
+
+This is a deliberate, user-approved exception to the one-home-per-topic rule above, taken with eyes open. **Until the migration completes, Phases 4, 7 and 8 remain the live source of truth** for every concept not yet migrated — so while it is in progress there are temporarily two places RAG content can live. Rules while that is true:
+
+- **Nothing has been moved, archived, or deleted.** Source notebooks stay in their phases and stay runnable. Do not "clean up" a source because a `RAG_Curriculum/` lesson appears to supersede it — a source is only superseded once `RAG_MIGRATION_MANIFEST.md` records its disposition *and* the replacing lesson has passed validation.
+- **Check the manifest before touching either side.** It is the only authority on which sources are canonical, donor, support, application, or archive-candidate.
+- **Assets stay stationary.** Lessons reach them through `RAG_Curriculum/_support/helpers/rag_paths.py`, which resolves by filename from the repo root, so notebooks work at any depth. Do not reintroduce `../../` paths, and do not name a new shared module `utils` or `helpers` — both already collide in this repo (three different `utils.py` files under Phase 4 alone).
+- **LLM calls go through the factory, not direct instantiation.** Lessons use `from helpers import get_experientiallabs_llm` (`gpt-5.6-luna`, needs `EXPERIENTIALLABS_API_KEY`) rather than `init_chat_model`/`ChatOpenAI`. Embeddings still use `OpenAIEmbeddings` (`text-embedding-3-small`, needs `OPENAI_API_KEY`) — the two providers are independent, and that's fine; what must never differ is the embedding model between indexing and querying.
+- **`RAG_Curriculum/_support/environment_and_path_manifest.md`** holds the runtime matrix, protected generated artifacts (`09_RAG_with_LangChain/index/` and `vs_db/` must not be overwritten), and the LangChain 0.x → 1.x import migration table. This repo runs **LangChain 1.4**, where `langchain.chains` and `langchain.prompts` no longer exist — they are `langchain_classic.chains` and `langchain_core.prompts`.
 
 **Why RAG and Advanced RAG are separate phases, not duplicated:** Phase 4 covers foundational RAG that doesn't require knowing agents. Phase 8 covers agentic/self-correcting RAG and CacheRAG/GraphRAG, which genuinely depend on Phase 5 (agents) and Phase 7 (advanced agentic systems) — so it's sequenced after both rather than bundled into Phase 4. This was a deliberate, explicit decision after the roadmap's structure went through three revisions in one day (see `NOTEBOOK_INDEX.md`'s Known Discrepancies) — don't re-merge these two phases.
 
