@@ -5,7 +5,9 @@ Every splitter in the previous lesson decides where to cut by counting — chara
 
 Semantic chunking asks a different question: **where does the meaning change?** It embeds the sentences, measures how much consecutive sentences differ, and cuts where the difference spikes.
 
-It is a genuinely better idea, and it is not free. This lesson covers how it works, builds it from scratch so the mechanism is visible, uses the library version, and — most importantly — establishes when the extra cost is and is not worth paying.
+The approach was [first proposed by Greg Kamradt](https://youtu.be/8OJC21T2SL4?t=1933) and subsequently [implemented in LangChain](https://python.langchain.com/docs/how_to/semantic-chunker/) as `SemanticChunker`.
+
+It is a genuinely better idea, and it is not free. This lesson covers how it works, builds it from scratch so the mechanism is visible, uses the library version, runs it end to end over a real 33-page PDF, and — most importantly — establishes when the extra cost is and is not worth paying.
 
 ## Learning objectives
 
@@ -15,8 +17,44 @@ By the end of this notebook you will be able to:
 2. **Implement it from scratch** in about fifteen lines, so `SemanticChunker` stops being a black box.
 3. **Use `SemanticChunker`** and choose between its four breakpoint threshold types.
 4. **See the boundaries it finds** that a character splitter misses — on text with a deliberate topic shift.
-5. **Account for its costs**: an embedding pass over every sentence at index time, unbounded chunk sizes, and sensitivity to sentence segmentation.
-6. **Decide when to use it**, which is not always.
+5. **Build a complete retrieval pipeline** on a real document: PDF → semantic chunks → FAISS → retriever → inspected context.
+6. **Account for its costs**: an embedding pass over every sentence at index time, unbounded chunk sizes, and sensitivity to sentence segmentation.
+7. **Decide when to use it**, which is not always.
+
+%%markdown attachfile=semantic_chunking_comparison.png
+## The idea, before the code
+
+**The problem.** Traditional text splitting breaks documents at arbitrary points — wherever the character or token budget happened to run out. That disrupts the flow of information, and it does so invisibly: nothing in the output tells you that a chunk ends mid-argument or that two subjects were fused into one vector.
+
+**The claim.** Split at *natural* breakpoints instead, so semantic coherence is preserved inside each chunk. A chunk that is about one thing embeds cleanly near that thing. A chunk that is about two things embeds somewhere between them and is a strong match for neither.
+
+The diagram below is the whole argument, and it is worth reading all the way down rather than just glancing at the top.
+
+The top half contrasts the boundaries: fixed-size chunking cuts a paper into pieces that each straddle two sections ("Chunk 2: Rest of Methods, part of Results"), while semantic chunking aligns them with the sections themselves ("Chunk 2: Methods").
+
+The bottom half is the part that matters, because it shows the *consequence*. Both are searched identically, by embedding similarity. Asked for the methods used to measure blood pressure, the fixed-size index returns fragments of two different chunks that must then be recombined, carrying irrelevant material along; the semantic index returns one coherent chunk that is the entire Methods section.
+
+That is the claim in full: not "nicer boundaries", but fewer chunks retrieved, less irrelevant text in the prompt, and complete context. Whether it holds on *your* corpus is what Parts 4 and 6 test.
+
+![Regular vs semantic chunking, both searched semantically: fixed-size chunks straddle the sections of a paper, while semantic chunks align with them](attachment:semantic_chunking_comparison)
+
+%%markdown
+**The method, in four stages.** These map onto the parts of this notebook:
+
+| Stage | What happens | Where |
+| --- | --- | --- |
+| Preprocessing | Read the document to a continuous string; page and line breaks are artifacts of the file format, not of the argument | Part 6 |
+| Semantic chunking | Sentence-split, embed, measure consecutive distance, threshold, group | Parts 2–3 |
+| Vector store creation | Embed the resulting chunks and index them for nearest-neighbour search | Part 6 |
+| Retriever setup | Fetch the top *k* chunks for a query and inspect what came back | Part 6 |
+
+**The benefits claimed for it**, each of which this lesson tries to check rather than assert:
+
+- **Improved coherence** — chunks are more likely to contain a complete thought (Parts 1–3).
+- **Better retrieval relevance** — preserved context should sharpen the match (Part 4 measures this).
+- **Adaptability** — the breakpoint strategy and threshold are tunable per corpus (Part 3).
+
+It is claimed to matter most for long, complex documents where context is load-bearing: scientific papers, legal documents, comprehensive reports. Part 6 runs it over one of those. Part 7 is the counter-argument.
 
 %%markdown
 ## Prerequisites
@@ -25,10 +63,11 @@ By the end of this notebook you will be able to:
 
 - `02_Chunking_and_Indexing/01_Document_Splitting_and_Chunking.ipynb` — the splitters this improves on, and the tension it addresses.
 - `01_Foundations/03_Embeddings_and_Model_Selection.ipynb` — cosine similarity and normalization; this lesson computes distances directly.
+- `01_Foundations/04_Vector_Stores_and_Index_Operations.ipynb` — the FAISS index and retriever that Part 6 builds on.
 
 **Packages**
 
-`langchain-experimental` (for `SemanticChunker`), `langchain-openai`, `langchain-text-splitters`, `numpy`, `pandas`.
+`langchain-experimental` (for `SemanticChunker`), `langchain-openai`, `langchain-text-splitters`, `langchain-community` (FAISS and `PyPDFLoader`), `faiss-cpu`, `pypdf`, `tiktoken`, `numpy`, `pandas`.
 
 `SemanticChunker` lives in `langchain_experimental`, not `langchain`. The name is a real signal: the API has changed before and may change again.
 
@@ -38,7 +77,10 @@ By the end of this notebook you will be able to:
 
 **Input assets**
 
-`langchain_intro.txt`, resolved via `rag_paths.asset()`. It is a short file with a deliberate topic shift, which is exactly what this lesson needs to demonstrate.
+Both resolved via `rag_paths.asset()`:
+
+- `langchain_intro.txt` — a short file with a deliberate topic shift, which is exactly what Parts 1–5 need to demonstrate the mechanism at a size where every chunk can be printed and read.
+- `Understanding_Climate_Change.pdf` — a 33-page report, ~13k tokens. Part 6 uses it because a method that only works on five hand-picked sentences has not been shown to work.
 
 %%markdown
 ## Provenance and runtime status
@@ -47,12 +89,14 @@ Consolidated from:
 
 | Source | Contribution |
 | --- | --- |
-| `08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/semantic_chunking.ipynb` | `SemanticChunker` usage and the breakpoint-threshold types. |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/semantic_chunking.ipynb` | **Canonical explanation.** The conceptual framing above (problem, claim, method stages, claimed benefits), the Kamradt/LangChain attribution, the `semantic_chunking_comparison.svg` diagram, the breakpoint-threshold types, and the end-to-end PDF → `SemanticChunker` → FAISS → retriever pipeline with the climate-change query in Part 6. |
 | `04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/2. Semantichunking.ipynb` | The from-scratch implementation, and `langchain_intro.txt` — a corpus built specifically to have a topic shift. |
+
+**Adapted, not copied, from the canonical source:** it calls `read_pdf_to_string` and `retrieve_context_per_question`/`show_context` from an anthology-local `helper_functions` module via `from helper_functions import *`. Part 6 uses `PyPDFLoader` and an explicit `show_context` instead, so the lesson has no dependency on the anthology folder's layout. Its three breakpoint types are also extended to four — `gradient` was added to `SemanticChunker` after the source was written.
 
 **A defect in the second source:** it is written entirely against LangChain 0.x — `langchain.chat_models`, `langchain.document_loaders`, `langchain.vectorstores`, `langchain.schema`, `langchain.prompts`. All of those raise `ModuleNotFoundError` on this repository's LangChain 1.4. It also depends on `sentence_transformers`, which is not installed here (the `hf` extra). It cannot run as written.
 
-**Added here, present in neither source:** the cost measurement in Part 5, the comparison against a character splitter on the same text, and the guidance on when *not* to use semantic chunking. Both sources demonstrate the technique working and stop there.
+**Added here, present in neither source:** the cost measurement in Part 5, the separation test in Part 4, the comparison against a character splitter on the same text, and the guidance on when *not* to use semantic chunking. Both sources demonstrate the technique working and stop there.
 
 **Runtime status:** see `RAG_MIGRATION_MANIFEST.md`.
 
@@ -80,14 +124,20 @@ import time
 
 import numpy as np
 import pandas as pd
+import tiktoken
 from dotenv import load_dotenv
 
+# FAISS and PyPDFLoader still live in langchain_community on LangChain 1.4;
+# no standalone package exists for either yet.
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.vectorstores import FAISS
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv(repo_root() / ".env")
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+enc = tiktoken.get_encoding("cl100k_base")
 
 print("Ready:", embeddings.model)
 
@@ -256,6 +306,8 @@ for i, c in enumerate(lib_chunks):
 | `"interquartile"` | beyond N × IQR | 1.5 | Robust to a few extreme values |
 | `"gradient"` | at a peak in the *rate of change* | 95 | For text where topics shift gradually rather than abruptly |
 
+The first three are the ones described in the original technique; `gradient` was added later.
+
 The distinction that matters: **`percentile` always splits** — the 95th percentile of any distribution exists, even if the text never changes topic. `standard_deviation` and `interquartile` can legitimately return one chunk for a document that is genuinely about one thing.
 
 %%code
@@ -342,9 +394,6 @@ Semantic chunking embeds every sentence in your corpus **before** you embed the 
 
 %%code
 # ============ MEASURING THE OVERHEAD ============
-import tiktoken
-
-enc = tiktoken.get_encoding("cl100k_base")
 corpus_tokens = len(enc.encode(flat))
 
 t0 = time.perf_counter()
@@ -393,7 +442,113 @@ print("where a topic ran longer than the ceiling.")
 %%markdown
 ---
 
-## Part 6 — When to use it
+## Part 6 — End to end on a real document
+
+Everything so far ran on five sentences, which is the right size for *seeing* the mechanism and the wrong size for trusting it. This part runs the full pipeline the technique was proposed for: a 33-page PDF report, chunked semantically, indexed in FAISS, queried through a retriever.
+
+### Stage 1 — Preprocessing
+
+%%code
+# ============ LOAD THE PDF ============
+pdf_path = str(asset("Understanding_Climate_Change.pdf"))
+pages = PyPDFLoader(pdf_path).load()
+
+# SemanticChunker needs continuous text. Page breaks are an artifact of the
+# file format, not of the argument, so join the pages back up before chunking -
+# otherwise every page boundary becomes a forced chunk boundary for free, and
+# the method never gets to decide anything about them.
+document_text = "\n".join(p.page_content for p in pages)
+doc_tokens = len(enc.encode(document_text))
+
+print(f"{len(pages)} pages -> {len(document_text):,} characters, {doc_tokens:,} tokens")
+print(f"boundary detection will embed all {doc_tokens:,} of those tokens,")
+print(f"then indexing will embed them again: ~{2 * doc_tokens:,} tokens total")
+
+%%markdown
+### Stage 2 — Semantic chunking
+
+%%code
+# ============ CHUNK THE DOCUMENT ============
+# create_documents() returns Document objects rather than raw strings, which is
+# what the vector store wants next.
+t0 = time.perf_counter()
+doc_chunks = SemanticChunker(
+    embeddings,
+    breakpoint_threshold_type="percentile",
+    breakpoint_threshold_amount=90,
+).create_documents([document_text])
+t_doc_chunk = time.perf_counter() - t0
+
+sizes = [len(d.page_content) for d in doc_chunks]
+print(f"{len(doc_chunks)} chunks in {t_doc_chunk:.1f}s\n")
+print(f"chars  min {min(sizes):>6}   median {int(np.median(sizes)):>6}   max {max(sizes):>6}")
+print(f"tokens {'':>6}   {'':>6}          max {max(len(enc.encode(d.page_content)) for d in doc_chunks):>6}")
+print("\nCheck that max: nothing in the algorithm bounds it. If it approaches")
+print("your embedding model's input limit, apply the Part 5 bounding pattern.")
+
+%%markdown
+### Stage 3 — Vector store creation
+
+%%code
+# ============ INDEX THE CHUNKS IN FAISS ============
+t0 = time.perf_counter()
+vectorstore = FAISS.from_documents(doc_chunks, embeddings)
+t_index = time.perf_counter() - t0
+
+print(f"indexed {len(doc_chunks)} chunks in {t_index:.1f}s")
+print(f"index size: {vectorstore.index.ntotal} vectors x {vectorstore.index.d} dims")
+
+%%markdown
+### Stage 4 — Retriever setup and inspection
+
+%%code
+# ============ RETRIEVE AND SHOW THE CONTEXT ============
+retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
+
+
+def show_context(docs, label=""):
+    """Print retrieved chunks in full. Reading the context is the only way to
+    tell a good retrieval from a lucky one."""
+    if label:
+        print(label)
+    for i, d in enumerate(docs):
+        print(f"--- context {i + 1} ({len(d.page_content)} chars) ---")
+        print(d.page_content.strip())
+        print()
+
+
+test_query = "What is the main cause of climate change?"
+show_context(retriever.invoke(test_query), f"Query: {test_query!r}\n")
+
+%%markdown
+Read those chunks rather than counting them. Two things to check:
+
+1. **Does each chunk stand on its own?** A semantically chunked passage should read as a complete thought — not start mid-sentence, not trail off into an unrelated subject. That is the coherence claim, and this is where you can see whether it held on real prose rather than on a constructed example.
+2. **Is the answer actually in there?** Coherent chunks that do not contain the answer are still a retrieval failure. Chunk quality and retrieval quality are different things.
+
+The same query against character-split chunks makes the comparison concrete.
+
+%%code
+# ============ THE SAME QUERY, CHARACTER-SPLIT ============
+# Same document, same embeddings, same k. Only the boundaries differ.
+char_docs = RecursiveCharacterTextSplitter(
+    chunk_size=int(np.median(sizes)), chunk_overlap=0
+).create_documents([document_text])
+
+char_store = FAISS.from_documents(char_docs, embeddings)
+show_context(
+    char_store.as_retriever(search_kwargs={"k": 2}).invoke(test_query),
+    f"Character splitter ({len(char_docs)} chunks at ~{int(np.median(sizes))} chars):\n",
+)
+
+print("Both retrieve something relevant - the useful question is whether the")
+print("character-split passages start or end mid-idea, and whether that would")
+print("cost you at generation time. Judge it on this document, not in general.")
+
+%%markdown
+---
+
+## Part 7 — When to use it
 
 **Use semantic chunking when:**
 
@@ -407,7 +562,7 @@ print("where a topic ran longer than the ceiling.")
 - The document already has structure. Markdown headings, code syntax and HTML sections are *author-supplied* boundaries — better signal than inferred ones, and free. Reach for the previous lesson's structure-aware splitters first.
 - The corpus is very large. Doubling index-time embedding cost is a real budget line.
 - Content is uniform — API reference pages, product records, log entries. If every entry is about one thing, there is no topic shift to find.
-- You have not measured it. It is intuitively appealing, which makes it easy to adopt on faith. Part 4 shows how to check.
+- You have not measured it. It is intuitively appealing, which makes it easy to adopt on faith. Parts 4 and 6 show how to check.
 
 **The honest summary:** semantic chunking is the right tool for a specific problem — unstructured text with internal topic shifts — and is often outperformed on structured documents by a `MarkdownHeaderTextSplitter` that costs nothing. Try structure first.
 
@@ -416,7 +571,7 @@ print("where a topic ran longer than the ceiling.")
 
 ## Limitations and tradeoffs
 
-**One 292-character file.** Everything measured here is a demonstration of method, not a result. The separation numbers in Part 4 come from a corpus built to have exactly one obvious topic shift.
+**Two documents.** Parts 1–5 run on a 292-character constructed file; Part 6 runs on one 33-page report. Both are demonstrations of method, not results. The separation numbers in Part 4 come from a corpus built to have exactly one obvious topic shift, and Part 6's retrieval is a single query with no ground truth attached.
 
 **Only local change is detected.** Sentence *i* against *i+1*. A chunk that drifts gradually across five sentences never triggers a boundary. `gradient` thresholding helps somewhat; nothing solves it fully.
 
@@ -483,6 +638,11 @@ class SemanticChunkingReport:
     # TODO 3: run it on structured text (a Markdown document with headings).
     #         Does the peak ratio still recommend semantic chunking? Should it,
     #         when MarkdownHeaderTextSplitter would do the job for free?
+    #
+    # TODO 4: run `analyse()` on the climate PDF from Part 6 and compare its
+    #         peak_ratio against the constructed `flat` text. A real report
+    #         shifts topic many times, gently; the toy corpus shifts once,
+    #         hard. Does a single peak_ratio number describe both usefully?
 
 
 report = SemanticChunkingReport(embeddings)
@@ -501,6 +661,8 @@ for k, v in report.analyse(flat).items():
 
 **`SemanticChunker`** takes four threshold types. `percentile` always finds boundaries; `standard_deviation` and `interquartile` can correctly decide a document has none. Thresholds are per-corpus and do not transfer.
 
+**The full pipeline** is preprocessing → semantic chunking → vector store → retriever, and Part 6 runs all four stages over a real 33-page report. Join pages before chunking, or the file format decides your boundaries for you.
+
 **The costs are real:** an extra embedding pass over every sentence at index time (roughly doubling embedding cost), unbounded chunk sizes, and total dependence on sentence-segmentation quality.
 
 **Bound the output** with a size split afterwards — semantic boundaries first, size ceiling second.
@@ -518,4 +680,8 @@ for k, v in report.analyse(flat).items():
 
 Canonical lesson for concept `RAG-CI-02` (semantic chunking), Chunking & Indexing batch.
 
-`2. Semantichunking.ipynb` is written entirely against LangChain 0.x (`langchain.chat_models`, `langchain.document_loaders`, `langchain.vectorstores`, `langchain.schema`, `langchain.prompts`) and additionally requires `sentence_transformers`, which is not installed in this environment. It cannot run as written; its from-scratch approach and its purpose-built `langchain_intro.txt` corpus are carried here on the current stack. See `RAG_MIGRATION_MANIFEST.md`.
+`semantic_chunking.ipynb` (anthology) is the canonical explanation source, per `RAG_CURRICULUM.md` section 4. Its conceptual framing, Kamradt/LangChain attribution, `semantic_chunking_comparison.svg` diagram, breakpoint-threshold table and end-to-end PDF → FAISS → retriever pipeline are all carried here; its `helper_functions` star-import is replaced with explicit `PyPDFLoader` and a local `show_context`. The anthology copy is **not** modified and **not** archived.
+
+`2. Semantichunking.ipynb` is written entirely against LangChain 0.x (`langchain.chat_models`, `langchain.document_loaders`, `langchain.vectorstores`, `langchain.schema`, `langchain.prompts`) and additionally requires `sentence_transformers`, which is not installed in this environment. It cannot run as written; its from-scratch approach and its purpose-built `langchain_intro.txt` corpus are carried here on the current stack.
+
+See `RAG_MIGRATION_MANIFEST.md`.

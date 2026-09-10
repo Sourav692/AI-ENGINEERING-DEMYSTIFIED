@@ -4,7 +4,7 @@ A single, accurate table of every notebook in this repo, in the order they're me
 
 This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6, 11 are scaffolded placeholders with no content yet.
 
-> **In progress (2026-09-10): `RAG_Curriculum/`.** A standalone top-level folder consolidating RAG content from Phases 4, 7 and 8 into one active lesson per concept, per `RAG_CURRICULUM.md`. **Currently 5 lessons of a planned 70** — `01_Foundations/` is complete. Phases 4, 7 and 8 below remain the live source of truth for everything not yet migrated, and no notebook listed in this index has been moved, archived, or deleted. See [`RAG_Curriculum/`](#rag_curriculum--in-progress) at the end of this index.
+> **In progress (2026-09-10): `RAG_Curriculum/`.** A standalone top-level folder consolidating RAG content from Phases 4, 7 and 8 into one active lesson per concept, per `RAG_CURRICULUM.md`. **Currently 9 lessons of a planned 70** — `01_Foundations/` is complete, `02_Chunking_and_Indexing/` is 4 of 9. Phases 4, 7 and 8 below remain the live source of truth for everything not yet migrated, and no notebook listed in this index has been moved, archived, or deleted. See [`RAG_Curriculum/`](#rag_curriculum--in-progress) at the end of this index.
 
 # Phase 1 — Theory & Foundations (`01_Theory_and_Foundations/`)
 
@@ -580,7 +580,9 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 
 Consolidation target for RAG content currently spread across Phases 4, 7 and 8. Plan: `RAG_CURRICULUM.md`. Execution record and per-source dispositions: `RAG_MIGRATION_MANIFEST.md`. Folder guide: `RAG_Curriculum/README.md`.
 
-**Built (5 of 70 planned lessons) — `01_Foundations/` is complete:**
+**Built (9 of 70 planned lessons) — `01_Foundations/` is complete; `02_Chunking_and_Indexing/` is 4 of 9:**
+
+### `01_Foundations/` — complete
 
 | # | Notebook | Topic |
 |---|---|---|
@@ -592,13 +594,24 @@ Consolidation target for RAG content currently spread across Phases 4, 7 and 8. 
 
 Every code cell in all five executes end to end against live services.
 
-**Scaffolded, no content yet:** `00_Curriculum_Guide/`, `02_Chunking_and_Indexing/`, `03_Retrieval/`, `04_Query_Transformation_and_Routing/`, `05_Context_and_Generation/`, `06_Evaluation/`, `07_Agentic_RAG/`, `08_Advanced_Architectures/`, `09_Multimodal_RAG/`, `10_Production_RAG/`, `11_Applications_and_Capstones/`.
+### `02_Chunking_and_Indexing/` — 4 of 9 built
 
-**Support, not lessons:** `_support/helpers/rag_paths.py` (depth-independent asset resolver), `_support/environment_and_path_manifest.md` (runtime matrix, asset roots, LangChain 1.x import migration, validation status). `_support/shared_data/` and `_support/evaluation_data/` are empty — assets stay in their existing homes for now. `_archive/` is empty; nothing has been retired.
+| # | Notebook | Topic |
+|---|---|---|
+| 01 | `01_Document_Splitting_and_Chunking.ipynb` | The splitter catalogue — fixed, sentence, paragraph, sliding window, recursive, character, code, Markdown, token-based, section-based; overlap and metadata; what each parameter actually does. Semantic chunking, empirical size selection and the retrieve-small/return-large family are deliberately deferred to their own lessons. From 2 sources. |
+| 02 | `02_Semantic_Chunking.ipynb` | Where the *meaning* changes rather than where the character count expires: the five-step algorithm built from scratch, `SemanticChunker` and its four threshold types, a measured separation test, the doubled index-time embedding cost, unbounded chunk sizes, and a full PDF → semantic chunks → FAISS → retriever pipeline on a 33-page report. Ends with when *not* to use it. From 2 sources. |
+| 03 | `03_Proposition_Chunking.ipynb` | Rewriting text into standalone atomic facts rather than finding boundaries in it; proposition generation and the quality-check grading step; the atomic-vs-self-contained distinction; measured comparison against larger chunks and the cost extrapolation. From 1 source, rebuilt on pydantic v2. |
+| 04 | `04_Choosing_Chunk_Size.ipynb` | Sweeping chunk sizes and reading the curve — including the case where the honest answer is "no difference"; a deterministic retrieval metric instead of LLM judges; the cost axis; the escape hatch when no size works. From 1 source, rebuilt off LlamaIndex. |
 
-**Runtime status:** all five lessons are fully validated by end-to-end execution (2026-09-10) — 27/27, 22/22, 11/11, 18/18, 19/19 code cells. LLM calls route through `helpers.get_experientiallabs_llm()` (`gpt-5.6-luna`); embeddings use `text-embedding-3-small`.
+**Not built:** `05_Incremental_Indexing_and_Record_Management`, `06_Parent_Document_Retrieval`, `07_Multi_Representation_Indexing`, `08_Document_Augmentation`, `09_HyPE_Hypothetical_Prompt_Embeddings`.
 
-**Sources:** lesson 01's seven sources were archived (see the Phase 4 sections above). Lessons 02–05's sources — the 11 loader notebooks, the embeddings/vector-DB notebooks, and the CSV/JSON technique notebooks — **remain in place and have not been retired.** Note that all 11 loader notebooks in `06_RAG_Naive_to_Production/01_Loading_Data/` are unrunnable as written: they reference `../../data/` and `../../docs/`, neither of which exists (the files are in `shared_data/`).
+**Scaffolded, no content yet:** `00_Curriculum_Guide/`, `03_Retrieval/`, `04_Query_Transformation_and_Routing/`, `05_Context_and_Generation/`, `06_Evaluation/`, `07_Agentic_RAG/`, `08_Advanced_Architectures/`, `09_Multimodal_RAG/`, `10_Production_RAG/`, `11_Applications_and_Capstones/`.
+
+**Support, not lessons:** `_support/helpers/rag_paths.py` (depth-independent asset resolver), `_support/lesson_sources/` (each lesson's `.src.md` plus `build_lesson.py`, which converts them to notebooks and carries donor diagrams across), `_support/environment_and_path_manifest.md` (runtime matrix, asset roots, LangChain 1.x import migration, validation status). Source assets stay in their existing homes and are reached through the resolver; `_support/shared_data/` holds only generated derivatives — currently one, `semantic_chunking_comparison.png`, rasterized from the anthology's SVG for lesson `02_Chunking_and_Indexing/02`. `_support/evaluation_data/` is empty. `_archive/` holds the seven notebooks retired with lesson 01, byte-identical to their originals.
+
+**Runtime status:** the five `01_Foundations/` lessons and `02_Semantic_Chunking.ipynb` are fully validated by end-to-end execution (2026-09-10) — 27/27, 22/22, 11/11, 18/18, 19/19 and 19/19 code cells. **`02_Chunking_and_Indexing/01`, `03` and `04` are built but have no execution record** — treat them as unvalidated until run. LLM calls route through `helpers.get_experientiallabs_llm()` (`gpt-5.6-luna`); embeddings use `text-embedding-3-small`.
+
+**Sources:** lesson 01's seven sources were archived (see the Phase 4 sections above). Every other source — the 11 loader notebooks, the embeddings/vector-DB notebooks, the CSV/JSON technique notebooks, and the chunking batch's sources in `06_RAG_Naive_to_Production/02_Splitting_and_Chunking/` and `Comprehensive_RAG_Techniques/all_rag_techniques/` — **remains in place and has not been retired.** Per-source dispositions are in `RAG_MIGRATION_MANIFEST.md`, which is the authority; a lesson's own provenance cell is a summary, not the record. Note that all 11 loader notebooks in `06_RAG_Naive_to_Production/01_Loading_Data/` are unrunnable as written: they reference `../../data/` and `../../docs/`, neither of which exists (the files are in `shared_data/`).
 
 ## Known Discrepancies
 

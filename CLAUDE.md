@@ -41,7 +41,7 @@ This repo has a local, gitignored code-graph snapshot at `graphify-out/` (produc
 11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
 13_Projects/                             ✅ Built — 12 projects: LangGraph/LangChain/RAG capstones + 9 more standalone full-stack apps
-RAG_Curriculum/                          🔨 In progress — standalone consolidation of RAG content from Phases 4/7/8 into one lesson per concept (1 of 70 lessons built; see below)
+RAG_Curriculum/                          🔨 In progress — standalone consolidation of RAG content from Phases 4/7/8 into one lesson per concept (9 of 70 lessons built; see below)
 archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
 docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
 ```

@@ -14,7 +14,8 @@ This manifest is the first execution artifact for `RAG_CURRICULUM.md`. It record
 | Basic-RAG pilot | **Consolidated and fully validated** | `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb` written from six sources. All five validation layers complete: **27/27 code cells execute end to end**. **No source notebook has been moved, archived, or deleted.** |
 | Retirement of pilot sources | **Complete** | 7 notebooks moved to `RAG_Curriculum/_archive/source_notebooks_preserved_by_migration_manifest/`, original relative layout preserved, SHA-256 verified identical after the move. Nothing deleted. All inbound references updated in the same pass. |
 | Foundations batch (`01_Foundations/02`–`05`) | **Complete and validated** | Four lessons built and executed end to end: 22/22, 11/11, 18/18, 19/19 code cells. Sources **not** yet archived. |
-| Remaining batches | Pending | `02_Chunking_and_Indexing/` (9 lessons) is next. |
+| Chunking & Indexing batch (`02_Chunking_and_Indexing/01`–`04`) | **Built; `02` reworked and re-validated September 10, 2026** | Four of the batch's nine lessons exist. Their dispositions were **not recorded here when they were built** — that omission is corrected in the batch section below. `02_Semantic_Chunking.ipynb` has been reworked to restore its canonical source to full weight. Sources **not** archived. |
+| Remaining batches | Pending | `02_Chunking_and_Indexing/05`–`09` (incremental indexing, parent-document retrieval, multi-representation indexing, document augmentation, HyPE), then the retrieval, query-transformation, context, agentic, advanced, multimodal and evaluation batches. |
 
 ## Dispositions
 
@@ -220,6 +221,90 @@ Two dependencies were deliberately **not** installed: `jq` (needs a C toolchain,
 ### Sources not yet archived
 
 **No Foundations source has been retired.** The pilot's precedent — archive only after the replacing lesson is validated — is met, but archiving these is a larger action than the pilot's seven files (the eleven loader notebooks alone are a coherent track) and has not been requested. All sources remain in place.
+
+## Chunking and Indexing batch — `02_Chunking_and_Indexing/01`–`04`
+
+Built September 10, 2026. **Their source dispositions were not recorded in this manifest at the time** — the four lessons carried their provenance only in their own "Provenance and runtime status" cells. Since `CLAUDE.md` makes this manifest the sole authority on which sources are canonical, donor, support or archive-candidate, that omission meant a reclassification (below) happened invisibly. The registry is backfilled here.
+
+Five of the batch's nine planned lessons (`05`–`09`) are not built.
+
+### Source registry and dispositions
+
+| Source | Canonical destination | Disposition | Notes |
+| --- | --- | --- | --- |
+| `04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/1. Document_Splitters_and_Chunkers.ipynb` | `02_Chunking_and_Indexing/01_Document_Splitting_and_Chunking.ipynb` | `canonical` | The splitter catalogue — fixed, sentence, paragraph, sliding window, recursive, character, code, Markdown, token-based, section-based. 87 cells, the largest single source in this batch. Unrunnable as written: reads `../../docs/layoutparser_paper.pdf`, a path that does not exist; the file is in `shared_data/` and is reached through `rag_paths.asset()` in the lesson. |
+| `04_Retrieval_and_RAG/RAG_Production_Course/02_text_splitters.ipynb` | Same | `donor` | Structure and the chunk-size / overlap comparison framing. |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/semantic_chunking.ipynb` | `02_Chunking_and_Indexing/02_Semantic_Chunking.ipynb` | `canonical` (**reclassified** — see below) | The anthology's semantic-chunking notebook. `RAG_CURRICULUM.md` section 4 names it the canonical explanation; section 6 (line 424) calls it a donor and defers to "the richer dedicated semantic-chunking source identified in Section 4", which is this same file. The plan contradicts itself here; section 4 governs. |
+| `04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/2. Semantichunking.ipynb` | Same | `donor` | From-scratch implementation and the purpose-built `langchain_intro.txt` corpus. Cannot run as written — LangChain 0.x throughout (`langchain.chat_models`, `langchain.document_loaders`, `langchain.vectorstores`, `langchain.schema`, `langchain.prompts`) plus `sentence_transformers`, which is not installed (the `hf` extra). |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/5. proposition_chunking.ipynb` | `02_Chunking_and_Indexing/03_Proposition_Chunking.ipynb` | `canonical` | Proposition generation, the quality-check grading step, the comparison against larger chunks. Cannot run here: `langchain_core.pydantic_v1` was removed in LangChain 1.x, alongside `langchain.text_splitter` and sunset `langchain_community.embeddings` paths, and it uses a different provider (`langchain_groq`). Technique carried, implementation rebuilt on pydantic v2. |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/4. choose_chunk_size.ipynb` | `02_Chunking_and_Indexing/04_Choosing_Chunk_Size.ipynb` | `canonical` | Method carried (sweep sizes, evaluate each, compare); implementation not. Built entirely on **LlamaIndex**, which is neither installed nor declared in `pyproject.toml`/`requirements.txt`. Its `FaithfulnessEvaluator`/`RelevancyEvaluator` LLM judges are replaced with a deterministic retrieval metric — faster, free of judge variance, comparable to the sweeps in `01_Foundations/03`. |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/images/semantic_chunking_comparison.svg` | Rasterized to `_support/shared_data/semantic_chunking_comparison.png`, attached in `02_Semantic_Chunking.ipynb` | `support` | Stationary and **untouched**; it remains the master copy. Carried as a PNG notebook attachment rather than a path reference, so the lesson does not depend on the anthology folder's layout. See "Generated asset" below. |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/data/Understanding_Climate_Change.pdf` | Read by `02_Semantic_Chunking.ipynb` Part 6 | `support` | Stationary, resolved through `rag_paths.asset()`. 33 pages, 72,523 characters, 13,016 tokens. |
+| `08_Advanced_RAG/Comprehensive_RAG_Techniques/helper_functions.py` | Not carried | `support` | `semantic_chunking.ipynb` reaches it with `from helper_functions import *` for `read_pdf_to_string`, `retrieve_context_per_question` and `show_context`. The lesson uses `PyPDFLoader` and a local `show_context` instead, so no import dependency on the anthology folder is created. Consistent with dependency rule 1. |
+
+**No source in this batch has been moved, modified, archived or deleted.** All four remain live and are still the source of truth for anything not carried.
+
+### Correction: `semantic_chunking.ipynb` restored to canonical (September 10, 2026)
+
+As first built, `02_Semantic_Chunking.ipynb` used the anthology notebook as a **donor only**, taking `SemanticChunker` usage and the breakpoint-threshold types and nothing else, while `2. Semantichunking.ipynb` supplied the lesson's spine. That inverted the roles section 4 of the plan assigns, and it dropped material that section 2's "preserve insight, not duplication" rule requires be carried — rule 2 names diagrams explicitly, and the pilot batch had already set the precedent by carrying all three of `1_rag_overview.ipynb`'s diagram attachments.
+
+Four things were lost and have now been restored:
+
+| Restored | Where it now lives |
+| --- | --- |
+| The conceptual framing — the problem with arbitrary breakpoints, the coherence claim, the four method stages, the claimed benefits | New "The idea, before the code" section, ahead of Prerequisites |
+| Attribution — [Greg Kamradt's original proposal](https://youtu.be/8OJC21T2SL4?t=1933) and the [LangChain how-to](https://python.langchain.com/docs/how_to/semantic-chunker/) | Opening section |
+| `semantic_chunking_comparison.svg` | Rasterized to PNG and attached in the same section |
+| The end-to-end pipeline: PDF → `SemanticChunker.create_documents` → FAISS → retriever → `"What is the main cause of climate change?"` | New Part 6, four stages, on the anthology's own 33-page climate PDF |
+
+The lesson's existing material was kept: the from-scratch implementation, the `gradient` threshold type (added to `SemanticChunker` after the anthology notebook was written, so absent from its three-type list), the Part 4 separation measurement, the Part 5 cost measurement, and the Part 7 when-*not*-to-use guidance. "When to use it" moved from Part 6 to Part 7 to make room.
+
+Adapted rather than copied, and why: the anthology's `from helper_functions import *` is replaced with `PyPDFLoader` and an explicit local `show_context`; its `read_pdf_to_string` flattens a PDF to a string, whereas the lesson loads pages and joins them, so it can state *why* page breaks must not become chunk boundaries.
+
+### Build tooling change
+
+`_support/lesson_sources/build_lesson.py` gained an `attachfile=<filename.png>` cell option: the file is resolved through `rag_paths.asset()`, base64'd, and attached under its filename stem, so the cell body references it as `![alt](attachment:<stem>)`. The build **fails** if a cell attaches a file it never references, which is the failure mode that would otherwise ship a silently invisible diagram. This is additive — the existing `attach=` path, which pulls the pilot donor's three PNG attachments, is unchanged, and all four other built lessons rebuild with cells identical to what is on disk.
+
+**First attempt, and why it was wrong.** The diagram was initially inlined as raw `<svg>` markup in the markdown cell, on the reasoning that inlining renders everywhere and avoids a base64 payload. **It did not render in Jupyter.** The diagnosis that followed matters more than the fix:
+
+- The first hypothesis — that the SVG's blank lines terminate the CommonMark HTML block early — was **tested and disproved**: both `markdown-it` (what JupyterLab uses) and `mistune` (what nbconvert uses) pass all 14 `<rect>` and 32 `<text>` elements through intact with or without blank lines.
+- The actual cause is downstream of the markdown parser: the renderer's HTML sanitizer. Inline `<svg>` survives parsing and is then stripped before display, which fails **silently** — no error, no broken-image icon, just nothing.
+
+The lesson generalizes: **do not carry a diagram as inline markup in a notebook.** Use an attachment, which is Jupyter's own mechanism and is what the pilot lesson's three diagrams already used. That precedent was available and should have been followed first.
+
+### Generated asset
+
+`RAG_Curriculum/_support/shared_data/semantic_chunking_comparison.png` (1600×1400, 2× the source's 800×700 viewBox) — the **first** file in the curriculum's own asset root, which had been empty.
+
+It is a faithful rasterization of the anthology's `images/semantic_chunking_comparison.svg`, which uses only `<rect>` and `<text>`. No SVG rasterizer is installed in this environment (`cairosvg`, `svglib` and `reportlab` are all absent, and none is declared in `pyproject.toml`), so the conversion was done with a throwaway Pillow script that parses those two element types and honours `text-anchor`, `font-size`, `font-weight`, `fill` and `stroke`; it warns on any element it does not handle, and warned on none. The output was inspected before use. **No dependency was added.**
+
+The source SVG is untouched. If the diagram ever needs regenerating, the SVG remains the master.
+
+### Material added that no source contained
+
+- **Lesson 01:** the deliberate deferral notes — semantic chunking, empirical size selection, and the retrieve-small/return-large family are separate lessons, and the notebook says why rather than silently omitting them.
+- **Lesson 02:** the Part 4 separation test (margin between two topic queries, character vs semantic on identical text), the Part 5 cost measurement and the bounding pattern, the Part 6 character-splitter comparison on the same PDF, and Part 7's when-*not*-to-use. Both sources demonstrate the technique working and stop there.
+- **Lesson 03:** the atomic-vs-self-contained distinction, the measured comparison, and the cost extrapolation.
+- **Lesson 04:** the cost axis, guidance on reading a sweep curve including the case where the honest answer is "no difference", and the escape hatch when no size works.
+
+### Validation performed
+
+| Lesson | Layer | Result |
+| --- | --- | --- |
+| `01_Document_Splitting_and_Chunking.ipynb` | Built (39 cells, 18 code) | Execution record not captured at build time; **not re-validated in this pass** |
+| `02_Semantic_Chunking.ipynb` | Static — nbformat schema, AST parse of all 19 code cells, SVG inlined, outputs cleared, `# ====` banner convention | **PASS** |
+| `02_Semantic_Chunking.ipynb` | Service-backed execution — full run-all with real API calls in a fresh kernel, 2026-09-10 | **PASS — 19/19 code cells**, 50s wall time, ~40k embedding tokens, no completions |
+| `03_Proposition_Chunking.ipynb` | Built (30 cells, 13 code) | Execution record not captured at build time; **not re-validated in this pass** |
+| `04_Choosing_Chunk_Size.ipynb` | Built (31 cells, 11 code) | Execution record not captured at build time; **not re-validated in this pass** |
+
+Lessons `01`, `03` and `04` are recorded as **built but not execution-validated in this manifest**. That is weaker than the Foundations batch, where every lesson has a cell count from a real run. Do not treat them as validated to the pilot's standard until they have been run.
+
+Behavioural claims confirmed by lesson `02`'s run:
+
+- **The unbounded-chunk warning is real, and the toy corpus could not show it.** On the 33-page PDF, `SemanticChunker` at the 90th percentile produced 62 chunks whose sizes ranged from 118 to **5,719 characters** (979 tokens) against a median of 752. That 7.6× spread over the median is the Part 5 argument in one line of output.
+- **Semantic boundaries land on section starts.** The top hit for `"What is the main cause of climate change?"` began at "Understanding Climate Change / Chapter 1: Introduction to Climate Change" and ran to the end of the introduction — a self-contained passage containing the answer.
+- **The character-splitter contrast is visible, not hypothetical.** At the same median size (752 chars, 103 chunks), its top hit for the same query *began mid-sentence* — "provide a historical record that scientists use to…" — and its second hit ended mid-word. Both still retrieved relevant material; neither passage stands on its own. This is the clearest evidence in the batch for the coherence claim, and it exists only because the end-to-end pipeline was restored.
+- **Part 4's margin result held on the toy corpus:** mean margin 0.5340 → 0.6966, a 1.30× sharpening, with the character splitter's mixed chunk showing the expected blended vector (0.1439 / 0.5027).
 
 ## Next batch
 

@@ -7,11 +7,27 @@ Cell format:
 Attachments named by `attach=` are pulled from the donor notebook so the
 original diagrams survive consolidation (acceptance checklist: "Notebook
 attachments, important metadata, and meaningful tags survive consolidation").
+
+A donor diagram that lives on disk as a file rather than as a notebook
+attachment is carried with cell metadata:
+
+    %%markdown attachfile=<filename.png>
+
+The filename is resolved through `rag_paths.asset()`, base64'd, and attached
+under its stem, so the cell body references it as
+`![alt](attachment:<stem>)`. The build fails if that reference is missing.
+PNG rather than inline SVG markup: inline `<svg>` depends on the renderer's
+HTML sanitizer and fails silently when stripped, whereas attachments are
+Jupyter's own mechanism.
 """
 
+import base64
 import json
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "helpers"))
+from rag_paths import asset  # noqa: E402
 
 REPO = Path(r"D:\AI ENGINEERING")
 # The donor was retired to the archive on 2026-09-10 (its diagrams live on inside
@@ -40,6 +56,21 @@ def load_attachments():
         size = sum(len(v) for v in att[name].values())
         print(f"  carried attachment {key:22s} <- donor cell {idx} ({size} b64 chars)")
     return out
+
+
+def file_attachment(name):
+    """Base64 a PNG on disk into a notebook attachment payload.
+
+    PNG rather than inline SVG markup: an inline `<svg>` in a markdown cell is
+    at the mercy of the renderer's HTML sanitizer and silently shows nothing
+    when it is stripped. An `image/png` attachment referenced as
+    `![alt](attachment:key)` is Jupyter's own mechanism and is what the pilot
+    lesson's three diagrams already use here.
+    """
+    path = asset(name)
+    payload = base64.b64encode(path.read_bytes()).decode("ascii")
+    print(f"  attached diagram {name} ({len(payload)} b64 chars) <- {path}")
+    return {"image/png": payload}
 
 
 def parse(src_text):
@@ -99,6 +130,15 @@ def main():
         elif "attach" in meta:
             key = meta["attach"]
             cell["attachments"] = {key: attachments[key]}
+        elif "attachfile" in meta:
+            name = meta["attachfile"]
+            key = Path(name).stem
+            cell["attachments"] = {key: file_attachment(name)}
+            if f"attachment:{key}" not in body:
+                raise SystemExit(
+                    f"cell {idx} attaches {name} but never references "
+                    f"![...](attachment:{key}) - the image would not render"
+                )
 
         cells.append(cell)
 

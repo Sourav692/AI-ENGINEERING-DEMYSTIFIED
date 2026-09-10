@@ -421,7 +421,7 @@ This mapping makes the proposed treatment of `08_Advanced_RAG/` explicit. A dest
 | `reranking.ipynb`, `reranking_with_llamaindex.ipynb` | `03_Retrieval/05_Reranking_and_Contextual_Compression.ipynb` | Donor; the LlamaIndex version is support/reference. |
 | `retrieval_with_feedback_loop.ipynb` | `07_Agentic_RAG/06_Feedback_Driven_Retrieval.ipynb` | Canonical source/donor. |
 | `self_rag.ipynb` | `07_Agentic_RAG/05_Self_RAG.ipynb` | Canonical source/donor. |
-| `semantic_chunking.ipynb` | `02_Chunking_and_Indexing/02_Semantic_Chunking.ipynb` | Donor; prefer the richer dedicated semantic-chunking source identified in Section 4. |
+| `semantic_chunking.ipynb` | `02_Chunking_and_Indexing/02_Semantic_Chunking.ipynb` | **Canonical.** *(Corrected 2026-09-10: this row previously read "Donor; prefer the richer dedicated semantic-chunking source identified in Section 4" — but Section 4 identifies this same file as the richer source, so the instruction pointed at itself and was read as a demotion. Section 4 governs: this notebook is the canonical explanation; `2. Semantichunking.ipynb` is the donor supplying the from-scratch implementation. See `RAG_MIGRATION_MANIFEST.md`.)* |
 
 #### Merged unique sources: `Comprehensive_RAG_Techniques/all_rag_techniques/`
 
