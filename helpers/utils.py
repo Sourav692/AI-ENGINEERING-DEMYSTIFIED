@@ -186,7 +186,7 @@ def get_databricks_gateway_llm(model_name: str = "system.ai.gemma-3-12b", temper
     )
 
 
-def get_experientiallabs_llm(model_name: str = "gpt-5.6-luna", temperature: float = 0):
+def get_experientiallabs_llm(model_name: str = "deepseek-v4.1-flash", temperature: float = 0):
     """
     Create and return a Chat LLM served through the Experiential Labs
     OpenAI-compatible endpoint, via ChatOpenAI pointed at that base_url.
