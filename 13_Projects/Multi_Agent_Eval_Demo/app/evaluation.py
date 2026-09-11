@@ -16,6 +16,7 @@ Most real systems lean on the checkable ones and use a judge only for the
 part that genuinely needs taste.
 """
 
+import time
 from statistics import mean
 
 from helpers import get_llm
@@ -24,6 +25,22 @@ from .agents import run
 from .dataset import CASES
 
 judge_llm = get_llm()
+
+
+def patiently(fn, *args, attempts=4):
+    """Retry on rate limits.
+
+    An evaluation fires far more requests than normal use, so shared model
+    endpoints will push back. Waiting and retrying is the whole fix.
+    """
+    for attempt in range(attempts):
+        try:
+            return fn(*args)
+        except Exception as exc:
+            transient = "rate" in str(exc).lower() or "429" in str(exc)
+            if not transient or attempt == attempts - 1:
+                raise
+            time.sleep(2 ** attempt)   # 1s, 2s, 4s ...
 
 
 # ---------------------------------------------------------------------------
@@ -69,9 +86,10 @@ Respond with a single digit and nothing else."""
 
 def score_quality(case, result) -> float:
     """Ask a model how good the answer reads. Returns 0.0-1.0."""
-    reply = judge_llm.invoke(
-        JUDGE_PROMPT.format(task=case.task, answer=result["answer"])
-    ).content.strip()
+    reply = patiently(
+        lambda p: judge_llm.invoke(p).content.strip(),
+        JUDGE_PROMPT.format(task=case.task, answer=result["answer"]),
+    )
 
     digit = next((ch for ch in reply if ch.isdigit()), None)
     if digit is None:
@@ -97,7 +115,7 @@ def evaluate(cases=None) -> dict:
     rows = []
 
     for case in cases:
-        result = run(case.task)
+        result = patiently(run, case.task)
 
         row = {
             "id": case.id,

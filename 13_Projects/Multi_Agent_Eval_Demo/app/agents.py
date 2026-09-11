@@ -51,8 +51,16 @@ Team members:
 
 The task: {task}
 
+Already worked: {already}
+
 Work done so far:
 {progress}
+
+Rules:
+- Never pick someone who has already worked.
+- If the task needs no arithmetic, skip the calculator.
+- If the task needs no rewriting, skip the writer.
+- Once everyone who is needed has worked, reply DONE.
 
 Reply with exactly one word - the name of who should work next,
 or DONE if the task is fully handled. Nothing else."""
@@ -61,16 +69,25 @@ or DONE if the task is fully handled. Nothing else."""
 def supervisor(state: TeamState) -> Command[Literal["calculator", "writer", "finish"]]:
     """Decide who works next, or that the work is finished."""
     progress = "\n".join(state["notes"]) if state["notes"] else "(nothing yet)"
+    worked = [name for name in state["visited"] if name in SPECIALISTS]
 
     reply = llm.invoke(
-        SUPERVISOR_PROMPT.format(task=state["task"], progress=progress)
+        SUPERVISOR_PROMPT.format(
+            task=state["task"],
+            already=", ".join(worked) if worked else "(nobody yet)",
+            progress=progress,
+        )
     ).content.strip().lower()
 
     # Pick whichever specialist the model named. Anything else means stop.
     choice = next((name for name in SPECIALISTS if name in reply), "finish")
 
-    # Stop early if we have gone around too many times.
-    if state["turns"] >= MAX_TURNS:
+    # Two guards, because a model will sometimes ignore the rules above.
+    # Without them a supervisor can loop forever, which is the classic way
+    # this pattern fails.
+    if choice in worked:                 # already had their turn
+        choice = "finish"
+    if state["turns"] >= MAX_TURNS:      # gone around too many times
         choice = "finish"
 
     return Command(
