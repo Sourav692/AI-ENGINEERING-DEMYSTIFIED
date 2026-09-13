@@ -6,6 +6,47 @@ notebook is the explanation; this is the index.
 
 ---
 
+## How the phases feed each other
+
+The notebooks are numbered in build order, but they form a **cycle**, and the direction of
+each arrow is the thing worth remembering:
+
+```mermaid
+flowchart LR
+    PROD(["production traffic"]) --> MON
+
+    MON["Phase 6 · online monitoring<br/>sampled judges on live traffic<br/>no ground truth, wide error bars"]
+    MON -- "flags something" --> MINE
+
+    MINE["Phase 4 · mine the traces<br/>novelty-targeted selection<br/>gives inputs, not labels"]
+    MINE -- "a human labels them" --> ALIGN
+
+    ALIGN["Phase 7 · align the judge<br/>expert standards distilled<br/>now the reward signal means something"]
+    ALIGN -- "trusted objective" --> OPT
+
+    OPT["Phase 8 · GEPA optimisation<br/>candidate prompt generated<br/>registered, NOT deployed"]
+    OPT -- "candidate" --> GATE
+
+    GATE{"Phase 5 · promotion gate<br/>thresholds + no regression<br/>100% coverage, paired"}
+    GATE -- "only if it passes" --> PROD
+    GATE -- "rejected" --> OPT
+
+    style MON fill:#e8f0fe,stroke:#4285f4
+    style GATE fill:#fef7e0,stroke:#f9ab00
+    style PROD fill:#e6f4ea,stroke:#137333
+```
+
+Two properties hold it together:
+
+- **Online discovers; offline prevents recurrence.** A finding that stops at the monitoring
+  dashboard helps once. Carried through to a gated test, it protects every release after.
+- **The gate is the only thing that can deploy.** Humans write prompts in Phase 5, machines
+  write them in Phase 8, and both pass through the identical check. Nothing is exempt for
+  being machine-generated — if anything it deserves more scrutiny, because it was optimised
+  against a metric that sits *inside* the gate.
+
+---
+
 ## 1. What evaluation is for
 
 | Concept | In one line | Phase |

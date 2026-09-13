@@ -40,7 +40,10 @@ default because the judges in later phases run on Databricks-served models.
 # ============================================================================
 
 # --- stdlib ---
+import json
 import os
+import socket
+import urllib.parse
 from functools import lru_cache
 
 # --- third-party ---
@@ -60,12 +63,73 @@ from typing_extensions import TypedDict
 # CONFIGURATION
 # ============================================================================
 
+def _load_env_file() -> None:
+    """Load the repo-root `.env` if python-dotenv is available.
+
+    Without this, the module depends on whatever the kernel happened to inherit — which is
+    exactly how a stale injected credential ends up being the *only* one present. Existing
+    environment variables win; `load_dotenv` does not override them by default.
+    """
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return          # optional convenience, not a hard dependency
+    load_dotenv()
+
+
+_load_env_file()
+
+
+def _repair_databricks_auth() -> str:
+    """Fall back to PAT auth when an injected metadata-service token server is dead.
+
+    The Databricks VS Code extension starts a short-lived local token server and injects
+    `DATABRICKS_AUTH_TYPE=metadata-service` plus a `DATABRICKS_METADATA_SERVICE_URL`
+    pointing at `127.0.0.1:<ephemeral port>` into notebook kernels. When that extension
+    restarts it picks a new port, leaving the injected URL stale — and because
+    `DATABRICKS_AUTH_TYPE` *pins* the SDK to that one method, it will not fall back to the
+    perfectly valid `DATABRICKS_TOKEN` sitting beside it. The result is a
+    `ConnectionRefusedError` on 127.0.0.1 with a working PAT in the same environment.
+
+    This probes the injected URL and, only if nothing is listening, drops the two pinning
+    variables so the SDK resolves auth normally. A live metadata service is left alone.
+
+    Returns a short status string, so a notebook can print what happened.
+    """
+    if os.environ.get("DATABRICKS_AUTH_TYPE") != "metadata-service":
+        return "auth: no metadata-service pin (nothing to repair)"
+
+    if not os.environ.get("DATABRICKS_TOKEN"):
+        # Nothing to fall back to; removing the pin would only change the error message.
+        return "auth: metadata-service pinned but no DATABRICKS_TOKEN to fall back to"
+
+    url = os.environ.get("DATABRICKS_METADATA_SERVICE_URL", "")
+    parsed = urllib.parse.urlparse(url)
+    if parsed.hostname and parsed.port:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.settimeout(0.25)          # localhost: alive answers immediately
+            if probe.connect_ex((parsed.hostname, parsed.port)) == 0:
+                return f"auth: metadata-service alive on port {parsed.port} (left as-is)"
+
+    os.environ.pop("DATABRICKS_AUTH_TYPE", None)
+    os.environ.pop("DATABRICKS_METADATA_SERVICE_URL", None)
+    return (
+        f"auth: metadata-service on port {parsed.port} is dead -- "
+        "dropped the pin, falling back to DATABRICKS_TOKEN"
+    )
+
+
+# Run at import so it is in place before any client is constructed, including by a notebook
+# cell that touches Databricks before importing this module.
+AUTH_STATUS = _repair_databricks_auth()
+
+
 PROVIDER = os.environ.get("TELCOASSIST_PROVIDER", "databricks")
 
 # Model identifiers per provider. These are the *system under test* -- when Phase 5
 # compares eval runs, holding these fixed is what makes the comparison meaningful.
 MODELS = {
-    "databricks": {"chat": "databricks-claude-opus-4-6", "embedding": "databricks-gte-large-en"},
+    "databricks": {"chat": "databricks-gpt-oss-120b", "embedding": "databricks-gte-large-en"},
     "openai": {"chat": "gpt-4o-mini", "embedding": "text-embedding-3-small"},
 }
 
@@ -398,6 +462,58 @@ TOOLS = [lookup_account, check_network_status, open_ticket]
 # GRAPH
 # ============================================================================
 
+def message_text(message) -> str:
+    """Flatten an assistant message's content to plain text.
+
+    Reasoning models — `gpt-oss`, the o-series, and a growing number of others — return
+    `content` as a **list of typed blocks** rather than a string:
+
+        [{"type": "reasoning", "summary": [...]}, {"type": "text", "text": "..."}]
+
+    Returning that list raw would break `answer`'s documented `str` contract and hand every
+    scorer a JSON blob to judge instead of a reply.
+
+    **Reasoning blocks are deliberately dropped.** Only `text` blocks become the answer. If
+    the model's private chain of thought were included in the scored output, an agent could
+    effectively argue its way past a judge — the judge would be reading the reasoning rather
+    than the response the customer actually sees.
+    """
+    content = getattr(message, "content", message)
+
+    if isinstance(content, list):
+        return _text_from_blocks(content)
+
+    if isinstance(content, str):
+        # Some integrations serialise the block list to a JSON *string* before it reaches
+        # us, so the reasoning blocks arrive disguised as ordinary text. Verified against
+        # databricks-gpt-oss-120b, whose `.content` is a `str` holding
+        # '[{"type": "reasoning", ...}, {"type": "text", ...}]'.
+        stripped = content.lstrip()
+        if stripped.startswith("[{") and '"type"' in stripped:
+            try:
+                blocks = json.loads(stripped)
+            except ValueError:
+                return content              # genuinely just a string that looked like JSON
+            if isinstance(blocks, list):
+                # Fall back to the raw string if the blocks held no text at all, rather
+                # than silently returning an empty answer.
+                return _text_from_blocks(blocks) or content
+        return content
+
+    return str(content)
+
+
+def _text_from_blocks(blocks) -> str:
+    """Keep only `text` blocks; drop reasoning, tool-call and other block types."""
+    parts = []
+    for block in blocks:
+        if isinstance(block, str):
+            parts.append(block)
+        elif isinstance(block, dict) and block.get("type") == "text":
+            parts.append(block.get("text", ""))
+    return "\n".join(p for p in parts if p).strip()
+
+
 class AgentState(TypedDict):
     """Conversation state.
 
@@ -498,7 +614,7 @@ def answer(
             "system_prompt": system_prompt or SYSTEM_PROMPT,
         }
     )
-    return result["messages"][-1].content
+    return message_text(result["messages"][-1])
 
 
 @mlflow.trace(span_type=SpanType.AGENT)

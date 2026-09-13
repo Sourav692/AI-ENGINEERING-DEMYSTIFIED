@@ -36,6 +36,8 @@ by name throughout, not redefined):
 Companion material that does what a sequential notebook can't — random access. It does
 **not** repeat the notebooks' explanations (there are ~15,900 words of those already):
 
+- `theory/AGENT_UNDER_TEST.md` — a high-level view of TelcoAssist itself: functionality,
+  tools, the data it holds, models, trace shape, and its deliberate non-goals
 - `theory/CONCEPTS.md` — every concept defined in a line or two, grouped **by theme**, with
   a pointer to the phase that demonstrates it
 - `theory/GOTCHAS.md` — 32 traps as symptom → cause → fix, led by the silent failures that
@@ -46,6 +48,7 @@ Companion material that does what a sequential notebook can't — random access.
 ### Shared modules
 
 - `agent.py` — TelcoAssist, the agent under test (built in Phase 1, unchanged after)
+- `trace_view.py` — span-tree rendering: self time, share of total, and the span types scorers require (built in Phase 1, reused by Phase 9)
 - `eval_dataset.py` — the evaluation dataset, edge cases, and quality gates (built in Phase 2, reused by 3-5)
 - `scorers.py` — custom scorers and judges (built in Phase 3; some get registered for production monitoring in Phase 6)
 - `promotion.py` — promotion gating: thresholds + no-regression rules with per-metric-type tolerance (built in Phase 5, reused by Phase 8)

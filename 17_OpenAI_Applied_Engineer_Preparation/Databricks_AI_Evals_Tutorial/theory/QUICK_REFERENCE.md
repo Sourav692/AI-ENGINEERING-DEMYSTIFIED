@@ -48,17 +48,27 @@ The same −0.015 delta is *tolerated* on a judged metric and *blocks* on a dete
 
 ### Which kind of scorer?
 
-```
-Does the rule have a definite answer computable from inputs/outputs/trace?
-├── YES → deterministic @scorer          free, instant, reproducible
-└── NO  → does it need context the judge can't extract itself?
-         ├── YES → custom scorer wrapping meets_guidelines()
-         └── NO  → is it judging the PATH or the ANSWER?
-                   ├── path   → make_judge with {{ trace }}
-                   └── answer → make_judge  (categorical if partial outcomes are real)
+```mermaid
+flowchart TD
+    Q{"Does the rule have a definite answer,<br/>computable from inputs, outputs or trace?"}
+
+    Q -- yes --> DET["deterministic @scorer<br/>free · instant · reproducible<br/>e.g. tool_call_correctness, no_account_leakage"]
+    Q -- no --> C{"Does the judge need context<br/>it cannot extract by itself?"}
+
+    C -- yes --> WRAP["custom scorer wrapping meets_guidelines<br/>you assemble the context dict"]
+    C -- no --> P{"Judging the PATH the agent took,<br/>or the ANSWER it gave?"}
+
+    P -- path --> TJ["make_judge with the trace template<br/>inspects spans, tool calls, ordering<br/>this is trajectory evaluation"]
+    P -- answer --> J["make_judge<br/>categorical when partial outcomes are real"]
+
+    style DET fill:#e6f4ea,stroke:#137333
+    style WRAP fill:#fef7e0,stroke:#f9ab00
+    style TJ fill:#fce8e6,stroke:#c5221f
+    style J fill:#fce8e6,stroke:#c5221f
 ```
 
-If code can check it, checking it with a judge is waste.
+Green is free and reproducible; red costs an LLM call per row and can move between runs.
+**If code can check it, checking it with a judge is waste.**
 
 ### Can this scorer run online?
 
@@ -82,12 +92,25 @@ thirty seconds ago.
 
 ### Promote this version?
 
-Both conditions, or no:
-1. **Absolute** — every blocking gate clears its threshold.
-2. **No regression** — no blocking metric dropped beyond its tolerance vs `@production`.
+```mermaid
+flowchart TD
+    C(["candidate version registered<br/>registering is not deploying"]) --> G1
 
-Threshold-only permits erosion: 0.98 → 0.91 clears a 0.90 bar three times in a row and
-you're at the floor.
+    G1{"1. Absolute<br/>every blocking gate<br/>clears its threshold?"}
+    G1 -- no --> REJ["DO NOT PROMOTE<br/>alias stays where it is<br/>candidate kept as evidence"]
+    G1 -- yes --> G2
+
+    G2{"2. No regression<br/>any blocking metric dropped<br/>beyond its tolerance vs @production?"}
+    G2 -- yes --> REJ
+    G2 -- no --> OK["PROMOTE<br/>move the @production alias"]
+
+    style OK fill:#e6f4ea,stroke:#137333
+    style REJ fill:#fce8e6,stroke:#c5221f
+```
+
+Both conditions, or no. **Checking only the threshold permits erosion**: 0.98 → 0.91 clears
+a 0.90 bar, and three "passing" releases later you are at the floor. Checking only the
+regression lets a candidate that improved on a bad baseline ship while still being bad.
 
 ---
 

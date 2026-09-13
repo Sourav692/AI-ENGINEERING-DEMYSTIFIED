@@ -106,7 +106,7 @@ pre-commit) — same "runs fresh" convention as the rest of the repo.
 OpenAI *Responses* API call object, not a chat-model instance. It also ignores its own
 `model_name` argument and hardcodes both the workspace URL and `system.ai.gemma-3-12b`.
 `CLAUDE.md` documents the intended behaviour (`ChatDatabricks` with
-`databricks-claude-opus-4-6`), so the code and the docs disagree.
+`databricks-gpt-oss-120b`), so the code and the docs disagree.
 
 This track therefore does **not** use the `helpers` factory — `agent.py` names its models
 explicitly in a `MODELS` dict, which is the right call for evaluation anyway (the model

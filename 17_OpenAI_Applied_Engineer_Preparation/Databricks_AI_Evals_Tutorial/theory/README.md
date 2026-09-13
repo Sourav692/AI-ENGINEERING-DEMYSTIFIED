@@ -18,6 +18,7 @@ So these files provide the things that exist in no single notebook:
 
 | File | What it gives you | Why a notebook can't |
 |---|---|---|
+| `AGENT_UNDER_TEST.md` | What the agent actually **is** — functionality, tools, data, models, trace shape, and what it deliberately cannot do | Described in pieces across Phases 0, 1 and 9; nowhere as a whole |
 | `CONCEPTS.md` | Every concept, defined in one or two lines, grouped **by theme** with a pointer to the phase that demonstrates it | Notebooks are ordered by build sequence, not by topic |
 | `GOTCHAS.md` | Every trap hit while building the track — symptom → cause → fix | Each gotcha is stranded in the one notebook where it surfaced |
 | `QUICK_REFERENCE.md` | The numbers, thresholds and decision rules worth memorising | Scattered across eleven files; nothing collects them |
