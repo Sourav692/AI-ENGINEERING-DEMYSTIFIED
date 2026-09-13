@@ -35,6 +35,10 @@ a bad turn poisons the context after it.
 
 ### Regression tolerance by scorer type
 
+A **threshold** asks *"is it good enough?"* — an absolute bar the metric must clear.
+A **tolerance** asks *"is it worse than it was?"* — how far a candidate may fall below the
+version already in production before that counts as a regression. A release passes both.
+
 | Scorer type | Tolerance | Why |
 |---|---|---|
 | Deterministic | **0.00** | Same input, same verdict — any movement is behavioural |
