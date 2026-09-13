@@ -31,6 +31,18 @@ by name throughout, not redefined):
 9. `09_multiturn_and_tool_selection.ipynb` — conversation-level metrics, tool selection, approval gating
 10. `10_capstone_edge_cases_and_crossref.ipynb` — adversarial design by attack surface, edge-case coverage map, full cross-reference
 
+### Theory & reference (`theory/`)
+
+Companion material that does what a sequential notebook can't — random access. It does
+**not** repeat the notebooks' explanations (there are ~15,900 words of those already):
+
+- `theory/CONCEPTS.md` — every concept defined in a line or two, grouped **by theme**, with
+  a pointer to the phase that demonstrates it
+- `theory/GOTCHAS.md` — 32 traps as symptom → cause → fix, led by the silent failures that
+  look like success
+- `theory/QUICK_REFERENCE.md` — the numbers, thresholds and decision rules, compressible to
+  one sitting
+
 ### Shared modules
 
 - `agent.py` — TelcoAssist, the agent under test (built in Phase 1, unchanged after)
