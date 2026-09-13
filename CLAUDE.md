@@ -176,9 +176,29 @@ pre-commit install
 notebooks cannot carry saved outputs into git. That matters for two reasons: notebooks here
 ship with cleared outputs so a learner runs them fresh, and committed outputs have
 previously leaked absolute filesystem paths. Verified against this repo's notebooks:
-outputs are emptied and `execution_count` nulled, while cell `metadata.tags` and the
-notebook `kernelspec` survive — the tags matter because the LangChain-1.x explainers mark
-their 0.x contrast cells with them. Config: `.pre-commit-config.yaml`.
+outputs are emptied and `execution_count` nulled, while cell `metadata.tags` survive — the
+tags matter because the LangChain-1.x explainers mark their 0.x contrast cells with them.
+Config: `.pre-commit-config.yaml`.
+
+**Kernel metadata is also stripped, but only the cosmetic half.**
+`metadata.kernelspec.display_name` and `metadata.language_info.version` are removed;
+`kernelspec.name` and `kernelspec.language` are kept, so a notebook still declares which
+kernel it wants. `display_name` records whatever the last editor's environment was called
+and had drifted to twelve different values across the repo (`.venv`, `Python 3`, `base`,
+`RAGUdemy`, …) while re-dirtying a notebook every time an IDE opened it.
+
+nbstripout is wired in **two** places, and both are needed:
+
+| | What it does | Activate with |
+| --- | --- | --- |
+| `.pre-commit-config.yaml` | Strips on the way into a commit | `pre-commit install` |
+| `.gitattributes` (clean filter) | Makes `git status`/`git diff` compare the *stripped* form, so re-opening a notebook shows no diff | `nbstripout --install --attributes .gitattributes --extra-keys "metadata.kernelspec.display_name metadata.language_info.version"` |
+
+The hook alone is not sufficient — once a field is absent from the committed copy, an IDE
+that writes it back leaves the file permanently modified. Until both are activated in a
+clone, the filter is an undefined no-op and git behaves normally. Keep the `--extra-keys`
+identical in both places, or the hook and the filter disagree and every notebook looks
+dirty.
 
 The distribution is named `ai_engineering_roadmap`. Core (`uv pip install -e .`) is the
 LangChain/LangGraph/RAG spine only — ~65 packages. Everything else lives in eleven extras:

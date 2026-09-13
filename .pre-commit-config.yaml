@@ -21,13 +21,27 @@ repos:
     hooks:
       - id: nbstripout
         name: strip output from notebooks
-        # Defaults only, deliberately. Verified on a real notebook from this
-        # repo: outputs are emptied, execution_count is nulled, and cell
-        # `metadata.tags` SURVIVE — which matters, because the LangChain-1.x
-        # explainers tag their 0.x contrast cells `raises-exception` and
-        # `langchain-0x-contrast`, and both the migration scanner and the
-        # bulk-edit scripts key off those tags. Notebook-level `kernelspec` is
-        # also kept, so notebooks still declare their kernel.
+        # Verified on a real notebook from this repo: outputs are emptied,
+        # execution_count is nulled, and cell `metadata.tags` SURVIVE — which
+        # matters, because the LangChain-1.x explainers tag their 0.x contrast
+        # cells `raises-exception` and `langchain-0x-contrast`, and both the
+        # migration scanner and the bulk-edit scripts key off those tags.
+        #
+        # The two --extra-keys below strip the volatile *kernel label* fields.
+        # `kernelspec.name` and `kernelspec.language` are NOT stripped, so a
+        # notebook still declares which kernel it wants — only the cosmetic
+        # parts go.
+        #
+        # Why: `display_name` records whatever the last editor's environment
+        # happened to be called. Across this repo it had drifted to twelve
+        # different values — `.venv` (311 notebooks), `Python 3` (109),
+        # `Python 3 (ipykernel)` (79), `base` (40), plus machine-specific ones
+        # like `RAGUdemy` and `udemycourse`. It carries no information, differs
+        # per machine, and re-dirties a notebook every time an IDE opens it.
+        # `language_info.version` is the same problem with a patch number.
+        args:
+          - --extra-keys
+          - metadata.kernelspec.display_name metadata.language_info.version
 
 # ---------------------------------------------------------------------------
 # Optional extras — NOT enabled, because they were not part of what was agreed.
