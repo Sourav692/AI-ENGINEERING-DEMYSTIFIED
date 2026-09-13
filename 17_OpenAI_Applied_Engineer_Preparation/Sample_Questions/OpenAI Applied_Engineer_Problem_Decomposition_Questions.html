@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Preparation guide for the OpenAI Applied Engineer problem decomposition round." />
+  <title>OpenAI Applied Engineer Problem Decomposition Round</title>
+
+  <style>
+    :root {
+      --text: #202124;
+      --muted: #5f6368;
+      --heading: #111827;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --border: #d1d5db;
+      --background: #ffffff;
+      --code-background: #f3f4f6;
+      --warning: #fff7ed;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    h1, h2, h3, h4 {
+      color: var(--heading);
+      line-height: 1.25;
+      margin-top: 1.8em;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 0;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+
+    h4 {
+      font-size: 1.05rem;
+    }
+
+    p {
+      margin: 0.8em 0;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin: 0.35rem 0;
+    }
+
+    blockquote {
+      margin: 1.2rem 0;
+      padding: 1rem 1.25rem;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      color: #1e3a8a;
+      font-style: italic;
+    }
+
+    .note {
+      background: var(--warning);
+      border-left: 4px solid #f97316;
+      padding: 1rem 1.25rem;
+      margin: 1.2rem 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.15rem;
+    }
+
+    .case {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      background: #fff;
+    }
+
+    .case h3 {
+      margin-top: 0;
+    }
+
+    .question {
+      font-weight: 600;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    code {
+      background: var(--code-background);
+      border-radius: 4px;
+      padding: 0.15rem 0.35rem;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media print {
+      body {
+        color: #000;
+      }
+
+      main {
+        max-width: none;
+        padding: 0;
+      }
+
+      .case {
+        break-inside: avoid;
+      }
+
+      a {
+        color: #000;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>OpenAI Applied Engineer Problem Decomposition Round</h1>
+      <p class="subtitle">Case Study Preparation Guide</p>
+
+      <div class="note">
+        <strong>Prepared for Sourav</strong><br />
+        Focus: OpenAI Applied AI Engineer / Applied Engineering problem decomposition round
+      </div>
+    </header>
+
+    <section>
+      <h2>Overview</h2>
+
+      <p>
+        I checked OpenAI’s current Applied AI Engineer role description,
+        OpenAI’s interview guidance, and publicly shared candidate reports.
+      </p>
+
+      <p>
+        The exact prompts are not public, so the questions below should be treated as
+        <strong>high-probability practice cases—not leaked interview questions</strong>.
+      </p>
+
+      <p>
+        OpenAI’s current Applied AI Engineer role description suggests that the
+        problem-decomposition round will test the ability to move from an ambiguous
+        customer problem to:
+      </p>
+
+      <ul>
+        <li>A clearly scoped use case</li>
+        <li>A technical architecture</li>
+        <li>An evaluation strategy</li>
+        <li>A production and integration plan</li>
+        <li>Measurable business outcomes</li>
+        <li>Reliability, latency, cost, safety, security, and governance considerations</li>
+      </ul>
+
+      <p>
+        OpenAI describes the role as taking systems from:
+      </p>
+
+      <blockquote>
+        Use-case selection through architecture, prototyping, evaluation, production launch, and scale.
+      </blockquote>
+
+      <p>
+        Source:
+        <a href="https://openai.com/careers/applied-ai-engineer-delhi-india/" target="_blank">
+          OpenAI Applied AI Engineer role
+        </a>
+      </p>
+    </section>
+
+    <section>
+      <h2>How the Round Will Probably Feel</h2>
+
+      <p>A typical prompt may be deliberately vague:</p>
+
+      <blockquote>
+        “A large enterprise wants to use AI to improve customer support. How would you approach it?”
+      </blockquote>
+
+      <p>
+        You will likely be expected to ask questions rather than immediately draw a RAG architecture.
+      </p>
+
+      <p>A strong structure is:</p>
+
+      <ol>
+        <li>Clarify the business objective and user</li>
+        <li>Define the current workflow and pain points</li>
+        <li>Choose and prioritize the use case</li>
+        <li>Define success metrics and evaluation data</li>
+        <li>Decompose the solution into components</li>
+        <li>Discuss risks, trade-offs, and failure modes</li>
+        <li>Explain the MVP and production rollout plan</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>High-Priority Case Study Questions</h2>
+
+      <article class="case">
+        <h3>1. Enterprise Knowledge Assistant</h3>
+
+        <p class="question">
+          A global enterprise wants an AI assistant that answers employee questions
+          using internal documents, policies, and wikis. Design the solution.
+        </p>
+
+        <h4>Be ready to discuss</h4>
+        <ul>
+          <li>Document ingestion and freshness</li>
+          <li>Chunking and metadata</li>
+          <li>Hybrid retrieval versus vector-only search</li>
+          <li>Reranking</li>
+          <li>Citations and answer grounding</li>
+          <li>Access-control-aware retrieval</li>
+          <li>Evaluation of retrieval and answer quality</li>
+          <li>Handling contradictory or stale documents</li>
+          <li>Prompt injection from retrieved content</li>
+          <li>Latency and cost controls</li>
+          <li>Human escalation</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The assistant gives a confident but incorrect answer. How do you detect and reduce this?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>2. Customer-Support Agent</h3>
+
+        <p class="question">
+          A telecom or financial-services company wants an AI agent to resolve customer-support tickets.
+        </p>
+
+        <h4>Decompose the workflow into</h4>
+        <ul>
+          <li>Intent classification</li>
+          <li>Customer authentication</li>
+          <li>Knowledge retrieval</li>
+          <li>Account lookup</li>
+          <li>Resolution recommendation</li>
+          <li>Tool execution</li>
+          <li>Human escalation</li>
+          <li>Conversation summary and CRM update</li>
+        </ul>
+
+        <h4>Important trade-offs</h4>
+        <ul>
+          <li>Assistive copilot versus autonomous agent</li>
+          <li>Read-only tools versus write-capable tools</li>
+          <li>Automation rate versus customer-impact risk</li>
+          <li>First-response time versus answer quality</li>
+          <li>Model fallback strategy</li>
+          <li>Auditability and traceability</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The customer wants 80% autonomous resolution in six months. What would you challenge?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>3. Claims-Processing Assistant</h3>
+
+        <p class="question">
+          An insurance company wants to automate claims processing using documents,
+          emails, and historical claims data.
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Document classification</li>
+          <li>OCR and structured extraction</li>
+          <li>Policy lookup</li>
+          <li>Missing-information detection</li>
+          <li>Fraud or anomaly signals</li>
+          <li>Human review thresholds</li>
+          <li>Explainability</li>
+          <li>Regulatory constraints</li>
+          <li>PII protection</li>
+          <li>Evaluation against human decisions</li>
+          <li>Gradual rollout by claim type</li>
+        </ul>
+
+        <p>
+          A strong answer should avoid promising full automation. Start with lower-risk
+          activities such as extraction, triage, summarization, and missing-information detection.
+        </p>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “How would you prove that the system is safe enough for production?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>4. AI-Powered Sales or Account-Research Assistant</h3>
+
+        <p class="question">
+          A B2B company wants an AI assistant that prepares account briefs for sales representatives.
+        </p>
+
+        <h4>Explore</h4>
+        <ul>
+          <li>CRM, email, product-usage, support, and public-data integrations</li>
+          <li>Entity resolution</li>
+          <li>Freshness and source prioritization</li>
+          <li>Permission boundaries</li>
+          <li>Citation and provenance</li>
+          <li>Personalization</li>
+          <li>Human review</li>
+          <li>Measuring seller adoption and time saved</li>
+        </ul>
+
+        <h4>Possible success metrics</h4>
+        <ul>
+          <li>Preparation-time reduction</li>
+          <li>Brief accuracy</li>
+          <li>Citation coverage</li>
+          <li>Sales-representative adoption</li>
+          <li>Conversion improvement</li>
+          <li>Meeting-quality improvement</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “What if the model generates a fabricated customer fact?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>5. Enterprise Document-Processing Platform</h3>
+
+        <p class="question">
+          A bank processes millions of financial documents and wants to extract structured data using AI.
+        </p>
+
+        <h4>Break it into</h4>
+        <ul>
+          <li>Ingestion</li>
+          <li>File validation</li>
+          <li>Document classification</li>
+          <li>OCR or multimodal extraction</li>
+          <li>Schema-constrained output</li>
+          <li>Confidence scoring</li>
+          <li>Validation against business rules</li>
+          <li>Human review</li>
+          <li>Correction feedback</li>
+          <li>Audit storage</li>
+          <li>Reprocessing and model versioning</li>
+        </ul>
+
+        <p>
+          Discuss batch versus online processing, idempotency, retry behavior,
+          data lineage, model versioning, and document-format drift.
+        </p>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “How would you handle a new document format appearing without warning?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>6. AI Agent for Enterprise Workflow Automation</h3>
+
+        <p class="question">
+          A customer wants an AI agent that reads incoming requests and performs actions
+          across Salesforce, SAP, Jira, and email.
+        </p>
+
+        <h4>Focus on</h4>
+        <ul>
+          <li>Tool discovery and tool schemas</li>
+          <li>Agent state</li>
+          <li>Workflow orchestration</li>
+          <li>Read versus write actions</li>
+          <li>Idempotency</li>
+          <li>Approval gates</li>
+          <li>Permissions</li>
+          <li>Timeouts and retries</li>
+          <li>Non-termination</li>
+          <li>Observability</li>
+          <li>Replay and recovery</li>
+          <li>Prompt-injection defense</li>
+        </ul>
+
+        <blockquote>
+          Assume the model will occasionally make the wrong decision. Design the system so that the blast radius is limited.
+        </blockquote>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The agent wants to issue a refund. Should it be allowed to do so automatically?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>7. Enterprise AI Coding Assistant</h3>
+
+        <p class="question">
+          A large company wants an internal coding assistant grounded in its private repositories.
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Repository indexing and incremental updates</li>
+          <li>Code-aware chunking</li>
+          <li>Symbol and dependency retrieval</li>
+          <li>Access control</li>
+          <li>IDE integration</li>
+          <li>Code generation versus code explanation</li>
+          <li>Static analysis and test execution</li>
+          <li>Secret scanning</li>
+          <li>IP and licensing concerns</li>
+          <li>Measuring accepted suggestions</li>
+          <li>Measuring developer productivity</li>
+          <li>Preventing insecure code generation</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “How would you evaluate whether the assistant actually improves developer productivity?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>8. The Model Got Worse After an Upgrade</h3>
+
+        <p class="question">
+          A customer says their AI application quality declined after switching to a newer model.
+        </p>
+
+        <h4>Diagnostic plan</h4>
+        <ul>
+          <li>Collect before-and-after production examples</li>
+          <li>Replay a fixed evaluation set</li>
+          <li>Segment by task, language, customer, and input size</li>
+          <li>Compare structured-output compliance</li>
+          <li>Check prompt compatibility</li>
+          <li>Check retrieval changes</li>
+          <li>Compare latency and token usage</li>
+          <li>Conduct human evaluation</li>
+          <li>Calibrate LLM-as-judge evaluations</li>
+          <li>Roll back or pin the model version</li>
+          <li>A/B test future upgrades</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The offline benchmark improved, but the customer still says quality declined. What could explain that?”
+        </blockquote>
+
+        <p>Possible explanations include:</p>
+        <ul>
+          <li>The benchmark does not represent production traffic</li>
+          <li>A specific customer segment regressed</li>
+          <li>Retrieval quality changed</li>
+          <li>The user experience became slower</li>
+          <li>Structured output became less reliable</li>
+          <li>The model improved average quality but worsened important edge cases</li>
+          <li>Users are judging task completion rather than answer quality</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>9. Latency Regression in an LLM Application</h3>
+
+        <p class="question">
+          An enterprise customer reports that responses have become slow. Walk through your investigation.
+        </p>
+
+        <h4>Decompose latency into</h4>
+        <ul>
+          <li>Client and network</li>
+          <li>Authentication</li>
+          <li>Application middleware</li>
+          <li>Retrieval</li>
+          <li>Prompt construction</li>
+          <li>Model prefill</li>
+          <li>Token generation</li>
+          <li>Tool calls</li>
+          <li>Output post-processing</li>
+          <li>Streaming behavior</li>
+        </ul>
+
+        <p>First clarify whether the problem is:</p>
+        <ul>
+          <li>Time to first token</li>
+          <li>Time between tokens</li>
+          <li>Total completion time</li>
+          <li>User-perceived latency</li>
+        </ul>
+
+        <h4>Check</h4>
+        <ul>
+          <li>Input and output token counts</li>
+          <li>Retrieval p95 and p99 latency</li>
+          <li>Retry rates</li>
+          <li>Rate-limit throttling</li>
+          <li>Traffic patterns</li>
+          <li>Model version</li>
+          <li>Prompt changes</li>
+          <li>Cache hit rates</li>
+          <li>Regional routing</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The latency problem happens only during peak traffic. What changes in your design?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>10. RAG System with Poor Answer Quality</h3>
+
+        <p class="question">
+          A customer has built a RAG assistant, but users complain that answers are unreliable. How do you debug it?
+        </p>
+
+        <p>Separate the problem into:</p>
+        <ol>
+          <li>Retrieval failure</li>
+          <li>Context assembly failure</li>
+          <li>Reasoning or synthesis failure</li>
+          <li>Prompt or instruction failure</li>
+          <li>Output-format failure</li>
+          <li>Evaluation failure</li>
+          <li>User-experience failure</li>
+        </ol>
+
+        <h4>Measure separately</h4>
+        <ul>
+          <li>Recall@k</li>
+          <li>Precision@k</li>
+          <li>MRR or nDCG</li>
+          <li>Citation correctness</li>
+          <li>Context sufficiency</li>
+          <li>Answer faithfulness</li>
+          <li>Answer relevance</li>
+          <li>Abstention quality</li>
+          <li>End-to-end task success</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “Would you fine-tune the model?”
+        </blockquote>
+
+        <p>Distinguish between:</p>
+        <ul>
+          <li><strong>Knowledge problem:</strong> Usually retrieval or better data access</li>
+          <li><strong>Behavior problem:</strong> Prompting, fine-tuning, or structured output</li>
+          <li><strong>Freshness problem:</strong> Indexing and data pipeline</li>
+          <li><strong>Permission problem:</strong> Access-control-aware retrieval</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>11. Build an Evaluation Strategy for an AI Application</h3>
+
+        <p class="question">
+          A customer wants to deploy an AI assistant but has no reliable way to measure quality. What would you do?
+        </p>
+
+        <h4>Cover</h4>
+        <ul>
+          <li>Representative production dataset</li>
+          <li>Golden examples</li>
+          <li>Task-specific rubrics</li>
+          <li>Ground-truth labels</li>
+          <li>Automated graders</li>
+          <li>Human evaluation</li>
+          <li>LLM-as-judge calibration</li>
+          <li>Safety and refusal tests</li>
+          <li>Regression tests</li>
+          <li>Online metrics</li>
+          <li>User feedback</li>
+          <li>Slice-based analysis</li>
+          <li>Statistical confidence</li>
+          <li>Continuous evaluation in CI/CD</li>
+        </ul>
+
+        <blockquote>
+          Model quality is not the same as application quality.
+        </blockquote>
+
+        <p>
+          Evaluate the complete workflow, including retrieval, tools, business rules,
+          user interaction, operational performance, and business outcomes.
+        </p>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “What if there is no labeled data?”
+        </blockquote>
+
+        <p>Discuss:</p>
+        <ul>
+          <li>Sampling production traffic</li>
+          <li>Expert labeling</li>
+          <li>Weak supervision</li>
+          <li>Synthetic examples used carefully</li>
+          <li>Measuring grader agreement</li>
+          <li>Human review of difficult cases</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>12. Deploying AI in a Highly Regulated Industry</h3>
+
+        <p class="question">
+          A healthcare or banking customer wants to deploy a generative AI system that handles sensitive data.
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Data classification</li>
+          <li>PII and sensitive-data handling</li>
+          <li>Encryption</li>
+          <li>Access control</li>
+          <li>Tenant isolation</li>
+          <li>Retention and deletion</li>
+          <li>Audit logging</li>
+          <li>Data residency</li>
+          <li>Human oversight</li>
+          <li>Explainability</li>
+          <li>Model and prompt versioning</li>
+          <li>Incident response</li>
+          <li>Vendor and third-party risk</li>
+          <li>Governance approvals</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The business wants to move quickly and skip the governance review for the MVP. What do you do?”
+        </blockquote>
+
+        <p>
+          A strong answer should balance speed with risk reduction by narrowing the scope,
+          using synthetic or masked data where possible, starting with read-only or assistive
+          functionality, defining approval gates, and obtaining security and legal review before
+          production exposure.
+        </p>
+      </article>
+
+      <article class="case">
+        <h3>13. AI Search Across Many Enterprise Data Sources</h3>
+
+        <p class="question">
+          An enterprise has information spread across SharePoint, Slack, Google Drive,
+          Confluence, Salesforce, and databases. Build a unified search assistant.
+        </p>
+
+        <h4>Difficult areas</h4>
+        <ul>
+          <li>Identity resolution</li>
+          <li>Permission propagation</li>
+          <li>Connectors</li>
+          <li>Incremental synchronization</li>
+          <li>Deleted or revoked documents</li>
+          <li>Source reliability</li>
+          <li>Deduplication</li>
+          <li>Freshness</li>
+          <li>Ranking across heterogeneous sources</li>
+          <li>Citation and provenance</li>
+          <li>Tenant isolation</li>
+          <li>Search analytics</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “A user has access to a document today but loses access tomorrow. How do you prevent retrieval of stale permissions?”
+        </blockquote>
+      </article>
+
+      <article class="case">
+        <h3>14. AI-Powered Operations or Incident-Response Assistant</h3>
+
+        <p class="question">
+          A technology company wants an AI assistant to help engineers diagnose production incidents.
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Logs, metrics, traces, alerts, tickets, and runbooks</li>
+          <li>Time-window correlation</li>
+          <li>Service topology</li>
+          <li>Retrieval of historical incidents</li>
+          <li>Hypothesis generation</li>
+          <li>Tool access</li>
+          <li>Proposed versus executed remediation</li>
+          <li>Approval workflow</li>
+          <li>Incident timeline</li>
+          <li>Auditability</li>
+          <li>False-positive cost</li>
+          <li>Safe rollback</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “Should the agent be allowed to restart production services automatically?”
+        </blockquote>
+
+        <p>A safe progression is:</p>
+        <ol>
+          <li>Read-only investigation</li>
+          <li>Suggested remediation</li>
+          <li>Human-approved execution</li>
+          <li>Limited autonomous action for low-risk, reversible operations</li>
+        </ol>
+      </article>
+
+      <article class="case">
+        <h3>15. AI Assistant for Sales or Customer-Service Calls</h3>
+
+        <p class="question">
+          A company wants to transcribe calls, summarize them, extract actions, and update its CRM.
+        </p>
+
+        <h4>Decompose into</h4>
+        <ul>
+          <li>Audio ingestion</li>
+          <li>Speaker diarization</li>
+          <li>Transcription</li>
+          <li>PII redaction</li>
+          <li>Summarization</li>
+          <li>Action-item extraction</li>
+          <li>CRM integration</li>
+          <li>Confidence scoring</li>
+          <li>Human correction</li>
+          <li>Retention policy</li>
+          <li>Evaluation by call type and language</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “How do you evaluate summaries when there is no single correct summary?”
+        </blockquote>
+
+        <p>Possible evaluation methods:</p>
+        <ul>
+          <li>Rubric-based human assessment</li>
+          <li>Action-item precision and recall</li>
+          <li>Factual consistency</li>
+          <li>Coverage of required fields</li>
+          <li>CRM update accuracy</li>
+          <li>User-edit distance</li>
+          <li>Downstream task completion</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>16. Prioritize AI Use Cases for a Large Enterprise</h3>
+
+        <p class="question">
+          An executive gives you a list of 30 potential AI use cases. How do you decide what to build first?
+        </p>
+
+        <p>Use a prioritization matrix based on:</p>
+        <ul>
+          <li>Business value</li>
+          <li>User pain</li>
+          <li>Feasibility</li>
+          <li>Data availability</li>
+          <li>Integration complexity</li>
+          <li>Risk</li>
+          <li>Time to value</li>
+          <li>Adoption likelihood</li>
+          <li>Reusability</li>
+          <li>Evaluation difficulty</li>
+        </ul>
+
+        <p>
+          Avoid selecting the most impressive demo. Select the use case with a measurable
+          outcome, a realistic path to adoption, manageable risk, available data, a practical
+          integration path, and a credible evaluation strategy.
+        </p>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The highest-value use case is also the riskiest. What do you recommend?”
+        </blockquote>
+
+        <p>Possible actions:</p>
+        <ul>
+          <li>Narrow the initial scope</li>
+          <li>Introduce human approval</li>
+          <li>Start with decision support rather than automation</li>
+          <li>Limit the user population</li>
+          <li>Use shadow mode</li>
+          <li>Define explicit go/no-go gates</li>
+          <li>Expand only after measured evidence</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>17. Scale a Successful AI Prototype to Production</h3>
+
+        <p class="question">
+          A prototype works for 100 users. The customer now wants to deploy it to 100,000 users.
+        </p>
+
+        <h4>Cover</h4>
+        <ul>
+          <li>Traffic and capacity modeling</li>
+          <li>Multi-tenancy</li>
+          <li>Rate limits</li>
+          <li>Queuing</li>
+          <li>Caching</li>
+          <li>Model routing</li>
+          <li>Batch processing</li>
+          <li>Streaming</li>
+          <li>Cost controls</li>
+          <li>Autoscaling</li>
+          <li>Observability</li>
+          <li>Reliability targets</li>
+          <li>Rollbacks</li>
+          <li>Security review</li>
+          <li>Support model</li>
+          <li>Change management</li>
+          <li>Adoption measurement</li>
+        </ul>
+
+        <h4>Likely follow-up</h4>
+        <blockquote>
+          “The system is technically ready but users are not adopting it. What do you investigate?”
+        </blockquote>
+
+        <p>Investigate:</p>
+        <ul>
+          <li>Whether the problem is important enough</li>
+          <li>Workflow fit</li>
+          <li>User trust</li>
+          <li>Response quality</li>
+          <li>Latency</li>
+          <li>Training and onboarding</li>
+          <li>Incentives</li>
+          <li>Integration friction</li>
+          <li>Whether the product solves the user’s actual pain point</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>18. Build an AI System When the Customer’s Data Is Poor</h3>
+
+        <p class="question">
+          The customer wants an AI solution, but its data is incomplete, inconsistent, and poorly documented.
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Data-quality profiling</li>
+          <li>Ownership</li>
+          <li>Missingness</li>
+          <li>Duplicates</li>
+          <li>Schema inconsistencies</li>
+          <li>Label quality</li>
+          <li>Freshness</li>
+          <li>Data contracts</li>
+          <li>Human-in-the-loop correction</li>
+          <li>Narrowing the initial use case</li>
+          <li>Whether AI is actually the right solution</li>
+        </ul>
+
+        <blockquote>
+          “I would not begin with model selection. I would first determine whether the available data can support a measurable workflow improvement.”
+        </blockquote>
+      </article>
+    </section>
+
+    <section>
+      <h2>Cases Especially Relevant to a Cloud Data Platform Background</h2>
+
+      <p>
+        Given your cloud-data-platform and Databricks experience, prioritize these five cases.
+      </p>
+
+      <article class="case">
+        <h3>A. Enterprise AI Data Platform</h3>
+
+        <p class="question">
+          Design a platform that ingests structured, unstructured, and streaming data
+          to support enterprise AI applications.
+        </p>
+
+        <h4>Be ready to connect</h4>
+        <ul>
+          <li>Data lakehouse</li>
+          <li>Batch and streaming ingestion</li>
+          <li>Metadata and lineage</li>
+          <li>Data quality</li>
+          <li>Feature or retrieval pipelines</li>
+          <li>Governance</li>
+          <li>Evaluation datasets</li>
+          <li>Production monitoring</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>B. Lakehouse-Powered RAG Platform</h3>
+
+        <p class="question">
+          A large organization wants a reusable RAG platform for multiple business units. Design it.
+        </p>
+
+        <h4>Cover</h4>
+        <ul>
+          <li>Multi-tenant architecture</li>
+          <li>Document ingestion</li>
+          <li>Delta-based processing</li>
+          <li>Metadata management</li>
+          <li>Vector and keyword retrieval</li>
+          <li>ACL propagation</li>
+          <li>Evaluation framework</li>
+          <li>Cost isolation</li>
+          <li>Model and embedding versioning</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>C. Real-Time Fraud or Anomaly-Detection Assistant</h3>
+
+        <p class="question">
+          A bank wants to detect suspicious activity in near real time and provide explanations to investigators.
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Streaming ingestion</li>
+          <li>Feature freshness</li>
+          <li>Detection versus investigation</li>
+          <li>Alert prioritization</li>
+          <li>Human feedback</li>
+          <li>False positives</li>
+          <li>Explainability</li>
+          <li>Historical backtesting</li>
+          <li>Online monitoring</li>
+          <li>Data and model drift</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>D. Enterprise Data Quality Copilot</h3>
+
+        <p class="question">
+          Build an AI assistant that helps data engineers diagnose pipeline and data-quality issues.
+        </p>
+
+        <h4>Cover</h4>
+        <ul>
+          <li>Catalog and lineage</li>
+          <li>Pipeline logs</li>
+          <li>Quality checks</li>
+          <li>Schema evolution</li>
+          <li>Incident history</li>
+          <li>Natural-language investigation</li>
+          <li>Safe remediation suggestions</li>
+          <li>Read-only versus write operations</li>
+          <li>Auditability</li>
+        </ul>
+      </article>
+
+      <article class="case">
+        <h3>E. AI Migration from Prototype to Production</h3>
+
+        <p class="question">
+          A team has a successful notebook-based AI prototype. How do you productionize it?
+        </p>
+
+        <h4>Discuss</h4>
+        <ul>
+          <li>Reproducibility</li>
+          <li>CI/CD</li>
+          <li>Evaluation gates</li>
+          <li>Model and prompt versioning</li>
+          <li>Secrets management</li>
+          <li>Monitoring</li>
+          <li>Cost controls</li>
+          <li>Security</li>
+          <li>SLAs</li>
+          <li>Rollback</li>
+          <li>Ownership and support</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>What the Interviewer Is Likely Evaluating</h2>
+
+      <p>Public decomposition-interview guidance emphasizes the following signals:</p>
+
+      <ul>
+        <li>Do you clarify before solving?</li>
+        <li>Can you identify the real user and business outcome?</li>
+        <li>Can you separate the problem into clean workstreams?</li>
+        <li>Do you make assumptions explicit?</li>
+        <li>Can you define measurable success?</li>
+        <li>Do you identify risks and failure modes?</li>
+        <li>Can you discuss trade-offs instead of asserting one “best” design?</li>
+        <li>Can you move from prototype to production?</li>
+        <li>Do you communicate clearly while the problem changes?</li>
+      </ul>
+
+      <p>
+        A publicly shared OpenAI candidate report described the problem-decomposition screen
+        as <strong>very vague</strong>, with likely signals including:
+      </p>
+
+      <ul>
+        <li>Identifying risks</li>
+        <li>Defining success metrics</li>
+        <li>Breaking down a complex problem</li>
+        <li>Communicating confidently under pressure</li>
+      </ul>
+
+      <p>
+        Treat that report as anecdotal, not authoritative.
+      </p>
+
+      <p>
+        Source:
+        <a href="https://www.reddit.com/r/FAANGJobs/comments/1w6cjej/openai_applied_engineering_interview/" target="_blank">
+          Candidate report
+        </a>
+      </p>
+    </section>
+
+    <section>
+      <h2>Reusable Answer Template</h2>
+
+      <blockquote>
+        “Before proposing a solution, I’d like to clarify the business outcome, primary user,
+        current workflow, constraints, and how success will be measured. I’ll make assumptions
+        explicit where information is missing. Then I’ll decompose the problem into use-case
+        selection, data and integrations, AI workflow, evaluation, production architecture, and rollout.”
+      </blockquote>
+
+      <h3>Business questions</h3>
+      <ul>
+        <li>Who is the user?</li>
+        <li>What decision or task should improve?</li>
+        <li>What is the current process?</li>
+        <li>What is the cost of the current problem?</li>
+        <li>Is the objective automation, assistance, speed, quality, or revenue?</li>
+      </ul>
+
+      <h3>Constraint questions</h3>
+      <ul>
+        <li>What latency is acceptable?</li>
+        <li>What volume and concurrency are expected?</li>
+        <li>What data is available?</li>
+        <li>How fresh must the data be?</li>
+        <li>What privacy, security, and regulatory constraints exist?</li>
+        <li>What actions may the system take autonomously?</li>
+      </ul>
+
+      <h3>Evaluation questions</h3>
+      <ul>
+        <li>What does a correct answer or successful task mean?</li>
+        <li>Do we have historical examples or labels?</li>
+        <li>What is the human baseline?</li>
+        <li>Which errors are tolerable?</li>
+        <li>Which errors require escalation?</li>
+      </ul>
+
+      <h3>Architecture questions</h3>
+      <ul>
+        <li>What are the inputs?</li>
+        <li>What processing is required?</li>
+        <li>Where do retrieval, models, tools, and business rules fit?</li>
+        <li>What state must be persisted?</li>
+        <li>How is the system monitored and rolled back?</li>
+      </ul>
+
+      <h3>Rollout questions</h3>
+      <ul>
+        <li>What is the lowest-risk MVP?</li>
+        <li>Which users or workflows get the pilot?</li>
+        <li>What gates must be passed before expansion?</li>
+        <li>How will adoption and business impact be measured?</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Biggest Mistakes to Avoid</h2>
+
+      <ol>
+        <li>Starting with “I would use RAG and agents.”</li>
+        <li>Not asking who the user is.</li>
+        <li>Treating automation as the objective.</li>
+        <li>Ignoring permissions and data governance.</li>
+        <li>Discussing model accuracy without defining evaluation.</li>
+        <li>Designing only the happy path.</li>
+        <li>Forgetting human escalation.</li>
+        <li>Ignoring latency and cost.</li>
+        <li>Treating a prototype as a production system.</li>
+        <li>Giving a technically impressive answer without connecting it to business impact.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Recommended Preparation Plan</h2>
+
+      <p>
+        Practice <strong>8–10 cases in 45-minute sessions</strong>.
+      </p>
+
+      <p>For each case, force yourself to produce:</p>
+
+      <ul>
+        <li>Five clarifying questions</li>
+        <li>Three to five workstreams</li>
+        <li>Three measurable success metrics</li>
+        <li>Two major trade-offs</li>
+        <li>Three failure modes</li>
+        <li>A phased MVP-to-production plan</li>
+      </ul>
+
+      <p>
+        For your profile, do not over-index on generic LLM theory.
+      </p>
+
+      <p>
+        Your strongest differentiator will be showing that you can connect:
+      </p>
+
+      <ul>
+        <li>Enterprise data</li>
+        <li>Architecture</li>
+        <li>Evaluation</li>
+        <li>Governance</li>
+        <li>Production operations</li>
+        <li>Customer outcomes</li>
+      </ul>
+
+      <p>
+        The goal is not to design the most sophisticated AI system.
+      </p>
+
+      <p>
+        The goal is to demonstrate that you can turn an ambiguous customer problem into
+        a measurable, safe, deployable, and adoptable production solution.
+      </p>
+    </section>
+
+    <footer>
+      <p>
+        OpenAI Applied Engineer Problem Decomposition Round — Case Study Preparation Guide
+      </p>
+    </footer>
+  </main>
+</body>
+</html>
