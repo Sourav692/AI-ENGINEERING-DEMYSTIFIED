@@ -1,9 +1,9 @@
 # Databricks AI Evals Tutorial — Build Plan
 
-**Status:** Plan approved-pending — no notebooks built yet. This file is the persistent
-reference for the phased build; tick items off as each phase lands. See
-[Known Discrepancies](../../NOTEBOOK_INDEX.md) for how this repo tracks build history for
-other tracks — this file plays the same role for this one.
+**Status: COMPLETE — all 11 phases (0-10) built.** Phase 9 was added after Phase 8 and the capstone renumbered to 10; see "Scope revision" below. Phases 0-5 and 9-10 run locally against SQLite; Phases 6-8 require a Databricks workspace. Phases 6-8 require a Databricks workspace; 0-5 run locally against SQLite. This file is the persistent reference for the phased build;
+tick items off as each phase lands. See [Known Discrepancies](../../NOTEBOOK_INDEX.md) for
+how this repo tracks build history for other tracks — this file plays the same role for
+this one.
 
 ## Why this track exists
 
@@ -77,18 +77,19 @@ notebooks once building starts, not a rule that everything must be a notebook.
 
 | # | Phase | Notebook | Deliverable | Maps to OpenAI eval guide | Status |
 |---|---|---|---|---|---|
-| 0 | Eval Strategy Worksheet | `00_eval_strategy_worksheet.ipynb` | Worked answers to Journey-0 strategy questions (what to evaluate, success criteria, user scenarios) for the agent built in Phase 1 | Anti-pattern #1 in the guide is skipping this — eval-driven development as a mindset, not a tool | ☐ Not started |
-| 1 | Minimal Agent + Tracing | `01_minimal_agent_and_tracing.ipynb` | Tiny LangGraph customer-support agent (1 retriever tool + 1 deterministic lookup tool), `mlflow.langchain.autolog()` wired up on Databricks, traces verified to carry CHAT_MODEL/RETRIEVER/TOOL spans | Foundation — nothing is evaluable without traces | ☐ Not started |
-| 2 | Offline Eval Fundamentals | `02_offline_eval_fundamentals.ipynb` | `mlflow.genai.evaluate()` runs with built-in scorers: `Guidelines`, `Correctness`, `Safety`, `RelevanceToQuery`, `RetrievalGroundedness` | Metric-based evals + LLM-as-judge basics | ☐ Not started |
-| 3 | Custom Scorers & Judges | `03_custom_scorers_and_judges.ipynb` | Function-based + class-based custom scorers; low-level judges (`meets_guidelines`, `is_correct`, `make_judge`) incl. a trace-based tool-call/trajectory judge | Architecture-specific eval: tool-selection accuracy, single-agent trajectory | ☐ Not started |
-| 4 | Eval Datasets from Production Traces | `04_eval_datasets_from_traces.ipynb` | UC-table-backed `mlflow.genai.datasets`, mining real traces into eval records, tagging traces in the UI for inclusion | "Collect diverse datasets reflecting real-world/production traffic" | ☐ Not started |
-| 5 | Prompt Versioning & Regression Detection | `05_prompt_versioning_and_regression.ipynb` | MLflow Prompt Registry (`register_prompt`, `load_prompt`, `set_prompt_alias`) used as the actual mechanism for regression detection — register a baseline prompt as `@production`, register a deliberately-worsened v2, evaluate both against the same dataset, and only move the `@production` alias if the new version doesn't regress | Continuous eval / catching regressions before ship — every prompt change is a versioned, evaluated artifact, not an untracked edit | ☐ Not started |
-| 6 | Online Evaluation — Production Monitoring | `06_online_eval_production_monitoring.ipynb` | UC trace ingestion setup, `register()`+`start()` scorers with sampling rates running against live traffic, querying trace tables via SQL | The literal "online eval" ask — Databricks' actual differentiator | ☐ Not started |
-| 7 | Human-in-the-Loop Judge Alignment (MemAlign) | `07_judge_alignment_memalign.ipynb` | SME labeling session in the Databricks UI, aligning a custom judge to human feedback, demonstrating why an aligned score legitimately drops | Closes the "human evaluation / calibrate with human feedback" gap | ☐ Not started (optional/bonus) |
-| 8 | Automated Improvement Loop (GEPA) | `08_automated_improvement_gepa.ipynb` | `optimize_prompts()` using the aligned judge as the reward signal, then registering and conditionally promoting the winning candidate through the *same* Prompt Registry mechanics taught in Phase 5 — the eval → improvement flywheel end to end | Closes the "eval insight drives improvement" gap | ☐ Not started (optional/bonus) |
-| 9 | Capstone: Edge-Case Eval Design + OpenAI Cross-Reference | `09_capstone_edge_cases_and_crossref.ipynb` | Adversarial eval set (multilingual, ambiguous, circular-handoff-style, jailbreak probes) + explicit callouts back to the OpenAI eval guide's exact sections | Closes the "edge-case eval design" gap; ties the whole track back to the source doc | ☐ Not started |
+| 0 | Eval Strategy Worksheet | `00_eval_strategy_worksheet.ipynb` | Worked answers to Journey-0 strategy questions (what to evaluate, success criteria, user scenarios) for the agent built in Phase 1 | Anti-pattern #1 in the guide is skipping this — eval-driven development as a mindset, not a tool | ✅ Built |
+| 1 | Minimal Agent + Tracing | `01_minimal_agent_and_tracing.ipynb` + `agent.py` | Tiny LangGraph customer-support agent (fixed retrieval step + 1 LLM-chosen lookup tool), `mlflow.langchain.autolog()` combined with explicit `@mlflow.trace(span_type=...)`, traces verified to carry AGENT/RETRIEVER/CHAT_MODEL/TOOL spans + a scorer-readiness preflight | Foundation — nothing is evaluable without traces | ✅ Built |
+| 2 | Offline Eval Fundamentals | `02_offline_eval_fundamentals.ipynb` + `eval_dataset.py` | 12-record eval dataset (+2 edge cases) with `expected_facts` vs per-row `guidelines`; all 6 built-in scorers wired up; smoke test; quality gates turned into a ship/no-ship decision; per-row failure analysis and category slicing | Metric-based evals + LLM-as-judge basics; "collect diverse datasets"; the "biased dataset" anti-pattern | ✅ Built |
+| 3 | Custom Scorers & Judges | `03_custom_scorers_and_judges.ipynb` + `scorers.py` | Cost hierarchy of scorers; deterministic trace-based `tool_call_correctness` (penalising unexpected calls, not just missing ones) fills the gate Phase 2 left unmeasured; deterministic-vs-judge on the same rule; numeric scorer w/ aggregations; class-based configurable scorer; categorical + `{{ trace }}` `make_judge`; low-level judges API for iterating on wording; production-serialization constraints | Architecture-specific eval: tool-selection accuracy, single-agent trajectory | ✅ Built |
+| 4 | Eval Datasets from Production Traces | `04_eval_datasets_from_traces.ipynb` + `traffic.py` | Skewed traffic simulator; random vs novelty-targeted sampling (threshold, not top-k); trace tagging; managed dataset via OSS `create_dataset(name=)` with the UC form noted; `log_expectation` with `AssessmentSource` provenance; `merge_records` dedup-by-input-hash semantics; discovery of an entirely untested behaviour (abstention on out-of-scope questions) and the scorer it motivated | "Collect diverse datasets reflecting real-world/production traffic"; the "biased dataset" anti-pattern | ✅ Built |
+| 5 | Prompt Versioning & Regression Detection | `05_prompt_versioning_and_regression.ipynb` + `promotion.py` | Prompt Registry as the regression-detection mechanism: v1 registered and aliased `@production`, a plausible-but-worse v2 registered and rejected by the gate, a targeted v3 fix promoted, then a rollback drill. Two-condition promotion gate (absolute thresholds + no regression) with per-metric-type tolerance: zero for deterministic scorers, 0.02 for judged ones | Continuous eval / catching regressions before ship; direct answer to interview Case #8 ("offline benchmark improved but quality declined") | ✅ Built |
+| 6 | Online Evaluation — Production Monitoring | `06_online_eval_production_monitoring.ipynb` + `monitoring.py` | Scorer-eligibility rule (anything reading `expectations` is offline-only — incl. `tool_call_correctness`); UC schema linking into a *separate* production experiment; `register()`+`start()` with per-scorer sampling; sampling economics *and* statistical resolution (Wilson intervals — a 5% sample resolves ±4.5pts, so a 2-pt drop is noise); SQL over the Delta trace tables; scorer lifecycle management; the online-discovers/offline-prevents loop | The literal "online eval" ask — Databricks' actual differentiator | ✅ Built |
+| 7 | Human-in-the-Loop Judge Alignment (MemAlign) | `07_judge_alignment_memalign.ipynb` + `alignment.py` | Agreement measurement (exact / Cohen's kappa / quadratic weighted kappa) as the *correct* metric instead of mean score; Likert `make_judge`; labeling session + label schema sharing one variable with the judge name; MemAlign with explicit `embedding_model`; before/after report showing mean score DOWN while every agreement measure rises | Closes the "human evaluation / calibrate with human feedback" gap | ✅ Built |
+| 8 | Automated Improvement Loop (GEPA) | `08_automated_improvement_gepa.ipynb` | Optimisation dataset (`expectations` required on every row, describing behaviour not gold text); registry-reloading `predict_fn`; GEPA with aligned judge as reward + `aggregation` normaliser; candidate registered but gated through Phase 5's full scorer set — a superset of the optimisation objective, which is what catches the overfitting | Closes the "eval insight drives improvement" gap | ✅ Built |
+| 9 | Multi-Turn and Tool-Selection Evaluation | `09_multiturn_and_tool_selection.ipynb` + `conversation.py` | `p ** n` arithmetic showing turn-level metrics overstate conversation quality; second read-only tool making tool *selection* measurable; an ungated write action gated only by the prompt, verified by an approval-gate scorer; context-retention scoring; which scorers belong at which level | Multi-turn context recall + approval gating — interview Cases #2 and #6 | ✅ Built |
+| 10 | Capstone: Edge-Case Eval Design + OpenAI Cross-Reference | `10_capstone_edge_cases_and_crossref.ipynb` + `edge_cases.py` | Adversarial suite designed as **5 attack classes x 3 variants** rather than a flat string list; 7 non-adversarial edge cases (ambiguous tool responses, multiple intents, format variability, minimal context, non-English, prompt conflict); a deterministic scorer for the polite-tool-failure hallucination mode; a coverage map against the guide's edge-case list stating N/A items *with reasons*; full cross-reference to the OpenAI guide and the interview cases; an explicit list of what the track does NOT cover | Closes the "edge-case eval design" gap; ties the whole track back to both source docs | ✅ Built |
 
-Plus a top-level `README.md` (learning path, prerequisites, how to run) once Phase 0 lands.
+Plus a top-level `README.md` (learning path, prerequisites, how to run) — ✅ built alongside Phase 0.
 
 ## Notebook conventions
 
@@ -97,6 +98,144 @@ markdown cell, `##`/`###` section hierarchy, `# ============ SECTION NAME ======
 banner comments in code cells, imports grouped stdlib → third-party → local, final cell
 is a summary markdown with key takeaways. Outputs ship cleared (nbstripout via
 pre-commit) — same "runs fresh" convention as the rest of the repo.
+
+## Known issue found during the Phase 1 build (not fixed — out of scope)
+
+`helpers.get_llm()` is **broken on macOS**. `PLATFORM_DEFAULTS["darwin"]` routes to
+`get_databricks_llm()`, which returns `client.responses.create(...)` — an already-executed
+OpenAI *Responses* API call object, not a chat-model instance. It also ignores its own
+`model_name` argument and hardcodes both the workspace URL and `system.ai.gemma-3-12b`.
+`CLAUDE.md` documents the intended behaviour (`ChatDatabricks` with
+`databricks-claude-opus-4-6`), so the code and the docs disagree.
+
+This track therefore does **not** use the `helpers` factory — `agent.py` names its models
+explicitly in a `MODELS` dict, which is the right call for evaluation anyway (the model
+under test has to be pinned and visible, or Phase 5's before/after comparison is
+meaningless). Flagged here because it affects other LangGraph notebooks in this repo that
+*do* call `get_llm()` on macOS.
+
+## Findings from the Phase 10 build
+
+- **A flat list of adversarial examples is a weak test.** It cannot tell you which class of
+  attack is unprotected. The suite is built as classes x variants, and a simulated agent in
+  `test_edge_cases.py` scores 80% overall while one class sits at 0% — the aggregate hides
+  it, the class view does not.
+- **Edge-case rows must assert boundaries, not gold answers.** For an ambiguous input,
+  several behaviours are acceptable; asserting one fails a good agent. No adversarial or
+  edge-case row uses `expected_facts`, enforced by test.
+- **Tools that fail politely are a hallucination trap.** Both read tools return
+  `{"found": False}` rather than raising, which is easy for a model to skate past. Added
+  `no_fabrication_after_failed_lookup`, a deterministic scorer reading the TOOL span output.
+  Nothing in Phases 1-9 tested this path.
+- **State N/A items with reasons.** "Single agent, no handoffs" shows the item was
+  considered; silence is indistinguishable from having missed it.
+
+## Phase 0 resync (done alongside Phase 9)
+
+Phase 0 is the track's single source of truth for scope and thresholds, so it was audited
+after Phase 9 rather than left to drift. Six things were stale; one was substantive:
+
+- **Three Phase 9 scorers had no gate entry** — `tool_selection_correctness`,
+  `approval_before_write`, `context_retained`. An agent opening a ticket nobody asked for
+  would have been measured and shipped. Added `tool_selection`, `approval_gate` (threshold
+  1.00 — a write nobody requested is a trust breach, not a quality miss) and
+  `context_retention`. **This is the second time a phase added scorers and forgot the
+  gate**, which is now called out explicitly in Phase 0's own output.
+- Phase 0's `QUALITY_GATES` was already two gates behind `eval_dataset.py` from Phase 5.
+  Both copies now agree on all 11 gates, verified by test.
+- The new gates resolve only on conversation runs and report as "not measured" on
+  single-turn ones — the correct behaviour, and a new lesson: **gates have a scope, exactly
+  as scorers do.**
+- `AGENT_SPEC` tools/purpose/formats, the Step 1 table (which still claimed "no
+  write-capable tools"), and the note asserting `multi_turn` was empty were all corrected;
+  the last two had become self-contradictory with cells directly beside them.
+
+## Scope revision (Phase 9, made after Phase 8)
+
+Two of Phase 0's four non-goals were revised, and the revision is recorded in Phase 0's own
+notebook rather than quietly edited in. The distinction that drove it:
+
+> A non-goal that limits the **agent** is discipline. A non-goal that silently limits what
+> you can **measure** is a blind spot.
+
+- *"no multi-turn memory"* meant "agent took a write action without asking" could not be
+  expressed at all — consent happens between turns — and neither could context retention.
+- *"no write actions"* plus a single tool meant tool-*selection* accuracy was unmeasurable:
+  with one tool, "called a tool" and "called the right tool" are the same question.
+
+Added additively (Phases 1-8 run unchanged): `check_network_status` (read-only, second
+tool), `open_ticket` (write, gated only by the prompt), `history=` on `answer`, and
+`converse()`. The remaining non-goals — authentication, autonomous escalation routing —
+still stand, because they constrain the agent without hiding an eval concept.
+
+Two bugs my own tests caught during this build, both semantic rather than syntactic:
+
+- **Approval gate used `t <= consent_turn`.** Consent arrives in the *user's message* at the
+  start of a turn and the write happens in the agent's response within that same turn, so
+  `<=` failed the agent for behaving correctly. Fixed to strictly-before.
+- **`customer_id` was applied only to turn 1.** That dropped customer identity from turn 2
+  onward, so every conversation would have failed context-retention for a plumbing reason
+  rather than a model one — measuring the harness instead of the agent. Identity is now
+  session-scoped.
+
+## Findings from the Phase 7-8 build
+
+- **Agreement, not average score, is the measure of a judge.** Mean score measures
+  generosity; a judge rating everything 5/5 scores wonderfully and is useless.
+- **Plain Cohen's kappa cannot distinguish "systematically one point generous" from
+  "uncorrelated".** Verified in `test_alignment.py`: two judges with *identical* exact
+  agreement (0.00) and *identical* plain kappa (-0.250) score +0.71 and -0.82 under
+  quadratic weighted kappa. Use the weighted form on ordinal scales.
+- **The label schema name must equal the judge name**, or `align()` finds no score pairs,
+  learns nothing, and returns silently. `alignment.format_alignment_report` names this as the
+  likely cause whenever agreement fails to improve.
+- **GEPA's reward signal is the judge, so Phase 7 gates Phase 8.** Optimising against an
+  unaligned judge tunes the agent toward a standard nobody holds — efficiently.
+- **A higher optimisation score is not permission to ship.** It is by definition the metric
+  the optimiser was pointed at. Phase 8 therefore runs the candidate through Phase 5's full
+  gate, whose scorer set is a strict superset of the optimisation objective.
+
+## Findings from the Phase 6 build
+
+- **Linking a UC schema hides that experiment's pre-existing MLflow-stored traces.** Phase 6
+  therefore links a *separate* `/Shared/telcoassist-production` experiment rather than
+  `telcoassist-evals`, which holds everything from Phases 1-5.
+- **A scorer that reads `expectations` cannot run online at all.** Production traffic has no
+  ground truth, so `tool_call_correctness` — one of the most useful scorers in the track —
+  would return `skip` on every live trace while appearing healthy. Eligibility is mechanical:
+  reference-free scorers transfer, expectation-reading ones don't.
+- **Sample rate must be chosen from the regression size you need to detect.** At 2,000
+  traces/day a 5% sample resolves only ±4.5 percentage points, so a 2-point drop is
+  indistinguishable from noise; detecting it needs ~30% sampling. Small regressions are far
+  cheaper to catch offline (Phase 5), where coverage is 100% and the comparison is paired.
+
+## Findings from the Phase 4 build
+
+- **Evaluation Datasets also require a SQL-backed store** — same constraint as the Prompt
+  Registry, independently confirmed. Two features now depend on the SQLite switch.
+- **`merge_records` needs `search_traces(..., return_type="list")`.** The default DataFrame
+  return does not work, and the argument is easy to miss.
+- **The mined traffic exposed a behaviour the curated set never tested at all**: what the
+  agent does when the knowledge base cannot answer the question (family plans, service
+  pauses, 5G tiers, student discounts are all absent from `agent.KNOWLEDGE_BASE`). That
+  produced a new `abstains_when_unsupported` scorer, which is the concrete argument for
+  this phase existing.
+
+## Corrections made during the Phase 5 build
+
+- **The Prompt Registry requires a database-backed tracking store.** `file:./mlruns` does
+  not support registry features. Phases 1-3 were retrofitted from `file:./mlruns` to
+  `sqlite:///mlflow.db` so traces and prompts share one store and the track doesn't switch
+  stores midway.
+- **Two blocking gates were missing.** Phases 2-3 added `protects_other_accounts`,
+  `no_account_leakage`, and `escalates_restricted_actions` scorers, none of which were
+  listed in `QUALITY_GATES` — so an account-leakage regression would have been reported as
+  "noted, not blocking" and shipped. Added `account_protection` and `escalation` gates.
+  Adding a scorer does not add a gate.
+- **`resolve_gate_metrics` ignored candidate priority.** It iterated over the metrics dict
+  rather than the candidate list, so which metric backed a gate depended on dict ordering
+  rather than the documented preference (deterministic scorer over judged one). Fixed to
+  iterate candidates in order.
 
 ## Build order note
 
