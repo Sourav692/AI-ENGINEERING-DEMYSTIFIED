@@ -134,6 +134,24 @@ regression lets a candidate that improved on a bad baseline ship while still bei
 **Valid aggregations, exactly six:** `min`, `max`, `mean`, `median`, `variance`, `p90`.
 No `p50` (use `median`), no `p99`, no `sum`.
 
+**A missing prerequisite errors that row; it does not score 0 and does not stop the run.**
+The harness records a `SCORER_ERROR`, and the metric drops out of the results entirely. On
+a dataset that mixes row kinds — some with `expected_facts`, some with `guidelines` — wrap
+the scorer so it returns `None` on a row that isn't its to score.
+
+**"Kind" above is about where the verdict comes from, not how the scorer was built.**
+
+| | Judge | LLM-judged scorer |
+|---|---|---|
+| What it is | A model + a rubric | A scorer whose verdict comes from a judge call |
+| Runs inside an eval? | Not necessarily — callable on one example | Yes: named metric, reads each row, aggregates |
+| Changed by | Swapping the model, rewriting the rubric, Phase 7 alignment | Changing what it reads or how it's named/aggregated |
+| Example | `judges.meets_guidelines(...)` | `Guidelines(name="concise", ...)` |
+
+Every LLM-judged scorer contains a judge; a judge isn't always acting as a scorer.
+`make_judge` returns an object that is both. The reason the label matters is
+non-determinism: "LLM-judged" is why the regression tolerance above is 0.02 rather than 0.
+
 ---
 
 ## Quality gates

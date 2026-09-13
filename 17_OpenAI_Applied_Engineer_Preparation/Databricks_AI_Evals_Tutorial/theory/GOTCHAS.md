@@ -73,10 +73,22 @@ count.
 **Fix:** `@mlflow.trace(span_type=SpanType.RETRIEVER)`, returning `mlflow.entities.Document`
 objects — the scorer reads `page_content` off them.
 
-### B10. `Correctness()` fails the run
-**Cause:** No `expectations.expected_facts` or `expected_response` on the row.
-**Fix:** Supply them, or don't run `Correctness()` on rows that have no factual answer
-(adversarial rows genuinely don't).
+### B10. `Correctness()` / `ExpectationsGuidelines()` error on rows that aren't theirs
+**Symptom:** A traceback per row — *"MlflowException: Guidelines must be specified in the
+expectations parameter or must be present in the trace"*, or the `expected_facts`
+equivalent — then a summary line like `'expectations_guidelines': 3/3 failed`, and **that
+metric missing entirely** from `results.metrics`.
+**Cause:** No `expectations.guidelines` (or `expected_facts` / `expected_response`) on the
+row. Neither built-in has a "not applicable" verdict; both raise. On a dataset that mixes
+factual and behavioural rows *on purpose* — ours is 9 and 3 — each scorer errors on every
+row belonging to the other kind.
+**Fix:** Wrap them so an inapplicable row returns `None`, which omits it from the metric
+cleanly. Return `None`, not a `"skip"` verdict: a pass rate counts `"skip"` as a non-pass
+and quietly deflates. See `correctness_when_facts_given` / `guidelines_when_specified` in
+`scorers.py`; both keep the built-in's metric name so runs stay comparable.
+**Note:** This does **not** stop the run. The harness catches each exception and records a
+`SCORER_ERROR` assessment for that row, so the symptom is noise plus a vanished metric
+rather than a crash — easy to scroll past. An errored row is not a scored row.
 
 ### B11. `outputs.get(...)` raises `AttributeError`
 **Cause:** The published examples assume `predict_fn` returns a dict. Ours returns a string,

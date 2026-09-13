@@ -75,7 +75,8 @@ Two properties hold it together:
 | --- | --- | --- |
 | **Cost hierarchy** | Deterministic (free, instant) → wrapped judge → `make_judge` → trace-based judge (LLM call, large prompt). | 3 |
 | **Determinism beats cost as a reason** | Deterministic scorers are *reproducible*; when one moves, behaviour really changed. Judges move on their own. | 3, 5 |
-| **Scorer prerequisites** | Every scorer demands something (`expected_facts`, a RETRIEVER span). A missing prerequisite fails the run — better than silently measuring nothing. | 2 |
+| **Scorer prerequisites** | Every scorer demands something (`expected_facts`, a RETRIEVER span). A row missing one is *errored*, not scored low — the run finishes and the metric quietly drops out. | 2 |
+| **Guard a scorer on a mixed dataset** | `Correctness()` and `ExpectationsGuidelines()` raise on rows that aren't theirs; wrap them to return `None` so an inapplicable row is skipped, not errored. | 2 |
 | **The `outputs` shape is whatever `predict_fn` returned** | No normalisation step; `outputs.get()` breaks if your agent returns a string. | 3 |
 | **Function vs class-based scorer** | Use a class when the same check runs at several configurations in one run. | 3 |
 | **Numeric scorer + aggregations** | Report a distribution, not a boolean — the p90 is where rambling answers hide. | 3 |
@@ -83,6 +84,40 @@ Two properties hold it together:
 | **Trace-based judge (`{{ trace }}`)** | Judges *how* the agent worked, not just what it said — this is what trajectory evaluation means. | 3 |
 | **Deterministic + judge as complements** | Regex catches the blatant case always and the paraphrase never; the judge is the reverse. Run both. | 3 |
 | **Scope of validity** | A scorer correct for a one-tool agent can become misleading when the agent gains a second tool. | 9 |
+
+### Judge vs. LLM-judged scorer
+
+The two terms get used interchangeably and they are not the same thing. They sit at
+different layers: a **judge** is what produces the verdict; an **LLM-judged scorer** is a
+scorer classified by what's inside it.
+
+- **Judge** — a model plus a rubric. Hand it a request and a response, get back a verdict
+  and a rationale. It exists on its own, with no evaluation run around it.
+- **LLM-judged scorer** — a scorer whose verdict comes from a judge call rather than from
+  Python. That is the judge *plus* the plumbing: a metric name, the wiring that reads
+  `inputs` / `outputs` / `expectations` / `trace` off each row, aggregation into
+  `<name>/mean`, and error handling.
+
+Every LLM-judged scorer contains a judge. A judge is not always acting as a scorer.
+
+| Layer | Code in this track | What it is |
+| --- | --- | --- |
+| Judge, bare | `judges.meets_guidelines(guidelines=…, context={"request":…, "response":…})` | One call, one example. No dataset, no metric, no run — the right tool while *drafting* a rule, since re-running 12 rows × 8 scorers to test one wording is slow and expensive. |
+| Judge wrapped as a scorer | `Guidelines(name="concise", guidelines=…)` | Same judge underneath; now named, row-aware, and aggregated into a metric. |
+| `make_judge` | `resolution_status_judge`, `trajectory_judge` (`scorers.py`) | A judge object that is *also* usable directly as a scorer. This is the case that blurs the line. |
+
+Why the distinction earns its keep, rather than being pedantry:
+
+- **They are changed independently.** Swapping the judge model (`model="openai:/…"`) is a
+  judge-level decision; the scorer around it is untouched. Phase 7 aligns the **judge** to
+  human labels — the scorer never changes.
+- **"LLM-judged" is a statement about the *number*, not the implementation.** Its defining
+  property is non-determinism: the same response can score differently on two runs. That is
+  what drives rationing judges to promotion decisions (5), sampling them in production (6),
+  and calibrating them against humans before trusting them (7).
+
+**One line:** a judge is the LLM with a rubric; an LLM-judged scorer is that judge wired
+into an eval run and reported as a metric — and `make_judge` hands you both at once.
 
 ## 4. Datasets and ground truth
 
