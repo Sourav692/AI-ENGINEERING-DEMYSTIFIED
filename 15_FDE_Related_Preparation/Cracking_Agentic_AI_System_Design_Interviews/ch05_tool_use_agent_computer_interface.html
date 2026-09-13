@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5 — Tool Use and the Agent-Computer Interface</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 5</div>
+  <h1>Tool Use and the Agent-Computer Interface</h1>
+  <p class="lede">Picture a support agent that can look up orders and issue refunds. This chapter is everything that decides whether that agent is reliable or a liability.</p>
+  <div class="toc">
+    <a href="#aci">ACI</a>
+    <a href="#schema">8 Schema Rules</a>
+    <a href="#typed">Typed Results</a>
+    <a href="#gateway">Tool Gateway</a>
+    <a href="#mcp">MCP</a>
+    <a href="#selection">Selection at Scale</a>
+    <a href="#sandbox">Sandboxing</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="running-example">
+    <strong>Running example:</strong> a support agent that can search orders and issue refunds. We'll keep coming back to it as each piece of this chapter gets added.
+  </div>
+
+  <article class="concept" id="aci">
+    <div class="concept-header"><h2>The Agent-Computer Interface</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Everything your agent can see and touch — its tools, their schemas, what comes back, and who's allowed to call what. That whole surface is called the agent-computer interface (ACI), and it sets the ceiling on how reliable the agent can ever be.</p>
+      <p class="why">Treat your tools like a public API for a partner who can't read your docs and can't ask you a question. Our support agent doesn't know <code>search_orders</code> returns <code>null</code> for "no such order" vs. "database is down" — unless you tell it, explicitly, every time.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Our issue_refund call just failed — why, really?</div>
+        <div class="mermaid">
+flowchart TD
+    A["Our agent calls issue_refund and it fails"] --> B{Why, really?}
+    B --> C1["1. Wrong tool: it called cancel_order by mistake"]
+    B --> C2["2. Right tool, bad args: sent a string, needed a number"]
+    B --> C3["3. Looked fine, wasn't: refund exceeds what was paid"]
+    B --> C4["4. It worked, but the result was unusable"]
+    B --> C5["5. The model just messed up (rare once 1-4 fixed)"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Only #5 is a model problem — the other four are bugs in <em>your</em> design, not the LLM's judgment.</li>
+        <li>If refund calls succeed less than ~90% of the time, don't reach for a bigger model — fix the interface first.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Naming this order out loud — "I'd check the interface before blaming the model" — is exactly the kind of judgment call a system-design panel wants to hear. It signals you've actually debugged a tool layer, not just read about one.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="schema">
+    <div class="concept-header"><h2>Eight Rules of Tool Schema Design</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A checklist that fixes most tool failures before you ever touch the model.</p>
+      <p class="why">Say we're writing <code>issue_refund</code> for our support agent. Here's what changes, rule by rule.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">issue_refund, before → after</div>
+        <table class="cmp">
+          <tr><th>Rule</th><th>Before</th><th>After</th></tr>
+          <tr><td>1. Name the action</td><td><code>ordersV2Query</code></td><td><code>search_orders</code></td></tr>
+          <tr><td>2. Say what NOT to use it for</td><td>(nothing)</td><td>"Do NOT use for refunds — call issue_refund"</td></tr>
+          <tr><td>3. Constrain everything</td><td><code>status: string</code></td><td><code>enum[open,shipped,...]</code></td></tr>
+          <tr><td>4. Units in the name</td><td><code>timeout</code></td><td><code>timeout_seconds</code></td></tr>
+          <tr><td>5. Flat, ≤6 args</td><td><code>filters: {...}</code></td><td><code>order_id, reason, amount_cents</code></td></tr>
+          <tr><td>6. Small results</td><td>full 40-field record</td><td>6 fields it actually needs</td></tr>
+          <tr><td>7. Teachable errors</td><td><code>400 Bad Request</code></td><td>"end_date is before start_date"</td></tr>
+          <tr><td>8. Idempotent writes</td><td>refunded twice</td><td>same key → refunded once</td></tr>
+        </table>
+      </div>
+      <ul class="keypoints">
+        <li>Every constraint (an enum, a bound) is one more mistake the model literally can't make.</li>
+        <li>Rule 8 alone stops the "agent retries and double-refunds the customer" incident before it happens.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="typed">
+    <div class="concept-header"><h2>Typed Results: The Five States That Matter</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Instead of a tool just returning a string, give it a typed result with five possible states — SUCCESS, EMPTY, UNAVAILABLE, DENIED, INVALID. This one change fixes more agents than anything else in this chapter.</p>
+      <p class="why">Our agent searches for an order and gets nothing back. Was there genuinely no matching order (EMPTY), or is the database just down (UNAVAILABLE)? If your tool can't tell these apart, neither can your agent — it'll just keep rewording the same query through a real outage until it burns through its whole budget.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">What actually happened?</div>
+        <div class="mermaid">
+flowchart LR
+    Call([Agent calls a tool]) --> R{What actually happened?}
+    R --> S["SUCCESS - here's your order"]
+    R --> E["EMPTY - searched fine, nothing matched"]
+    R --> U["UNAVAILABLE - database is down"]
+    R --> D["DENIED - not allowed"]
+    R --> I["INVALID - bad input, here's the fix"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Mixing up EMPTY and UNAVAILABLE causes retry storms during a real outage.</li>
+        <li>Mixing up DENIED and INVALID teaches the agent to work around your policy.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: never explain a denial</summary>
+        <div class="dd-body">
+          Say <code>issue_refund</code> returns DENIED with "refunds over $500 need manager approval." The agent reads that as an instruction, not a wall — next time it wants to refund $600, it just issues two $300 refunds instead. Denials should be a dead end to the model, fully explained only in the trace a human reads later. It's deliberate, and interviewers like to probe it.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "How would you design your tool's result types?" is a near-certain question. These five named states, plus the refund-splitting failure above, is the specific detail that separates a strong answer from a vague one.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="gateway">
+    <div class="concept-header"><h2>The Tool Gateway</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">One single doorway between the agent and anything real happening in the world. Every call — refund, lookup, anything — walks through the same seven checks, in the same order, no exceptions.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">issue_refund, walking through the gateway</div>
+        <div class="mermaid">
+sequenceDiagram
+    participant O as Orchestrator
+    participant G as Gateway
+    participant P as Policy
+    participant V as Validator
+    participant T as Tool/API
+    O->>G: call issue_refund(order_123, $50)
+    G->>P: allowed to refund?
+    P-->>G: allow / DENIED
+    G->>V: args match schema?
+    V-->>G: valid / INVALID
+    G->>T: call, timeout + idempotency key
+    T-->>G: result or error
+    G-->>O: classified, trimmed ToolResult
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Order matters: <strong>authorize before you validate.</strong> Otherwise a denied caller learns the schema from the validation error.</li>
+        <li>Idempotency key = hash of <code>run_id + tool_name + arguments</code> — call twice with the same key, refund happens once.</li>
+        <li>Trim results to what's declared. One real team's support-agent cost doubled overnight — and got 9s slower — when a backend added 14 fields and the tool returned all of it, unfiltered.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "How do you stop an agent from doing something it shouldn't?" — the strong answer names the mechanism (authorize → validate → idempotent call → trim → log), not "we add guardrails."
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="mcp">
+    <div class="concept-header"><h2>The Model Context Protocol (MCP)</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A shared protocol for handing an agent its tools, its data, and its prompt templates — instead of every team writing a one-off integration for every tool, everyone speaks the same client-server language.</p>
+      <p class="why">Without it: 5 apps × 10 tools = 50 custom integrations. With MCP: 5 clients + 10 servers = 15 pieces. That gap only grows.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Our agent's runtime, talking to two servers</div>
+        <div class="mermaid">
+flowchart LR
+    subgraph Host["Our agent's runtime"]
+        C1["MCP Client to Orders"]
+        C2["MCP Client to Warehouse"]
+    end
+    C1 -- stdio --> S1[Orders Server]
+    C2 -- streamable HTTP --> S2[Warehouse Server]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Tools</strong> — the agent decides to call them, can have side effects (like <code>issue_refund</code>).</li>
+        <li><strong>Resources</strong> — the host app decides what goes in, addressed by URI, no side effects (like a policy doc).</li>
+        <li><strong>Prompts</strong> — the user invokes them on purpose (a slash command).</li>
+        <li>Expose a document library as a "tool" and the model calls it repeatedly, burning budget. As a "resource," the host controls what enters context instead.</li>
+        <li><strong>stdio</strong> = subprocess, no network, one developer's laptop. <strong>Streamable HTTP</strong> = real network service, real auth, the only sane choice once shared.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: two ways MCP quietly breaks security</summary>
+        <div class="dd-body">
+          <strong>Confused deputy</strong> — the server runs with its own (often broader) credentials. If you don't pass the real user's identity through and check it server-side, your agent can do anything any user could do, for any user.<br><br>
+          <strong>Cross-server data flow</strong> — one client on a private data server, another on a public web-search server, and you've built a leak path. (Preview of Ch. 16's "lethal trifecta.") Keep servers in different trust domains on separate clients.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        MCP sits right in the "Tools & Protocols" part of most evals. Explain the three primitives by <em>who's in control</em> (model, app, or user) — not "a way to plug in tools."
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="selection">
+    <div class="concept-header"><h2>Tool Selection at Scale</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">The more tools you hand the agent, the worse it gets at picking the right one — it's discriminating between similar-sounding options inside a fixed attention budget.</p>
+      <p class="why">Our support agent has 200 internal APIs behind it, not just two. Here's how you keep it sane.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Four composable strategies</div>
+        <table class="cmp">
+          <tr><th>Strategy</th><th>What it means</th><th>Extra latency</th><th>Use when</th></tr>
+          <tr><td>Principal filtering</td><td>Only show tools this caller can use</td><td>none</td><td>always</td></tr>
+          <tr><td>Namespacing</td><td>One façade + operation enum</td><td>none</td><td>lots of similar ops</td></tr>
+          <tr><td>Retrieval</td><td>Embed, pull top-k per request</td><td>20-60ms</td><td>&gt; ~40 tools</td></tr>
+          <tr><td>Hierarchical routing</td><td>Small router picks domain first</td><td>one extra call</td><td>genuinely distinct domains</td></tr>
+        </table>
+      </div>
+      <ul class="keypoints">
+        <li>Split façades by <strong>who's allowed to do what</strong>, not by which service it hits — never bundle a write and a read together.</li>
+        <li>Watch two numbers separately: right tool picked? right arguments filled in? Consolidating tools tends to help the first and can quietly hurt the second.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: the "200 tools" design question</summary>
+        <div class="dd-body">
+          A real interview drill from the book. Strong answer: don't advertise 200 tools — collapse reads behind scope-based façades first (→ 20-40), filter by who's calling, add retrieval only past ~40 tools. Keep a couple of tools <em>pinned</em> and always visible — like <code>clarify</code> and <code>escalate</code> — so the agent is never stuck. Always check the real user's permissions server-side.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        This exact "200 tools" scenario is a stock system-design prompt. Open with "collapse the surface first" — most candidates jump straight to embeddings and skip the façade/authorization design that actually shows judgment.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="sandbox">
+    <div class="concept-header"><h2>Sandboxing Code Execution</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">If your agent can run arbitrary code, that's the single most dangerous tool you can give it — you can't validate your way to safety, because there's no way to know in advance what code will do. Isolation is the only real answer.</p>
+      <p class="why">Imagine a data-analysis agent that writes Python to answer "top 10 refund reasons last month." Now imagine someone tricks it into running <code>os.system('rm -rf /')</code> instead.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Six isolation controls</div>
+        <div class="mermaid">
+flowchart TD
+    Code[Agent-written code] --> Iso["Container: read-only root, one writable folder, non-root user"]
+    Iso --> Net[No network, by default]
+    Iso --> Res[Hard limits: CPU, memory, processes, wall-clock kill]
+    Iso --> Cred[No cloud credentials, no ambient secrets]
+    Iso --> Life[Destroyed after this one run]
+    Iso --> Out[Output truncated]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Six controls, none of them "ask the model nicely": isolate, no default network, resource caps, no ambient creds, single-use, truncated output.</li>
+        <li>A static check blocking <code>os.system</code>/<code>eval</code>/<code>exec</code> is a nice extra layer — never the main defense.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: what this looks like in practice</summary>
+        <div class="dd-body">
+          <pre>docker run --rm --network none --read-only \
+  --tmpfs /work:rw,size=256m,noexec \
+  --user 65534:65534 --memory 512m --cpus 1.0 \
+  --pids-limit 128 --cap-drop ALL \
+  --security-opt no-new-privileges \
+  agent-sandbox:python-3.12 timeout --signal=KILL 30s python /work/task.py</pre>
+          Every flag maps to one of the six controls above — this is what "isolation" actually looks like, not a hand-wave.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "Someone tricked your code-interpreter agent into running <code>rm -rf /</code> — how, and how do you stop it?" is a documented interview question. Strong answer: you can't count on the model refusing every time — sandboxing is the actual control.
+      </div>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">Agent-Computer Interface</div><div class="c-fact">4 of 5 tool failures are interface bugs — fix the interface before blaming the model</div></div>
+      <div class="cheat-card"><div class="c-name">Eight schema rules</div><div class="c-fact">Every constraint you add is a mistake the model can't make anymore</div></div>
+      <div class="cheat-card"><div class="c-name">Typed results</div><div class="c-fact">Never blur EMPTY/UNAVAILABLE or DENIED/INVALID; never explain why something was denied</div></div>
+      <div class="cheat-card"><div class="c-name">Tool gateway</div><div class="c-fact">Authorize → validate → idempotent call → trim → log, always in that order</div></div>
+      <div class="cheat-card"><div class="c-name">MCP</div><div class="c-fact">Tools=model picks, Resources=app picks, Prompts=user picks</div></div>
+      <div class="cheat-card"><div class="c-name">Selection at scale</div><div class="c-fact">Collapse by scope/permissions first — retrieval only past ~40 tools</div></div>
+      <div class="cheat-card"><div class="c-name">Sandboxing</div><div class="c-fact">Isolation, not validation, is what actually stops damage</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 5 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

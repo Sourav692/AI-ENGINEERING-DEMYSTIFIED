@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 12 — Validation and Measurement</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 12</div>
+  <h1>Validation and Measurement</h1>
+  <p class="lede">If you can't measure your agent's quality, latency, and cost per run, you're running a demo in production.</p>
+  <div class="toc">
+    <a href="#pyramid">Evaluation Pyramid</a>
+    <a href="#component">Component Metrics</a>
+    <a href="#trajectory">Trajectory Eval</a>
+    <a href="#rubric">Judge Rubric</a>
+    <a href="#calibration">Validating the Judge</a>
+    <a href="#golden">Golden Datasets</a>
+    <a href="#gate">CI Release Gate</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="running-example">
+    <strong>Running example:</strong> the ops agent, months in. How do you know an improvement is real — not noise, or a gain for most users that quietly breaks it for one team?
+  </div>
+
+  <article class="concept" id="pyramid">
+    <div class="concept-header"><h2>The Evaluation Pyramid</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A single accuracy number is necessary and almost useless on its own — it can't tell you which subsystem caused a regression.</p>
+      <p class="why">If our ops agent's success rate drops from 84% to 76%, that could be retrieval, a tool schema, planning, context assembly, or a model change. One number can't distinguish among five hypotheses.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Cheapest layer first, most expensive last</div>
+        <div class="mermaid">
+flowchart TD
+    A["Unit assertions on tools, schemas, parsers<br/>- thousands of cases, microseconds each"]
+    B["Component metrics: retrieval, tool selection, args<br/>- hundreds of cases, milliseconds each"]
+    C["Trajectory evaluation: valid and efficient path?<br/>- hundreds of cases, seconds each"]
+    D["Outcome evaluation: did it actually succeed?<br/>- tens-hundreds of cases, plus judge"]
+    E["Human review of a stratified sample<br/>- tens of cases, expert minutes"]
+    F["Production sampling and user feedback<br/>- continuous"]
+    A --> B --> C --> D --> E --> F
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Cost per case rises and volume falls as you go up — cheap layers must catch most defects before expensive ones run.</li>
+        <li>A layered picture localizes a regression instead of just detecting one.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        The book's framing — "if you can't measure quality, latency, and cost per run, you're running a demo in production" — is a strong opener for any evaluation-design question.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="component">
+    <div class="concept-header"><h2>Component Metrics</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Component metrics answer "which subsystem is failing?" — each one is cheap, deterministic where possible, and independently trackable over time.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Metric → what it localizes</div>
+        <table class="cmp">
+          <tr><th>Metric</th><th>Definition</th><th>Localizes</th></tr>
+          <tr><td>Tool selection accuracy</td><td>Chosen tool matches labeled correct one</td><td>Descriptions, routing</td></tr>
+          <tr><td>Argument validity</td><td>Calls passing schema validation first try</td><td>Schema design, units</td></tr>
+          <tr><td>Retrieval recall@k</td><td>Required evidence present in top k</td><td>Index, chunking, query</td></tr>
+          <tr><td>Context precision</td><td>Assembled context actually relevant</td><td>Selection policy, dilution</td></tr>
+          <tr><td>Groundedness</td><td>Claims supported by retrieved evidence</td><td>Synthesis, verification</td></tr>
+          <tr><td>Step efficiency</td><td>Steps taken ÷ minimum sufficient</td><td>Planning, no-progress cycles</td></tr>
+          <tr><td>Termination correctness</td><td>Runs stop for the right reason</td><td>Loop bounds, stopping policy</td></tr>
+        </table>
+      </div>
+      <details class="deepdive">
+        <summary>Deep Dive: groundedness and correctness are different metrics</summary>
+        <div class="dd-body">
+          A claim can be fully supported by retrieved evidence <em>and still be wrong</em> — because the evidence itself was wrong or outdated. Groundedness measures faithfulness to sources; correctness measures agreement with reality. A system that only measures groundedness rewards an agent for confidently repeating a stale document.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Interviewers probe the groundedness-vs-correctness distinction specifically, per the book. Naming both — and the failure mode of optimizing only the first — shows real evals depth.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="trajectory">
+    <div class="concept-header"><h2>Trajectory Evaluation</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">An agent can reach a correct answer through a wasteful, unsafe, or lucky path — outcome-only evaluation can't see the difference, so it can't warn you before the luck runs out.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Compare to a path vs. assert properties of it</div>
+        <div class="mermaid">
+flowchart LR
+    subgraph Naive["Compare to ONE reference path"]
+        N1[Any deviation = failure] --> N2[Breaks on valid alternate strategies]
+    end
+    subgraph Working["Assert properties of the path"]
+        W1["e.g. never calls issue_refund<br/>before verifying order status"] --> W2[Several correct strategies pass]
+        W2 --> W3[Lucky-but-unsafe paths still fail]
+    end
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Trajectory assertions encode policy executably — "must not call X before Y," "must stop within N steps of sufficient evidence."</li>
+        <li><strong>Write safety assertions before success-case assertions.</strong> They encode policy, never go obsolete, and matter most at 3am during an incident.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        The book: a candidate who starts evaluation from safety assertions, not accuracy, "reads as someone who has operated a system with consequences." A precise, quotable framing worth having ready.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="rubric">
+    <div class="concept-header"><h2>Designing a Judge Rubric</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">For open-ended output there's no reference string to match, so a model judge is often the only scalable option — but it's an unvalidated classifier, and treating it as ground truth without validation is the most common measurement error in this field.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Three properties of a usable rubric</div>
+        <div class="mermaid">
+flowchart TD
+    A["Decompose into independent criteria<br/>(groundedness, completeness, correctness, format -<br/>never one blended 'quality' score)"] --> B
+    B["Anchor every level with a concrete example<br/>('3 = every claim cited', NOT '3 = good')"] --> C
+    C["Require evidence before the score<br/>(quote the span that supports/contradicts each claim)"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>A single blended "quality" score correlates with length and fluency — not what you think it's measuring.</li>
+        <li>The quotation requirement is what turns "vibes" into an actual check.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="calibration">
+    <div class="concept-header"><h2>Validating the Judge</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A judge only counts as a measurement instrument once it's calibrated against humans — and that calibration figure has to travel with every number it produces afterward.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">The calibration gate</div>
+        <div class="mermaid">
+flowchart TD
+    A["Human-labeled calibration set, n >= 100"] --> B["Compute Cohen's kappa<br/>(corrects for chance agreement)"]
+    B --> C{"kappa >= 0.60?"}
+    C -->|no| X["Not usable alone -<br/>report as unmeasured"]
+    C -->|yes| D["Check position bias<br/>(randomize order, compare)"]
+    D --> E{"Bias <= 10 points?"}
+    E -->|no| X
+    E -->|yes| F["Usable - report kappa<br/>alongside every score"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Never judge with the model that generated the answer.</strong> Self-preference is measurable and real.</li>
+        <li>Randomize presentation order; report an inconsistent verdict as a <strong>tie</strong>, not a coin-flip win.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: the kappa formula, and why raw agreement isn't enough</summary>
+        <div class="dd-body">
+          Raw agreement overstates quality when one label dominates — a judge that always guesses the majority class looks great on raw agreement while adding zero information. Cohen's kappa fixes this: <code>κ = (observed − expected) / (1 − expected)</code>, where expected agreement is what two random labelers would achieve by chance given the label distribution. The book's floor: κ below 0.60 means the judge isn't usable alone.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "Never judge with the model that generated the answer" plus kappa/position-bias mechanics is a concrete, mechanism-level answer — much stronger than "we use GPT-4 as a judge."
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="golden">
+    <div class="concept-header"><h2>Golden Datasets and Sample Size Arithmetic</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">The dataset determines what your numbers mean — and most reported small improvements in this field are not actually measurable, given how small most eval suites are.</p>
+      <ul class="keypoints">
+        <li><strong>Stratify by segment</strong> (intent, tenant size, recency, difficulty) and report per stratum — aggregate accuracy hides segment collapse.</li>
+        <li><strong>Include failure cases explicitly</strong> — refusal, escalation, "insufficient evidence" at a realistic proportion.</li>
+        <li><strong>Version with a datasheet</strong>: collection window, filters, dedup method, split strategy, label source.</li>
+        <li><strong>Refresh on a schedule</strong>, measure drift against production's actual distribution.</li>
+      </ul>
+      <div class="diagram-wrap">
+        <div class="diagram-title">How much a small suite can actually detect</div>
+        <div class="mermaid">
+flowchart TD
+    A["At baseline p=0.8, a 5-point gain<br/>needs ~1,000 cases/arm"]
+    B["A 2-point gain needs<br/>~6,000 cases/arm"]
+    C["A 200-case suite can't reliably detect<br/>anything smaller than ~12 points"]
+    A --> B --> C
+        </div>
+      </div>
+      <details class="deepdive">
+        <summary>Deep Dive: the actual arithmetic</summary>
+        <div class="dd-body">
+          To detect a difference δ in a success rate near p, sample size per arm is approximately <code>n ≈ 15.7 × p(1−p) / δ²</code>. This is why a 200-case suite reporting a 3-point gain has, almost certainly, reported noise. Two legitimate responses: run <strong>paired evaluation</strong> (same cases, both variants, test the per-case difference — needs far fewer cases), or accept offline evaluation only gates large changes and detect small ones through production experiments where the traffic exists.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        The book is blunt: saying "most reported agent improvements are not measurable" unprompted, backed by this arithmetic, is "quantitative, correct, and uncomfortable" — probably the single highest-leverage line in this chapter for an evals-focused panel.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="gate">
+    <div class="concept-header"><h2>The CI Release Gate</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Every layer of the pyramid converges into one decision: does this change ship? The gate checks safety absolutely, quality against a significance test, and cost as a visible trade — never silently.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">One evaluation run inside CI</div>
+        <div class="mermaid">
+sequenceDiagram
+    participant PR as Pull Request
+    participant H as Eval Harness
+    participant A as Agent Under Test
+    participant J as Judge
+    participant G as Release Gate
+    PR->>H: commit sha, config diff
+    H->>A: run 640 cases, 8 strata, paired w/ baseline
+    A-->>H: trajectories, tokens, cost
+    H->>H: trajectory assertions first, deterministic
+    H->>J: open-ended answers, both orders
+    J-->>H: verdicts + quoted spans
+    H->>G: paired significance test, PER STRATUM
+    G-->>PR: block / allow, with the reason
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Safety assertions gate absolutely</strong> — any failure blocks, no exceptions.</li>
+        <li><strong>Quality gates per stratum</strong> with a significance test, not just on the mean.</li>
+        <li><strong>Cost is reported, and a ceiling breach blocks</strong> — a quality gain that triples spend must be a visible decision.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: The Evaluation Suite That Blessed a Fifteen-Point Segment Collapse</summary>
+        <div class="dd-body">
+          A real case from the book. A document QA agent serving 11 enterprise tenants shipped a retrieval change that improved aggregate accuracy from 79% to 81%. Within two weeks, one tenant escalated — their segment had fallen from 82% to 67%. Why: the eval set was drawn proportionally to traffic, so that tenant was only ~4% of it; their corpus leaned on heavy internal abbreviations, and the change shifted weight toward dense retrieval — exactly the direction that hurts exact-token matching on abbreviations. The aggregate improvement was real, and the collapse was invisible inside it. Fix: stratified reporting with a per-stratum floor — no release may drop any stratum by more than 3 points regardless of the aggregate — plus per-tenant production monitoring with automatic alerting.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Close to a perfect answer to "why gate per-stratum instead of on the mean." The book's own line: "aggregate metrics are a summary, and summaries hide exactly the failures that generate escalations."
+      </div>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">Evaluation pyramid</div><div class="c-fact">One number can't localize a regression — measure at every layer, cheapest first</div></div>
+      <div class="cheat-card"><div class="c-name">Component metrics</div><div class="c-fact">Groundedness ≠ correctness — faithfully sourced can still be wrong</div></div>
+      <div class="cheat-card"><div class="c-name">Trajectory evaluation</div><div class="c-fact">Assert path properties, not a single reference; safety assertions come first</div></div>
+      <div class="cheat-card"><div class="c-name">Judge rubric design</div><div class="c-fact">Decompose, anchor with examples, require quoted evidence before a score</div></div>
+      <div class="cheat-card"><div class="c-name">Judge validation</div><div class="c-fact">Never self-judge; report kappa (≥0.60) and position bias with every score</div></div>
+      <div class="cheat-card"><div class="c-name">Sample size arithmetic</div><div class="c-fact">A 200-case suite can't detect gains under ~12 points — suspect leakage/noise first</div></div>
+      <div class="cheat-card"><div class="c-name">CI release gate</div><div class="c-fact">Safety absolute, quality per-stratum, cost visible — never silent</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 12 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 23 — System Design Patterns for Agents</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+  table.cmp td:first-child { font-weight: 600; white-space: nowrap; }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 23</div>
+  <h1>System Design Patterns for Agents</h1>
+  <p class="lede">A named catalogue with forces, structure, consequences, and the measurement that justifies each one at a whiteboard.</p>
+  <div class="toc">
+    <a href="#names">Why Names Matter</a>
+    <a href="#orch">Orchestration</a>
+    <a href="#context">Context & Memory</a>
+    <a href="#tool">Tool & Action</a>
+    <a href="#reliability">Reliability</a>
+    <a href="#safety">Safety</a>
+    <a href="#cost">Cost & Evaluation</a>
+    <a href="#composition">Composition Rules</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="running-example">
+    <strong>Running example:</strong> the ops agent, now touching almost every idea in this book — a tool gateway, typed results, a context assembler, a skill library, an eval harness. This chapter gives it all a shared vocabulary.
+  </div>
+
+  <article class="concept" id="names">
+    <div class="concept-header"><h2>Why Names Matter</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A pattern you can't name is a pattern you'll rediscover slowly, under time pressure, on a whiteboard.</p>
+      <p class="why">Naming a pattern buys you three things: it compresses a paragraph into two words, it signals you've seen this problem before, and it gives your interviewer a hook to probe with — turning a monologue into an actual design conversation.</p>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Naming a pattern is a mid-level signal, per the book. <strong>Naming the pattern plus the measurement that justifies it</strong> is a senior signal — it shows you treat architecture as falsifiable claims, not taste. Every pattern below carries that measurement for exactly this reason.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="orch">
+    <div class="concept-header"><h2>Family One: Orchestration Patterns</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Govern the topology of decision-making — the foundational choice that sets your latency ceiling, token profile, and failure containment boundary.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Eight patterns, their forces, and their risk</div>
+        <table class="cmp">
+          <tr><th>Pattern</th><th>Forces & structure</th><th>Consequence</th><th>Measurement</th></tr>
+          <tr><td>Router</td><td>Enumerable, disjoint intents; small model picks 1 of n</td><td>Cheap, predictable, misroutes silently</td><td>Route distribution, shadow disagreement</td></tr>
+          <tr><td>Bounded Loop</td><td>Next step depends on last observation; 4 bounds</td><td>Adaptive, variable cost</td><td>Budget termination rate, step p95</td></tr>
+          <tr><td>Plan then Execute</td><td>Independent subtasks known upfront</td><td>Parallel, commits before evidence</td><td>Replan rate, plan validity</td></tr>
+          <tr><td>Reflection</td><td>A critic with an info advantage revises a draft</td><td>Better output, ~2x tokens</td><td>Revision acceptance, critic agreement</td></tr>
+          <tr><td>Supervisor</td><td>Distinct specialities; coordinator delegates</td><td>Tree-shaped trace, terminates by construction</td><td>Coverage, per-worker spend</td></tr>
+          <tr><td>Pipeline</td><td>Named stages; fixed sequence, bounded reject-back</td><td>Predictable latency, testable stages</td><td>Stage pass rate, reject-back rate</td></tr>
+          <tr><td>Blackboard</td><td>Contribution order unknown; shared state</td><td>Decoupled, needs concurrency discipline</td><td>Write conflict rate</td></tr>
+          <tr><td>Event Driven</td><td>Work arrives async, long horizons</td><td>Decoupled from request lifetime</td><td>Queue lag, duplicate rate</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="context">
+    <div class="concept-header"><h2>Family Two: Context and Memory Patterns</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Govern how information is budgeted, organized, and retrieved across time — the context window is a scarce, expensive resource that degrades non-linearly when overloaded.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Six patterns for keeping context sane</div>
+        <table class="cmp">
+          <tr><th>Pattern</th><th>Forces & structure</th><th>Consequence</th><th>Measurement</th></tr>
+          <tr><td>Context Assembler</td><td>Finite window; fixed section order + budgets</td><td>Deterministic, cacheable, reconstructable</td><td>Section token shares, eviction counts</td></tr>
+          <tr><td>Sub-agent Isolation</td><td>Subtask needs a window the parent needs too</td><td>Parent grows by hundreds not thousands</td><td>Parent context growth/subtask</td></tr>
+          <tr><td>Structured Compaction</td><td>History must shrink; extract typed records</td><td>Stable across re-compaction</td><td>Fact retention across compactions</td></tr>
+          <tr><td>Memory Tiering</td><td>Different query patterns need different stores</td><td>Right store per tier</td><td>Retrieval precision per tier</td></tr>
+          <tr><td>Evidence Ledger</td><td>Parallel workers re-retrieve same sources</td><td>Removes duplicate retrieval cost</td><td>Duplicate source rate</td></tr>
+          <tr><td>Predicate Normalization</td><td>Contradictions can't resolve by similarity</td><td>Newer fact supersedes by construction</td><td>Contradiction rate in store</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="tool">
+    <div class="concept-header"><h2>Family Three: Tool and Action Patterns</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Manage the interface between probabilistic reasoning and deterministic external systems — without them, the failure mode is unconstrained environment access.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Six patterns protecting the execution boundary</div>
+        <table class="cmp">
+          <tr><th>Pattern</th><th>Forces & structure</th><th>Consequence</th><th>Measurement</th></tr>
+          <tr><td>Tool Gateway</td><td>Model must not touch env directly; authorize→validate→bound→execute→classify→project→observe</td><td>Single security & cost boundary</td><td>Denial rate, argument validity</td></tr>
+          <tr><td>Typed Result</td><td>"Empty" and "unavailable" are different facts</td><td>Removes retry storms</td><td>Status mix per tool</td></tr>
+          <tr><td>Projection</td><td>Upstream schema growth inflates context</td><td>Cost decoupled from other teams</td><td>Payload bytes per tool</td></tr>
+          <tr><td>Idempotency Key</td><td>Retries/restores repeat effects</td><td>Safe retry of writes</td><td>Duplicate effect rate</td></tr>
+          <tr><td>Tool Retrieval</td><td>Selection degrades past ~40 tools</td><td>Short advertised list</td><td>Selection accuracy, recall</td></tr>
+          <tr><td>Action Selector</td><td>Free-form calls can be invented by injected text</td><td>Injection can't fabricate actions</td><td>Invalid action attempt rate</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="reliability">
+    <div class="concept-header"><h2>Family Four: Reliability Patterns</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Convert the compounding failure probability of a multi-step run into recoverable, bounded operations — partial dependency degradation is the normal case, not an edge case.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Six patterns that keep runs recoverable</div>
+        <table class="cmp">
+          <tr><th>Pattern</th><th>Forces & structure</th><th>Consequence</th><th>Measurement</th></tr>
+          <tr><td>Degradation Ladder</td><td>Partial failure is normal; rungs to honest refusal</td><td>Partial answers instead of exceptions</td><td>Rung distribution</td></tr>
+          <tr><td>Circuit Breaker</td><td>A failing dependency mustn't be retried into the ground</td><td>Fast failure, faster recovery</td><td>Open duration, half-open success</td></tr>
+          <tr><td>Typed Bounded Retry</td><td>Some failures are retryable, some aren't</td><td>No retry on denials/invalid args</td><td>Retry success rate by status</td></tr>
+          <tr><td>Checkpoint & Resume</td><td>Long runs meet deploys and preemptions</td><td>Runs survive process death</td><td>Resume rate, duplicate effect rate</td></tr>
+          <tr><td>Human Interrupt</td><td>Irreversible actions need a decision</td><td>Pause without holding a process</td><td>Approval queue age, expiry rate</td></tr>
+          <tr><td>Compensating Action</td><td>Some effects can't be undone, only offset</td><td>Recovery path exists</td><td>Compensation success rate</td></tr>
+        </table>
+      </div>
+      <details class="deepdive">
+        <summary>Deep Dive: two of these, worked through properly</summary>
+        <div class="dd-body">
+          <strong>Degradation Ladder</strong> — an ordered set of rungs from full capability to honest refusal, selected by a pure function of a health snapshot, with the rung disclosed to the user and emitted as a span attribute. Common finding on first instrumenting this: a meaningful share of traffic has been running above rung zero, unnoticed.<br><br>
+          <strong>Circuit Breaker</strong> — closed/open/half-open per dependency. Trip on a <strong>windowed failure rate with a minimum sample</strong>, never on consecutive failures — agent traffic is bursty. In open state, return a typed <code>UNAVAILABLE</code> immediately so the degradation ladder can pick a lower rung. In half-open, admit only a few probes — otherwise recovery looks like a second outage.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "Trip circuit breakers on a windowed failure rate with a minimum sample, not on consecutive failures, because agent traffic is bursty" is a direct quote-worthy line from the book's chapter summary — specific, mechanism-level, cheap to have ready.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="safety">
+    <div class="concept-header"><h2>Family Five: Safety Patterns</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Enforce architectural security boundaries rather than relying on probabilistic prompt-level compliance — injection and exfiltration can't be mitigated by asking the model to behave.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Six patterns that eliminate the lethal trifecta by construction</div>
+        <table class="cmp">
+          <tr><th>Pattern</th><th>Forces & structure</th><th>Consequence</th><th>Measurement</th></tr>
+          <tr><td>Privilege Separation</td><td>Untrusted content mustn't reach a capable component</td><td>Injection can't act</td><td>Residual attack success rate</td></tr>
+          <tr><td>Provenance Tagging</td><td>Policy must refer to where content came from</td><td>Makes the trifecta rule enforceable</td><td>Untrusted content share/run</td></tr>
+          <tr><td>Trifecta Guard</td><td>Three capabilities jointly dangerous</td><td>Composition refused, not filtered</td><td>Guard trigger rate</td></tr>
+          <tr><td>Egress Firewall</td><td>Data leaves via arguments AND rendered output</td><td>Exfiltration blocked both paths</td><td>Egress denials by principal</td></tr>
+          <tr><td>Approval Gate</td><td>Irreversible actions need a person</td><td>Bounded catastrophic risk</td><td>Decision time, reversal rate</td></tr>
+          <tr><td>Grounded Refusal</td><td>An uncited claim in grounded mode isn't a fact</td><td>Confident errors become refusals</td><td>Citation-free answer rate</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="cost">
+    <div class="concept-header"><h2>Family Six: Cost and Evaluation Patterns</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Provide economic governance and continuous quality verification — agent workloads compound token usage quadratically over long trajectories.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Eight patterns bounding cost and quality risk</div>
+        <table class="cmp">
+          <tr><th>Pattern</th><th>Forces & structure</th><th>Consequence</th><th>Measurement</th></tr>
+          <tr><td>Prefix Cache Boundary</td><td>Input tokens dominate; keep prefix byte-stable</td><td>Large input cost reduction</td><td>Cache hit rate</td></tr>
+          <tr><td>Tier Router</td><td>Quality gap on easy traffic is small</td><td>Spend follows difficulty</td><td>Shadow disagreement rate</td></tr>
+          <tr><td>Semantic Answer Cache</td><td>Traffic repeats; key on corpus versions</td><td>Whole runs removed</td><td>Hit rate, stale answer rate</td></tr>
+          <tr><td>Early Termination</td><td>Enough evidence should stop the loop</td><td>Removes the MOST expensive steps</td><td>Steps saved per run</td></tr>
+          <tr><td>Cost Governor</td><td>Worst case must be bounded, not just average</td><td>Graduated degradation, no surprise invoice</td><td>Ceiling trigger rate</td></tr>
+          <tr><td>Trajectory Assertion</td><td>Several paths valid; assert properties not paths</td><td>Unsafe paths fail, valid ones pass</td><td>Assertion coverage</td></tr>
+          <tr><td>Shadow Evaluation</td><td>Small differences need production volume</td><td>Router/model quality becomes observable</td><td>Disagreement rate</td></tr>
+          <tr><td>Canary with Guardrails</td><td>Offline can't detect small regressions</td><td>The rollout is the detector</td><td>Rollback rate, breach lead time</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="composition">
+    <div class="concept-header"><h2>Composition Rules and the Pattern Audit</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Patterns compose — real systems layer several from each family — but every pattern you add without a reason is cost someone pays at 3am with nothing to show for it.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">The audit question for every pattern in your system</div>
+        <div class="mermaid">
+flowchart TD
+    A[A pattern in your system] --> Q{"Metric that motivated it?<br/>AND an incident it prevented?"}
+    Q -->|both yes| Keep[Keep it]
+    Q -->|either no| Remove[Strong signal to remove it]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>A representative composed system: event-driven/router entry → bounded loop or supervisor → tool gateway with typed results → circuit breaker + degradation ladder — with a cost governor and trajectory assertions cutting across everything.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: the system with nine patterns nobody could justify</summary>
+        <div class="dd-body">
+          A real case from the book. A production system accumulated five layers of indirection between a request and a model call, three separate caches with different invalidation rules, two overlapping retry mechanisms that occasionally interacted to produce duplicate effects, and an 11-rung degradation ladder — four rungs of which had never once been observed in production. Resolution: the team audited every pattern for the metric that motivated it and the incidents it had prevented. Nine patterns had neither, and were removed. The two retries were consolidated into one typed bounded retry. The ladder shrank to 5 rungs matching actually-observed failure modes. Mean time to resolution fell substantially, and no capability was lost.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        The book's own line: "patterns are answers to questions. A system that contains answers to questions nobody asked is carrying cost with no corresponding benefit, and the cost is paid by whoever is on call at three in the morning." A strong closing line when asked to justify complexity — restraint reads as more senior than breadth.
+      </div>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">Orchestration</div><div class="c-fact">Real systems compose these 8; the composition itself is the strongest answer</div></div>
+      <div class="cheat-card"><div class="c-name">Context & Memory</div><div class="c-fact">Fixed assembly + isolation + typed extraction keep context sane</div></div>
+      <div class="cheat-card"><div class="c-name">Tool & Action</div><div class="c-fact">The gateway's 7-step order + typed results is the biggest reliability lever</div></div>
+      <div class="cheat-card"><div class="c-name">Reliability</div><div class="c-fact">Circuit breakers trip on windowed rate, never consecutive failures</div></div>
+      <div class="cheat-card"><div class="c-name">Safety</div><div class="c-fact">Architectural boundaries, not prompt compliance — provenance makes the trifecta guard enforceable</div></div>
+      <div class="cheat-card"><div class="c-name">Cost & Evaluation</div><div class="c-fact">Prefix cache boundary is usually the single largest cost lever</div></div>
+      <div class="cheat-card"><div class="c-name">Composition</div><div class="c-fact">Every pattern needs a metric AND a prevented incident — audit and remove what has neither</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 23 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

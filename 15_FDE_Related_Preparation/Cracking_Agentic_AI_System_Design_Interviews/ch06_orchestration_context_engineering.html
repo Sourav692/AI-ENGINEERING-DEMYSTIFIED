@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6 — Orchestration and Context Engineering</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 6</div>
+  <h1>Orchestration and Context Engineering</h1>
+  <p class="lede">Who decides what happens next, and what does the model actually see when it decides? Both are budgets you spend on purpose, not by accident.</p>
+  <div class="toc">
+    <a href="#control">Control Placement</a>
+    <a href="#topologies">6 Topologies</a>
+    <a href="#fourops">4 Operations</a>
+    <a href="#assembly">Deterministic Assembly</a>
+    <a href="#rot">Context Rot</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="running-example">
+    <strong>Running example:</strong> an internal ops agent with write access to a config service, used by about sixty engineers. Every request raises the same question: what happens next, and who decides?
+  </div>
+
+  <article class="concept" id="control">
+    <div class="concept-header"><h2>Control Is a Resource You Allocate</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Every step an agent takes was preceded by a decision about what to do next, and that decision can live in one of three places: fixed code, a small model, or the reasoning model itself.</p>
+      <p class="why">When our ops agent gets "bump the timeout on service X," you could let the big model decide everything — or push that decision down to something cheaper and more predictable, saving the big model for cases that actually need it.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Where can this decision live?</div>
+        <table class="cmp">
+          <tr><th>Where</th><th>Cost</th><th>Testable?</th><th>Handles novelty?</th></tr>
+          <tr><td>In code (fixed edge)</td><td>Free</td><td>Fully</td><td>No — only what's anticipated</td></tr>
+          <tr><td>In a small model (router)</td><td>Cheap</td><td>Against a labeled set</td><td>Only within defined labels</td></tr>
+          <tr><td>In the reasoning model</td><td>A full model call</td><td>Resists testing</td><td>Yes</td></tr>
+        </table>
+      </div>
+      <ul class="keypoints">
+        <li>Most systems put far more decisions in the reasoning model than they need to, purely for convenience — then pay for it on every request, forever.</li>
+        <li>The habit worth building: for each decision, ask "could this live one level down?"</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        The book calls this out directly: a candidate who audits decisions this way reads as someone who has actually operated a system at cost, not just designed one on a whiteboard.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="topologies">
+    <div class="concept-header"><h2>Six Orchestration Topologies</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Six repeatable shapes cover how agent systems structure "what happens next" — and real systems almost always compose more than one.</p>
+      <p class="why">For our ops agent: a config request gets classified (router), known types run a fixed workflow (sequential), anything ambiguous drops into a bounded loop, and a step needing three lookups fans them out in parallel.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Pick the shape by its trigger condition</div>
+        <table class="cmp">
+          <tr><th>Topology</th><th>Select when</th><th>Latency</th><th>Dominant risk</th></tr>
+          <tr><td>Sequential</td><td>Steps known, strictly ordered</td><td>Sum of steps</td><td>Rigid, no recovery</td></tr>
+          <tr><td>Router</td><td>Intents enumerable, disjoint</td><td>+1 small call</td><td>Silent misroute</td></tr>
+          <tr><td>Parallel fan-out</td><td>Subtasks independent</td><td>Slowest branch</td><td>Merge conflicts, cost×</td></tr>
+          <tr><td>Bounded loop</td><td>Next step needs last observation</td><td>Variable</td><td>Oscillation, no progress</td></tr>
+          <tr><td>Hierarchical</td><td>Distinct specialities/scopes</td><td>+overhead/hop</td><td>Coordination &gt; benefit</td></tr>
+          <tr><td>Event-driven</td><td>Async, long horizons</td><td>Decoupled</td><td>Ordering, duplicates</td></tr>
+        </table>
+      </div>
+      <ul class="keypoints">
+        <li>Realistic production shape: event consumer → router classifies → most run sequential → residual enters a bounded loop → the loop fans out in parallel for retrieval.</li>
+        <li>Track <strong>traffic share</strong> of each path continuously. Router drift — more traffic silently sliding into the expensive loop — is the most common silent quality regression in production agents.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: the composed orchestrator pattern</summary>
+        <div class="dd-body">
+          A router (small model) checks confidence and complexity. High confidence + low complexity → run the matching deterministic workflow. If it fails structurally, escalate to the bounded loop <em>once</em> — bounded, so a broken workflow can't silently double-spend on every request forever. Every routing decision is logged as a metric dimension, not just a log line, because router drift is invisible without that time series.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Naming this composition explicitly — "I'd compose these, not pick one" — is stronger than naming a single topology, because it's what production systems actually look like.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="fourops">
+    <div class="concept-header"><h2>Context Engineering: The Four Operations</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Context engineering is deciding exactly what goes into the model's context window at each step, under a fixed token budget, on purpose. It replaced prompt engineering as the core skill, the same way schema design replaced query tuning.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Every context strategy reduces to these four</div>
+        <div class="mermaid">
+flowchart TD
+    W["Write: persist outside the window<br/>(scratchpad, run state, long-term memory)"] --> CTX((Context Window))
+    S["Select: pull in only what THIS step needs<br/>(per step, not per run)"] --> CTX
+    C["Compress: shrink what must be kept<br/>but not verbatim"] --> CTX
+    I["Isolate: hand a subtask its own window,<br/>return only the conclusion"] -.-> CTX
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Write</strong> early — anything not written down can't survive a compaction pass.</li>
+        <li><strong>Select</strong> per step, not per run — a tool result useful at step 2 is noise by step 7.</li>
+        <li><strong>Compress</strong> is lossy by definition — choose what to lose on purpose (structured extraction beats prose summary beats blind truncation).</li>
+        <li><strong>Isolate</strong> is the strongest, most underused lever — see below.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="assembly">
+    <div class="concept-header"><h2>Deterministic Context Assembly</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Assemble every step's context in a fixed section order, with a fixed token budget per section — and when something has to go, cut inside a section, never across the whole window.</p>
+      <p class="why">For our ops agent, a step's context always looks the same, in this order:</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Fixed order, fixed caps — only the caps move</div>
+        <div class="mermaid">
+flowchart TD
+    A["System instructions & policy — 800 tok, NEVER evicted"]
+    B["Tool schema, filtered — 1200 tok"]
+    C["Durable facts & profile — cap 600 tok"]
+    D["Retrieved evidence — cap 5000 tok"]
+    E["Compressed history — cap 1500 tok"]
+    F["Recent turns, verbatim — cap 3000 tok"]
+    G["Current goal — 200 tok, NEVER evicted"]
+    A --> B --> C --> D --> E --> F --> G
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Order buys cacheability.</strong> Providers cache a prompt prefix only if it's byte-identical across requests — instructions and tool schema first, nothing inserted above them, turns a large share of input tokens into cheap cache hits.</li>
+        <li><strong>Order buys debuggability.</strong> A deterministic assembler means you can reconstruct exactly what the model saw at any step from the trace alone.</li>
+        <li>When a section overflows, trim <em>within</em> it and leave an explicit marker — never silently pretend the content never existed.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: the bug that will not stay fixed by accident</summary>
+        <div class="dd-body">
+          The most common context bug: "if too long, drop from the front." Since instructions sit at the front, a long-running agent quietly loses its policy and safety constraints — and starts behaving like a general assistant holding production credentials. Global truncation deletes your instructions. The fix is structural, not "be careful": mark instructions and the current goal non-evictable, evict only inside the other sections.
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <article class="concept" id="rot">
+    <div class="concept-header"><h2>Context Rot and Sub-Agent Isolation</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Model accuracy degrades as the window fills, and unevenly — information stuck in the middle gets retrieved less reliably than information at either end. Three well-chosen observations often beat twelve.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Shared context vs. isolated sub-agents</div>
+        <div class="mermaid">
+flowchart LR
+    subgraph Shared["Shared context, 3 subtasks"]
+        P1["Parent accumulates<br/>tens of thousands of tokens"] --> P2["...resent on every later step"]
+    end
+    subgraph Isolated["Sub-agent isolation"]
+        S1["Each subtask gets its own window"] --> S2["Parent gets one short<br/>conclusion each"]
+        S2 --> S3["Parent grows by ~1,000 tokens total"]
+    end
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Isolate</strong> when a subtask's intermediate steps aren't needed downstream — research, verification, extraction.</li>
+        <li><strong>Share</strong> only when steps genuinely need to reason across each other's intermediates — rarer than it feels.</li>
+        <li>On a real ten-step run, isolating typically cuts billed input tokens by <strong>an order of magnitude</strong>.</li>
+        <li>What you give up: auditability across the boundary. Link the sub-agent's full trace from the parent's span.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: The Agent That Forgot Its Own Safety Policy at Step Nine</summary>
+        <div class="dd-body">
+          A real production incident — this chapter's own ops agent. It behaved correctly on short runs, but past ~8 steps it started approving config changes its own policy prohibited, including production edits outside the change window. Cause: the context builder truncated from the front once things got long, and the safety policy sat at the front — gone entirely by step nine. The team's evaluation suite only used short scenarios, so the bug was invisible to every test they had. Fix: sectioned assembly with non-evictable instructions, in-section eviction, an assertion that the policy hash is always present — and a new standing requirement to test any write-access agent on runs past the compaction threshold.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "Answer quality degrades on long runs but every component tests clean" is a documented interview drill in this book. Strong answers reconstruct exactly what the model saw before guessing, check instruction eviction first, then context rot — most candidates jump straight to "the model isn't good enough."
+      </div>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">Control placement</div><div class="c-fact">Push every decision down — code, then small model, then reasoning model last</div></div>
+      <div class="cheat-card"><div class="c-name">Six topologies</div><div class="c-fact">Real systems compose them — naming the composition beats naming one</div></div>
+      <div class="cheat-card"><div class="c-name">Four context operations</div><div class="c-fact">Write early, select per step, compress deliberately, isolate for long horizons</div></div>
+      <div class="cheat-card"><div class="c-name">Deterministic assembly</div><div class="c-fact">Fixed order + fixed budgets = cacheable and debuggable; evict inside, never across</div></div>
+      <div class="cheat-card"><div class="c-name">Context rot</div><div class="c-fact">Three well-chosen observations can beat twelve; isolate subtasks into their own window</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 6 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

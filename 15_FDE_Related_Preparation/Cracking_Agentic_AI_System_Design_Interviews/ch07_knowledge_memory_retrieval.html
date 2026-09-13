@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7 — Knowledge, Memory, and Retrieval</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 7</div>
+  <h1>Knowledge, Memory, and Retrieval</h1>
+  <p class="lede">Memory is a write problem before it's a retrieval problem. The highest-leverage decisions are about what never gets stored in the first place.</p>
+  <div class="toc">
+    <a href="#writeproblem">Write Problem</a>
+    <a href="#tiers">4 Memory Tiers</a>
+    <a href="#policy">Write Policy</a>
+    <a href="#contract">Retrieval Contract</a>
+    <a href="#decay">Decay & Forgetting</a>
+    <a href="#tenancy">Tenancy & Erasure</a>
+    <a href="#compaction">Hierarchical Compaction</a>
+    <a href="#bitemporal">Bitemporal Memory</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="running-example">
+    <strong>Running example:</strong> that same ops agent, months later. It needs to remember an on-call rotation changed, forget a retracted preference, and never leak one team's incidents to another.
+  </div>
+
+  <article class="concept" id="writeproblem">
+    <div class="concept-header"><h2>Memory Is a Write Problem</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">The most valuable memory entries are conclusions with a source attached — "the billing contact is finance@acme.example, confirmed 3 March from ticket 88214" — not raw transcript fragments.</p>
+      <p class="why">Six months of embedding every conversation turn gets you a store full of low-value fragments, retrieval that returns plausible-looking noise, and an agent that confidently recalls a preference the user retracted back in March.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Naive embedding vs. a write policy</div>
+        <div class="mermaid">
+flowchart LR
+    A[Every conversation turn] -->|naive: embed everything| B[Millions of low-value fragments]
+    A -->|write policy: extract conclusions| C[A few durable, sourced facts]
+    B --> D[Retrieval returns plausible noise]
+    C --> E[Retrieval returns the right answer]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Retrieval quality is bounded above by what you chose to store — you can't retrieve your way out of a bad write policy.</li>
+        <li>When asked "how would you design agent memory," leading with the write policy (not the vector index) is the differentiating move.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="tiers">
+    <div class="concept-header"><h2>The Four Memory Tiers</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Four tiers, each suited to a different question and a different storage technology — using the wrong store for a tier is where most memory systems quietly break.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Volatility falls, cost per read rises</div>
+        <div class="mermaid">
+flowchart TD
+    W["Working: this step, this run<br/>(the context window itself)"] --> E
+    E["Episodic: past runs for this user<br/>(vector index over documents)"] --> S
+    S["Semantic: durable facts about entities<br/>(relational or graph store)"] --> P
+    P["Procedural: learned skills & playbooks<br/>(versioned, evaluation-gated)"]
+        </div>
+      </div>
+      <table class="cmp">
+        <tr><th>Tier</th><th>Natural query</th><th>Storage fit</th><th>Dominant failure</th></tr>
+        <tr><td>Working</td><td>Direct assembly</td><td>The context window</td><td>Eviction deletes instructions</td></tr>
+        <tr><td>Episodic</td><td>Similarity + recency</td><td>Vector index over docs</td><td>Unbounded growth, noise</td></tr>
+        <tr><td>Semantic</td><td>Exact key lookup + filter</td><td>Relational or property graph</td><td>Stale facts, contradictions</td></tr>
+        <tr><td>Procedural</td><td>Match by task signature</td><td>Versioned artifact registry</td><td>Promotion without eval gate</td></tr>
+      </table>
+      <details class="deepdive">
+        <summary>Deep Dive: why "what's the renewal date" breaks in a vector store</summary>
+        <div class="dd-body">
+          A fact with exactly one correct value, retrieved by similarity, comes back with several <em>plausible</em> alternatives and no way to choose. "This customer's tier" or "this contract's renewal date" needs exact lookup by key, not nearest-neighbor search. Teams that force semantic facts into a vector store discover this the hard way.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "Why not just put everything in a vector store?" is a near-guaranteed follow-up. The specific answer — similarity search can't distinguish "the one correct value" from "several plausible ones" — shows real understanding.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="policy">
+    <div class="concept-header"><h2>The Write Policy</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Before any candidate memory gets written, it has to pass four gates.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Four gates before anything is written</div>
+        <div class="mermaid">
+flowchart TD
+    F[Candidate fact] --> Q1{Durable? true<br/>next month too}
+    Q1 -->|no| X1[Drop]
+    Q1 -->|yes| Q2{Reusable? would a<br/>future run read it}
+    Q2 -->|no| X2[Drop]
+    Q2 -->|yes| Q3{Attributable? source,<br/>timestamp, confidence}
+    Q3 -->|no| X3[Drop]
+    Q3 -->|yes| Q4{Permitted?<br/>regulated category}
+    Q4 -->|no| X4[Reject or redact]
+    Q4 -->|yes| OK[Write as a typed fact]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Facts are extracted as typed <code>(subject, predicate, value)</code> records at write time — never stored as raw conversation turns.</li>
+        <li>Regulated categories (health, payment, government IDs) are enforced on the <em>write</em> path — the read path is too late.</li>
+        <li>A contradicting fact <strong>supersedes, not deletes</strong> — kept with a pointer, so the system can answer "why did it believe X in April?"</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: the memory that remembered a retracted instruction for four months</summary>
+        <div class="dd-body">
+          A real case from the book. A user told a scheduling assistant in January to always book travel through a specific vendor. In February the firm switched vendors and the user said so — but through May, the assistant kept proposing the original vendor about one time in four. Why: both statements were separate episodic entries, and retrieval returned whichever was more <em>similar</em> to the query — the January phrasing just happened to rank higher. Nothing knew the two entries were about the same predicate. Fix: extract typed facts so contradictions collide by construction, supersede instead of coexisting, and add an eval suite that seeds contradictory histories and asserts the newer fact wins.
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <article class="concept" id="contract">
+    <div class="concept-header"><h2>The Retrieval Contract</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Every memory read must be bounded by tokens, scoped by tenant, and attributable to a source — those three properties keep memory from being a source of randomness.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">One memory read cycle</div>
+        <div class="mermaid">
+sequenceDiagram
+    participant A as Agent step
+    participant M as Memory Service
+    participant V as Vector index
+    participant L as Lexical index
+    participant F as Fact store
+    A->>M: read(query, tenant, max_tokens)
+    M->>V: ANN top-40, tenant filter
+    M->>L: BM25 top-40, tenant filter
+    V-->>M: candidates + scores
+    L-->>M: candidates + scores
+    M->>M: fuse by rank, drop superseded
+    M->>F: hydrate facts by id
+    F-->>M: facts with provenance
+    M-->>A: Evidence[] under max_tokens
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Tenancy is enforced <strong>inside the store</strong> (row-level security or separate indexes), not just an app-layer filter that can silently fail open.</li>
+        <li>Dense (embedding) and lexical (BM25) search get combined by <strong>rank</strong>, not raw score.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: fuse by rank, never by raw score</summary>
+        <div class="dd-body">
+          The obvious approach — <code>0.7 × cosine + 0.3 × BM25</code> — breaks three ways: cosine and BM25 sit on incomparable scales, so weights are arbitrary; BM25 drifts as the corpus grows, silently reweighting over time; and normalizing needs each score's distribution, which changes whenever either index is retuned. <strong>Reciprocal rank fusion</strong> fixes this: score each doc as <code>Σ 1/(k + rank)</code> across result lists (k = 60 standard). Only ordinal position matters, so it's scale-free and stable across reindexing. Same principle applies to combining a judge's rating with a heuristic metric, or fusing reranker outputs.
+        </div>
+      </details>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        A real interview drill in the book: "explain why fuse by rank rather than score, and where else this applies." Naming the general principle — ordinal beats cardinal combination when scales are incomparable — is what separates a strong answer from just reciting the RRF formula.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="decay">
+    <div class="concept-header"><h2>Consolidation, Decay, and Forgetting</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Facts should fade on a schedule, not accumulate forever — otherwise "eviction volume" becomes the only warning sign that your write policy is admitting the wrong things.</p>
+      <ul class="keypoints">
+        <li>Each fact scores on <strong>salience</strong>, decaying with age (a configurable half-life, e.g. 90 days) unless it keeps getting retrieved and used.</li>
+        <li>Consolidation runs <strong>offline</strong>, not on the request path — a background job clusters episodic facts and distills stable semantic traits.</li>
+        <li>Decay happens <strong>per predicate</strong>, not globally — a customer's tier barely ages; this week's on-call engineer ages fast.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="tenancy">
+    <div class="concept-header"><h2>Multi-Tenancy, Erasure, and Audit</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A regulated buyer will audit three things: that one tenant's memory can never leak to another, that deletion is actually complete, and that every answer can point to its source.</p>
+      <ul class="keypoints">
+        <li><strong>Isolation</strong>: enforced in the store — an app-level filter fails open under an untested code path, and that failure is a cross-tenant leak.</li>
+        <li><strong>Erasure</strong>: must remove the fact, its vector, its lexical posting, and every cached summary derived from it. Design the fan-out from day one.</li>
+        <li><strong>Explainability</strong>: every answer must show which memory entries contributed — falls straight out of storing provenance in the schema.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="compaction">
+    <div class="concept-header"><h2>Hierarchical Memory Compaction and Lifecycle GC</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">At millions of episodic observations, raw vector search breaks down — index bloat, semantic collisions, contradictory recall. The fix is a three-tier lifecycle that consolidates as data ages.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Working → nearline episodic → offline semantic</div>
+        <div class="mermaid">
+flowchart LR
+    A["Working memory<br/>(ephemeral, discarded at session end)"] --> B["Nearline episodic<br/>(vector + fact log, recency decay)"]
+    B --> C["Offline semantic profile<br/>(batch-distilled, consolidated traits)"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>A background batch job inspects hundreds of episodic facts, clusters by subject/predicate, resolves contradictions, writes compact traits.</li>
+      </ul>
+      <details class="deepdive">
+        <summary>Deep Dive: GDPR Article 17 — hard erasure, not soft deletion</summary>
+        <div class="dd-body">
+          A "right to be forgotten" request isn't satisfied by soft-deletion. A compliant erasure is a coordinated purge: hard-delete matching rows in the relational store → delete corresponding vectors → remove subject references from BM25 postings → invalidate and regenerate any cached summaries derived from the erased facts. Miss one tier and a "deleted" fact is still recoverable somewhere.
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <article class="concept" id="bitemporal">
+    <div class="concept-header"><h2>Bitemporal Memory: Valid-Time vs. System-Time</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A fact's real-world validity and the moment it was recorded are two different timelines — mixing them up means an agent answers "who's the lead architect now" when asked "who was it in Q3 2024."</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Filtering on the query's target time</div>
+        <div class="mermaid">
+flowchart TD
+    Q["Query: who was architect in Q3 2024?"] --> Check{as_of time falls within<br/>this fact's valid interval?}
+    Check -->|yes| Match[Return this historical fact]
+    Check -->|no| Skip["Skip, even if most similar"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Valid-time</strong>: the real-world interval a fact was actually true.</li>
+        <li><strong>System-time</strong>: the timestamp the database recorded the assertion.</li>
+        <li>A retrieval filter enforces both — target time inside the valid interval, and the system must have known by then — eliminating anachronisms by construction.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        A sharper version of "handle time-sensitive facts" than most candidates offer. Naming valid-time vs. system-time explicitly — not just "we'd add a timestamp" — signals you've hit this class of bug before.
+      </div>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">Memory is a write problem</div><div class="c-fact">Store conclusions with provenance, not transcripts</div></div>
+      <div class="cheat-card"><div class="c-name">Four memory tiers</div><div class="c-fact">Working, episodic (vector), semantic (relational/graph), procedural (eval-gated)</div></div>
+      <div class="cheat-card"><div class="c-name">Write policy</div><div class="c-fact">Durable? Reusable? Attributable? Permitted? — supersede, never silently coexist</div></div>
+      <div class="cheat-card"><div class="c-name">Retrieval contract</div><div class="c-fact">Bounded by tokens, scoped in the store, fused by rank never raw score</div></div>
+      <div class="cheat-card"><div class="c-name">Decay & consolidation</div><div class="c-fact">Per-predicate half-life; consolidate offline, not on the request path</div></div>
+      <div class="cheat-card"><div class="c-name">Tenancy & erasure</div><div class="c-fact">Isolation in the store; deletion fans out to vectors, postings, summaries</div></div>
+      <div class="cheat-card"><div class="c-name">Hierarchical compaction</div><div class="c-fact">Working → nearline episodic → offline semantic, consolidating as data ages</div></div>
+      <div class="cheat-card"><div class="c-name">Bitemporal memory</div><div class="c-fact">Valid-time (when true) ≠ system-time (when recorded) — filter on both</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 7 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

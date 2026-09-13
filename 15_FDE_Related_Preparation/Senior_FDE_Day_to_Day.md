@@ -15,7 +15,7 @@
 ## The three lenses (weighted, not sequential)
 
 | Lens | Roughly how it shows up daily | What it's actually for |
-|---|---|---|
+| --- | --- | --- |
 | **Technical build** | Architecture decisions, hands-on code/review, debugging production issues, evaluating retrieval/agent strategies | Staying credible enough to make calls the team will trust, and to catch problems before a customer does |
 | **Customer-facing** | Stakeholder discovery, requirement translation, demo/readouts, escalation handling, expectation-setting on scope and timeline | Making sure what gets built is what the business actually needs — not what the spec said six weeks ago |
 | **Leadership / guiding the team** | Unblocking engineers, reviewing designs before they're built (not after), calibrating scope with delivery leads, mentoring on customer communication | Making the team's output better and faster than any one person's individual throughput |
@@ -100,6 +100,6 @@
 
 ---
 
-## Closing line (if asked "so what actually makes you a *senior* FDE, not just an FDE")
+## Closing line (if asked "so what actually makes you a senior FDE, not just an FDE")
 
 *"It's less about doing harder individual work and more about being the person whose judgment the team can borrow — on scope, on what 'done' means for this customer, on when to go deep versus when to ship the simpler thing. That only works if I stay technical enough to be trusted, customer-connected enough to know what actually matters, and available enough that I'm not the bottleneck."*
