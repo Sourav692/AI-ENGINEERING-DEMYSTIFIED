@@ -249,6 +249,57 @@ def response_word_count(outputs):
 
 
 # ============================================================================
+# BUILT-IN SCORERS, GUARDED FOR A MIXED DATASET
+# ============================================================================
+# `EVAL_DATASET` mixes two kinds of row on purpose: factual rows carrying `expected_facts`,
+# and behavioural rows carrying `guidelines` (a correct refusal has no correct *content*,
+# so it cannot have expected facts — see the Phase 2 notebook).
+#
+# The two built-in scorers that read those fields **raise** on a row that lacks theirs;
+# neither treats it as "not applicable":
+#
+#   Correctness()            -> MlflowException on a row with no expected_facts/expected_response
+#   ExpectationsGuidelines() -> MlflowException: "Guidelines must be specified in the
+#                               `expectations` parameter or must be present in the trace."
+#
+# The harness catches each one and records a SCORER_ERROR assessment, so the run finishes —
+# but every mismatched row logs a traceback, and an errored row is not a scored row. On a
+# 13-row dataset that is ~10 errors from one scorer and ~3 from the other, every run,
+# drowning the real failures you are looking for.
+#
+# The fix is the "not applicable" verdict the custom scorers above already use. These two
+# wrappers return `None` rather than a `"skip"` Feedback: an empty return omits the row from
+# the metric entirely, which is what you want for a pass rate (a `"skip"` string would be
+# counted as a non-pass and quietly deflate it).
+#
+# Both keep the built-in's metric name, so runs scored with them stay comparable to runs
+# scored with the raw built-in — which matters for the Phase 5 regression check.
+
+@scorer(name="correctness")
+def correctness_when_facts_given(inputs, outputs, expectations):
+    """`Correctness()`, applied only to rows that carry ground-truth facts."""
+    from mlflow.genai.scorers import Correctness
+
+    expectations = expectations or {}
+    if expectations.get("expected_facts") is None and expectations.get("expected_response") is None:
+        return None
+
+    return Correctness()(inputs=inputs, outputs=outputs, expectations=expectations)
+
+
+@scorer(name="expectations_guidelines")
+def guidelines_when_specified(inputs, outputs, expectations):
+    """`ExpectationsGuidelines()`, applied only to rows that carry per-row guidelines."""
+    from mlflow.genai.scorers import ExpectationsGuidelines
+
+    expectations = expectations or {}
+    if not expectations.get("guidelines"):
+        return None
+
+    return ExpectationsGuidelines()(inputs=inputs, outputs=outputs, expectations=expectations)
+
+
+# ============================================================================
 # CLASS-BASED SCORER — same logic, configurable per use
 # ============================================================================
 
