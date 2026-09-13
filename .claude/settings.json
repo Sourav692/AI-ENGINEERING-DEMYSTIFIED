@@ -20,5 +20,10 @@
   },
   "enabledPlugins": {
     "skill-creator@claude-plugins-official": true
+  },
+  "env": {
+    "MLFLOW_DISABLE_AGENT_HINT": "1",
+    "MLFLOW_LOGGING_LEVEL": "WARNING",
+    "PYTHONWARNINGS": "ignore::UserWarning"
   }
 }
