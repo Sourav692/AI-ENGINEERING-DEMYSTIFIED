@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 28 — System Design Interview: Agentic Systems</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 28</div>
+  <h1>System Design Interview: Agentic Systems</h1>
+  <p class="lede">A repeatable 45-minute script, two fully worked designs, the follow-up bank, and the rubric that separates a senior signal from a staff one.</p>
+  <div class="toc">
+    <a href="#script">45-Minute Script</a>
+    <a href="#design1">Deep Research Agent</a>
+    <a href="#design2">Incident Response Agent</a>
+    <a href="#followups">Follow-Up Bank</a>
+    <a href="#rubric">Levelling Rubric</a>
+    <a href="#recovery">Recovering</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <article class="concept" id="script">
+    <div class="concept-header"><h2>The Forty-Five Minute Script</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Time is the binding constraint. Twenty minutes on requirements produces an incomplete design; two minutes produces a generic one. Rehearse against a clock until the pacing is automatic.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Seven phases, forty-five minutes</div>
+        <div class="mermaid">
+flowchart LR
+    A["0-8 min<br/>Requirements: 8 numbers,<br/>oracle, scope cut"] --> B["8-12 min<br/>State schema<br/>+ action space"]
+    B --> C["12-20 min<br/>Control pattern,<br/>draw architecture"]
+    C --> D["20-28 min<br/>Failure ladder,<br/>safety, human gates"]
+    D --> E["28-35 min<br/>Scale, cost<br/>arithmetic, capacity"]
+    E --> F["35-41 min<br/>Measurement<br/>and rollout"]
+    F --> G["41-45 min<br/>Your questions"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Miss the first 8 minutes and every later answer is guesswork. Miss the last 5 and you forfeit the leveling signal.</li>
+        <li>Three opening moves, every time: restate the problem in one sentence, ask for the eight numbers (throughput, latency, horizon, accuracy, cost, autonomy, data class, recovery), name the oracle and cut scope.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Close requirements by restating everything as one sentence, then ask "is that the system?" Twenty seconds, consistently marked as a strong signal — it's what a technical lead does at the start of a real project.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="design1">
+    <div class="concept-header"><h2>Worked Design One: A Deep Research Agent at Consumer Scale</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A read-only, citation-grounded research agent for ~100K daily users — walked through the same script, with the arithmetic said aloud.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Untrusted web content stays isolated from user documents</div>
+        <div class="mermaid">
+flowchart TD
+    Q[Question + cache probe] --> P["Plan (reasoning tier):<br/>decompose?"]
+    P --> W["Web sub-agents<br/>(untrusted, NO user doc access)"]
+    P --> D["Document sub-agent<br/>(user-scoped)"]
+    W --> S["Schema boundary -<br/>typed findings only"]
+    D --> S
+    S --> L["Evidence ledger<br/>(user-scoped, dedups sources)"]
+    L --> G[Grade coverage + agreement]
+    G --> Y[Synthesize with citations]
+    Y --> V[Verify claims against evidence]
+    V --> O["Streamed answer + citations<br/>+ coverage note"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Requirements:</strong> ~40K runs/day (peak 3x), p95&lt;90s with first signal &lt;3s, 3-12 step horizon, success = every claim cited, $0.20/run ceiling, read-only (no approval subsystem needed — say so explicitly).</li>
+        <li><strong>State:</strong> run/user identity, goal, dependency-aware plan, evidence list with a <em>concatenating</em> merge rule (prevents Ch.2's fan-out data-loss defect), tool errors, draft, verification score, budget summed across branches.</li>
+        <li><strong>The arithmetic:</strong> 40K/day peaked 3x ≈ 100 runs/min; Little's Law → ~120 in-flight at p95=70s → size concurrency ~170 at 70% utilization. Naive cost ≈30K input tokens/run — fixed by sub-agent isolation (biggest lever), prefix caching, tier routing.</li>
+        <li><strong>Safety, volunteered unprompted:</strong> no external comm tool, so trifecta's 3rd leg seems absent — except the <em>rendered answer itself is a channel</em>, so an egress firewall on rendering is mandatory. Web sub-agents hold zero document scope — an injection can't reach the private corpus even in principle.</li>
+        <li><strong>Falsifying metric:</strong> the grade distribution. Most runs grading poorly even after correction means the corpus, not the architecture, is the constraint.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="design2">
+    <div class="concept-header"><h2>Worked Design Two: An Incident Response Agent for an SRE Team</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A write-capable, high-stakes agent under a 30-second latency floor — same script, entirely different risk profile.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Read-only investigation, staged mitigation</div>
+        <div class="mermaid">
+flowchart LR
+    A["~1,200 alerts/day<br/>(bursty during incidents)"] --> B["Dedupe + correlate<br/>BEFORE any model call"]
+    B --> C["Read-only investigation<br/>(query anything, change nothing)"]
+    C --> D["Proposed mitigation:<br/>command + blast radius + evidence"]
+    D --> E["Human approves<br/>(~10s fine mid-incident)"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Read-only investigation, staged mitigation:</strong> a 10s human approval mid-incident is fine; an autonomous rollback on a wrong hypothesis is not.</li>
+        <li><strong>Dependency inversion:</strong> the agent depends on the observability stack, which is disproportionately likely to be degraded during the very incident it's investigating — every telemetry query can return EMPTY/UNAVAILABLE, and source coverage is a first-class output field.</li>
+        <li><strong>Burst capacity:</strong> 1,200 alerts/day is trivial; 400 in 90 seconds during an incident is not — dedupe/correlate before any model call, cap concurrent investigations per service.</li>
+        <li><strong>Falsifying metric:</strong> hypothesis precision. Below a threshold, responders stop reading the output — an ignored tool is worse than none.</li>
+      </ul>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Both worked designs volunteer the safety/trifecta analysis before being asked. That's a deliberate, repeated signal in this book: naming the security boundary unprompted reads as senior threat modeling, not box-checking.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="followups">
+    <div class="concept-header"><h2>Follow-Up Questions and the Shape of a Strong Answer</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">The interviewer's follow-up bank — and what separates a real answer from a generic one.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Eight common follow-ups</div>
+        <table class="cmp">
+          <tr><th>Follow-up</th><th>Shape of a strong answer</th></tr>
+          <tr><td>Scale to 10x?</td><td>Name the binding constraint first (usually provider quota), then arithmetic, then the lever + its cost</td></tr>
+          <tr><td>What breaks first?</td><td>A specific component + specific symptom + the metric that reveals it — never "hallucinations"</td></tr>
+          <tr><td>How do you know it works?</td><td>The oracle, sampled online measurement, offline gate, and the offline suite's power limitation</td></tr>
+          <tr><td>What if the model gets worse?</td><td>Version pinning, eval before adoption, canary+guardrails, auto rollback, 2nd provider behind an adapter</td></tr>
+          <tr><td>How much does it cost?</td><td>Per-run arithmetic derived aloud, blended figure, levers with expected effect</td></tr>
+          <tr><td>Where's the security boundary?</td><td>The gateway, the trifecta analysis, egress control on tool path AND rendering path</td></tr>
+          <tr><td>Cut for a 2-week version?</td><td>A reduced scope that still has an oracle + failure ladder — and what you would NOT cut, and why</td></tr>
+          <tr><td>Handle a bad actor?</td><td>Rate limits, per-principal cost governor, anomalous tool-sequence detection — prompt defenses are rate-reducers, not boundaries</td></tr>
+        </table>
+      </div>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        "What breaks first" is worth rehearsing most. Wrong shape: "hallucinations." Right shape: "the search tool returns empty during a partial outage, the agent treats empty as valid, we ship uncited claims — signal is citation-free answer rate, fix is a typed result distinguishing empty from unavailable." A symptom, a mechanism, a metric, and a fix — in one breath.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="rubric">
+    <div class="concept-header"><h2>The Levelling Rubric</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">What each level actually sounds like out loud — a description of what to say, not a judgment of who you are.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Mid → Senior → Staff, in what's said</div>
+        <table class="cmp">
+          <tr><th>Level</th><th>Sounds like</th><th>Missing</th></tr>
+          <tr><td>Mid</td><td>Correct components, names a framework, working happy path</td><td>Numbers, failure design, trade-offs as choices</td></tr>
+          <tr><td>Senior</td><td>Requirements as numbers, names the control pattern AND the rejected alternative, degradation ladder, cost arithmetic</td><td>Org consequences, migration path, second-order effects</td></tr>
+          <tr><td>Staff</td><td>All of the above, plus: what to build first and why, what to deliberately NOT build, how it changes at 10x, the falsifying metric</td><td>Little — differences are about scope of influence</td></tr>
+        </table>
+      </div>
+      <details class="deepdive">
+        <summary>Deep Dive: depth on one component vs. breadth across the design</summary>
+        <div class="dd-body">
+          Cover the whole design at consistent depth first, then offer depth explicitly: "I can go deeper on the evaluation layer or the cost model — which is more useful?" Letting the interviewer choose beats guessing. Candidates who go deep unprompted usually pick the component they know best (not the one being assessed), and run out of time before the failure/measurement sections — exactly where the leveling signal lives.
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <article class="concept" id="recovery">
+    <div class="concept-header"><h2>Recovering a Round That Has Gone Sideways</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Four specific moves for four specific ways a round goes wrong.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">What to say, in each case</div>
+        <div class="mermaid">
+flowchart TD
+    A[Behind on time] --> A1["Say so, reprioritize aloud.<br/>'Skipping retrieval detail to go<br/>straight to the degradation ladder.'"]
+    B[Interviewer keeps redirecting] --> B1["Stop defending your path, follow.<br/>Ask directly what they want assessed."]
+    C[You gave a wrong number] --> C1["Correct it immediately, out loud.<br/>Self-correction is strong;<br/>an uncorrected noticed error is weak."]
+    D[Don't know the domain] --> D1["Say so, ask 2 questions that let<br/>you reason about it."]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Interviewers respect explicit prioritization and penalize silent overruns — the failure isn't running out of time, it's doing so without saying so.</li>
+      </ul>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">45-minute script</div><div class="c-fact">8 min requirements buys the rest; last 5 min is where leveling happens</div></div>
+      <div class="cheat-card"><div class="c-name">Deep research agent</div><div class="c-fact">Sub-agent isolation is the biggest cost lever; volunteer the trifecta analysis unprompted</div></div>
+      <div class="cheat-card"><div class="c-name">Incident response agent</div><div class="c-fact">Read-only investigation + staged mitigation; assume your own observability is degraded too</div></div>
+      <div class="cheat-card"><div class="c-name">Follow-up bank</div><div class="c-fact">"What breaks first" needs symptom + mechanism + metric + fix — never a category</div></div>
+      <div class="cheat-card"><div class="c-name">Levelling rubric</div><div class="c-fact">Senior = numbers + rejected alternatives + ladder. Staff = what NOT to build + falsifying metric</div></div>
+      <div class="cheat-card"><div class="c-name">Recovery</div><div class="c-fact">Always narrate — silent overruns and uncorrected errors are worse than the mistakes themselves</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 28 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

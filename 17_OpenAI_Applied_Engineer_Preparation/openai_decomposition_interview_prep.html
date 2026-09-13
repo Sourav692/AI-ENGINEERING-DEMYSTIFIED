@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenAI Applied AI — Decomposition Round: Question Bank &amp; Prep Roadmap</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#171a23; --card:#1c2030; --line:#2a3040;
+    --ink:#e8eaf0; --muted:#9aa3b5; --accent:#10a37f; --accent2:#6c8cff;
+    --warn:#f5a623; --danger:#ff6b6b; --ok:#4cc38a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font:16px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; padding:0 0 80px;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+  header.hero{background:linear-gradient(135deg,#10a37f22,#6c8cff22); border-bottom:1px solid var(--line); padding:48px 0 36px; margin-bottom:36px;}
+  h1{font-size:32px; line-height:1.25; letter-spacing:-.5px;}
+  h1 .thin{color:var(--accent);}
+  .sub{color:var(--muted); margin-top:10px; font-size:15px;}
+  .meta{margin-top:14px; font-size:13px; color:var(--muted);}
+  .meta b{color:var(--ink);}
+  h2{font-size:24px; margin:44px 0 6px; padding-top:18px; letter-spacing:-.3px; scroll-margin-top:16px;}
+  h2 .tag{display:inline-block; font-size:12px; vertical-align:middle; background:var(--accent); color:#04120d; border-radius:20px; padding:2px 10px; margin-left:8px; font-weight:700;}
+  h3{font-size:17px; margin:22px 0 10px; color:var(--accent2);}
+  p{margin:10px 0;}
+  ul,ol{margin:10px 0 10px 22px;}
+  li{margin:6px 0;}
+  a{color:var(--accent);}
+  .lead{color:var(--muted); font-size:15px; margin-bottom:8px;}
+  .toc{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px 24px; margin:8px 0 10px;}
+  .toc b{color:var(--ink);}
+  .toc ol{margin-left:18px; columns:2; column-gap:36px;}
+  .toc li{break-inside:avoid;}
+  .box{border:1px solid var(--line); border-left:4px solid var(--accent); background:var(--panel); border-radius:10px; padding:14px 18px; margin:14px 0;}
+  .box.blue{border-left-color:var(--accent2);}
+  .box.amber{border-left-color:var(--warn);}
+  .box.red{border-left-color:var(--danger);}
+  .box .t{font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px;}
+  .box.blue .t{color:var(--accent2);} .box.amber .t{color:var(--warn);} .box.red .t{color:var(--danger);} .box .t{color:var(--accent);}
+  blockquote{border-left:4px solid var(--accent); background:var(--panel); padding:14px 18px; margin:14px 0; border-radius:0 10px 10px 0; font-style:italic;}
+  .q{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin:12px 0;}
+  .q .num{display:inline-block; min-width:30px; text-align:center; background:var(--accent); color:#04120d; font-weight:800; border-radius:8px; margin-right:10px; font-size:14px; padding:1px 6px;}
+  .q .co{float:right; font-size:12px; color:var(--muted); border:1px solid var(--line); padding:1px 8px; border-radius:12px;}
+  .q p{margin:6px 0 2px 40px;}
+  .q .why{margin-left:40px; font-size:13.5px; color:var(--muted);}
+  .q .why b{color:var(--accent2); font-weight:600;}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14.5px;}
+  th,td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+  th{background:var(--panel); color:var(--accent); font-size:13px; text-transform:uppercase; letter-spacing:.5px;}
+  tr:nth-child(even) td{background:#ffffff06;}
+  .pill{display:inline-block; font-size:12px; border-radius:12px; padding:1px 9px; margin:1px 3px 1px 0; border:1px solid var(--line); color:var(--muted);}
+  .steps{counter-reset:st; margin:16px 0;}
+  .step{position:relative; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 18px 14px 62px; margin:12px 0;}
+  .step::before{counter-increment:st; content:counter(st); position:absolute; left:16px; top:14px; width:32px; height:32px; line-height:32px; text-align:center; background:var(--accent2); color:#fff; border-radius:50%; font-weight:800;}
+  .step b.t{display:block; margin-bottom:3px; font-size:16px;}
+  .step .d{color:var(--muted); font-size:14.5px;}
+  .step .d em{color:var(--ink); font-style:normal;}
+  pre{background:#0b0d13; border:1px solid var(--line); border-radius:10px; padding:14px 16px; overflow-x:auto; margin:12px 0; font-size:13.5px; line-height:1.55;}
+  code{font-family:"SF Mono",Consolas,Menlo,monospace; color:#9fe8d5;}
+  p code, li code, td code{background:#10a37f1a; padding:1px 6px; border-radius:6px; font-size:13px;}
+  .src{font-size:13px; color:var(--muted);}
+  .src li{margin:3px 0;}
+  footer{margin-top:52px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:13px;}
+  .printbtn{position:fixed; right:22px; bottom:22px; background:var(--accent); color:#04120d; border:none; border-radius:24px; padding:12px 20px; font-weight:800; cursor:pointer; box-shadow:0 6px 20px #0008;}
+  @media print{
+    body{background:#fff; color:#111; font-size:12.5px;}
+    header.hero{background:#f4f6f8; border-bottom:2px solid #ddd;}
+    .wrap{max-width:100%; padding:0 8mm;}
+    .q,.box,.step,.toc,table,pre{background:#fff; border-color:#ccc; box-shadow:none; break-inside:avoid;}
+    .toc ol{columns:2;}
+    pre{background:#f6f6f6;}
+    h2{page-break-before:always; padding-top:0;}
+    h2:first-of-type{page-break-before:avoid;}
+    .printbtn{display:none;}
+    a{color:#0a6e57; text-decoration:none;}
+    th{background:#eee; color:#0a6e57;}
+    .q .co{color:#555; border-color:#ccc;}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>OpenAI Applied AI — <span class="thin">Decomposition Round</span><br>Question Bank &amp; Prep Roadmap</h1>
+    <div class="sub">Agentic system architecture interviews at OpenAI, Anthropic &amp; MAANG — compiled from Reddit, Blind, Glassdoor trackers, Exponent, IGotAnOffer and interview-prep guides.</div>
+    <div class="meta">Prepared for <b>Sourav</b> · September 2026 · Companion notebook: <a href="https://www.genspark.ai/api/files/s/dEFgVTL7">langgraph_state_management.ipynb</a></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="toc" id="toc">
+  <b>Contents</b>
+  <ol>
+    <li><a href="#s1">What the Decomposition Round Is</a></li>
+    <li><a href="#s2">Tier 1 — Most Likely Prompts (19)</a></li>
+    <li><a href="#s3">Tier 2 — Deep-Dive Probes (27)</a></li>
+    <li><a href="#s4">The Framework That Wins (6 Steps)</a></li>
+    <li><a href="#s5">State Management — The Interview Answer</a></li>
+    <li><a href="#s6">LangGraph Companion Notebook</a></li>
+    <li><a href="#s7">Sources</a></li>
+  </ol>
+</div>
+
+<!-- ============================ SECTION 1 ============================ -->
+<h2 id="s1">1 · What the Decomposition Round Actually Is</h2>
+<p class="lead">Borrowed from Palantir's playbook and now standard at OpenAI for Applied AI / FDE-type roles.</p>
+<p>A <b>45–60 min open-ended session</b>: you get a vague, real-world enterprise problem and must break it into <b>users, data, workflows, constraints, and a prioritized V1</b> — out loud, collaboratively. There is no correct answer; interviewers watch <i>how</i> you navigate when the path is undefined. It eliminates more qualified candidates than any other stage — not because the problems are technically hard, but because engineers who crush LeetCode in silence freeze when the interviewer keeps adding constraints mid-stream.</p>
+
+<div class="box red"><div class="t">Failure mode #1</div>
+Jumping to architecture before clarifying scope. An OpenAI FDE candidate reported the interviewer literally stopped them and asked: <i>"What questions would you ask the customer before designing anything?"</i></div>
+<div class="box amber"><div class="t">Failure mode #2</div>
+Hand-waving evaluation. <i>"How do you know your AI system is actually working well?"</i> is used as a deliberate differentiator — most engineers fumble it. This maps directly to the evaluation-best-practices doc OpenAI sends candidates.</div>
+<div class="box blue"><div class="t">What they score</div>
+Continuous narration of reasoning — a polished answer delivered in silence scores <b>worse</b> than messy, well-narrated thinking. Asking the right questions before committing to an approach mirrors the actual job.</div>
+
+<!-- ============================ SECTION 2 ============================ -->
+<h2 id="s2">2 · Tier 1 — Most Likely Prompts <span class="tag">19 questions</span></h2>
+<p class="lead">Reported or representative prompts. Expect a variant: an ambiguous business problem where an <b>agentic system</b> is the implied solution.</p>
+
+<h3>A. Reported decomposition prompts (OpenAI / FDE-style)</h3>
+<div class="q"><span class="co">OpenAI · FDE</span><span class="num">1</span>
+<p>"A logistics firm wants an AI agent to handle automated shipment rerouting. They have SAP data, real-time weather APIs, and 500 warehouse managers on different regional systems. How do you build it, and how do you evaluate it?"</p>
+<p class="why"><b>Tests:</b> multi-system data unification, stakeholder surface area, and whether evaluation is first-class in your answer.</p></div>
+<div class="q"><span class="co">Decomp classic</span><span class="num">2</span>
+<p>"A major city wants to reduce 911 emergency response times. They have call data, traffic sensor data, and ambulance GPS data. You have 60 minutes. Go."</p>
+<p class="why"><b>Tests:</b> mission clarification (response time vs. cost vs. equity of coverage), input mapping, sequencing by risk.</p></div>
+<div class="q"><span class="co">Decomp classic</span><span class="num">3</span>
+<p>"A regional bank wants to unify fraud detection across three legacy systems acquired through M&amp;A. None of the data is labeled consistently. How do you scope the first 90 days?"</p>
+<p class="why"><b>Tests:</b> data quality realism, phased scoping, regulatory constraints.</p></div>
+<div class="q"><span class="co">Decomp classic</span><span class="num">4</span>
+<p>"A hospital network wants to reduce medication errors in post-surgery care. They have patient records, pharmacy dispensing logs, and nurse assignment schedules. Where do you start?"</p>
+<p class="why"><b>Tests:</b> high-stakes HITL design, safety-first decomposition.</p></div>
+<div class="q"><span class="co">OpenAI · perf</span><span class="num">5</span>
+<p>"A customer demands sub-100ms latency for an LLM-powered search. The naive RAG flow is 1.5 seconds. Walk me through getting to 100ms."</p>
+<p class="why"><b>Tests:</b> latency budget decomposition across retrieval, generation, and network.</p></div>
+
+<h3>B. Reported OpenAI GenAI design questions</h3>
+<div class="q"><span class="co">OpenAI</span><span class="num">6</span><p>Design ChatGPT.</p></div>
+<div class="q"><span class="co">OpenAI</span><span class="num">7</span><p>Design an AI chatbot / an LLM-powered enterprise search system.</p></div>
+<div class="q"><span class="co">OpenAI</span><span class="num">8</span><p>Design a scalable, efficient system for training an LLM given compute and data constraints.</p></div>
+<div class="q"><span class="co">OpenAI · favorite</span><span class="num">9</span>
+<p>"Walk me through how you'd diagnose high latency in an LLM inference pipeline."</p>
+<p class="why"><b>They want the full stack:</b> tokenization → network → batch size → KV cache → post-processing.</p></div>
+
+<h3>C. Reported Anthropic questions</h3>
+<p class="lead">AI/ML framing, but they fundamentally test distributed-systems fundamentals: batching, queuing, load balancing.</p>
+<div class="q"><span class="co">Anthropic</span><span class="num">10</span>
+<p>Design an inference batching system: a single GPU processes up to 100 inputs per batch; users submit requests synchronously and wait. Design intake, batching, GPU processing, and response routing.</p></div>
+<div class="q"><span class="co">Anthropic</span><span class="num">11</span>
+<p>Design an end-to-end batching system for LLM queries — request intake, batching, GPU routing and load balancing, response delivery. Follow-ups: how do you determine which GPU has capacity? How do you handle failover?</p></div>
+<div class="q"><span class="co">Anthropic</span><span class="num">12</span><p>Design a token-generation service handling up to 100,000 requests per second.</p></div>
+<div class="q"><span class="co">Anthropic</span><span class="num">13</span><p>Design the Claude chat service.</p></div>
+<div class="q"><span class="co">Anthropic · review</span><span class="num">14</span>
+<p>"Here's a junior developer's design for an inference batching system — review it and explain what you'd change."</p></div>
+<div class="q"><span class="co">Anthropic · MLE</span><span class="num">15</span><p>Design an agentic AI system that can autonomously adapt to new tasks.</p></div>
+<div class="q"><span class="co">Anthropic</span><span class="num">16</span><p>Design a language model that minimizes harmful outputs while staying useful.</p></div>
+
+<h3>D. Reported at MAANG / Salesforce / Cohere</h3>
+<div class="q"><span class="co">Salesforce</span><span class="num">17</span>
+<p>"Architect an AI agent system including the agent loop, tool interfaces, memory design, orchestration, and safety considerations."</p></div>
+<div class="q"><span class="co">Google</span><span class="num">18</span>
+<p>Design a small LLM that runs on a phone while staying polite.</p></div>
+<div class="q"><span class="co">Cohere</span><span class="num">19</span>
+<p>Design a model that solves math problems — walk through data collection, SFT, post-training, and eval.</p></div>
+
+<div class="box"><div class="t">Pattern to notice</div>
+Every prompt is <b>business-goal-first, data-second, model-last</b>. Nowhere is the question "which model would you use?" — it's always "here's a messy org and its data; decompose the path to a working, evaluable system."</div>
+
+<!-- ============================ SECTION 3 ============================ -->
+<h2 id="s3">3 · Tier 2 — Deep-Dive Probes That Follow Your Design <span class="tag">27 probes</span></h2>
+<p class="lead">Once you propose an architecture, interviewers drill into these clusters (from the r/ExperiencedDevs agentic-design thread and 40-question agentic guides).</p>
+
+<h3>Agent loop &amp; orchestration</h3>
+<ol>
+  <li>What logic belongs in the orchestrator vs. the LLM itself?</li>
+  <li>How do you design a safe, debuggable agent loop? What are the termination conditions for long-running agents?</li>
+  <li>Stateless vs. stateful agents — tradeoffs?</li>
+  <li>How do you detect and stop infinite planning loops?</li>
+  <li>How do you prevent over-reasoning / over-planning?</li>
+  <li>How do you version and roll back agent behavior (and prompts) in production? How do you A/B test them?</li>
+</ol>
+
+<h3>Tool use &amp; execution</h3>
+<ol start="7">
+  <li>How do agents decide which tool to use? How do you design tool schemas that reduce hallucinated actions?</li>
+  <li>How do you handle tool failures, retries, idempotency?</li>
+  <li>How do you sandbox tool execution?</li>
+  <li>How do you control cost explosions from runaway tool calls?</li>
+</ol>
+
+<h3>State, memory &amp; data</h3>
+<ol start="11">
+  <li>How do you manage state across async, multi-step workflows? <span class="pill">see §5</span></li>
+  <li>Working / episodic / semantic memory — when do you retrieve vs. ignore?</li>
+  <li>How do you keep long-term memory from getting polluted?</li>
+  <li>Customer data split across SAP + Salesforce + Postgres — how do you unify it for an agent?</li>
+</ol>
+
+<h3>Multi-agent</h3>
+<ol start="15">
+  <li>When is multi-agent actually better than single-agent — and when does it just add cost and failure modes?</li>
+  <li>How do agents coordinate without conflicting actions?</li>
+  <li>How do you debug failures across interacting agents?</li>
+  <li>Cheap-model routing before LLM fallback for edge/ambiguous cases — latency + cost optimization?</li>
+</ol>
+
+<h3>Evaluation &amp; observability <span class="pill">highest-signal for OpenAI</span></h3>
+<ol start="19">
+  <li>Design an evaluation harness for an agent with a 99% task-success target.</li>
+  <li>Offline + online evals, golden sets, LLM-as-judge biases, regression-testing prompts.</li>
+  <li>Design observability for an agent system: what do you log, alert on, dashboard? Trajectory analysis? Correlation IDs and replay?</li>
+  <li>How do you detect goal drift or misalignment?</li>
+  <li>What metrics matter beyond task success?</li>
+</ol>
+
+<h3>Safety, guardrails &amp; human-in-the-loop</h3>
+<ol start="24">
+  <li>Prompt injection (direct &amp; indirect), PII filtering before data hits the LLM, capability isolation.</li>
+  <li>When do you route to human-in-the-loop?</li>
+  <li>How does auditing/logging drive HITL decisions?</li>
+  <li>Circuit breakers, rate limiting, graceful degradation when the model is unavailable.</li>
+</ol>
+
+<!-- ============================ SECTION 4 ============================ -->
+<h2 id="s4">4 · The Framework That Wins the Round</h2>
+<p class="lead">Narrate this structure explicitly — Exponent and Final Round AI converge on the same six steps.</p>
+<div class="steps">
+  <div class="step"><b class="t">Clarify the mission (3–5 min)</b>
+    <div class="d">Before scoping anything, ask: <em>"Are we optimizing for response time, cost, accuracy, or equity of coverage? Who's the primary user?"</em> State assumptions explicitly if they don't confirm.</div></div>
+  <div class="step"><b class="t">Stakeholders &amp; success metrics</b>
+    <div class="d">Who calls this a success, and <em>which number moves</em>?</div></div>
+  <div class="step"><b class="t">Map the inputs</b>
+    <div class="d">What data exists, what shape, who owns it, how fresh? Data-oriented thinking is an edge — lean into data quality and lineage.</div></div>
+  <div class="step"><b class="t">Decompose into workstreams, sequence by risk</b>
+    <div class="d">E.g., <em>(a)</em> data ingestion/quality, <em>(b)</em> the agent/model layer, <em>(c)</em> the operator-facing surface. Justify the ordering.</div></div>
+  <div class="step"><b class="t">Walking-skeleton MVP, then iterate</b>
+    <div class="d">Ship the thinnest end-to-end version — even with mocked agent logic — to prove the integration story, then swap in real components.</div></div>
+  <div class="step"><b class="t">Adapt live</b>
+    <div class="d">The interviewer <em>will</em> change a constraint mid-round ("you lost access to the GPS feed"). Re-derive without defending your original plan — adaptability is what's being scored.</div></div>
+</div>
+<div class="box"><div class="t">Two differentiating habits</div>
+<b>1.</b> Think out loud continuously — narrate tradeoffs as you make them. <b>2.</b> Tie every design choice back to how you'd evaluate it — this maps directly to the evaluation-best-practices guide OpenAI sent you, and it's where most candidates hand-wave.</div>
+
+<!-- ============================ SECTION 5 ============================ -->
+<h2 id="s5">5 · State Management in Async, Multi-Step Workflows</h2>
+<p class="lead">The deep-dive probe you're most likely to face as an agentic candidate — full answer, ready to narrate.</p>
+<p><b>The problem:</b> an agent's workflow isn't one request-response — it's a chain of steps (plan → tool call → wait → next step) spanning minutes, hours, or human approvals. Each step is async and can fail, retry, or pause. The workflow must survive crashes, resume correctly, and never execute a side-effect twice.</p>
+
+<h3>The five rules</h3>
+<ol>
+  <li><b>Externalize state, keep workers stateless.</b> Never hold workflow state in process memory. Persist it (Postgres, Redis, DynamoDB) after every step. Any worker can pick up where the last one left off — crash-safe and horizontally scalable.</li>
+  <li><b>Model state as an event log, not just a snapshot.</b> Record each step append-only (<code>task_received → plan_created → tool_called → result_stored</code>). Replaying the log reconstructs full context — critical for debugging agent decisions and resuming after failure.</li>
+  <li><b>Idempotency + exactly-once semantics for side effects.</b> Every step gets a unique ID. Before executing a real-world action (payment, email, DB write), check whether that step ID already ran. Async retries <i>will</i> happen — idempotency keys make them harmless.</li>
+  <li><b>Explicit state machine over implicit control flow.</b> Define states (<code>PENDING → RUNNING → WAITING_HUMAN → COMPLETED / FAILED</code>) and legal transitions. The orchestrator advances state based on events; async steps (tool calls, human approvals) are just waiting states with timeouts. This is how Temporal, LangGraph, and Databricks Workflows handle it.</li>
+  <li><b>Handle the async gaps deliberately.</b> Long-running steps use queues + callbacks (or polling with backoff); timeouts trigger escalation/compensation; human-in-the-loop pauses are just another persisted state — not a blocked thread.</li>
+</ol>
+
+<h3>The one-line interview answer</h3>
+<blockquote>"I keep workers stateless, checkpoint progress to durable storage after every step as an event log, make all side-effects idempotent, and model the workflow as an explicit state machine — so any step can fail, retry, or wait on a human without losing context or double-executing."</blockquote>
+
+<!-- ============================ SECTION 6 ============================ -->
+<h2 id="s6">6 · LangGraph Companion Notebook</h2>
+<p class="lead">A fully executed, key-free notebook proving every rule above in runnable code: <a href="https://www.genspark.ai/api/files/s/dEFgVTL7">langgraph_state_management.ipynb</a> (LangGraph 1.2.11, 24 cells, zero errors).</p>
+<table>
+  <tr><th style="width:8%">§</th><th>Concept</th><th>What the notebook demonstrates</th></tr>
+  <tr><td>1</td><td>State schema &amp; reducers</td><td><code>Annotated[list, operator.add]</code> event log; overwrite vs. reducer side-by-side</td></tr>
+  <tr><td>2</td><td>Checkpointing</td><td><code>InMemorySaver</code> + <code>thread_id</code>; <code>get_state()</code>; full checkpoint timeline via <code>get_state_history()</code></td></tr>
+  <tr><td>3</td><td>Thread isolation &amp; durability</td><td>Isolated <code>thread_id</code>s; a fresh SQLite connection recovers state written by a "previous process"</td></tr>
+  <tr><td>4</td><td>Explicit state machine</td><td>Refund agent: <code>triage → assess → route(on risk) → execute → done</code> with conditional edges</td></tr>
+  <tr><td>5</td><td>Human-in-the-loop</td><td><code>interrupt()</code> parks at <code>human_gate</code>; <code>Command(resume="yes")</code> resumes the same thread</td></tr>
+  <tr><td>6</td><td>Crash recovery</td><td>Node raises mid-run; <code>invoke(None, cfg)</code> resumes without re-running completed steps</td></tr>
+  <tr><td>7</td><td>Retries + idempotency</td><td><code>RetryPolicy(retry_on=...)</code> succeeds on attempt 3; ledger makes duplicate refunds harmless</td></tr>
+  <tr><td>8</td><td>Parallel fan-out</td><td>Reducer-less conflict → <code>InvalidUpdateError</code>; with a reducer → deterministic merge</td></tr>
+  <tr><td>9</td><td>Time travel</td><td>Replay from a historical <code>checkpoint_id</code>; fork a new branch via <code>update_state()</code></td></tr>
+  <tr><td>10</td><td>Context pruning</td><td><code>RemoveMessage</code> trims model context; audit log untouched</td></tr>
+  <tr><td>11</td><td>Async execution</td><td>Async nodes, <code>ainvoke</code>, <code>astream(stream_mode="updates")</code> — one event per superstep</td></tr>
+</table>
+
+<h3>Two implementation gotchas (interview gold)</h3>
+<ul>
+  <li><b><code>RetryPolicy</code> needs explicit <code>retry_on</code></b> — with defaults, a plain <code>ValueError</code> is <i>not</i> retried in LangGraph 1.x; only explicitly matched exception classes are.</li>
+  <li><b>For replay/fork, reuse the checkpoint's own <code>config</code> object</b> — a hand-built <code>{"configurable": {"thread_id":..., "checkpoint_id":...}}</code> dict misses <code>checkpoint_ns</code> and crashes <code>update_state()</code> with a <code>KeyError</code>.</li>
+</ul>
+
+<div class="box blue"><div class="t">Production checkpointer progression</div>
+<code>InMemorySaver</code> for tests → <code>SqliteSaver</code> for local dev → <code>PostgresSaver</code> (or a platform-native store, e.g. Databricks/Temporal-backed) for production. Same code — swap the saver.</div>
+
+<!-- ============================ SECTION 7 ============================ -->
+<h2 id="s7">7 · Sources</h2>
+<ul class="src">
+  <li><a href="https://www.tryexponent.com/blog/anthropic-system-design-interview">Exponent — Anthropic System Design Interview (2026 Guide)</a></li>
+  <li><a href="https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde">Exponent — Forward Deployed Engineer Interview: The Definitive 2026 Guide</a></li>
+  <li><a href="https://www.paraform.com/insights/openai-forward-deployed-engineer">Paraform — OpenAI Forward Deployed Engineer</a></li>
+  <li><a href="https://www.finalroundai.com/blog/palantir-decomposition-interview">Final Round AI — Palantir Decomposition Interview: Framework and Examples</a></li>
+  <li><a href="https://igotanoffer.com/en/advice/generative-ai-system-design-interview">IGotAnOffer — Generative AI System Design Interview</a></li>
+  <li><a href="https://gaijineer.co/openai-forward-deployed-engineer-interview-process">gaijineer.co — OpenAI FDE Interview Process</a></li>
+  <li><a href="https://www.reddit.com/r/ExperiencedDevs/comments/1r78ipa/agentic_ai_agents_system_design_interview/">Reddit r/ExperiencedDevs — Agentic AI system design interview thread</a></li>
+  <li><a href="https://atul4u.medium.com/the-complete-agentic-ai-system-design-interview-guide-2026-f95d0cfeb7cf">Medium — The Complete Agentic AI System Design Interview Guide 2026</a></li>
+  <li><a href="https://openai.com/interview-guide/">OpenAI — Interview Guide</a></li>
+  <li><a href="https://developers.openai.com/tracks/building-agents">OpenAI — Building Agents track</a></li>
+  <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices?api-mode=responses">OpenAI — Evaluation Best Practices</a></li>
+  <li><a href="https://docs.langchain.com/oss/python/langgraph/persistence">LangGraph — Persistence docs</a> · <a href="https://docs.langchain.com/oss/python/langgraph/interrupts">Interrupts docs</a></li>
+</ul>
+
+<footer>
+  Compiled September 2026 for interview prep · Question bank: 19 Tier-1 prompts + 27 deep-dive probes · Framework: 6 steps · State management: 5 rules · Notebook: 11 executed sections.<br>
+  Tip: use your browser's Print → Save as PDF for an offline copy — this document is print-formatted.
+</footer>
+</div>
+
+<button class="printbtn" onclick="window.print()">Save as PDF</button>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

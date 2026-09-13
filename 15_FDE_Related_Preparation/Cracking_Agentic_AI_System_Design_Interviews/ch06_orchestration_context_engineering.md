@@ -18,13 +18,15 @@ big model decide everything — or you could push that decision down to
 something cheaper and more predictable, and save the big model for the cases
 that actually need it.
 
-| Where the decision lives | Cost | Testable? | Handles novelty? |
-|---|---|---|---|
-| In code (a fixed edge) | Free | Fully | No — only what you anticipated |
-| In a small model (a classifier/router) | Cheap | Against a labeled set | Only within labels you defined |
-| In the reasoning model | A full model call | Resists testing | Yes |
+
+| Where the decision lives               | Cost              | Testable?             | Handles novelty?                |
+| -------------------------------------- | ----------------- | --------------------- | ------------------------------- |
+| In code (a fixed edge)                 | Free              | Fully                 | No — only what you anticipated |
+| In a small model (a classifier/router) | Cheap             | Against a labeled set | Only within labels you defined  |
+| In the reasoning model                 | A full model call | Resists testing       | Yes                             |
 
 **Key points**
+
 - Most systems put far more decisions in the reasoning model than they need to, purely out of convenience — and then pay for that convenience on every single request, forever.
 - The habit worth building: for each decision, ask "could this live one level down?"
 
@@ -41,16 +43,18 @@ known request types run a fixed workflow (sequential), anything ambiguous
 drops into a bounded loop that reasons step by step, and if a step needs three
 independent lookups, they fan out in parallel.
 
-| Topology | Select when | Latency | Dominant risk |
-|---|---|---|---|
-| Sequential | Steps are known and strictly ordered | Sum of steps, predictable | Rigid — no recovery path |
-| Router | Intents are enumerable and disjoint | One extra small call | Silent misroute degrades quality |
-| Parallel fan-out | Subtasks are genuinely independent | Slowest branch | Merge conflicts, cost multiplies |
-| Bounded loop | Next step depends on the last observation | Variable, needs bounds | Oscillation, no-progress cycles |
-| Hierarchical | Distinct specialities, tools, or data scopes | Delegation overhead per hop | Coordination cost exceeds the benefit |
-| Event-driven | Work arrives async, over long horizons | Decoupled from the request | Ordering, duplicates, poison messages |
+
+| Topology         | Select when                                  | Latency                     | Dominant risk                         |
+| ---------------- | -------------------------------------------- | --------------------------- | ------------------------------------- |
+| Sequential       | Steps are known and strictly ordered         | Sum of steps, predictable   | Rigid — no recovery path             |
+| Router           | Intents are enumerable and disjoint          | One extra small call        | Silent misroute degrades quality      |
+| Parallel fan-out | Subtasks are genuinely independent           | Slowest branch              | Merge conflicts, cost multiplies      |
+| Bounded loop     | Next step depends on the last observation    | Variable, needs bounds      | Oscillation, no-progress cycles       |
+| Hierarchical     | Distinct specialities, tools, or data scopes | Delegation overhead per hop | Coordination cost exceeds the benefit |
+| Event-driven     | Work arrives async, over long horizons       | Decoupled from the request  | Ordering, duplicates, poison messages |
 
 **Key points**
+
 - A realistic production shape: an event consumer receives work → a router classifies it → most classes run a sequential workflow → the residual (ambiguous) class enters a bounded loop → the loop uses parallel fan-out for retrieval within a single step.
 - Track the **traffic share** of each path continuously, not once at launch. Router drift — where more and more traffic silently slides into the expensive loop — is the most common silent quality regression in production agents.
 
@@ -79,6 +83,7 @@ flowchart TD
 ```
 
 **Key points**
+
 - **Write** early — anything you didn't write down can't be recovered after a compaction pass.
 - **Select** per step, not per run — a tool result that mattered at step 2 is usually noise by step 7.
 - **Compress** is lossy by definition, so choose deliberately what to lose (extraction into a structured record beats prose summarizing beats blind truncation).
@@ -105,6 +110,7 @@ flowchart TD
 ```
 
 **Key points**
+
 - **Order buys cacheability.** Providers can only cache a prompt prefix if it's byte-identical across requests — put instructions and tool schema first, never insert anything above them, and a large share of your input tokens become cheap cache hits (Chapter 14 quantifies this).
 - **Order buys debuggability.** A deterministic assembler means you can reconstruct exactly what the model saw at any step, from the trace alone — turning a guessing exercise into a reading exercise.
 - When a section overflows its own cap, trim proportionally *within that section* and leave an explicit marker ("[...240 tokens omitted...]") — never silently pretend the content never existed.
@@ -131,6 +137,7 @@ flowchart LR
 ```
 
 **Key points**
+
 - **Isolate** when a subtask's intermediate steps aren't needed downstream — the common case for research, verification, extraction.
 - **Share** context only when steps genuinely need to reason across each other's intermediates — rarer than it feels.
 - On a real ten-step run, isolating typically cuts billed input tokens by **an order of magnitude**.
@@ -146,10 +153,11 @@ flowchart LR
 
 ## Cheat Sheet
 
-| Concept | The one thing to remember |
-|---|---|
-| Control placement | Push every decision as far down as it will go — code, then small model, then reasoning model last |
-| Six topologies | Real systems compose them; naming the composition beats naming one topology |
-| Four context operations | Write early, select per step, compress deliberately, isolate for long horizons |
-| Deterministic assembly | Fixed section order + fixed budgets = cacheable and debuggable; evict inside sections, never across |
-| Context rot | Three well-chosen observations can beat twelve; isolate subtasks into their own window |
+
+| Concept                 | The one thing to remember                                                                           |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| Control placement       | Push every decision as far down as it will go — code, then small model, then reasoning model last  |
+| Six topologies          | Real systems compose them; naming the composition beats naming one topology                         |
+| Four context operations | Write early, select per step, compress deliberately, isolate for long horizons                      |
+| Deterministic assembly  | Fixed section order + fixed budgets = cacheable and debuggable; evict inside sections, never across |
+| Context rot             | Three well-chosen observations can beat twelve; isolate subtasks into their own window              |

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 27 — Technical Interview: Concepts and Coding</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 640px; font-size: 15px; margin: 0 0 18px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+
+  .running-example {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .running-example strong { color: var(--ink); }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+  .why { color: var(--ink-soft); font-size: 14px; margin: 0 0 14px; }
+
+  .diagram-wrap {
+    background: #10151C;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table.cmp th, table.cmp td {
+    border: 1px solid var(--rule);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cmp th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.cmp code { color: var(--green); }
+  table.selftest td:first-child { font-weight: 600; width: 32%; color: var(--accent); }
+
+  ul.keypoints { margin: 0 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 6px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer {
+    background: var(--openai-teal-bg);
+    border-color: var(--openai-teal-border);
+  }
+  .callout.pointer .label { color: var(--openai-teal); }
+
+  details.deepdive {
+    margin-top: 12px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 4px 14px 2px;
+  }
+  details.deepdive summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 10px 0;
+    list-style: none;
+  }
+  details.deepdive summary::-webkit-details-marker { display: none; }
+  details.deepdive summary::before { content: "▸ "; }
+  details.deepdive[open] summary::before { content: "▾ "; }
+  details.deepdive .dd-body { padding-bottom: 12px; font-size: 13.5px; }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cheat-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .cheat-card .c-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">Cracking Agentic AI System Design Interviews — Ch. 27</div>
+  <h1>Technical Interview: Concepts and Coding</h1>
+  <p class="lede">Forty concept answers at interview length, eight recurring coding problems, and how to perform in a live editor. Cover the answer, quiz yourself, then check.</p>
+  <div class="toc">
+    <a href="#scoring">How It's Scored</a>
+    <a href="#foundations">Foundations</a>
+    <a href="#reasoning">Reasoning & Models</a>
+    <a href="#tools">Tools/Context/Memory</a>
+    <a href="#coding">8 Coding Problems</a>
+    <a href="#live">Strong Live Coding</a>
+    <a href="#recovery">Recovering</a>
+    <a href="#cheat">Cheat Sheet</a>
+  </div>
+</div>
+
+<main>
+
+  <article class="concept" id="scoring">
+    <div class="concept-header"><h2>How the Technical Round Is Scored</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Correctness is necessary and rarely sufficient — interviewers score four things, and three of them are invisible unless you talk.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Four scored dimensions</div>
+        <table class="cmp">
+          <tr><th>Dimension</th><th>What it's really asking</th></tr>
+          <tr><td>Problem framing</td><td>Did you restate the problem, ask about inputs, state assumptions before writing?</td></tr>
+          <tr><td>Solution shape</td><td>Reasonable structure, and can you say why you rejected the alternative?</td></tr>
+          <tr><td>Production instincts</td><td>Error handling, bounds, types, the failure case you handled unprompted</td></tr>
+          <tr><td>Communication</td><td>Continuous narration, receptiveness to hints, honest about what you don't know</td></tr>
+        </table>
+      </div>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        Open every problem by writing the function signature with types, then a comment block listing the failure cases you intend to handle — before any logic. Ninety seconds, and the book notes candidates who do this score higher on identical final code.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="foundations">
+    <div class="concept-header"><h2>Forty Concepts, Self-Test Style — Foundations</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Cover the right column. Answer aloud. Then check.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Eight foundational concept answers</div>
+        <table class="cmp selftest">
+          <tr><th>Question</th><th>Answer at interview length</th></tr>
+          <tr><td>What is an agent?</td><td>Pursues a goal by repeatedly selecting, executing, observing, updating state — sequence/count not fixed in advance. Discriminating property: autonomy over control flow.</td></tr>
+          <tr><td>Agent vs. workflow?</td><td>Workflow's graph fixed at design time; agent's next step depends on what it observed. Workflows = predictable, tested. Agents = handle novelty, pay in variance.</td></tr>
+          <tr><td>Six components?</td><td>Orchestrator, reasoning model, tool gateway, memory, guardrails, observability. Model never touches the environment directly — the gateway is the security boundary.</td></tr>
+          <tr><td>Why bound a loop 4 ways?</td><td>Step ceiling (oscillation), token budget (giant re-read), wall clock (slow deps), no-progress detector (identical repeated calls).</td></tr>
+          <tr><td>Tool error vs. denial?</td><td>Error = recoverable observation, feed it back. Denial = terminates the run; feeding it back invites a policy workaround.</td></tr>
+          <tr><td>When NOT to build an agent?</td><td>Task is deterministic, verification impossible/expensive, error cost asymmetric+unbounded, or latency budget below loop time.</td></tr>
+          <tr><td>Why input tokens dominate cost?</td><td>Full history resent each step — tokens grow ~quadratically in step count. Doubling steps ~quadruples the input bill.</td></tr>
+          <tr><td>The verification heuristic?</td><td>Commercial viability tracks cost of checking the agent's work more than model capability. Name the oracle first.</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="reasoning">
+    <div class="concept-header"><h2>Forty Concepts, Self-Test Style — Reasoning and Models</h2></div>
+    <div class="concept-body">
+      <div class="diagram-wrap">
+        <div class="diagram-title">Eight concept answers on reasoning</div>
+        <table class="cmp selftest">
+          <tr><th>Question</th><th>Answer at interview length</th></tr>
+          <tr><td>Test-time compute?</td><td>Extra inference-time compute per input via deliberation/sampling/search/verification. A per-request budget you route, not a model property.</td></tr>
+          <tr><td>Reasoning model vs. CoT prompting?</td><td>Prompting elicits tokens correlating with correctness. A reasoning model is RL-trained on checkable outcomes — deliberation IS the mechanism, robust to rewording.</td></tr>
+          <tr><td>Where to spend reasoning budget?</td><td>The plan step — accuracy compounds multiplicatively and the plan gates every later step. Minimal effort on extraction/formatting.</td></tr>
+          <tr><td>ReAct vs. ReWOO?</td><td>ReAct interleaves reasoning+acting, serialized. ReWOO plans once with placeholders, executes deterministically — 2 model calls, parallel, at the cost of planning pre-evidence.</td></tr>
+          <tr><td>When does self-consistency work?</td><td>Small, discrete answer space so samples collide meaningfully. Useless for open prose.</td></tr>
+          <tr><td>When does reflection work?</td><td>Only when the critic has an information advantage (test result, validator, extra retrieval). Same-context critic mostly agrees with itself.</td></tr>
+          <tr><td>Reasoning tokens?</td><td>Hidden, billed, often exceed visible output on hard problems. Meter separately; alert on the ratio to output tokens.</td></tr>
+          <tr><td>Routing reasoning effort?</td><td>Cascade: deterministic signals free → small classifier for the remainder → failed verification escalates one tier. Log the routing reason.</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="tools">
+    <div class="concept-header"><h2>Forty Concepts, Self-Test Style — Tools, Context, and Memory</h2></div>
+    <div class="concept-body">
+      <div class="diagram-wrap">
+        <div class="diagram-title">Twelve concept answers on the ACI, context, and memory</div>
+        <table class="cmp selftest">
+          <tr><th>Question</th><th>Answer at interview length</th></tr>
+          <tr><td>Agent-computer interface?</td><td>The full surface the agent perceives/affects the world through — sets the ceiling on agent reliability.</td></tr>
+          <tr><td>Five tool result states?</td><td>Success, empty, invalid, denied, unavailable. Conflating empty/unavailable → retry storms; denied/invalid → policy workarounds.</td></tr>
+          <tr><td>Why filter the advertised tool list?</td><td>Raises selection accuracy (shorter list) and prevents disclosing privileged tooling.</td></tr>
+          <tr><td>Tool count limits?</td><td>Degrades past ~40. Combine principal filtering, façade namespacing, embedding retrieval, hierarchical routing.</td></tr>
+          <tr><td>Context engineering, defined?</td><td>Systematic input construction each step: selection, compression, ordering, budget+eviction. Four ops: write, select, compress, isolate.</td></tr>
+          <tr><td>Why fixed section order?</td><td>Byte-stable prefix → provider caching works; any step's context is reconstructable from a trace.</td></tr>
+          <tr><td>Global truncation danger?</td><td>Truncating from the front evicts instructions/policy — long runs become a general assistant with prod credentials.</td></tr>
+          <tr><td>Context rot?</td><td>Accuracy degrades as window fills; middle-positioned info retrieved less reliably. 3 good observations can beat 12.</td></tr>
+          <tr><td>Sub-agent isolation?</td><td>Subtask gets its own window, returns a compact conclusion — parent grows by hundreds not thousands of tokens.</td></tr>
+          <tr><td>Four memory tiers?</td><td>Working (window), episodic (vector), semantic (relational/graph), procedural (versioned, eval-gated).</td></tr>
+          <tr><td>Why not facts in a vector store?</td><td>One-correct-value facts retrieved by similarity return several plausible alternatives with no way to choose. Use exact lookup.</td></tr>
+          <tr><td>Reciprocal rank fusion?</td><td>Combine by ordinal position: Σ 1/(k+rank), k≈60. Scale-free, no normalization, stable across reindexing.</td></tr>
+        </table>
+      </div>
+      <div class="callout pointer">
+        <span class="label">🎯 OpenAI Interview Pointer</span>
+        This cluster maps almost 1:1 onto Tools/Context/Memory eval dimensions. On an Agent-Evals-heavy panel, "five tool result states" and "why not a vector store" are near-certain follow-ups.
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="coding">
+    <div class="concept-header"><h2>The Eight Recurring Coding Problems</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Eight implementation problems recur across agentic-loop interviews — know what each tests and the extension an interviewer will layer on.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Problem → what it tests → likely extension</div>
+        <table class="cmp">
+          <tr><th>Problem</th><th>Tests</th><th>Likely extension</th></tr>
+          <tr><td>1. Bounded loop</td><td>Termination reasoning, result shape</td><td>Add a 5th bound, or make it concurrent</td></tr>
+          <tr><td>2. Typed retry</td><td>Knowing what NOT to retry</td><td>Honor a server hint, share a deadline</td></tr>
+          <tr><td>3. Context assembly</td><td>Budgeting and eviction policy</td><td>Make it cache-friendly</td></tr>
+          <tr><td>4. Rank fusion</td><td>Scale-free combination, determinism</td><td>Weight retrievers, rescore with cross-encoder</td></tr>
+          <tr><td>5. Token bucket</td><td>Rate limiting, fairness</td><td>Make it distributed and atomic</td></tr>
+          <tr><td>6. Stream parser</td><td>Partial chunks, resume, duplicates</td><td>Backpressure on a slow consumer</td></tr>
+          <tr><td>7. Semantic fingerprinting</td><td>Normalization judgment</td><td>Why this normalizer is wrong for a cache key</td></tr>
+          <tr><td>8. Trajectory evaluator</td><td>Assertions over paths</td><td>Run it deterministically in CI</td></tr>
+        </table>
+      </div>
+      <details class="deepdive">
+        <summary>Deep Dive: two traps interviewers specifically probe</summary>
+        <div class="dd-body">
+          <strong>Typed retry (#2):</strong> never retry a <code>denied</code> or <code>invalid</code> result. Always apply <em>full</em> jitter — equal or no jitter both leave retries synchronized across concurrent runs, turning a degraded dependency into an outage. Honor a server's <code>retry-after</code> hint over your own schedule.<br><br>
+          <strong>Semantic fingerprinting (#7):</strong> a no-progress detector must catch an agent rewording the same query, so it sorts tokens before hashing — "did revenue exceed cost" collides with "did cost exceed revenue." Exactly right for detecting a stall, exactly wrong for a cache key using the same collision to serve a wrong answer. <strong>Progress detection wants recall; cache keys want precision — one normalizer can't serve both.</strong>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <article class="concept" id="live">
+    <div class="concept-header"><h2>What Strong Live Coding Sounds Like</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">A compressed transcript pattern for any of the eight problems — six moves, each earning a specific scored dimension.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Six moves, in order</div>
+        <div class="mermaid">
+flowchart TD
+    A["1. Restate the problem<br/>+ confirm a key design fact"] --> B["2. Write the signature<br/>+ failure-case comments FIRST"]
+    B --> C["3. State the alternative<br/>you rejected, and why"]
+    C --> D["4. Write the simple version,<br/>then harden it"]
+    D --> E["5. Test aloud -<br/>trace one case by hand"]
+    E --> F["6. Name what you left out<br/>('in production I would...')"]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li>Move 6 is the one most candidates skip — naming a known limitation beats hoping nobody notices it.</li>
+        <li>Move 3 earns "solution shape" even when the interviewer never asked for alternatives.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept" id="recovery">
+    <div class="concept-header"><h2>Recovering When It Goes Wrong</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">Three situations, three specific moves — narrate the recovery, don't silently patch.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-title">What to say, in each case</div>
+        <div class="mermaid">
+flowchart TD
+    A[You're stuck] --> A1["Say so, and say what you've ruled out.<br/>Structured thinking scores even without a solution."]
+    B[Design is wrong, halfway through] --> B1["Say it, state restart-vs-continue cost, then pick.<br/>Silently patching is what's penalized."]
+    C[You don't know a concept] --> C1["Say what you DO know adjacent to it, and how you'd find out.<br/>Never guess confidently."]
+        </div>
+      </div>
+      <ul class="keypoints">
+        <li><strong>Take a hint immediately, and say so</strong> ("that's a better direction, let me take it"). Defending a weaker approach after a hint costs you on receptiveness — the easiest dimension to lose.</li>
+      </ul>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>Cheat Sheet</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">Scoring</div><div class="c-fact">4 dimensions, 3 invisible unless you narrate — signature + failure cases first, always</div></div>
+      <div class="cheat-card"><div class="c-name">Concept answers</div><div class="c-fact">2-4 sentences, not a lecture — length isn't depth, the round is timed</div></div>
+      <div class="cheat-card"><div class="c-name">Eight coding problems</div><div class="c-fact">Retry: never denied/invalid, always full jitter. Fingerprint: recall for progress, precision for cache keys</div></div>
+      <div class="cheat-card"><div class="c-name">Live coding pattern</div><div class="c-fact">Restate → signature+failures → rejected alternative → simple-then-harden → test aloud → name what's left out</div></div>
+      <div class="cheat-card"><div class="c-name">Recovery</div><div class="c-fact">Stuck: say what you ruled out. Wrong: say so, pick. Don't know: say what's adjacent, how you'd find out</div></div>
+    </div>
+  </section>
+
+  <footer>Cracking Agentic AI System Design Interviews — Chapter 27 Tutorial</footer>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#161C24',
+      primaryColor: '#16223B',
+      primaryBorderColor: '#2E4A80',
+      primaryTextColor: '#E8EDF3',
+      lineColor: '#5B8DEF',
+      textColor: '#E8EDF3',
+      fontFamily: 'Inter, sans-serif',
+      secondaryColor: '#10151C',
+      tertiaryColor: '#10151C'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true, actorMargin: 40, boxMargin: 8 }
+  });
+</script>
+
+</body>
+</html>

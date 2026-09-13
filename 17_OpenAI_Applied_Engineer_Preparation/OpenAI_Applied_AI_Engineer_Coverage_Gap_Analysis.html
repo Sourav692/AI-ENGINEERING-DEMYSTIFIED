@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenAI Applied AI Engineer — Decomp Round Coverage &amp; Gap Analysis</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0F1419;
+    --bg-raised: #161C24;
+    --ink: #E8EDF3;
+    --ink-soft: #A8B3C2;
+    --ink-faint: #6B7686;
+    --rule: #2A323D;
+    --accent: #5B8DEF;
+    --accent-bg: #16223B;
+    --accent-border: #2E4A80;
+    --openai-teal: #10A37F;
+    --openai-teal-bg: #0D2B24;
+    --openai-teal-border: #1C5C4A;
+    --amber: #E0A72E;
+    --amber-bg: #2B2412;
+    --amber-border: #4d3f16;
+    --green: #4CAF7D;
+    --red: #E5735B;
+    --red-bg: #2B1712;
+    --red-border: #5c2c1c;
+    --code-bg: #06090C;
+    --code-fg: #D8E2EC;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .masthead {
+    background: linear-gradient(160deg, #131A22, #0F1419);
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 20px 28px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .lede { color: var(--ink-soft); max-width: 680px; font-size: 15px; margin: 0 0 18px; }
+  .lede a { color: var(--openai-teal); }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  main { max-width: 900px; margin: 0 auto; padding: 28px 16px; }
+
+  article.concept {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .concept-header {
+    background: linear-gradient(120deg, #182029, #161C24);
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .concept-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .concept-header .sub { color: var(--ink-faint); font-size: 12.5px; margin-top: 4px; }
+  .concept-body { padding: 16px 18px 18px; }
+  .oneliner { font-weight: 600; font-size: 15px; margin: 0 0 8px; }
+
+  table.cov {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  table.cov th, table.cov td {
+    border: 1px solid var(--rule);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.cov th {
+    background: #10151C;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+  }
+  table.cov code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--green);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.86em;
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; white-space: nowrap; text-align: center; }
+  .status.strong { color: var(--green); }
+  .status.partial { color: var(--amber); }
+  .status.gap { color: var(--red); }
+  table.cov td.status-cell { width: 90px; }
+
+  .overflow-wrap { overflow-x: auto; }
+
+  .callout {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.pointer { background: var(--openai-teal-bg); border-color: var(--openai-teal-border); }
+  .callout.pointer .label { color: var(--openai-teal); }
+  .callout.gapbox { background: var(--red-bg); border-color: var(--red-border); }
+  .callout.gapbox .label { color: var(--red); }
+
+  ul.keypoints { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; }
+  ul.keypoints li { margin-bottom: 8px; }
+  ol.gaplist { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; }
+  ol.gaplist li { margin-bottom: 10px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; }
+  .legend span.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+  .dot.g { background: var(--green); }
+  .dot.a { background: var(--amber); }
+  .dot.r { background: var(--red); }
+
+  .cheatsheet {
+    background: linear-gradient(160deg, #14202c, #0F1419);
+    border: 1px solid var(--accent-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    margin-top: 30px;
+  }
+  .cheatsheet h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+  .cheat-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 640px) { .cheat-grid { grid-template-columns: 1fr 1fr; } }
+  .cheat-card { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; }
+  .cheat-card .c-name { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; }
+  .cheat-card .c-fact { font-size: 13.5px; color: var(--ink); }
+
+  footer { text-align: center; color: var(--ink-faint); font-size: 12px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">17 — OpenAI Applied Engineer Preparation</div>
+  <h1>Decomp Round: Coverage &amp; Gap Analysis</h1>
+  <p class="lede">Mapped against OpenAI's own <a href="https://developers.openai.com/tracks/building-agents" target="_blank" rel="noopener">Building Agents</a> track and <a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices?api-mode=responses" target="_blank" rel="noopener">Evaluation Best Practices</a> guide — every topic checked against where (if anywhere) this repo already has hands-on coverage, with exact paths.</p>
+  <div class="toc">
+    <a href="#building-agents">Building Agents Coverage</a>
+    <a href="#evals">Evaluation Coverage</a>
+    <a href="#gaps">Net Gaps</a>
+    <a href="#cheat">What Actually Matters</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="legend">
+    <span><span class="dot g"></span>Strong coverage</span>
+    <span><span class="dot a"></span>Partial coverage</span>
+    <span><span class="dot r"></span>Clear gap</span>
+  </div>
+
+  <article class="concept" id="building-agents">
+    <div class="concept-header">
+      <h2>1. "Building Agents" Track — Topic by Topic</h2>
+      <div class="sub">Modules 1–5: Core Concepts, Tools, Orchestration, Example Use Cases, Best Practices</div>
+    </div>
+    <div class="concept-body">
+      <div class="overflow-wrap">
+        <table class="cov">
+          <tr><th>Module</th><th>Topic</th><th>Repo coverage</th><th>Status</th></tr>
+          <tr><td>1. Core Concepts</td><td>Reasoning vs. non-reasoning model selection</td><td>No dedicated notebook framing this tradeoff explicitly</td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>1. Core Concepts</td><td>Responses API (OpenAI's own stateful core API)</td><td>Not used anywhere — repo is LangChain/LangGraph-native</td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>1. Core Concepts</td><td>Agents SDK (OpenAI's own)</td><td><code>06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/</code> — planned, empty</td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>1. Core Concepts</td><td>Augmenting agents with tools</td><td><code>03_LangGraph_Fundamentals/01_Foundations/05_Augmented_LLM_with_Tools.ipynb</code>, <code>06_ReAct_Agent.ipynb</code>; <code>05_AI_Agent_Fundamentals/LangChain_Tools_and_Agents/01_Tools_and_Functions/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>2. Tools</td><td>Function calling mechanics</td><td>Phase 3 <code>bind_tools</code> notebooks; Phase 5 <code>01_Tools_and_Functions/</code> (4 nb), <code>02_Agents/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>2. Tools</td><td>Web Search built-in tool</td><td>Tavily-based search in <code>05_AI_Agent_Fundamentals/AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb</code> — same concept, different provider</td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>2. Tools</td><td>File Search (RAG)</td><td><code>04_Retrieval_and_RAG/</code> (whole phase) + <code>08_Advanced_RAG/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>2. Tools</td><td>Code Interpreter (hosted sandbox tool)</td><td><code>05_AI_Agent_Fundamentals/AI_Agents_with_LangGraph/05_Reflective_Code_Generation_Agent/</code> covers code-gen agents, not the hosted-sandbox-as-tool pattern</td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>2. Tools</td><td>Computer Use</td><td>No coverage anywhere in the repo</td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>2. Tools</td><td>Image Generation as an agent tool call</td><td><code>01_Theory_and_Foundations/Model_Landscape_and_Hugging_Face/02_Diffusers/</code> covers image-gen models, not the agentic tool-call pattern</td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>2. Tools</td><td>MCP (Model Context Protocol)</td><td><code>09_Agent_Protocols/MCP/</code> (all 4 tracks) + <code>08_Advanced_RAG/mcp_a2a_agentic_rag/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>3. Orchestration</td><td>Agent / Handoff / Guardrail / Session primitives</td><td>Equivalent concepts under different names: <code>07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/03_agent_handoffs.ipynb</code>; <code>Memory_and_State/</code>; <code>12_Production_and_Observability/Safety_and_Alignment/</code></td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>3. Orchestration</td><td>Multi-agent collaboration (routing, agent-as-tool)</td><td><code>07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/</code>, <code>03_LangGraph_Fundamentals/02_Core_Capabilities/02_Routing/</code>, CrewAI/AutoGen in <code>10_Alternative_Agent_Frameworks/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>4. Use Cases</td><td>Human-in-the-loop support agent</td><td><code>03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/</code> (4 nb)</td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>4. Use Cases</td><td>Customer service agent networks</td><td><code>02_Routing/</code>; <code>08_Advanced_RAG/RAG_with_LangGraph_Advanced/1. Build_a_Healthcare_Customer_Support_Router_Agentic_RAG_System.ipynb</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>4. Use Cases</td><td>Frontend testing agent using computer vision</td><td>No coverage — same gap as Computer Use</td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>4. Use Cases</td><td>Optimization priorities (speed / reliability / cost)</td><td><code>12_Production_and_Observability/.../Cost_Monitoring/</code>, <code>Caching_and_Performance/</code> — covered as infra, not as an upfront design lever</td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>5. Best Practices</td><td>User input guardrails (jailbreak prevention)</td><td><code>Safety_and_Alignment/01_Moderating_Chains.ipynb</code>; <code>Production_Course_Ops/03_security_patterns.ipynb</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>5. Best Practices</td><td>Structured outputs</td><td><code>03_LangGraph_Fundamentals/01_Foundations/08_Pydantic_State_Validation.ipynb</code>; <code>02_Competitive_Intelligence_Agent.ipynb</code>; <code>02_Prompt_Chaining_Structured_Output.ipynb</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>5. Best Practices</td><td>Production optimization (cost/latency/monitoring)</td><td><code>12_Production_and_Observability/</code> (whole phase) + <code>Production_Course_Ops/01_monitoring.ipynb</code>, <code>02_cost_optimization.ipynb</code></td><td class="status-cell status strong">Strong</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="evals">
+    <div class="concept-header">
+      <h2>2. "Evaluation Best Practices" Guide — Topic by Topic</h2>
+      <div class="sub">Eval types, process, architecture-specific eval, evaluator methods, edge cases, improvement loop</div>
+    </div>
+    <div class="concept-body">
+      <div class="overflow-wrap">
+        <table class="cov">
+          <tr><th>Topic</th><th>Repo coverage</th><th>Status</th></tr>
+          <tr><td>Eval types: benchmarks, standard scores, custom app-specific tests</td><td><code>07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Tutorial_RAG_Agent_Tool_Evaluation/</code> (Modules 0–5)</td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>Eval-driven development / continuous eval as a process</td><td>Implicit across <code>Evaluation_and_Eval_Harnesses/</code>; no notebook frames it as an explicit dev process</td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>5-step eval workflow (objective → dataset → metrics → run/compare → continuous)</td><td>Closest: <code>RAG_Evaluation/4. End_to_End_RAG_System_Evaluation.ipynb</code>; process framing lives more in <code>15_FDE_Related_Preparation/.../ch12_validation_and_measurement.md</code></td><td class="status-cell status partial">Partial</td></tr>
+          <tr><td>Single-turn / workflow eval</td><td><code>RAG_Evaluation/2.Generator_Evaluation_Metrics.ipynb</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>Single-agent eval (tool selection, arg extraction)</td><td><code>Agent_Evaluation/DeepLearningAI_Arize/Lab 3.../L7.ipynb</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>Multi-agent eval (handoff accuracy, trajectory)</td><td><code>Lab 4 - Adding Trajectory Evaluations/L9.ipynb</code>; Tutorial Module 4</td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>Metric-based evals (exact match, ROUGE/BLEU, function-call accuracy)</td><td><code>RAG_Evaluation/1.Retriever_Evaluation_Metrics.ipynb</code>, <code>DeepEval_Metrics/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>Human evaluation (blinded comparison, consensus voting)</td><td>No hands-on notebook — theory only in <code>ch12_validation_and_measurement.md</code></td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>LLM-as-a-judge (pairwise, single-answer, reference-guided)</td><td><code>RAG_Evaluation/3.Custom_LLM_as_a_Judge _(G-Eval).ipynb</code>; <code>LLM_as_Judge/DeepEval_GEval/</code></td><td class="status-cell status strong">Strong</td></tr>
+          <tr><td>Edge-case eval design (multilingual, format variety, circular handoffs, jailbreak-in-eval)</td><td>Jailbreak coverage exists only as production guardrails, not as adversarial eval-set design practice</td><td class="status-cell status gap">Gap</td></tr>
+          <tr><td>Eval → reinforcement fine-tuning flywheel</td><td><code>01_Theory_and_Foundations/Fine_Tuning_and_RL/02_Techniques/</code> (RLHF/DPO/LoRA) — planned, empty</td><td class="status-cell status gap">Gap</td></tr>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept" id="gaps">
+    <div class="concept-header"><h2>3. Net Gaps Worth Closing</h2></div>
+    <div class="concept-body">
+      <p class="oneliner">One theme repeated five ways: this repo has almost no first-party OpenAI agent-primitive coverage. The orchestration/guardrail/handoff/tracing depth is real — it's just expressed in LangGraph/CrewAI/AutoGen vocabulary, not OpenAI's own.</p>
+      <ol class="gaplist">
+        <li><strong>Responses API &amp; Agents SDK</strong> — <code>06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/</code> is a placeholder folder with no notebooks.</li>
+        <li><strong>Computer Use</strong> — zero coverage; no analogue anywhere in the repo.</li>
+        <li><strong>Code Interpreter / Image Generation as hosted agent tools</strong> — model-level coverage exists (Phase 1), the tool-calling pattern doesn't.</li>
+        <li><strong>Human evaluation practice</strong> (blinded review, consensus voting) and <strong>adversarial/edge-case eval-set design</strong> — repo's eval strength is metrics and LLM-as-judge, not eval-set construction discipline.</li>
+        <li><strong>RLHF/DPO/LoRA</strong> and the eval → fine-tuning flywheel — explicitly planned, not built.</li>
+      </ol>
+      <div class="callout gapbox">
+        <span class="label">⚠ Why this pattern, not five isolated gaps</span>
+        Every OpenAI-specific gap traces back to the repo being framework-agnostic-in-practice (LangChain/LangGraph/CrewAI/AutoGen) rather than OpenAI-native. The architectural judgment underneath (routing, handoffs, guardrails, tracing) transfers directly — only the vocabulary and a few hosted-tool patterns (computer use, code interpreter, image gen as tool calls) are missing outright.
+      </div>
+    </div>
+  </article>
+
+  <section class="cheatsheet" id="cheat">
+    <h2>What Actually Moves the Needle for This Round</h2>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="c-name">This is discussion, not a build check</div><div class="c-fact">The fix isn't "build 5 more notebooks" — it's closing the vocabulary and framing gaps cheaply before the call.</div></div>
+      <div class="cheat-card"><div class="c-name">Vocabulary mapping (~15–30 min)</div><div class="c-fact">Skim Agents SDK / Responses API docs and re-tag what you know: supervisor pattern → <code>Handoff</code>, moderation chain → <code>Guardrail</code>, LangGraph checkpointing → <code>Session</code>.</div></div>
+      <div class="cheat-card"><div class="c-name">Rehearse the decomposition format out loud</div><div class="c-fact"><code>15_FDE_Related_Preparation/.../ch28_system_design_interview.md</code> already has the 45-minute script, two worked designs, and a levelling rubric for this exact interview shape.</div></div>
+      <div class="cheat-card"><div class="c-name">Last pass before the call</div><div class="c-fact">Re-skim the eval guide's edge-case list (multilingual, circular handoffs, ambiguous tool responses) — the one area where OpenAI's framing genuinely differs from how this repo teaches evaluation.</div></div>
+    </div>
+  </section>
+
+  <footer>17_OpenAI_Applied_Engineer_Preparation — Coverage &amp; Gap Analysis</footer>
+</main>
+
+</body>
+</html>
