@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic AI System Design &amp; Decomposition — Case-Study Question Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2128; --line:#30363d;
+  --fg:#e6edf3; --muted:#8b949e; --accent:#2dd4bf; --accent2:#7c9cf5;
+  --warn:#f0b429; --ok:#3fb950;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:Inter,system-ui,sans-serif;line-height:1.65;font-size:16px}
+.wrap{max-width:960px;margin:0 auto;padding:48px 22px 100px}
+h1{font-family:'Space Grotesk',sans-serif;font-size:2.1rem;line-height:1.2;
+  margin:0 0 1.2rem;letter-spacing:-.02em}
+h1+p{color:var(--muted)}
+h2{font-family:'Space Grotesk',sans-serif;font-size:1.55rem;margin:3.2rem 0 1rem;
+  padding-bottom:.5rem;border-bottom:2px solid var(--accent);letter-spacing:-.01em}
+h3{font-family:'Space Grotesk',sans-serif;font-size:1.18rem;margin:2.4rem 0 .7rem;color:var(--accent2)}
+h4{font-family:'Space Grotesk',sans-serif;font-size:1rem;margin:1.6rem 0 .5rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em}
+p,li{color:var(--fg)}
+strong{color:#fff;font-weight:600}
+em{color:var(--muted)}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(45,212,191,.35)}
+hr{border:0;border-top:1px solid var(--line);margin:3rem 0}
+ul,ol{padding-left:1.35rem}
+li{margin:.4rem 0}
+code{font-family:'JetBrains Mono',monospace;font-size:.87em;background:var(--panel2);
+  border:1px solid var(--line);border-radius:5px;padding:.1em .4em;color:#ffd9a0}
+blockquote{margin:1.4rem 0;padding:1rem 1.2rem;background:var(--panel);
+  border-left:4px solid var(--accent2);border-radius:0 8px 8px 0}
+blockquote p{margin:0;color:#dce3ea;font-size:1.02rem}
+table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.93rem;
+  background:var(--panel);border-radius:8px;overflow:hidden;display:block;overflow-x:auto}
+th{background:var(--panel2);text-align:left;padding:.7rem .85rem;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent);
+  border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:.7rem .85rem;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.mermaid{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:22px;margin:1.8rem 0;text-align:center;overflow-x:auto}
+@media(max-width:640px){.wrap{padding:28px 14px 70px}h1{font-size:1.6rem}h2{font-size:1.3rem}}
+</style></head><body><div class="wrap">
+<h1>Agentic AI System Design &amp; Decomposition — Case-Study Question Bank</h1>
+<p><strong>Source material:</strong> <code>07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/</code>, <code>07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/</code>, and <code>17_OpenAI_Applied_Engineer_Preparation/</code> from <a href="https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED">AI-ENGINEERING-DEMYSTIFIED</a>.</p>
+<p><strong>Target rounds:</strong> Agentic AI system design / problem decomposition at OpenAI (Applied AI Engineer), Anthropic (Applied AI / Forward Deployed), Google (Applied AI Engineer, Vertex Agents), Microsoft (Copilot Applied Science / Cloud Solution Architect - AI).</p>
+<p><strong>How to use this:</strong> These are <strong>practice cases, not leaked questions</strong>. Every scenario below is a situation an applied AI engineer or FDE actually walks into on a customer engagement. Each one is written to be answered out loud in 30-45 minutes, with the interviewer pushing back.</p>
+<hr />
+<h2>Section 0 — What This Round Actually Measures</h2>
+<p>The decomposition round is not a knowledge quiz. Interviewers at all four companies are scoring roughly the same five axes:</p>
+<table>
+<thead>
+<tr>
+<th>Axis</th>
+<th>What a weak answer looks like</th>
+<th>What a strong answer looks like</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ambiguity handling</strong></td>
+<td>Starts drawing a RAG diagram in minute two</td>
+<td>Spends 5-8 minutes establishing who the user is, what the current workflow costs, and what "good" means numerically</td>
+</tr>
+<tr>
+<td><strong>Decomposition</strong></td>
+<td>One monolithic "the agent does X"</td>
+<td>Named components with explicit contracts, each independently measurable and independently failable</td>
+</tr>
+<tr>
+<td><strong>Measurement discipline</strong></td>
+<td>"We'd use RAGAS"</td>
+<td>Separates retrieval / generation / tool-mechanics / trajectory / outcome, and says which are <em>blocking</em> vs <em>informational</em></td>
+</tr>
+<tr>
+<td><strong>Failure reasoning</strong></td>
+<td>Assumes the happy path</td>
+<td>Names the blast radius of each wrong decision, and designs the system so the model is allowed to be wrong</td>
+</tr>
+<tr>
+<td><strong>Judgment under constraint</strong></td>
+<td>Says yes to the stated goal</td>
+<td>Pushes back on the business ask with a reason and an alternative sequencing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The single highest-signal behaviour:</strong> treat evaluation as a <em>design input</em>, not a phase that happens after the build. If you cannot describe how you would measure a component, you have not finished designing it.</p>
+<hr />
+<h2>Section 1 — The Decomposition Spine</h2>
+<p>Use this as the backbone for every case in this document. It is deliberately eval-first.</p>
+<div class="mermaid">flowchart TD
+    A[&quot;1 · Clarify&lt;br/&gt;who is the user, what does the current&lt;br/&gt;workflow cost, what decision changes&quot;] --&gt; B
+    B[&quot;2 · Define &#x27;good&#x27; numerically&lt;br/&gt;thresholds BEFORE architecture&lt;br/&gt;which are blocking, which informational&quot;] --&gt; C
+    C[&quot;3 · Decompose into measurable components&lt;br/&gt;each with an input contract, an output&lt;br/&gt;contract, and its own failure mode&quot;] --&gt; D
+    D[&quot;4 · Pick the measurement per component&lt;br/&gt;deterministic → wrapped judge → custom judge&lt;br/&gt;→ trace-based judge, cheapest that works&quot;] --&gt; E
+    E[&quot;5 · Design the ground truth&lt;br/&gt;where do inputs come from, where do&lt;br/&gt;labels come from, who authors them&quot;] --&gt; F
+    F[&quot;6 · Design the gate&lt;br/&gt;absolute threshold AND no-regression&lt;br/&gt;vs current production version&quot;] --&gt; G
+    G[&quot;7 · Design the rollout&lt;br/&gt;assistive → gated-write → autonomous&lt;br/&gt;by risk tier, not by calendar&quot;] --&gt; H
+    H[&quot;8 · Design the feedback loop&lt;br/&gt;online monitoring discovers,&lt;br/&gt;offline gates prevent recurrence&quot;] --&gt; B
+
+    style B fill:#1e3a5f,stroke:#4285f4,color:#e8eaed
+    style F fill:#4a3a1a,stroke:#f9ab00,color:#e8eaed
+    style H fill:#1a3a2a,stroke:#137333,color:#e8eaed</div>
+<p><strong>Two properties to say out loud when you draw this:</strong></p>
+<ul>
+<li><strong>Online discovers; offline prevents recurrence.</strong> A finding that stops at the monitoring dashboard helps once. Carried into a gated offline test, it protects every release after.</li>
+<li><strong>The gate is the only thing that can deploy.</strong> Human-written prompts and machine-optimised prompts pass through the identical check. Nothing is exempt for being auto-generated — if anything it deserves more scrutiny, because it was optimised against a metric that sits <em>inside</em> the gate.</li>
+</ul>
+<hr />
+<h2>Section 2 — The Evaluation Taxonomy You Must Be Able to Draw</h2>
+<p>Almost every follow-up in this round is a disguised version of <em>"which layer are you actually measuring?"</em> Have this ready.</p>
+<div class="mermaid">flowchart LR
+    subgraph L1[&quot;Retrieval&quot;]
+        R1[&quot;deterministic&lt;br/&gt;precision@k, recall@k, MRR, NDCG&quot;]
+        R2[&quot;LLM-judged&lt;br/&gt;contextual relevancy / precision / recall&quot;]
+    end
+    subgraph L2[&quot;Generation&quot;]
+        G1[&quot;referenceless&lt;br/&gt;faithfulness, answer relevancy&quot;]
+        G2[&quot;reference-based&lt;br/&gt;correctness, expected_facts&quot;]
+    end
+    subgraph L3[&quot;Tool mechanics&quot;]
+        T1[&quot;tool selection accuracy&quot;]
+        T2[&quot;argument correctness&quot;]
+        T3[&quot;redundant / unexpected calls&quot;]
+    end
+    subgraph L4[&quot;Trajectory&quot;]
+        J1[&quot;step-wise accuracy&quot;]
+        J2[&quot;trajectory match&quot;]
+        J3[&quot;recovery / self-correction rate&quot;]
+        J4[&quot;cost &amp; efficiency proxy&quot;]
+    end
+    subgraph L5[&quot;Outcome&quot;]
+        O1[&quot;task success rate&quot;]
+        O2[&quot;END-STATE VERIFICATION&lt;br/&gt;read the system of record&quot;]
+    end
+
+    L1 --&gt; L2 --&gt; L3 --&gt; L4 --&gt; L5
+    style O2 fill:#1a3a2a,stroke:#137333,color:#e8eaed</div>
+<p><strong>Mechanics ≠ process ≠ outcome.</strong> Right tool with right arguments does not guarantee a sound sequence, and a sound sequence does not guarantee the user's goal was met. Evaluate all three, not just the cheapest to check.</p>
+<h2><strong>The strongest signal is always end-state verification.</strong> Wherever a real, checkable side effect exists — a database row, a booking, a sent message, a created ticket — reading the system of record beats every LLM-judged metric. It cannot be fooled by a confident sentence that misrepresents what actually happened.</h2>
+<h1>Tier A — Building an Evaluation Strategy From Zero</h1>
+<h2>Case 1 — "We have an agent in production and no idea if it's any good"</h2>
+<blockquote>
+<p>A telecom customer has had an LLM support agent live for four months. It answers from an internal knowledge base and can look up accounts, check network status, and open tickets. There are no evals. Leadership wants to know whether to expand it to three more business units. You have two weeks. What do you do?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you can bootstrap measurement on a system you didn't build, without stopping it.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Instrumentation first.</strong> An untraceable agent is unevaluable. Before any metric exists, confirm every request emits: a retriever span, a chat-model span per LLM call, and a tool span per tool call, with token counts and latency.</li>
+<li><strong>Span type is a contract, not a label.</strong> A groundedness scorer <em>hard-requires</em> a span typed RETRIEVER. A retrieval function traced without the correct span type doesn't degrade the eval, it breaks it.</li>
+<li><strong>Decide what "good" means before you measure.</strong> Name 5-7 dimensions (groundedness, correctness, tool-selection, safety, escalation-appropriateness, latency, cost) and give each a threshold and a blocking/informational flag.</li>
+<li><strong>Mine the dataset from real traffic, don't hand-write it.</strong> Hand-written sets are structurally blind: they contain what the author imagined, and the gap from reality is invisible from inside.</li>
+<li><strong>Mining gives inputs, not labels.</strong> Traces hand you the <em>distribution</em> — the expensive half to guess. Expectations still have to be authored by a human, and provenance of each label needs recording.</li>
+<li><strong>Stratify the sample.</strong> Random sampling reproduces the head you already understand. Novelty-targeted selection — embedding distance from what's already in the set, or low-confidence/high-latency/tool-error traces — finds the tail.</li>
+</ul>
+<p><strong>The trap:</strong> Using the agent's own historical outputs as expectations. This is <strong>circular ground truth</strong> — the agent passes by construction, and today's bugs get frozen as correct. If someone proposes it as a shortcut, name it.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"You have no labelled data and no SME time for three weeks. What do you ship in week one?"</em> → Referenceless scorers only (faithfulness, safety, format, deterministic input/output checks). They need no ground truth and can run on live traffic immediately.
+- <em>"Your eval says 91% pass. Is the agent good?"</em> → Not answerable yet. 91% of <em>what distribution</em>, against <em>whose</em> standard, with an unvalidated judge. Aggregate pass rate with no category slices and no judge calibration is a number, not evidence.</p>
+<p><strong>Strong-answer signal:</strong> You say out loud that an eval which doesn't end in a decision isn't an eval. The output of a two-week engagement should be <em>expand / don't expand / expand only for these two intents</em>, not a dashboard.</p>
+<hr />
+<h2>Case 2 — "Design the eval before you design the system"</h2>
+<blockquote>
+<p>A bank wants an agent that answers relationship managers' questions about client portfolios, pulling from a document store and a transactions warehouse. Nothing is built. The first thing your interviewer asks is: before you draw any architecture, tell me how you'd know it works.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Eval-driven development as a genuine method, not a slogan.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>The objective, in one sentence with a number.</strong> "Reduce RM portfolio-prep time from 40 minutes to under 10, with zero fabricated holdings figures" is an objective. "Improve productivity" is not.</li>
+<li><strong>A gate is a named metric + a threshold + a blocking flag.</strong> Write the gate table <em>first</em>. It becomes the architecture's requirements document.</li>
+<li><strong>Blocking vs informational is orthogonal to whether the dimension matters.</strong> Tone matters and probably shouldn't block a release. Fabricated figures matter and must.</li>
+<li><strong>Architectural decisions made <em>for</em> measurability.</strong> The big one: make retrieval a fixed pipeline step rather than a tool the model may skip. That guarantees every trace carries a retriever span, so groundedness is always scoreable. Keep account lookup as a model-chosen tool precisely <em>because</em> "should it have called that?" is itself something you want to score.</li>
+<li><strong>Scorer cost hierarchy.</strong> Deterministic (free, instant) → built-in judge wrapped as a scorer → custom judge with a rubric → trace-based judge reading the whole trajectory. Pick the cheapest layer that answers the question.</li>
+<li><strong>Determinism beats cost as the reason.</strong> Deterministic scorers are <em>reproducible</em>. When one moves, behaviour really changed. Judges move on their own.</li>
+</ul>
+<p><strong>The trap:</strong> Proposing one mega-judge that rates "overall quality 1-5." It compresses five independent failure modes into one number that can't diagnose anything and can't gate anything specific.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Which of your gates would you make blocking on day one, and which on day ninety?"</em>
+- <em>"A deterministic regex scorer and an LLM judge disagree on the same row. Who wins?"</em> → Neither. They're complements: regex catches the blatant case always and the paraphrase never; the judge is the reverse. Run both, and treat the disagreement set as your highest-value review queue.</p>
+<hr />
+<h2>Case 3 — "Prove it's safe enough to go from copilot to autonomous"</h2>
+<blockquote>
+<p>An insurer runs an AI claims assistant in assistive mode — it drafts, a human decides. The business wants automated adjudication for low-value claims within two quarters. What evidence would you require before allowing that, and how would you generate it?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Risk-tiered rollout, and whether you can say no with a plan attached.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Tier the actions by blast radius</strong>, not by claim value: read-only extraction → triage/routing → missing-info detection → recommendation → adjudication. Each tier earns autonomy independently.</li>
+<li><strong>Assistive mode is a free labelling factory.</strong> Every human override is a ground-truth label with perfect provenance. Instrument the override itself — what the agent proposed, what the human chose, and why — and you have your eval set for the autonomous phase.</li>
+<li><strong>Agreement with human adjudicators, not accuracy against a gold file.</strong> And measure agreement corrected for chance, because on a skewed distribution (most claims approved) raw agreement flatters badly.</li>
+<li><strong>Define the reversal path before the automation path.</strong> What does an incorrect auto-adjudication cost, how is it detected, how long until it's caught, and can it be reversed?</li>
+<li><strong>Shadow mode as the gate.</strong> Run autonomous decisions in parallel with humans for N weeks, gate promotion on both an absolute agreement threshold <em>and</em> no regression against the assistive baseline.</li>
+</ul>
+<p><strong>The trap:</strong> Answering the question as asked. "Prove it's safe" invites a single number. The right move is to reframe: safety isn't one threshold, it's a per-claim-type decision with different thresholds and different human-review rates.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"The business says the governance review will take six weeks and they want to skip it for the MVP. What do you do?"</em> → Offer a scope reduction, not a control reduction. MVP on read-only extraction needs no adjudication governance.
+- <em>"Your agreement number is 94%. The remaining 6% — how do you know they're not concentrated in one claim type?"</em> → You don't, unless you sliced. Aggregates hide the thing you need to see.</p>
+<hr />
+<h1>Tier B — Diagnosing a Failing System in Production</h1>
+<h2>Case 4 — "Quality dropped after we upgraded the model"</h2>
+<blockquote>
+<p>A customer upgraded to a newer model. Offline benchmarks improved. Users say quality got worse. Walk me through your investigation.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you can separate <em>model quality</em> from <em>application quality</em> — the most reliably asked question in this family.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Reproduce the complaint as a measurable claim.</strong> "Worse" is not a metric. Get 20 specific conversations users flagged.</li>
+<li><strong>Diff everything that changed, not just the model.</strong> Model version, prompt template, tool schemas, retrieval index, context-window truncation behaviour, temperature, structured-output mode.</li>
+<li><strong>Check prompt sensitivity.</strong> A prompt tuned against the old model's quirks can degrade on a new one that follows instructions more literally. Format compliance and tool-argument shape are the usual casualties.</li>
+<li><strong>Check the metric that nobody was watching.</strong> The classic: the metric someone asked about improving went up, and three others collapsed. Conciseness improves; groundedness and escalation-appropriateness fall.</li>
+<li><strong>Check whether the benchmark is the thing that's wrong.</strong> A benchmark that improves while users complain is evidence that the benchmark's distribution doesn't match production traffic.</li>
+</ul>
+<p><strong>The trap:</strong> Concluding "the new model is worse." It usually isn't. The application was overfit to the old one.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"The offline benchmark improved but users disagree. Give me three explanations."</em> → (1) benchmark distribution ≠ traffic distribution; (2) the benchmark measures dimensions users don't care about and misses ones they do; (3) the benchmark's judge is unaligned and was inflating the new model.
+- <em>"How do you prevent this next time?"</em> → A regression gate that is two-condition: absolute thresholds <em>and</em> no regression versus the current production version, across the full scorer set — not just the metric being optimised.</p>
+<hr />
+<h2>Case 5 — "The agent confidently told a customer something that doesn't exist"</h2>
+<blockquote>
+<p>An agent told a customer their account plan and balance. The account number didn't exist. The tool returned <code>{"found": false}</code>. No error was raised, nothing crashed, nothing alerted. How did this happen and how do you stop it?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Recognising <strong>polite tool failure</strong> — the single most under-tested failure mode in production agents.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>The mechanism.</strong> Tools that return a soft failure object rather than raising give the model something that looks like data. The model skates past it and fills the gap with fluent, plausible, wrong content.</li>
+<li><strong>Why standard scorers miss it.</strong> Groundedness checks the answer against <em>retrieved documents</em>, not against <em>tool outputs</em>. Task-success checks the final string. Neither reads the tool span.</li>
+<li><strong>The fix is a deterministic scorer, not a better prompt.</strong> Read the TOOL span output; if it indicates failure, assert that the response does not state the facts that tool was supposed to supply. Deterministic because you want it reproducible and free.</li>
+<li><strong>Second-order fix:</strong> make soft failures loud at the tool layer where you control it, and make "I couldn't retrieve that" an explicitly rewarded behaviour in the rubric.</li>
+<li><strong>Absence is behaviour.</strong> A question that correctly produces <em>no</em> tool call is a correct outcome worth scoring, not an absence of signal.</li>
+</ul>
+<p><strong>The trap:</strong> Proposing to fix this with prompt engineering alone. Instructions reduce the rate; they don't make it detectable.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Where else does this pattern appear?"</em> → Empty retrieval results, a permission-filtered search returning zero rows, a downstream API returning 200 with an empty payload, a rate-limited call returning a cached stale value.
+- <em>"How would this have surfaced in monitoring?"</em> → It wouldn't have, and that's the point. Silence and success look identical.</p>
+<hr />
+<h2>Case 6 — "Responses got slow, and only during peak"</h2>
+<blockquote>
+<p>An enterprise reports p95 latency tripled. It only happens during business hours. Investigate.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you can decompose latency across an agentic trace rather than treating the system as one box.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Latency is per-span, not per-request.</strong> Break it down: input assembly → retrieval (embed + search + rerank) → first LLM call → tool round-trips → subsequent LLM calls → output streaming. An agent loop that takes two extra turns is a <em>behavioural</em> regression showing up as a latency one.</li>
+<li><strong>Traces as queryable tables.</strong> Once production traces land in a warehouse, "it got slower" becomes "retrieval p95 doubled while chat-model p95 was flat." That's the whole value of the trace store.</li>
+<li><strong>Peak-only narrows it fast.</strong> Candidates: provider rate limiting and retry backoff, vector index cache eviction under concurrency, connection-pool exhaustion, a reranker that batches poorly, a noisy-neighbour tenant.</li>
+<li><strong>Check whether step count changed, not just step duration.</strong> More tool calls per request during peak can mean a different traffic mix, not a slower system.</li>
+<li><strong>Only six aggregations are usually available</strong> — min, max, mean, median, variance, p90. If you need p99, you need to compute it from the raw trace table yourself.</li>
+</ul>
+<p><strong>Killer follow-up:</strong> <em>"Latency is fine at p50 and terrible at p90. Which do you optimise and why?"</em> → Depends entirely on whether the tail correlates with a user segment or an intent class. Slice before you optimise.</p>
+<hr />
+<h1>Tier C — Trajectory and Multi-Agent Evaluation</h1>
+<h2>Case 7 — "The agent gets the right answer but takes six steps to do it"</h2>
+<blockquote>
+<p>A research agent reliably produces correct final answers. It also makes redundant tool calls, retries failed calls blindly, and costs 4x what was budgeted. Task success is 96%. Design the evaluation that would have caught this.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Understanding that <strong>outcome metrics hide process failures</strong> — and that you need both.</p>
+<p><strong>Decompose into the nine trajectory-level metrics:</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Metric</th>
+<th>What it catches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Tool selection accuracy</strong></td>
+<td>Did the called set cover the gold set? Loosest of the nine — passes with wrong order and extra calls</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Tool call correctness (arguments)</strong></td>
+<td>Right tool, malformed arguments</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Redundant / unnecessary calls</strong></td>
+<td>A <code>(tool, args)</code> pair that already <em>succeeded</em> earlier in the same trace</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Step-wise accuracy</strong></td>
+<td>Fraction of all steps that made real forward progress</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Task success rate</strong></td>
+<td>Ground-truth outcome for the run</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Trajectory match (fuzzy/set-based)</strong></td>
+<td>Successful tool set vs gold set, ignoring order and retries</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>End-state verification</strong></td>
+<td>Read the mutated system of record directly</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Recovery / self-correction rate</strong></td>
+<td>After an error, did a later step call the same tool and succeed?</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Cost / efficiency proxy</strong></td>
+<td>Redundant calls + errors treated as waste</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The trap in the standard pattern:</strong> The commonly published tool-selection scorer computes both <em>missing</em> and <em>unexpected</em> tools, then bases the verdict only on the missing ones. An agent that calls <strong>every tool on every request scores 100%</strong>. Fail both directions — an unexpected account lookup is a privacy problem, not an inefficiency.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Is a high recovery rate good or bad?"</em> → Genuinely good on its own. An error caught and corrected mid-run is a very different system from one that fails silently or retries blindly with the same bad input. But pair it with step-wise accuracy, or you're rewarding a system that generates errors so it can recover from them.
+- <em>"A capable model usually picks a minimal trajectory anyway. Why build the harness?"</em> → Because "usually" is the problem. The harness exists to catch the ambiguous-query and edge-case runs where it doesn't, and those are exactly the runs nobody reports.
+- <em>"Exact sequence match or fuzzy set match?"</em> → Fuzzy by default. Exact-sequence fails on a mid-trace typo or a harmless extra lookup even when the agent did the right things. Reserve exact match for regulated workflows where order is the requirement.</p>
+<hr />
+<h2>Case 8 — "Multi-agent system, and we can't tell which agent is wrong"</h2>
+<blockquote>
+<p>A deep-agent orchestrator routes to specialised subagents — a research agent, a code writer, a code reviewer, a memory manager, and four domain analytics agents over separate data domains. End-to-end quality is inconsistent. Design the evaluation.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Attribution in a system where the failure and the symptom are in different components.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Trace nesting enables attribution.</strong> Session → orchestrator turn → subagent invocation → spans. Without nesting you can say quality dropped; with it you can say <em>which subagent</em>, on <em>which turn</em>.</li>
+<li><strong>Evaluate at three levels.</strong> Routing/handoff accuracy (did the orchestrator pick the right subagent?), per-subagent specialisation quality (is the research agent good at research?), and end-to-end outcome.</li>
+<li><strong>Handoff accuracy is its own metric</strong> and usually the first thing to break when a new subagent is added — the routing rubric was written for N agents and is now running with N+1.</li>
+<li><strong>Scope of validity.</strong> A scorer that was correct for a one-tool agent becomes misleading when the agent gains a second tool. The same is true of a router rubric. Every measurement has a scope of validity, and it silently stops being true when the system changes underneath it.</li>
+<li><strong>Cross-domain queries are the hard case.</strong> When a question requires two analytics subagents plus the research agent, define whether partial coverage counts as success, and score the <em>composition</em> separately from each part.</li>
+<li><strong>Memory as an evaluable component.</strong> Cross-thread persistence needs its own tests: does a saved fact recall correctly in a new thread, does a forget instruction actually remove it, does memory leak between users.</li>
+</ul>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Every subagent scores above 0.9 and the end-to-end system scores 0.6. Explain."</em> → Composition. Independent components at rate p compose to p^n; plus routing errors and context loss at handoff boundaries, which no per-agent metric sees.
+- <em>"Circular handoffs — agent A routes to B, B routes back to A. How do you detect and evaluate this?"</em> → A deterministic trace scorer for cycles, with a step-budget gate. It's cheap, reproducible, and this is a class of failure where an LLM judge adds nothing.</p>
+<hr />
+<h2>Case 9 — "The conversation fails even though every turn passes"</h2>
+<blockquote>
+<p>A multi-turn assistant reports 95% turn-level pass rate. Users say it's frustrating. Reconcile these.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Session-level vs turn-level reasoning, and basic composition arithmetic.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>The arithmetic.</strong> Independent turns at rate p give p^n for the conversation. At 95% per turn and 5 turns, that's a <strong>77% conversation success rate</strong> — and the overstatement grows with length, so the metric looks best exactly where the product is worst.</li>
+<li><strong>Failures that have no single-turn representation at all:</strong></li>
+<li><strong>Context retention</strong> — re-asking for something the user already supplied. The most visible multi-turn failure.</li>
+<li><strong>Consent, which lives between turns.</strong> "Acted without asking" cannot be expressed as a property of one turn.</li>
+<li><strong>Three approval outcomes, not two:</strong> compliant, violation, and <em>stalled</em> (agreed but nothing happened). They need different fixes.</li>
+<li><strong>Gate by prompt, verify by evaluation.</strong> Most agent write-actions are gated by instructions, not by APIs. The tool will happily write every time it's called. So obedience is something evaluation has to <em>verify</em>, not something the code guarantees.</li>
+<li><strong>First-failing-turn distribution.</strong> Failures on turn 1 mean basic competence problems. Failures on turn 4 mean context handling. Same aggregate, completely different fix.</li>
+<li><strong>Gate scope.</strong> A conversation gate is unmeasurable on a single-turn run. It must report <strong>"not measured"</strong>, never 0 — an unmeasured gate and a failed gate must never look alike.</li>
+</ul>
+<p><strong>The harness trap:</strong> Applying the user identity only to turn 1. The agent loses track of who it's talking to from turn 2 onward, and every conversation fails context-retention for a plumbing reason. You'd be measuring your harness, not the agent.</p>
+<p><strong>The off-by-one trap:</strong> Treating a write on the <em>same</em> turn consent arrived as premature. Consent arrives in the user's message at the start of a turn; the write happens in the agent's response within that turn. Same-turn is correct — and getting this wrong fails the agent for behaving correctly.</p>
+<h2><strong>Killer follow-up:</strong> <em>"Tool selection vs tool use — same thing?"</em> → With one tool they collapse into one question. With two they separate, and wrong-tool is worse than no-tool: it returns data that is real, irrelevant, and confidently presented.</h2>
+<h1>Tier D — Judges and Human Calibration</h1>
+<h2>Case 10 — "Who validates the validator?"</h2>
+<blockquote>
+<p>Your eval suite has been running for three months. Every quality number in it came from an LLM judge that nobody ever checked against a human. A VP asks whether the numbers mean anything. What's your answer, and what do you do next?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you treat LLM-as-judge as a tool with known failure modes or as an oracle.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>The honest answer first:</strong> the numbers are internally consistent and externally unvalidated. They're useful for detecting <em>change</em>, not for asserting <em>quality</em>.</li>
+<li><strong>Collect human labels on the same traces.</strong> Small (100-200 rows), from actual domain experts, on the same rating schema the judge uses.</li>
+<li><strong>Measure agreement, not average score.</strong> Average measures generosity. A judge that rates everything 5/5 scores beautifully and is useless.</li>
+<li><strong>Raw agreement flatters.</strong> On a skewed rating distribution two raters agree often by luck. A case with 85% raw agreement had a Cohen's kappa of <strong>0.20</strong>.</li>
+<li><strong>Use the weighted form on ordinal scales.</strong> Plain kappa treats 4-vs-5 and 1-vs-5 as the same error. Two judges with <em>identical</em> exact agreement and <em>identical</em> plain kappa can score <strong>+0.71 and −0.82</strong> under quadratic weighted kappa.</li>
+<li><strong>A falling score after alignment is the success condition.</strong> The agent didn't change. The measurement stopped inflating. Say this before the VP says "you made it worse."</li>
+<li><strong>The real output of alignment is the distilled guidelines</strong> — your experts' tacit standard, finally written down. That artifact outlives the judge model.</li>
+</ul>
+<p><strong>The silent failure:</strong> If the human label schema name doesn't match the judge name, alignment completes without error and learns nothing. The aligned judge is byte-identical to the base. Define the name once as a variable and use it in both places.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Your experts disagree with each other. Now what?"</em> → Measure inter-annotator agreement first. If humans can't agree, the rubric is underspecified and no judge can be aligned to it. Fix the rubric, don't fix the judge.
+- <em>"Can you use a judge to grade a judge?"</em> → For triage and disagreement-surfacing, yes. As the ground truth, no — you've just moved the unvalidated layer one level up.</p>
+<hr />
+<h2>Case 11 — "Automated prompt optimisation made the score go up. Ship it?"</h2>
+<blockquote>
+<p>An automated optimiser ran against your judge-based objective and produced a candidate prompt scoring 12 points higher. The team wants to deploy it Friday.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Overfitting reasoning, and whether you understand what an optimiser is actually maximising.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>The judge is the objective.</strong> The optimiser moves toward whatever the judge rewards. An unaligned judge doesn't just make optimisation useless — it makes it <strong>actively harmful</strong>, because you're now systematically steering the system toward a miscalibrated standard.</li>
+<li><strong>A higher optimisation score is not permission to ship.</strong> It is by definition the metric being maximised: the most overfit number available in the building.</li>
+<li><strong>Machine-written prompts pass the identical gate as human-written ones</strong>, evaluated against a scorer set <em>strictly larger</em> than the optimisation objective. That superset is what catches the overfitting.</li>
+<li><strong>The optimisation dataset is not the eval dataset.</strong> Optimisation needs expectations on <em>every</em> row describing required behaviour; the eval set deliberately holds rows the optimiser never saw.</li>
+<li><strong>Registering is not deploying.</strong> Creating a prompt version and pointing production traffic at it are separate operations, and evaluation belongs in the gap between them.</li>
+</ul>
+<p><strong>Killer follow-ups:</strong>
+- <em>"What would convince you to ship it?"</em> → It clears absolute thresholds on the full scorer set, shows no regression on any metric versus the current production version, and holds on a held-out slice the optimiser never touched.
+- <em>"The optimiser ran its whole budget and the prompt barely changed. What's wrong?"</em> → Almost always the prediction function closed over a fixed prompt string instead of re-loading from the registry each call — so every candidate ran against the same old text.</p>
+<hr />
+<hr />
+<h2>Case 12 — "Stand up the human evaluation programme"</h2>
+<blockquote>
+<p>Leadership has agreed to fund domain-expert review time for an agent, but nobody has done this before. They want to know: how many reviewers, reviewing what, how often, and how you'd know the reviews themselves are any good. Design the programme.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you treat human evaluation as an engineered system with its own failure modes, or as "ask some experts what they think." This is the layer everything else in the eval stack rests on — and the one candidates most often wave at.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Human eval is a dataset generator, not a scorer.</strong> It doesn't run in CI and it doesn't gate releases directly. Its outputs are (a) labels that calibrate judges, (b) the distilled rubric your experts couldn't previously articulate, and (c) a periodic ground-truth check on whether the automated stack has drifted. Every one of those is expensive and none of them is continuous.</li>
+<li><strong>Pick the protocol from the question, not from convenience.</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Protocol</th>
+<th>Use when</th>
+<th>Cost per judgement</th>
+<th>Main hazard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Blinded pairwise (A vs B)</strong></td>
+<td>Comparing two candidates — model, prompt, retrieval config</td>
+<td>Low; humans are fast at "which is better"</td>
+<td>Position bias, length bias, ties</td>
+</tr>
+<tr>
+<td><strong>Single-answer absolute rating</strong></td>
+<td>Building a labelled set to align a judge, or tracking quality over time</td>
+<td>Medium</td>
+<td>Scale drift, anchoring, generosity</td>
+</tr>
+<tr>
+<td><strong>Reference-guided rating</strong></td>
+<td>Domain where a gold answer exists (policy lookup, calculation)</td>
+<td>Medium</td>
+<td>Penalises correct answers phrased differently</td>
+</tr>
+<tr>
+<td><strong>Critique / error annotation</strong></td>
+<td>You don't yet know what the failure modes <em>are</em></td>
+<td>High</td>
+<td>Unstructured output that doesn't aggregate</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Blinding is load-bearing, and it has to be real.</strong> Strip model names, strip anything that identifies which arm a response came from, and randomise A/B order per row. Then <em>measure</em> whether order mattered: if position A wins meaningfully more often across a balanced set, your pairwise numbers include a bias term, not just a quality signal.</li>
+<li><strong>Length is the confound nobody controls for.</strong> Longer answers win pairwise comparisons at a rate unrelated to quality. Report win rate alongside a length distribution per arm, or you'll ship verbosity and call it improvement.</li>
+<li><strong>Validate the raters before you trust the ratings.</strong> Inter-annotator agreement is the first number to compute, not the last. If humans can't agree with each other, the rubric is underspecified and <strong>no judge can be aligned to it</strong> — you fix the rubric, not the judge.</li>
+<li>Two raters, ordinal scale → <strong>quadratic weighted kappa</strong>.</li>
+<li>Three or more raters → <strong>Fleiss' kappa</strong> or <strong>Krippendorff's alpha</strong>.</li>
+<li>Report raw agreement too, but never alone: on a skewed distribution two raters agree often by luck.</li>
+<li><strong>Consensus rules must be decided in advance.</strong> Majority vote is the cheap default and it hides systematic disagreement — a persistent 2-1 split on one claim category is a rubric defect wearing a resolved label. Prefer: majority for the bulk, mandatory adjudication by a senior reviewer wherever agreement falls below threshold, and a standing log of adjudicated cases that feeds back into the rubric.</li>
+<li><strong>Record provenance on every label.</strong> Who authored it, human or script, which rubric version, which date. This becomes decisive later, when those labels train a judge and you need to know which ones predate a rubric change.</li>
+<li><strong>Design against annotator drift.</strong> Standards move over weeks. Seed 5-10% of every batch with previously-labelled gold rows and track each rater's agreement with their own past self. A rater whose self-agreement is falling needs recalibration, not replacement.</li>
+<li><strong>Separate the people who wrote the rubric from the people applying it</strong>, at least for the validation batch. Authors score their own rubric far more consistently than anyone else can, which makes agreement look excellent and generalisation look fine right up until it isn't.</li>
+<li><strong>Size the programme from what it has to decide.</strong> A pairwise win rate of 55% is not distinguishable from a tie on 100 comparisons. Work backwards from the smallest difference you need to detect — same reasoning as production sample rates, applied to people instead of traffic.</li>
+</ul>
+<p><strong>The trap:</strong> Treating human labels as ground truth rather than as a sample from one population of annotators, taken under one rubric version, at one point in time. They're the best signal available and they are still an estimate with error bars. State that before someone else does.</p>
+<p><strong>The second trap:</strong> Running human eval continuously. It's the most expensive measurement you have and its throughput caps your release cadence if you make it blocking. Ration it to the three moments that justify it — judge alignment, major model or architecture changes, and a scheduled drift check.</p>
+<p><strong>Killer follow-ups:</strong></p>
+<ul>
+<li><em>"Your experts disagree 30% of the time. Is the programme broken?"</em> → Not necessarily — first find out <em>where</em>. Disagreement concentrated in one claim category is a rubric gap and it's fixable. Disagreement spread evenly means the task is genuinely subjective, and the honest move is to narrow what you're asking them to rate rather than pretend the number will improve.</li>
+<li><em>"Can you replace human eval entirely once the judge is aligned?"</em> → No. The judge is aligned to a snapshot of expert standards under one rubric on one traffic distribution. All three move. A periodic human batch is what tells you the judge has drifted, and without it you have a confident number and no way to know it stopped meaning anything.</li>
+<li><em>"You have budget for 200 expert-hours a year. Spend it."</em> → Roughly: one large alignment batch up front (the highest-leverage spend, because it converts into an automated judge that runs unlimited times), quarterly drift batches, and reserve for adjudication and for whichever failure mode online monitoring surfaces that nobody anticipated.</li>
+<li><em>"Pairwise says the new prompt wins 58-42. Ship it?"</em> → Not yet. Check the confidence interval at that sample size, check position balance, check the length distributions, and check whether the 42% losses cluster in one intent category. A win rate is an aggregate, and aggregates hide the thing you need to see.</li>
+</ul>
+<p><strong>Strong-answer signal:</strong> You name inter-annotator agreement as the <em>first</em> thing you'd measure, and you connect the programme forward — its output isn't a quality verdict, it's the calibrated judge and the written-down rubric that let you stop paying for human review on every release.</p>
+<h1>Tier E — Release Gating and CI</h1>
+<h2>Case 13 — "Design the CI gate for an agent"</h2>
+<blockquote>
+<p>A platform team wants every prompt change, tool-schema change, and model upgrade to pass an automated gate before reaching production. Design it.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you can turn measurement into enforcement — and whether you know the difference.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Scorer ≠ gate.</strong> Adding a scorer adds measurement, not enforcement. Scorers are informational by default. An ungated scorer blocks nothing.</li>
+<li><strong>Two-condition promotion.</strong> Absolute thresholds <em>and</em> no regression versus the current production version. Either alone is insufficient.</li>
+<li><strong>Threshold-only gates permit erosion.</strong> 0.98 → 0.91 still clears a 0.90 bar. Repeat that three times and you are sitting on the floor, having passed every gate.</li>
+<li><strong>Per-metric-type tolerance.</strong> Zero tolerance for deterministic metrics — there is no noise to absorb, so any movement is real. A small budget for judged ones, because they move on their own.</li>
+<li><strong>A regression report is a diagnosis, not a verdict.</strong> It should name the prompt clause to fix, not just say FAIL.</li>
+<li><strong>Alias as indirection.</strong> Production points at an alias, not a version. Rollback is moving a pointer, not a revert-and-redeploy.</li>
+<li><strong>Resolve gates against the keys the run actually produced.</strong> A mistyped metric name looks up nothing, defaults to 0, and reports as a catastrophically broken agent. Unmatched gates must report <strong>"not measured"</strong>, separately from failures.</li>
+<li><strong>Fixed vs current datasets, and you need both.</strong> The curated regression set must <em>not</em> drift, or before/after comparisons are invalid. The mined set must stay fresh, or it stops discovering anything.</li>
+</ul>
+<p><strong>The recurring failure to name:</strong> a scorer added without a corresponding gate entry. This happens repeatedly even to teams who know about it — an agent opening a support ticket nobody asked for was measured and released, because the scorer existed and the gate didn't.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Judged metrics are non-deterministic. How do you gate on them without flaky CI?"</em> → Fixed judge model and version, temperature 0 where available, a tolerance band sized from a measured run-to-run variance study, and a rerun-on-boundary policy. Never gate on a single row.
+- <em>"How long should the gate take?"</em> → Whatever keeps it in the merge path. A 40-minute gate gets bypassed. Tier it: deterministic scorers on every commit, full judged suite on merge to main.</p>
+<hr />
+<h2>Case 14 — "Score went up on the metric we asked about"</h2>
+<blockquote>
+<p>Someone asked for more concise answers. The next release: conciseness up, ship approved. Two weeks later, complaints. What happened?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> The most common real-world eval failure in one sentence.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li>The metric someone asked about improving rose. Three that nobody was watching collapsed — typically groundedness (shorter answers drop citations), escalation-appropriateness (less room to hedge), and completeness.</li>
+<li><strong>This is exactly what the no-regression condition exists for.</strong> A gate that checks only the target metric is a gate that optimises one dimension into the ground.</li>
+<li><strong>Raw numeric metrics carry no direction.</strong> Word count falling reads as a regression to a naive check. Only a verdict-returning scorer encodes intent — wrap numeric metrics before gating on them.</li>
+<li><strong>Report distributions, not booleans.</strong> The p90 is where rambling answers hide; the p10 is where truncated ones do.</li>
+</ul>
+<p><strong>Killer follow-up:</strong> <em>"How would you have caught this before release, not after?"</em> → Full-scorer-set evaluation on every candidate, with per-metric regression tolerance, plus category slices. Aggregates hide the thing you need to see — and they hide it most reliably when one number is moving in the direction someone wanted.</p>
+<hr />
+<h1>Tier F — Online Monitoring and Statistics</h1>
+<h2>Case 15 — "Set up production monitoring for the agent"</h2>
+<blockquote>
+<p>The agent serves roughly 2,000 conversations a day. Design online evaluation and alerting.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Knowing which scorers can even run in production, and whether you can reason about sample statistics.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Offline catches what your dataset contains. Online exists to find what it didn't.</strong> Both, always.</li>
+<li><strong>Production has no ground truth.</strong> Any scorer that reads expectations is structurally offline-only, however good it is. The test is mechanical: does it read expectations? If yes, it cannot go online.</li>
+<li><strong>Reference-free scorers transfer:</strong> safety, relevance, groundedness, guideline adherence, and all deterministic input/output checks.</li>
+<li><strong>Sample judges; never sample deterministic scorers.</strong> The first cost money per call. The second are free — run them on 100% of traffic.</li>
+<li><strong>Choose the sample rate from the delta you must detect</strong>, not from a round number that felt affordable. At 2,000 traces/day, a 5% sample resolves to roughly <strong>±4.5 points</strong>. A 2-point drop is indistinguishable from noise; detecting it reliably needs around 30% sampling.</li>
+<li><strong>Alerts set below the sampling resolution fire on noise</strong> and get muted within a month — at which point you have monitoring that looks healthy and alerts nobody.</li>
+<li><strong>Traces as warehouse tables.</strong> Once production behaviour is SQL-queryable, incident response changes character: "it got worse" becomes "retrieval p95 doubled for tenant 14 starting Tuesday."</li>
+<li><strong>Carry every finding into a gated offline test.</strong> A finding that stops at the dashboard helps once.</li>
+</ul>
+<p><strong>The silent failure:</strong> A registered-but-never-started monitor. Registration creates the scorer; starting it begins evaluating. A registered scorer that was never started evaluates nothing and looks identical to a working one on every list view. Verify by checking each scorer has a live sampling config.</p>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Your best offline scorer is tool-call correctness. Can it run online?"</em> → No. It compares against expected tool calls, which production traffic doesn't have. It will report skip on 100% of traces while appearing perfectly healthy.
+- <em>"What's your first alert?"</em> → Not a quality metric. A structural one — trace volume, error-span rate, and scorer-coverage rate — because those catch the case where monitoring itself has silently stopped.</p>
+<hr />
+<h1>Tier G — Adversarial and Edge-Case Evaluation</h1>
+<h2>Case 16 — "We tested 15 jailbreak strings and passed 12"</h2>
+<blockquote>
+<p>A security team hands you their adversarial test results: 80% pass rate on a list of prompt-injection strings. They consider the system cleared. Do you agree?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Eval-set <em>design</em> discipline, which is a different skill from metric selection.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Design by attack surface, not by example.</strong> A flat list of strings tells you nothing when it passes — you learn that those 15 strings failed, not that the surface is defended.</li>
+<li><strong>Structure as classes × variants.</strong> Name the classes: direct instruction override, role-play framing, <strong>channel confusion</strong> (content formatted to look like system text or tool output), injection via retrieved documents, injection via tool responses, encoding/obfuscation, multi-turn gradual escalation. Multiple phrasings per class stop one lucky string standing in for a whole surface.</li>
+<li><strong>Report per class, never in aggregate.</strong> A real case: <strong>80% overall with one entire class at 0%.</strong> The aggregate was the thing hiding it.</li>
+<li><strong>Retrieved content is untrusted input.</strong> In a RAG system the document corpus <em>is</em> an injection channel, and it's the one most teams never test.</li>
+<li><strong>Edge-case rows assert what must not happen</strong>, not one gold answer. Behavioural boundaries, not gold text.</li>
+<li><strong>Over-constrained expectations fail good agents.</strong> For genuinely ambiguous input several behaviours are acceptable; asserting one specific response penalises correct handling.</li>
+<li><strong>Documented gap ≠ covered gap.</strong> Writing a gap down buys honesty, not coverage — and the two are easy to confuse for a long time. Say "not measured," with a reason, rather than leaving silence: silence is indistinguishable from having missed it.</li>
+</ul>
+<p><strong>Killer follow-ups:</strong>
+- <em>"Design the adversarial eval set for a banking agent with a write-capable tool."</em> → Classes must include: privilege escalation through conversational framing, injection via the transaction-description field, tool-argument manipulation, consent-forgery ("as I said earlier, go ahead"), and cross-customer data requests.
+- <em>"How do you avoid over-refusal?"</em> → Test both directions. A refusal-rate scorer on <em>benign</em> inputs is as necessary as a jailbreak scorer on hostile ones. A system that refuses everything scores perfectly on safety.</p>
+<hr />
+<h2>Case 17 — "The agent must never do X"</h2>
+<blockquote>
+<p>A regulated customer gives you a hard constraint: the agent must never disclose another customer's data, never commit the firm to a price, and never take a write action without explicit confirmation. Design the enforcement and the evaluation.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Whether you distinguish <em>enforcement</em> from <em>evaluation</em>, and put each where it belongs.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Enforce in code where you can, evaluate where you can't.</strong> Cross-customer data access is enforceable at the retrieval layer — filter by identity before the model ever sees a row. Never make that a prompt instruction.</li>
+<li><strong>Everything gated by instructions rather than APIs must be verified by evaluation.</strong> Most agent write-actions fall here. The tool writes every time it's called; obedience is a behaviour, and behaviours get tested.</li>
+<li><strong>Three layers, named:</strong> hard constraints in code (ACL-filtered retrieval, typed tool signatures rejecting malformed arguments, allowlisted write scopes), soft constraints in the prompt, and verification in the eval harness for both.</li>
+<li><strong>Permission freshness is its own problem.</strong> A user with access today and revoked access tomorrow must not retrieve from a stale index or a cached embedding. Decide whether you filter at query time or re-index, and be explicit about the staleness window.</li>
+<li><strong>Blast-radius design.</strong> Assume the model will occasionally decide wrongly. Limit what a wrong decision can reach: read-only by default, write scopes narrow and reversible, dollar/row-count caps, idempotency keys, and an audit record of what was proposed versus what executed.</li>
+<li><strong>End-state verification closes the loop.</strong> Don't trust the agent's claim that it asked for confirmation — read the actual write log and reconcile it against the consent turns.</li>
+</ul>
+<p><strong>Killer follow-up:</strong> <em>"The agent wants to issue a refund. Should it be allowed to do so automatically?"</em> → Under a value threshold, with a reversal window, an idempotency key, a daily cap, and 100% end-state verification — yes. Above it, propose-and-confirm. The question is never "autonomous or not," it's "autonomous within what bounded, reversible envelope."</p>
+<hr />
+<h1>Tier H — Harness and Platform Engineering</h1>
+<h2>Case 18 — "Build the eval platform, not the eval"</h2>
+<blockquote>
+<p>An enterprise wants a reusable evaluation capability that eight product teams can use for their own agents. Design it.</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Platform thinking — the FDE-to-product-engineering transition.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>What's shared vs what's per-team.</strong> Shared: tracing schema and span-type contracts, scorer library, dataset storage and versioning, gate execution, the trace warehouse, judge-model access and cost accounting. Per-team: the rubrics, the thresholds, the domain expectations.</li>
+<li><strong>The span-type contract is the platform's actual API.</strong> If teams instrument inconsistently, no shared scorer works. Ship instrumentation as a library, not a document.</li>
+<li><strong>Scorer registry with declared prerequisites.</strong> Every scorer declares what it needs (expected facts, a retriever span, a tool span) and whether it's reference-free. That declaration is what makes online-eligibility checkable automatically instead of discovered in production.</li>
+<li><strong>Guard scorers on mixed datasets.</strong> Built-in correctness and guideline scorers <em>raise</em> on rows that aren't theirs — they have no "not applicable" verdict. On a dataset that deliberately mixes factual and behavioural rows, each scorer errors on every row belonging to the other kind. Wrap them to return null so an inapplicable row is skipped, not errored. Return null rather than a "skip" verdict: a pass rate counts "skip" as a non-pass and quietly deflates.</li>
+<li><strong>An errored row is not a scored row.</strong> The harness catches the exception, records an error assessment, and the run completes — so the symptom is log noise plus a metric that quietly vanished from the results, not a crash. Easy to scroll past for weeks.</li>
+<li><strong>The output shape is whatever the prediction function returned.</strong> There's no normalisation step. Normalise in one helper every scorer routes through, or half your scorers break on the first team that returns a string instead of a dict.</li>
+<li><strong>Infrastructure prerequisites are real design constraints.</strong> Prompt registries and evaluation datasets typically require a SQL-backed tracking store, not a file backend. Decide that on day one; two features depend on it.</li>
+</ul>
+<p><strong>Killer follow-up:</strong> <em>"Team 6 says your scorers don't fit their agent. How much customisation do you allow?"</em> → Rubrics and thresholds: fully theirs. Span contracts and gate semantics: not negotiable. The moment gate semantics fork, you no longer have a platform, you have eight harnesses with a shared logo.</p>
+<hr />
+<h2>Case 19 — "Cost is 4x the estimate"</h2>
+<blockquote>
+<p>An agentic system in production is costing four times what was modelled. The customer wants it cheaper without losing quality. Where do you look?</p>
+</blockquote>
+<p><strong>What's being tested:</strong> Cost as a first-class design dimension, including eval cost — which most candidates forget entirely.</p>
+<p><strong>Decompose into:</strong></p>
+<ul>
+<li><strong>Cost decomposes like latency.</strong> Per-span token counts, split by: context assembly (retrieved chunks, conversation history), model calls per request, tool round-trips triggering more calls, retries, and output length.</li>
+<li><strong>Step count usually beats model price.</strong> An agent averaging 5 LLM calls where 2 would do is a 2.5x problem that no model swap fixes. This is where the trajectory metrics earn their keep — redundant calls and blind retries are directly priced.</li>
+<li><strong>Context growth is the silent multiplier.</strong> Every turn appends history; every retrieval appends chunks. Measure tokens-per-turn as a trend, not an average.</li>
+<li><strong>Tiered model routing.</strong> A cheap model for classification, routing, and extraction; the expensive one only where reasoning is genuinely needed. Gate the routing decision itself — a misrouted hard query is worse than the saved cost.</li>
+<li><strong>Eval cost is production cost.</strong> Judges are LLM calls. Sampling rate, judge-model choice, and trace-based judges (which carry a large prompt) all show up on the bill. Ration judges to promotion decisions and sampled production traffic; run deterministic scorers everywhere.</li>
+<li><strong>Caching by layer:</strong> embedding cache, retrieval cache, exact-match response cache, prefix cache for the system prompt. Each has a different staleness risk and a different correctness cost.</li>
+</ul>
+<p><strong>Killer follow-up:</strong> <em>"Cut cost 60% without a quality regression. What's your first move?"</em> → Measure the token distribution before touching anything, because the 60% is almost never where the team assumes. Then: context pruning, step-count reduction, and tiered routing — in that order, each gated by the full scorer set so "without a quality regression" is a checkable claim rather than a hope.</p>
+<hr />
+<h1>Appendix A — The Silent-Failure Catalogue</h1>
+<p>These are the failures worth naming unprompted. Every one reports nothing and reads as fine. Dropping two or three of these into an answer is the fastest way to signal you've actually operated a system rather than read about one.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>A metric regresses and ships anyway</td>
+<td>Scorer added, no gate entry. Scorers are informational by default</td>
+<td>Add a gate whenever you add a scorer</td>
+</tr>
+<tr>
+<td>2</td>
+<td>A gate fails at 0.000, looks like a broken agent</td>
+<td>Mistyped metric name; lookup defaults to 0</td>
+<td>Resolve gates against keys the run produced; report unmatched as <strong>not measured</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Monitoring dashboard is quiet, everything looks healthy</td>
+<td>Scorer registered but never started</td>
+<td>Register <em>and</em> start; verify sampling config exists</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Judge alignment completes; aligned judge is identical to base</td>
+<td>Label schema name ≠ judge name</td>
+<td>Define the name once, use the variable in both places</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Production scorer reports skip on 100% of traces</td>
+<td>It reads expectations; production has no ground truth</td>
+<td>Check reference-freeness before registering</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Optimiser burns its full budget, prompt barely moves</td>
+<td>Prediction function closed over a fixed prompt string</td>
+<td>Load the prompt from the registry inside the prediction function</td>
+</tr>
+<tr>
+<td>7</td>
+<td>"Passed 12/15 jailbreaks" while one class is 0%</td>
+<td>Examples without a taxonomy</td>
+<td>Classes × variants, reported per class</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Agent states a plan and balance for a non-existent account</td>
+<td>Tool returned a soft failure; model skated past it</td>
+<td>Deterministic scorer reading the tool span</td>
+</tr>
+<tr>
+<td>9</td>
+<td>A metric silently vanishes from results</td>
+<td>Built-in scorer raised on rows that aren't its type</td>
+<td>Wrap to return null on inapplicable rows</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Tool-selection scorer reports 100% for an agent calling every tool</td>
+<td>Verdict based only on missing tools, not unexpected ones</td>
+<td>Fail both directions</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Annotator agreement looks excellent, judge generalises badly</td>
+<td>The rubric authors were also the validation raters</td>
+<td>Validate with raters who did not write the rubric</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>Appendix B — Misreadings That Sound Like Insight</h1>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Why it's wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"The aligned judge scored lower, so the agent regressed"</td>
+<td>The agent didn't change. The unaligned judge was inflating. A falling score after alignment is the success condition — read agreement, not average</td>
+</tr>
+<tr>
+<td>"Raw agreement is 85%, the judge is fine"</td>
+<td>On a skewed distribution, raters agree by luck. That same data had Cohen's kappa of 0.20</td>
+</tr>
+<tr>
+<td>"Plain kappa says both judges are equally bad"</td>
+<td>Plain kappa treats 4-vs-5 and 1-vs-5 as the same error. Under quadratic weighted kappa those same two judges scored +0.71 and −0.82</td>
+</tr>
+<tr>
+<td>"A 5% sample shows a 2-point drop — page someone"</td>
+<td>At 2,000 traces/day a 5% sample resolves to ±4.5 points. Indistinguishable from noise</td>
+</tr>
+<tr>
+<td>"95% of turns pass, the assistant is in good shape"</td>
+<td>At five turns that's 77% conversation success. The metric looks best where the product is worst</td>
+</tr>
+<tr>
+<td>"Word count went down, that's a regression"</td>
+<td>A raw numeric metric carries no directional information. Wrap it in a verdict-returning scorer before gating</td>
+</tr>
+<tr>
+<td>"Conciseness improved, ship it"</td>
+<td>The watched metric rose; the unwatched ones may have collapsed</td>
+</tr>
+<tr>
+<td>"We documented the coverage gap"</td>
+<td>Documented ≠ covered. Honesty, not coverage</td>
+</tr>
+<tr>
+<td>"The new prompt wins 58-42 on blinded pairwise"</td>
+<td>Check the interval at that sample size, check A/B position balance, check length distributions per arm — longer answers win regardless of quality</td>
+</tr>
+<tr>
+<td>"Our experts labelled it, so it's ground truth"</td>
+<td>It's a sample from one annotator population, under one rubric version, at one point in time. Still an estimate with error bars</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>Appendix C — Company-Specific Flavour</h1>
+<p>The core decomposition is identical everywhere. What differs is which follow-up you'll get pushed hardest on.</p>
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Where the round tilts</th>
+<th>Vocabulary to have ready</th>
+<th>The follow-up to expect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OpenAI</strong></td>
+<td>Ambiguity → scoped use case → architecture → eval → production, in that order. Evals treated as a product surface, not a QA activity</td>
+<td>Responses API, Agents SDK, <code>Agent</code> / <code>Handoff</code> / <code>Guardrail</code> / <code>Session</code>, built-in tools (file search, web search, code interpreter, computer use), structured outputs</td>
+<td>"You have no labelled data. What do you ship in week one?" and "What's the smallest thing you could launch that produces a measurable business number?"</td>
+</tr>
+<tr>
+<td><strong>Anthropic</strong></td>
+<td>Safety and human oversight as design inputs rather than a review stage. Refusal calibration in <em>both</em> directions</td>
+<td>Harm taxonomies, red-teaming as eval-set design, over-refusal, human-in-the-loop escalation design, tool-use safety, model-written evals</td>
+<td>"How would you know if the system is being <em>too</em> cautious?" and "What would you need to see before you'd let this act without a human?"</td>
+</tr>
+<tr>
+<td><strong>Google</strong></td>
+<td>Scale, multi-tenancy, and statistical rigour. Expect to be pushed on sampling, significance, and infrastructure economics</td>
+<td>Vertex AI Agent Builder, grounding, per-tenant isolation, batch vs online eval, data lineage, p50/p90/p99 trace analysis</td>
+<td>"Now serve 100 tenants with per-tenant quality SLAs. What changes?" and "Justify your sample rate statistically"</td>
+</tr>
+<tr>
+<td><strong>Microsoft</strong></td>
+<td>Enterprise governance, identity, and integration into existing workflow surfaces. Compliance is load-bearing, not a caveat</td>
+<td>Copilot extensibility, Graph/M365 permission trimming, ACL-aware retrieval, Azure AI Foundry evaluations, content safety, data residency</td>
+<td>"A user loses access to a document today. How do you prevent retrieval of stale permissions tomorrow?" and "Walk me through the audit trail a regulator would ask for"</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>Appendix D — Rapid-Fire Drill Set</h1>
+<p>Use these as spoken-answer drills. Target 60-90 seconds each.</p>
+<ol>
+<li>Give me three things a task-success metric cannot see.</li>
+<li>Which of your scorers can run in production, and what's the mechanical test?</li>
+<li>When would you <em>not</em> use an LLM judge?</li>
+<li>Your judge and your regex scorer disagree. What do you do with that row?</li>
+<li>Why is retrieval a fixed pipeline step in this design and not a tool?</li>
+<li>What's the difference between a scorer and a gate?</li>
+<li>What's wrong with a threshold-only promotion gate?</li>
+<li>Why is an unmeasured gate more dangerous than a failed one?</li>
+<li>Name a correct agent behaviour that produces no tool call.</li>
+<li>Why is wrong-tool worse than no-tool?</li>
+<li>What's the failure mode of using production outputs as expectations?</li>
+<li>When is exact-sequence trajectory match the right choice?</li>
+<li>How do you evaluate a summary when there's no single correct summary?</li>
+<li>Why does a falling score after judge alignment mean things are working?</li>
+<li>What breaks when a one-tool agent gains a second tool?</li>
+<li>How would you detect a circular handoff between two subagents?</li>
+<li>Your conversation-level gate reports 0 on a single-turn run. What's wrong?</li>
+<li>What's the first alert you'd set on a production agent, and why isn't it a quality metric?</li>
+<li>How do you test that an agent isn't over-refusing?</li>
+<li>The customer wants 80% autonomous resolution in six months. What do you challenge?</li>
+<li>Your annotators agree 70% of the time. What do you fix — the rubric or the annotators?</li>
+<li>Why is a 58-42 pairwise win rate not yet a decision?</li>
+<li>Once the judge is aligned, why keep paying for human review at all?</li>
+</ol>
+<hr />
+<h2>Closing Note</h2>
+<p>The throughline across all nineteen cases: <strong>task success alone is never enough, and aggregates hide the thing you need to see.</strong> A trace can reach the right final answer while being inefficient, unsafe, or lucky rather than reliable. A dashboard can be green while an entire attack class is at zero, an entire customer segment is failing, or the monitor itself stopped running three weeks ago.</p>
+<p>Say that out loud in the round, then show the decomposition that would have caught it.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({startOnLoad:true,theme:'dark',securityLevel:'loose',
+  themeVariables:{fontFamily:'Inter, sans-serif',fontSize:'14px',
+    background:'#161b22',primaryColor:'#1c2128',primaryTextColor:'#e6edf3',
+    primaryBorderColor:'#30363d',lineColor:'#8b949e'}});
+</script></body></html>
