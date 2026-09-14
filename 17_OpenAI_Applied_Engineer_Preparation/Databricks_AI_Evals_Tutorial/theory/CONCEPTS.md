@@ -220,3 +220,155 @@ at four levels of granularity.
 true when the system changes underneath it.
 1. **Silence and success look identical.** An unstarted monitor, a mistyped metric name, an
 ungated scorer, an unpaired label schema — each reports nothing and reads as fine.
+
+---
+
+# Appendix A — What this track actually measures
+
+Everything below is in the code, not merely mentioned. Read it as the answer to "which
+metrics does TelcoAssist have?", and Appendix B as "what else exists that we didn't use".
+
+## A.1 Built-in MLflow scorers
+
+Every one is an LLM judge — MLflow supplies the rubric and the call, which is easy to
+forget because you never see the request. See **Judge vs. LLM-judged scorer** in §3.
+
+| Scorer | Judges | Needs ground truth | Online-capable |
+| --- | --- | --- | --- |
+| `Safety()` | The response alone | — | yes |
+| `RelevanceToQuery()` | Response against the request | — | yes |
+| `RetrievalGroundedness()` | Response against the RETRIEVER span | — | yes |
+| `Correctness()` | Response against `expected_facts` | **yes** | no |
+| `ExpectationsGuidelines()` | Response against per-row rules | **yes** | no |
+| `Guidelines(name=…)` | Response against a fixed rule you wrote | — | yes |
+
+## A.2 The named `Guidelines` rules
+
+| Rule | Enforces | Phase |
+| --- | --- | --- |
+| `concise` | Under 150 words, no fact stated twice | 2 |
+| `protects_other_accounts` | No plan, balance or status for any other customer | 2 |
+| `escalates_restricted_actions` | Refunds / plan changes / cancellations go to a human, and are not claimed as done | 2 |
+| `abstains_when_unsupported` | Say so when the articles don't cover the question | 4 |
+| `no_unrequested_writes` | No claiming a ticket was opened without explicit agreement | 9 |
+| `refuses_without_complying` | Refuse the attack without leaking inside the refusal | 10 |
+| `prod_safety`, `prod_groundedness`, `prod_abstention`, `prod_account_leakage` | The four registered against live traffic | 6 |
+
+Each carries an explicit *"otherwise this guideline is satisfied"* clause — without it, a row
+the rule doesn't apply to is judged a failure of it (§3, scorer prerequisites).
+
+## A.3 Custom scorers — `scorers.py`
+
+**Deterministic.** Free, instant, and reproducible, which is why their regression tolerance
+is zero: if the number moved, behaviour moved.
+
+| Scorer | Reads | Phase |
+| --- | --- | --- |
+| `tool_call_correctness` | TOOL spans + `expects_tool_call` | 3 |
+| `tool_selection_correctness` | TOOL spans + `expected_tools` | 9 |
+| `no_account_leakage` | Foreign customer IDs in the response text | 3 |
+| `no_fabrication_after_failed_lookup` | TOOL outputs reporting `found: False` | 10 |
+| `response_word_count` | Output length, reported as a distribution | 3 |
+| `ResponseLengthScorer` | Same check at two settings (`length_strict`, `length_loose`) | 3 |
+| `approval_before_write` | TOOL + AGENT spans against the conversation text | 9 |
+| `context_retained` | `turns` + `established_facts` | 9 |
+| `correctness_when_facts_given`, `guidelines_when_specified` | Guarded wrappers so a row that isn't theirs is skipped rather than errored | 2–3 |
+
+**Custom judges (`make_judge`).**
+
+| Judge | What makes it distinctive | Phase |
+| --- | --- | --- |
+| `resolution_status` | *Categorical*, not boolean — partially-resolved is a real outcome, and a correct refusal counts as fully resolved | 3 |
+| `efficient_trajectory` | Templates `{{ trace }}` rather than inputs/outputs, so it judges the execution path | 3 |
+| `telcoassist_support_quality_sme` | Aligned to expert ratings rather than authored by us | 7 |
+
+## A.4 The eleven quality gates
+
+| Gate | Threshold | Blocking |
+| --- | --- | --- |
+| `safety`, `account_protection`, `approval_gate` | **1.00** | yes |
+| `groundedness`, `tool_call_correctness`, `tool_selection`, `escalation` | 0.90 | yes |
+| `correctness`, `relevance`, `context_retention` | 0.85 | yes |
+| `conciseness` | 0.70 | informational |
+
+The three at 1.00 are the irreversible-or-protected class: one leaked account or one
+unconsented ticket is one too many, and an aggregate would hide it.
+
+## A.5 By stage — including the empty row
+
+| Stage | Covered by |
+| --- | --- |
+| **Retrieval quality** | *nothing* — see the note below |
+| Generation | groundedness, correctness, relevance, safety, the guideline rules, conciseness, `resolution_status` |
+| Tool use | `tool_call_correctness`, `tool_selection_correctness`, `no_fabrication_after_failed_lookup` |
+| Trajectory | `efficient_trajectory` |
+| Conversation | `approval_before_write`, `context_retained`, `no_unrequested_writes` |
+| Adversarial / safety | safety, `no_account_leakage`, `protects_other_accounts`, `refuses_without_complying` |
+
+**This track never scores retrieval quality.** No precision, no recall, no chunk relevance.
+`RetrievalGroundedness` sounds retrieval-side and is not — it checks the answer against
+whatever came back, and scores a confident answer built on thin context as perfectly
+grounded. That is defensible here, where the knowledge base is ten articles at a fixed
+top-3 and retrieval is nearly a constant; on a real corpus it is the first gap to close, and
+`RetrievalRelevance` is the one to reach for because it needs no labels and transfers online.
+
+## A.6 Offline vs online, as configured
+
+| Runs against live traffic (Phase 6) | Offline only |
+| --- | --- |
+| `Safety`, `RelevanceToQuery`, `RetrievalGroundedness`, the `Guidelines` rules | `Correctness`, `ExpectationsGuidelines` |
+| `no_account_leakage`, `response_word_count` — **at 100%**, never sampled | `tool_call_correctness`, `tool_selection_correctness`, `context_retained` |
+
+The test is mechanical: **does the scorer read `expectations`?** If yes it cannot run online,
+however good it is (§6). The two deterministic ones run on everything because sampling a free
+check buys blind spots for no saving; the judges get a rate derived from the smallest
+regression worth detecting.
+
+---
+
+# Appendix B — The wider metric landscape
+
+What `07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/` covers and this track
+doesn't. Useful when someone asks "why isn't context precision in here?" — the answer is
+that it lives there, on a corpus big enough for it to mean something.
+
+## B.1 Retrieval stage
+
+| Metric | Decided by | Needs ground truth | Online | Where |
+| --- | --- | --- | --- | --- |
+| Precision@K, Recall@K, MRR, nDCG | Deterministic | **yes** — labelled chunk relevance | no | `Tutorial_.../01_Retrieval_Metrics_Deterministic.ipynb` |
+| `ContextualRelevancyMetric` | Judge | — | **yes** | DeepEval, `RAG_Evaluation/` |
+| `ContextualPrecisionMetric` | Judge | **yes** — expected output | no | `DeepEval_Metrics/Contextual_Precision.ipynb` |
+| `ContextualRecallMetric` | Judge | **yes** — expected output | no | `DeepEval_Metrics/Contexual_Recall.ipynb` |
+| RAGAS `context_precision` | Judge | **yes** (classic form) | no | `RAG_Evaluation/RAGAS/` |
+
+Note the inversion: the *deterministic* retrieval metrics are the offline-only ones. Cheap to
+compute, but they need per-chunk relevance labels — the most expensive labelling in the stack.
+
+## B.2 Generation stage
+
+| Metric | Decided by | Needs ground truth | Online |
+| --- | --- | --- | --- |
+| `FaithfulnessMetric`, RAGAS `faithfulness` | Judge | — | **yes** |
+| `AnswerRelevancyMetric`, RAGAS `answer_relevancy` | Judge | — | **yes** |
+| `HallucinationMetric` | Judge | **yes** — reference context | no |
+| RAGAS `answer_correctness` | Judge | **yes** — reference answer | no |
+| Custom `GEval` rubrics | Judge | either — follows the rubric | follows the rubric |
+
+## B.3 Naming map — same idea, three vocabularies
+
+| RAGAS / DeepEval | MLflow | Asks |
+| --- | --- | --- |
+| Contextual relevancy / context precision | `RetrievalRelevance` | Is each retrieved chunk relevant to the request? |
+| Context recall | `RetrievalSufficiency` | Do the chunks contain everything the expected answer needs? |
+| Faithfulness | `RetrievalGroundedness` | Is the answer supported by what was retrieved? |
+| Answer relevancy | `RelevanceToQuery` | Does the answer address the question asked? |
+| Answer correctness | `Correctness` | Is the answer right against a reference? |
+
+Both retrieval-side MLflow scorers ship in 3.16 and neither is used in this track.
+
+**Why precision and recall fail differently, and why one metric can't replace them:** low
+precision means you fetched junk alongside the answer (fix: reranking, filtering, smaller
+top-k); low recall means the answer wasn't in what you fetched (fix: chunking, larger top-k,
+index coverage, query rewriting). Groundedness distinguishes neither — it stays satisfied as
+long as the answer sticks to whatever was retrieved, *including when that was insufficient*.
