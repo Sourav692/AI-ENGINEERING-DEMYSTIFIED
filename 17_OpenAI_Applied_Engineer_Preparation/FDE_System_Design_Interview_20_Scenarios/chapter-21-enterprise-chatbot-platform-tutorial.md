@@ -450,7 +450,7 @@ sequenceDiagram
         P-->>GW: Clean — forward
     end
     PA->>ST: Persist turn + citations + route + tokens
-    ST->>ST: Append audit event; increment usage
+    ST->>ST: Append audit event and increment usage
 
     Note over P,GW: Failure branch A — output scanner trips mid-stream
     P-->>GW: Violation in buffered window
