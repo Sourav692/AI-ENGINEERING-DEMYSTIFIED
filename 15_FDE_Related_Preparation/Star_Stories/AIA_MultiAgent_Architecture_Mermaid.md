@@ -1,12 +1,95 @@
 # AIA Group — Multi-Agent Architecture, End-to-End (Mermaid)
 
-### Governed Multi-Agent Data Assistant on Databricks · companion to `AIA_Technical_Implementation_Flow.md`
+### Governed Multi-Agent Data Assistant on Databricks · companion to AIA_Technical_Implementation_Flow.md
 
-> Five views of the same system. Diagram 1 is the one to draw on a whiteboard; the rest are the layers an interviewer will ask you to zoom into.
+> Six views of the same system. Section 1 is split into four small panels — panel **1a** is the one to draw on a whiteboard; the rest are the layers an interviewer will ask you to zoom into.
 
 ---
 
 ## 1. End-to-end request flow (Stage 2 — the Supervisor pattern that shipped)
+
+> Four small panels instead of one crowded canvas. Draw **1a** on the whiteboard — it is the whole system in ten boxes. The other three are the zoom-ins an interviewer will ask for, in the order they usually ask.
+
+### 1a · The whole system in ten boxes
+
+```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 55, 'rankSpacing': 90}, 'themeVariables': {'fontSize': '18px'}}}%%
+flowchart LR
+    U(["Business user<br/>actuary · claims manager · analyst"]) --> APP["Databricks App<br/>Dash chat UI"]
+    APP --> GW["AI Gateway<br/>rate limiting · PII filtering · guardrails"]
+    GW --> SUP{"Supervisor<br/>what kind of<br/>question is this?"}
+
+    SUP -->|"simple KPI"| W1["Genie Agent<br/>BI specialist"]
+    SUP -->|"find a document"| W2["Multi-Tool Agent<br/>SQL + RAG generalist"]
+    SUP -->|"deep analysis"| W3["Data Analysis Agent<br/>deterministic stats"]
+    SUP -->|"make a chart"| W4["Visualization Agent<br/>dashboard creator"]
+
+    W1 --> ANS["Cited, traceable answer"]
+    W2 --> ANS
+    W3 --> ANS
+    W4 --> ANS
+    ANS --> APP
+
+    classDef spec fill:#e8f4e8,stroke:#2e7d32,color:#000
+    class W1,W2,W3,W4 spec
+```
+
+**Talk track:** a question enters through the App and the AI Gateway, the Supervisor decides *what kind* of question it is, exactly one specialist does the work, and the answer comes back cited. One sentence, and the interviewer has the shape of the system.
+
+### 1b · Inside the Supervisor
+
+```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 50, 'rankSpacing': 65}, 'themeVariables': {'fontSize': '18px'}}}%%
+flowchart TD
+    Q["Question arrives<br/>from the AI Gateway"] --> C{"1 · classify_intent<br/>+ confidence score"}
+    C -->|"confidence < 60%"| ASK["2 · clarify_or_disambiguate<br/>ask the user instead of guessing"]
+    ASK -.->|"user replies"| Q
+    C -->|"confidence >= 60%"| R["3 · resolve_assets_with_context_index<br/>Vector Search over 16 governed assets<br/>endorsed assets ranked first"]
+    R --> RT["4 · route_to_*<br/>resolved asset list attached to shared state"]
+    RT --> SPEC(["one specialist runs"])
+    SPEC --> CA["5 · compose_answer<br/>cited, traceable"]
+```
+
+**Talk track:** two design decisions live here and both get lost in a bigger picture. First, the system **asks when it is unsure** rather than guessing confidently — that is the 60% gate. Second, asset resolution happens **once, centrally**, so every specialist works from the same governed asset list instead of each rediscovering it.
+
+Intents in full: `simple_kpi` · `deep_analysis` · `document_lookup` · `visualization` · `conversational`.
+
+### 1c · What each specialist actually reads
+
+```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 50, 'rankSpacing': 80}, 'themeVariables': {'fontSize': '18px'}}}%%
+flowchart LR
+    W1["Genie Agent"] --> GS["Genie Spaces<br/>managed text-to-SQL"]
+    W3["Data Analysis Agent"] --> MV["7 governed Metric Views<br/>claims · policy performance<br/>agent productivity · fraud"]
+    GS --> MV
+    W2["Multi-Tool Agent"] --> RAG["Vector Search RAG<br/>policy docs · claims files<br/>underwriting notes"]
+    W2 --> SQL["LLM-generated SQL<br/>ad-hoc, narrower governance"]
+    W4["Visualization Agent"] --> LV["Lakeview REST API<br/>publishes a real dashboard, returns a link"]
+    MV --> GOLD[("Unity Catalog<br/>gold / silver")]
+    SQL --> GOLD
+
+    classDef gov fill:#e8f4e8,stroke:#2e7d32,color:#000
+    class GS,MV,GOLD gov
+```
+
+**Talk track:** green is the governed path — a KPI question lands on a versioned metric view, so the agent and a human analyst computing "claims by region" get the same number. `W2 → SQL` is the one edge that leaves that lane, and naming it before the interviewer finds it is the strong move: ad-hoc SQL is the escape hatch for questions no governed asset covers, and it is deliberately the narrowest-trust path in the system.
+
+> Section 3 below shows how this data gets *built* (bronze → silver → gold). This panel only shows who reads what.
+
+### 1d · The cross-cutting layer
+
+Four things wrap every request. They have no flow of their own, so they read better as a list than as dotted lines crossing the diagram:
+
+| Layer | What it is | Why it is there |
+| --- | --- | --- |
+| **Context Index** | 16 governed assets in Vector Search — Genie Spaces, metric views, tables, document indexes | Queried **once per question, only by the Supervisor** (node 3 above) |
+| **Short-term memory** | `ai_ops.conversations` — Delta checkpoints keyed by `thread_id`, 30-day retention | Checkpoint at each key node; resume a conversation, replay a failure |
+| **Prompt store** | `ai_ops.agent_instructions` — base + overlay, 5-minute cache | Tune prompts with no redeploy |
+| **MLflow Tracing** | `@mlflow.trace` on every node | One span per node and per tool call |
+| **Agent Evaluation** | Held-out eval set, LLM-as-judge | Offline accuracy gate before release |
+
+<details>
+<summary><strong>The original single-canvas version</strong> — everything above on one diagram, kept for reference</summary>
 
 ```mermaid
 flowchart TD
@@ -64,7 +147,7 @@ flowchart TD
     class TR,EV obs
 ```
 
-**Talk track for this diagram:** request enters through the App and AI Gateway → Supervisor classifies and, if unsure, asks instead of guessing → asset resolution happens **once**, centrally, so every worker sees the same governed assets → one specialist does the work → answer is composed with citations. Everything is traced, checkpointed, and tunable without redeploy.
+</details>
 
 ---
 
@@ -269,20 +352,20 @@ flowchart LR
 
 ## Quick reference — the numbers on the diagrams
 
-| Item                         | Value                                                                                                                                |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Supervisor nodes             | 8 (LangGraph StateGraph)                                                                                                             |
-| Clarification threshold      | confidence < 60%                                                                                                                     |
-| Context Index                | 16 governed assets, Vector Search, endorsed-first ranking                                                                            |
-| Specialist workers (Stage 2) | 4 — Genie · Multi-Tool · Data Analysis · Visualization                                                                           |
-| Domain subagents (Stage 3)   | 4 + Memory Manager                                                                                                                   |
-| Governed metric views        | 7                                                                                                                                    |
-| Genie Spaces                 | 4 domains                                                                                                                            |
-| Short-term memory            | `ai_ops.conversations`, Delta, keyed by `thread_id`, 30-day retention                                                            |
-| Prompt store                 | `ai_ops.agent_instructions`, base + overlay, 5-minute cache                                                                        |
-| Long-term memory categories  | preference · fact · decision · project · feedback                                                                                |
-| Outcome                      | 2–10 days → minutes · ~4 wk dashboards → self-serve · ~35% YTD consumption growth (correlated, not causal) · MVP in 8–9 weeks |
+| Item | Value |
+| --- | --- |
+| Supervisor nodes | 8 (LangGraph StateGraph) |
+| Clarification threshold | confidence < 60% |
+| Context Index | 16 governed assets, Vector Search, endorsed-first ranking |
+| Specialist workers (Stage 2) | 4 — Genie · Multi-Tool · Data Analysis · Visualization |
+| Domain subagents (Stage 3) | 4 + Memory Manager |
+| Governed metric views | 7 |
+| Genie Spaces | 4 domains |
+| Short-term memory | `ai_ops.conversations`, Delta, keyed by `thread_id`, 30-day retention |
+| Prompt store | `ai_ops.agent_instructions`, base + overlay, 5-minute cache |
+| Long-term memory categories | preference · fact · decision · project · feedback |
+| Outcome | 2–10 days → minutes · ~4 wk dashboards → self-serve · ~35% YTD consumption growth (correlated, not causal) · MVP in 8–9 weeks |
 
 ---
 
-*Companion to `AIA_Technical_Implementation_Flow.md` and `AIA_MultiAgent_DeepDive_15-20min.md` · MongoDB Staff FDE prep*
+*Companion to *`AIA_Technical_Implementation_Flow.md`* and *`AIA_MultiAgent_DeepDive_15-20min.md`* · MongoDB Staff FDE prep*
