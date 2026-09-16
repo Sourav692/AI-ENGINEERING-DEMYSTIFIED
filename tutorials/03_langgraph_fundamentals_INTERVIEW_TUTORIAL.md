@@ -1,8 +1,12 @@
 # 🔗 LangGraph Fundamentals — Interview Tutorial
 
-> Built from 8 notebooks in `production-course-main-code-main/03_LangGraph_Fundamentals/` on 2026-09-06.
-> Target roles: Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer
-> Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end.
+| | |
+|---|---|
+| **Source** | `production-course-main-code-main/03_LangGraph_Fundamentals/` |
+| **Notebooks** | 8 |
+| **Built** | 2026-09-06 |
+| **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
+| **Note** | Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end. |
 
 This is the tutorial that turns a chain into an agent. [Tutorial 01](01_langchain_foundations_INTERVIEW_TUTORIAL.md)
 built pipelines that always run the same steps in the same order. LangGraph adds the

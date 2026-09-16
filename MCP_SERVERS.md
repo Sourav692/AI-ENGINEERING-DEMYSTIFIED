@@ -29,11 +29,14 @@ inspected directly instead of relying on pasted error output.
 ## 2. Chroma — configured
 
 ```
-chroma: uvx chroma-mcp --client-type persistent --data-dir D:/AI ENGINEERING/.mcp_data/chroma
+chroma: uvx chroma-mcp --client-type persistent --data-dir .mcp_data/chroma
 ```
 
 Added at **project scope** (in `.mcp.json`, shareable if you commit that file) since it needs
-no secrets — just a local data directory.
+no secrets — just a local data directory. The path is **relative to the repo root**, so the same
+`.mcp.json` works on both the Windows and macOS clones. (It used to be the absolute Windows path
+`D:/AI ENGINEERING/.mcp_data/chroma`, which on macOS created a literal `D:` folder in the repo
+root on every server start.)
 
 **Why it matters here:** nearly every RAG notebook across Phases 4, 5, 8, 13 builds a Chroma
 collection. This lets a collection's contents be inspected directly (what got embedded,
@@ -47,15 +50,19 @@ stops and were never visible to this MCP connection in the first place. To make 
 collection inspectable via this server, point it at the same data directory:
 
 ```python
+from pathlib import Path
+
+# repo root -> .mcp_data/chroma (adjust the number of .parent hops to the notebook's depth)
+CHROMA_DIR = Path.cwd().parents[2] / ".mcp_data" / "chroma"
+
 vectorstore = Chroma(
     collection_name="summaries",
     embedding_function=OpenAIEmbeddings(),
-    persist_directory=r"D:\AI ENGINEERING\.mcp_data\chroma",
+    persist_directory=str(CHROMA_DIR),
 )
 ```
 
-`.mcp_data/chroma/` is already covered by this repo's `.gitignore` (matched by the existing
-`chroma/` pattern), so nothing there gets committed.
+`.mcp_data/` is listed in this repo's `.gitignore`, so nothing there gets committed.
 
 ## 3. Jupyter — configured, needs a running JupyterLab
 

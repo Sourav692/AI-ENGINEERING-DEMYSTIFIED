@@ -56,8 +56,8 @@ The board staying truthful matters more than finishing the notebook in one pass.
 ### 1. Pick up the task
 
 ```bash
-python .claude/skills/plan-to-tasks/scripts/tasks.py list .tasks/<board> --type explainer
-python .claude/skills/plan-to-tasks/scripts/tasks.py next .tasks/<board>
+python plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py list .tasks/<board> --type explainer
+python plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py next .tasks/<board>
 ```
 
 Work the task the user named, or the next unblocked one. **Respect `depends_on`** — an explainer
@@ -103,7 +103,7 @@ roadmap and are expensive to undo.
 
 ### 3. Draft in markdown, to the formatter's contract
 
-**Load the `Format_Python_Notebook` skill first** (`Skill` tool, name `Format_Python_Notebook`).
+**Load the `format-notebook` skill first** (`Skill` tool, name `format-notebook`).
 It owns the formatting contract for every notebook in this repo — title cell shape, heading
 hierarchy and emoji, the 3-line code banner, confirmation prints, import grouping, summary
 cell, cleanup rules. This skill supplies the migration *content*; that skill supplies the
@@ -144,11 +144,11 @@ worse than no notebook.
 ### 4. Convert and check
 
 ```bash
-python .claude/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py \
+python plugins/langchain-v1-migration/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py \
   "<scratchpad>/draft.md" --out "<destination>/3.7_Concept_LangChain_v1.ipynb"
 ```
 
-The script converts and then validates against `Format_Python_Notebook`'s rules in one pass —
+The script converts and then validates against `format-notebook`'s rules in one pass —
 title cell (H1 + emoji + Learning Objectives + Prerequisites), `---` before `##` sections, one
 emoji per heading, the 3-line banner on every code cell, `## 📝 Summary` + `### Next Steps` last,
 outputs cleared and `execution_count: null`. Each failure names the format rule it violates. Fix
@@ -183,7 +183,7 @@ or `migration` task until `review: approved`, and that verdict comes only from t
 Record the artifact and move the task into review:
 
 ```bash
-T=.claude/skills/plan-to-tasks/scripts/tasks.py
+T=plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py
 python $T set .tasks/<board>/T-00N_*.md --status in-review \
   --output "03_LCEL/3.7_Chains_to_LCEL_LangChain_v1.ipynb"
 ```

@@ -1,7 +1,7 @@
 # Deprecation map — non-LangChain libraries
 
 **LangChain / LangGraph migrations are NOT here.** They belong to
-`.claude/skills/langchain-v1-migration-audit/` — run its scanner and use its
+`plugins/langchain-v1-migration/skills/langchain-v1-migration-audit/` — run its scanner and use its
 `references/v0-to-v1-rewrite-map.md`. Duplicating those rules here would let the two
 drift apart.
 

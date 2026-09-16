@@ -1,8 +1,12 @@
 # 🕸️ Multi-Agent Systems — Interview Tutorial
 
-> Built from 7 notebooks in `production-course-main-code-main/04_Multi_Agent_Systems/` on 2026-09-06.
-> Target roles: Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer
-> Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end.
+| | |
+|---|---|
+| **Source** | `07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/` |
+| **Notebooks** | 7 |
+| **Built** | 2026-09-06 |
+| **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
+| **Note** | Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end. |
 
 Everything here is a LangGraph graph with more than one agent in it. If
 [tutorial 03](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) is unfamiliar, read that

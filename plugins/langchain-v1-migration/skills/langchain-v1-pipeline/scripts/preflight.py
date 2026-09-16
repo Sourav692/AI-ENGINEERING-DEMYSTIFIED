@@ -44,10 +44,10 @@ GENERIC_NAMES = {
 }
 
 STAGE_SCRIPTS = {
-    "scan": ".claude/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py",
-    "tasks": ".claude/skills/plan-to-tasks/scripts/tasks.py",
-    "md_to_notebook": ".claude/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py",
-    "static_check": ".claude/skills/notebook-review/scripts/static_check.py",
+    "scan": "plugins/langchain-v1-migration/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py",
+    "tasks": "plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py",
+    "md_to_notebook": "plugins/langchain-v1-migration/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py",
+    "static_check": "plugins/langchain-v1-migration/skills/notebook-review/scripts/static_check.py",
 }
 
 

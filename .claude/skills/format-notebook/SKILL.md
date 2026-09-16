@@ -1,5 +1,5 @@
 ---
-name: Format_Python_Notebook
+name: format-notebook
 description: >-
   Reformat Jupyter notebooks for educational readability. Use when the user asks
   to clean up, reformat, restructure, or improve a .ipynb notebook. Applies

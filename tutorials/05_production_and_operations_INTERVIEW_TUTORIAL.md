@@ -1,8 +1,12 @@
 # 🛡️ Production & Operations — Interview Tutorial
 
-> Built from 4 notebooks in `production-course-main-code-main/05_Production_and_Operations/` on 2026-09-06.
-> Target roles: Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer
-> Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end.
+| | |
+|---|---|
+| **Source** | `12_Production_and_Observability/Production_Course_Ops/` |
+| **Notebooks** | 4 |
+| **Built** | 2026-09-06 |
+| **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
+| **Note** | Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end. |
 
 The other four tutorials build things. This one is about keeping them alive, affordable,
 safe and measurable. It is also the tutorial that fills the biggest gap in the other
@@ -445,7 +449,7 @@ provider.
 
 **What a production breaker adds.** Compare the teaching version above with
 `enterprise_rag/llm/client.py`, and with the third implementation in
-`production-course-main-code-main/03_LangGraph_Fundamentals/07_error_handling.ipynb`,
+`03_LangGraph_Fundamentals/02_Core_Capabilities/07_Retries/02_Manual_Reliability_Patterns.ipynb`,
 which pushes the pattern down into LangGraph nodes:
 
 - **Shared, not per-caller.** "Is the provider down" is a fact about the outside world,

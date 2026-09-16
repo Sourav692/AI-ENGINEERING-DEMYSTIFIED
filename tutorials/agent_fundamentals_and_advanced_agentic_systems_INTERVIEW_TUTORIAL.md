@@ -1,11 +1,12 @@
 # 🤖 Agent Fundamentals & Advanced Agentic Systems — Interview Tutorial
 
-> Built from 162 notebook(s) in `05_AI_Agent_Fundamentals/` and `07_Advanced_Agentic_Systems/` on 2026-09-09.
-> Target roles: Applied AI / AI Engineer · **Agentic AI Engineer (primary focus)** · Forward Deployed Engineer
->
-> This run is weighted toward **agentic system design** — architecture choices, state/memory, tool
-> design, failure handling, and evaluation/observability — because that is the shape of the coding
-> round this guide was built for.
+| | |
+|---|---|
+| **Source** | `05_AI_Agent_Fundamentals/`, `07_Advanced_Agentic_Systems/` |
+| **Notebooks** | 162 |
+| **Built** | 2026-09-09 |
+| **Target roles** | Applied AI / AI Engineer · **Agentic AI Engineer (primary focus)** · Forward Deployed Engineer |
+| **Note** | Weighted toward **agentic system design** — architecture choices, state/memory, tool design, failure handling, and evaluation/observability — because that is the shape of the coding round this guide was built for. |
 
 ## What this covers
 

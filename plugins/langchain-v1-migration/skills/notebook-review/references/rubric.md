@@ -73,9 +73,9 @@ From `plan-to-teaching-notebook/references/notebook-blueprint.md`:
 - Exercises present and solvable from the notebook's own content.
 - One concept per notebook. Two unrelated concepts = **blocker** (split the task).
 
-## Gate 4 — `Format_Python_Notebook` compliance
+## Gate 4 — `format-notebook` compliance
 
-The notebook must follow the `Format_Python_Notebook` skill
+The notebook must follow the `format-notebook` skill
 (`.claude/skills/format-notebook/SKILL.md`) **exactly**. Read that skill before judging this
 gate — it is the contract, this is only the checklist. Its sample notebook
 (`.claude/skills/format-notebook/notebook/sample.ipynb`) shows every rule applied.
@@ -83,7 +83,7 @@ gate — it is the contract, this is only the checklist. Its sample notebook
 Start with the mechanical half:
 
 ```bash
-python .claude/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py <notebook> --check
+python plugins/langchain-v1-migration/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py <notebook> --check
 ```
 
 Every line it prints is a **blocker**, and each names the format rule it breaks. It covers

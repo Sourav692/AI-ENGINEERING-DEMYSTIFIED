@@ -19,11 +19,20 @@
     ]
   },
   "enabledPlugins": {
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "langchain-v1-migration@ai-engineering-local": true
   },
   "env": {
     "MLFLOW_DISABLE_AGENT_HINT": "1",
     "MLFLOW_LOGGING_LEVEL": "WARNING",
     "PYTHONWARNINGS": "ignore::UserWarning"
+  },
+  "extraKnownMarketplaces": {
+    "ai-engineering-local": {
+      "source": {
+        "source": "directory",
+        "path": "./"
+      }
+    }
   }
 }

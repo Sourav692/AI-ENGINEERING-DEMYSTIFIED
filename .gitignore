@@ -147,3 +147,6 @@ cell_*.txt
 # bare `prompt.json` so an unrelated file of that name elsewhere is unaffected.
 02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.json
 02_LangChain_Fundamentals_and_Prompting/LangChain_Fundamentals/02_Inputs_Outputs_Prompts/prompt.yaml
+
+# MCP server local data (Chroma persistent store)
+.mcp_data/

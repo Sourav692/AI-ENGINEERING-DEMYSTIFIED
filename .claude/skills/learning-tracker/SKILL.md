@@ -1,3 +1,19 @@
+---
+name: learning-tracker
+description: >-
+  Tracks the user's personal study progress through this repo's 13-phase AI
+  Engineering roadmap, as a local gitignored checklist the user checks off
+  themselves — a notebook existing in the repo is not the same as the user
+  having learned it. Use when the user says "I completed <folder> end to
+  end", "mark <topic/notebook> as done", "I finished the LangGraph
+  fundamentals phase", "what's my progress", "what's left in Phase 4", "show
+  me my tracker", or otherwise reports finishing or wants to check status on
+  part of this repo's learning material. Do not use this for migration/
+  refactor task tracking (that's `.tasks/` via `plan-to-tasks`) or the
+  repo's own build status (that's `NOTEBOOK_INDEX.md`) — this is exclusively
+  the user's own learning progress.
+---
+
 # Learning Tracker
 
 Tracks the user's **personal study progress** through this repo's 13-phase AI

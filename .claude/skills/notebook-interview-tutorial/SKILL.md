@@ -1,5 +1,5 @@
 ---
-name: agentic-ai-interview-tutorial
+name: notebook-interview-tutorial
 description: >-
   Turns a folder of notebooks (or individual notebooks) in this AI ENGINEERING repo
   into an interview-prep tutorial for Generative AI and Agentic AI roles — a markdown
@@ -58,7 +58,7 @@ defend. So:
 ### 1. Resolve the input and inventory it
 
 ```bash
-python .claude/skills/agentic-ai-interview-tutorial/scripts/extract_concepts.py <path> [<path> ...]
+python .claude/skills/notebook-interview-tutorial/scripts/extract_concepts.py <path> [<path> ...]
 ```
 
 Accepts folders (crawled recursively) and individual `.ipynb` paths, mixed. It is
@@ -184,3 +184,11 @@ Check each of these against the draft, and fix rather than report:
    of each section as a beginner would: if it opens with jargon, rewrite it.
 10. The artifact hides answers until clicked, renders the same diagrams and snippets,
     and its content matches the markdown.
+11. Every concept's main flow is one short intro (1-2 sentences) plus bullets — no
+    second paragraph. Anything longer moved to a `<details>` Deep Dive, or cut.
+12. No point is made twice in different words anywhere in the document. If two
+    sections say the same thing, keep it in the one it belongs to and cut the other.
+13. Deep Dives exist only where "Deep Dive shape" says one is earned (a formula/
+    multi-step mechanism, a real failure worth walking through, or a named interview
+    failure mode) — not on every concept, and not as a dumping ground for anything
+    that felt too long for the main flow without meeting that bar.

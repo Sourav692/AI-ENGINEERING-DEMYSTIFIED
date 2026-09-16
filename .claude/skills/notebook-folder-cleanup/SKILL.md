@@ -4,7 +4,7 @@ description: >-
   Cleans and modernizes a folder of Jupyter notebooks end to end — retires dead-end
   and abandoned notebooks, consolidates duplicate coverage, migrates deprecated library
   APIs (pandas, NumPy, scikit-learn, PyTorch, TensorFlow, CrewAI, AutoGen; LangChain via
-  the dedicated audit skill), reformats everything to the Format_Python_Notebook contract,
+  the dedicated audit skill), reformats everything to the format-notebook contract,
   and reports what changed and why. Use when the user names a folder and asks to "clean
   up", "organize", "tidy", "deduplicate", "remove dead notebooks", "modernize the
   libraries", or "make these notebooks production/enterprise grade". Does not clean on
@@ -35,7 +35,7 @@ This skill **composes** the others rather than reimplementing them:
 | --- | --- |
 | Inventory, triage, and the plan itself | `notebook-folder-cleanup-planner` |
 | LangChain/LangGraph 0.x → 1.x | `langchain-v1-migration-audit` (its scanner + rewrite map) |
-| Formatting contract | `Format_Python_Notebook` |
+| Formatting contract | `format-notebook` |
 | Independent sign-off | `notebook-review` |
 | Where a notebook belongs in the roadmap | `ai-roadmap-organizer` |
 
@@ -162,7 +162,7 @@ Two things that make a migration real rather than cosmetic:
 
 ### 5. Reformat
 
-Load the `Format_Python_Notebook` skill and apply it to every retained notebook: title cell
+Load the `format-notebook` skill and apply it to every retained notebook: title cell
 (H1 + emoji + Learning Objectives + Prerequisites), `---` before each `##` section, one
 emoji per section heading, the 3-line banner on every code cell, grouped imports,
 confirmation prints, `## 📝 Summary` + `### Next Steps`, cleared outputs.
@@ -170,7 +170,7 @@ confirmation prints, `## 📝 Summary` + `### Next Steps`, cleared outputs.
 Validate mechanically:
 
 ```bash
-python .claude/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py "<nb>.ipynb" --check
+python plugins/langchain-v1-migration/skills/plan-to-teaching-notebook/scripts/md_to_notebook.py "<nb>.ipynb" --check
 ```
 
 Every line it prints names the format rule broken. Use `NotebookEdit` for the edits — never

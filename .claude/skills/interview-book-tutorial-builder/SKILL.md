@@ -1,5 +1,5 @@
 ---
-name: agentic-ai-tutorial-builder
+name: interview-book-tutorial-builder
 description: >-
   Generate short, diagram-heavy, jargon-free tutorials from "Cracking Agentic AI
   System Design Interviews" (sole source text, via project_knowledge_search),

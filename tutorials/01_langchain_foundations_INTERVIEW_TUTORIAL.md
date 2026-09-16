@@ -1,8 +1,12 @@
 # 🧱 LangChain Foundations — Interview Tutorial
 
-> Built from 10 notebooks in `production-course-main-code-main/01_LangChain_Foundations/` on 2026-09-06.
-> Target roles: Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer
-> Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end.
+| | |
+|---|---|
+| **Source** | `01_LangChain_Fundamentals/08_Production_Course_Foundations/` |
+| **Notebooks** | 10 |
+| **Built** | 2026-09-06 |
+| **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
+| **Note** | Part of a 5-tutorial series — see [Where this fits](#where-this-fits) at the end. |
 
 This is the base layer. Everything in the other four tutorials is built out of the
 pieces here: a prompt, a model, a parser, and the pipe that joins them.

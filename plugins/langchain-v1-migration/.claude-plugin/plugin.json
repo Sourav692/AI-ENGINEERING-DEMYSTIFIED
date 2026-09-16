@@ -1,0 +1,6 @@
+{
+  "name": "langchain-v1-migration",
+  "version": "1.0.0",
+  "description": "LangChain 1.x migration pipeline for the AI Engineering roadmap repo: audit -> plan -> task board -> teaching notebooks -> review, plus the end-to-end runner.",
+  "author": { "name": "Sourav" }
+}

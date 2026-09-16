@@ -20,7 +20,7 @@ Rules:
                           Objectives + Prerequisites together.
   * `<!-- split -->`  -> force a markdown cell break anywhere else
 
---check validates the notebook against the Format_Python_Notebook skill
+--check validates the notebook against the format-notebook skill
 (.claude/skills/format-notebook/SKILL.md): title cell (rule 1), section
 separators and heading emoji (rule 2), the 3-line code banner (rule 3),
 summary + next steps (rule 6), cleared outputs (rule 7). Each message names
@@ -48,7 +48,7 @@ for _stream in (sys.stdout, sys.stderr):
 FENCE_RE = re.compile(r"^```(\w[\w-]*)?\s*$")
 SPLIT_RE = re.compile(r"^<!--\s*split\s*-->\s*$", re.I)
 HR_RE = re.compile(r"^---\s*$")   # thematic break = major-section boundary
-# Format_Python_Notebook's 3-line banner:
+# format-notebook's 3-line banner:
 #   # ==========...
 #   # SECTION_NAME: Brief description
 #   # ==========...
@@ -63,7 +63,7 @@ CODE_LANGS = {"python", "python-noexec", "py"}
 # _has_emoji's own threshold.
 EMOJI_PREFIX = r"(?:[℁-🫿]\S*\s+)?"  # 2101, not 2100: _has_emoji uses `> 0x2100` (exclusive)
 
-# Headings the Format_Python_Notebook templates show without an emoji.
+# Headings the format-notebook templates show without an emoji.
 FIXED_HEADINGS = {
     "Learning Objectives", "Prerequisites", "Key Concepts", "Key Concepts:",
     "Next Steps", "Summary", "Recap",
@@ -167,7 +167,7 @@ def build_notebook(cells: list[dict]) -> dict:
 
 
 # --------------------------------------------------------------------------
-# Convention check — enforces the Format_Python_Notebook skill's rules
+# Convention check — enforces the format-notebook skill's rules
 # (.claude/skills/format-notebook/SKILL.md). Keep the two in sync: if that
 # skill's rules change, change these checks and say so in its Reference section.
 # --------------------------------------------------------------------------

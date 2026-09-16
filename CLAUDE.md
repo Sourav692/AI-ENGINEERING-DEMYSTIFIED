@@ -49,6 +49,8 @@ docs/                                    Static HTML tutorial microsite (LangGra
 
 A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and should be consulted whenever new files/folders get dropped into this repo.
 
+The five LangChain 1.x migration pipeline skills (audit → plan-to-tasks → plan-to-teaching-notebook → notebook-review, plus the `langchain-v1-pipeline` runner) are grouped as a local plugin at `plugins/langchain-v1-migration/`, registered via `.claude-plugin/marketplace.json` and enabled in `.claude/settings.json`. Invoke them as `/langchain-v1-migration:<skill>`; call their scripts by repo-relative path under `plugins/langchain-v1-migration/skills/`.
+
 ### Phase 1 — `01_Theory_and_Foundations/` — internal tracks
 
 | Track | Content |

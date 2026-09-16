@@ -68,7 +68,7 @@ same body of work, and putting them on the board is what lets the notebook skill
 ### 3. Create the task files
 
 ```bash
-python .claude/skills/plan-to-tasks/scripts/tasks.py new .tasks/04_Chains \
+python plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py new .tasks/04_Chains \
   --title "Repoint legacy chain imports to langchain-classic" \
   --type migration --wave 1 --effort S --disposition repoint \
   --plan .plan/04_Chains_langchain_v1_plan.md \
@@ -93,7 +93,7 @@ before an explainer that documents the result). The index renders unmet dependen
 ### 4. Generate the tracker
 
 ```bash
-python .claude/skills/plan-to-tasks/scripts/tasks.py index .tasks/04_Chains
+python plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py index .tasks/04_Chains
 ```
 
 Writes `INDEX.md`: progress bar, status counts, and per-wave tables linking each task file, with
@@ -141,7 +141,7 @@ Reading state: `tasks.py list <board> [--status todo] [--type explainer]` and
 ### 6. Roll up to the plan
 
 ```bash
-python .claude/skills/plan-to-tasks/scripts/tasks.py rollup .tasks/<board>
+python plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py rollup .tasks/<board>
 ```
 
 `rollup` reads the board and rewrites a managed block in each source `.plan/` file

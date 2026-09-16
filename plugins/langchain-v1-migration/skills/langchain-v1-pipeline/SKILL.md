@@ -43,7 +43,7 @@ whole repo (~500 notebooks) produces an unusable plan, and guessing wastes an en
 ## Preflight
 
 ```bash
-python .claude/skills/langchain-v1-pipeline/scripts/preflight.py "<target>" --json
+python plugins/langchain-v1-migration/skills/langchain-v1-pipeline/scripts/preflight.py "<target>" --json
 ```
 
 Returns the resolved target, the shared `slug` (phase-prefixed when the folder name is

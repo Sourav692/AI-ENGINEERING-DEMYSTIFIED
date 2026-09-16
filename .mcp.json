@@ -12,7 +12,7 @@
         "--client-type",
         "persistent",
         "--data-dir",
-        "D:/AI ENGINEERING/.mcp_data/chroma"
+        ".mcp_data/chroma"
       ],
       "env": {}
     }

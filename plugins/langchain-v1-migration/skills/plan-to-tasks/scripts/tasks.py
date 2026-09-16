@@ -334,7 +334,7 @@ def cmd_index(args) -> int:
         out.append("")
 
     out += ["---", "",
-            "Regenerate with `python .claude/skills/plan-to-tasks/scripts/tasks.py index "
+            "Regenerate with `python plugins/langchain-v1-migration/skills/plan-to-tasks/scripts/tasks.py index "
             f"{board.as_posix()}` — do not hand-edit this file; edit the task files' "
             "frontmatter instead."]
     (board / "INDEX.md").write_text("\n".join(out) + "\n", encoding="utf-8")

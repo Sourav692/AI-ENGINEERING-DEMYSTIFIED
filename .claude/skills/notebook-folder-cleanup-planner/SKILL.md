@@ -87,7 +87,7 @@ them — IDs are permanent once issued.
 
 ```bash
 python .claude/skills/notebook-folder-cleanup/scripts/inventory.py "<folder>" --json
-python .claude/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py "<folder>" --json
+python plugins/langchain-v1-migration/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py "<folder>" --json
 ```
 
 Both are read-only. The first gives per-notebook cell counts, title/summary presence,

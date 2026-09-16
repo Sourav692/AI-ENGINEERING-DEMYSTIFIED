@@ -67,7 +67,7 @@ unless asked.
 ### 2. Run the scanner
 
 ```bash
-python .claude/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py \
+python plugins/langchain-v1-migration/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py \
   "<target folder>" --out "<scratchpad>/langchain_v1_audit.md"
 ```
 
@@ -124,7 +124,7 @@ Start the file with this frontmatter block so re-runs can diff against it:
 
 - **Target:** `<repo-relative path>`
 - **Generated:** <YYYY-MM-DD>
-- **Scanner:** `.claude/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py`
+- **Scanner:** `plugins/langchain-v1-migration/skills/langchain-v1-migration-audit/scripts/scan_langchain_v1.py`
 - **Pinned versions at scan time:** langchain `<x>`, langchain-core `<x>`, langgraph `<x>`
   (read from `pyproject.toml`)
 - **Files scanned / needing work:** `<n>` / `<m>`

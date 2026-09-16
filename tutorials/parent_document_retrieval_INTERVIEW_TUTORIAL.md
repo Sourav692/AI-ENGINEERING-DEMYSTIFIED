@@ -1,8 +1,11 @@
 # 🪆 Parent Document Retrieval — Interview Tutorial
 
-> Built from 2 notebooks in `04_Retrieval_and_RAG/03_Indexing_Techniques/Parent_Document_Retrieval.ipynb` and
-> `04_Retrieval_and_RAG/06_RAG_Naive_to_Production/05_Parent_Document_Retriever/08_BetterRetriever.ipynb` on 2026-09-09.
-> Target roles: Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer
+| | |
+|---|---|
+| **Source** | `04_Retrieval_and_RAG/03_Indexing_Techniques/Parent_Document_Retrieval.ipynb`, `04_Retrieval_and_RAG/06_RAG_Naive_to_Production/05_Parent_Document_Retriever/08_BetterRetriever.ipynb` |
+| **Notebooks** | 2 |
+| **Built** | 2026-09-09 |
+| **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
 
 ## What this covers
 

@@ -1,8 +1,12 @@
 # 🎯 RAG & Retrieval — Interview Tutorial
 
-> Built from 8 notebooks in `production-course-main-code-main/02_RAG_and_Retrieval/` on 2026-09-06.
-> Target roles: Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer
-> Section 5 was web-sourced live on the build date; every question there carries a source link.
+| | |
+|---|---|
+| **Source** | `04_Retrieval_and_RAG/RAG_Production_Course/` |
+| **Notebooks** | 8 |
+| **Built** | 2026-09-06 |
+| **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
+| **Note** | Section 5 was web-sourced live on the build date; every question there carries a source link. |
 
 **RAG** stands for **Retrieval-Augmented Generation**. It means: before you ask a
 language model a question, you go find the relevant documents and paste them into the

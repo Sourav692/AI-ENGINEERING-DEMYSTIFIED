@@ -6,7 +6,7 @@ form appears as contrast, never as the main event.
 
 ## The shape
 
-**The `Format_Python_Notebook` skill (`.claude/skills/format-notebook/SKILL.md`) owns the
+**The `format-notebook` skill (`.claude/skills/format-notebook/SKILL.md`) owns the
 formatting contract.** Read it before drafting — everything below is the migration-specific
 *content* poured into that skill's *structure*, not a competing format.
 
@@ -65,7 +65,7 @@ them (`## 🔬 Under the hood`, `## 🧭 When to still use the old way`).
 ## Format rules the checker enforces mechanically
 
 `md_to_notebook.py --check` validates these on every write, straight from
-`Format_Python_Notebook`. It reports the rule number, so a failure points back at that skill:
+`format-notebook`. It reports the rule number, so a failure points back at that skill:
 
 | # | Rule | Checked |
 | --- | --- | --- |
@@ -89,7 +89,7 @@ Model initialization depends on where the notebook lands:
 | 2 `LangChain_Fundamentals/` | direct `ChatOpenAI` / `ChatGroq` — the documented convention there |
 | 4 (`RAG_Demystified`-sourced) | direct instantiation, matches surrounding notebooks |
 
-**This overrides `Format_Python_Notebook`'s rule 5**, which shows `get_databricks_llm(...)`
+**This overrides `format-notebook`'s rule 5**, which shows `get_databricks_llm(...)`
 unconditionally. That skill was written for the LangGraph-side notebooks; the per-phase
 convention in `CLAUDE.md` wins. Everything else in rule 5 still applies — show the active
 choice, list alternatives as comments, and print which model was loaded.

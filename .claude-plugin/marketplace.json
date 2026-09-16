@@ -1,0 +1,11 @@
+{
+  "name": "ai-engineering-local",
+  "owner": { "name": "Sourav" },
+  "plugins": [
+    {
+      "name": "langchain-v1-migration",
+      "source": "./plugins/langchain-v1-migration",
+      "description": "LangChain 1.x migration pipeline skills (audit, plan-to-tasks, plan-to-teaching-notebook, notebook-review, langchain-v1-pipeline)."
+    }
+  ]
+}
