@@ -238,10 +238,10 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | Path | Type | Topics Covered |
 |---|---|---|
 | `tutorials/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
-| `tutorials/02_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
+| `tutorials/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
 | `tutorials/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |
-| `tutorials/04_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
-| `tutorials/05_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
+| `tutorials/07_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
+| `tutorials/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
 | `tutorials/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
 | `tutorials/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
 | `tutorials/chunking/01-chunking-strategies-by-doc-type.md` (+html) | md/html | Chunking strategies by document type |

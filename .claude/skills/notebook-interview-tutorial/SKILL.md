@@ -69,7 +69,16 @@ It reports, per notebook: title, heading outline, third-party imports, library-l
 symbols called, and cell counts. Aggregated: frameworks in use, **topics demonstrated
 with the evidence for each**, and **interview-critical topics absent from the source**.
 
-That last list is the Coverage gaps section. Do not editorialize it away.
+That last list is a fixed 10-topic checklist (agents, evaluation, observability,
+streaming, retries, structured output, human-in-the-loop, multi-agent, etc.) run
+against every notebook regardless of subject — it is a *candidate* list, not the
+Coverage gaps section verbatim. Before writing Coverage gaps, keep only the
+candidates that are actually about the concept this tutorial teaches — a gap that
+would apply to literally any notebook (e.g. "no tracing", "no multi-agent") is noise,
+not a coverage gap for *this* topic. Never invent that something absent IS covered,
+and never drop a candidate that genuinely bears on this concept working correctly
+(e.g. an evaluation gap for a retrieval technique) — but do not editorialize a
+generic candidate INTO relevance just because the script flagged it.
 
 If the run finds no notebooks, stop and say so rather than inventing a curriculum.
 
@@ -192,3 +201,9 @@ Check each of these against the draft, and fix rather than report:
     multi-step mechanism, a real failure worth walking through, or a named interview
     failure mode) — not on every concept, and not as a dumping ground for anything
     that felt too long for the main flow without meeting that bar.
+14. Every gotcha is specific to *this tutorial's core concept*, not a generic fact
+    about some other component the notebook happens to use (a text splitter's
+    units, a chain type's context limit, a store's persistence default, a broad
+    `except` clause, an ID-generation default, a notebook's own placeholder-key
+    check). See "Gotcha shape"'s topic-specific rule — cut, don't keep, anything
+    that fails it, even if that leaves fewer than 6 gotchas.

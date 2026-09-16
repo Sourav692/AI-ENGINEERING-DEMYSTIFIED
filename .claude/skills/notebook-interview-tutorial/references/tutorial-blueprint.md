@@ -55,7 +55,7 @@ name (or notebook stem for a single file), lowercased with underscores.
 | **Note** _(optional)_ | anything that doesn't fit the rows above — series membership, a role weighted as primary focus, whether section 4 was web-sourced live, etc. Omit the row entirely when there's nothing to say. |
 
 ## What this covers            <- table: concept | source notebook | interview weight
-## Coverage gaps               <- interview-critical topics the source does NOT teach
+## Coverage gaps               <- ONLY gaps specific to this topic (see SKILL.md); not the raw checklist
 
 ---
 ## 1. Core concepts            <- the SHARED CORE, every role needs this
@@ -186,6 +186,21 @@ ones the source notebooks actually hit — a saved error output or a warning in 
 is a gift, use it verbatim. If a cause genuinely needs more than one sentence to
 explain (a multi-step failure chain), that is a Deep Dive candidate, not a longer
 Cause line — link it: `**Cause**: <one sentence>. See the Deep Dive on <concept>.`
+
+**Topic-specific, not implementation-generic.** A gotcha earns its place only if it
+is a surprising behavior of *this tutorial's core concept* — something that would
+still be a gotcha in a from-scratch reimplementation of the pattern being taught.
+Cut anything that is really a fact about a different, generic component the
+notebook happens to use: a text splitter's units, a chain type's context-window
+limit, a store's persistence default, a broad `except` clause, an ID-generation
+default, a notebook author's own placeholder-key check. Those are real facts, but
+they belong to a different topic's tutorial (or nowhere) — including them here
+dilutes the list and crowds out the gotchas that actually test understanding of
+*this* concept. When in doubt, ask: "is this surprising because of how *the concept
+this tutorial teaches* behaves, or because of some other library/notebook detail
+that happened to be in the way?" Keep only the former. A shorter list of 2-4 sharp,
+on-topic gotchas beats a longer list padded with generic ones — the 6-10 target
+above is a ceiling, not a quota.
 
 ## Tradeoff shape
 

@@ -102,8 +102,8 @@ architecture out loud scores better than building the complicated one.
 | Gap | Where it lives |
 |---|---|
 | Single-agent loop, tools, checkpointing | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
-| Retrieval as an agent capability | [02 RAG](02_rag_and_retrieval_INTERVIEW_TUTORIAL.md) |
-| Evaluating and costing all this | [05 Production](05_production_and_operations_INTERVIEW_TUTORIAL.md) |
+| Retrieval as an agent capability | [02 RAG](04_rag_and_retrieval_INTERVIEW_TUTORIAL.md) |
+| Evaluating and costing all this | [05 Production](12_production_and_operations_INTERVIEW_TUTORIAL.md) |
 | Retries and fallbacks | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) |
 | **Async** | **Nowhere in this repo — build it yourself** |
 
@@ -515,7 +515,7 @@ Your home track alongside [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUT
 
 ### 5.2 Applied AI / AI Engineer
 1. **Do you need multiple agents for RAG?** Almost never. Retrieve-then-generate is one
-   path. See [02 RAG](02_rag_and_retrieval_INTERVIEW_TUTORIAL.md).
+   path. See [02 RAG](04_rag_and_retrieval_INTERVIEW_TUTORIAL.md).
 2. **How would you evaluate routing accuracy?** Label a set of requests with the correct
    agent and measure the supervisor like a classifier. It is one.
 3. **Parallel agents over the same corpus — what's the risk?** Duplicate retrieval and
@@ -574,8 +574,8 @@ flowchart LR
 |---|---|
 | [03 LangGraph](03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md) | **Read first.** Every pattern here is that graph, nested. State, reducers and checkpointing are unchanged. |
 | [01 Foundations](01_langchain_foundations_INTERVIEW_TUTORIAL.md) | `with_structured_output`, which is how supervisor routing stays safe. |
-| [02 RAG](02_rag_and_retrieval_INTERVIEW_TUTORIAL.md) | Give your agents documents. Share one retrieval step rather than duplicating it per agent. |
-| [05 Production](05_production_and_operations_INTERVIEW_TUTORIAL.md) | Cost accounting per hop, tracing per agent, and evaluating trajectories. |
+| [02 RAG](04_rag_and_retrieval_INTERVIEW_TUTORIAL.md) | Give your agents documents. Share one retrieval step rather than duplicating it per agent. |
+| [05 Production](12_production_and_operations_INTERVIEW_TUTORIAL.md) | Cost accounting per hop, tracing per agent, and evaluating trajectories. |
 
 **Repo-wide gap: async.** Parallel agents here run on threads, not an event loop.
 Nothing in any folder uses `ainvoke` or `astream`. For a service handling concurrent
