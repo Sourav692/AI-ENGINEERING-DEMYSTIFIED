@@ -1,0 +1,134 @@
+{
+  "generatedAt": "2026-09-16T21:44:41.317Z",
+  "modules": [
+    {
+      "id": "01-customer-discovery-and-decomposition",
+      "tracks": [
+        {
+          "id": "core",
+          "title": "Core Scenarios",
+          "blurb": "Ten generic GenAI FDE case studies. Start here — they cover the discovery and decomposition moves that every scenario builds on.",
+          "scenarios": [
+            {
+              "slug": "internal-knowledge-assistant",
+              "order": 1,
+              "title": "Internal Knowledge Assistant for Enterprise Support"
+            },
+            {
+              "slug": "sales-copilot",
+              "order": 2,
+              "title": "Sales Copilot for Account Executives"
+            },
+            {
+              "slug": "financial-compliance-reviewer",
+              "order": 3,
+              "title": "Financial Compliance Document Reviewer"
+            },
+            {
+              "slug": "healthcare-prior-auth-assistant",
+              "order": 4,
+              "title": "Healthcare Prior Authorization Assistant"
+            },
+            {
+              "slug": "legal-contract-copilot",
+              "order": 5,
+              "title": "Legal Contract Review Copilot"
+            },
+            {
+              "slug": "sre-triage-agent",
+              "order": 6,
+              "title": "SRE Incident Triage Agent"
+            },
+            {
+              "slug": "multi-tenant-saas-support",
+              "order": 7,
+              "title": "Multi-Tenant SaaS Support Assistant"
+            },
+            {
+              "slug": "retail-demand-explainer",
+              "order": 8,
+              "title": "Retail Demand Forecast Explanation Assistant"
+            },
+            {
+              "slug": "service-now-ticket-agent",
+              "order": 9,
+              "title": "ServiceNow Ticket Automation Agent"
+            },
+            {
+              "slug": "executive-dashboard-copilot",
+              "order": 10,
+              "title": "Executive Dashboard Copilot"
+            }
+          ]
+        },
+        {
+          "id": "system-design",
+          "title": "System Design Scenarios",
+          "blurb": "Twelve harder scenarios, each built around one dangerous constraint — permission fidelity, tenant isolation, air-gapped deployment, release gating.",
+          "scenarios": [
+            {
+              "slug": "enterprise-knowledge-assistant-rag",
+              "order": 1,
+              "title": "Enterprise Knowledge Assistant with RAG"
+            },
+            {
+              "slug": "secure-multi-tenant-ai-platform",
+              "order": 2,
+              "title": "Secure Multi-Tenant AI Platform"
+            },
+            {
+              "slug": "natural-language-to-sql-analytics-assistant",
+              "order": 3,
+              "title": "Natural-Language-to-SQL Analytics Assistant"
+            },
+            {
+              "slug": "ai-customer-support-automation",
+              "order": 4,
+              "title": "AI Customer-Support Automation"
+            },
+            {
+              "slug": "ai-system-for-an-air-gapped-environment",
+              "order": 5,
+              "title": "AI System for an Air-Gapped Environment"
+            },
+            {
+              "slug": "llm-evaluation-and-release-gating-platform",
+              "order": 6,
+              "title": "LLM Evaluation and Release-Gating Platform"
+            },
+            {
+              "slug": "high-volume-batch-inference-system",
+              "order": 7,
+              "title": "High-Volume Batch Inference System"
+            },
+            {
+              "slug": "tool-using-ai-agent-with-safety-controls",
+              "order": 8,
+              "title": "Tool-Using AI Agent with Safety Controls"
+            },
+            {
+              "slug": "reliable-workflow-orchestration-system",
+              "order": 9,
+              "title": "Reliable Workflow Orchestration System"
+            },
+            {
+              "slug": "observability-customer-facing-ai-application",
+              "order": 10,
+              "title": "Observability for a Customer-Facing AI Application"
+            },
+            {
+              "slug": "configurable-platform-customer-specific-workflows",
+              "order": 11,
+              "title": "Configurable Platform for Customer-Specific Workflows"
+            },
+            {
+              "slug": "enterprise-chatbot-platform",
+              "order": 12,
+              "title": "Enterprise Chatbot Platform"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

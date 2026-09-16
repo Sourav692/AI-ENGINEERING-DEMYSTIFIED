@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Section } from '@/lib/parse'
 import { Blocks } from './Blocks'
 
@@ -8,21 +8,21 @@ import { Blocks } from './Blocks'
  * The per-section answer key, collapsed by default.
  *
  * Kept shut until asked because the whole value of the worksheet is attempting a
- * section before seeing what a strong answer covers. `forceOpen` lets the page-level
- * "Reveal all" and the print stylesheet open every one at once.
+ * section before seeing what a strong answer covers.
+ *
+ * `defaultOpen` carries the page-level "Reveal all". The parent remounts these via
+ * `key` when it flips, so the initial state comes from the prop rather than being
+ * synced into state by an effect — and afterwards each section toggles on its own
+ * again, so revealing everything then closing one still behaves the way you expect.
  */
 export function AnswerKeyReveal({
   sections,
-  forceOpen,
+  defaultOpen,
 }: {
   sections: Section[]
-  forceOpen: boolean
+  defaultOpen: boolean
 }) {
-  const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    if (forceOpen) setOpen(true)
-  }, [forceOpen])
+  const [open, setOpen] = useState(defaultOpen)
 
   if (sections.length === 0) return null
 

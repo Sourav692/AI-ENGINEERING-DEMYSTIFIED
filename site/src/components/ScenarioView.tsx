@@ -41,6 +41,11 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [revealAll, setRevealAll] = useState(false)
 
+  // Saved answers live in localStorage, which does not exist during prerendering and
+  // must not be read during render. Reading after mount is what keeps the first client
+  // render identical to the prerendered HTML; seeding this state any earlier is exactly
+  // what would be unsafe. One pass, on scenario change.
+  /* eslint-disable react-hooks/set-state-in-effect -- hydration-safe by design */
   useEffect(() => {
     setAnswers(loadAnswers(id))
     setScores(loadScores(id))
@@ -55,6 +60,7 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
     }
     setHydrated(true)
   }, [id])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Debounced so typing does not write on every keystroke. The timer is cleared on
   // unmount, and a pending write is flushed first so navigating away keeps the edit.
@@ -189,7 +195,11 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
               onAddRow={handleAddRow}
             />
 
-            <AnswerKeyReveal sections={section.answerKey} forceOpen={revealAll} />
+            <AnswerKeyReveal
+              key={`${section.index}-${revealAll}`}
+              sections={section.answerKey}
+              defaultOpen={revealAll}
+            />
           </section>
         ))}
       </div>

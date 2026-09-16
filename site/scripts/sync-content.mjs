@@ -158,7 +158,49 @@ async function syncTrack(track) {
   }
 }
 
+/**
+ * The sources live outside `site/`, so a deploy whose root directory is `site/`
+ * never sees them. `content/` is therefore committed, and when the sources are
+ * absent we build from that committed copy instead of failing.
+ *
+ * This only applies when the sources are missing wholesale. If they are present
+ * but produce nothing, that is a broken path and still fails the build.
+ */
+async function sourcesPresent() {
+  try {
+    await readdir(SOURCE_ROOT)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function contentPresent() {
+  try {
+    const manifest = JSON.parse(
+      await readFile(join(OUT_DIR, 'manifest.json'), 'utf8'),
+    )
+    return manifest.modules?.[0]?.tracks?.length > 0
+  } catch {
+    return false
+  }
+}
+
 async function main() {
+  if (!(await sourcesPresent())) {
+    if (await contentPresent()) {
+      console.log(
+        `content sync: sources not present at ${SOURCE_ROOT}\n` +
+          '  building from the committed content/ snapshot instead.',
+      )
+      return
+    }
+    throw new Error(
+      `Sources not found at:\n  ${SOURCE_ROOT}\n` +
+        'and content/ holds no usable snapshot, so there is nothing to build from.',
+    )
+  }
+
   await rm(OUT_DIR, { recursive: true, force: true })
   await mkdir(OUT_DIR, { recursive: true })
 

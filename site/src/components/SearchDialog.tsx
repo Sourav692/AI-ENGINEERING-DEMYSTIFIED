@@ -18,11 +18,27 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
 
+  // Opening always starts from a clean slate. Done here rather than in an effect
+  // watching `open` so the reset happens with the state change that caused it.
+  const openDialog = useCallback(() => {
+    setQuery('')
+    setActive(0)
+    setOpen(true)
+    // Focus after the dialog paints, otherwise the element is not yet focusable.
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }, [])
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        setOpen((v) => !v)
+        setOpen((wasOpen) => {
+          if (wasOpen) return false
+          setQuery('')
+          setActive(0)
+          requestAnimationFrame(() => inputRef.current?.focus())
+          return true
+        })
       }
       if (e.key === 'Escape') setOpen(false)
     }
@@ -30,18 +46,13 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  useEffect(() => {
-    if (open) {
-      setQuery('')
-      setActive(0)
-      // Focus after the dialog paints, otherwise the element is not yet focusable.
-      requestAnimationFrame(() => inputRef.current?.focus())
-    }
-  }, [open])
-
   const results = useMemo(() => search(entries, query), [entries, query])
 
-  useEffect(() => setActive(0), [query])
+  // A new query invalidates the highlighted row, so they change together.
+  const handleQueryChange = useCallback((value: string) => {
+    setQuery(value)
+    setActive(0)
+  }, [])
 
   const go = useCallback(
     (href: string) => {
@@ -76,7 +87,7 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openDialog}
         aria-label="Search all case studies"
         aria-keyshortcuts="Meta+K Control+K"
         className="flex items-center gap-2 rounded-md border border-border bg-surface px-2.5 py-1.5 text-[0.8125rem] text-subtle transition-colors hover:border-border-strong hover:text-muted"
@@ -111,7 +122,7 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
               <input
                 ref={inputRef}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => handleQueryChange(e.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder="Search scenarios, sections and answer keys…"
                 aria-label="Search"
