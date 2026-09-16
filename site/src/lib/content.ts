@@ -82,14 +82,24 @@ export const getScenario = cache(
 
     const sections: ScenarioSection[] = worksheet.sections.map((section) => ({
       ...section,
-      answerKey: (ANSWER_KEY_MAP[section.key] ?? [])
+      // Falling back to the section's own key pairs a worksheet section with an
+      // answer-key section of the same name. Module 01's two documents have
+      // deliberately different shapes, so it declares its pairings in ANSWER_KEY_MAP
+      // and the fallback only ever resolves to nothing there. Tracks whose two
+      // documents share a heading structure — the behavioural ones, where each
+      // question is one section in both files — need no entry at all.
+      answerKey: (ANSWER_KEY_MAP[section.key] ?? [section.key])
         .map((key) => keyByKey.get(key))
         .filter((s): s is Section => Boolean(s)),
     }))
 
     return {
       ref,
-      title: worksheet.title.replace(/\s*[-–—]\s*Case Study Worksheet\s*$/i, ''),
+      title: worksheet.title.replace(
+        /\s*[-–—]\s*(Case Study|Practice) Worksheet\s*$/i,
+        '',
+      ),
+      intro: worksheet.intro,
       sections,
       closing: keyByKey.get(CLOSING_SECTION_KEY) ?? null,
       answerKeyDocument: answerKey,

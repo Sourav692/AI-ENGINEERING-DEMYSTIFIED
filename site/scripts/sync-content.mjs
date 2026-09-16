@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * Copies the FDE prep markdown out of the learning repo and into `site/content/`,
- * which is generated output and gitignored. The source folders under
- * `15_FDE_Related_Preparation/` stay the only place anyone edits.
+ * Copies the FDE prep markdown out of the learning repo and into `site/content/`.
+ * The source folders under `15_FDE_Related_Preparation/` stay the only place anyone
+ * edits; `content/` is generated, but it is committed rather than ignored, because a
+ * deploy rooted at `site/` cannot see the sources (see `sourcesPresent` below).
  *
  * Also writes `content/manifest.json`: the sync step is the single place that knows
  * how worksheets pair with answer keys and what order scenarios appear in, so the
@@ -22,47 +23,82 @@ const REPO_ROOT = resolve(SITE_DIR, '..')
 const SOURCE_ROOT = join(REPO_ROOT, '15_FDE_Related_Preparation')
 const OUT_DIR = join(SITE_DIR, 'content')
 
-const MODULE_ID = '01-customer-discovery-and-decomposition'
+const BEHAVIOURAL_ROOT = join(SOURCE_ROOT, 'Behavioral_and_Leadership')
 
-const TRACKS = [
+/**
+ * Every live module and the tracks inside it. Track ids must be unique across all
+ * modules, not just within one: saved progress is keyed `trackId/slug`, so two
+ * modules sharing a track id would share a reader's answers too.
+ */
+const MODULES = [
   {
-    id: 'core',
-    title: 'Core Scenarios',
-    blurb:
-      'Ten generic GenAI FDE case studies. Start here — they cover the discovery ' +
-      'and decomposition moves that every scenario builds on.',
-    worksheetDir: join(
-      SOURCE_ROOT,
-      '1. Complete GEN AI FDE Interview System — Core + GenAI',
-      '01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION',
-      '04_CASE_STUDY_WORKSHEET',
-    ),
-    answerKeyDir: join(
-      SOURCE_ROOT,
-      '1. Complete GEN AI FDE Interview System — Core + GenAI',
-      '01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION',
-      '04_CASE_STUDY_WORKSHEET',
-      'answer_keys',
-      'answer-keys-in-md',
-    ),
+    id: '01-customer-discovery-and-decomposition',
+    tracks: [
+      {
+        id: 'core',
+        title: 'Core Scenarios',
+        blurb:
+          'Ten generic GenAI FDE case studies. Start here — they cover the discovery ' +
+          'and decomposition moves that every scenario builds on.',
+        worksheetDir: join(
+          SOURCE_ROOT,
+          '1. Complete GEN AI FDE Interview System — Core + GenAI',
+          '01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION',
+          '04_CASE_STUDY_WORKSHEET',
+        ),
+        answerKeyDir: join(
+          SOURCE_ROOT,
+          '1. Complete GEN AI FDE Interview System — Core + GenAI',
+          '01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION',
+          '04_CASE_STUDY_WORKSHEET',
+          'answer_keys',
+          'answer-keys-in-md',
+        ),
+      },
+      {
+        id: 'system-design',
+        title: 'System Design Scenarios',
+        blurb:
+          'Twelve harder scenarios, each built around one dangerous constraint — ' +
+          'permission fidelity, tenant isolation, air-gapped deployment, release gating.',
+        worksheetDir: join(
+          SOURCE_ROOT,
+          'FDE_System_Design_Interview_20_Scenarios',
+          'Version_3',
+        ),
+        answerKeyDir: join(
+          SOURCE_ROOT,
+          'FDE_System_Design_Interview_20_Scenarios',
+          'Version_3',
+          'answer_keys',
+        ),
+      },
+    ],
   },
   {
-    id: 'system-design',
-    title: 'System Design Scenarios',
-    blurb:
-      'Twelve harder scenarios, each built around one dangerous constraint — ' +
-      'permission fidelity, tenant isolation, air-gapped deployment, release gating.',
-    worksheetDir: join(
-      SOURCE_ROOT,
-      'FDE_System_Design_Interview_20_Scenarios',
-      'Version_3',
-    ),
-    answerKeyDir: join(
-      SOURCE_ROOT,
-      'FDE_System_Design_Interview_20_Scenarios',
-      'Version_3',
-      'answer_keys',
-    ),
+    id: '14-behavioural-and-leadership-round',
+    tracks: [
+      {
+        id: 'hiring-manager',
+        title: 'Hiring Manager Round',
+        blurb:
+          'Five customer-facing competencies, four questions each. The round that ' +
+          'decides whether you can be put in front of a customer — not whether you ' +
+          'can design a system.',
+        worksheetDir: join(BEHAVIOURAL_ROOT, 'hiring_manager_round'),
+        answerKeyDir: join(BEHAVIOURAL_ROOT, 'hiring_manager_round', 'answer_keys'),
+      },
+      {
+        id: 'leadership-principles',
+        title: 'Leadership Principles',
+        blurb:
+          'Thirteen principles plus the staff-level cross-cutting set, each with the ' +
+          'spoken answers your own engagements already support — and an honest mark ' +
+          'on the ones they do not.',
+        worksheetDir: join(BEHAVIOURAL_ROOT, 'leadership_principles'),
+        answerKeyDir: join(BEHAVIOURAL_ROOT, 'leadership_principles', 'answer_keys'),
+      },
+    ],
   },
 ]
 
@@ -91,7 +127,10 @@ function extractTitle(markdown, fallback) {
   if (!line) return fallback
   return line
     .replace(/^#\s+/, '')
-    .replace(/\s*[-–—]\s*(Case Study Worksheet|Answer Key)\s*$/i, '')
+    .replace(
+      /\s*[-–—]\s*(Case Study Worksheet|Practice Worksheet|Answer Key)\s*$/i,
+      '',
+    )
     .trim()
 }
 
@@ -107,7 +146,7 @@ async function readMarkdownFiles(dir) {
     .sort((a, b) => sourceNumber(a) - sourceNumber(b) || a.localeCompare(b))
 }
 
-async function syncTrack(track) {
+async function syncTrack(moduleId, track) {
   const worksheetFiles = await readMarkdownFiles(track.worksheetDir)
   const answerKeyFiles = new Set(await readMarkdownFiles(track.answerKeyDir))
 
@@ -126,7 +165,7 @@ async function syncTrack(track) {
     const worksheet = await readFile(join(track.worksheetDir, file), 'utf8')
     const answerKey = await readFile(join(track.answerKeyDir, keyFile), 'utf8')
 
-    const outBase = join(OUT_DIR, 'modules', MODULE_ID, track.id)
+    const outBase = join(OUT_DIR, 'modules', moduleId, track.id)
     await mkdir(join(outBase, 'worksheets'), { recursive: true })
     await mkdir(join(outBase, 'answer-keys'), { recursive: true })
     await writeFile(join(outBase, 'worksheets', `${slug}.md`), worksheet)
@@ -204,26 +243,29 @@ async function main() {
   await rm(OUT_DIR, { recursive: true, force: true })
   await mkdir(OUT_DIR, { recursive: true })
 
-  const tracks = []
+  const modules = []
   const warnings = []
 
-  for (const track of TRACKS) {
-    const result = await syncTrack(track)
-    tracks.push(result.manifest)
-    warnings.push(...result.warnings)
+  for (const mod of MODULES) {
+    const tracks = []
+    for (const track of mod.tracks) {
+      const result = await syncTrack(mod.id, track)
+      tracks.push(result.manifest)
+      warnings.push(...result.warnings)
+    }
+    modules.push({ id: mod.id, tracks })
   }
 
-  const manifest = {
-    generatedAt: new Date().toISOString(),
-    modules: [{ id: MODULE_ID, tracks }],
-  }
+  const manifest = { generatedAt: new Date().toISOString(), modules }
   await writeFile(join(OUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))
 
-  const total = tracks.reduce((sum, t) => sum + t.scenarios.length, 0)
+  const allTracks = modules.flatMap((m) => m.tracks)
+  const total = allTracks.reduce((sum, t) => sum + t.scenarios.length, 0)
   for (const warning of warnings) console.warn(`  warning: ${warning}`)
   console.log(
-    `content sync: ${total} scenarios across ${tracks.length} tracks ` +
-      `(${tracks.map((t) => `${t.id}=${t.scenarios.length}`).join(', ')})`,
+    `content sync: ${total} scenarios across ${allTracks.length} tracks ` +
+      `in ${modules.length} modules ` +
+      `(${allTracks.map((t) => `${t.id}=${t.scenarios.length}`).join(', ')})`,
   )
 }
 

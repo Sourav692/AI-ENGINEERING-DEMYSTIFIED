@@ -1,9 +1,15 @@
 /**
  * Maps a worksheet section to the answer-key sections that speak to it.
  *
- * The two documents have different shapes on purpose — the worksheet is 11 sections
- * of scaffold, the answer key is 13 sections of prose — so the relationship is
- * declared here rather than inferred. Keys are `normaliseKey()` output.
+ * This is Module 01's map. Its two documents have different shapes on purpose — the
+ * worksheet is 11 sections of scaffold, the answer key is 13 sections of prose — so
+ * the relationship is declared here rather than inferred. Keys are `normaliseKey()`
+ * output.
+ *
+ * A section with no entry here falls back to matching an answer-key section of the
+ * same key (see `content.ts`). That is what the behavioural tracks rely on, and it
+ * is a no-op for Module 01: the only two keys present in both of its documents,
+ * `evaluation-plan` and `rollout-plan`, are already mapped to themselves below.
  *
  * Two deliberate gaps:
  *   - `users-and-workflows` has no counterpart. Synthesising one from other key

@@ -29,7 +29,11 @@ export default async function ModulePage({
   if (!meta || meta.status !== 'live') notFound()
 
   const tracks = await getTracks(moduleId)
-  const allScenarios = await getAllScenarios()
+  // Scoped to this module: `getAllScenarios()` spans every live module, and the
+  // progress ring and track lists on this page must only count what is on it.
+  const moduleScenarios = (await getAllScenarios()).filter(
+    (s) => s.moduleId === moduleId,
+  )
 
   return (
     <div className="py-12">
@@ -51,12 +55,12 @@ export default async function ModulePage({
       </header>
 
       <div className="mt-7 rounded-xl border border-border bg-surface p-5">
-        <ModuleProgress scenarios={allScenarios} />
+        <ModuleProgress scenarios={moduleScenarios} />
       </div>
 
       <div className="mt-12 space-y-12">
         {tracks.map((track) => {
-          const refs = allScenarios.filter((s) => s.trackId === track.id)
+          const refs = moduleScenarios.filter((s) => s.trackId === track.id)
           return (
             <section key={track.id}>
               <div className="mb-4 max-w-2xl">

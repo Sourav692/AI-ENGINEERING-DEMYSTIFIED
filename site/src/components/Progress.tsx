@@ -68,7 +68,7 @@ export function ModuleProgress({ scenarios }: { scenarios: ScenarioRef[] }) {
               ? started > 0
                 ? `mastered · ${started} in progress`
                 : 'mastered'
-              : 'case studies with answer keys'}
+              : 'with answer keys'}
           </div>
         </div>
       </div>

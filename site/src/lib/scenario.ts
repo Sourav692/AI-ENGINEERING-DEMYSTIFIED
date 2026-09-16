@@ -1,4 +1,4 @@
-import type { Section, ParsedDocument } from './parse'
+import type { Block, Section, ParsedDocument } from './parse'
 
 /**
  * Types and helpers shared by server and client code.
@@ -39,6 +39,9 @@ export type ScenarioSection = Section & {
 export type Scenario = {
   ref: ScenarioRef
   title: string
+  /** Worksheet content above the first `## ` heading, shown as a lead-in. Empty for
+   *  the case-study worksheets, whose first line is already a numbered section. */
+  intro: Block[]
   sections: ScenarioSection[]
   /** The "Final 2-minute spoken answer" section, shown as the closing card. */
   closing: Section | null

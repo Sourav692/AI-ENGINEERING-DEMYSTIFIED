@@ -175,6 +175,12 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
         onReset={handleReset}
       />
 
+      {scenario.intro.length > 0 && (
+        <div className="mb-12 rounded-xl border border-border bg-surface-2/50 p-5 text-[0.9375rem] leading-relaxed">
+          <Blocks blocks={scenario.intro} />
+        </div>
+      )}
+
       <div className="space-y-12">
         {scenario.sections.map((section) => (
           <section key={section.index} id={`section-${section.index}`} className="scroll-mt-32">

@@ -5,7 +5,10 @@ import { ModuleProgress } from '@/components/Progress'
 
 export default async function HomePage() {
   const scenarios = await getAllScenarios()
-  const liveModule = MODULES.find((m) => m.status === 'live')!
+  const liveModules = MODULES.filter((m) => m.status === 'live')
+  const firstLive = liveModules[0]
+  const scenariosIn = (moduleId: string) =>
+    scenarios.filter((s) => s.moduleId === moduleId)
 
   return (
     <div className="py-14 sm:py-20">
@@ -24,10 +27,10 @@ export default async function HomePage() {
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Link
-            href={`/modules/${liveModule.id}`}
+            href={`/modules/${firstLive.id}`}
             className="rounded-md bg-accent px-4 py-2.5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-accent-hover"
           >
-            Start Module 01
+            Start Module {String(firstLive.number).padStart(2, '0')}
           </Link>
           <Link
             href="/guide"
@@ -44,7 +47,7 @@ export default async function HomePage() {
             The preparation path
           </h2>
           <span className="text-[0.8125rem] text-subtle">
-            1 of {MODULES.length} modules available
+            {liveModules.length} of {MODULES.length} modules available
           </span>
         </div>
 
@@ -78,12 +81,12 @@ export default async function HomePage() {
                   {module.blurb}
                 </p>
                 <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-border pt-4">
-                  <ModuleProgress scenarios={scenarios} />
+                  <ModuleProgress scenarios={scenariosIn(module.id)} />
                   <Link
                     href={`/modules/${module.id}`}
                     className="text-[0.875rem] font-semibold text-accent transition-colors hover:text-accent-hover"
                   >
-                    All 22 scenarios →
+                    All {scenariosIn(module.id).length} scenarios →
                   </Link>
                 </div>
               </div>

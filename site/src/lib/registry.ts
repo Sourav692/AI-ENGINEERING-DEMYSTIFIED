@@ -120,6 +120,16 @@ export const MODULES: ModuleMeta[] = [
     blurb: 'Résumé framing, portfolio projects and STAR stories that hold up to an FDE panel.',
     status: 'planned',
   },
+  {
+    id: '14-behavioural-and-leadership-round',
+    number: 14,
+    title: 'Behavioural & Leadership Round',
+    blurb:
+      'The non-technical half of the loop. Customer-facing competencies for the hiring ' +
+      'manager round, and leadership-principle answers grounded in engagements you ' +
+      'actually ran — including an honest mark on the ones they do not cover.',
+    status: 'live',
+  },
 ]
 
 export function getModule(id: string): ModuleMeta | undefined {

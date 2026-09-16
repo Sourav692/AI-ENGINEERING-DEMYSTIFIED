@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T21:44:41.317Z",
+  "generatedAt": "2026-09-16T22:05:11.817Z",
   "modules": [
     {
       "id": "01-customer-discovery-and-decomposition",
@@ -125,6 +125,120 @@
               "slug": "enterprise-chatbot-platform",
               "order": 12,
               "title": "Enterprise Chatbot Platform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-behavioural-and-leadership-round",
+      "tracks": [
+        {
+          "id": "hiring-manager",
+          "title": "Hiring Manager Round",
+          "blurb": "Five customer-facing competencies, four questions each. The round that decides whether you can be put in front of a customer — not whether you can design a system.",
+          "scenarios": [
+            {
+              "slug": "ambiguity-and-discovery",
+              "order": 1,
+              "title": "Ambiguity and Discovery"
+            },
+            {
+              "slug": "stakeholder-influence",
+              "order": 2,
+              "title": "Stakeholder Influence"
+            },
+            {
+              "slug": "delivery-under-pressure",
+              "order": 3,
+              "title": "Delivery Under Pressure"
+            },
+            {
+              "slug": "pushback-and-saying-no",
+              "order": 4,
+              "title": "Pushback and Saying No"
+            },
+            {
+              "slug": "scale-beyond-self",
+              "order": 5,
+              "title": "Scale Beyond Self"
+            }
+          ]
+        },
+        {
+          "id": "leadership-principles",
+          "title": "Leadership Principles",
+          "blurb": "Thirteen principles plus the staff-level cross-cutting set, each with the spoken answers your own engagements already support — and an honest mark on the ones they do not.",
+          "scenarios": [
+            {
+              "slug": "customer-obsession",
+              "order": 1,
+              "title": "Customer Obsession"
+            },
+            {
+              "slug": "ownership",
+              "order": 2,
+              "title": "Ownership"
+            },
+            {
+              "slug": "attracts-and-retains-talent",
+              "order": 3,
+              "title": "Attracts and Retains Talent"
+            },
+            {
+              "slug": "communicates-with-clarity",
+              "order": 4,
+              "title": "Communicates with Clarity"
+            },
+            {
+              "slug": "sets-high-standards",
+              "order": 5,
+              "title": "Sets High Standards"
+            },
+            {
+              "slug": "focuses-on-outcomes",
+              "order": 6,
+              "title": "Focuses on Outcomes"
+            },
+            {
+              "slug": "resourceful",
+              "order": 7,
+              "title": "Resourceful"
+            },
+            {
+              "slug": "makes-good-decisions-quickly",
+              "order": 8,
+              "title": "Makes Good Decisions Quickly"
+            },
+            {
+              "slug": "develops-people",
+              "order": 9,
+              "title": "Develops People"
+            },
+            {
+              "slug": "creates-a-culture-of-accountability",
+              "order": 10,
+              "title": "Creates a Culture of Accountability"
+            },
+            {
+              "slug": "engenders-trust",
+              "order": 11,
+              "title": "Engenders Trust"
+            },
+            {
+              "slug": "embraces-adversity",
+              "order": 12,
+              "title": "Embraces Adversity"
+            },
+            {
+              "slug": "never-stops-learning-and-growing",
+              "order": 13,
+              "title": "Never Stops Learning and Growing"
+            },
+            {
+              "slug": "staff-level-and-cross-cutting",
+              "order": 14,
+              "title": "Staff-Level and Cross-Cutting"
             }
           ]
         }

@@ -5,15 +5,58 @@
  * This exists because the fillable regions are inferred from emptiness rather than
  * declared, so a formatting change in a source file can silently turn an input into
  * static text. That would look fine and be wrong.
+ *
+ * Tracks are read from the manifest rather than listed here, so a new track is
+ * checked from the moment it syncs. What differs per track is the *shape* expected,
+ * which `EXPECTATIONS` declares: case-study worksheets are a fixed 11-section
+ * scaffold ending in a scorecard, while the behavioural ones are one section per
+ * interview question and carry no scorecard at all.
  */
 
 import { readFile, readdir } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { parseDocument } from '../src/lib/parse.ts'
 import type { Block } from '../src/lib/parse.ts'
+import { ANSWER_KEY_MAP } from '../src/lib/mapping.ts'
 
 const CONTENT = resolve(import.meta.dirname, '..', 'content')
-const MODULE_DIR = join(CONTENT, 'modules', '01-customer-discovery-and-decomposition')
+
+type Expectation = {
+  /** Exact section count, or a minimum when the shape varies by document. */
+  sections: { exact: number } | { min: number }
+  scorecards: number
+  minFillable: number
+  minKeySections: number
+  /**
+   * Whether every worksheet section must resolve to an answer-key section. True for
+   * tracks that pair by identity — a worksheet question with no answer renders as a
+   * dead reveal, which is the failure this catches.
+   */
+  requirePairing: boolean
+}
+
+const CASE_STUDY: Expectation = {
+  sections: { exact: 11 },
+  scorecards: 1,
+  minFillable: 20,
+  minKeySections: 10,
+  requirePairing: false,
+}
+
+const BEHAVIOURAL: Expectation = {
+  sections: { min: 3 },
+  scorecards: 0,
+  minFillable: 8,
+  minKeySections: 3,
+  requirePairing: true,
+}
+
+const EXPECTATIONS: Record<string, Expectation> = {
+  core: CASE_STUDY,
+  'system-design': CASE_STUDY,
+  'hiring-manager': BEHAVIOURAL,
+  'leadership-principles': BEHAVIOURAL,
+}
 
 type Counts = {
   inputs: number
@@ -21,6 +64,10 @@ type Counts = {
   editableCells: number
   scorecards: number
   growableTables: number
+}
+
+function emptyCounts(): Counts {
+  return { inputs: 0, fields: 0, editableCells: 0, scorecards: 0, growableTables: 0 }
 }
 
 function count(blocks: Block[], counts: Counts): void {
@@ -44,69 +91,101 @@ function count(blocks: Block[], counts: Counts): void {
 const failures: string[] = []
 const rows: string[] = []
 
-for (const track of ['core', 'system-design']) {
-  const worksheetDir = join(MODULE_DIR, track, 'worksheets')
-  const files = (await readdir(worksheetDir)).filter((f) => f.endsWith('.md')).sort()
+const manifest = JSON.parse(await readFile(join(CONTENT, 'manifest.json'), 'utf8'))
 
-  for (const file of files) {
-    const slug = file.replace(/\.md$/, '')
-    const doc = parseDocument(await readFile(join(worksheetDir, file), 'utf8'))
-    const counts: Counts = {
-      inputs: 0,
-      fields: 0,
-      editableCells: 0,
-      scorecards: 0,
-      growableTables: 0,
-    }
-    for (const section of doc.sections) count(section.blocks, counts)
-
-    const total =
-      counts.inputs + counts.fields + counts.editableCells + counts.scorecards
-
-    // Every worksheet in this format has 11 sections, a scorecard, and a
-    // substantial number of blanks. Deviation means the parser or the source moved.
-    if (doc.sections.length !== 11) {
-      failures.push(`${track}/${slug}: expected 11 sections, got ${doc.sections.length}`)
-    }
-    if (counts.scorecards !== 1) {
-      failures.push(`${track}/${slug}: expected 1 scorecard, got ${counts.scorecards}`)
-    }
-    if (total < 20) {
-      failures.push(`${track}/${slug}: only ${total} fillable regions — suspiciously few`)
-    }
-    if (!doc.title) failures.push(`${track}/${slug}: no title`)
-
-    rows.push(
-      `  ${(track + '/' + slug).padEnd(52)} ` +
-        `${String(doc.sections.length).padStart(2)} sec  ` +
-        `${String(counts.editableCells).padStart(3)} cells  ` +
-        `${String(counts.inputs).padStart(2)} bullets  ` +
-        `${String(counts.fields).padStart(2)} fields  ` +
-        `${counts.growableTables} growable`,
-    )
-  }
-
-  const keyDir = join(MODULE_DIR, track, 'answer-keys')
-  for (const file of (await readdir(keyDir)).filter((f) => f.endsWith('.md'))) {
-    const doc = parseDocument(await readFile(join(keyDir, file), 'utf8'))
-    const counts: Counts = {
-      inputs: 0,
-      fields: 0,
-      editableCells: 0,
-      scorecards: 0,
-      growableTables: 0,
-    }
-    for (const section of doc.sections) count(section.blocks, counts)
-    // Answer keys are reference text. Anything editable in one means the parser is
-    // treating authored content as a blank.
-    if (counts.inputs + counts.editableCells > 0) {
+for (const mod of manifest.modules) {
+  for (const track of mod.tracks) {
+    const expect = EXPECTATIONS[track.id]
+    if (!expect) {
       failures.push(
-        `${track}/answer-keys/${file}: ${counts.inputs + counts.editableCells} ` +
-          `unexpected editable regions in an answer key`,
+        `${track.id}: no expectation declared in check-parse.ts — add one so the ` +
+          `track is actually checked rather than silently skipped`,
+      )
+      continue
+    }
+
+    const trackDir = join(CONTENT, 'modules', mod.id, track.id)
+    const worksheetDir = join(trackDir, 'worksheets')
+    const keyDir = join(trackDir, 'answer-keys')
+    const files = (await readdir(worksheetDir)).filter((f) => f.endsWith('.md')).sort()
+
+    for (const file of files) {
+      const slug = file.replace(/\.md$/, '')
+      const label = `${track.id}/${slug}`
+      const doc = parseDocument(await readFile(join(worksheetDir, file), 'utf8'))
+      const counts = emptyCounts()
+      for (const section of doc.sections) count(section.blocks, counts)
+
+      const total =
+        counts.inputs + counts.fields + counts.editableCells + counts.scorecards
+
+      if ('exact' in expect.sections) {
+        if (doc.sections.length !== expect.sections.exact) {
+          failures.push(
+            `${label}: expected ${expect.sections.exact} sections, got ${doc.sections.length}`,
+          )
+        }
+      } else if (doc.sections.length < expect.sections.min) {
+        failures.push(
+          `${label}: expected at least ${expect.sections.min} sections, got ${doc.sections.length}`,
+        )
+      }
+      if (counts.scorecards !== expect.scorecards) {
+        failures.push(
+          `${label}: expected ${expect.scorecards} scorecard(s), got ${counts.scorecards}`,
+        )
+      }
+      if (total < expect.minFillable) {
+        failures.push(`${label}: only ${total} fillable regions — suspiciously few`)
+      }
+      if (!doc.title) failures.push(`${label}: no title`)
+
+      // The reveal under each worksheet section is populated by key lookup. A section
+      // that resolves to nothing renders an empty reveal, which reads as missing
+      // content rather than as a bug.
+      if (expect.requirePairing) {
+        const keyDoc = parseDocument(
+          await readFile(join(keyDir, file), 'utf8').catch(() => ''),
+        )
+        const keyKeys = new Set(keyDoc.sections.map((s) => s.key))
+        for (const section of doc.sections) {
+          const targets = ANSWER_KEY_MAP[section.key] ?? [section.key]
+          if (!targets.some((k) => keyKeys.has(k))) {
+            failures.push(
+              `${label}: worksheet section "${section.title}" ` +
+                `(key ${section.key}) has no matching answer-key section`,
+            )
+          }
+        }
+      }
+
+      rows.push(
+        `  ${label.padEnd(52)} ` +
+          `${String(doc.sections.length).padStart(2)} sec  ` +
+          `${String(counts.editableCells).padStart(3)} cells  ` +
+          `${String(counts.inputs).padStart(2)} bullets  ` +
+          `${String(counts.fields).padStart(2)} fields  ` +
+          `${counts.growableTables} growable`,
       )
     }
-    if (doc.sections.length < 10) {
-      failures.push(`${track}/answer-keys/${file}: only ${doc.sections.length} sections`)
+
+    for (const file of (await readdir(keyDir)).filter((f) => f.endsWith('.md'))) {
+      const doc = parseDocument(await readFile(join(keyDir, file), 'utf8'))
+      const counts = emptyCounts()
+      for (const section of doc.sections) count(section.blocks, counts)
+      // Answer keys are reference text. Anything editable in one means the parser is
+      // treating authored content as a blank.
+      if (counts.inputs + counts.editableCells > 0) {
+        failures.push(
+          `${track.id}/answer-keys/${file}: ${counts.inputs + counts.editableCells} ` +
+            `unexpected editable regions in an answer key`,
+        )
+      }
+      if (doc.sections.length < expect.minKeySections) {
+        failures.push(
+          `${track.id}/answer-keys/${file}: only ${doc.sections.length} sections`,
+        )
+      }
     }
   }
 }
