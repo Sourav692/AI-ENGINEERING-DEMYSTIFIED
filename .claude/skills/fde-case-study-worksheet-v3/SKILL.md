@@ -41,14 +41,57 @@ FDE_System_Design_Interview_20_Scenarios/Version_3/
 - Never write into `Version_1/` or `Version_2/`. Never modify the v2 source file.
 - If a target file already exists, ask before overwriting.
 
-## Length targets (hard)
+## Length and density targets (hard)
 
-| File | Target | Hard ceiling |
+Line count alone is the **wrong instrument** and will let you ship a bad draft. In the
+Chapter 1 trial run, both files matched the reference's line count exactly while running
+1.3-1.9x too wordy per bullet — the shape was right and the writing was bloated. Always
+check density, not just length.
+
+| File | Lines | Bytes (vs reference) |
 |---|---:|---:|
-| Worksheet | 80-95 lines | 110 lines |
-| Answer key | 90-110 lines | 130 lines |
+| Worksheet | 80-95 | ~3.0-3.4 KB |
+| Answer key | 90-110 | ~12.4-13.5 KB |
 
-A v2 chapter is ~1,400 lines. Landing at 200 lines total means **ruthless** cutting. If a
+Per-bullet word budgets, measured off the canonical reference. Stay within ~1.2x of these:
+
+| Section | Words per bullet |
+|---|---:|
+| Worksheet §2 discovery questions | ~10 |
+| Worksheet §6 architecture stage labels | ~4 (bare labels: `Citations:`, not `Grounding and citations:`) |
+| Worksheet §8 failure modes | ~6 |
+| Worksheet §9 rollout steps | ~5 |
+| Worksheet §11 scorecard cells | ~3 |
+| Key: discovery / functional / non-functional | ~19-20 |
+| Key: architecture explanation | ~22 |
+| Key: data model assumptions | ~25 |
+| Key: red-team risks | ~19 |
+| Key: rollout plan | ~17 |
+| Key: weak / average / strong answer | ~44 / ~58 / ~103 words total |
+| Key: final spoken answer | ~211 words total |
+
+**Hard caps on the four sections that overshoot every single time.** In the Chapter 1, 2
+and 3 runs, these same four failed the checker on the first draft. Write them at the cap
+from the start rather than trimming later:
+
+| Section | Cap | Example at the cap |
+|---|---|---|
+| Worksheet §1 prompt | 32 words total, 2 sentences | "Design a GenAI FDE solution for **X**. <one clause naming this chapter's pressure>." |
+| Worksheet §8 failure modes | 6 words per bullet | `- Valid SQL, wrong business question` |
+| Worksheet §9 rollout steps | 5 words per step | `- Ten governed metrics, named owners.` |
+| Worksheet §10 weak / strong | 13 / 37 words | quote only, no trailing explanation |
+| Key: weak answer | 50 words total | claim, then one `This is weak because...` sentence |
+
+**The rule that produces these numbers: one clause per bullet, not two.** The most common
+failure is writing a correct bullet and then appending a second clause explaining it. The
+reference states and stops. If a bullet has an em-dash or a "because" in the middle, ask
+whether the second half earns its place.
+
+The worksheet in particular is **telegraphic prompts, not prose** — it is a form the
+learner fills in, so its filled sections are terser than the answer key's, not just
+shorter versions of the same sentences.
+
+A v2 chapter is ~1,400 lines. Landing at ~180 lines total means **ruthless** cutting. If a
 draft runs long, cut supporting detail — never drop a section.
 
 ## Part A — the worksheet (11 sections, exact order)
@@ -64,7 +107,7 @@ scaffold they check themselves against.
 | 3 | `## 3. Users and workflows` | **Blank** | Table `User \| Workflow \| Current pain \| AI assist opportunity \| Human approval needed?` — row labels filled from this chapter's real personas (v2 §1 stakeholder map), all other cells empty. |
 | 4 | `## 4. Requirements` | **Blank** | `### Functional` with 3 empty `-` bullets; `### Non-functional` with labelled empty bullets: `Latency target:`, `Availability target:`, `Cost budget:`, `Security/privacy constraints:`, `Audit/compliance requirement:`. |
 | 5 | `## 5. Data and integration map` | **Blank** | Table `Data source \| Format \| Owner \| Freshness \| Permission model \| Risk` with one empty row. |
-| 6 | `## 6. Proposed architecture` | **Blank** | Lead line `Use one of the rendered diagrams as a base, then customize:` then empty labelled bullets. Relabel the 6 stages to this chapter's actual pipeline (v2 §4) rather than copying the RAG labels — e.g. for Chapter 10: `Batch intake:`, `Sharding/scheduling:`, `Inference workers:`, `Retry/DLQ:`, `Evaluation:`, `Monitoring:`. |
+| 6 | `## 6. Proposed architecture` | **Blank** | Lead line `Use one of the rendered diagrams as a base, then customize:` then empty labelled bullets. Relabel the 6 stages to this chapter's actual pipeline (v2 §4) rather than copying the RAG labels — e.g. for Chapter 10: `Batch intake:`, `Sharding:`, `Inference workers:`, `Retry/DLQ:`, `Evaluation:`, `Monitoring:`. Keep labels to 1-3 words; they are form field names, not descriptions. |
 | 7 | `## 7. Evaluation plan` | Filled | Table `Metric \| Good threshold \| Bad threshold \| Test dataset \| Owner`, 4 rows, thresholds pulled from v2 §7 metrics. Right-align the two threshold columns (`---:`). |
 | 8 | `## 8. Failure modes` | Filled | 6 bullets, this chapter's real failure modes from v2 §6. |
 | 9 | `## 9. Rollout plan` | Filled | 6 numbered steps, condensed from v2 §7. |
@@ -100,7 +143,8 @@ Then, in order:
    Condense v2 §5's full DDL/Pydantic into that one line. Remaining 4 bullets each start
    with `Assume ` and state an integration assumption plus its consequence.
 6. `## Red-team risks` — 6 bullets. First is a compact comma-separated list of this
-   chapter's headline risks; the next 5 are one specific attack class each (injection,
+   chapter's headline risks, written as a lowercase sentence fragment with no closing
+   period (the reference does this deliberately — it reads as a tag list, not a sentence); the next 5 are one specific attack class each (injection,
    permission-boundary, exfiltration, unsafe automation, staleness/conflict — swap any that
    do not apply to this scenario for ones that do). Source: v2 §6.
 7. `## Rollout plan` — 7 bullets on a week timeline: `Week 0-1:`, `Week 1-2:`, `Week 2-3:`,
@@ -167,6 +211,14 @@ it is the best raw material for key §13 (final spoken answer).
   (those belong to the v2 format, not this one).
 - **Padding to hit a section.** If v2 genuinely lacks material for a bullet slot, write a
   shorter section rather than inventing a fact.
+- **The second clause.** The single most likely way this skill goes wrong: writing a
+  correct bullet, then appending a clause that explains, justifies, or elaborates it. Every
+  such bullet is individually defensible and the document still ends up 40% overweight.
+  Compare against the budget table, not against your sense of whether the sentence is good.
+- **Inventing numbers the chapter withholds.** Chapter 1 never states an absolute latency
+  figure or groundedness percentage — it says "state it as a percentile against an agreed
+  target" and "no sustained drop over 5 points from baseline." Reproduce that shape. Do not
+  import the reference's `>= 90%` / `3-8 seconds`, which belong to a different scenario.
 
 ## Working order (per chapter)
 
@@ -176,28 +228,40 @@ it is the best raw material for key §13 (final spoken answer).
 4. Derive the worksheet from it: the worksheet's filled sections are the key's content
    further compressed; its blank sections are the key's sections 2, 3, 4, 5 withheld.
 5. Write key §13 last.
-6. Run the verification block.
-7. Report per-chapter: line counts for both files, and any v2 content deliberately dropped.
+6. Run `scripts/check_density.py` and iterate until it prints `PASS`. Expect to tighten on
+   the first pass — the draft that feels right is reliably too wordy.
+7. Report per-chapter: line and byte counts for both files, the density result, and any v2
+   content deliberately dropped.
 
 ## Verification (run before delivering each pair)
 
-```bash
-D="15_FDE_Related_Preparation/FDE_System_Design_Interview_20_Scenarios/Version_3"
-W="$D/NN_<slug>.md"; K="$D/answer_keys/NN_<slug>_answer_key.md"
+Run the bundled checker, which compares both new files against the canonical reference
+pair on section names, bullet counts, and prose density:
 
-echo "== worksheet sections (expect 11, numbered 1-11) =="; grep -c "^## [0-9]" "$W"
-echo "== worksheet sub-heads (expect 2: Functional/Non-functional) =="; grep -c "^### " "$W"
-echo "== worksheet tables (expect 4 header rows) =="; grep -c "^|---" "$W"
-echo "== key sections (expect 13) =="; grep -c "^## " "$K"
-echo "== key tables (expect 2) =="; grep -c "^|---" "$K"
-echo "== no code fences in key (expect 0 unless 1 mermaid) =="; grep -c '^```' "$K"
-echo "== no v2 leftovers (expect 0) =="; grep -cE "Interview Pointer|Coverage Notes|Table of Contents" "$W" "$K"
-echo "== lines =="; wc -l "$W" "$K"
+```bash
+python3 .claude/skills/fde-case-study-worksheet-v3/scripts/check_density.py \
+  "15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md" \
+  "15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md" \
+  "15_FDE_Related_Preparation/FDE_System_Design_Interview_20_Scenarios/Version_3/NN_<slug>.md" \
+  "15_FDE_Related_Preparation/FDE_System_Design_Interview_20_Scenarios/Version_3/answer_keys/NN_<slug>_answer_key.md"
 ```
 
-Then read both files end to end and confirm: the worksheet's blank cells really are blank,
-no sentence names a system the v2 chapter never mentions, and §13 reads aloud in about two
-minutes.
+It exits non-zero and names every offending section. Iterate until it prints `PASS`.
+Missing/extra sections, wrong bullet counts, any section over 1.25x the reference's
+words-per-bullet, and an oversized file all fail. Table **row** counts only warn — a
+chapter may genuinely have 4 personas or 6 data sources where the reference has 3.
+
+Then run these content checks the script cannot do:
+
+```bash
+K=<answer-key-path>; W=<worksheet-path>
+grep -c '^```' "$K"                                          # 0, unless the one allowed mermaid
+grep -cE "Interview Pointer|Coverage Notes|Table of Contents" "$W" "$K"   # 0 0 — no v2 leftovers
+grep -nE '^\|[^|]*\|\s*\|' "$W"                              # worksheet blanks really blank
+```
+
+Finally read both files end to end and confirm no sentence names a system, number, or
+threshold the v2 chapter never states, and that §13 reads aloud in about two minutes.
 
 ## Batch mode
 

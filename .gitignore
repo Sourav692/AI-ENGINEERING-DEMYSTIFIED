@@ -150,4 +150,13 @@ cell_*.txt
 
 # MCP server local data (Chroma persistent store)
 .mcp_data/
-1. Complete GEN AI FDE Interview System — Core + GenAI/
+# FDE prep source folder. The markdown is the source of truth for the Forward
+# Deployed site (site/), so it is tracked; the PDFs and .docx exports alongside it
+# are large binaries and were the original reason this folder was ignored.
+# Paths are spelled out in full: a pattern with a slash in the middle is anchored to
+# this file's directory, so the bare folder name would match nothing here.
+# Git will not descend into an excluded directory, so directories must be
+# re-included before a negation on the files inside them can apply.
+15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/**
+!15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/**/
+!15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/**/*.md
