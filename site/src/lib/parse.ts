@@ -23,6 +23,8 @@ export type Block =
   | { kind: 'list'; items: ListItem[] }
   | { kind: 'table'; headers: string[]; rows: Cell[][]; growable: boolean }
   | { kind: 'scorecard'; headers: string[]; rows: ScorecardRow[] }
+  | { kind: 'code'; code: string; lang: string }
+  | { kind: 'diagram'; code: string }
 
 export type ScorecardRow = {
   area: string
@@ -145,6 +147,34 @@ function parseListItem(
   return { kind: 'text', html: inline(text) }
 }
 
+const FENCE = /^\s*(?:```|~~~)/
+
+/** `  ```mermaid ` -> `mermaid`; a bare fence -> `''`. */
+function fenceLang(line: string): string {
+  const info = line.trim().replace(/^(?:```|~~~)/, '').trim()
+  // An info string may carry more than a language (``` ts title="x"); take the first word.
+  return (info.split(/\s+/)[0] ?? '').toLowerCase()
+}
+
+/**
+ * Consumes a fenced block starting at `start` and returns it plus the index just
+ * past its closing fence. An unterminated fence swallows the rest of the input,
+ * which is what a markdown reader does too — better than leaking the fence markers
+ * into the prose path, where they used to end up.
+ */
+function parseFence(lines: string[], start: number): { block: Block; next: number } {
+  const lang = fenceLang(lines[start])
+  let i = start + 1
+  while (i < lines.length && !FENCE.test(lines[i])) i++
+  const code = lines.slice(start + 1, i).join('\n').replace(/\s+$/, '')
+  const next = i < lines.length ? i + 1 : i
+
+  return {
+    block: lang === 'mermaid' ? { kind: 'diagram', code } : { kind: 'code', code, lang },
+    next,
+  }
+}
+
 function parseBlocks(lines: string[], sectionId: string): Block[] {
   const blocks: Block[] = []
   let i = 0
@@ -163,6 +193,15 @@ function parseBlocks(lines: string[], sectionId: string): Block[] {
     if (line.startsWith('### ')) {
       blocks.push({ kind: 'subheading', text: line.replace(/^###\s+/, '').trim() })
       i++
+      continue
+    }
+
+    // Fences are matched before every other rule: their contents are code, and a
+    // mermaid arrow or a shell flag must never be read as a bullet or a table row.
+    if (FENCE.test(line)) {
+      const fence = parseFence(lines, i)
+      blocks.push(fence.block)
+      i = fence.next
       continue
     }
 
@@ -194,6 +233,7 @@ function parseBlocks(lines: string[], sectionId: string): Block[] {
       lines[i].trim() !== '' &&
       !lines[i].startsWith('### ') &&
       !lines[i].trim().startsWith('|') &&
+      !FENCE.test(lines[i]) &&
       !/^[-*]\s|^[-*]$/.test(lines[i].trim())
     ) {
       i++
@@ -213,7 +253,26 @@ export function parseDocument(markdown: string): ParsedDocument {
   const rawSections: { heading: string; lines: string[] }[] = []
   let current: { heading: string; lines: string[] } | null = null
 
+  // Headings are only headings outside a fence. Now that code blocks are parsed,
+  // a shell or Python snippet whose first line is `# something` would otherwise be
+  // lifted out as the document title.
+  let fenced = false
+
+  const keep = (line: string) => {
+    if (current) current.lines.push(line)
+    else introLines.push(line)
+  }
+
   for (const line of lines) {
+    if (FENCE.test(line)) {
+      fenced = !fenced
+      keep(line)
+      continue
+    }
+    if (fenced) {
+      keep(line)
+      continue
+    }
     if (line.startsWith('# ')) {
       title = line.replace(/^#\s+/, '').trim()
       continue
@@ -223,8 +282,7 @@ export function parseDocument(markdown: string): ParsedDocument {
       rawSections.push(current)
       continue
     }
-    if (current) current.lines.push(line)
-    else introLines.push(line)
+    keep(line)
   }
 
   const sections: Section[] = rawSections.map((section, index) => {

@@ -64,14 +64,33 @@ type Counts = {
   editableCells: number
   scorecards: number
   growableTables: number
+  diagrams: number
+  /**
+   * Fences that reached the prose path instead of becoming a `diagram` or `code`
+   * block. That was a real regression: a mermaid fence rendered as its own source
+   * text on the live site, which looks like broken content rather than a bug.
+   */
+  leakedFences: number
 }
 
 function emptyCounts(): Counts {
-  return { inputs: 0, fields: 0, editableCells: 0, scorecards: 0, growableTables: 0 }
+  return {
+    inputs: 0,
+    fields: 0,
+    editableCells: 0,
+    scorecards: 0,
+    growableTables: 0,
+    diagrams: 0,
+    leakedFences: 0,
+  }
 }
 
 function count(blocks: Block[], counts: Counts): void {
   for (const b of blocks) {
+    if (b.kind === 'diagram') counts.diagrams++
+    if (b.kind === 'prose' && /language-mermaid|&#96;&#96;&#96;|```/.test(b.html)) {
+      counts.leakedFences++
+    }
     if (b.kind === 'list') {
       for (const item of b.items) {
         if (item.kind === 'input') counts.inputs++
@@ -90,6 +109,7 @@ function count(blocks: Block[], counts: Counts): void {
 
 const failures: string[] = []
 const rows: string[] = []
+let diagramTotal = 0
 
 const manifest = JSON.parse(await readFile(join(CONTENT, 'manifest.json'), 'utf8'))
 
@@ -114,7 +134,15 @@ for (const mod of manifest.modules) {
       const label = `${track.id}/${slug}`
       const doc = parseDocument(await readFile(join(worksheetDir, file), 'utf8'))
       const counts = emptyCounts()
+      count(doc.intro, counts)
       for (const section of doc.sections) count(section.blocks, counts)
+
+      if (counts.leakedFences > 0) {
+        failures.push(
+          `${label}: ${counts.leakedFences} fenced block(s) rendered as prose — ` +
+            `a code or mermaid fence is not being parsed as its own block`,
+        )
+      }
 
       const total =
         counts.inputs + counts.fields + counts.editableCells + counts.scorecards
@@ -172,7 +200,15 @@ for (const mod of manifest.modules) {
     for (const file of (await readdir(keyDir)).filter((f) => f.endsWith('.md'))) {
       const doc = parseDocument(await readFile(join(keyDir, file), 'utf8'))
       const counts = emptyCounts()
+      count(doc.intro, counts)
       for (const section of doc.sections) count(section.blocks, counts)
+      if (counts.leakedFences > 0) {
+        failures.push(
+          `${track.id}/answer-keys/${file}: ${counts.leakedFences} fenced block(s) ` +
+            `rendered as prose instead of a diagram or code block`,
+        )
+      }
+      if (counts.diagrams > 0) diagramTotal += counts.diagrams
       // Answer keys are reference text. Anything editable in one means the parser is
       // treating authored content as a blank.
       if (counts.inputs + counts.editableCells > 0) {
@@ -191,6 +227,7 @@ for (const mod of manifest.modules) {
 }
 
 console.log(rows.join('\n'))
+console.log(`\n  ${diagramTotal} mermaid diagram(s) parsed across all answer keys`)
 
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):`)

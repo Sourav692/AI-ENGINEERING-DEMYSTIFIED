@@ -159,6 +159,43 @@ body {
   color: var(--text-subtle);
 }
 
+/*
+ * Fenced code. `.code-block` is the parser's own code blocks; `.prose pre` catches
+ * anything marked still emits on the prose path, so neither can render unstyled.
+ */
+.code-block,
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+/* The inline-code chip would otherwise double up inside a block. */
+.code-block code,
+.prose pre code {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/*
+ * Diagrams render at their natural size and the container scrolls. Fitting them to
+ * the column instead would shrink a wide flowchart until its labels are unreadable,
+ * which is worse than a horizontal scroll on the few diagrams wide enough to need one.
+ */
+.mermaid-figure svg {
+  display: block;
+  max-width: none;
+}
+
 /* Print: drop all chrome, keep the worksheet and whatever the reader has written. */
 @media print {
   .no-print {
@@ -184,5 +221,10 @@ body {
   }
   section {
     break-inside: avoid;
+  }
+  .mermaid-figure,
+  .code-block {
+    break-inside: avoid;
+    background: #fff;
   }
 }

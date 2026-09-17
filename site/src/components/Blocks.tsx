@@ -2,6 +2,7 @@
 
 import type { Block, Cell } from '@/lib/parse'
 import { AutoTextarea } from './AutoTextarea'
+import { Diagram } from './Diagram'
 
 /**
  * Renders parsed markdown blocks. The same component draws worksheets and answer
@@ -85,6 +86,16 @@ function BlockView({ block, ...p }: { block: Block } & BlocksProps) {
 
     case 'scorecard':
       return <ScorecardView block={block} {...p} />
+
+    case 'diagram':
+      return <Diagram code={block.code} />
+
+    case 'code':
+      return (
+        <pre className="code-block" data-lang={block.lang || undefined}>
+          <code>{block.code}</code>
+        </pre>
+      )
   }
 }
 
