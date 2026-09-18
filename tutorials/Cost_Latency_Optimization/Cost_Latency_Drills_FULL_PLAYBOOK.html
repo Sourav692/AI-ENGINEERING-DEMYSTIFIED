@@ -1,0 +1,1699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root{color-scheme:light dark; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
+  body{margin:0;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+</style>
+<title>Cost &amp; Latency Drills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+  :root{
+    --ground:#EBEFF1; --surface:#FFFFFF; --surface-2:#F4F7F8;
+    --ink:#0F1F2A; --muted:#546E7D; --faint:#7A93A1;
+    --line:#D1DBE1; --line-strong:#B4C4CD;
+    --accent:#0B6A6F; --accent-soft:#D8EAEA; --on-accent:#FFFFFF;
+    --signal:#A9520C; --signal-soft:#F6E6D6;
+    --good:#1A6B48; --good-soft:#D9EDE3;
+    --bad:#8F2E2A; --bad-soft:#F4DEDC;
+    --shadow:0 1px 2px rgba(15,31,42,.06), 0 8px 24px -16px rgba(15,31,42,.30);
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --cond:"IBM Plex Sans Condensed","IBM Plex Sans",-apple-system,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0B1216; --surface:#131C22; --surface-2:#182329;
+      --ink:#E2EBF0; --muted:#94A9B5; --faint:#748B98;
+      --line:#233138; --line-strong:#33454E;
+      --accent:#4FB5B1; --accent-soft:#17312F; --on-accent:#06181A;
+      --signal:#DD8D51; --signal-soft:#33241A;
+      --good:#4FBC89; --good-soft:#132D22;
+      --bad:#DD8078; --bad-soft:#331A1A;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0B1216; --surface:#131C22; --surface-2:#182329;
+    --ink:#E2EBF0; --muted:#94A9B5; --faint:#748B98;
+    --line:#233138; --line-strong:#33454E;
+    --accent:#4FB5B1; --accent-soft:#17312F; --on-accent:#06181A;
+    --signal:#DD8D51; --signal-soft:#33241A;
+    --good:#4FBC89; --good-soft:#132D22;
+    --bad:#DD8078; --bad-soft:#331A1A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.55;
+    margin:0; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--cond); text-wrap:balance; margin:0; line-height:1.18;}
+  button{font:inherit; color:inherit; cursor:pointer;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px;}
+
+  /* ---------- console bar ---------- */
+  .bar{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:30;
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar-in{
+    max-width:920px; margin:0 auto; padding:10px 16px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:baseline; gap:10px; margin-right:auto;}
+  .brand h1{font-size:19px; letter-spacing:-.01em;}
+  .brand .src{font-family:var(--mono); font-size:11px; color:var(--faint); letter-spacing:.06em;}
+  .readout{
+    font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    font-variant-numeric:tabular-nums; display:flex; align-items:center; gap:10px;
+  }
+  .meter{width:76px; height:5px; border-radius:99px; background:var(--line); overflow:hidden;}
+  .meter i{display:block; height:100%; background:var(--accent); width:0%; transition:width .25s ease;}
+  .ghost{
+    background:none; border:1px solid var(--line-strong); color:var(--muted);
+    border-radius:5px; padding:3px 8px; font-family:var(--mono); font-size:10.5px;
+    letter-spacing:.05em; text-transform:uppercase;
+  }
+  .ghost:hover{color:var(--ink); border-color:var(--ink);}
+
+  /* ---------- tabs ---------- */
+  .tabs{border-bottom:1px solid var(--line); background:var(--surface);}
+  .tabs-in{
+    max-width:920px; margin:0 auto; padding:0 16px;
+    display:flex; gap:2px; overflow-x:auto; scrollbar-width:none;
+  }
+  .tabs-in::-webkit-scrollbar{display:none}
+  .tab{
+    background:none; border:0; border-bottom:2px solid transparent;
+    padding:9px 12px; font-family:var(--cond); font-size:14px; font-weight:600;
+    color:var(--muted); white-space:nowrap; letter-spacing:.005em;
+  }
+  .tab .n{font-family:var(--mono); font-size:10px; font-weight:500; color:var(--faint); margin-left:5px;}
+  .tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent);}
+  .tab:hover{color:var(--ink);}
+
+  /* ---------- layout ---------- */
+  main{max-width:920px; margin:0 auto; padding-block:22px 40px; padding-left:16px; padding-right:16px;}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .card-head{padding:18px 20px 16px; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--faint); display:flex; gap:8px; align-items:center; margin-bottom:9px;
+    font-variant-numeric:tabular-nums;
+  }
+  .eyebrow .id{
+    color:var(--accent); background:var(--accent-soft);
+    padding:1px 6px; border-radius:4px; font-weight:600; letter-spacing:.08em;
+  }
+  .eyebrow .mark{margin-left:auto; letter-spacing:.08em;}
+  .mark.nailed{color:var(--good)} .mark.partial{color:var(--signal)} .mark.missed{color:var(--bad)}
+  .card-head h2{font-size:23px; letter-spacing:-.015em;}
+
+  .stimulus{
+    margin:13px 0 0; padding:11px 14px; border-left:3px solid var(--signal);
+    background:var(--signal-soft); border-radius:0 6px 6px 0;
+    font-size:14.5px;
+  }
+  .stimulus .lab{
+    display:block; font-family:var(--mono); font-size:10px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--signal); margin-bottom:4px; font-weight:600;
+  }
+
+  .card-body{padding:18px 20px 20px;}
+
+  .task{
+    font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 10px;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 4px; padding:0; list-style:none;}
+  .chips li{
+    font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    border:1px dashed var(--line-strong); border-radius:5px; padding:3px 8px;
+  }
+  .chips.solid li{border-style:solid; border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
+
+  .primary{
+    width:100%; margin-top:16px; padding:11px 14px;
+    background:var(--accent); color:var(--on-accent); border:0; border-radius:7px;
+    font-family:var(--cond); font-weight:700; font-size:15px; letter-spacing:.01em;
+  }
+  .primary:hover{filter:brightness(1.08)}
+  .primary .kbd{font-family:var(--mono); font-size:10.5px; opacity:.72; margin-left:7px; font-weight:500;}
+
+  /* ---------- revealed answer ---------- */
+  .answer{margin-top:18px; border-top:1px solid var(--line); padding-top:16px;}
+  .row{display:grid; grid-template-columns:104px 1fr; gap:14px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .row:last-of-type{border-bottom:0}
+  .row dt{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--faint); padding-top:2px;
+  }
+  .row dd{margin:0; font-size:14.5px;}
+  .row.hi dt{color:var(--accent)}
+  .quote{
+    margin-top:14px; padding:13px 15px; background:var(--surface-2);
+    border:1px solid var(--line); border-radius:7px; font-style:italic; font-size:14.5px;
+  }
+  .quote .lab{
+    display:block; font-family:var(--mono); font-style:normal; font-size:10px;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--faint); margin-bottom:5px;
+  }
+
+  /* ---------- scoring ---------- */
+  .score{display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;}
+  .score button{
+    flex:1 1 110px; padding:9px 10px; border-radius:7px; background:var(--surface-2);
+    border:1px solid var(--line-strong); font-family:var(--cond); font-weight:600; font-size:14px;
+  }
+  .score button .kbd{font-family:var(--mono); font-size:10px; color:var(--faint); margin-left:6px; font-weight:400;}
+  .score button[data-v="missed"]:hover,.score button[data-v="missed"][aria-pressed="true"]{background:var(--bad-soft); border-color:var(--bad); color:var(--bad);}
+  .score button[data-v="partial"]:hover,.score button[data-v="partial"][aria-pressed="true"]{background:var(--signal-soft); border-color:var(--signal); color:var(--signal);}
+  .score button[data-v="nailed"]:hover,.score button[data-v="nailed"][aria-pressed="true"]{background:var(--good-soft); border-color:var(--good); color:var(--good);}
+
+  /* ---------- weak vs strong ---------- */
+  .opts{display:grid; gap:10px; margin-top:14px;}
+  .opt{
+    text-align:left; padding:13px 15px; border-radius:8px; background:var(--surface-2);
+    border:1px solid var(--line-strong); font-size:14.5px; line-height:1.5;
+  }
+  .opt:hover{border-color:var(--accent)}
+  .opt .tag{
+    display:block; font-family:var(--mono); font-size:10px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--faint); margin-bottom:5px;
+  }
+  .opt[data-state="right"]{border-color:var(--good); background:var(--good-soft);}
+  .opt[data-state="right"] .tag{color:var(--good)}
+  .opt[data-state="wrong"]{border-color:var(--bad); background:var(--bad-soft);}
+  .opt[data-state="wrong"] .tag{color:var(--bad)}
+  .opt[disabled]{cursor:default; opacity:1;}
+  .verdict{
+    margin-top:14px; padding:12px 15px; border-radius:7px; font-size:14.5px;
+    border:1px solid var(--line); background:var(--surface-2);
+  }
+  .verdict b{font-family:var(--cond); font-size:15px;}
+  .verdict.ok b{color:var(--good)} .verdict.no b{color:var(--bad)}
+
+  /* ---------- clarify checklist ---------- */
+  .checks{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:7px;}
+  .checks li{display:flex; gap:10px; align-items:flex-start;}
+  .checks input{margin:4px 0 0; accent-color:var(--accent); width:15px; height:15px; flex:none;}
+  .checks label{font-size:14.5px; cursor:pointer;}
+  .tally{
+    margin-top:13px; font-family:var(--mono); font-size:12px; color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  textarea{
+    width:100%; margin-top:12px; min-height:82px; resize:vertical;
+    background:var(--surface-2); color:var(--ink); border:1px solid var(--line-strong);
+    border-radius:7px; padding:10px 12px; font:inherit; font-size:14px;
+  }
+  textarea::placeholder{color:var(--faint)}
+
+  /* ---------- deck nav ---------- */
+  .nav{
+    display:flex; align-items:center; gap:10px; margin-top:16px;
+    font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  .nav button{
+    background:var(--surface); border:1px solid var(--line-strong); border-radius:6px;
+    padding:6px 12px; font-family:var(--cond); font-weight:600; font-size:13.5px;
+  }
+  .nav button:hover{border-color:var(--ink)}
+  .nav .pos{margin:0 auto; letter-spacing:.08em;}
+  .dots{display:flex; gap:3px; flex-wrap:wrap; margin-top:14px;}
+  .dots button{
+    width:17px; height:17px; border-radius:4px; border:1px solid var(--line-strong);
+    background:var(--surface); font-family:var(--mono); font-size:9px; color:var(--faint);
+    padding:0; line-height:1; display:grid; place-items:center;
+  }
+  .dots button[data-v="nailed"]{background:var(--good); border-color:var(--good); color:transparent}
+  .dots button[data-v="partial"]{background:var(--signal); border-color:var(--signal); color:transparent}
+  .dots button[data-v="missed"]{background:var(--bad); border-color:var(--bad); color:transparent}
+  .dots button[aria-current="true"]{outline:2px solid var(--accent); outline-offset:1px;}
+
+  /* ---------- reference ---------- */
+  .ref h3{font-size:16px; margin:22px 0 8px; color:var(--accent); font-family:var(--cond);}
+  .ref h3:first-child{margin-top:0}
+  details{border:1px solid var(--line); border-radius:8px; background:var(--surface); margin-bottom:7px;}
+  details[open]{box-shadow:var(--shadow)}
+  summary{
+    padding:11px 14px; cursor:pointer; font-family:var(--cond); font-weight:600; font-size:15px;
+    display:flex; gap:9px; align-items:baseline;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary .id{
+    font-family:var(--mono); font-size:10.5px; color:var(--accent); background:var(--accent-soft);
+    padding:1px 6px; border-radius:4px; flex:none;
+  }
+  details .inner{padding:0 14px 14px;}
+  .banner{
+    border:1px solid var(--accent); background:var(--accent-soft); color:var(--ink);
+    border-radius:8px; padding:13px 16px; margin-bottom:18px; font-size:14.5px;
+  }
+  .banner .lab{
+    display:block; font-family:var(--mono); font-size:10px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:5px; font-weight:600;
+  }
+  .foot{
+    margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; color:var(--faint); line-height:1.7;
+  }
+  .groups{display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px;}
+  .groups button{
+    background:var(--surface); border:1px solid var(--line-strong); border-radius:99px;
+    padding:4px 11px; font-family:var(--mono); font-size:11px; color:var(--muted);
+  }
+  .groups button[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--on-accent);}
+  .groups button .c{opacity:.65; margin-left:5px;}
+  .groups button:hover{color:var(--ink)}
+  .groups button[aria-pressed="true"]:hover{color:var(--on-accent)}
+  .j3{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px;}
+  .j3 button{
+    padding:11px 8px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line-strong);
+    font-family:var(--cond); font-weight:700; font-size:14.5px;
+  }
+  .j3 button[data-k="safe"]:hover{background:var(--good-soft); border-color:var(--good); color:var(--good)}
+  .j3 button[data-k="conditional"]:hover{background:var(--signal-soft); border-color:var(--signal); color:var(--signal)}
+  .j3 button[data-k="unsafe"]:hover{background:var(--bad-soft); border-color:var(--bad); color:var(--bad)}
+  .j3 button[disabled]{opacity:.45}
+  .j3 button[data-truth="true"]{opacity:1; border-width:2px;}
+  .j3 button[data-truth="true"][data-k="safe"]{background:var(--good-soft); border-color:var(--good); color:var(--good)}
+  .j3 button[data-truth="true"][data-k="conditional"]{background:var(--signal-soft); border-color:var(--signal); color:var(--signal)}
+  .j3 button[data-truth="true"][data-k="unsafe"]{background:var(--bad-soft); border-color:var(--bad); color:var(--bad)}
+  .eqs{display:grid; gap:10px; margin-bottom:18px;}
+  .eq{border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:12px 15px;}
+  .eq .lab{
+    display:block; font-family:var(--mono); font-size:10px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:5px; font-weight:600;
+  }
+  .eq code{font-family:var(--mono); font-size:12.5px; line-height:1.65; color:var(--ink);}
+  @media (max-width:560px){
+    .row{grid-template-columns:1fr; gap:3px; padding:8px 0;}
+    .card-head h2{font-size:20px}
+    .brand h1{font-size:17px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+
+</head>
+<body>
+<div class="bar"><div class="bar-in">
+  <div class="brand">
+    <h1>Cost &amp; Latency Drills</h1>
+    <span class="src">§1–§18</span>
+  </div>
+  <div class="readout">
+    <span id="tally">—</span>
+    <span class="meter"><i id="meter"></i></span>
+  </div>
+  <button class="ghost" id="reset">Reset</button>
+</div></div>
+
+<div class="tabs"><div class="tabs-in" role="tablist" id="tabs"></div></div>
+
+<main id="main"></main>
+
+<script>
+// Data extracted verbatim-in-substance from the playbook §15 + §16.
+const SCENARIOS = [
+  {
+    id: "S1", title: "LLM cost increased 5× after rollout",
+    symptom: "Daily spend increased sharply while active users increased only modestly.",
+    ask: "Which tenant, feature, prompt version, model route, retry path, batch job or agent workflow changed?",
+    causes: "Longer prompts, new RAG context, agent loop, eval job, retries, output verbosity, provider price-tier change.",
+    metrics: ["Cost/request","Tokens/request","Requests by feature","Retry count","Model distribution","Output tokens","Eval + batch spend"],
+    debug: "Break spend by tenant / feature / model / prompt version; compare before vs after rollout; inspect high-cost traces.",
+    now: "Apply max output length, pause expensive batch/eval jobs, route simple tasks to a smaller model, cap agent steps.",
+    later: "Budgeting, anomaly alerts, prompt-token regression tests, request-path cost dashboard.",
+    prevent: "Pre-rollout cost simulation and per-tenant budget alerts.",
+    say: "The increase is likely from request shape, not just user count. I would isolate token growth, retries, agent steps, and batch jobs before changing the model."
+  },
+  {
+    id: "S2", title: "Latency jumped from 2 seconds to 20 seconds",
+    symptom: "Users report the assistant is unusably slow after a deployment.",
+    ask: "Did retrieval, reranker, prompt version, model, provider, tool dependency or region change?",
+    causes: "New reranker, larger context, provider latency incident, cold starts, tool timeout, synchronous logging.",
+    metrics: ["P95/P99","First-token latency","Retrieval latency","Rerank latency","Model latency","Tool latency","Timeout + retry rate"],
+    debug: "Inspect the trace waterfall and compare component timing before vs after the deploy.",
+    now: "Roll back the prompt/reranker change, disable the optional tool, reduce top-k, activate the fallback provider.",
+    later: "Latency budgets per component, canary deploys, provider health monitoring.",
+    prevent: "Performance tests with realistic payload and corpus size.",
+    say: "I would not guess. I would use traces to see whether the 18-second increase is retrieval, model, tool calls, or infrastructure."
+  },
+  {
+    id: "S3", title: "RAG retrieval became slow after adding more documents",
+    symptom: "Vector search latency grows after corpus expansion.",
+    ask: "How many documents, chunks, dimensions, tenants, filters and replicas changed?",
+    causes: "Index not tuned, too many chunks, missing metadata filters, high top-k, hot shard.",
+    metrics: ["Vector DB P95","Top-k","Filter selectivity","Index memory","Shard load","Corpus size"],
+    debug: "Replay representative queries and compare index/filter behaviour.",
+    now: "Reduce top-k, add metadata filters, tune the index, scale the vector DB, deduplicate chunks.",
+    later: "Capacity planning by corpus size and tenant; ingestion quality gates.",
+    prevent: "Benchmark retrieval at the projected production corpus size.",
+    say: "Adding documents changes retrieval economics. I would filter earlier, tune index settings, and remove duplicate chunks before simply scaling hardware."
+  },
+  {
+    id: "S4", title: "Agent keeps calling tools repeatedly",
+    symptom: "Agent repeats CRM lookup, retrieval, or calculator calls and times out.",
+    ask: "Which tool repeats, what observation triggers it, and is state preserved?",
+    causes: "Poor stopping condition, ambiguous tool descriptions, missing memory, failed parse, no result cache.",
+    metrics: ["Agent steps","Tool count","Repeated tool args","Parse failures","Timeout rate"],
+    debug: "Inspect the trace; identify the loop trigger and the missing state transition.",
+    now: "Set max steps, cache the tool result, improve the tool schema, add a deterministic route.",
+    later: "Agent budget tests and trace-based loop detection.",
+    prevent: "Unit tests for tool selection and loop prevention.",
+    say: "I would treat this as a control-loop bug. The fix is step budgets, better tool routing, cached results, and explicit stopping criteria."
+  },
+  {
+    id: "S5", title: "One tenant has unusually high usage",
+    symptom: "One customer consumes far more tokens or requests than comparable tenants.",
+    ask: "Is this legitimate adoption, abuse, a loop, a batch job, or an integration bug?",
+    causes: "Automated integration loop, heavy document processing, power-user workflow, missing quota.",
+    metrics: ["Cost/tenant","Cost/user","Request source","Tokens/request","Batch jobs","Agent steps"],
+    debug: "Segment usage by API key, user, feature, time of day, and prompt version.",
+    now: "Apply a tenant rate limit, contact the customer, pause the suspicious workflow if necessary.",
+    later: "Tenant budgets, usage dashboard, anomaly alerts, integration safeguards.",
+    prevent: "Contract-aligned quotas and notifications.",
+    say: "I would first distinguish healthy adoption from runaway automation. The response differs: support scale-up for healthy usage, throttle loops or abuse."
+  },
+  {
+    id: "S6", title: "Executive demo is too slow",
+    symptom: "Demo answer takes too long in front of stakeholders.",
+    ask: "Is the demo path hitting cold starts, large documents, a slow provider, or live tools?",
+    causes: "Unwarmed services, live external dependencies, over-large prompt, no streaming, poor network.",
+    metrics: ["First-token latency","Retrieval latency","Model latency","Tool calls","Cold-start count"],
+    debug: "Run rehearsal traces; identify the demo-specific critical path.",
+    now: "Warm services, pre-index documents, stream output, use a stable demo dataset, shorten the answer.",
+    later: "Demo readiness checklist with latency rehearsal and a fallback path.",
+    prevent: "Separate the demo environment from production claims.",
+    say: "For an executive demo, I would reduce live uncertainty while staying honest about production architecture and limitations."
+  },
+  {
+    id: "S7", title: "Customer complains the AI is too expensive",
+    symptom: "Customer questions the invoice or the projected budget.",
+    ask: "Which workflows drive cost, and what business value do they produce?",
+    causes: "Premium-model overuse, verbose answers, no quotas, high batch jobs, low-value workflows.",
+    metrics: ["Cost by feature","Active users","Cost/outcome","Model distribution","Tokens/request"],
+    debug: "Create a cost attribution report and identify low-value high-cost paths.",
+    now: "Route simple tasks to a cheaper model, add quotas, trim prompts, cache safe repeated results.",
+    later: "ROI dashboard and budget policies.",
+    prevent: "Cost review before expansion.",
+    say: "I would not defend the bill generically. I would show cost by workflow and propose concrete reductions that preserve value."
+  },
+  {
+    id: "S8", title: "Vector database query latency increased",
+    symptom: "RAG latency rises while model latency is unchanged.",
+    ask: "Did index size, metadata filters, shard distribution, or traffic change?",
+    causes: "Index fragmentation, hot tenant, inefficient filters, under-provisioned replicas.",
+    metrics: ["Query latency","Filter selectivity","QPS","Shard CPU/memory","Cache hit rate"],
+    debug: "Compare slow and fast queries; inspect filters and index statistics.",
+    now: "Add selective filters, scale replicas, tune the index, reduce dimensions/top-k.",
+    later: "Vector DB capacity planning and index maintenance.",
+    prevent: "Load test with a realistic tenant distribution.",
+    say: "When vector DB latency rises, I check corpus growth, filter selectivity, top-k, shard load, and tenant hot spots."
+  },
+  {
+    id: "S9", title: "Reranker improved quality but doubled latency",
+    symptom: "Answer quality improved but user experience worsened.",
+    ask: "Which queries truly need reranking, and how many candidates are scored?",
+    causes: "Reranking every query, too many candidates, heavy reranker model.",
+    metrics: ["Reranker latency","Candidate count","Quality lift by segment"],
+    debug: "Run an ablation by query type: no rerank vs rerank top 10 vs top 50.",
+    now: "Gate reranking for ambiguous/high-value queries; reduce candidates.",
+    later: "Quality-latency policy and retrieval confidence thresholds.",
+    prevent: "Monitor quality lift per millisecond added.",
+    say: "Reranking should be conditional. If it improves only 20% of queries, do not tax 100% of traffic."
+  },
+  {
+    id: "S10", title: "Prompt update increased token usage",
+    symptom: "Cost and first-token latency rise after a prompt release.",
+    ask: "What changed in the system prompt, few-shot examples, context packing, or output format?",
+    causes: "Verbose instructions, duplicated rules, added examples, longer output default.",
+    metrics: ["Input tokens","Output tokens","Prompt version","Parse errors","Retry count"],
+    debug: "Diff prompt templates and compare token metrics by version.",
+    now: "Roll back or trim the prompt; reduce examples; enforce output max.",
+    later: "Prompt CI checks for token budget and quality regression.",
+    prevent: "Every prompt rollout includes a cost impact report.",
+    say: "Prompt changes are production changes. I would version them and compare token usage and latency before rollout."
+  },
+  {
+    id: "S11", title: "Model provider latency became unstable",
+    symptom: "Latency spikes intermittently without an application deploy.",
+    ask: "Is the instability model-specific, region-specific, or provider-wide?",
+    causes: "Provider incident, regional queueing, rate limiting, network issue.",
+    metrics: ["Provider latency by model/region","Fallback rate","Error codes","Queue time"],
+    debug: "Compare providers/models and application traces during the spike windows.",
+    now: "Activate the fallback model/provider, reduce concurrency, degrade optional features.",
+    later: "Provider health dashboard and multi-provider fallback strategy.",
+    prevent: "Test fallback prompts and schema compatibility.",
+    say: "I would isolate provider latency from our own pipeline and use routing/fallback rules rather than waiting blindly."
+  },
+  {
+    id: "S12", title: "Cache hit rate dropped suddenly",
+    symptom: "Latency and cost rise because fewer requests hit cache.",
+    ask: "Did the cache key, TTL, prompt version, document version, or traffic mix change?",
+    causes: "New prompt version invalidated cache, TTL too short, normalization changed, document churn.",
+    metrics: ["Cache hit rate by type","Invalidations","TTL","Key cardinality","Traffic mix"],
+    debug: "Compare cache keys before and after the deploy; inspect invalidation events.",
+    now: "Roll back the key change, adjust TTL, normalize queries, prewarm safe cache.",
+    later: "Cache observability and deployment checks.",
+    prevent: "Cache changes require a performance and security review.",
+    say: "A cache hit drop is usually a keying, versioning, traffic, or invalidation issue; I would inspect those before scaling."
+  },
+  {
+    id: "S13", title: "Batch embedding job became too expensive",
+    symptom: "Nightly embedding bill spikes after a document refresh.",
+    ask: "Are all documents re-embedded, or only changed content?",
+    causes: "Full re-indexing, duplicate docs, no content hash, larger embedding model.",
+    metrics: ["Embeddings generated","Documents changed","Duplicate rate","Model version","Job retries"],
+    debug: "Compare the changed document count with the embedded document count.",
+    now: "Pause the full job; switch to incremental indexing; deduplicate.",
+    later: "Content-hash based embedding cache and change detection.",
+    prevent: "Indexing budget and anomaly alerts.",
+    say: "Embedding should be incremental. Re-embedding unchanged documents is usually a pipeline design issue."
+  },
+  {
+    id: "S14", title: "Long context window caused poor performance",
+    symptom: "Cost and latency high; answers become less focused.",
+    ask: "Why is long context used: broad synthesis, weak retrieval, or convenience?",
+    causes: "Too much irrelevant context, chat history bloat, full documents in the prompt.",
+    metrics: ["Input tokens","Answer accuracy","Citation precision","First-token latency"],
+    debug: "Compare the long-context answer vs a compressed RAG answer on an eval set.",
+    now: "Use retrieval, summarization, context compression, history summarization.",
+    later: "Context budget policies per workflow.",
+    prevent: "Treat context size as a quality and cost variable.",
+    say: "Long context is a tool, not a strategy. I would test whether smaller evidence improves both speed and faithfulness."
+  },
+  {
+    id: "S15", title: "Tool-calling workflow times out",
+    symptom: "LLM response fails because the external workflow exceeds the timeout.",
+    ask: "Which tool is slow, can it be async, and is the result required immediately?",
+    causes: "Slow external API, serial calls, no timeout budget, synchronous side effects.",
+    metrics: ["Tool latency","Timeout rate","Dependency errors","Step count","Retries"],
+    debug: "Trace tool calls and identify the critical-path dependency.",
+    now: "Set tool timeouts, parallelize read-only calls, return a partial answer or an async job.",
+    later: "Dependency SLAs and circuit breakers.",
+    prevent: "Workflow design review before adding tools.",
+    say: "A tool timeout is not always an LLM issue. I would redesign slow side effects as async and keep the user informed."
+  }
+];
+
+const CASES = [
+  {
+    id: "C1", title: "Enterprise legal RAG assistant under strict cost limits",
+    prompt: "A legal team wants a RAG assistant over contracts and policies. Budget is strict, answers must cite sources, and the latency target is under 8 seconds.",
+    clarify: [
+      "Who are the users: lawyers, sales, procurement, or executives?",
+      "What documents are authoritative and how are permissions represented?",
+      "What is the acceptable risk level for legal interpretation?",
+      "What latency and cost ceilings are contractual?",
+      "Is human review required for external-facing language?"
+    ],
+    weak: "Use the strongest model with all documents in a long context window for every request.",
+    strong: "Use permission-aware RAG with metadata filters, calibrated top-k, citation enforcement, and model routing. Simple clause lookup uses a mid-tier model; high-risk synthesis escalates. Reranking only for ambiguous queries.",
+    why: "The weak answer buys quality with unbounded cost and latency and ignores permissions entirely. The strong answer matches model strength to risk, bounds evidence, and makes reranking conditional — hitting all three constraints (budget, citations, 8s) instead of one.",
+    arch: "Authentication → tenant/ACL filters → hybrid retrieval → optional rerank → compressed evidence → answer with citations → audit log.",
+    tradeoff: "The cost limit requires top-k tuning and routing; legal quality requires citations and escalation; the latency target discourages unconditional heavy reranking.",
+    metrics: ["Recall@k","Citation correctness","Cost/request","Retrieval latency","Model latency","Human escalation rate"],
+    rec: "Pilot with a limited document set, define high-risk categories, instrument cost and latency from day one."
+  },
+  {
+    id: "C2", title: "Optimize a support chatbot with 10,000 daily users",
+    prompt: "Support chatbot volume is growing and monthly LLM spend is rising faster than ticket deflection.",
+    clarify: [
+      "Which intents dominate traffic?",
+      "What percentage are repeated FAQs?",
+      "What is the target cost per resolved issue?",
+      "Can answers be cached?",
+      "Which answers require live account data?"
+    ],
+    weak: "Keep the same model and hope caching at the browser layer helps.",
+    strong: "Build an intent router, cache safe FAQ answers, use a small model for classification, RAG for knowledge answers, tool calls only for account-specific requests, and concise response defaults.",
+    why: "Browser-layer caching does nothing for backend token spend, and 'same model everywhere' ignores that most traffic is simple. The strong answer segments traffic first, then applies the cheapest safe mechanism per segment.",
+    arch: "Gateway → intent classifier → FAQ semantic cache → RAG/tool path → model route → streaming answer.",
+    tradeoff: "Caching improves cost but must be permission-aware; a smaller model helps simple traffic; live account data cannot be cached broadly.",
+    metrics: ["Cost/resolved ticket","Deflection rate","Cache hit rate","P95 latency","Tool latency","CSAT"],
+    rec: "Reduce cost by workflow, not across the board; protect high-value paths."
+  },
+  {
+    id: "C3", title: "Reduce latency for an agentic CRM assistant",
+    prompt: "Sales users complain the CRM assistant takes 30–45 seconds for account preparation.",
+    clarify: [
+      "What tools are called?",
+      "Are tool calls serial or parallel?",
+      "How many agent steps occur?",
+      "Which data is required synchronously?",
+      "Can account snapshots be precomputed?"
+    ],
+    weak: "Switch to a faster model without inspecting agent traces.",
+    strong: "Trace the agent, cap steps, cache account data, parallelize read-only calls, precompute account summaries, and route common requests to deterministic workflows.",
+    why: "At 30–45 seconds the model is almost certainly not the dominant term — step count and serial tool calls are. Swapping models without a trace optimizes the wrong component and may not move p95 at all.",
+    arch: "User → deterministic intent route → account cache → parallel CRM/tool calls → summarization → optional agent for ambiguous next steps.",
+    tradeoff: "Agent flexibility is useful, but common CRM operations should be deterministic and cache-backed.",
+    metrics: ["Agent step count","Tool latency","Cache hit rate","Timeout rate","Cost/request"],
+    rec: "Replace the open-ended agent loop with a bounded execution graph."
+  },
+  {
+    id: "C4", title: "Design a multi-tenant GenAI platform with per-customer budgets",
+    prompt: "A SaaS company wants GenAI features across customers with strict tenant isolation and budget controls.",
+    clarify: [
+      "How are tenants isolated today?",
+      "What budgets are contractual?",
+      "Can tenants choose model tiers?",
+      "What data retention and audit policies apply?",
+      "How is billing reported?"
+    ],
+    weak: "Add a global token limit and a shared cache.",
+    strong: "Implement a tenant-aware gateway, per-tenant budgets, permission-aware cache, tenant-specific observability, model-routing policy, quota alerts, and isolation tests.",
+    why: "A global limit punishes every tenant for one tenant's spike and gives no contract-level predictability; a shared cache across tenants is a cross-tenant data-leak waiting to happen. Tenant identity has to be in the key and in the budget, not just in the bill.",
+    arch: "Tenant gateway → auth → budget check → cache/model route → tenant-scoped data plane → cost attribution → dashboards.",
+    tradeoff: "Caching and routing are powerful but dangerous without tenant keys and budget ownership.",
+    metrics: ["Cost/tenant","Quota usage","Cross-tenant access tests","Cache hit rate by tenant","P95 latency"],
+    rec: "Make tenant_id and permission_signature first-class across every service."
+  },
+  {
+    id: "C5", title: "Optimize a document summarization pipeline for batch processing",
+    prompt: "A company processes thousands of PDFs nightly and cost is too high.",
+    clarify: [
+      "Are documents new or changed?",
+      "Is full summarization required every time?",
+      "What is the SLA?",
+      "Can work be batched off-peak?",
+      "What quality checks are needed?"
+    ],
+    weak: "Run all PDFs through the premium model every night.",
+    strong: "Use content hashing, incremental processing, document dedupe, a cheaper summarization model, batch inference, queue budgets, and sampled evaluation.",
+    why: "The weak answer pays full price to recompute work that has not changed. The strong answer attacks the volume first (hash, dedupe, changed-only), then the unit price (cheaper model, batch), and keeps quality visible through sampling rather than full re-evaluation.",
+    arch: "Ingest → hash/dedupe → parse → changed-only queue → batch summarization → quality sample → publish.",
+    tradeoff: "Batch work optimizes throughput, not interactive latency. Quality can be checked with sampling and strong-model audits.",
+    metrics: ["Documents processed","Changed ratio","Cost/document","Queue depth","Failure rate","Eval score"],
+    rec: "Never reprocess unchanged documents without a reason."
+  },
+  {
+    id: "C6", title: "Build a real-time sales assistant with sub-3-second response time",
+    prompt: "The sales team wants real-time answer suggestions during calls, with a sub-3-second target.",
+    clarify: [
+      "What tasks must complete within 3 seconds?",
+      "Can data be precomputed before calls?",
+      "Is streaming acceptable?",
+      "Which facts must be current?",
+      "What happens on timeout?"
+    ],
+    weak: "Use a large model with a live CRM lookup during each request.",
+    strong: "Precompute account context, keep the prompt small, use a mid/small model for suggestions, stream quick bullets, run enrichment asynchronously, and fall back gracefully.",
+    why: "A live dependency inside a 3-second budget means the SLO depends on someone else's p99. The strong answer moves work out of the critical path in time (before/after the call) rather than trying to make the critical path faster.",
+    arch: "Before the call: precompute context. During the call: small prompt → fast model → streamed suggestion. After the call: async summary and CRM update.",
+    tradeoff: "A sub-3-second target requires workflow design, not only model choice.",
+    metrics: ["First-token latency","Total latency","Cache/precompute hit rate","User accept rate","Timeout rate"],
+    rec: "Separate real-time suggestions from slower enrichment."
+  },
+  {
+    id: "C7", title: "Handle a production incident where LLM costs exploded after launch",
+    prompt: "A new GenAI feature launched yesterday and spending exceeded the weekly budget in one day.",
+    clarify: [
+      "What changed at launch?",
+      "Which tenant/feature dominates spend?",
+      "Are retries or agents involved?",
+      "Are eval or batch jobs running?",
+      "Is there abuse or an integration loop?"
+    ],
+    weak: "Disable the entire AI feature without diagnosis.",
+    strong: "Activate the spend circuit breaker, identify top spend paths, cap output, pause batch/eval jobs, reduce premium routing, apply tenant quotas — then run root-cause analysis.",
+    why: "Killing the feature trades a cost incident for an availability incident and destroys the evidence you need. The strong answer stops the bleeding on the runaway paths specifically, keeps low-cost safe paths online, and only then diagnoses.",
+    arch: "Incident dashboard → cost attribution → mitigation controls → customer communication → permanent guardrails.",
+    tradeoff: "Business continuity vs spend control: keep low-cost safe paths online while disabling runaway paths.",
+    metrics: ["Cost/minute","Tokens/request","Model distribution","Retry count","Agent steps","Tenant usage"],
+    rec: "Budget guardrails must exist before launch."
+  }
+];
+
+const COMMS_LINE = "Acknowledge impact, show measured cause, provide immediate mitigation, then explain long-term prevention and success metric.";
+
+/* §1–§14, §17–§18 — levers, sentences, judgement calls, checklists. */
+
+const LEVER_GROUPS = [
+  {
+    key:"g1", sec:"§1", name:"Executive lens",
+    cols:["They really ask","FDE translation"],
+    items:[
+      {t:"ROI", f:["Does the value justify the spend?","Track cost per resolved ticket, cost per document processed, hours saved, deflection rate, revenue/risk impact."]},
+      {t:"Predictability", f:["Can we budget this safely?","Per-tenant budgets, token limits, quotas, anomaly alerts, model-routing rules."]},
+      {t:"Adoption", f:["Will employees actually use it?","Optimize perceived latency, workflow fit, reliability, explainability."]},
+      {t:"Risk", f:["Will this leak data or create compliance issues?","Permission-aware retrieval, audit logs, caching controls, human approval for sensitive actions."]},
+      {t:"Scalability", f:["Can this work beyond the pilot?","Load-test realistic traffic, measure P95/P99, define cost curves before rollout."]},
+      {t:"Prototype vs production — dataset", f:["Small, curated, static.","Large, messy, multi-tenant, constantly changing."]},
+      {t:"Prototype vs production — security", f:["Minimal or mocked.","OAuth/OIDC/SAML, RBAC/ABAC, permission filtering, audit logging."]},
+      {t:"Prototype vs production — load", f:["Single-user manual test.","Concurrent users, traffic spikes, batch jobs, retries."]},
+      {t:"Prototype vs production — latency", f:["One happy path.","Tail latency, provider queueing, cold starts, tool/API delays."]},
+      {t:"Prototype vs production — cost", f:["Small usage bill.","Budget ownership, cost allocation, anomaly detection, procurement constraints."]}
+    ]
+  },
+  {
+    key:"g2", sec:"§2", name:"Cost drivers",
+    cols:["What causes it","Why underestimated","Production signal","How to reduce","Trade-off"],
+    items:[
+      {t:"Input tokens", f:["Long prompts, retrieved context, chat history, tool results.","Teams count the user question but ignore system prompt, RAG chunks and hidden history.","Bill increases even when user traffic is flat.","Trim prompts, compress context, summarize history, cache static prompt parts.","Less context can reduce accuracy if retrieval quality is weak."]},
+      {t:"Output tokens", f:["Verbose answers, uncontrolled generation, reasoning-heavy tasks.","Teams measure requests, not generated tokens.","Long answers dominate per-request cost.","Max tokens, concise templates, structured output, summarize only when needed.","Too aggressive limits produce incomplete answers."]},
+      {t:"Long context windows", f:["Large documents, full chat history, large policy manuals.","Large context feels safe but is expensive and slower.","Cost rises and answer quality degrades from distraction.","Retrieve only relevant sections, compress, deduplicate, hierarchical summaries.","Requires better ingestion and retrieval design."]},
+      {t:"RAG retrieval", f:["Vector search, metadata filtering, query rewriting, hybrid search.","Retrieval seems cheap until request volume and tenant count rise.","Vector DB costs, latency and infra load increase.","Filter first, tune top-k, batch reads, optimize index, cache retrieval results.","Too few chunks reduce answer completeness."]},
+      {t:"Embedding generation", f:["Document ingestion, re-embedding, query embedding.","Teams forget recurring re-indexing and document churn.","Batch jobs become expensive overnight.","Incremental indexing, change detection, embedding cache, cheaper embedding model.","Stale embeddings hurt retrieval freshness."]},
+      {t:"Vector DB storage / search", f:["High-dimensional vectors, replicas, large metadata, high top-k.","Storage and query units scale with corpus and tenants.","Search latency and DB bill rise after adding documents.","Dimension choice, sharding, filters, index tuning, dedupe, lifecycle policies.","Over-tuning can reduce recall."]},
+      {t:"Reranking models", f:["Cross-encoder rerankers, LLM-based relevance scoring.","The quality win hides a latency/cost multiplier.","One request triggers many reranker scores.","Rerank only ambiguous/high-stakes queries; reduce candidates; lighter reranker.","Less reranking lowers precision."]},
+      {t:"Agent tool calls", f:["Planning, retrieval, CRM calls, web/API calls, reflection.","One user request becomes 5–20 sub-requests.","Cost per request varies wildly by agent path.","Max steps, tool budgets, allowlists, deterministic routing, cache tools.","Too strict limits may block complex workflows."]},
+      {t:"Multi-step reasoning", f:["Chain decomposition, verification, critique, self-reflection.","Looks intelligent in demos but is expensive at scale.","High output tokens and long traces.","Use only for complex/high-risk tasks; route simple tasks to direct answers.","May reduce reliability on hard tasks."]},
+      {t:"Model retries", f:["Timeouts, parsing failures, provider errors, safety re-prompts.","Retries are invisible to product metrics unless traced.","Cost spikes during incidents.","Idempotency, retry budgets, backoff, schema validation, fallback models.","Too few retries reduce availability."]},
+      {t:"Streaming responses", f:["Long generations, connection overhead, UI session time.","Streaming feels free but still generates tokens.","Users ask follow-ups before completion; infra holds connections.","Stream only user-visible long generation; cancel unused streams.","Streaming hides but does not remove backend cost."]},
+      {t:"Logging and tracing", f:["Full prompts, completions, embeddings, traces.","Necessary for debugging, but storage costs grow.","Observability bill and privacy risk increase.","Sample, redact, TTL policies, structured metrics over raw payloads.","Less detail slows incident analysis."]},
+      {t:"Evaluation pipelines", f:["Regression tests, synthetic queries, judge models.","Offline evals call expensive models repeatedly.","CI/CD or nightly jobs become large hidden spend.","Sample eval set, stratified eval, cheaper judges, run deltas only.","Weak eval coverage misses quality regressions."]},
+      {t:"Batch jobs", f:["Summarization, enrichment, embedding, migration.","Batch work is not visible to interactive users.","Monthly bill spikes after a data refresh.","Queue budgets, incremental processing, off-peak scheduling, rate limits.","Longer processing windows."]},
+      {t:"Fine-tuning", f:["Training data prep, training runs, hosted fine-tuned model.","Teams focus on training price, not lifecycle cost.","Additional model version operations and evals.","Use when behaviour repeats and prompts become large; compare with RAG/prompting.","Can lock the team into a provider or stale behaviour."]},
+      {t:"GPU / inference hosting", f:["Self-hosted models, replicas, idle capacity.","GPU cost continues even when traffic is low.","Low utilization and expensive standby.","Autoscaling, batching, quantization, right-size model, managed API for low volume.","Self-hosting adds operational complexity."]},
+      {t:"Third-party APIs", f:["Search, CRM, OCR, document parsing, rerank APIs.","The LLM is not the only bill.","External API fees scale with agent/tool use.","Cache, batch, negotiate limits, deterministic pre-filtering.","Caching introduces freshness and security issues."]},
+      {t:"Human review", f:["Approval queues, compliance review, expert validation.","Operational cost is ignored in engineering estimates.","Support teams become a bottleneck after rollout.","Risk-based routing, active learning, better UI, policy automation.","Automation must not bypass required controls."]}
+    ]
+  },
+  {
+    key:"g3", sec:"§3", name:"Latency drivers",
+    cols:["Symptoms","Root causes","Metrics to check","Optimization","Prevention pattern"],
+    items:[
+      {t:"Model inference time", f:["Long wait before or during generation.","Large model, long prompt, long output, provider queueing.","Model latency, tokens/sec, queue time, model tier.","Compare model tiers, reduce prompt/output, route simple tasks to a smaller model.","Use model routing; avoid a large model as the default."]},
+      {t:"First-token latency", f:["UI appears frozen before streaming starts.","Provider queueing, prompt size, safety checks, cold connection.","Time to first token, provider latency, request size.","Keep the prompt lean, reuse connections, stream, warm paths.","Monitor first-token separately from total latency."]},
+      {t:"Total response time", f:["Answer finishes too slowly.","Long output, sequential calls, tool delays.","End-to-end duration, output tokens, tool trace.","Limit output, parallelize safe work, async background tasks.","Use concise answer defaults."]},
+      {t:"Retrieval latency", f:["Slow before the model call.","Filters, large index, poor metadata, network to vector DB.","Retrieval duration, DB CPU, index stats, top-k.","Filter before vector search, tune index, cache, reduce top-k.","Pre-test retrieval at target corpus size."]},
+      {t:"Vector search latency", f:["Search worsens as documents grow.","Unoptimized index, large dimensions, high recall settings.","P95 query time, shard load, index memory.","Index tuning, sharding, quantization, metadata pruning.","Separate hot and warm corpora."]},
+      {t:"Reranker latency", f:["Good answers but a slow pipeline.","Reranking too many candidates or using a heavy model.","Reranker duration, candidate count.","Rerank fewer docs, use only when needed, lighter reranker.","Gate reranking by query ambiguity."]},
+      {t:"Tool / API latency", f:["Agent waits on CRM, ERP, search, database.","Synchronous external calls and slow dependencies.","Per-tool latency, timeout rate, dependency SLA.","Parallelize, cache, set timeouts, degrade gracefully.","Budget tool calls per workflow."]},
+      {t:"Agent planning loops", f:["Agent appears to think forever.","Reflection loops, poor stopping conditions, repeated retrieval.","Step count, trace length, repeated tool calls.","Max steps, deterministic routers, smaller planning model.","Every agent path needs a budget."]},
+      {t:"Cold starts", f:["First request after idle is slow.","Serverless/container scale-to-zero, model warm-up.","Cold start count, startup time, idle duration.","Min replicas, warmers, keep-alive, provisioned concurrency.","Balance idle cost against latency."]},
+      {t:"Network latency", f:["Regional users see slower responses.","Long distance to provider, vector DB, APIs.","RTT, region, DNS, TLS handshake.","Regional deployment, connection pooling, colocate services.","Data residency may constrain regions."]},
+      {t:"Database latency", f:["Permission checks or metadata lookup are slow.","Unindexed joins, tenant filters, audit writes.","DB query time, slow query logs, locks.","Indexes, denormalized read models, async writes.","Do not bypass auth for speed."]},
+      {t:"Large prompt construction", f:["Backend slow before the model call.","Loading many docs, string assembly, serialization.","Prompt build time, payload size.","Precompute, cache static parts, compress context.","Version prompt templates."]},
+      {t:"Long output generation", f:["Streaming starts but completion drags.","Verbose format, no max token limit.","Output tokens, tokens/sec.","Short answer defaults, progressive details, max output.","Allow expansion on demand."]},
+      {t:"Sequential workflow design", f:["Each step waits for the previous one unnecessarily.","Linear retrieval, tool calls, validation, logging.","Trace waterfall, critical path.","Parallelize independent calls, prefetch, async non-critical work.","Avoid parallelizing unsafe side effects."]},
+      {t:"Synchronous external calls", f:["Request times out due to a dependency.","Real-time wait for a slow API.","Dependency P95/P99, timeout count.","Queue async jobs, callbacks, optimistic UI.","Use async for non-immediate tasks."]},
+      {t:"Auth and permission checks", f:["Secure retrieval is slow.","Complex ACL joins, per-doc checks after search.","Permission filter time, DB queries/request.","Precompute ACL metadata, filter before search, cache permissions carefully.","Never leak data for speed."]},
+      {t:"Observability overhead", f:["Tracing/logging slows the hot path.","Full payload logging, sync telemetry writes.","Telemetry duration, log volume.","Async logging, sampling, redaction, metrics over raw traces.","Keep enough detail for incidents."]}
+    ]
+  },
+  {
+    key:"g5", sec:"§5", name:"Model selection",
+    cols:["Best use","Optimization logic","Risk control"],
+    items:[
+      {t:"Routing model", f:["Intent classification, complexity scoring, policy detection.","A cheap fast model decides whether premium reasoning is necessary.","Confidence threshold and fallback to a stronger model."]},
+      {t:"Extraction model", f:["Structured fields from tickets, PDFs, emails.","A small model or constrained parser is often enough.","Validate with schema and deterministic checks."]},
+      {t:"Summarization model", f:["Short summaries of documents, calls, tickets.","Cheaper model when factuality risk is moderate and the source remains available.","Cite source chunks and limit abstraction."]},
+      {t:"Reasoning model", f:["Complex trade-offs, legal reasoning, architecture design.","Use only when the task requires multi-step judgement.","Gate by risk, audit traces, require human review if needed."]},
+      {t:"Embedding model", f:["Semantic retrieval representation.","Choose by domain recall, dimension, latency, storage cost.","Evaluate retrieval against real queries, not benchmark names."]},
+      {t:"Reranker model", f:["Ranking retrieved candidates.","Improve precision without sending all context to the generator.","Use only for ambiguous or high-value queries."]},
+      {t:"Multimodal model", f:["Image/PDF/table understanding.","Powerful but expensive; use OCR/document parsing first where adequate.","Route pages/regions instead of whole files."]},
+      {t:"Cascade: cheap → medium → premium", f:["Classify with a small model; medium for normal support answers; premium for complex policy conflicts.","Most traffic avoids the premium model.","Escalate when confidence is low or policy risk is high."]},
+      {t:"Cascade: rules before LLM", f:["Deterministic regex/rules for invoice ID extraction before calling a model.","Avoids unnecessary inference for simple cases.","Fall back to the model when rule confidence is low."]},
+      {t:"Cascade: retrieval confidence gate", f:["High score + clean permissions → generate directly; otherwise query-rewrite and rerank.","Avoids reranking on easy queries.","Trigger rerank when the top score margin is low."]},
+      {t:"Cascade: cheap draft, strong verify", f:["Cheap model drafts; strong model checks high-risk facts.","The premium model sees shorter content and only validates.","Use for compliance-heavy reports."]},
+      {t:"Cascade: provider fallback", f:["Primary provider for quality; fallback for availability/latency incidents.","Improves resilience and can control cost.","Keep prompts and schemas provider-portable."]},
+      {t:"Context window size", f:["Useful when the question genuinely requires broad evidence.","Dangerous as a substitute for retrieval quality — raises input cost and first-token latency and distracts the model.","The target is not maximum context; it is minimum sufficient context."]}
+    ]
+  },
+  {
+    key:"g6", sec:"§6", name:"Prompt optimization",
+    cols:["Effect"],
+    items:[
+      {t:"Remove repeated style instructions", f:["Fewer input tokens and less instruction conflict."]},
+      {t:"Reduce few-shot examples", f:["Lower prompt size; keep only examples that improve the eval score."]},
+      {t:"Compress context", f:["Lower cost and faster first token."]},
+      {t:"Output limit", f:["Lower output-token cost and faster completion."]},
+      {t:"Structured fields", f:["Easier downstream parsing and observability."]},
+      {t:"Separate static from dynamic", f:["Static prompt segments can be cached or versioned."]},
+      {t:"Prompt rollout discipline", f:["Regression-eval before production, compare token usage before/after, measure first-token latency, parse failures, retries and user correction rate, version every template, keep a rollback path."]}
+    ]
+  },
+  {
+    key:"g7", sec:"§7", name:"RAG levers",
+    cols:["Trade-off","Production guidance"],
+    items:[
+      {t:"Chunk size", f:["Small chunks improve precision but need more chunks; large chunks reduce calls but include irrelevant text.","Tune by document type and question type; evaluate faithfulness and recall."]},
+      {t:"Chunk overlap", f:["Overlap prevents boundary loss but increases storage and duplicate context.","Use minimal overlap; avoid blind 20% overlap on every corpus."]},
+      {t:"Metadata filtering", f:["Tenant, department, document type, date, ACL, region.","Apply filters before vector search where possible, to shrink the search space and avoid leakage."]},
+      {t:"Permission-aware retrieval", f:["Only retrieve documents the user can access.","Precompute ACL metadata; never filter only after generation."]},
+      {t:"Hybrid search", f:["Combines keyword and semantic signals.","Use for enterprise terms, acronyms, IDs, product names, legal clauses."]},
+      {t:"Query rewriting", f:["Improves recall for ambiguous queries.","Gate it; rewriting every query adds latency and cost."]},
+      {t:"Top-k tuning", f:["Controls the number of retrieved chunks.","Measure answer quality as top-k decreases; top-k 20 may not beat top-k 5."]},
+      {t:"Context compression", f:["Summarize or extract only relevant lines.","Useful when retrieval returns long chunks; must preserve citations."]},
+      {t:"Deduplication", f:["Remove repeated docs, version duplicates, boilerplate.","Cuts storage, retrieval noise, token cost and hallucination risk."]},
+      {t:"Embedding freshness", f:["New or changed docs need updated vectors.","Use incremental indexing and content hashes."]},
+      {t:"Vector DB tuning", f:["Index type, shards, replicas, dimensions, filtering strategy.","Tune using production-like corpus size and tenant filters."]},
+      {t:"Retrieval evaluation", f:["Recall@k, MRR, answer faithfulness, citation correctness.","Do not optimize top-k blindly; evaluate real questions."]},
+      {t:"Ingestion path (memorize the order)", f:["parse → normalize → deduplicate → chunk → classify metadata → compute permissions → embed → index → validate retrieval.","Getting this order wrong is where permission leaks and duplicate chunks come from."]},
+      {t:"Query path (memorize the order)", f:["authenticate → infer intent → apply tenant/ACL filters → retrieve → optional rerank → compress context → generate → cite → log metrics.","Filters sit before retrieval, not after generation."]}
+    ]
+  },
+  {
+    key:"g8", sec:"§8", name:"Agent controls",
+    cols:["How it works","Benefit","Risk control"],
+    items:[
+      {t:"Hard max step limits", f:["Stop after N reasoning/tool steps.","Predictable latency and cost.","Escalate to a human or ask for clarification if the limit is reached."]},
+      {t:"Tool allowlists", f:["Expose only relevant tools for the request type.","Reduces wrong calls and planning noise.","Route by intent first."]},
+      {t:"Tool call budgeting", f:["Set max tool calls and max cost per request.","Prevents runaway workflows.","Record budget exhaustion as a trace event."]},
+      {t:"Parallel tool calls", f:["Run independent read-only calls concurrently.","Reduces wall-clock latency.","Do not parallelize side-effecting actions blindly."]},
+      {t:"Cached tool results", f:["Reuse CRM/profile/search results within a request or session.","Cuts repeated dependency calls.","Apply TTL and permission checks."]},
+      {t:"Deterministic routing", f:["Use rules/workflows for common paths.","Avoids agent overhead.","Fall back to the agent for ambiguous tasks."]},
+      {t:"Smaller planning model", f:["Use a cheaper model to choose tools.","Lowers cost and latency.","Escalate if confidence is low."]},
+      {t:"Summarized intermediate state", f:["Carry compact state instead of the full trace.","Reduces prompt tokens.","Preserve the audit log outside the prompt."]},
+      {t:"Human approval", f:["Pause before expensive or sensitive actions.","Controls risk and cost.","Use thresholds and a clear user explanation."]},
+      {t:"Trace analysis", f:["Analyze step patterns and loops.","Finds root causes from real traffic.","Add tests for repeated failure paths."]}
+    ]
+  },
+  {
+    key:"g10", sec:"§10", name:"Streaming & UX",
+    cols:["Meaning","Optimization tactic"],
+    items:[
+      {t:"First-token latency", f:["Time before the user sees any output.","Stream early, reduce prompt size, warm connections, avoid pre-generation bottlenecks."]},
+      {t:"Total latency", f:["Time until the final answer is complete.","Limit output length, parallelize safe steps, reduce tool calls."]},
+      {t:"Perceived latency", f:["How slow the user feels the system is.","Streaming, progress states, partial results, skeleton UI."]},
+      {t:"Progressive disclosure", f:["Short answer first, details on request.","Default concise answer; add a 'show details' expansion."]},
+      {t:"Async job handling", f:["Long-running tasks move out of the request path.","Return job status, notification, downloadable result."]},
+      {t:"Cancellation support", f:["User can stop a long generation.","Cancel the model stream, stop tool execution, log cancelled cost."]},
+      {t:"Retry UX", f:["User understands when a dependency failed.","Retry safely, provide a partial answer and a next step."]},
+      {t:"Timeout handling", f:["System avoids an endless wait.","Set per-component and global timeout budgets."]},
+      {t:"When streaming hides a real problem", f:["Retrieval or tool calls take 10s before any token; the answer is too verbose; agent loops keep running after the user stopped caring; the UI streams low-confidence content before verification.","Streaming is UX optimization, not a substitute for backend optimization."]}
+    ]
+  },
+  {
+    key:"g11", sec:"§11", name:"Infrastructure",
+    cols:["Optimization use","Production warning"],
+    items:[
+      {t:"API gateway", f:["Rate limits, auth offload, request shaping, caching headers.","Do not hide per-tenant cost attribution."]},
+      {t:"Connection pooling", f:["Reuse HTTP/database connections to providers and tools.","Pool exhaustion creates latency spikes."]},
+      {t:"HTTP keep-alive", f:["Avoid repeated TLS handshakes.","Tune timeouts and idle connection limits."]},
+      {t:"Async processing", f:["Move long-running jobs to queues.","Users need job status and failure handling."]},
+      {t:"Worker scaling", f:["Scale background workers by queue depth and SLA.","Avoid uncontrolled batch spend."]},
+      {t:"Horizontal scaling", f:["Add replicas for stateless API layers.","Model/provider latency may still dominate."]},
+      {t:"Rate limiting", f:["Protect the system and the budget.","Make limits tenant-aware and user-friendly."]},
+      {t:"Backpressure", f:["Slow down producers before overload.","Prefer graceful degradation over cascading failure."]},
+      {t:"Autoscaling", f:["Scale by CPU, queue depth, concurrency, latency.","LLM workloads may not correlate with CPU alone."]},
+      {t:"Cold start reduction", f:["Min replicas, warmers, provisioned concurrency.","Costs more idle capacity."]},
+      {t:"Regional deployment", f:["Deploy near users, providers and data.","Data residency and vendor region constraints matter."]},
+      {t:"GPU optimization", f:["Batching, quantization, tensor parallelism, memory tuning.","Low utilization can be more expensive than a managed API."]},
+      {t:"Serverless vs containers", f:["Serverless for bursty low-volume APIs; containers for stable services.","Cold starts and timeout limits affect GenAI workflows."]},
+      {t:"Kubernetes tuning", f:["Requests/limits, HPA, node pools, pod disruption budgets.","Over- or under-provisioning creates cost or instability."]},
+      {t:"Batch inference", f:["Group offline tasks for throughput.","Not suitable for interactive low-latency tasks."]},
+      {t:"Observability overhead", f:["Async traces, metrics sampling, payload redaction.","Full prompt logging can be costly and risky."]},
+      {t:"Pattern: real-time GenAI API", f:["Chatbot, copilots, sales assistant.","Keep the critical path short; route models; stream; cache; strict timeouts."]},
+      {t:"Pattern: async document pipeline", f:["Summarization, extraction, embedding.","Queue, batch, worker autoscaling, cost budgets, retry policies."]},
+      {t:"Pattern: RAG ingestion pipeline", f:["Enterprise document search assistant.","Deduplication, incremental indexing, ACL metadata, embedding cache."]},
+      {t:"Pattern: multi-tenant platform", f:["Customer-facing SaaS AI features.","Tenant budgets, isolation, per-tenant metrics, permission-aware cache."]},
+      {t:"Pattern: agent execution service", f:["CRM/ERP assistant, operations copilot.","Step limits, tool budgets, trace store, deterministic routes."]},
+      {t:"Pattern: evaluation pipeline", f:["Prompt/model regression testing.","Sampled evals, cheaper judge models, scheduled/offline execution."]}
+    ]
+  },
+  {
+    key:"g12", sec:"§12", name:"Observability",
+    cols:["Definition","Why it matters"],
+    items:[
+      {t:"Request latency", f:["End-to-end response time.","Overall user experience and SLA."]},
+      {t:"First-token latency", f:["Time before the stream begins.","Perceived responsiveness."]},
+      {t:"Total generation time", f:["Time spent generating output.","Model/output bottlenecks."]},
+      {t:"Input/output tokens", f:["Tokens consumed per request.","Cost driver diagnosis."]},
+      {t:"Cost per request", f:["Estimated total request cost.","Budget and ROI tracking."]},
+      {t:"Cost per tenant/feature/user", f:["Attribution by customer or product area.","Billing, quotas, procurement conversations."]},
+      {t:"Retrieval / reranker latency", f:["RAG component timing.","Finds non-model bottlenecks."]},
+      {t:"Tool call latency", f:["Per external dependency timing.","Agent/API bottlenecks."]},
+      {t:"Agent step count", f:["Number of planning/tool steps.","Loop and budget control."]},
+      {t:"Cache hit rate", f:["Share served from cache.","Cost/latency optimization health."]},
+      {t:"Retry / timeout rate", f:["Failures and repeated attempts.","Hidden cost multiplier."]},
+      {t:"P95 / P99 latency", f:["Tail latency.","Real production reliability."]},
+      {t:"Provider / model latency", f:["Latency by vendor and model.","Fallback and routing decisions."]},
+      {t:"Vector DB latency", f:["Search/index performance.","RAG scaling health."]},
+      {t:"Queue depth", f:["Backlog in async pipelines.","SLA risk and scaling trigger."]},
+      {t:"GPU utilization", f:["Self-hosted inference efficiency.","Cost efficiency of capacity."]},
+      {t:"Customer ROI metrics", f:["Resolution rate, hours saved, revenue impact.","The executive value story."]},
+      {t:"Trace event schema", f:["tenant_id, feature, prompt_version, model, input_tokens, output_tokens, estimated_cost, latency breakdown, retrieval top-k, reranker used, cache status, tool calls, retries, timeout status, final outcome.","Redact sensitive payloads and apply a retention policy."]},
+      {t:"Dashboard: executive cost", f:["CFO, sponsor, product owner.","Spend trend, cost/request, cost/tenant, adoption, ROI proxy, budget alerts."]},
+      {t:"Dashboard: engineering latency", f:["Platform and backend engineers.","P50/P95/P99, first-token, retrieval, model, tool, DB, queue, provider latency."]},
+      {t:"Dashboard: tenant usage", f:["Customer success, account team.","Requests, tokens, cost, active users, top workflows, budget remaining."]},
+      {t:"Dashboard: incident", f:["On-call, SRE, FDE.","Errors, retries, timeouts, provider health, cache drop, queue depth, recent deploys."]},
+      {t:"Dashboard: model performance", f:["AI engineers, product.","Quality evals, model route distribution, fallback rate, cost/quality trade-off."]}
+    ]
+  },
+  {
+    key:"g13", sec:"§13", name:"Budget guardrails",
+    cols:["Purpose","Implementation"],
+    items:[
+      {t:"Per-user budget", f:["Limit individual misuse or accidental loops.","Daily/monthly token or spend cap with a friendly warning."]},
+      {t:"Per-tenant budget", f:["Contract-level predictability.","Tenant dashboard and alert thresholds."]},
+      {t:"Per-feature budget", f:["Find expensive product areas.","Budget by workflow: chat, summarization, agent, eval."]},
+      {t:"Per-request token limit", f:["Prevent huge prompts and outputs.","Max input context and output length."]},
+      {t:"Max agent steps / tool calls", f:["Stop runaway agents.","Hard limit plus an escalation path."]},
+      {t:"Rate limits and quotas", f:["Protect infra and budget.","Tenant-aware limits by tier."]},
+      {t:"Spend anomaly detection", f:["Detect sudden cost increases.","Alert on unusual token/request/cost patterns."]},
+      {t:"Expensive query detection", f:["Identify heavy documents or workflows.","Flag long context, repeated retries, high tool usage."]},
+      {t:"Model fallback rules", f:["Control provider latency/cost incidents.","Fall back to a cheaper/faster model under defined conditions."]},
+      {t:"Human approval", f:["Gate high-cost/high-risk tasks.","Approval before mass email, bulk processing, external actions."]},
+      {t:"Policy: free tier", f:["Small model default, strict daily quota, no long-context agent workflows, limited batch jobs.","Keeps free usage sustainable while allowing product evaluation."]},
+      {t:"Policy: enterprise tenant", f:["Contract budget, quota alerts, premium model only for approved workflows, monthly usage report.","Provides predictability and supports procurement."]},
+      {t:"Policy: internal employee assistant", f:["Department budgets, sensitive workflows require approval, logging with retention limits.","Encourages adoption without uncontrolled internal spend."]},
+      {t:"Policy: high-risk workflow", f:["Strong model, retrieval citations, human approval, full audit trace, no broad cache.","Optimizes for correctness and compliance over speed."]},
+      {t:"Policy: demo environment", f:["Warm paths, seeded cache, capped traffic, fixed dataset, budget alert.","Ensures demo reliability without pretending it is production capacity."]}
+    ]
+  }
+];
+
+/* §4 trade-off sentences + §14 customer wording */
+const SAYIT = [
+  {sec:"§4", id:"T1", sit:"Smaller model vs larger model", opt:"Route simple tasks to a smaller model; reserve the large model for reasoning.", benefit:"Lower cost and faster latency.", risk:"Lower accuracy on complex or ambiguous tasks.", use:"Classification, extraction, routing, simple summaries.", avoid:"High-risk legal, financial, medical, security reasoning.", say:"I would match model strength to task risk and complexity instead of using the premium model for every request."},
+  {sec:"§4", id:"T2", sit:"Fast answer vs accurate answer", opt:"Tiered response: quick draft, then deeper verification.", benefit:"Better perceived latency.", risk:"The initial answer may be incomplete.", use:"Operational chat, support triage, user guidance.", avoid:"Regulated or irreversible decisions.", say:"I would separate perceived latency from final confidence and make high-risk paths slower but safer."},
+  {sec:"§4", id:"T3", sit:"More retrieval context vs less", opt:"Tune top-k and context compression.", benefit:"Reduced tokens and a faster model call.", risk:"May miss supporting evidence.", use:"Questions with a narrow evidence need.", avoid:"Broad legal/policy synthesis.", say:"More context is not always better; irrelevant context increases cost and can reduce answer quality."},
+  {sec:"§4", id:"T4", sit:"More chunks vs fewer chunks", opt:"Calibrated top-k by query type.", benefit:"Better cost/latency control.", risk:"Recall may drop.", use:"Known-document lookup.", avoid:"Ambiguous exploratory queries.", say:"I would evaluate recall and answer faithfulness while reducing top-k."},
+  {sec:"§4", id:"T5", sit:"Reranking vs direct retrieval", opt:"Rerank only when retrieval confidence is low.", benefit:"Better precision on hard queries.", risk:"Extra model/API latency and cost.", use:"Ambiguous, high-value, enterprise search.", avoid:"Very low-latency chat paths.", say:"Reranking should be a gated quality tool, not an unconditional tax."},
+  {sec:"§4", id:"T6", sit:"Agentic vs deterministic workflow", opt:"Deterministic routing for common paths; agent only for open-ended tasks.", benefit:"Lower latency and predictable cost.", risk:"Less flexibility.", use:"Known workflows, stable tools.", avoid:"Ambiguous multi-step problem solving.", say:"I would not use an agent where a workflow engine or router is enough."},
+  {sec:"§4", id:"T7", sit:"Real-time vs async processing", opt:"Move heavy document work to background jobs.", benefit:"Avoids timeouts and improves UX.", risk:"User waits for a completion notification.", use:"Bulk summarization, embedding, report generation.", avoid:"Live conversation requiring an immediate answer.", say:"Not every AI workflow should be synchronous."},
+  {sec:"§4", id:"T8", sit:"Streaming vs non-streaming", opt:"Stream long user-facing outputs.", benefit:"Improves perceived latency.", risk:"Does not reduce total compute cost.", use:"Narrative answers, copilots.", avoid:"Short classification/extraction tasks.", say:"Streaming is UX optimization, not a substitute for backend optimization."},
+  {sec:"§4", id:"T9", sit:"Fine-tuning vs prompt engineering", opt:"Fine-tune repetitive behaviour to reduce prompt length.", benefit:"Shorter prompts, consistent style.", risk:"Training/eval/versioning cost.", use:"Repeated structured tasks with a stable target style.", avoid:"Fast-changing knowledge or permissions.", say:"I would compare fine-tuning against RAG and prompt compression using production traffic."},
+  {sec:"§4", id:"T10", sit:"Caching vs freshness", opt:"Cache stable and permission-safe results.", benefit:"Large latency and cost reduction.", risk:"Stale or unauthorized answers.", use:"FAQs, embeddings, tool results with TTL.", avoid:"User-specific sensitive answers with changing permissions.", say:"Caching must be permission-aware; speed is not worth cross-tenant leakage."},
+  {sec:"§4", id:"T11", sit:"Batch vs live inference", opt:"Batch non-interactive work.", benefit:"Lower unit cost, controlled throughput.", risk:"Delayed results.", use:"Document ingestion, enrichment, evals.", avoid:"Interactive support/chat.", say:"Batching is ideal when user value does not require an immediate response."},
+  {sec:"§4", id:"T12", sit:"Self-hosted vs managed API", opt:"Choose by volume, latency, compliance, ops maturity.", benefit:"Control, data residency, potential scale economics.", risk:"Operational burden and GPU utilization risk.", use:"Predictable high volume or strict data controls.", avoid:"Low or variable traffic with a small team.", say:"I would compare total cost of ownership, not only token or GPU price."},
+  {sec:"§14", id:"W1", sit:"Explaining high latency", say:"I would not frame this as simply a model problem. I would break the latency into retrieval time, model inference time, tool-call time, and post-processing time. That lets us optimize the real bottleneck instead of guessing."},
+  {sec:"§14", id:"W2", sit:"Explaining a cost increase", say:"The increase appears to be driven less by user count and more by request shape: longer prompts, more retrieved context, additional tool calls, and retries. I would separate these drivers so we can reduce spend without reducing useful quality."},
+  {sec:"§14", id:"W3", sit:"Executive trade-off", say:"We can make this faster and cheaper, but we need to decide which quality bar must remain fixed. For low-risk requests we can route to a smaller model. For high-risk workflows I recommend keeping the stronger model and optimizing retrieval and prompt size first."},
+  {sec:"§14", id:"W4", sit:"Model downgrade decision", say:"This is not a downgrade of the product experience. It is a routing strategy: use the premium model where it changes the outcome, and use a faster model where the task is simple and measurable."},
+  {sec:"§14", id:"W5", sit:"Why caching helps", say:"Many requests repeat the same stable context. A permission-aware cache can reduce latency and cost while preserving tenant isolation and freshness rules."},
+  {sec:"§14", id:"W6", sit:"Why not every request uses the best model", say:"The best model is not always the best system choice. The right system uses the cheapest reliable model for the task and escalates only when complexity or risk requires it."},
+  {sec:"§14", id:"W7", sit:"Optimization roadmap", say:"I would propose a three-step roadmap: first instrument the bottlenecks, then apply safe quick wins like prompt trimming and top-k tuning, and finally redesign heavy workflows with routing, caching, and async processing."},
+  {sec:"§14", id:"W8", sit:"Handling complaints", say:"Your concern is valid. I would separate whether the issue is answer quality, latency, cost predictability, or workflow fit. Each has a different fix, and treating everything as a model problem would be too imprecise."},
+  {sec:"§14", id:"W9", sit:"Pilot failed due to latency", say:"The pilot showed useful quality but the workflow latency was not production-ready. I would treat this as an engineering optimization issue, not a failure of the entire AI use case."},
+  {sec:"§14", id:"W10", sit:"CFO / procurement concern", say:"We can provide per-tenant budgets, cost ceilings, usage dashboards, and model-routing rules so spend is predictable rather than open-ended."},
+  {sec:"§14", id:"W11", sit:"Security concern about caching", say:"Caching is only acceptable when the cache key includes tenant and permission boundaries, and when invalidation respects document and access changes. We should not cache sensitive cross-user answers broadly."}
+];
+
+/* §9 — safe or not */
+const SAFETY = [
+  {id:"K1", claim:"Cache public or tenant-approved static documentation, keyed by version.", v:"safe", rule:"Explicitly on the playbook's safe list — the version key is what makes it safe."},
+  {id:"K2", claim:"Cache embeddings keyed by content hash and embedding model version.", v:"safe", rule:"Safe list. Both keys are required: a content hash alone breaks when you change embedding model."},
+  {id:"K3", claim:"Cache prompt templates keyed by prompt version.", v:"safe", rule:"Safe list. The version key is what lets you roll a prompt back without serving mixed behaviour."},
+  {id:"K4", claim:"Cache low-risk tool results with a short TTL and permission-bound keys.", v:"safe", rule:"Safe list — but only with both the TTL and the permission binding."},
+  {id:"K5", claim:"Cache retrieval results for repeated queries.", v:"conditional", rule:"Safe only when tenant, user permissions, document versions and filters are all part of the cache key. Invalidate on document, ACL or metadata changes."},
+  {id:"K6", claim:"Cache the same response across tenants when the question text matches.", v:"unsafe", rule:"Cross-tenant responses without tenant isolation — never mix tenant keys."},
+  {id:"K7", claim:"Cache a sensitive user-specific answer because the same user asks it daily.", v:"unsafe", rule:"Never without explicit permission-bound keys."},
+  {id:"K8", claim:"Cache answers whose underlying permissions change frequently.", v:"unsafe", rule:"Not unless invalidation is strong — a permission change must invalidate the entry."},
+  {id:"K9", claim:"Cache derived outputs over regulated data.", v:"unsafe", rule:"Forbidden where the retention policy prohibits storing derived outputs."},
+  {id:"K10", claim:"Cache a tool response that contains an access token.", v:"unsafe", rule:"Never cache secrets, tokens, credentials or private notes."},
+  {id:"K11", claim:"Use semantic caching for FAQ-style support questions.", v:"conditional", rule:"Useful for FAQ and public/internal knowledge bases, but a poor similarity threshold returns stale or mismatched answers."},
+  {id:"K12", claim:"Use session-level caching to reuse context within a conversation.", v:"conditional", rule:"Good for conversational workflows — but clear it at logout or session expiry."},
+  {id:"K13", claim:"Put dynamic personalized responses behind the CDN / API gateway cache.", v:"unsafe", rule:"Gateway caching is for static resources and model-independent metadata only."},
+  {id:"K14", claim:"Cache static system instructions and shared policy blocks (prompt caching).", v:"conditional", rule:"Good for large repeated prompts with stable content — but do not cache user-specific sensitive context across users."},
+  {id:"K15", claim:"The full enterprise cache key.", v:"safe", rule:"tenant_id + user_id or permission_signature + document_version + prompt_version + model_version + request_normalized_hash + tool_state_version. If that feels too heavy, that is a sign the answer may not be safe to cache broadly."}
+];
+
+/* §17 checklists + §18 mental model */
+const CHECKLISTS = [
+  {id:"L1", title:"Cost optimization", items:[
+    "Break cost down by tenant, feature, model, prompt version, request path, and batch job.",
+    "Measure input tokens, output tokens, retries, agent steps, tool calls, embeddings, reranking, and logging overhead.",
+    "Identify low-value high-cost workflows before reducing quality globally.",
+    "Set max output length and per-request token budgets.",
+    "Route simple tasks to smaller models; reserve premium models for complex/high-risk tasks.",
+    "Deduplicate documents and avoid re-embedding unchanged content.",
+    "Gate reranking and query rewriting by ambiguity or risk.",
+    "Introduce safe caching with tenant and permission keys.",
+    "Create spend anomaly alerts before launch.",
+    "Review evaluation and batch jobs as part of spend analysis."]},
+  {id:"L2", title:"Latency optimization", items:[
+    "Measure first-token, total latency, retrieval, reranker, model, tool, DB, auth, and post-processing time.",
+    "Inspect P95 and P99, not only average latency.",
+    "Create a trace waterfall for slow requests.",
+    "Reduce prompt size and output length where quality allows.",
+    "Parallelize independent read-only calls.",
+    "Move long-running work to async jobs.",
+    "Set timeout budgets per dependency.",
+    "Warm cold paths for critical demos and production workflows.",
+    "Use regional deployment and connection pooling.",
+    "Monitor provider latency separately from application latency."]},
+  {id:"L3", title:"RAG optimization", items:[
+    "Evaluate chunk size and overlap on real documents and real queries.",
+    "Apply tenant, ACL, document type and date filters before vector search where possible.",
+    "Tune top-k using retrieval evals and answer faithfulness.",
+    "Remove duplicate documents and boilerplate chunks.",
+    "Use hybrid search for acronyms, IDs and exact terms.",
+    "Gate reranking for ambiguous/high-value queries.",
+    "Compress context while preserving source IDs.",
+    "Use incremental indexing and a content-hash embedding cache.",
+    "Measure vector DB P95 latency and filter selectivity.",
+    "Track citation correctness and retrieval recall."]},
+  {id:"L4", title:"Agent optimization", items:[
+    "Set max steps, max tool calls, max cost, and a global timeout.",
+    "Use tool allowlists based on intent.",
+    "Cache retrieval and tool results within the request/session.",
+    "Use deterministic workflows for common tasks.",
+    "Use a smaller planning model where reliable.",
+    "Summarize intermediate state rather than passing the full trace repeatedly.",
+    "Parallelize safe read-only tool calls.",
+    "Add human approval for expensive or sensitive actions.",
+    "Track agent step count and repeated tool patterns.",
+    "Write tests for loop and timeout scenarios."]},
+  {id:"L5", title:"Prompt optimization", items:[
+    "Remove repeated instructions and unused examples.",
+    "Separate static and dynamic prompt sections.",
+    "Set output length defaults and expansion-on-demand behaviour.",
+    "Use structured output only as complex as necessary.",
+    "Compress retrieved context and summarize chat history.",
+    "Track the prompt template version in every trace.",
+    "Run prompt token budget tests in CI.",
+    "Compare quality, retries, parsing errors and token usage before rollout.",
+    "Avoid hidden prompt bloat from conversation memory.",
+    "Keep a rollback path for prompt releases."]},
+  {id:"L6", title:"Caching", items:[
+    "Define the cache type: prompt, semantic, response, embedding, retrieval, tool, session, tenant.",
+    "Include tenant and permission boundaries in cache keys.",
+    "Include document, prompt, model and tool-state versions where relevant.",
+    "Set TTLs based on freshness and risk.",
+    "Never cache secrets, tokens, or broad sensitive user-specific answers.",
+    "Measure hit rate, miss reason, stale response incidents and invalidations.",
+    "Prewarm safe high-frequency cache entries.",
+    "Audit cache isolation for cross-tenant leakage.",
+    "Document when caching is forbidden.",
+    "Review caching with security and compliance teams."]},
+  {id:"L7", title:"Observability", items:[
+    "Log cost and latency per request path without storing unnecessary sensitive payloads.",
+    "Track token usage by prompt version and model.",
+    "Break down latency by auth, retrieval, rerank, prompt build, model, tool and post-processing.",
+    "Track cache hit rate and invalidation events.",
+    "Track retries, timeouts, provider errors and fallback usage.",
+    "Track agent step count, tool count and repeated tool calls.",
+    "Build executive, engineering, tenant, incident and model dashboards.",
+    "Add alerts for spend anomalies and P95/P99 latency regressions.",
+    "Retain traces according to privacy policy.",
+    "Use sampling where full tracing is too expensive."]},
+  {id:"L8", title:"Customer communication", items:[
+    "Acknowledge business impact before explaining technical details.",
+    "Separate quality, cost, latency, security and workflow-fit issues.",
+    "Explain trade-offs using options, not excuses.",
+    "Avoid blaming the model provider without evidence.",
+    "Show measured bottlenecks and before/after targets.",
+    "Connect optimization to ROI, adoption and budget predictability.",
+    "Document immediate mitigation and long-term prevention.",
+    "Use plain language for executives and detailed traces for engineers.",
+    "Set expectations for high-risk workflows that require slower verification.",
+    "Be transparent about caching, data retention and tenant isolation."]},
+  {id:"L9", title:"Pre-production readiness", items:[
+    "Load test realistic traffic, documents, tenants and prompt sizes.",
+    "Define latency and cost SLOs by workflow.",
+    "Set budgets, quotas, rate limits, token limits and agent limits.",
+    "Validate permission-aware retrieval and caching isolation.",
+    "Run prompt/model regression evaluations.",
+    "Review observability dashboards and alerts.",
+    "Test provider fallback and graceful degradation.",
+    "Test batch job budgets and retry behaviour.",
+    "Prepare incident runbooks and customer communication templates.",
+    "Run a security/compliance review for logging, caching and retention."]},
+  {id:"L10", title:"Executive demo readiness", items:[
+    "Use a stable dataset that matches the business scenario.",
+    "Warm critical services and caches.",
+    "Rehearse with production-like network conditions.",
+    "Measure latency for every demo path.",
+    "Prepare a fallback path for provider or network delays.",
+    "Use concise answer defaults and streaming where helpful.",
+    "Avoid uncontrolled live agent workflows unless tested.",
+    "Have a clear ROI and trade-off explanation ready.",
+    "Do not overclaim production readiness from a demo.",
+    "Capture feedback and convert it into measurable next steps."]},
+  {id:"L11", title:"§18 — The senior mental model", items:[
+    "Measure before changing: traces, cost attribution, token metrics, P95/P99 before proposing fixes.",
+    "Break latency into components: auth, retrieval, reranking, prompt construction, first-token, generation, tool calls, post-processing, network return.",
+    "Break cost into drivers: input tokens, output tokens, embeddings, reranking, retries, agent steps, tools, logging, evals, batch jobs, infrastructure.",
+    "Optimize workflow before model: routing, async design, caching, removing unnecessary steps.",
+    "Use smaller models where possible: match model strength to task complexity, risk and quality requirement.",
+    "Cache carefully: caching without tenant and permission safety becomes a security incident.",
+    "Control agent behaviour: step limits, tool budgets, traces, deterministic routes, stopping rules.",
+    "Set budgets and guardrails: spend predictable by tenant, feature, user and request path.",
+    "Communicate trade-offs clearly: customers need options with benefits, risks and business impact.",
+    "Connect optimization to business value: adoption, ROI, reliability, security, sustainable scale."]}
+];
+
+const ONEPAGER = [
+  ["Where is the latency?","Trace the full path: auth, retrieval, rerank, model, tools, post-processing, network."],
+  ["Where is the cost?","Attribute spend by tokens, model, retries, agent steps, embeddings, tools, evals, infra, tenant."],
+  ["What should be optimized first?","The largest measured bottleneck that can be improved without breaking quality or security."],
+  ["Should we use a smaller model?","Yes for simple low-risk tasks if evals confirm quality; escalate for complex/high-risk tasks."],
+  ["Should we cache?","Yes — only with tenant, permission, freshness and retention controls."],
+  ["Should we use agents?","Only when deterministic workflows are insufficient; agents must be budgeted and traced."],
+  ["How do we convince executives?","Show cost predictability, latency targets, adoption impact and ROI metrics."]
+];
+
+const EQUATIONS = {
+  latency:"auth + request routing + retrieval + reranking + prompt construction + model queue time + inference + tool/API calls + post-processing + network return",
+  cost:"input-token cost + output-token cost + embedding/retrieval cost + reranking cost + tool/API cost + infra allocation + logging/evaluation overhead",
+  principle:"Never optimize the model in isolation. Break the workflow into measured components, then remove the largest bottleneck first."
+};
+
+</script>
+<script>
+(function(){
+  "use strict";
+
+  var MODES = [
+    {k:"playbook",  label:"Symptom → playbook", n:SCENARIOS.length},
+    {k:"weakstrong",label:"Weak vs strong",     n:CASES.length},
+    {k:"clarify",   label:"Clarifying questions",n:CASES.length},
+    {k:"metrics",   label:"Metrics recall",     n:SCENARIOS.length+CASES.length},
+    {k:"levers",    label:"Levers & drivers",   n:0},
+    {k:"sayit",     label:"Say it right",       n:SAYIT.length},
+    {k:"safety",    label:"Safe or not",        n:SAFETY.length},
+    {k:"checks",    label:"Checklists",         n:CHECKLISTS.length},
+    {k:"ref",       label:"Reference",          n:0}
+  ];
+
+  // stable ids for lever cards
+  var LEVER_TOTAL = 0;
+  LEVER_GROUPS.forEach(function(g){
+    g.items.forEach(function(it,i){ it.id = g.key+"-"+i; });
+    LEVER_TOTAL += g.items.length;
+  });
+  MODES[4].n = LEVER_TOTAL;
+
+  var KEY="clo-drill-v1";
+  var store={};
+  try{ store=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ store={}; }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){} }
+  function get(mode,id){ return (store[mode]||{})[id]||null; }
+  function set(mode,id,v){ if(!store[mode]) store[mode]={}; store[mode][id]=v; save(); }
+
+  var METRIC_DECK = SCENARIOS.map(function(s){
+    return {id:s.id, kind:"scenario", title:s.title, stim:s.symptom, metrics:s.metrics};
+  }).concat(CASES.map(function(c){
+    return {id:c.id, kind:"case", title:c.title, stim:c.prompt, metrics:c.metrics};
+  }));
+
+  function curGroup(){
+    for(var i=0;i<LEVER_GROUPS.length;i++){ if(LEVER_GROUPS[i].key===state.group) return LEVER_GROUPS[i]; }
+    return LEVER_GROUPS[0];
+  }
+  function deck(mode){
+    if(mode==="playbook") return SCENARIOS;
+    if(mode==="weakstrong"||mode==="clarify") return CASES;
+    if(mode==="metrics") return METRIC_DECK;
+    if(mode==="levers") return curGroup().items;
+    if(mode==="sayit") return SAYIT;
+    if(mode==="safety") return SAFETY;
+    if(mode==="checks") return CHECKLISTS;
+    return [];
+  }
+
+  var state={
+    mode:"playbook", group:LEVER_GROUPS[0].key,
+    idx:{playbook:0,weakstrong:0,clarify:0,metrics:0,sayit:0,safety:0,checks:0},
+    lidx:{}, revealed:false, picked:null
+  };
+  LEVER_GROUPS.forEach(function(g){ state.lidx[g.key]=0; });
+  Object.defineProperty(state.idx, "levers", {
+    get:function(){ return state.lidx[state.group]||0; },
+    set:function(v){ state.lidx[state.group]=v; }
+  });
+
+  var VERDICT_LABEL={safe:"Safe",conditional:"Conditional",unsafe:"Unsafe"};
+
+  var el=function(t,c,x){var e=document.createElement(t); if(c)e.className=c; if(x!=null)e.textContent=x; return e;};
+
+  /* ---------------- tabs + readout ---------------- */
+  function renderTabs(){
+    var host=document.getElementById("tabs"); host.textContent="";
+    MODES.forEach(function(m){
+      var b=el("button","tab"); b.setAttribute("role","tab");
+      b.setAttribute("aria-selected", state.mode===m.k ? "true":"false");
+      b.appendChild(document.createTextNode(m.label));
+      if(m.n){ var n=el("span","n",String(m.n)); b.appendChild(n); }
+      b.onclick=function(){ state.mode=m.k; state.revealed=false; state.picked=null; render(); };
+      host.appendChild(b);
+    });
+  }
+
+  function renderTally(){
+    var t=document.getElementById("tally"), bar=document.getElementById("meter");
+    var total=0, pts=0, done=0;
+    ["playbook","weakstrong","clarify","metrics","levers","sayit","safety","checks"].forEach(function(m){
+      var d = (m==="levers") ? LEVER_GROUPS.reduce(function(a,g){return a.concat(g.items);},[]) : deck(m);
+      total+=d.length;
+      d.forEach(function(c){
+        var v=get(m,c.id);
+        if(v){ done++; pts += (v==="nailed"?1: v==="partial"?0.5:0); }
+      });
+    });
+    var pct = total ? Math.round(pts/total*100) : 0;
+    t.textContent = done+"/"+total+" scored · "+pct+"% mastery";
+    bar.style.width = pct+"%";
+  }
+
+  /* ---------------- shared card pieces ---------------- */
+  function head(idTag, posText, title, stimLabel, stimText, scored){
+    var h=el("div","card-head");
+    var e=el("div","eyebrow");
+    e.appendChild(el("span","id",idTag));
+    e.appendChild(el("span",null,posText));
+    if(scored){ var m=el("span","mark "+scored, scored); e.appendChild(m); }
+    h.appendChild(e);
+    h.appendChild(el("h2",null,title));
+    if(stimText){
+      var s=el("div","stimulus");
+      s.appendChild(el("span","lab",stimLabel));
+      s.appendChild(document.createTextNode(stimText));
+      h.appendChild(s);
+    }
+    return h;
+  }
+
+  function revealBtn(label, fn){
+    var b=el("button","primary"); b.appendChild(document.createTextNode(label));
+    var k=el("span","kbd","[space]"); b.appendChild(k);
+    b.onclick=fn; return b;
+  }
+
+  function scoreRow(mode,id){
+    var wrap=el("div","score");
+    [["missed","Missed","1"],["partial","Partial","2"],["nailed","Nailed","3"]].forEach(function(o){
+      var b=el("button"); b.dataset.v=o[0];
+      b.appendChild(document.createTextNode(o[1]));
+      var k=el("span","kbd","["+o[2]+"]"); b.appendChild(k);
+      b.setAttribute("aria-pressed", get(mode,id)===o[0] ? "true":"false");
+      b.onclick=function(){ set(mode,id,o[0]); next(); };
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+
+  function row(dt,dd,hi){
+    var r=el("div","row"+(hi?" hi":"")); r.appendChild(el("dt",null,dt));
+    var d=el("dd"); if(typeof dd==="string") d.textContent=dd; else d.appendChild(dd);
+    r.appendChild(d); return r;
+  }
+
+  function chips(list,solid){
+    var ul=el("ul","chips"+(solid?" solid":""));
+    list.forEach(function(x){ ul.appendChild(el("li",null,x)); });
+    return ul;
+  }
+
+  function navRow(mode){
+    var d=deck(mode), i=state.idx[mode];
+    var n=el("div","nav");
+    var p=el("button",null,"← Prev"); p.onclick=prev;
+    var x=el("button",null,"Next →"); x.onclick=next;
+    var pos=el("span","pos",(i+1)+" / "+d.length);
+    n.appendChild(p); n.appendChild(pos); n.appendChild(x);
+    return n;
+  }
+
+  function dotRow(mode){
+    var d=deck(mode), i=state.idx[mode];
+    var w=el("div","dots");
+    d.forEach(function(c,j){
+      var b=el("button",null,String(j+1));
+      var v=get(mode,c.id); if(v) b.dataset.v=v;
+      if(j===i) b.setAttribute("aria-current","true");
+      b.title=c.title||c.id;
+      b.onclick=function(){ state.idx[mode]=j; state.revealed=false; state.picked=null; render(); };
+      w.appendChild(b);
+    });
+    return w;
+  }
+
+  function prev(){ var m=state.mode, d=deck(m); state.idx[m]=(state.idx[m]-1+d.length)%d.length; state.revealed=false; state.picked=null; render(); }
+  function next(){ var m=state.mode, d=deck(m); state.idx[m]=(state.idx[m]+1)%d.length; state.revealed=false; state.picked=null; render(); }
+
+  /* ---------------- mode: symptom → playbook ---------------- */
+  function viewPlaybook(){
+    var s=SCENARIOS[state.idx.playbook], card=el("div","card");
+    card.appendChild(head(s.id, "Scenario "+(state.idx.playbook+1)+" of "+SCENARIOS.length, s.title,
+                          "Symptom", s.symptom, get("playbook",s.id)));
+    var b=el("div","card-body");
+    if(!state.revealed){
+      b.appendChild(el("p","task","Recall out loud, then reveal"));
+      b.appendChild(chips(["Clarifying question","Probable causes","Metrics to check","Debugging step","Immediate fix","Long-term fix","Prevention","Your one-line answer"]));
+      b.appendChild(revealBtn("Reveal the playbook", function(){ state.revealed=true; render(); }));
+    } else {
+      var dl=el("dl","answer");
+      dl.appendChild(row("Ask", s.ask, true));
+      dl.appendChild(row("Causes", s.causes));
+      dl.appendChild(row("Metrics", chips(s.metrics,true)));
+      dl.appendChild(row("Debug", s.debug));
+      dl.appendChild(row("Now", s.now, true));
+      dl.appendChild(row("Later", s.later));
+      dl.appendChild(row("Prevent", s.prevent));
+      dl.appendChild(row("Comms", COMMS_LINE));
+      b.appendChild(dl);
+      var q=el("div","quote"); q.appendChild(el("span","lab","Interview-ready answer"));
+      q.appendChild(document.createTextNode("“"+s.say+"”")); b.appendChild(q);
+      b.appendChild(scoreRow("playbook", s.id));
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+  /* ---------------- mode: weak vs strong ---------------- */
+  function viewWeakStrong(){
+    var c=CASES[state.idx.weakstrong], card=el("div","card");
+    card.appendChild(head(c.id, "Case "+(state.idx.weakstrong+1)+" of "+CASES.length, c.title,
+                          "Interviewer prompt", c.prompt, get("weakstrong",c.id)));
+    var b=el("div","card-body");
+    b.appendChild(el("p","task","Which answer would a senior FDE give?"));
+    // deterministic shuffle: strong first on even-index cases
+    var strongFirst = state.idx.weakstrong % 2 === 0;
+    var opts = strongFirst ? [["strong",c.strong],["weak",c.weak]] : [["weak",c.weak],["strong",c.strong]];
+    var box=el("div","opts");
+    opts.forEach(function(o,j){
+      var btn=el("button","opt");
+      btn.appendChild(el("span","tag","Option "+(j===0?"A":"B")));
+      btn.appendChild(document.createTextNode(o[1]));
+      if(state.picked){
+        btn.disabled=true;
+        btn.dataset.state = (o[0]==="strong") ? "right" : (state.picked===o[0] ? "wrong" : "");
+        if(o[0]==="strong") btn.querySelector(".tag").textContent="Strong answer";
+        else btn.querySelector(".tag").textContent="Weak answer";
+      } else {
+        btn.onclick=function(){
+          state.picked=o[0];
+          set("weakstrong", c.id, o[0]==="strong" ? "nailed":"missed");
+          render();
+        };
+      }
+      box.appendChild(btn);
+    });
+    b.appendChild(box);
+    if(state.picked){
+      var ok = state.picked==="strong";
+      var v=el("div","verdict "+(ok?"ok":"no"));
+      var bb=el("b", null, ok ? "Correct — that's the strong answer. " : "That's the weak answer. ");
+      v.appendChild(bb); v.appendChild(document.createTextNode(c.why));
+      b.appendChild(v);
+      var dl=el("dl","answer");
+      dl.appendChild(row("Architecture", c.arch, true));
+      dl.appendChild(row("Trade-offs", c.tradeoff));
+      dl.appendChild(row("Metrics", chips(c.metrics,true)));
+      dl.appendChild(row("Recommend", c.rec, true));
+      b.appendChild(dl);
+      var n=el("button","primary"); n.appendChild(document.createTextNode("Next case"));
+      n.appendChild(el("span","kbd","[→]")); n.onclick=next; b.appendChild(n);
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+  /* ---------------- mode: clarifying questions ---------------- */
+  var clarifyTicks={};
+  function viewClarify(){
+    var c=CASES[state.idx.clarify], card=el("div","card");
+    card.appendChild(head(c.id, "Case "+(state.idx.clarify+1)+" of "+CASES.length, c.title,
+                          "Interviewer prompt", c.prompt, get("clarify",c.id)));
+    var b=el("div","card-body");
+    if(!state.revealed){
+      b.appendChild(el("p","task","Before answering — what do you ask them? Aim for "+c.clarify.length+"."));
+      var ta=el("textarea"); ta.id="clarify-notes-"+c.id;
+      ta.placeholder="1.\n2.\n3.";
+      b.appendChild(ta);
+      b.appendChild(revealBtn("Reveal the checklist", function(){ state.revealed=true; render(); }));
+    } else {
+      b.appendChild(el("p","task","Tick the ones you had"));
+      var ul=el("ul","checks");
+      if(!clarifyTicks[c.id]) clarifyTicks[c.id]={};
+      c.clarify.forEach(function(q,j){
+        var li=el("li");
+        var inp=document.createElement("input"); inp.type="checkbox";
+        inp.id="ck-"+c.id+"-"+j;
+        inp.checked=!!clarifyTicks[c.id][j];
+        inp.onchange=function(){
+          clarifyTicks[c.id][j]=inp.checked;
+          var hit=c.clarify.filter(function(_,k){return clarifyTicks[c.id][k];}).length;
+          document.getElementById("tallyline").textContent =
+            "You had "+hit+" of "+c.clarify.length+" — "+verdictWord(hit,c.clarify.length);
+          set("clarify", c.id, hit>=c.clarify.length-1 ? "nailed" : hit>=2 ? "partial" : "missed");
+          renderTally();
+        };
+        var lab=document.createElement("label"); lab.htmlFor=inp.id; lab.textContent=q;
+        li.appendChild(inp); li.appendChild(lab); ul.appendChild(li);
+      });
+      b.appendChild(ul);
+      var hit0=c.clarify.filter(function(_,k){return clarifyTicks[c.id][k];}).length;
+      var t=el("div","tally", "You had "+hit0+" of "+c.clarify.length+" — "+verdictWord(hit0,c.clarify.length));
+      t.id="tallyline"; b.appendChild(t);
+      var n=el("button","primary"); n.appendChild(document.createTextNode("Next case"));
+      n.appendChild(el("span","kbd","[→]")); n.onclick=next; b.appendChild(n);
+    }
+    card.appendChild(b);
+    return card;
+  }
+  function verdictWord(h,n){
+    if(h>=n) return "full marks.";
+    if(h>=n-1) return "strong.";
+    if(h>=2) return "partial: you'd design on assumptions.";
+    return "you'd answer the wrong question.";
+  }
+
+  /* ---------------- mode: metrics recall ---------------- */
+  function viewMetrics(){
+    var m=METRIC_DECK[state.idx.metrics], card=el("div","card");
+    card.appendChild(head(m.id, (m.kind==="scenario"?"Incident ":"Case ")+(state.idx.metrics+1)+" of "+METRIC_DECK.length,
+                          m.title, m.kind==="scenario"?"Symptom":"Interviewer prompt", m.stim, get("metrics",m.id)));
+    var b=el("div","card-body");
+    if(!state.revealed){
+      b.appendChild(el("p","task","Name the "+m.metrics.length+" metrics you pull before proposing any fix"));
+      b.appendChild(revealBtn("Reveal the metrics", function(){ state.revealed=true; render(); }));
+    } else {
+      b.appendChild(el("p","task", m.kind==="scenario" ? "Metrics to check" : "Metrics to monitor"));
+      b.appendChild(chips(m.metrics,true));
+      b.appendChild(scoreRow("metrics", m.id));
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+
+  /* ---------------- mode: levers & drivers ---------------- */
+  function groupRow(){
+    var w=el("div","groups");
+    LEVER_GROUPS.forEach(function(g){
+      var b=el("button");
+      b.appendChild(document.createTextNode(g.sec+" "+g.name));
+      var c=el("span","c",String(g.items.length)); b.appendChild(c);
+      b.setAttribute("aria-pressed", g.key===state.group ? "true":"false");
+      b.onclick=function(){ state.group=g.key; state.revealed=false; state.picked=null; render(); };
+      w.appendChild(b);
+    });
+    return w;
+  }
+  function viewLevers(){
+    var g=curGroup(), it=g.items[state.idx.levers], card=el("div","card");
+    card.appendChild(head(g.sec, g.name+" · "+(state.idx.levers+1)+" of "+g.items.length, it.t,
+                          null, null, get("levers",it.id)));
+    var b=el("div","card-body");
+    if(!state.revealed){
+      b.appendChild(el("p","task","Recall each column, then reveal"));
+      b.appendChild(chips(g.cols));
+      b.appendChild(revealBtn("Reveal", function(){ state.revealed=true; render(); }));
+    } else {
+      var dl=el("dl","answer");
+      g.cols.forEach(function(c,i){ dl.appendChild(row(c, it.f[i]||"—", i===g.cols.length-1)); });
+      b.appendChild(dl);
+      b.appendChild(scoreRow("levers", it.id));
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+  /* ---------------- mode: say it right ---------------- */
+  function viewSayIt(){
+    var q=SAYIT[state.idx.sayit], card=el("div","card");
+    var isTradeoff = q.sec==="\u00a74";
+    card.appendChild(head(q.sec, (isTradeoff?"Trade-off ":"Situation ")+(state.idx.sayit+1)+" of "+SAYIT.length,
+                          q.sit, null, null, get("sayit",q.id)));
+    var b=el("div","card-body");
+    if(!state.revealed){
+      b.appendChild(el("p","task", isTradeoff
+        ? "Give the option, benefit, risk, when to use, when to avoid \u2014 then the sentence"
+        : "Word this for the customer, out loud, in one breath"));
+      if(isTradeoff) b.appendChild(chips(["Option","Benefit","Risk","When to use","When to avoid","The sentence"]));
+      b.appendChild(revealBtn("Reveal the wording", function(){ state.revealed=true; render(); }));
+    } else {
+      if(isTradeoff){
+        var dl=el("dl","answer");
+        dl.appendChild(row("Option", q.opt, true));
+        dl.appendChild(row("Benefit", q.benefit));
+        dl.appendChild(row("Risk", q.risk));
+        dl.appendChild(row("Use when", q.use));
+        dl.appendChild(row("Avoid when", q.avoid));
+        b.appendChild(dl);
+      }
+      var qt=el("div","quote"); qt.appendChild(el("span","lab", isTradeoff?"Interview sentence":"Senior wording template"));
+      qt.appendChild(document.createTextNode("\u201c"+q.say+"\u201d"));
+      b.appendChild(qt);
+      b.appendChild(scoreRow("sayit", q.id));
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+  /* ---------------- mode: safe or not ---------------- */
+  function viewSafety(){
+    var k=SAFETY[state.idx.safety], card=el("div","card");
+    card.appendChild(head("\u00a79", "Judgement call "+(state.idx.safety+1)+" of "+SAFETY.length,
+                          "Cache this?", "Proposal", k.claim, get("safety",k.id)));
+    var b=el("div","card-body");
+    b.appendChild(el("p","task","Rule on it \u2014 then name the missing key or control"));
+    var box=el("div","j3");
+    ["safe","conditional","unsafe"].forEach(function(v){
+      var btn=el("button",null,VERDICT_LABEL[v]); btn.dataset.k=v;
+      if(state.picked){
+        btn.disabled=true;
+        if(v===k.v) btn.dataset.truth="true";
+      } else {
+        btn.onclick=function(){
+          state.picked=v;
+          set("safety", k.id, v===k.v ? "nailed" : "missed");
+          render();
+        };
+      }
+      box.appendChild(btn);
+    });
+    b.appendChild(box);
+    if(state.picked){
+      var ok = state.picked===k.v;
+      var v=el("div","verdict "+(ok?"ok":"no"));
+      v.appendChild(el("b", null, ok ? ("Correct \u2014 "+VERDICT_LABEL[k.v].toLowerCase()+". ")
+                                     : ("No \u2014 it is "+VERDICT_LABEL[k.v].toLowerCase()+". ")));
+      v.appendChild(document.createTextNode(k.rule));
+      b.appendChild(v);
+      var n=el("button","primary"); n.appendChild(document.createTextNode("Next call"));
+      n.appendChild(el("span","kbd","[\u2192]")); n.onclick=next; b.appendChild(n);
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+  /* ---------------- mode: checklists ---------------- */
+  var checkTicks={};
+  function viewChecks(){
+    var c=CHECKLISTS[state.idx.checks], card=el("div","card");
+    card.appendChild(head("\u00a717", "Checklist "+(state.idx.checks+1)+" of "+CHECKLISTS.length,
+                          c.title, null, null, get("checks",c.id)));
+    var b=el("div","card-body");
+    if(!state.revealed){
+      b.appendChild(el("p","task","List all "+c.items.length+" items before revealing"));
+      var ta=el("textarea"); ta.id="check-notes-"+c.id; ta.placeholder="1.\n2.\n3.";
+      b.appendChild(ta);
+      b.appendChild(revealBtn("Reveal the checklist", function(){ state.revealed=true; render(); }));
+    } else {
+      b.appendChild(el("p","task","Tick the ones you had"));
+      if(!checkTicks[c.id]) checkTicks[c.id]={};
+      var ul=el("ul","checks");
+      c.items.forEach(function(item,j){
+        var li=el("li");
+        var inp=document.createElement("input"); inp.type="checkbox"; inp.id="lk-"+c.id+"-"+j;
+        inp.checked=!!checkTicks[c.id][j];
+        inp.onchange=function(){
+          checkTicks[c.id][j]=inp.checked;
+          var hit=c.items.filter(function(_,x){return checkTicks[c.id][x];}).length;
+          document.getElementById("tallyline").textContent="You had "+hit+" of "+c.items.length+".";
+          set("checks", c.id, hit>=c.items.length-1 ? "nailed" : hit>=Math.ceil(c.items.length/2) ? "partial" : "missed");
+          renderTally();
+        };
+        var lab=document.createElement("label"); lab.htmlFor=inp.id; lab.textContent=item;
+        li.appendChild(inp); li.appendChild(lab); ul.appendChild(li);
+      });
+      b.appendChild(ul);
+      var hit0=c.items.filter(function(_,x){return checkTicks[c.id][x];}).length;
+      var t=el("div","tally","You had "+hit0+" of "+c.items.length+"."); t.id="tallyline";
+      b.appendChild(t);
+      var n=el("button","primary"); n.appendChild(document.createTextNode("Next checklist"));
+      n.appendChild(el("span","kbd","[\u2192]")); n.onclick=next; b.appendChild(n);
+    }
+    card.appendChild(b);
+    return card;
+  }
+
+  /* ---------------- mode: reference ---------------- */
+  function viewRef(){
+    var w=el("div","ref");
+    var eqs=el("div","eqs");
+    [["End-to-end latency", EQUATIONS.latency],["Cost per request", EQUATIONS.cost],["Senior FDE principle", EQUATIONS.principle]]
+      .forEach(function(e){
+        var box=el("div","eq"); box.appendChild(el("span","lab",e[0]));
+        box.appendChild(el("code",null,e[1])); eqs.appendChild(box);
+      });
+    w.appendChild(eqs);
+
+    var ban=el("div","banner");
+    ban.appendChild(el("span","lab","Free marks — identical in all 15 scenarios"));
+    ban.appendChild(document.createTextNode("Customer communication: “"+COMMS_LINE+"”"));
+    w.appendChild(ban);
+
+    w.appendChild(el("h3",null,"§15 — Production troubleshooting (15)"));
+    SCENARIOS.forEach(function(s){
+      var d=document.createElement("details");
+      var sm=document.createElement("summary");
+      sm.appendChild(el("span","id",s.id)); sm.appendChild(document.createTextNode(s.title));
+      d.appendChild(sm);
+      var inner=el("div","inner"); var dl=el("dl");
+      dl.appendChild(row("Ask",s.ask,true));
+      dl.appendChild(row("Causes",s.causes));
+      dl.appendChild(row("Metrics",chips(s.metrics,true)));
+      dl.appendChild(row("Now",s.now,true));
+      dl.appendChild(row("Later",s.later));
+      dl.appendChild(row("Prevent",s.prevent));
+      inner.appendChild(dl);
+      var q=el("div","quote"); q.appendChild(el("span","lab","Say"));
+      q.appendChild(document.createTextNode("“"+s.say+"”")); inner.appendChild(q);
+      d.appendChild(inner); w.appendChild(d);
+    });
+
+    w.appendChild(el("h3",null,"§16 — Interview case studies (7)"));
+    CASES.forEach(function(c){
+      var d=document.createElement("details");
+      var sm=document.createElement("summary");
+      sm.appendChild(el("span","id",c.id)); sm.appendChild(document.createTextNode(c.title));
+      d.appendChild(sm);
+      var inner=el("div","inner"); var dl=el("dl");
+      dl.appendChild(row("Prompt",c.prompt));
+      dl.appendChild(row("Ask",chips(c.clarify,false),true));
+      dl.appendChild(row("Weak",c.weak));
+      dl.appendChild(row("Strong",c.strong,true));
+      dl.appendChild(row("Arch",c.arch));
+      dl.appendChild(row("Trade-off",c.tradeoff));
+      dl.appendChild(row("Metrics",chips(c.metrics,true)));
+      dl.appendChild(row("Recommend",c.rec,true));
+      inner.appendChild(dl); d.appendChild(inner); w.appendChild(d);
+    });
+
+    w.appendChild(el("h3",null,"\u00a71\u2013\u00a713 \u2014 Levers & drivers"));
+    LEVER_GROUPS.forEach(function(g){
+      var d=document.createElement("details");
+      var sm=document.createElement("summary");
+      sm.appendChild(el("span","id",g.sec));
+      sm.appendChild(document.createTextNode(g.name+" ("+g.items.length+")"));
+      d.appendChild(sm);
+      var inner=el("div","inner"); var dl=el("dl");
+      g.items.forEach(function(it){
+        var parts=[];
+        g.cols.forEach(function(c,i){ if(it.f[i]) parts.push(c+": "+it.f[i]); });
+        dl.appendChild(row(it.t, parts.join("  \u00b7  ")));
+      });
+      inner.appendChild(dl); d.appendChild(inner); w.appendChild(d);
+    });
+
+    w.appendChild(el("h3",null,"\u00a74 + \u00a714 \u2014 What to say"));
+    SAYIT.forEach(function(q){
+      var d=document.createElement("details");
+      var sm=document.createElement("summary");
+      sm.appendChild(el("span","id",q.sec)); sm.appendChild(document.createTextNode(q.sit));
+      d.appendChild(sm);
+      var inner=el("div","inner");
+      if(q.opt){
+        var dl=el("dl");
+        dl.appendChild(row("Option",q.opt,true));
+        dl.appendChild(row("Benefit",q.benefit));
+        dl.appendChild(row("Risk",q.risk));
+        dl.appendChild(row("Use when",q.use));
+        dl.appendChild(row("Avoid when",q.avoid));
+        inner.appendChild(dl);
+      }
+      var qt=el("div","quote"); qt.appendChild(el("span","lab","Say"));
+      qt.appendChild(document.createTextNode("\u201c"+q.say+"\u201d"));
+      inner.appendChild(qt); d.appendChild(inner); w.appendChild(d);
+    });
+
+    w.appendChild(el("h3",null,"\u00a79 \u2014 Cache: safe or not"));
+    var kd=document.createElement("details");
+    var ksm=document.createElement("summary");
+    ksm.appendChild(el("span","id","\u00a79")); ksm.appendChild(document.createTextNode("All "+SAFETY.length+" judgement calls"));
+    kd.appendChild(ksm);
+    var kin=el("div","inner"); var kdl=el("dl");
+    SAFETY.forEach(function(k){ kdl.appendChild(row(VERDICT_LABEL[k.v], k.claim+" \u2014 "+k.rule, k.v==="unsafe")); });
+    kin.appendChild(kdl); kd.appendChild(kin); w.appendChild(kd);
+
+    w.appendChild(el("h3",null,"\u00a717 + \u00a718 \u2014 Checklists"));
+    CHECKLISTS.forEach(function(c){
+      var d=document.createElement("details");
+      var sm=document.createElement("summary");
+      sm.appendChild(el("span","id",c.id)); sm.appendChild(document.createTextNode(c.title+" ("+c.items.length+")"));
+      d.appendChild(sm);
+      var inner=el("div","inner"); var ul=el("ul","checks");
+      c.items.forEach(function(x){
+        var li=el("li"); li.appendChild(el("span",null,"\u25a1")); li.appendChild(el("label",null,x)); ul.appendChild(li);
+      });
+      inner.appendChild(ul); d.appendChild(inner); w.appendChild(d);
+    });
+
+    w.appendChild(el("h3",null,"\u00a718 \u2014 One-page field summary"));
+    var od=document.createElement("details"); od.open=true;
+    var osm=document.createElement("summary");
+    osm.appendChild(el("span","id","\u00a718")); osm.appendChild(document.createTextNode("Seven questions, seven answers"));
+    od.appendChild(osm);
+    var oin=el("div","inner"); var odl=el("dl");
+    ONEPAGER.forEach(function(r){ odl.appendChild(row(r[0], r[1], true)); });
+    oin.appendChild(odl); od.appendChild(oin); w.appendChild(od);
+
+    var f=el("div","foot");
+    f.textContent="Source: Cost & Latency Optimization Playbook §1–§18 · companion files: CRAM_SHEET_S15_S16.md, ADDITIONS_BEYOND_PLAYBOOK.md · keys: space reveal · 1/2/3 score · ←/→ move";
+    w.appendChild(f);
+    return w;
+  }
+
+  /* ---------------- render ---------------- */
+  function render(){
+    renderTabs();
+    var main=document.getElementById("main"); main.textContent="";
+    if(state.mode==="ref"){ main.appendChild(viewRef()); renderTally(); return; }
+    if(state.mode==="levers") main.appendChild(groupRow());
+    var view = state.mode==="playbook" ? viewPlaybook()
+             : state.mode==="weakstrong" ? viewWeakStrong()
+             : state.mode==="clarify" ? viewClarify()
+             : state.mode==="metrics" ? viewMetrics()
+             : state.mode==="levers" ? viewLevers()
+             : state.mode==="sayit" ? viewSayIt()
+             : state.mode==="safety" ? viewSafety()
+             : viewChecks();
+    main.appendChild(view);
+    main.appendChild(navRow(state.mode));
+    main.appendChild(dotRow(state.mode));
+    var f=el("div","foot");
+    f.textContent="space reveal · 1 / 2 / 3 score · ← → move · source: Cost & Latency Optimization Playbook §1–§18";
+    main.appendChild(f);
+    renderTally();
+  }
+
+  document.getElementById("reset").onclick=function(){
+    store={}; clarifyTicks={}; checkTicks={}; save(); state.revealed=false; state.picked=null; render();
+  };
+
+  document.addEventListener("keydown", function(ev){
+    var t=ev.target && ev.target.tagName;
+    if(t==="TEXTAREA"||t==="INPUT") return;
+    if(state.mode==="ref") return;
+    if(ev.key===" "||ev.key==="Enter"){
+      if(!state.revealed && state.mode!=="weakstrong" && state.mode!=="safety"){ ev.preventDefault(); state.revealed=true; render(); }
+    } else if(ev.key==="ArrowRight"){ ev.preventDefault(); next(); }
+    else if(ev.key==="ArrowLeft"){ ev.preventDefault(); prev(); }
+    else if(["1","2","3"].indexOf(ev.key)>-1 && state.revealed && ["playbook","metrics","levers","sayit"].indexOf(state.mode)>-1){
+      var m=state.mode, d=deck(m), id=d[state.idx[m]].id;
+      set(m, id, {"1":"missed","2":"partial","3":"nailed"}[ev.key]);
+      next();
+    }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
