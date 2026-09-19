@@ -23,7 +23,7 @@
 
 ## Known gaps
 
-- **`shared_data/` relative paths are unreliable.** Several `RAG_Demystified`-sourced notebooks in `06_RAG_Naive_to_Production/` reference a shared `data/` folder via `../../data/`-style paths. A copy was brought along as `shared_data/`, but exact path depth was never reconstructed. Expect to fix the path when you run one of these.
+- **`shared_data/` is the one data folder here — use that name.** Fixed 2026-09-19: five `06_RAG_Naive_to_Production/` notebooks still pointed at `../../data/`, a name that stopped existing when the folder was brought over as `shared_data/`. They now use `../../shared_data/`, matching `03_Indexing_Techniques/` and `04_Query_Transformation_Techniques/`, which had already been migrated. All data references in this phase resolve; `scripts/check_repo_invariants.py` asserts it on every commit. Don't reintroduce a bare `data/`.
 
 ## Don't
 

@@ -73,7 +73,7 @@ Every phase carries its own `CLAUDE.md`. Claude Code loads the root file always,
 | `01_Foundations/02_Prompt_and_Context_Engineering/CLAUDE.md` | prompting as a discipline; what belongs to LangChain instead |
 | `02_Core/01_LangChain_Fundamentals/CLAUDE.md` | LangChain mechanics; why direct client instantiation here is not a violation |
 | `02_Core/03_LangGraph_Fundamentals/CLAUDE.md` | LangGraph mechanics; strongest `helpers` requirement in the repo |
-| `02_Core/04_Retrieval_and_RAG/CLAUDE.md` | foundational RAG, 10 tracks, the `shared_data/` relative-path gap |
+| `02_Core/04_Retrieval_and_RAG/CLAUDE.md` | foundational RAG, 10 tracks, the `shared_data/` naming rule |
 | `02_Core/05_AI_Agent_Fundamentals/CLAUDE.md` | all agent building, both frameworks; the `N. Name` folder convention |
 | `03_Advanced/06_Agent_SDKs_First_Party/CLAUDE.md` | vendor-native SDKs; first-party vs third-party boundary |
 | `03_Advanced/07_Advanced_Agentic_Systems/CLAUDE.md` | memory, orchestration, deep agents; the Deep Agents file-lock gotcha |
