@@ -150,7 +150,7 @@ Not carried over: the `.html` twins of the markdown design docs in `System_Desig
 |---|---|---|
 | `01_Deep_Dive_And_Conversational_Formats.md` | N | synthesised from the nine narratives in `06_Interview_Prep/FDE/Star_Stories/` (now grouped by engagement) |
 | `02_Proof_vs_Cheat_Sheet_Honesty.md` | N | synthesised from the three coverage maps and the three project READMEs |
-| `stories/*.md` (9 files) | C | `06_Interview_Prep/FDE/Star_Stories/*.md`, same filenames |
+| `stories/*.md` (9 files) | C | `06_Interview_Prep/FDE/Star_Stories/{AIA_Group,Bajaj_RapidLR,Meridian_Assist_Enterprise_RAG}/`, same filenames. Grouped by engagement 2026-09-19 — the top level no longer holds loose `.md` |
 | `stories/STAR_Stories_Client_Engagements.html` | C | `Star_Stories/star_stories.html` |
 | `stories/STAR_Stories_Technical_Build_Projects.html` | C | `Star_Stories/STAR Stories — Technical Build Projects.html` |
 
