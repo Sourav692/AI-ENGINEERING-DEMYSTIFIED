@@ -13,4 +13,4 @@ Merged in from the standalone `LangChain_Demystified` repo, trimmed to true fund
 | 5 | `05_Summarization/` | Text summarization; document-combining chains (stuff / map-reduce / refine) as LCEL |
 | 6 | `06_Workflow_Patterns/` | The five agentic workflow patterns built with LangChain 1.x primitives — the LangChain counterparts to Phase 5's LangGraph versions |
 
-Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`.
+Also has `Docs/` (supporting PDFs/CSV), `images/`, and `LangChain_v0_vs_v1_Differences.md`. (Corrected 2026-09-19 — this line used to claim a `Reference_Links.md` in this folder; no such file exists here. The repo-wide course-link list lives at the repo root and spans RAG, agents, security and observability, not just LangChain.)

@@ -1,3 +1,8 @@
+# Reference Links
+
+Course and tutorial links that fed this roadmap, across all phases — RAG, agents,
+LangChain/LangGraph, observability and security. Not scoped to any one phase.
+
 1. [www.udemy.com/course/ultimate-rag-bootcamp-using-langchainlanggraph-langsmith/?couponCode=PMNVD2025](https://www.udemy.com/course/ultimate-rag-bootcamp-using-langchainlanggraph-langsmith/?couponCode=PMNVD2025)
 2. [www.udemy.com/course/ai-security-bootcamp-guardrailsllm-gatewaysobservability/?couponCode=PMNVD2025](https://www.udemy.com/course/ai-security-bootcamp-guardrailsllm-gatewaysobservability/?couponCode=PMNVD2025)
 3. [www.udemy.com/course/production-ai-agents/?couponCode=PMNVD2025](https://www.udemy.com/course/production-ai-agents/?couponCode=PMNVD2025)

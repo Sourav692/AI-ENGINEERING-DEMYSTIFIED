@@ -232,6 +232,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `docs/chapter-5.html` | html | LangGraph fundamentals chapter 5 |
 | `docs/chapter-6.html` | html | LangGraph fundamentals chapter 6 |
 | `docs/chapter-7.html` | html | LangGraph fundamentals chapter 7 |
+| `docs/tutorial_chapters.excalidraw` | excalidraw | Chapter map of the seven microsite chapters (moved here from the repo root 2026-09-19 — it diagrams exactly these files) |
 
 ## 06_Interview_Prep/Study_Guides/ (top-level, standalone interview/tutorial content)
 
