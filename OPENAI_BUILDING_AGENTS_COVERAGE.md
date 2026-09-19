@@ -8,8 +8,9 @@ to where this repo teaches it, and names what is genuinely missing.
 **The headline:** the repo covers the *concepts* well and the *OpenAI-specific surface* poorly.
 Agent loops, tool calling, routing, handoffs, memory, guardrails, structured output and
 RAG are all taught in depth — through LangChain/LangGraph. What is thin is OpenAI's own
-primitives: the Responses API, the Agents SDK beyond one foundations notebook, and the
-five server-side hosted tools.
+primitives: the Agents SDK beyond one foundations notebook, and the five server-side hosted
+tools. The Responses API is the third such gap and was **descoped on 2026-09-20** — the prep
+is concept-led, so the vendor's request layer does not earn notebook time.
 
 | | Count |
 |---|---|
@@ -24,7 +25,7 @@ five server-side hosted tools.
 | Track topic | Repo coverage | Status |
 |---|---|---|
 | Reasoning vs. non-reasoning model choice; reasoning-effort levers | **Closed 2026-09-19.** `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/` — `01_Reasoning_vs_NonReasoning.ipynb` (measured on identical tasks, including one where reasoning loses) and `02_Reasoning_Effort_Levers.ipynb` (effort swept, knee located, plus the case where effort is the wrong lever). Applied at `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`. `get_llm()` gained a `reasoning_effort` passthrough to make it reachable | ✅ Covered |
-| **Responses API** (OpenAI's stateful core API) | **Re-checked 2026-09-20: it is used once**, in `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/10_Hotel_Reservations_Multi_Agent_System/Module_2_Core_Agents/1_Environment_Setup.ipynb` — a `client.responses.create(model=..., instructions=..., input=...)` smoke test reading `response.output_text`. It appears, it is not taught: no statefulness, no conversation chaining, no contrast with chat-completions, and the cell depends on `google.colab.userdata` so it will not run locally. `ChatOpenAI` also exposes `use_responses_api`, so the stack can reach it without new dependencies | 🟡 Partial |
+| **Responses API** (OpenAI's stateful core API) | ⏭️ **Descoped 2026-09-20 — not being built.** The prep is concept-led, not OpenAI-API-led, so the vendor's own request layer is not worth notebook time. Kept in the table for completeness. *Re-checked 2026-09-20: it is used once*, in `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/10_Hotel_Reservations_Multi_Agent_System/Module_2_Core_Agents/1_Environment_Setup.ipynb` — a `client.responses.create(model=..., instructions=..., input=...)` smoke test reading `response.output_text`. It appears, it is not taught: no statefulness, no conversation chaining, no contrast with chat-completions, and the cell depends on `google.colab.userdata` so it will not run locally. `ChatOpenAI` also exposes `use_responses_api`, so the stack can reach it without new dependencies | 🟡 Partial |
 | **Agents SDK** (OpenAI's own) | `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/01_Foundations/01_Agents_Handoffs_Guardrails.ipynb` — 23 cells covering Agent, tools, handoffs and input guardrails, with an explicit LangGraph comparison. The track's other three folders are scope READMEs | 🟡 Partial |
 | Augmenting agents with tools | `02_Core/03_LangGraph_Fundamentals/01_Foundations/` (`05_Augmented_LLM_with_Tools.ipynb`), `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` | ✅ Covered |
 
@@ -84,9 +85,11 @@ original sweep missed, because it searched for the phrase "Responses API" rather
 2. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
    but stops before screenshots, vision and a live GUI.
 
-Still worth building even though it is no longer a hard gap: **the Responses API as a
-subject** — statefulness, `previous_response_id` chaining, and how it differs from
-chat-completions. One smoke test in a Colab-only setup notebook is not coverage.
+**Descoped, not forgotten:** the Responses API as a subject — statefulness,
+`previous_response_id` chaining, how it differs from chat-completions. Deliberately **not**
+being built (decided 2026-09-20): the preparation this doc serves is concept-led, and the
+concepts it would teach (conversation state, request chaining) are already covered by
+LangGraph checkpointing and memory. Revisit only if the target becomes OpenAI-API-specific.
 
 The natural home for the first is
 `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`, whose `02_Core_Capabilities/`,
