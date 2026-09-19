@@ -105,11 +105,11 @@ One topic, one phase (see `.claude/skills/ai-roadmap-organizer/`). For migration
 | --- | --- |
 | Package split, imports, `langchain-classic` | `02_.../LangChain_Fundamentals/01_Getting_Started/` |
 | Chains → LCEL | `02_.../LangChain_Fundamentals/03_LCEL/` (a `3.x` sibling; `3.5_Chain_Migrations` already exists — extend the numbering, don't duplicate the topic) |
-| `AgentExecutor` / `create_react_agent` → `create_agent` | `05_AI_Agent_Fundamentals/LangChain_Tools_and_Agents/` |
-| Middleware | `05_AI_Agent_Fundamentals/Workflow_and_Agent_Patterns/` |
-| `*Memory` → checkpointers | `07_Advanced_Agentic_Systems/Memory_and_State/LangChain/` |
+| `AgentExecutor` / `create_react_agent` → `create_agent` | `02_Core/05_AI_Agent_Fundamentals/LangChain_Tools_and_Agents/` |
+| Middleware | `02_Core/05_AI_Agent_Fundamentals/Workflow_and_Agent_Patterns/` |
+| `*Memory` → checkpointers | `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/LangChain/` |
 | Content blocks / message API | `02_.../LangChain_Fundamentals/02_Inputs_Outputs_Prompts/` |
-| `RetrievalQA` → LCEL / agentic RAG | `04_Retrieval_and_RAG/RAG_with_LangChain/` |
+| `RetrievalQA` → LCEL / agentic RAG | `02_Core/04_Retrieval_and_RAG/RAG_with_LangChain/` |
 
 Number the new file to fit the destination folder's existing sequence. If the destination already
 has a notebook covering the concept, **extend it instead of adding a second one** — a second home

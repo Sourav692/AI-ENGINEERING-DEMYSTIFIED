@@ -8,7 +8,7 @@
 
 A public website that guides anyone through end-to-end Forward Deployed Engineer
 interview preparation. The content already exists as markdown in
-`14_Interview_Preparation/FDE/`. The site's job is to turn static worksheets into a
+`06_Interview_Prep/FDE/`. The site's job is to turn static worksheets into a
 practice loop: attempt a section, reveal the answer key for that section, self-score,
 track progress.
 

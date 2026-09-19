@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Copies the FDE prep markdown out of the learning repo and into `site/content/`.
- * The source folders under `14_Interview_Preparation/FDE/` stay the only place anyone
+ * The source folders under `06_Interview_Prep/FDE/` stay the only place anyone
  * edits; `content/` is generated, but it is committed rather than ignored, because a
  * deploy rooted at `site/` cannot see the sources (see `sourcesPresent` below).
  *
@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url'
 
 const SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = resolve(SITE_DIR, '..')
-const SOURCE_ROOT = join(REPO_ROOT, '14_Interview_Preparation/FDE')
+const SOURCE_ROOT = join(REPO_ROOT, '06_Interview_Prep/FDE')
 const OUT_DIR = join(SITE_DIR, 'content')
 
 const BEHAVIOURAL_ROOT = join(SOURCE_ROOT, 'Behavioral_and_Leadership')

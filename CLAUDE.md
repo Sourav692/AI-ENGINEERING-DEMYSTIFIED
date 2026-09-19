@@ -30,23 +30,35 @@ This repo has a local, gitignored code-graph snapshot at `graphify-out/` (produc
 ## Roadmap Structure
 
 ```
-01_Theory_and_Foundations/               ✅ Partially built — Hugging Face ecosystem, fine-tuning foundations, coding essentials built; math/ML intuition, transformer architecture, RLHF/DPO/LoRA planned
-02_LangChain_Fundamentals_and_Prompting/ ✅ Built — LangChain basics (5 modules) + prompt engineering; context engineering planned
-03_LangGraph_Fundamentals/               ✅ Built — LangGraph mechanics only (state, graphs, routing, tools, platform capabilities)
-04_Retrieval_and_RAG/                    ✅ Built — foundational RAG theory + LangGraph/LangChain/LlamaIndex implementations
-05_AI_Agent_Fundamentals/                ✅ Built — all agent-building content, both frameworks
-06_Agent_SDKs_First_Party/               🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK
-07_Advanced_Agentic_Systems/             ✅ Built — memory, multi-agent orchestration, deep agents, evaluation (RAG/agent/LLM-as-judge)
-08_Advanced_RAG/                         ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned; needs Phases 5 & 7 first
-09_Agent_Protocols/                      ✅ Partially built — MCP built; ACP, A2A planned
-10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI, AutoGen, DSPy built; PydanticAI + orchestration overview planned
-11_AI_Coding_Tools/      🚧 Planned
-12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
-13_Projects/                             ✅ Built — 15 projects: LangGraph/LangChain/RAG capstones + 9 standalone apps + 3 enterprise platforms
-14_Interview_Preparation/                ✅ Built — Handbook, FDE ⚠purchased, AI_Engineer, OpenAI_Applied, Study_Guides (collapsed from old phases 14–17 + tutorials/ on 2026-09-19)
-archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
-docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
+01_Foundations/                              no prerequisites
+  00_Theory_and_Foundations/                 ✅ Partially built — HF ecosystem, fine-tuning foundations, coding essentials; math/ML intuition, transformer architecture, RLHF/DPO/LoRA planned
+  02_Prompt_and_Context_Engineering/         ✅ Built — prompt engineering; context engineering planned
+
+02_Core/                                     needs Foundations
+  01_LangChain_Fundamentals/                 ✅ Built — LangChain basics (5 modules)
+  03_LangGraph_Fundamentals/                 ✅ Built — LangGraph mechanics only (state, graphs, routing, tools, platform capabilities)
+  04_Retrieval_and_RAG/                      ✅ Built — foundational RAG theory + LangGraph/LangChain/LlamaIndex implementations
+  05_AI_Agent_Fundamentals/                  ✅ Built — all agent-building content, both frameworks
+
+03_Advanced/                                 needs Core (specifically agents)
+  06_Agent_SDKs_First_Party/                 🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK
+  07_Advanced_Agentic_Systems/               ✅ Built — memory, multi-agent orchestration, deep agents
+  08_Advanced_RAG/                           ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned
+  09_Agent_Protocols/                        ✅ Partially built — MCP built; ACP, A2A planned
+  10_Alternative_Agent_Frameworks/           ✅ Partially built — CrewAI, AutoGen, DSPy built; PydanticAI + orchestration overview planned
+  12_Production_and_Observability/           ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
+
+04_AI_Coding_Tools/                          🚧 Planned — Claude Code, Codex, Cursor, Agent Skills, Claude API & Agent SDK
+05_Projects/                                 ✅ Built — 15 projects: capstones + standalone apps + 3 enterprise platforms
+06_Interview_Prep/                           ✅ Built — Handbook · FDE ⚠purchased · AI_Engineer · OpenAI_Applied · Study_Guides
+
+archive/                                     Retired notebooks, frozen — never reorganize
+docs/  helpers/  plugins/  site/             Support: microsite, LLM factory, plugin, Next.js site
 ```
+
+**Stage folders group phases by prerequisite, not by difficulty** (added 2026-09-19). "Advanced" means *requires agents knowledge*, which is objective and stable — it is the same criterion that keeps foundational RAG in `02_Core/04_` and agentic RAG in `03_Advanced/08_`. Phase numbers inside the stages are the original ones and were deliberately not renumbered: every "Phase 7" reference across the docs stays true, and the gap (no `11_` under `03_Advanced/`) is the cost of that.
+
+**Evaluation is not in this repo.** It lives in the sibling repo `Agent_Evaluation_Demystified`. Removed here 2026-09-19 after a content-hash comparison found 147 duplicated files and none unique. Don't recreate an evaluation track.
 
 **Why RAG and Advanced RAG are separate phases, not duplicated:** Phase 4 covers foundational RAG that doesn't require knowing agents. Phase 8 covers agentic/self-correcting RAG and CacheRAG/GraphRAG, which genuinely depend on Phase 5 (agents) and Phase 7 (advanced agentic systems) — so it's sequenced after both rather than bundled into Phase 4. This was a deliberate, explicit decision after the roadmap's structure went through three revisions in one day (see `NOTEBOOK_INDEX.md`'s Known Discrepancies) — don't re-merge these two phases.
 
@@ -54,109 +66,48 @@ A project-organizing skill lives at `.claude/skills/ai-roadmap-organizer/` and s
 
 The five LangChain 1.x migration pipeline skills (audit → plan-to-tasks → plan-to-teaching-notebook → notebook-review, plus the `langchain-v1-pipeline` runner) are grouped as a local plugin at `plugins/langchain-v1-migration/`, registered via `.claude-plugin/marketplace.json` and enabled in `.claude/settings.json`. Invoke them as `/langchain-v1-migration:<skill>`; call their scripts by repo-relative path under `plugins/langchain-v1-migration/skills/`.
 
-### Phase 1 — `01_Theory_and_Foundations/` — internal tracks
+## Per-phase `CLAUDE.md` — read the one for the folder you're in
 
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `Model_Landscape_and_Hugging_Face/` | Hugging Face Hub setup, Transformers, Diffusers, audio/video models, Gradio (21 notebooks) |
-| `Fine_Tuning_and_RL/` | SFT / data prep / training / eval (DeepLearning.AI labs) + Llama 2 AutoTrain; `02_Techniques/` (RLHF/DPO/LoRA) 🚧 Planned |
-| `Coding_Essentials_for_Agents/` | Python, files/DBs, Flask APIs, raw LLM API calls, threading/GIL, asyncio |
-| `Math_and_ML_Intuition/`, `Transformer_Architecture/` | 🚧 Planned |
+Every phase carries its own `CLAUDE.md`. Claude Code loads the root file always, plus any `CLAUDE.md` in a subdirectory when it touches files under that subtree, so they compose — this file holds only what is cross-cutting.
 
-### Phase 2 — `02_LangChain_Fundamentals_and_Prompting/` — internal tracks
+**The per-phase track tables that used to live here have moved into those files.** Keeping them in two places is the same duplication the one-topic-one-phase rule exists to prevent. Go to the phase file for what a phase contains, what conventions apply inside it, and what must not be added to it.
 
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `LangChain_Fundamentals/`     | Getting started, I/O & prompts, LCEL, chains, summarization — true fundamentals only (5 modules) |
-| `Prompt_and_Context_Engineering/Prompt_Engineering/` | Core/advanced prompting patterns, hands-on-by-model, multimodal, real-world applications |
-| `Prompt_and_Context_Engineering/Context_Engineering/` | 🚧 Planned |
+| Phase file | Covers |
+|---|---|
+| `01_Foundations/00_Theory_and_Foundations/CLAUDE.md` | HF ecosystem, fine-tuning, coding essentials — and why the `helpers` factory is deliberately unused here |
+| `01_Foundations/02_Prompt_and_Context_Engineering/CLAUDE.md` | prompting as a discipline; what belongs to LangChain instead |
+| `02_Core/01_LangChain_Fundamentals/CLAUDE.md` | LangChain mechanics; why direct client instantiation here is not a violation |
+| `02_Core/03_LangGraph_Fundamentals/CLAUDE.md` | LangGraph mechanics; strongest `helpers` requirement in the repo |
+| `02_Core/04_Retrieval_and_RAG/CLAUDE.md` | foundational RAG, 10 tracks, the `shared_data/` relative-path gap |
+| `02_Core/05_AI_Agent_Fundamentals/CLAUDE.md` | all agent building, both frameworks; the `N. Name` folder convention |
+| `03_Advanced/06_Agent_SDKs_First_Party/CLAUDE.md` | vendor-native SDKs; first-party vs third-party boundary |
+| `03_Advanced/07_Advanced_Agentic_Systems/CLAUDE.md` | memory, orchestration, deep agents; the Deep Agents file-lock gotcha |
+| `03_Advanced/08_Advanced_RAG/CLAUDE.md` | agentic RAG; why `Comprehensive_RAG_Techniques/` must not be split |
+| `03_Advanced/09_Agent_Protocols/CLAUDE.md` | MCP built, ACP/A2A planned; per-subproject environments |
+| `03_Advanced/10_Alternative_Agent_Frameworks/CLAUDE.md` | CrewAI/AutoGen/DSPy; the CrewAI `chromadb<1.2` conflict |
+| `03_Advanced/12_Production_and_Observability/CLAUDE.md` | LLMOps, safety; the observability-vs-evaluation line |
+| `04_AI_Coding_Tools/CLAUDE.md` | Claude Code, Codex, Cursor, Agent Skills |
+| `05_Projects/CLAUDE.md` | 15 projects, one venv each, the ruff-exclude rule |
+| `06_Interview_Prep/CLAUDE.md` | ⚠ purchased material and the path-anchored `.gitignore` that protects it |
 
-### Phase 3 — `03_LangGraph_Fundamentals/` — internal tracks
+Two deeper files also exist and take precedence inside their trees: `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/CLAUDE.md` and `site/CLAUDE.md`.
 
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `01_Foundations/`             | Core LangGraph mechanics: state, graphs, routing, tools, ReAct, Pydantic, node/command patterns (11 notebooks) |
-| `02_Core_Capabilities/`       | Routing, human-in-the-loop, advanced state, subgraphs, async/streaming, retries |
+## Path-anchored config — repoint these whenever a folder moves
 
-### Phase 4 — `04_Retrieval_and_RAG/` — internal tracks
+Three places hard-code repository paths. All three broke silently during the 2026-09-19 restructure and were caught only by explicit checking. **If you move a folder, fix these in the same commit:**
 
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `Introduction_to_RAG/`        | RAG overview, indexing, LangChain+RAG |
-| `Embeddings_and_Vector_Databases/` | Embedding models, vector DB options, retrievers |
-| `RAG_Naive_to_Production/`    | Loading → chunking → hybrid search → query enhancement → parent-doc retrieval → postprocessing → full pipelines |
-| `Query_Transformation_Techniques/` | Multi-query, RAG-Fusion, decomposition, step-back prompting, HyDE, query routing, self-querying retrieval |
-| `Indexing_Techniques/` | Multi-representation indexing, parent-document retrieval — split out from `Query_Transformation_Techniques/` since these change the index rather than transform the query |
-| `Post_Retrieval_Techniques/` | Cross-encoder reranking — split out from `Query_Transformation_Techniques/` since this re-scores already-retrieved results rather than transforming the query |
-| `Multimodal_and_Document_Intelligence/` | Multimodal RAG |
-| `RAG_with_LangGraph/`         | Basic agentic RAG (2 notebooks) |
-| `RAG_with_LangChain/`         | RAG essentials, comprehensive, filtered search, indexing API (4 notebooks) |
-| `RAG_with_LlamaIndex/`        | Chainlit ReAct RAG chatbot over Wikipedia |
+| File | What it anchors | Failure mode |
+|---|---|---|
+| `.gitignore` lines ~160–162 | keeps purchased FDE material out of git except `.md` | ~107 vendor PDFs silently become committable |
+| `site/scripts/sync-content.mjs` `SOURCE_ROOT` | the public site builds from `06_Interview_Prep/FDE` | site build reads a dead path |
+| `pyproject.toml` `[tool.ruff] extend-exclude` | 5 JS frontend paths | frontends get linted as Python |
 
-Also `shared_data/` at this phase's root — supporting PDFs/data referenced by several notebooks via relative paths inherited from the source repo (`RAG_Demystified`); not re-verified for exact path resolution after the move.
+Verification after any move:
+```bash
+git status --porcelain | grep -c '^??'                      # expect 0
+git ls-files '06_Interview_Prep/FDE' | grep -c '\.md$'       # expect 122
+```
 
-### Phase 5 — `05_AI_Agent_Fundamentals/` — internal tracks
-
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `LangChain_Tools_and_Agents/` | Tool calling, tool-calling agents, agents, + `03_Applied_Projects/` (16 applied builds) |
-| `AI_Agents_with_LangGraph/`   | Full real-world agent builds (11) |
-| `Workflow_and_Agent_Patterns/` | Named agentic design patterns — tool use, planning, reflection, router, prompt chaining, evaluator-optimizer, orchestrator-worker, advanced cognitive patterns (8 pattern subfolders, ~27 notebooks) |
-| `Building_Agents_From_Scratch/` | OpenAI API + `agentic_patterns` package (no LangGraph) |
-
-### Phase 7 — `07_Advanced_Agentic_Systems/` — internal tracks
-
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `Memory_and_State/`           | `LangGraph/` (memory & threads, long-term PostgreSQL memory) + `LangChain/` (chat/conversation memory, multi-user SQL persistence) |
-| `Multi_Agent_Orchestration/`  | Supervisor pattern, multi-agent swarm architecture |
-| `Deep_Agents_and_Harness_Engineering/` | Multi-agent orchestration via `deepagents` — see its own `CLAUDE.md` |
-| ~~`Evaluation_and_Eval_Harnesses/`~~ | **Removed 2026-09-19** — all evaluation content lives in the sibling repo `Agent_Evaluation_Demystified` (`courses/` + `labs/`). Don't recreate it here. |
-
-### Phase 8 — `08_Advanced_RAG/` — internal tracks
-
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `RAG_with_LangGraph_Advanced/` | Self-correcting retrieval, corrective/adaptive RAG, healthcare router agentic RAG |
-| `Comprehensive_RAG_Techniques/` | The NirDiamant `RAG_Techniques` anthology (~35 notebooks, kept whole — see its `README_ROADMAP.md`) |
-| `RAG_Ecosystem/`              | Single-notebook RAG stack (basic → query transforms → RAPTOR/ColBERT → CRAG pointers → RAGAS) |
-| `GraphRAG/`                   | Full knowledge-graph + RAG course |
-| `CacheRAG/`                   | 🚧 Planned |
-| `building-adaptive-rag/`, `mcp_a2a_agentic_rag/` | Standalone apps — MCP+A2A agentic RAG kept RAG-first here; a copy also lives under Phase 9 `MCP/` |
-
-### Phase 9 — `09_Agent_Protocols/` — internal tracks
-
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `MCP/` | Foundations (Anthropic + Educative), building servers (Educative Mastering + Databricks Apps), building clients (MCP Essential), applications (Udemy MCP Mastery), plus `mcp_a2a_agentic_rag/` |
-| `ACP/`, `A2A/` | 🚧 Planned |
-
-### Phase 12 — `12_Production_and_Observability/` — internal tracks
-
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `LLMOps_and_AI_Infrastructure/` | `Tracing_and_Observability/` (LangSmith built, LangFuse planned, callbacks), `Caching_and_Performance/`, `Cost_Monitoring/` |
-| `Safety_and_Alignment/`       | Content moderation, red teaming (`deepteam`) |
-| `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned |
-
-### Phase 10 — `10_Alternative_Agent_Frameworks/` — internal tracks
-
-| Track | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `CrewAI/`                     | `01_Foundations/` (basics + 8 simple agents + comprehensive tutorial), `02_Core_Capabilities/` (Flows), `03_Multi_Agent_Patterns/`, `04_Applications/` (9 project sets) |
-| `AutoGen/`                    | Foundations (3 nb) + core labs (conversable/sequential/tools/code/multimodal) + group/swarm patterns + 8 application project sets |
-| `DSPy/`                       | `context-engineering-dspy/` levels 1–5 (kept whole) |
-| `PydanticAI/`, `Orchestration_Frameworks_Overview/` | 🚧 Planned |
-
-### Phase 13 — `13_Projects/`
-
-| Project | Content |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `LangGraph_Fullstack_Capstone/` | Full-stack app (FastAPI + Angular + Postgres), unit tests, Streamlit apps |
-| `LangChain_Microservices_Capstone/` | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
-| `RAG_Systems_Projects/`       | 7 applied RAG capstone notebooks — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
-| `ShopUNow_Agentic_RAG_Capstone/` | Vector DB + agentic RAG e-commerce capstone |
-| `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/`, `Resume_Genie/` | 8 more standalone full-stack apps |
 
 ## Environment Setup
 
@@ -226,20 +177,20 @@ jupyter lab
 ruff check .
 
 # Streamlit apps
-cd 13_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor
+cd 05_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor
 streamlit run app.py
 
 # Full-stack capstone (FastAPI + Angular + Postgres)
-cd 13_Projects/LangGraph_Fullstack_Capstone/fullstackapp
+cd 05_Projects/LangGraph_Fullstack_Capstone/fullstackapp
 docker compose up
 # Backend: localhost:8000, Frontend: localhost:5555, Postgres: localhost:5433
 
 # Tests
-cd 13_Projects/LangGraph_Fullstack_Capstone/unit_tests
+cd 05_Projects/LangGraph_Fullstack_Capstone/unit_tests
 pytest
 
 # Deep Agents (runs off the root env — no separate install needed)
-cd 07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering
+cd 03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering
 python examples/simple_coding_agent.py
 ```
 
@@ -274,13 +225,13 @@ LangGraph-phase notebooks route all LLM/embedding initialization through this fa
 
 ### Agentic Patterns Covered
 
-ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), Planning (parallel execution, `Send` API / map-reduce), Router, Prompt Chaining, Evaluator-Optimizer, Orchestrator-Worker, Reflection & Reflexion, Agent Patterns (supervisor, swarm), Long-Term Memory, plus a dozen advanced cognitive patterns (PEV, blackboard, tree-of-thoughts, RLHF, and others — see `05_AI_Agent_Fundamentals/Workflow_and_Agent_Patterns/11_Advanced_Cognitive_Patterns/`).
+ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), Planning (parallel execution, `Send` API / map-reduce), Router, Prompt Chaining, Evaluator-Optimizer, Orchestrator-Worker, Reflection & Reflexion, Agent Patterns (supervisor, swarm), Long-Term Memory, plus a dozen advanced cognitive patterns (PEV, blackboard, tree-of-thoughts, RLHF, and others — see `02_Core/05_AI_Agent_Fundamentals/Workflow_and_Agent_Patterns/11_Advanced_Cognitive_Patterns/`).
 
 ## Known Gaps (don't build against these as if they exist)
 
 - **Every phase/track marked 🚧 Planned above has no content** — folders and scope-describing `README.md`s exist, but no notebooks/code. Don't assume any file exists under them without checking.
-- Several LangGraph notebooks (e.g. `03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/01_HITL_Basics.ipynb`, `07_Advanced_Agentic_Systems/Memory_and_State/LangGraph/01_Memory/02_Memory_Optimizations.ipynb`) don't open with a proper `# Title` markdown cell — see `NOTEBOOK_INDEX.md`'s "Still open" section.
-- Some `RAG_Demystified`-sourced notebooks in `04_Retrieval_and_RAG/RAG_Naive_to_Production/` reference a shared `data/` folder via relative paths (`../../data/`-style) that may not resolve correctly post-move — a copy was brought along as `04_Retrieval_and_RAG/shared_data/`, but exact path depth wasn't reconstructed.
+- Several LangGraph notebooks (e.g. `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/01_HITL_Basics.ipynb`, `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/LangGraph/01_Memory/02_Memory_Optimizations.ipynb`) don't open with a proper `# Title` markdown cell — see `NOTEBOOK_INDEX.md`'s "Still open" section.
+- Some `RAG_Demystified`-sourced notebooks in `02_Core/04_Retrieval_and_RAG/RAG_Naive_to_Production/` reference a shared `data/` folder via relative paths (`../../data/`-style) that may not resolve correctly post-move — a copy was brought along as `02_Core/04_Retrieval_and_RAG/shared_data/`, but exact path depth wasn't reconstructed.
 
 ## Notebook Conventions
 
@@ -294,5 +245,5 @@ ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), 
 ## Conventions
 
 - Python >= 3.11 required (target 3.12 for venv)
-- Directory names use numeric prefixes without spaces for phases (e.g., `05_AI_Agent_Fundamentals/`), with descriptive track/topic names nested inside (e.g., `.../AI_Agents_with_LangGraph/`) — no need to quote these paths
-- No linting was configured before this pass; `ruff` is now wired into `[tool.ruff]` in `pyproject.toml` (line length 100, target py311, rules `E,F,I,UP`) and excludes `archive/` and five JS frontends (`13_Projects/LangGraph_Fullstack_Capstone/fullstackapp/frontend`, `13_Projects/LangChain_Microservices_Capstone/frontend`, `07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/app/frontend`, `10_Alternative_Agent_Frameworks/CrewAI/01_Foundations/Some_Simple_Agents/app/frontend`, `13_Projects/Realtime_Voice_AI_Agent_with_RAG/Codes/rag_voice_ai_agent-deployment_live/frontend`)
+- Directory names use numeric prefixes without spaces for phases (e.g., `02_Core/05_AI_Agent_Fundamentals/`), with descriptive track/topic names nested inside (e.g., `.../AI_Agents_with_LangGraph/`) — no need to quote these paths
+- No linting was configured before this pass; `ruff` is now wired into `[tool.ruff]` in `pyproject.toml` (line length 100, target py311, rules `E,F,I,UP`) and excludes `archive/` and five JS frontends (`05_Projects/LangGraph_Fullstack_Capstone/fullstackapp/frontend`, `05_Projects/LangChain_Microservices_Capstone/frontend`, `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/app/frontend`, `03_Advanced/10_Alternative_Agent_Frameworks/CrewAI/01_Foundations/Some_Simple_Agents/app/frontend`, `05_Projects/Realtime_Voice_AI_Agent_with_RAG/Codes/rag_voice_ai_agent-deployment_live/frontend`)

@@ -31,7 +31,7 @@ The read-only audit inventoried notebook files across the repository and inspect
 | ---------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | Notebook files discovered                                              | 632                                                              |
 | Notebook files parseable as JSON                                       | 631                                                              |
-| Foundational RAG notebooks in`04_Retrieval_and_RAG/`                 | 74                                                               |
+| Foundational RAG notebooks in`02_Core/04_Retrieval_and_RAG/`                 | 74                                                               |
 | Advanced RAG notebooks outside the nested source checkout              | 52                                                               |
 | Notebooks inside the nested`RAG_TECHNIQUES` checkout                 | 46                                                               |
 | Byte-identical Enterprise RAG notebook pairs                           | 13 pairs between the handbook and interview-preparation projects |
@@ -46,7 +46,7 @@ These are the audit's final inventory counts, not a continuously updated invento
 - The handbook and interview-preparation Enterprise RAG projects contain 13 byte-identical notebook pairs. The handbook project should become the authoritative enterprise example, with interview-preparation links instead of duplicate lessons.
 - The nested checkout contains material absent from the outer anthology, including LightRAG, MemoRAG, graph attribution, and additional evaluation examples. Do not discard it as an entirely redundant copy.
 - The [question-answering project placeholder][empty-qa-project] is zero bytes. The [short multimodal project placeholder][empty-multimodal-project] contains an empty code cell. Neither should count as a completed lesson.
-- Some document references are already fragile or incorrect. For example, loaders reference `../../data/dummy.txt` and `../../docs/layoutparser_paper.pdf`, while those assets live in `04_Retrieval_and_RAG/shared_data/`. The [notebook index][notebook-index] already records this issue in its known discrepancies.
+- Some document references are already fragile or incorrect. For example, loaders reference `../../data/dummy.txt` and `../../docs/layoutparser_paper.pdf`, while those assets live in `02_Core/04_Retrieval_and_RAG/shared_data/`. The [notebook index][notebook-index] already records this issue in its known discrepancies.
 - The existing `semantic_chunking.ipynb` changed during the audit. At plan-creation time, there are also working-copy changes to `1-densesparse.ipynb` and `Reference_Links.md`, along with untracked local settings and the nested checkout. Preserve the current working state; do not overwrite it with an older audited copy.
 
 ### What the audit did not verify
@@ -353,7 +353,7 @@ Applications remain coherent bundles. They may link to canonical lessons and dem
 
 This catalogue intentionally does not turn every existing file into an active destination. For example, the 11 loader notebooks become sections of one ingestion lesson, the many backend notebooks become vector-store comparisons, and application notebooks remain bundled projects. A later migration manifest must list every source notebook as `canonical`, `donor`, `application`, `support`, `reference-only`, or `archive-candidate`, and must record the destination concept ID plus every data/helper dependency.
 
-### Explicit coverage of `08_Advanced_RAG/`
+### Explicit coverage of `03_Advanced/08_Advanced_RAG/`
 
 The advanced-RAG area was included in the audit and in the proposed mapping. The current snapshot contains **6 top-level folders and 98 notebooks**. The nested `RAG_TECHNIQUES` directory is treated as a source checkout/reference bundle, not as a second active curriculum. Counts should be rechecked immediately before migration.
 
@@ -372,7 +372,7 @@ The 98-notebook count includes repeated anthology files in the nested checkout. 
 
 ### Source-to-destination mapping and disposition
 
-This mapping makes the proposed treatment of `08_Advanced_RAG/` explicit. A destination is a proposed canonical location; it does not exist until implementation is approved. `Donor` means useful content is merged into the destination. `Support/reference` means the notebook is retained for code, framework comparison, setup, or provenance but is not indexed as an active concept lesson. `Archive candidate` means it may be moved to recoverable history only after dependency validation and approval. Nothing is deleted by this plan.
+This mapping makes the proposed treatment of `03_Advanced/08_Advanced_RAG/` explicit. A destination is a proposed canonical location; it does not exist until implementation is approved. `Donor` means useful content is merged into the destination. `Support/reference` means the notebook is retained for code, framework comparison, setup, or provenance but is not indexed as an active concept lesson. `Archive candidate` means it may be moved to recoverable history only after dependency validation and approval. Nothing is deleted by this plan.
 
 #### Mapping legend
 
@@ -766,63 +766,63 @@ All source links below point to the locations observed during planning. Update t
 [repo-guidance]: CLAUDE.md
 [notebook-index]: NOTEBOOK_INDEX.md
 [requirements]: requirements.txt
-[empty-qa-project]: 13_Projects/RAG_Systems_Projects/4. Develop a RAG system for Question Answering.ipynb
-[empty-multimodal-project]: 13_Projects/RAG_Systems_Projects/3. Multimodal RAG System.ipynb
-[rag-comprehensive]: 04_Retrieval_and_RAG/09_RAG_with_LangChain/7.1_RAG_Comprehensive.ipynb
-[rag-overview]: 04_Retrieval_and_RAG/01_Introduction_to_RAG/1_rag_overview.ipynb
-[rag-pipeline]: 04_Retrieval_and_RAG/RAG_Production_Course/06_rag_pipeline.ipynb
-[loader-lessons]: 04_Retrieval_and_RAG/06_RAG_Naive_to_Production/01_Loading_Data/
-[embedding-basics]: 04_Retrieval_and_RAG/02_Embeddings_and_Vector_Databases/4. Embedding_Basics_Alt.ipynb
-[openai-embeddings]: 04_Retrieval_and_RAG/02_Embeddings_and_Vector_Databases/5. Openaiembeddings_Alt.ipynb
-[embeddings-deep]: 04_Retrieval_and_RAG/RAG_Production_Course/04_embeddings_deep.ipynb
-[vector-stores]: 04_Retrieval_and_RAG/RAG_Production_Course/05_vector_stores.ipynb
-[chunking-comprehensive]: 04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/1. Document_Splitters_and_Chunkers.ipynb
-[text-splitters]: 04_Retrieval_and_RAG/RAG_Production_Course/02_text_splitters.ipynb
-[semantic-chunking]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/semantic_chunking.ipynb
-[semantic-chunking-manual]: 04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/2. Semantichunking.ipynb
-[query-transformations]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/
-[hybrid-rag]: 04_Retrieval_and_RAG/06_RAG_Naive_to_Production/03_Hybrid_Search_Strategies/1.1. Hybrid_Search_RAG.ipynb
-[dense-sparse]: 04_Retrieval_and_RAG/06_RAG_Naive_to_Production/03_Hybrid_Search_Strategies/1-densesparse.ipynb
-[parent-document]: 04_Retrieval_and_RAG/03_Indexing_Techniques/Parent_Document_Retrieval.ipynb
-[postgres-parent]: 04_Retrieval_and_RAG/06_RAG_Naive_to_Production/05_Parent_Document_Retriever/08_BetterRetriever.ipynb
-[reranking]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/reranking.ipynb
-[corrective-rag]: 08_Advanced_RAG/RAG_with_LangGraph_Advanced/2. Build_an_Agentic_Corrective_RAG_System_with_LangGraph.ipynb
-[crag-anthology]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/crag.ipynb
-[adaptive-rag]: 08_Advanced_RAG/RAG_with_LangGraph_Advanced/3. Build_an_Adaptive_RAG_System.ipynb
-[self-rag]: 08_Advanced_RAG/RAG_with_LangGraph_Advanced/4. Build_a_Self_RAG_System.ipynb
-[conversational-m8]: 13_Projects/RAG_Systems_Projects/M8_Simple_RAG,_Conversational_RAG_and_Multi_User_Conversational_RAG_Systems.ipynb
-[multimodal-m8]: 13_Projects/RAG_Systems_Projects/M8_Multimodal_RAG_System_with_GPT_4o.ipynb
-[evaluation-tutorial]: 07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Tutorial_RAG_Agent_Tool_Evaluation/
-[evaluation-drills]: 07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/RAG_Evaluation/DeepEval_Metrics/
-[enterprise-handbook]: 14_Interview_Preparation/Handbook/04_Enterprise_RAG/project/
-[enterprise-interview]: 14_Interview_Preparation/AI_Engineer/Enterprise RAG Platform/
-[multi-query]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/a. Multi_Query.ipynb
-[rag-fusion]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/b. RAG_Fusion.ipynb
-[step-back]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/c. Step_Back_Prompting.ipynb
-[hyde]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/d. HyDE.ipynb
-[decomposition]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/2. Decomposition/Decomposition.ipynb
-[classifier-routing]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/3. Routing/a. Routing_LLM_Classifier.ipynb
-[semantic-routing]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/3. Routing/b. Semantic_Routing.ipynb
-[self-querying]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/3. Routing/c. Self_Querying_Retrieval.ipynb
-[rag-ecosystem]: 08_Advanced_RAG/RAG_Ecosystem/rag_ecosystem.ipynb
-[advanced-rag-overview]: 04_Retrieval_and_RAG/RAG_Production_Course/07_advanced_rag.ipynb
-[evaluation-master]: 07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Agent_RAG_Tools_Evaluation_MASTER.ipynb
-[nested-checkout]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/
-[nested-agentic]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/Agentic_RAG.ipynb
-[nested-attribution]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/graph_rag_local_attribution.ipynb
-[nested-json]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/json_rag.ipynb
-[nested-lightrag]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/light_rag.ipynb
-[nested-local]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/local_rag_huggingface_faiss.ipynb
-[nested-memorag]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/memorag.ipynb
-[nested-filtering]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/multi_faceted_filtering.ipynb
-[nested-end-to-end]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/evaluation/end-2-end_rag_evaluation.ipynb
-[nested-open-eval]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/evaluation/open-rag-eval-example.ipynb
-[shopunow]: 13_Projects/ShopUNow_Agentic_RAG_Capstone/
-[cache-rag]: 08_Advanced_RAG/CacheRAG/README.md
-[shared-data]: 04_Retrieval_and_RAG/shared_data/
-[anthology-root]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/
-[graph-extraction-bundle]: 08_Advanced_RAG/GraphRAG/Constucting Knowledge Graph/
-[anthology-roadmap]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/README_ROADMAP.md
-[anthology-test-config]: 08_Advanced_RAG/Comprehensive_RAG_Techniques/tests/conftest.py
+[empty-qa-project]: 05_Projects/RAG_Systems_Projects/4. Develop a RAG system for Question Answering.ipynb
+[empty-multimodal-project]: 05_Projects/RAG_Systems_Projects/3. Multimodal RAG System.ipynb
+[rag-comprehensive]: 02_Core/04_Retrieval_and_RAG/09_RAG_with_LangChain/7.1_RAG_Comprehensive.ipynb
+[rag-overview]: 02_Core/04_Retrieval_and_RAG/01_Introduction_to_RAG/1_rag_overview.ipynb
+[rag-pipeline]: 02_Core/04_Retrieval_and_RAG/RAG_Production_Course/06_rag_pipeline.ipynb
+[loader-lessons]: 02_Core/04_Retrieval_and_RAG/06_RAG_Naive_to_Production/01_Loading_Data/
+[embedding-basics]: 02_Core/04_Retrieval_and_RAG/02_Embeddings_and_Vector_Databases/4. Embedding_Basics_Alt.ipynb
+[openai-embeddings]: 02_Core/04_Retrieval_and_RAG/02_Embeddings_and_Vector_Databases/5. Openaiembeddings_Alt.ipynb
+[embeddings-deep]: 02_Core/04_Retrieval_and_RAG/RAG_Production_Course/04_embeddings_deep.ipynb
+[vector-stores]: 02_Core/04_Retrieval_and_RAG/RAG_Production_Course/05_vector_stores.ipynb
+[chunking-comprehensive]: 02_Core/04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/1. Document_Splitters_and_Chunkers.ipynb
+[text-splitters]: 02_Core/04_Retrieval_and_RAG/RAG_Production_Course/02_text_splitters.ipynb
+[semantic-chunking]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/semantic_chunking.ipynb
+[semantic-chunking-manual]: 02_Core/04_Retrieval_and_RAG/06_RAG_Naive_to_Production/02_Splitting_and_Chunking/2. Semantichunking.ipynb
+[query-transformations]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/
+[hybrid-rag]: 02_Core/04_Retrieval_and_RAG/06_RAG_Naive_to_Production/03_Hybrid_Search_Strategies/1.1. Hybrid_Search_RAG.ipynb
+[dense-sparse]: 02_Core/04_Retrieval_and_RAG/06_RAG_Naive_to_Production/03_Hybrid_Search_Strategies/1-densesparse.ipynb
+[parent-document]: 02_Core/04_Retrieval_and_RAG/03_Indexing_Techniques/Parent_Document_Retrieval.ipynb
+[postgres-parent]: 02_Core/04_Retrieval_and_RAG/06_RAG_Naive_to_Production/05_Parent_Document_Retriever/08_BetterRetriever.ipynb
+[reranking]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/reranking.ipynb
+[corrective-rag]: 03_Advanced/08_Advanced_RAG/RAG_with_LangGraph_Advanced/2. Build_an_Agentic_Corrective_RAG_System_with_LangGraph.ipynb
+[crag-anthology]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/crag.ipynb
+[adaptive-rag]: 03_Advanced/08_Advanced_RAG/RAG_with_LangGraph_Advanced/3. Build_an_Adaptive_RAG_System.ipynb
+[self-rag]: 03_Advanced/08_Advanced_RAG/RAG_with_LangGraph_Advanced/4. Build_a_Self_RAG_System.ipynb
+[conversational-m8]: 05_Projects/RAG_Systems_Projects/M8_Simple_RAG,_Conversational_RAG_and_Multi_User_Conversational_RAG_Systems.ipynb
+[multimodal-m8]: 05_Projects/RAG_Systems_Projects/M8_Multimodal_RAG_System_with_GPT_4o.ipynb
+[evaluation-tutorial]: 03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Tutorial_RAG_Agent_Tool_Evaluation/
+[evaluation-drills]: 03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/RAG_Evaluation/DeepEval_Metrics/
+[enterprise-handbook]: 06_Interview_Prep/Handbook/04_Enterprise_RAG/project/
+[enterprise-interview]: 06_Interview_Prep/AI_Engineer/Enterprise RAG Platform/
+[multi-query]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/a. Multi_Query.ipynb
+[rag-fusion]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/b. RAG_Fusion.ipynb
+[step-back]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/c. Step_Back_Prompting.ipynb
+[hyde]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/d. HyDE.ipynb
+[decomposition]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/2. Decomposition/Decomposition.ipynb
+[classifier-routing]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/3. Routing/a. Routing_LLM_Classifier.ipynb
+[semantic-routing]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/3. Routing/b. Semantic_Routing.ipynb
+[self-querying]: 02_Core/04_Retrieval_and_RAG/04_Query_Transformation_Techniques/3. Routing/c. Self_Querying_Retrieval.ipynb
+[rag-ecosystem]: 03_Advanced/08_Advanced_RAG/RAG_Ecosystem/rag_ecosystem.ipynb
+[advanced-rag-overview]: 02_Core/04_Retrieval_and_RAG/RAG_Production_Course/07_advanced_rag.ipynb
+[evaluation-master]: 03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Agent_RAG_Tools_Evaluation_MASTER.ipynb
+[nested-checkout]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/
+[nested-agentic]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/Agentic_RAG.ipynb
+[nested-attribution]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/graph_rag_local_attribution.ipynb
+[nested-json]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/json_rag.ipynb
+[nested-lightrag]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/light_rag.ipynb
+[nested-local]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/local_rag_huggingface_faiss.ipynb
+[nested-memorag]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/memorag.ipynb
+[nested-filtering]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/all_rag_techniques/multi_faceted_filtering.ipynb
+[nested-end-to-end]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/evaluation/end-2-end_rag_evaluation.ipynb
+[nested-open-eval]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/all_rag_techniques/RAG_TECHNIQUES/evaluation/open-rag-eval-example.ipynb
+[shopunow]: 05_Projects/ShopUNow_Agentic_RAG_Capstone/
+[cache-rag]: 03_Advanced/08_Advanced_RAG/CacheRAG/README.md
+[shared-data]: 02_Core/04_Retrieval_and_RAG/shared_data/
+[anthology-root]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/
+[graph-extraction-bundle]: 03_Advanced/08_Advanced_RAG/GraphRAG/Constucting Knowledge Graph/
+[anthology-roadmap]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/README_ROADMAP.md
+[anthology-test-config]: 03_Advanced/08_Advanced_RAG/Comprehensive_RAG_Techniques/tests/conftest.py
 [lightrag-paper]: https://arxiv.org/abs/2410.05779
 [memorag-paper]: https://arxiv.org/abs/2409.05591

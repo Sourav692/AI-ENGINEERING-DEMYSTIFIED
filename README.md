@@ -208,7 +208,7 @@ Orchestrator (Claude Opus via Databricks)
 Three code-execution backends: `FilesystemBackend` (safe default), `LocalShellBackend` (local dev), `LangSmithSandbox` (cloud, production) — plus a JSON-backed long-term memory variant.
 
 ```bash
-cd 07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering
+cd 03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering
 python examples/simple_coding_agent.py
 python examples/long_term_memory_agent.py
 ```
@@ -260,9 +260,9 @@ Also two standalone apps: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (M
 
 ```bash
 # LangGraph capstone
-cd 13_Projects/LangGraph_Fullstack_Capstone/fullstackapp && docker compose up
-cd 13_Projects/LangGraph_Fullstack_Capstone/unit_tests && pytest
-cd 13_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor && streamlit run app.py
+cd 05_Projects/LangGraph_Fullstack_Capstone/fullstackapp && docker compose up
+cd 05_Projects/LangGraph_Fullstack_Capstone/unit_tests && pytest
+cd 05_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor && streamlit run app.py
 ```
 
 ---
@@ -315,10 +315,10 @@ AI ENGINEERING/
 │   └── Prompt_and_Context_Engineering/
 │       ├── Prompt_Engineering/                01_Core_Patterns/ … 05_Real_World_Applications/, Assignments/
 │       └── Context_Engineering/               🚧 Planned
-├── 03_LangGraph_Fundamentals/               ✅ Built
+├── 02_Core/03_LangGraph_Fundamentals/               ✅ Built
 │   ├── 01_Foundations/
 │   └── 02_Core_Capabilities/
-├── 04_Retrieval_and_RAG/                    ✅ Built
+├── 02_Core/04_Retrieval_and_RAG/                    ✅ Built
 │   ├── Introduction_to_RAG/
 │   ├── Embeddings_and_Vector_Databases/
 │   ├── RAG_Naive_to_Production/
@@ -328,18 +328,18 @@ AI ENGINEERING/
 │   ├── RAG_with_LangChain/
 │   ├── RAG_with_LlamaIndex/
 │   └── shared_data/
-├── 05_AI_Agent_Fundamentals/                ✅ Built
+├── 02_Core/05_AI_Agent_Fundamentals/                ✅ Built
 │   ├── LangChain_Tools_and_Agents/            01_Tools_and_Functions/, 02_Agents/, 03_Applied_Projects/
 │   ├── AI_Agents_with_LangGraph/              01 … 11 (research, financial, hotel, software-eng builds)
 │   ├── Workflow_and_Agent_Patterns/
 │   └── Building_Agents_From_Scratch/
-├── 06_Agent_SDKs_First_Party/                🚧 Planned
-├── 07_Advanced_Agentic_Systems/              ✅ Built
+├── 03_Advanced/06_Agent_SDKs_First_Party/                🚧 Planned
+├── 03_Advanced/07_Advanced_Agentic_Systems/              ✅ Built
 │   ├── Memory_and_State/                      LangGraph/, LangChain/
 │   ├── Multi_Agent_Orchestration/
 │   ├── Deep_Agents_and_Harness_Engineering/
 │   └── Evaluation_and_Eval_Harnesses/         RAG_Evaluation/, Agent_Evaluation/, LLM_as_Judge/
-├── 08_Advanced_RAG/                          ✅ Built
+├── 03_Advanced/08_Advanced_RAG/                          ✅ Built
 │   ├── RAG_with_LangGraph_Advanced/
 │   ├── Comprehensive_RAG_Techniques/
 │   ├── RAG_Ecosystem/                         rag_ecosystem.ipynb
@@ -347,22 +347,22 @@ AI ENGINEERING/
 │   ├── CacheRAG/                              🚧 Planned
 │   ├── building-adaptive-rag/
 │   └── mcp_a2a_agentic_rag/
-├── 09_Agent_Protocols/                       ✅ Partially built
+├── 03_Advanced/09_Agent_Protocols/                       ✅ Partially built
 │   ├── MCP/                                   01_Foundations/ … 04_Applications/, mcp_a2a_agentic_rag/
 │   ├── ACP/                                   🚧 Planned
 │   └── A2A/                                   🚧 Planned
-├── 10_Alternative_Agent_Frameworks/          ✅ Partially built
+├── 03_Advanced/10_Alternative_Agent_Frameworks/          ✅ Partially built
 │   ├── CrewAI/                                01_Foundations/, 02_Core_Capabilities/, 03_Multi_Agent_Patterns/, 04_Applications/
 │   ├── AutoGen/                                01_Foundations/, 02_Core_Capabilities/, 03_Multi_Agent_Patterns/, 04_Applications/
 │   ├── DSPy/                                   context-engineering-dspy/ (levels 1–5)
 │   └── PydanticAI/, Orchestration_Frameworks_Overview/  🚧 Planned
-├── 11_AI_Coding_Tools/       🚧 Planned
-├── 12_Production_and_Observability/          ✅ Partially built
+├── 04_AI_Coding_Tools/       🚧 Planned
+├── 03_Advanced/12_Production_and_Observability/          ✅ Partially built
 │   ├── DevOps_and_Deployment/                 🚧 Planned
 │   ├── LLMOps_and_AI_Infrastructure/           Tracing_and_Observability/, Caching_and_Performance/, Cost_Monitoring/
 │   ├── Security_and_Compliance/               🚧 Planned
 │   └── Safety_and_Alignment/
-├── 13_Projects/                              ✅ Built (12 projects)
+├── 05_Projects/                              ✅ Built (12 projects)
 │   ├── LangGraph_Fullstack_Capstone/
 │   ├── LangChain_Microservices_Capstone/
 │   ├── RAG_Systems_Projects/

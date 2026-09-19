@@ -12,33 +12,33 @@ Excluded as non-theoretical: `.venv`/site-packages library docs, Claude Code too
 
 **Note:** on-disk phase numbering (`00_`–`17_`) has drifted from what the root `CLAUDE.md`
 documents (`01_`–`13_`) — the handbook (14), FDE prep (15), interview prep (16), OpenAI prep (17),
-plus top-level `docs/` and `14_Interview_Preparation/Study_Guides/`, aren't reflected there at all. This index reflects what's
+plus top-level `docs/` and `06_Interview_Prep/Study_Guides/`, aren't reflected there at all. This index reflects what's
 actually on disk.
 
-## 00_Theory_and_Foundations
+## 01_Foundations/00_Theory_and_Foundations
 
 | Path | Type | Topics Covered |
 |---|---|---|
 | `Coding_Essentials_for_Agents/README_COURSE.md` | md | Python essentials for agent-building: files/DBs, Flask APIs, raw LLM API calls, threading/GIL, asyncio |
 
-## 01_LangChain_Fundamentals
+## 02_Core/01_LangChain_Fundamentals
 
 | Path | Type | Topics Covered |
 |---|---|---|
 | `LangChain_v0_vs_v1_Differences.md` | md | LangChain 0.x vs 1.x API differences, migration concepts |
 
-## 03_LangGraph_Fundamentals
+## 02_Core/03_LangGraph_Fundamentals
 
 *(no standalone theory docs — core theory lives in notebooks and the `docs/` microsite below)*
 
-## 04_Retrieval_and_RAG
+## 02_Core/04_Retrieval_and_RAG
 
 | Path | Type | Topics Covered |
 |---|---|---|
 | `03_Indexing_Techniques/Indexing_Techniques_Explained.md` | md | Multi-representation indexing, parent-document retrieval theory |
 | `04_Query_Transformation_Techniques/Query_Transformation_Techniques_Explained.md` (+ `.html`) | md/html | Multi-query, RAG-Fusion, decomposition, step-back prompting, HyDE, query routing |
 
-## 05_AI_Agent_Fundamentals
+## 02_Core/05_AI_Agent_Fundamentals
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -61,11 +61,11 @@ actually on disk.
 | `docs/Agent_Pattern_Grouping.md` | md | Taxonomy of all agent design patterns |
 | `docs/Design_Patterns_Reference.md` | md | Reference guide to agentic design patterns |
 
-## 06_Agent_SDKs_First_Party
+## 03_Advanced/06_Agent_SDKs_First_Party
 
 *(all thin "Planned" scaffolding — no theory content yet)*
 
-## 07_Advanced_Agentic_Systems
+## 03_Advanced/07_Advanced_Agentic_Systems
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -77,14 +77,14 @@ actually on disk.
 | `Multi_Agent_Orchestration/02_Multi_Agent_Swarm/README.md` | md | Multi-agent swarm architecture |
 | `Multi_Agent_Orchestration/04-multiagent-pattern.md` (+html) | md/html | Multi-agent orchestration pattern |
 
-## 08_Advanced_RAG
+## 03_Advanced/08_Advanced_RAG
 
 | Path | Type | Topics Covered |
 |---|---|---|
 | `Comprehensive_RAG_Techniques/README.md` | md | Anthology overview of 42+ RAG techniques |
 | `Comprehensive_RAG_Techniques/README_ROADMAP.md` | md | Curated reading order through the RAG anthology |
 
-## 09_Agent_Protocols
+## 03_Advanced/09_Agent_Protocols
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -93,24 +93,24 @@ actually on disk.
 | `MCP/04_Applications/Udemy_MCP_Mastery/08 MCP RAG with LangChain/presentation/mcp_rag_architecture.html` | html | RAG-over-MCP with LangChain architecture |
 | `MCP/04_Applications/Udemy_MCP_Mastery/09 Research Assistant with MCP and LangGraph/presentation/research_assistant.html` | html | Research-assistant agent combining MCP + LangGraph |
 
-## 10_Alternative_Agent_Frameworks
+## 03_Advanced/10_Alternative_Agent_Frameworks
 
 | Path | Type | Topics Covered |
 |---|---|---|
 | `CrewAI/01_Foundations/reference_docs/TUTORIAL.md` | md | CrewAI Agent/Task/Crew abstractions and Flow API |
 
-## 12_Production_and_Observability
+## 03_Advanced/12_Production_and_Observability
 
 *(all thin "Planned/Built" scaffolding — no standalone theory content)*
 
-## 13_Projects
+## 05_Projects
 
 | Path | Type | Topics Covered |
 |---|---|---|
 | `ShopUNow_Agentic_RAG_Capstone/WALKTHROUGH.md` | md | Multi-user conversational agentic RAG: LangGraph nodes, memory, routing |
 | `Realtime_Voice_AI_Agent_with_RAG/Docs/PROJECT_REPORT.md` | md | Real-time voice AI assistant + RAG architecture |
 
-## 14_Interview_Preparation/Handbook
+## 06_Interview_Prep/Handbook
 
 Handbook is structured as a full curriculum — every numbered chapter file within each module is a
 theory chapter (133 files total; excluded only `project/data/corpus/*.md` synthetic ticket/policy
@@ -141,7 +141,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `07_Multi_Agent_Systems/reference_code/README.md` | md | Autonomous research agent: multi-agent pipeline, red teaming, LLM eval architecture |
 | `10_FDE_Delivery_Operating_Model/project/README.md` | md | Gate-enforcing state machine for scoping-to-deployed-agent delivery framework |
 
-## 14_Interview_Preparation/FDE
+## 06_Interview_Prep/FDE
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -184,7 +184,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `System_Design and Delivery/Agentic Coverage Map.html` | html | Coverage map of agentic system design topics |
 | `System_Design and Delivery/Mock - AI Exception-Handling Assistant.md` | md | Mock interview design walkthrough for exception-handling assistant |
 
-## 14_Interview_Preparation/AI_Engineer
+## 06_Interview_Prep/AI_Engineer
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -216,7 +216,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `Enterprise RAG Platform/docs/Scale_Optimization.md` | md | Scale optimization strategies for enterprise RAG |
 | `Enterprise RAG Platform/INTERVIEW_SCRIPT.md, INTERVIEW_SCRIPT_DATABRICKS.md` | md | Interview walkthrough scripts covering the RAG platform's architecture/concepts |
 
-## 14_Interview_Preparation/OpenAI_Applied
+## 06_Interview_Prep/OpenAI_Applied
 
 *(the one file here, `OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md`, is a personal gap-analysis/planning doc rather than a concept explainer — excluded)*
 
@@ -233,26 +233,21 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `docs/chapter-6.html` | html | LangGraph fundamentals chapter 6 |
 | `docs/chapter-7.html` | html | LangGraph fundamentals chapter 7 |
 
-## 14_Interview_Preparation/Study_Guides/ (top-level, standalone interview/tutorial content)
+## 06_Interview_Prep/Study_Guides/ (top-level, standalone interview/tutorial content)
 
 | Path | Type | Topics Covered |
 |---|---|---|
-| `14_Interview_Preparation/Study_Guides/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
-| `14_Interview_Preparation/Study_Guides/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
-| `14_Interview_Preparation/Study_Guides/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |
-| `14_Interview_Preparation/Study_Guides/07_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
-| `14_Interview_Preparation/Study_Guides/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
-| `14_Interview_Preparation/Study_Guides/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
-| `14_Interview_Preparation/Study_Guides/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
-| `14_Interview_Preparation/Study_Guides/chunking/01-chunking-strategies-by-doc-type.md` (+html) | md/html | Chunking strategies by document type |
-| `14_Interview_Preparation/Study_Guides/chunking/chunking-by-doc-type.md` (+html) | md/html | Chunking by document type (companion/alt version) |
-| `14_Interview_Preparation/Study_Guides/evaluation/00-evaluation-index.md` (+html) | md/html | Index of RAG/agent evaluation topics |
-| `14_Interview_Preparation/Study_Guides/evaluation/01-deterministic-retrieval-metrics.md` (+html) | md/html | Deterministic retrieval evaluation metrics |
-| `14_Interview_Preparation/Study_Guides/evaluation/02-llm-judged-retrieval-metrics.md` (+html) | md/html | LLM-as-judge retrieval evaluation metrics |
-| `14_Interview_Preparation/Study_Guides/evaluation/03-generator-metrics.md` (+html) | md/html | Generator (answer-quality) evaluation metrics |
-| `14_Interview_Preparation/Study_Guides/evaluation/04-tool-use-evaluation.md` (+html) | md/html | Tool-use evaluation for agents |
-| `14_Interview_Preparation/Study_Guides/evaluation/05-agent-trajectory-evaluation.md` (+html) | md/html | Agent trajectory evaluation |
-| `14_Interview_Preparation/Study_Guides/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
-| `14_Interview_Preparation/Study_Guides/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
-| `14_Interview_Preparation/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md` (+html) | md/html | Parent-document retrieval technique |
-| `14_Interview_Preparation/Study_Guides/retrieval_strategies/rag_retrieval_strategies.md` (+html) | md/html | RAG retrieval strategies overview |
+| _(evaluation guides)_ | — | **Moved 2026-09-19** to the sibling repo `Agent_Evaluation_Demystified` → `docs/interactive-labs/` (html + md companions) |
+| `06_Interview_Prep/Study_Guides/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
+| `06_Interview_Prep/Study_Guides/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
+| `06_Interview_Prep/Study_Guides/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |
+| `06_Interview_Prep/Study_Guides/07_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
+| `06_Interview_Prep/Study_Guides/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
+| `06_Interview_Prep/Study_Guides/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
+| `06_Interview_Prep/Study_Guides/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
+| `06_Interview_Prep/Study_Guides/chunking/01-chunking-strategies-by-doc-type.md` (+html) | md/html | Chunking strategies by document type |
+| `06_Interview_Prep/Study_Guides/chunking/chunking-by-doc-type.md` (+html) | md/html | Chunking by document type (companion/alt version) |
+| `06_Interview_Prep/Study_Guides/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
+| `06_Interview_Prep/Study_Guides/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
+| `06_Interview_Prep/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md` (+html) | md/html | Parent-document retrieval technique |
+| `06_Interview_Prep/Study_Guides/retrieval_strategies/rag_retrieval_strategies.md` (+html) | md/html | RAG retrieval strategies overview |

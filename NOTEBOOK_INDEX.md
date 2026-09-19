@@ -102,7 +102,7 @@ Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`. Tool-ca
 
 ## `Prompt_and_Context_Engineering/Context_Engineering/` — 🚧 Planned
 
-# Phase 3 — LangGraph Fundamentals (`03_LangGraph_Fundamentals/`)
+# Phase 3 — LangGraph Fundamentals (`02_Core/03_LangGraph_Fundamentals/`)
 
 ## `01_Foundations/`
 
@@ -157,7 +157,7 @@ Note: `02_Routing/`'s notebooks are also agentic RAG examples — kept here rath
 
 Also `graph_code.png`, `graph_complex.png`.
 
-# Phase 4 — Retrieval & RAG (`04_Retrieval_and_RAG/`)
+# Phase 4 — Retrieval & RAG (`02_Core/04_Retrieval_and_RAG/`)
 
 Foundational RAG only. Agentic/advanced RAG lives in Phase 8.
 
@@ -253,7 +253,7 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 ## `RAG_Production_Course/` (added 2026-09-08)
 
-7 notebooks from the same merged-in "production-course" as `03_LangGraph_Fundamentals/03_Production_Course/` (see `.cleanup/production-course-main-code-main_cleanup_plan.md`).
+7 notebooks from the same merged-in "production-course" as `02_Core/03_LangGraph_Fundamentals/03_Production_Course/` (see `.cleanup/production-course-main-code-main_cleanup_plan.md`).
 
 | Notebook | Topic |
 |---|---|
@@ -265,9 +265,9 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 | `07_advanced_rag.ipynb` | Advanced RAG |
 | `08_research_assistant.ipynb` (+ `08_research_assistant.py`) | Research-assistant app |
 
-`03_embeddings.ipynb` (an abandoned 3-cell first draft superseded by `04_embeddings_deep.ipynb`) was retired to `archive/04_Retrieval_and_RAG/RAG_Production_Course/` — see `archive/RETIRED_MANIFEST.md`. Also has its own `docs/` folder.
+`03_embeddings.ipynb` (an abandoned 3-cell first draft superseded by `04_embeddings_deep.ipynb`) was retired to `archive/02_Core/04_Retrieval_and_RAG/RAG_Production_Course/` — see `archive/RETIRED_MANIFEST.md`. Also has its own `docs/` folder.
 
-# Phase 5 — AI Agent Fundamentals (`05_AI_Agent_Fundamentals/`)
+# Phase 5 — AI Agent Fundamentals (`02_Core/05_AI_Agent_Fundamentals/`)
 
 ## `LangChain_Tools_and_Agents/`
 
@@ -331,11 +331,11 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 | `Agentic Patterns/` | `src/agentic_patterns/` package + matching notebooks |
 | `images/` | Diagrams |
 
-# Phase 6 — Agent SDKs (First-Party) (`06_Agent_SDKs_First_Party/`) — 🚧 Planned
+# Phase 6 — Agent SDKs (First-Party) (`03_Advanced/06_Agent_SDKs_First_Party/`) — 🚧 Planned
 
 `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`
 
-# Phase 7 — Advanced Agentic Systems (`07_Advanced_Agentic_Systems/`)
+# Phase 7 — Advanced Agentic Systems (`03_Advanced/07_Advanced_Agentic_Systems/`)
 
 ## `Memory_and_State/LangGraph/`
 
@@ -377,7 +377,7 @@ Evaluation no longer lives in this repo. All of it — the 14-notebook tutorial,
 
 Verified by content hash across both repos before deletion: 147 files removed here, 0 unique to this repo. Three markdown sources the migration had left behind (`TUTORIAL.md` → `courses/01-rag-agent-tool-evaluation/THEORY_GUIDE.md`, the interactive-lab `.md` companions, and two interview-prep documents) were moved across rather than deleted.
 
-# Phase 8 — Advanced RAG (`08_Advanced_RAG/`)
+# Phase 8 — Advanced RAG (`03_Advanced/08_Advanced_RAG/`)
 
 Depends on Phases 5 & 7 — sequenced after both.
 
@@ -413,7 +413,7 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 
 `building-adaptive-rag/` — standalone adaptive-RAG app. `mcp_a2a_agentic_rag/` — agentic RAG app built on MCP + A2A protocols (original RAG-first copy still here; a copy also sits under Phase 9's `MCP/`).
 
-# Phase 9 — Agent Protocols (`09_Agent_Protocols/`)
+# Phase 9 — Agent Protocols (`03_Advanced/09_Agent_Protocols/`)
 
 `ACP/`, `A2A/` — 🚧 Planned.
 
@@ -429,7 +429,7 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 | `04_Applications/Udemy_MCP_Mastery/` | Claude Desktop, data-analysis servers, MCP+RAG, LangGraph research assistant, EC2 deploy |
 | `mcp_a2a_agentic_rag/` | MCP + A2A agentic RAG app |
 
-# Phase 10 — Alternative Agent Frameworks (`10_Alternative_Agent_Frameworks/`)
+# Phase 10 — Alternative Agent Frameworks (`03_Advanced/10_Alternative_Agent_Frameworks/`)
 
 ## `CrewAI/`
 
@@ -457,11 +457,11 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 
 ## `PydanticAI/`, `Orchestration_Frameworks_Overview/` — 🚧 Planned
 
-# Phase 11 — Claude Code & AI Coding Tools (`11_AI_Coding_Tools/`) — 🚧 Planned
+# Phase 11 — Claude Code & AI Coding Tools (`04_AI_Coding_Tools/`) — 🚧 Planned
 
 `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
 
-# Phase 12 — Production & Observability (`12_Production_and_Observability/`)
+# Phase 12 — Production & Observability (`03_Advanced/12_Production_and_Observability/`)
 
 ## `LLMOps_and_AI_Infrastructure/`
 
@@ -494,7 +494,7 @@ Also `00_Advanced_LangChain_Overview.ipynb`.
 
 ## `DevOps_and_Deployment/`, `Security_and_Compliance/` — 🚧 Planned
 
-# Phase 13 — Projects (`13_Projects/`)
+# Phase 13 — Projects (`05_Projects/`)
 
 ## `LangGraph_Fullstack_Capstone/`
 
@@ -524,16 +524,16 @@ Not notebooks-only — `01_create_vector_databases.ipynb`, `02_agentic_rag_syste
 
 ## More full-stack apps
 
-`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/` (Flask + Pinecone RAG; Groq; Docker/AWS + Databricks Apps CI/CD; `diagrams/`), `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat holiday planner — not CrewAI travel advisor), `Resume_Genie/` (Streamlit + LangGraph career suite). Each is a standalone deployable app. See `13_Projects/README.md` for a one-line summary of each.
+`AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/` (Flask + Pinecone RAG; Groq; Docker/AWS + Databricks Apps CI/CD; `diagrams/`), `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat holiday planner — not CrewAI travel advisor), `Resume_Genie/` (Streamlit + LangGraph career suite). Each is a standalone deployable app. See `05_Projects/README.md` for a one-line summary of each.
 
 # Planned Phases (no content yet)
 
 | Phase | Folder |
 |---|---|
 | 1 | `01_Theory_and_Foundations/` *(optional)* |
-| 6 | `06_Agent_SDKs_First_Party/` |
-| 9 | `09_Agent_Protocols/` |
-| 11 | `11_AI_Coding_Tools/` |
+| 6 | `03_Advanced/06_Agent_SDKs_First_Party/` |
+| 9 | `03_Advanced/09_Agent_Protocols/` |
+| 11 | `04_AI_Coding_Tools/` |
 
 ## Archive (`archive/`)
 
@@ -542,7 +542,7 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 ---
 
 
-# Phase 14 — Interview Preparation (`14_Interview_Preparation/`)
+# Phase 14 — Interview Preparation (`06_Interview_Prep/`)
 
 Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` into one phase with five tracks — interview prep is one topic, and four top-level homes for it was the same duplication the one-topic-one-phase rule exists to prevent.
 
@@ -567,7 +567,7 @@ Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` 
   2. Replaced entirely: rebuilt around **learning phase** instead of framework, after comparing against a reference tracker (`aie-learning-tracker.vercel.app`) — `01_Theory_and_Foundations/` … `12_Projects/`, LangGraph's content split across several phase tracks.
   3. **Final restructuring (this one):** `LangChain_Demystified-main/` and `Prompt-Engineering-Demystified-main/` were merged in, which exposed real duplication in restructuring #2 (RAG, agents, memory, and observability each had 2–3 different homes across phases). Rebuilt around a stricter rule — **each topic owns exactly one phase**, framework implementations sit as sibling tracks inside it — and split into 13 phases: Theory & Foundations (1), LangChain Fundamentals & Prompting (2, trimmed to true fundamentals), LangGraph Fundamentals (3, mechanics only), Retrieval & RAG (4, foundational only), AI Agent Fundamentals (5, both frameworks' agent-building consolidated), Agent SDKs First-Party (6, promoted to its own phase), Advanced Agentic Systems (7), Advanced RAG (8, new — agentic/self-correcting RAG + CacheRAG/GraphRAG, deliberately sequenced *after* Phases 5 & 7 since it depends on knowing agents), Agent Protocols (9), Alternative Agent Frameworks (10), Claude Code & AI Coding Tools (11), Production & Observability (12, absorbed LangChain's LangSmith/advanced-features/moderation content), Projects (13, absorbed LangChain's microservices module as a second capstone). `LangChain_Demystified`'s `_Archive/` and root scaffolding were discarded per established precedent; its two `.claude/skills/` were preserved at `.claude/skills-candidates/` for separate review. Updated everywhere a path was hardcoded: `pyproject.toml` (ruff excludes — now 3 JS frontends), `README.md`, this file, `CLAUDE.md`, `docs/*.html`, and the `ai-roadmap-organizer` skill's `roadmap-map.md`/`SKILL.md`. The same Windows directory-lock issue hit `Deep_Agents_and_Harness_Engineering` and its `app/` subfolder twice more during this pass — same drain-contents-then-remove-shell workaround each time, no data lost (verified via notebook counts before/after: 132 total).
 
-- **2026-08-17 — `RAG_Demystified-main` merged in**, filling every remaining Phase 4/7/8 placeholder that used to be empty. Split across 3 phases by the same one-topic-one-phase rule: `1. Introduction/` → Phase 4's `Introduction_to_RAG/`; `2. Concepts/4. Embedding...` → Phase 4's `Embeddings_and_Vector_Databases/` (filled the placeholder); `2. Concepts/{2,3,5,6,7,8,9}` (loading/chunking/hybrid-search/query-enhancement/parent-doc-retrieval/postprocessing/building-RAG-systems) → Phase 4's `RAG_Naive_to_Production/` (filled); `2. Concepts/10. Multi-Modal RAG` → Phase 4's `Multimodal_and_Document_Intelligence/` (filled); `2. Concepts/11. Evaluating RAG Systems` → Phase 7's `Evaluation_and_Eval_Harnesses/RAG_Evaluation/` (filled); `6. Graph_RAG` → Phase 8's `GraphRAG/` (filled); `7. Agentic_RAG/Agentic RAG Systems with LangGraph` → extended Phase 8's existing `RAG_with_LangGraph_Advanced/`; `5. Projects` → Phase 13's new `RAG_Systems_Projects/`. Two judgment calls made with the user: `4. Advanced RAG` (despite its name) is query-transformation content requiring no agent knowledge, so it went to Phase 4 as `Query_Transformation_Techniques/` rather than Phase 8; and `3. rag_technniques` (the well-known NirDiamant `RAG_Techniques` collection) was kept whole as Phase 8's `Comprehensive_RAG_Techniques/` rather than split, since its ~35 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths that splitting would have broken. Two standalone apps from `7. Agentic_RAG` (`building-adaptive-rag/`, `mcp_a2a_agentic_rag/` — the latter using MCP+A2A protocols) stayed in Phase 8 rather than moving to Phase 9 or 13, per user decision. A shared root `data/` folder (referenced by several notebooks via relative paths) was brought along as `04_Retrieval_and_RAG/shared_data/` — exact relative-path depth wasn't reconstructed after the move, since fixing that would mean editing notebook content, out of scope for a reorganization. During the move, a Windows/Git-Bash `mv` quirk briefly renamed the existing `RAG_with_LangGraph_Advanced/` folder to `AgenticRAG` mid-operation (no data lost, caught immediately via notebook-count verification and fixed). Total notebook count went from 132 to 249 (117 added), verified exactly matching before executing docs updates.
+- **2026-08-17 — `RAG_Demystified-main` merged in**, filling every remaining Phase 4/7/8 placeholder that used to be empty. Split across 3 phases by the same one-topic-one-phase rule: `1. Introduction/` → Phase 4's `Introduction_to_RAG/`; `2. Concepts/4. Embedding...` → Phase 4's `Embeddings_and_Vector_Databases/` (filled the placeholder); `2. Concepts/{2,3,5,6,7,8,9}` (loading/chunking/hybrid-search/query-enhancement/parent-doc-retrieval/postprocessing/building-RAG-systems) → Phase 4's `RAG_Naive_to_Production/` (filled); `2. Concepts/10. Multi-Modal RAG` → Phase 4's `Multimodal_and_Document_Intelligence/` (filled); `2. Concepts/11. Evaluating RAG Systems` → Phase 7's `Evaluation_and_Eval_Harnesses/RAG_Evaluation/` (filled); `6. Graph_RAG` → Phase 8's `GraphRAG/` (filled); `7. Agentic_RAG/Agentic RAG Systems with LangGraph` → extended Phase 8's existing `RAG_with_LangGraph_Advanced/`; `5. Projects` → Phase 13's new `RAG_Systems_Projects/`. Two judgment calls made with the user: `4. Advanced RAG` (despite its name) is query-transformation content requiring no agent knowledge, so it went to Phase 4 as `Query_Transformation_Techniques/` rather than Phase 8; and `3. rag_technniques` (the well-known NirDiamant `RAG_Techniques` collection) was kept whole as Phase 8's `Comprehensive_RAG_Techniques/` rather than split, since its ~35 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths that splitting would have broken. Two standalone apps from `7. Agentic_RAG` (`building-adaptive-rag/`, `mcp_a2a_agentic_rag/` — the latter using MCP+A2A protocols) stayed in Phase 8 rather than moving to Phase 9 or 13, per user decision. A shared root `data/` folder (referenced by several notebooks via relative paths) was brought along as `02_Core/04_Retrieval_and_RAG/shared_data/` — exact relative-path depth wasn't reconstructed after the move, since fixing that would mean editing notebook content, out of scope for a reorganization. During the move, a Windows/Git-Bash `mv` quirk briefly renamed the existing `RAG_with_LangGraph_Advanced/` folder to `AgenticRAG` mid-operation (no data lost, caught immediately via notebook-count verification and fixed). Total notebook count went from 132 to 249 (117 added), verified exactly matching before executing docs updates.
 
 - **2026-08-17 — `Vector_Database_and_Embedding_Demystified-main` merged in** (4 notebooks + a PDF) — added directly into Phase 4's existing `Embeddings_and_Vector_Databases/` track, no new sections needed. Two notebooks overlapped conceptually with existing content and were suffixed `_Alt`; two were genuinely new (embedding-model comparison, hybrid search + reranking). Root scaffolding (`README.md`, `.gitignore`) discarded per established precedent.
 
@@ -585,7 +585,7 @@ Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` 
 
 - **2026-08-17 — five GitHub repos merged:** `Coding_Essential_For_Agents` → Phase 1 `Coding_Essentials_for_Agents/` (Python through asyncio; Module 4 is raw LLM API calls, not LangChain/HF Hub). `LlamaIndex_Demystified` → Phase 4 `RAG_with_LlamaIndex/` (Chainlit Wikipedia RAG; distinct from Phase 8 NirDiamant LlamaIndex notebooks). `Autogen_Demystified` → AutoGen `02_Core_Capabilities/` + `03_Multi_Agent_Patterns/` (code-execution lab kept alongside the larger existing `coding_agent` project — different size/scope). `DSPy_Demystified` → Phase 10 `DSPy/context-engineering-dspy/` kept whole. `AI-Agents-Essentials` was split: from-scratch OpenAI patterns → Phase 5 `Building_Agents_From_Scratch/`; unique Auto-EDA app → AutoGen `04_Applications/Auto_EDA/`. **Skipped as conceptual duplicates of content already in Phases 2/3/4/5/8/10:** LangChain basics/chains/LCEL/simple-agent; LangGraph stateful apps + research assistant; LangGraph agentic RAG; AutoGen intro building-agents / research-assistant / demo / calculator tool-use / GroupChat `4.1` (covered by Autogen_Demystified Group/Stateflow). Discarded root scaffolding and leftover clone `_incoming/`.
 
-- **2026-08-17 — `End-to-End-Medical-Chatbot` GitHub repo** was the same app already in Phase 13, not a new project. PDF identical. Unique extras (Databricks Apps + GitHub Actions, Docker, architecture diagrams, `pyproject.toml`/`uv.lock`) merged into `13_Projects/End_to_End_Medical_Chatbot/`; app updated to Groq. Kept local executed `research/demo.ipynb` and Apache `LICENSE`.
+- **2026-08-17 — `End-to-End-Medical-Chatbot` GitHub repo** was the same app already in Phase 13, not a new project. PDF identical. Unique extras (Databricks Apps + GitHub Actions, Docker, architecture diagrams, `pyproject.toml`/`uv.lock`) merged into `05_Projects/End_to_End_Medical_Chatbot/`; app updated to Groq. Kept local executed `research/demo.ipynb` and Apache `LICENSE`.
 
 - **2026-08-17 — `Personalized-Holiday-Management-Agent` merged in** as Phase 13 `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat). Not placed in Phase 10 AutoGen apps — capstone/integration project, kept flat. Distinct from CrewAI travel-advisor content.
 

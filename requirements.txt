@@ -28,7 +28,7 @@
 # crewai / crewai-tools : CrewAI 1.x hard-pins chromadb>=1.1,<1.2, while
 #   langchain-chroma 1.1 requires chromadb>=1.3.5. Chroma wins here because
 #   Phases 4 and 8 depend on it. Install CrewAI in its own venv from
-#   10_Alternative_Agent_Frameworks/CrewAI/**/requirements.txt.
+#   03_Advanced/10_Alternative_Agent_Frameworks/CrewAI/**/requirements.txt.
 # grouse-eval : not published on PyPI.
 # ragatouille, lamini, pyppeteer, huey, magika : single-notebook, heavily
 #   pinned deps — install per-notebook rather than repo-wide.

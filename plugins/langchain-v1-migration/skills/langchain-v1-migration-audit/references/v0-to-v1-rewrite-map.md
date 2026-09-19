@@ -170,7 +170,7 @@ agent.invoke({"messages": [{"role": "user", "content": "What's my name?"}]}, cfg
 | `CombinedMemory` | compose multiple middleware |
 
 Persistent variants: `PostgresSaver` / `SqliteSaver` instead of `InMemorySaver`.
-Worked examples already in-repo: `07_Advanced_Agentic_Systems/Memory_and_State/`.
+Worked examples already in-repo: `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/`.
 
 ---
 
@@ -270,5 +270,5 @@ These are unchanged on 1.x — if a plan proposes touching them, it's wrong:
 - Partner package classes: `ChatOpenAI`, `ChatGroq`, `ChatAnthropic`, `OpenAIEmbeddings`, …
 - Text splitters, document loaders, vector stores (in their post-0.2 homes).
 - `@tool` decorator and `StructuredTool`.
-- Everything in Phase 3 `03_LangGraph_Fundamentals/` that builds `StateGraph` by hand —
+- Everything in Phase 3 `02_Core/03_LangGraph_Fundamentals/` that builds `StateGraph` by hand —
   LangGraph 1.x kept its API; only the *prebuilt* `create_react_agent` shortcut is superseded.
