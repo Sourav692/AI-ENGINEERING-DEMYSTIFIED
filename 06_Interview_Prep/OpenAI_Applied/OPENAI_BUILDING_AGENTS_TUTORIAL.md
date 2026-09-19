@@ -10,15 +10,17 @@ failure modes — open the notebook listed under it.
 **All notebook paths are relative to the repository root**, not to this file, so you can
 paste them straight into `jupyter lab` or an editor.
 
-> **Companion document:** [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](OPENAI_BUILDING_AGENTS_COVERAGE.md),
+> **Companion document:** `[OPENAI_BUILDING_AGENTS_COVERAGE.md](OPENAI_BUILDING_AGENTS_COVERAGE.md)`,
 > beside this file, is the audit — which track topics this repo covers, which were
 > deliberately skipped, and why. **That one is the record; this one is the lesson.**
 
 ---
 
+
+
 ## How to work through it — the TODO tracker
 
-Every concept ends with a **`- [ ] TODO`** line. Tick it off as you go: this file *is* the
+Every concept ends with a `- [ ] TODO` line. Tick it off as you go: this file *is* the
 tracker, so commit it as you work and `git log` becomes your study history.
 
 The TODOs are deliberately **not** "read the notebook". Each asks you to produce something
@@ -36,19 +38,25 @@ grep -c '^- \[x\]' OPENAI_BUILDING_AGENTS_TUTORIAL.md   # done
 
 ---
 
+
+
 ## Contents
 
-| # | Chapter | TODOs |
-|---|---|---|
-| 1 | [What is an agent?](#1-what-is-an-agent) | 1 |
-| 2 | [Core concepts](#2-core-concepts) — picking a model, building the loop, adding tools | 4 |
-| 3 | [Tools](#3-tools) — your functions vs. OpenAI's built-in ones | 8 |
-| 4 | [Orchestration](#4-orchestration) — handoffs, guardrails, memory, many agents | 4 |
-| 5 | [Example use cases](#5-example-use-cases) | 3 |
-| 6 | [Best practices](#6-best-practices) | 4 |
-| 7 | [A path through this repo](#7-a-path-through-this-repo) | — |
+
+| #   | Chapter                                                                              | TODOs |
+| --- | ------------------------------------------------------------------------------------ | ----- |
+| 1   | [What is an agent?](#1-what-is-an-agent)                                             | 1     |
+| 2   | [Core concepts](#2-core-concepts) — picking a model, building the loop, adding tools | 4     |
+| 3   | [Tools](#3-tools) — your functions vs. OpenAI's built-in ones                        | 8     |
+| 4   | [Orchestration](#4-orchestration) — handoffs, guardrails, memory, many agents        | 4     |
+| 5   | [Example use cases](#5-example-use-cases)                                            | 3     |
+| 6   | [Best practices](#6-best-practices)                                                  | 4     |
+| 7   | [A path through this repo](#7-a-path-through-this-repo)                              | —     |
+
 
 ---
+
+
 
 ## 1. What is an agent?
 
@@ -69,6 +77,8 @@ flowchart LR
     R --> M
 ```
 
+
+
 Three parts make up an agent, and you control all three:
 
 - **Instructions** — what it should do, and how it should behave.
@@ -78,12 +88,16 @@ Three parts make up an agent, and you control all three:
 **In this repo:** `02_Core/03_LangGraph_Fundamentals/` builds this loop from scratch, step
 by step. It is the best starting point in the whole repo.
 
-- [ ] **TODO** — run one notebook in `02_Core/03_LangGraph_Fundamentals/01_Foundations/` and
+- [x] **TODO** — run one notebook in `02_Core/03_LangGraph_Fundamentals/01_Foundations/` and
   say in one sentence where the loop decides to *stop*. That condition is the agent.
 
 ---
 
+
+
 ## 2. Core concepts
+
+
 
 ### 2.1 Choosing the right model
 
@@ -96,13 +110,16 @@ fails. Most people guess wrong about which tasks need thinking, so measure rathe
 assume.
 
 **In this repo:**
-- `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/01_Reasoning_vs_NonReasoning.ipynb`
-  — the same tasks on both kinds of model, **including one where the reasoning model does worse**.
-- `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/02_Reasoning_Effort_Levers.ipynb`
-  — how hard to let it think, and where extra thinking stops helping.
 
-- [ ] **TODO** — run `01_Reasoning_vs_NonReasoning.ipynb` and write down **the task where the
+- `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/01_Reasoning_vs_NonReasoning.ipynb`
+— the same tasks on both kinds of model, **including one where the reasoning model does worse**.
+- `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/02_Reasoning_Effort_Levers.ipynb`
+— how hard to let it think, and where extra thinking stops helping.
+
+- [x] **TODO** — run `01_Reasoning_vs_NonReasoning.ipynb` and write down **the task where the
   reasoning model does worse**. That single example is what stops you defaulting to the big model.
+
+
 
 ### 2.2 Using a cheap model for easy turns and an expensive one for hard turns
 
@@ -116,8 +133,10 @@ expensive as just using the big model, you have gained nothing.
 **In this repo:** `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`
 — routing by difficulty, with the cost of the routing step measured honestly.
 
-- [ ] **TODO** — run `Routing_By_Model_Tier.ipynb` and note the measured saving. Then answer:
+- [x] **TODO** — run `Routing_By_Model_Tier.ipynb` and note the measured saving. Then answer:
   at what traffic mix would the routing step cost more than it saves?
+
+
 
 ### 2.3 Building the core logic
 
@@ -129,12 +148,15 @@ This repo teaches the loop mainly through **LangGraph**, because once you unders
 loop you can rebuild it in any of them. The ideas transfer; the function names do not.
 
 **In this repo:**
+
 - `02_Core/03_LangGraph_Fundamentals/` — the loop, taught as a loop.
 - `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/01_Foundations/01_Agents_Handoffs_Guardrails.ipynb`
-  — OpenAI's own SDK, with a table mapping each of its pieces to the LangGraph equivalent.
+— OpenAI's own SDK, with a table mapping each of its pieces to the LangGraph equivalent.
 
-- [ ] **TODO** — open section 6 of `01_Agents_Handoffs_Guardrails.ipynb` (the LangGraph
+- [x] **TODO** — open section 6 of `01_Agents_Handoffs_Guardrails.ipynb` (the LangGraph
   comparison table) and cover the right-hand column. Can you fill it in from memory?
+
+
 
 ### 2.4 Giving your agent tools
 
@@ -146,16 +168,21 @@ That is the important bit: the model is choosing, not executing. Everything abou
 and control follows from that split.
 
 **In this repo:**
+
 - `02_Core/03_LangGraph_Fundamentals/01_Foundations/05_Augmented_LLM_with_Tools.ipynb` — the simplest possible version.
 - `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` — writing real tools.
 
-- [ ] **TODO** — write one tool of your own in `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` and get the model to
+- [x] **TODO** — write one tool of your own in `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` and get the model to
   call it. Then give it a vague description and watch the model call it wrongly. Tool
   descriptions are prompts.
 
 ---
 
+
+
 ## 3. Tools
+
+
 
 ### 3.1 Your functions vs. OpenAI's built-in tools
 
@@ -178,6 +205,8 @@ flowchart TB
     end
 ```
 
+
+
 The trade is simple. Built-in tools mean no infrastructure to run. Your own functions mean
 you can inspect the arguments, block a bad call, log it, stub it in tests, and point it at
 your own systems. You only get that seam when the execution is yours.
@@ -186,8 +215,10 @@ your own systems. You only get that seam when the execution is yours.
 — the **same capability built both ways**, side by side, including a guard that refuses a
 tool call, which is only possible when you run it.
 
-- [ ] **TODO** — run `07_Hosted_vs_Client_Side_Tools.ipynb` and change the guard to block a
+- [x] **TODO** — run `07_Hosted_vs_Client_Side_Tools.ipynb` and change the guard to block a
   *different* call. Then try to do the same to the hosted version, and be able to say why you can't.
+
+
 
 ### 3.2 Web search
 
@@ -198,11 +229,14 @@ You can do it with a search provider you call yourself, or with OpenAI's hosted 
 Same capability, different amount of control.
 
 **In this repo:**
+
 - Your own: `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb` (and 37 other notebooks use Tavily).
 - Hosted: `.../01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb`.
 
-- [ ] **TODO** — run the research chatbot and ask it something from this week. Then break the
+- [x] **TODO** — run the research chatbot and ask it something from this week. Then break the
   search tool on purpose: what does the agent do when a tool returns nothing useful?
+
+
 
 ### 3.3 File search
 
@@ -214,11 +248,14 @@ OpenAI can host the whole thing for you. Building it yourself is more work and t
 far more about why retrieval fails.
 
 **In this repo:**
+
 - `02_Core/04_Retrieval_and_RAG/` — the fundamentals, built by hand.
 - `03_Advanced/08_Advanced_RAG/` — the harder version, where the agent checks and corrects its own retrieval.
 
-- [ ] **TODO** — in `02_Core/04_Retrieval_and_RAG/`, ask a question your documents *cannot*
+- [x] **TODO** — in `02_Core/04_Retrieval_and_RAG/`, ask a question your documents *cannot*
   answer. Does the system say so, or invent something? That behaviour is the whole game.
+
+
 
 ### 3.4 Code interpreter
 
@@ -233,8 +270,10 @@ method even though you did not run it yourself.
 gets wrong unaided and right with execution, plus how to cap the sandbox's memory and cut
 its internet access.
 
-- [ ] **TODO** — run `09_Hosted_Code_Execution.ipynb`, compare the unaided answer to the truth
+- [x] **TODO** — run `09_Hosted_Code_Execution.ipynb`, compare the unaided answer to the truth
   digit by digit, then read the code it ran and check *which* standard deviation it used.
+
+
 
 ### 3.5 Computer use
 
@@ -245,11 +284,14 @@ It is slow and it misclicks, but it is the only option when there is no API to c
 is what "agent that tests my website" actually means.
 
 **In this repo:**
+
 - `.../01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` — real screenshots in, click coordinates out.
 - `.../01_Tool_Use/06_BrowserAgent_Computer_Use_Applied.ipynb` — the same loop with text instead of pixels, which is easier to follow first.
 
-- [ ] **TODO** — run `08_Vision_Driven_Computer_Use.ipynb`, then move one button somewhere
+- [x] **TODO** — run `08_Vision_Driven_Computer_Use.ipynb`, then move one button somewhere
   awkward. Does the agent still find it, and how many more steps did it need?
+
+
 
 ### 3.6 Image generation
 
@@ -265,8 +307,10 @@ The fix is to send the picture back in and ask a second model to read it out lou
 **In this repo:** `.../01_Tool_Use/10_Agentic_Image_Generation.ipynb` — that exact failure,
 reproduced on two live runs, and the check that catches it.
 
-- [ ] **TODO** — run `10_Agentic_Image_Generation.ipynb` and put the agent's description next
+- [x] **TODO** — run `10_Agentic_Image_Generation.ipynb` and put the agent's description next
   to the actual image. Satisfy yourself that it described the prompt, not the picture.
+
+
 
 ### 3.7 MCP
 
@@ -279,29 +323,37 @@ Think USB for agent tools: write the tool once, plug it in anywhere.
 **In this repo:** `03_Advanced/09_Agent_Protocols/MCP/` — using MCP servers, and building
 your own server and client.
 
-- [ ] **TODO** — connect an existing MCP server to an agent, then build the smallest server you
+- [x] **TODO** — connect an existing MCP server to an agent, then build the smallest server you
   can that exposes one tool of your own.
+
+
 
 ### 3.8 One thing to remember about built-in tools
 
 They are not equally transparent, and they are not equally checkable:
 
-| Tool | What you get back | Can you verify it? |
-|---|---|---|
-| Web search | a conclusion | compare against the source |
-| Code interpreter | **the code it ran** + the output | re-run the code |
-| Image generation | the prompt it wrote + the bytes | **no easy way** — needs a second model with vision |
+
+| Tool             | What you get back                | Can you verify it?                                 |
+| ---------------- | -------------------------------- | -------------------------------------------------- |
+| Web search       | a conclusion                     | compare against the source                         |
+| Code interpreter | **the code it ran** + the output | re-run the code                                    |
+| Image generation | the prompt it wrote + the bytes  | **no easy way** — needs a second model with vision |
+
 
 That last row is the one people get caught by. A wrong number looks wrong. A wrong picture
 arrives with a confident paragraph explaining how good it is.
 
-- [ ] **TODO** — for a feature you actually want to build, write one sentence naming how you
+- [x] **TODO** — for a feature you actually want to build, write one sentence naming how you
   would *check* the tool's output. If you can't, that is the risk to design around — say so
   out loud rather than discovering it in production.
 
 ---
 
+
+
 ## 4. Orchestration
+
+
 
 ### 4.1 Handoffs
 
@@ -314,8 +366,10 @@ where agents start ignoring things.
 
 **In this repo:** `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/03_agent_handoffs.ipynb`
 
-- [ ] **TODO** — run `03_agent_handoffs.ipynb`, then merge two of the agents into one with a
+- [x] **TODO** — run `03_agent_handoffs.ipynb`, then merge two of the agents into one with a
   longer prompt. Find the instruction it starts ignoring. That is why handoffs exist.
+
+
 
 ### 4.2 Guardrails
 
@@ -336,13 +390,18 @@ flowchart LR
     G2 -->|fine| R[Reply reaches the user]
 ```
 
+
+
 **In this repo:**
+
 - `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/01_Moderating_Chains.ipynb` — the basics.
 - `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/03_Guardrails_LLM_and_Rule_Based.ipynb`
-  — the full pipeline above, including a reply blocked for leaking the system prompt.
+— the full pipeline above, including a reply blocked for leaking the system prompt.
 
-- [ ] **TODO** — run `03_Guardrails_LLM_and_Rule_Based.ipynb`, then try to get the agent to leak
+- [x] **TODO** — run `03_Guardrails_LLM_and_Rule_Based.ipynb`, then try to get the agent to leak
   its system prompt *past* the output guardrail. Whatever gets through is your next rule.
+
+
 
 ### 4.3 Memory and conversation history
 
@@ -356,8 +415,10 @@ a database, and sometimes rewind to an earlier point.
 **In this repo:** `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/` — 23 notebooks
 on exactly this, plus LangGraph's built-in saving, separate threads per user, and time travel.
 
-- [ ] **TODO** — run a conversation long enough to get expensive, then turn on summarising and
+- [x] **TODO** — run a conversation long enough to get expensive, then turn on summarising and
   measure the token count before and after.
+
+
 
 ### 4.4 Many agents working together
 
@@ -383,21 +444,28 @@ flowchart TB
     end
 ```
 
+
+
 - **Handoff** — the other agent takes over and replies to the user itself.
 - **Agent as a tool** — the other agent does a job and reports back; the first agent still owns the conversation.
 - **Parallel** — several run at the same time and someone merges the results. Faster, but only when the pieces are truly independent.
 
 **In this repo:**
+
 - `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/` — supervisor and swarm setups.
 - `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/02_Routing/` — sending work down different paths.
 - `03_Advanced/10_Alternative_Agent_Frameworks/` — how CrewAI, AutoGen and DSPy each express the same thing.
 
-- [ ] **TODO** — take one of your own problems, write down which of the three shapes it is, and
+- [x] **TODO** — take one of your own problems, write down which of the three shapes it is, and
   why the other two are wrong for it. Most design mistakes here are picking the wrong shape.
 
 ---
 
+
+
 ## 5. Example use cases
+
+
 
 ### 5.1 A support agent that asks a human first
 
@@ -410,8 +478,10 @@ hour and then resumed.
 
 **In this repo:** `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/`
 
-- [ ] **TODO** — run a human-in-the-loop notebook, then **restart the kernel while it is
+- [x] **TODO** — run a human-in-the-loop notebook, then **restart the kernel while it is
   paused** and try to resume. What survives the restart is the real lesson.
+
+
 
 ### 5.2 A customer service agent network
 
@@ -420,11 +490,14 @@ returns — with each specialist having its own knowledge and its own tools. Thi
 and RAG combined into one real system.
 
 **In this repo:**
+
 - `03_Advanced/08_Advanced_RAG/Agentic_RAG/1. Build_a_Healthcare_Customer_Support_Router_Agentic_RAG_System.ipynb`
 - `05_Projects/AI_Powered_Customer_Support/` — the deployable version, with Docker and tests.
 
-- [ ] **TODO** — run the healthcare router and send it a question that sits between two
+- [x] **TODO** — run the healthcare router and send it a question that sits between two
   specialists. Watch how it decides — and whether it decides the same way twice.
+
+
 
 ### 5.3 A frontend testing agent
 
@@ -438,12 +511,16 @@ agent is confused).
 **In this repo:** section 4 of `.../01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` — a
 deliberately broken button, and that exact diagnosis.
 
-- [ ] **TODO** — break a *different* control in section 4 and confirm the diagnosis still tells
+- [x] **TODO** — break a *different* control in section 4 and confirm the diagnosis still tells
   "the app is broken" apart from "the agent is confused".
 
 ---
 
+
+
 ## 6. Best practices
+
+
 
 ### 6.1 Check what comes in
 
@@ -454,8 +531,10 @@ model sees the message.
 **In this repo:** `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/`,
 and `03_Advanced/12_Production_and_Observability/Production_Course_Ops/03_security_patterns.ipynb`.
 
-- [ ] **TODO** — spend ten honest minutes trying to talk one of your own agents out of its
+- [x] **TODO** — spend ten honest minutes trying to talk one of your own agents out of its
   instructions. Write down what worked; that list is your test suite.
+
+
 
 ### 6.2 Make the output a shape, not a paragraph
 
@@ -467,11 +546,14 @@ This removes an entire category of bug: the one where the model answered correct
 phrased it differently today.
 
 **In this repo:**
+
 - `02_Core/01_LangChain_Fundamentals/07_LangChain_1x_Agents_and_Middleware/7.4_Structured_Output.ipynb`
 - `02_Core/03_LangGraph_Fundamentals/01_Foundations/08_Pydantic_State_Validation.ipynb`
 
-- [ ] **TODO** — convert one agent that returns prose into structured output. Then feed it a
+- [x] **TODO** — convert one agent that returns prose into structured output. Then feed it a
   question it cannot answer and see what lands in your required fields.
+
+
 
 ### 6.3 Watch it in production
 
@@ -481,11 +563,14 @@ called, how long each took, how many tokens it burned, where it went wrong.
 Build this early. Debugging an agent without a trace of its steps is guesswork.
 
 **In this repo:**
+
 - `03_Advanced/12_Production_and_Observability/LLMOps_and_AI_Infrastructure/Tracing_and_Observability/LangSmith/01_LangSmith_Basics.ipynb`
 - `03_Advanced/12_Production_and_Observability/Production_Course_Ops/01_monitoring.ipynb` — the same thing built by hand, which is how you learn what a trace actually is.
 
-- [ ] **TODO** — run `01_monitoring.ipynb` and add one thing it does not track yet. Building a
+- [x] **TODO** — run `01_monitoring.ipynb` and add one thing it does not track yet. Building a
   trace by hand once is what makes every dashboard afterwards readable.
+
+
 
 ### 6.4 Decide about speed, cost and reliability up front
 
@@ -494,13 +579,16 @@ one is more likely to be wrong. Pick which one you are protecting before you bui
 retrofitting it later means rewriting the design.
 
 **In this repo:**
+
 - `03_Advanced/12_Production_and_Observability/LLMOps_and_AI_Infrastructure/` — caching, cost tracking.
 - `06_Interview_Prep/Study_Guides/Cost_Latency_Optimization/` — the same as design decisions rather than operations.
 
-- [ ] **TODO** — for something you are building, finish this sentence: *"when these three
+- [x] **TODO** — for something you are building, finish this sentence: *"when these three
   conflict, I protect ___ first, because ___."* Then check your design actually does that.
 
 ---
+
+
 
 ## 7. A path through this repo
 
@@ -527,6 +615,8 @@ flowchart TD
     P12 --> P13
 ```
 
+
+
 **The short version if you only have a weekend:**
 
 1. `02_Core/03_LangGraph_Fundamentals/01_Foundations/` — what the loop is.
@@ -540,17 +630,21 @@ actually ran.
 
 ---
 
+
+
 ## What OpenAI's track covers that this repo deliberately skips
 
 Four topics were reviewed and **intentionally left out**, because they are OpenAI's spelling
 of something this repo already teaches in more depth. The reasoning for each is recorded in
 `OPENAI_BUILDING_AGENTS_COVERAGE.md`:
 
-| Topic | Why it was skipped |
-|---|---|
-| Responses API | It is OpenAI's request format. The concepts it carries are taught framework-neutrally |
-| Agents SDK (beyond the foundations notebook) | The remaining folders would add API surface, not new ideas |
-| Sessions | OpenAI's automatic history is a simpler version of memory the repo covers in 23 notebooks |
-| Tracing (OpenAI's dashboard) | A different screen for spans and token counts the repo already builds from scratch |
+
+| Topic                                        | Why it was skipped                                                                        |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Responses API                                | It is OpenAI's request format. The concepts it carries are taught framework-neutrally     |
+| Agents SDK (beyond the foundations notebook) | The remaining folders would add API surface, not new ideas                                |
+| Sessions                                     | OpenAI's automatic history is a simpler version of memory the repo covers in 23 notebooks |
+| Tracing (OpenAI's dashboard)                 | A different screen for spans and token counts the repo already builds from scratch        |
+
 
 Everything else in the track is covered.
