@@ -1,6 +1,6 @@
 # Reasoning and Model Selection
 
-**Status:** 🚧 Being built — 1 of 2 notebooks.
+**Status:** ✅ Built — 2 notebooks.
 
 Which model, and how hard should it think? Both questions are model-level and
 framework-independent, which is why they live in this stage.
@@ -8,7 +8,7 @@ framework-independent, which is why they live in this stage.
 | Notebook | Teaches |
 |---|---|
 | `01_Reasoning_vs_NonReasoning.ipynb` | What a reasoning model does differently, measured on identical tasks — including a task where reasoning is the wrong choice |
-| `02_Reasoning_Effort_Levers.ipynb` | 🚧 Planned. Effort as a dial: sweeping low/medium/high, finding the knee, and the tokens you pay for but never see |
+| `02_Reasoning_Effort_Levers.ipynb` | Effort as a dial. Sweeps low/medium/high over a mixed task set, finds the knee via cost-per-accuracy-point, and shows the case where effort is the **wrong lever** — flat accuracy with rising reasoning tokens means the fix is upstream |
 
 ## Conventions here
 

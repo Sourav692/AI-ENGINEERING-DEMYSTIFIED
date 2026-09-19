@@ -17,7 +17,7 @@ Which model, and how hard should it think. Raw `openai` SDK — no LangChain, no
 | Notebook | Topic |
 |---|---|
 | `01_Reasoning_vs_NonReasoning.ipynb` | Reasoning as a training difference, not a prompt. One task through both model types, measuring latency / output tokens / reasoning tokens / correctness — including a mechanical-extraction task where the reasoning model is slower, dearer and no better |
-| `02_Reasoning_Effort_Levers.ipynb` | 🚧 Planned — effort as a dial, finding the knee |
+| `02_Reasoning_Effort_Levers.ipynb` | Effort as a dial. Sweeps `low`/`medium`/`high` over a 6-problem mixed set, reports accuracy vs latency vs cost per level, then the marginal cost per accuracy point of each step up — the number that picks a production setting. Ends on a task no amount of thinking fixes, where flat accuracy against rising reasoning tokens signals the fix is upstream (retrieval, prompt, or a cheaper model) |
 
 Added to close a gap named in `OPENAI_BUILDING_AGENTS_COVERAGE.md`. The applied counterpart — routing between tiers at runtime — is a framework question and belongs to `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/`, not here.
 
