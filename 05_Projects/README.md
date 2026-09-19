@@ -36,7 +36,7 @@ Flat by design: one folder per project, no grouping parent, even as the count pa
 
 ## Applied builds
 
-**`RAG_Systems_Projects/`** ✅ — 7 applied RAG capstone notebooks
+**`RAG_Systems_Projects/`** ✅ — 5 applied RAG capstone notebooks
 - Document search engine
 - Multi-user conversational RAG
 - Multimodal RAG

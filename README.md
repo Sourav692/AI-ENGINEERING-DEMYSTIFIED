@@ -254,7 +254,7 @@ No standalone apps live in this phase. `building-adaptive-rag/` moved to `05_Pro
 |---|---|---|
 | `LangGraph_Fullstack_Capstone/` | ✅ Built | FastAPI + Angular + PostgreSQL with human-in-the-loop workflows, unit tests, Streamlit apps |
 | `LangChain_Microservices_Capstone/` | ✅ Built | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
-| `RAG_Systems_Projects/` | ✅ Built | 7 applied RAG capstones — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
+| `RAG_Systems_Projects/` | ✅ Built | 5 applied RAG capstones — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
 | `ShopUNow_Agentic_RAG_Capstone/` | ✅ Built | Vector DB + agentic RAG e-commerce capstone |
 | `Building_Adaptive_RAG/` | ✅ Built | Deployable adaptive-RAG CLI app (moved from Phase 8, 2026-09-19) |
 | `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/`, `Resume_Genie/` | ✅ Built | 8 more standalone full-stack apps |
