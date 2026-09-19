@@ -4,6 +4,28 @@ This file is the skill's memory of the roadmap's actual shape. **Update it every
 
 The repo is 13 numbered phases, each owning **exactly one topic** — this is the hard-won rule (see History below): earlier structures let the same topic (RAG, agents, memory, observability) live in 2–3 different phases at once, which is what made the roadmap feel confusing. **Never create a second home for a topic that already has one.** Where a topic has framework-specific implementations, they're sibling tracks *inside* the one phase that owns it (e.g. Phase 4 has `RAG_with_LangGraph/` and `RAG_with_LangChain/` side by side, not split across two phases).
 
+## Stage folders (added 2026-09-19) — READ FIRST
+
+Phases are no longer top-level. They sit inside six stage folders grouped **by prerequisite, not by difficulty**:
+
+| Stage | Holds | Entry rule |
+|---|---|---|
+| `01_Foundations/` | `00_Theory_and_Foundations/`, `02_Prompt_and_Context_Engineering/` | nothing in it depends on a framework |
+| `02_Core/` | `01_LangChain_Fundamentals/`, `03_LangGraph_Fundamentals/`, `04_Retrieval_and_RAG/`, `05_AI_Agent_Fundamentals/` | needs Foundations only |
+| `03_Advanced/` | `06_`, `07_`, `08_`, `09_`, `10_`, `12_` | **requires agents knowledge** — the same criterion that splits RAG across `02_Core/04_` and `03_Advanced/08_` |
+| `04_AI_Coding_Tools/` | was `11_` | tools you use, not topics you study |
+| `05_Projects/` | was `13_` | applications, not a topic |
+| `06_Interview_Prep/` | was `14_` (itself the collapse of old 14–17 + `tutorials/`) | derived prep material |
+
+**Difficulty was rejected as the boundary** — it is subjective and drifts as the learner improves, which would mean moving folders between stages forever. Prerequisite is objective and checkable.
+
+**Phase numbers inside stages were deliberately NOT renumbered.** Every "Phase 7" reference across the docs stays true, and the visible gap (no `11_` inside `03_Advanced/`) is the accepted cost. When placing new content, find the phase that owns the topic first, then the stage follows from it — never pick a stage by how hard the content feels.
+
+**Path-anchored config that must be repointed whenever a folder moves** (both were silently broken by the 2026-09-19 moves and caught only by checking):
+- `.gitignore` lines ~160–162 — keeps the purchased FDE material out of git except `.md`. If it stops matching, ~107 vendor PDFs become committable.
+- `site/scripts/sync-content.mjs` `SOURCE_ROOT` — the site build reads from `06_Interview_Prep/FDE`.
+- `pyproject.toml` `[tool.ruff] extend-exclude` — 5 hardcoded JS frontend paths.
+
 ## Phase 2 — `02_LangChain_Fundamentals_and_Prompting/` — ✅ Built
 
 Owns: LangChain's core building blocks + prompting. Does NOT own: RAG, tool-use/agents, memory, LangSmith/observability, deployment — each of those moved to the phase that owns that topic.
@@ -14,9 +36,9 @@ Owns: LangChain's core building blocks + prompting. Does NOT own: RAG, tool-use/
 | `Prompt_and_Context_Engineering/Prompt_Engineering/` | ✅ Built | Regrouped by technique from `Prompt-Engineering-Demystified` |
 | `Prompt_and_Context_Engineering/Context_Engineering/` | 🚧 Planned | |
 
-Note: on disk this phase is currently at `01_LangChain_Fundamentals/` (flat, not nested under a `02_LangChain_Fundamentals_and_Prompting/` parent) — the repo's top-level phase numbering was changed outside this skill's own restructurings (see `.cleanup/01_LangChain_Fundamentals_cleanup_plan.md`, Q-001). This map's phase numbers/paths are not fully reconciled to that renumbering yet; treat the *topic ownership* table as authoritative and the literal paths as needing a disk-check.
+Note: on disk this phase is currently at `02_Core/01_LangChain_Fundamentals/` (flat, not nested under a `02_LangChain_Fundamentals_and_Prompting/` parent) — the repo's top-level phase numbering was changed outside this skill's own restructurings (see `.cleanup/02_Core/01_LangChain_Fundamentals_cleanup_plan.md`, Q-001). This map's phase numbers/paths are not fully reconciled to that renumbering yet; treat the *topic ownership* table as authoritative and the literal paths as needing a disk-check.
 
-## Phase 3 — `03_LangGraph_Fundamentals/` — ✅ Built
+## Phase 3 — `02_Core/03_LangGraph_Fundamentals/` — ✅ Built
 
 Owns: LangGraph mechanics only. Does NOT own: RAG, agent builds, design patterns — those moved to Phases 4/5/8.
 
@@ -28,7 +50,7 @@ Owns: LangGraph mechanics only. Does NOT own: RAG, agent builds, design patterns
 
 Note: `02_Routing/` contains 3 "Agentic RAG System" notebooks. By the topic-ownership rule these arguably belong in Phase 4 or 8, but the user explicitly chose to keep them here since they're this phase's only routing-mechanics demo — a deliberate exception, not an oversight. Don't move them without asking.
 
-## Phase 4 — `04_Retrieval_and_RAG/` — ✅ Built
+## Phase 4 — `02_Core/04_Retrieval_and_RAG/` — ✅ Built
 
 Owns: **foundational** RAG — theory + straightforward framework implementations, nothing that requires already knowing agents. Advanced/agentic RAG is Phase 8's job, not this one's.
 
@@ -46,7 +68,7 @@ Owns: **foundational** RAG — theory + straightforward framework implementation
 
 Also `shared_data/` at this phase's root — a copy of `RAG_Demystified`'s shared `data/` folder, since several `RAG_Naive_to_Production/` notebooks reference it via relative paths. Path depth wasn't reconstructed exactly after the move (would require editing notebook content) — flag this if a notebook can't find its data file.
 
-## Phase 5 — `05_AI_Agent_Fundamentals/` — ✅ Built
+## Phase 5 — `02_Core/05_AI_Agent_Fundamentals/` — ✅ Built
 
 Owns: all agent-building content, both frameworks, in one place.
 
@@ -58,11 +80,11 @@ Owns: all agent-building content, both frameworks, in one place.
 | `5. Agent Pattern/` / `Workflow_and_Agent_Patterns/` | ✅ Built | Agent patterns (tool use, planning loops, reflection, …) — not the Anthropic workflow five |
 | `Building_Agents_From_Scratch/` | ✅ Built | OpenAI API + `agentic_patterns` package — from `AI-Agents-Essentials`; not a second LangGraph patterns track |
 
-## Phase 6 — `06_Agent_SDKs_First_Party/` — 🚧 Planned
+## Phase 6 — `03_Advanced/06_Agent_SDKs_First_Party/` — 🚧 Planned
 
 Promoted to its own top-level phase (was a track inside the old combined LangGraph phase). `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`.
 
-## Phase 7 — `07_Advanced_Agentic_Systems/` — ✅ Built
+## Phase 7 — `03_Advanced/07_Advanced_Agentic_Systems/` — ✅ Built
 
 Owns: composing agents into systems — memory, orchestration, harnesses, evaluation.
 
@@ -73,7 +95,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | The `deepagents` multi-agent framework — own `CLAUDE.md`, `app/`, `examples/`, `skills/`, `docs/`. **This directory (specifically its `app/` subfolder) has hit a Windows file lock 3 separate times** across different restructurings — always drain-contents-then-remove-shell, never assume `mv`/`git mv` will just work on it. |
 | ~~`Evaluation_and_Eval_Harnesses/`~~ | ❌ Removed 2026-09-19 | **Evaluation lives in the sibling repo `Agent_Evaluation_Demystified` now, not here.** That repo had already migrated the same material into `courses/` + `labs/` and kept it more current. Verified by content hash: 147 files deleted here, none unique. Do not recreate an evaluation track in this repo — if eval content arrives, it goes to that repo. |
 
-## Phase 8 — `08_Advanced_RAG/` — ✅ Built
+## Phase 8 — `03_Advanced/08_Advanced_RAG/` — ✅ Built
 
 **Deliberately sequenced after Phases 5 and 7**, not bundled into Phase 4 — agentic/self-correcting RAG and GraphRAG genuinely require already knowing agents and advanced agentic systems. This was an explicit user correction mid-restructuring; don't merge this back into Phase 4 even though the topic is "RAG" in both — the ownership split here is by *prerequisite*, not by keyword.
 
@@ -87,7 +109,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 
 Also two standalone apps merged from `RAG_Demystified`: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (an MCP+A2A agentic RAG app — kept RAG-first here rather than split to Phase 9, per user decision).
 
-## Phase 9 — `09_Agent_Protocols/` — ✅ Partially built
+## Phase 9 — `03_Advanced/09_Agent_Protocols/` — ✅ Partially built
 
 Owns: interoperability protocols — MCP (model-to-tools/data), ACP, A2A (agent-to-agent). Not RAG (Phase 4/8), not agent-building (Phase 5).
 
@@ -96,7 +118,7 @@ Owns: interoperability protocols — MCP (model-to-tools/data), ACP, A2A (agent-
 | `MCP/` | ✅ Built | `01_Foundations/` (Anthropic rich-context course + Educative fundamentals), `02_Building_Servers/` (Educative Mastering + Databricks Apps), `03_Building_Clients/` (MCP Essential labs), `04_Applications/` (Udemy MCP Mastery, kept whole). `mcp_a2a_agentic_rag/` also sits here (copy; original RAG-first copy remains in Phase 8). |
 | `ACP/`, `A2A/` | 🚧 Planned | |
 
-## Phase 10 — `10_Alternative_Agent_Frameworks/` — ✅ Partially built
+## Phase 10 — `03_Advanced/10_Alternative_Agent_Frameworks/` — ✅ Partially built
 
 Frameworks to pick up *after* Phases 2/3/5 — each standalone. **If a new agent framework shows up and doesn't obviously belong to an earlier phase, this is very likely where it goes.**
 
@@ -109,7 +131,7 @@ Frameworks to pick up *after* Phases 2/3/5 — each standalone. **If a new agent
 
 Note: AutoGen `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were empty after `AgenticAI_Projects_Demystified`; they were filled from `Autogen_Demystified`. Don't treat AutoGen intro notebooks in other courses as a third foundations track if they duplicate `Some_Simple_Agents/`.
 
-## Phase 11 — `11_AI_Coding_Tools/` — 🚧 Planned
+## Phase 11 — `04_AI_Coding_Tools/` — 🚧 Planned
 
 Renamed from `11_Claude_Code_and_AI_Coding_Tools/` on 2026-09-19 — the old name baked one vendor into the folder; Codex/Cursor/Copilot are sibling tracks inside it.
 
@@ -127,7 +149,7 @@ Owns: math/ML intuition, transformer *architecture*, the model landscape & Huggi
 | `Fine_Tuning_and_RL/` | ✅ Partially built | `01_Foundations/` = DeepLearning.AI finetuning labs 1–6 (kept whole for `images/`/`llama.py`/`lamini_docs.jsonl`); `03_Applications/` = Llama 2 AutoTrain notebook; `02_Techniques/` (RLHF/DPO/LoRA) still 🚧 planned. Finetune-model evaluation stayed in lesson 6 here, not Phase 7. |
 | `Coding_Essentials_for_Agents/` | ✅ Built | Python through asyncio — from `Coding_Essential_For_Agents`. Not agent-building (Phase 5) and not Phase 12 DevOps. |
 
-## Phase 12 — `12_Production_and_Observability/` — ✅ Partially built
+## Phase 12 — `03_Advanced/12_Production_and_Observability/` — ✅ Partially built
 
 Owns: deployment, LLMOps, observability, security, safety.
 
@@ -138,11 +160,11 @@ Owns: deployment, LLMOps, observability, security, safety.
 | `DevOps_and_Deployment/`, `Security_and_Compliance/` | 🚧 Planned | |
 | `Production_Course_Ops/` | ✅ Built | 4 nb from the same merged-in "production-course" as the Phase 2/3/4/7 additions (added 2026-09-08, History §18) — monitoring, cost optimization, security patterns, testing patterns |
 
-## Phase 13 — `13_Projects/` — ✅ Built (12 projects)
+## Phase 13 — `05_Projects/` — ✅ Built (12 projects)
 
 Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 apps from `AgenticAI_Projects_Demystified` + `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat) + `Resume_Genie/` (Streamlit + LangGraph career suite). More capstones get added here as new phases produce content worth integrating. **2026-09-19:** three enterprise platform builds (`Enterprise_Multi_Agent_AI_Research_Platform/`, `Enterprise_Agentic_Workflow_Automation_Platform/`, `Enterprise_RAG_Platform/`) moved in from what was Phase 16 — they had CODE/ trees and dependency manifests, so they were applications misfiled under interview prep. A vestigial `4. FDE_Related_Preparation/` husk (one orphaned `.gitignore`) was deleted at the same time.
 
-## Phase 14 — `14_Interview_Preparation/` — ✅ Built (added 2026-09-19)
+## Phase 14 — `06_Interview_Prep/` — ✅ Built (added 2026-09-19)
 
 Owns: interview preparation. Created by collapsing four top-level phases plus `tutorials/` into one phase with five tracks — the same one-topic-one-phase fix applied at the top level.
 
@@ -192,7 +214,7 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 
 12. **2026-08-17 — five repos (`Coding_Essential_For_Agents`, `LlamaIndex_Demystified`, `Autogen_Demystified`, `DSPy_Demystified`, `AI-Agents-Essentials`).** Coding prerequisites became a new Phase 1 track (topic is programming, not agents). LlamaIndex RAG is a Phase 4 sibling of LangChain/LangGraph RAG, not a Phase 13 capstone. DSPy context-engineering stayed in Phase 10 as one collection (including its RAG level). AutoGen 02/03 filled from `Autogen_Demystified`. `AI-Agents-Essentials` was split: unique from-scratch OpenAI patterns → Phase 5; unique Auto-EDA → AutoGen applications; LangChain/LCEL/LangGraph/agentic-RAG/intro-Autogen notebooks skipped as duplicates of Phases 2/3/4/5/8/10.
 
-13. **2026-08-17 — `End-to-End-Medical-Chatbot` GitHub repo was the same Phase 13 project, not a new one.** Hash compare: `data/Medical_book.pdf` identical. Merged unique extras (Databricks Apps + GitHub Actions, Docker, diagrams, `pyproject.toml`/`uv.lock`) into existing `13_Projects/End_to_End_Medical_Chatbot/` and updated app to Groq. Kept the local executed `research/demo.ipynb` and Apache `LICENSE`. Did not add a second project folder.
+13. **2026-08-17 — `End-to-End-Medical-Chatbot` GitHub repo was the same Phase 13 project, not a new one.** Hash compare: `data/Medical_book.pdf` identical. Merged unique extras (Databricks Apps + GitHub Actions, Docker, diagrams, `pyproject.toml`/`uv.lock`) into existing `05_Projects/End_to_End_Medical_Chatbot/` and updated app to Groq. Kept the local executed `research/demo.ipynb` and Apache `LICENSE`. Did not add a second project folder.
 
 14. **2026-08-17 — `Personalized-Holiday-Management-Agent` added as a new Phase 13 project.** FastAPI + AutoGen AgentChat holiday planner. Kept flat per Phase 13 convention; not filed under Phase 10 AutoGen (that's framework labs/apps from the AutoGen course, not this capstone). Distinct from CrewAI travel-advisor notebooks.
 
@@ -202,4 +224,4 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 
 17. **2026-08-17 — `Resume-Genie` added as Phase 13 `Resume_Genie/`.** Streamlit + LangGraph career suite. Not CrewAI job-tailoring and not the AutoGen interview coach. GitHub source repo deleted after merge.
 
-18. **2026-09-08 — `production-course-main-code-main` (a standalone 38-notebook, 5-track course) split by topic across 5 already-built phases, not kept as a second top-level home.** Its own cleanup plan (`.cleanup/production-course-main-code-main_cleanup_plan.md`, Q-001) flagged it as sitting outside the roadmap entirely even though its 5 folders (LangChain foundations, RAG, LangGraph fundamentals, multi-agent, production/ops) each shadow the *shape* of an existing phase. Unlike `Comprehensive_RAG_Techniques`/`GraphRAG` (kept whole because notebooks share `helper_functions.py`/`data/`/`images/` via relative paths), this course's 5 folders have no cross-folder shared internals — each is self-contained — so the "split a multi-topic course by topic" pattern (History §4, §12) applied instead of the "keep a shared-internals collection whole" pattern (History §5, §7). Moved: `01_LangChain_Foundations/` → `01_LangChain_Fundamentals/08_Production_Course_Foundations/`; `02_RAG_and_Retrieval/` → `04_Retrieval_and_RAG/RAG_Production_Course/`; `03_LangGraph_Fundamentals/` → `03_LangGraph_Fundamentals/03_Production_Course/`; `04_Multi_Agent_Systems/` → `07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/`; `05_Production_and_Operations/` → `12_Production_and_Observability/Production_Course_Ops/`. `main.ipynb`/`main.py` (the course's connectivity-check entry point) went with the LangChain-foundations track as `00_main_connectivity_check.*`. Filename-checked against each target phase's existing notebooks first — no near-duplicate names found, so nothing was skipped. Root scaffolding (`pyproject.toml`, `uv.lock`, `README.md`, `graph*.png`, `.python-version`, `.gitignore`) was left in place at `production-course-main-code-main/` (now emptied of notebooks) rather than deleted, per the "never delete, only retire" convention — that folder is now just inert scaffolding, not a phase or track. Also applied the source cleanup plan's non-blocked items in the same pass: retired `03_embeddings.ipynb` (abandoned draft, superseded by `04_embeddings_deep.ipynb`) to `archive/`; added a short markdown note (not a code rewrite) to `05_checkpointing.ipynb` documenting the `config['configurable']`-vs-`context=` distinction (MIG-001); cleared a stale saved `ModuleNotFoundError` traceback from `07_error_handling.ipynb` (FMT-001); left `06_rag_pipeline.ipynb` and `02_cost_optimization.ipynb`'s out-of-order execution counts deferred (FMT-002/003) since no working Jupyter/kernel was available in this session to re-run them live.
+18. **2026-09-08 — `production-course-main-code-main` (a standalone 38-notebook, 5-track course) split by topic across 5 already-built phases, not kept as a second top-level home.** Its own cleanup plan (`.cleanup/production-course-main-code-main_cleanup_plan.md`, Q-001) flagged it as sitting outside the roadmap entirely even though its 5 folders (LangChain foundations, RAG, LangGraph fundamentals, multi-agent, production/ops) each shadow the *shape* of an existing phase. Unlike `Comprehensive_RAG_Techniques`/`GraphRAG` (kept whole because notebooks share `helper_functions.py`/`data/`/`images/` via relative paths), this course's 5 folders have no cross-folder shared internals — each is self-contained — so the "split a multi-topic course by topic" pattern (History §4, §12) applied instead of the "keep a shared-internals collection whole" pattern (History §5, §7). Moved: `01_LangChain_Foundations/` → `02_Core/01_LangChain_Fundamentals/08_Production_Course_Foundations/`; `02_RAG_and_Retrieval/` → `02_Core/04_Retrieval_and_RAG/RAG_Production_Course/`; `02_Core/03_LangGraph_Fundamentals/` → `02_Core/03_LangGraph_Fundamentals/03_Production_Course/`; `04_Multi_Agent_Systems/` → `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/`; `05_Production_and_Operations/` → `03_Advanced/12_Production_and_Observability/Production_Course_Ops/`. `main.ipynb`/`main.py` (the course's connectivity-check entry point) went with the LangChain-foundations track as `00_main_connectivity_check.*`. Filename-checked against each target phase's existing notebooks first — no near-duplicate names found, so nothing was skipped. Root scaffolding (`pyproject.toml`, `uv.lock`, `README.md`, `graph*.png`, `.python-version`, `.gitignore`) was left in place at `production-course-main-code-main/` (now emptied of notebooks) rather than deleted, per the "never delete, only retire" convention — that folder is now just inert scaffolding, not a phase or track. Also applied the source cleanup plan's non-blocked items in the same pass: retired `03_embeddings.ipynb` (abandoned draft, superseded by `04_embeddings_deep.ipynb`) to `archive/`; added a short markdown note (not a code rewrite) to `05_checkpointing.ipynb` documenting the `config['configurable']`-vs-`context=` distinction (MIG-001); cleared a stale saved `ModuleNotFoundError` traceback from `07_error_handling.ipynb` (FMT-001); left `06_rag_pipeline.ipynb` and `02_cost_optimization.ipynb`'s out-of-order execution counts deferred (FMT-002/003) since no working Jupyter/kernel was available in this session to re-run them live.

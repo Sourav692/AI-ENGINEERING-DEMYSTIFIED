@@ -53,7 +53,7 @@ fixes:
 
 - **Generic or repeated segment names** (`01_Foundations`, `LangGraph`, `src`) recur across
   phases — prefix with the owning phase so plans never collide:
-  `10_Alternative_Agent_Frameworks__CrewAI__01_Foundations_cleanup_plan.md`.
+  `03_Advanced/10_Alternative_Agent_Frameworks__CrewAI__01_Foundations_cleanup_plan.md`.
 - **A single file** as target → use the file stem.
 
 The plan and its decisions file are paired **by slug**. `<slug>_cleanup_decisions.md`
