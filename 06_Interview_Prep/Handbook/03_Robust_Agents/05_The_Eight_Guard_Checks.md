@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 03 · **Doc** 5 of 5 · **Time** ~30 min
 > **Prerequisites:** the four preceding documents in this module
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Cross Cutting Preparation/05-guarding-tool-calls.md`; `agent_tool_calling_demo/src/robustness.py` → `disambiguate`
+> **Source material:** `06_Interview_Prep/AI_Engineer/Cross Cutting Preparation/05-guarding-tool-calls.md`; `agent_tool_calling_demo/src/robustness.py` → `disambiguate`
 
 ## Why this matters
 

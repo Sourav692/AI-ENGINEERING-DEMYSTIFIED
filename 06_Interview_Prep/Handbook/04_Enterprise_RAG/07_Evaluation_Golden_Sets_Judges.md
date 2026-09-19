@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 7 of 10 · **Time** ~35 min
 > **Prerequisites:** [The Query Graph](05_The_Query_Graph.md), [Output Guardrails](06_Output_Guardrails.md)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/01-theory.md` §9; `docs/06-architecture-end-to-end.md` §7; `docs/05-src-modules-reference.md` (`evaluation/harness.py`); `README.md` ("Verified results", "Read these numbers honestly"); `docs/07-system-design-coverage-map.md` §4.5
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/01-theory.md` §9; `docs/06-architecture-end-to-end.md` §7; `docs/05-src-modules-reference.md` (`evaluation/harness.py`); `README.md` ("Verified results", "Read these numbers honestly"); `docs/07-system-design-coverage-map.md` §4.5
 > **Lab:** `project/notebooks/02-hands-on-parts/part10-evaluation.ipynb`, `project/scripts/evaluate.py`, `calibrate_judge.py`, `project/tests/test_golden_set.py`
 
 ## Why this matters

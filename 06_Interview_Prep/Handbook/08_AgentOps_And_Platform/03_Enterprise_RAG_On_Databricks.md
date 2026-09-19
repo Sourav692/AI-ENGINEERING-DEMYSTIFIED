@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 08 · **Doc** 3 of 6 · **Time** ~60 min
 > **Prerequisites:** all of Module 04; Module 06 doc 3 (build vs buy)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/03-theory-databricks.md`; `databricks/README.md`
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/03-theory-databricks.md`; `databricks/README.md`
 > **Lab:** `../04_Enterprise_RAG/project/notebooks/04-databricks-enterprise-rag.ipynb` (runs in a Databricks workspace; ~12 min serverless); `../04_Enterprise_RAG/project/databricks/validate_*.py` (REST validation scripts)
 
 ## Why this matters

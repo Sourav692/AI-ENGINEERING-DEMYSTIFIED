@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 03 · **Doc** 3 of 5 · **Time** ~15 min
 > **Prerequisites:** [Retry, Fallback, Memoization and the Confirmation Gate](01_Retry_Fallback_Memo_Confirm.md)
-> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/docs/DESIGN.md` §3
+> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/docs/DESIGN.md` §3 *(source not in this repo — the DevRev coding-round material was removed; kept as provenance)*
 
 ## Why this matters
 

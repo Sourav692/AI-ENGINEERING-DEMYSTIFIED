@@ -108,8 +108,8 @@ Module 07's `reference_code/` is a deployed AWS platform (Terraform, ECS, Bedroc
 
 The handbook was assembled from three source folders in this repository, which remain untouched:
 
-- `3. AI_Engineer_Interview_Preparation/` — the three platform projects and the cross-cutting notes
-- `4. FDE_Related_Preparation/` — system design, delivery framework, STAR stories, day-in-the-life
-- `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/` — the tool-calling loop
+- `06_Interview_Prep/AI_Engineer/` — the three platform projects and the cross-cutting notes
+- `06_Interview_Prep/FDE/` — system design, delivery framework, STAR stories, day-in-the-life
+- `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/` — the tool-calling loop *(source not in this repo — the DevRev coding-round material was removed; kept as provenance)*
 
 Appendix B maps every handbook document back to its source. The handbook is designed to grow: new modules slot into the level structure, and the source map records provenance as material is added.

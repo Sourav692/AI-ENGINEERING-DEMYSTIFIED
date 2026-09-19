@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 08 · **Doc** 4 of 6 · **Time** ~20 min
 > **Prerequisites:** Module 04 doc 6 (refusal), Module 05 doc 2 (channel adapters), Module 06 doc 3 (streaming), Module 07 doc 2 (the escalation agent)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/10-agent-ops-and-channels.md` §2–3
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/10-agent-ops-and-channels.md` §2–3
 
 ## Why this matters
 

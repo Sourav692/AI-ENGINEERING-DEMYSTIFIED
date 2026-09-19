@@ -2,7 +2,7 @@
 
 > **Level** 🔴 The FDE Role · **Module** 10 · **Doc** 3 of 7 · **Time** ~40 min
 > **Prerequisites:** Module 05 (staged rollout, the `Decision` shape); Module 04 doc 7 (golden sets)
-> **Source material:** `4. FDE_Related_Preparation/Delivery Framework from Scoping to Delivery/docs/01-theory.md`; `docs/02-architecture-end-to-end.md`; `README.md`
+> **Source material:** `06_Interview_Prep/AI_Engineer/Delivery Framework from Scoping to Delivery/docs/01-theory.md`; `docs/02-architecture-end-to-end.md`; `README.md`
 > **Lab:** `project/scripts/run_engagement_demo.py`, `project/notebooks/02-hands-on.ipynb`
 
 ## Why this matters

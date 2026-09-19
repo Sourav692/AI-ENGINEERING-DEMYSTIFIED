@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 08 · **Doc** 2 of 6 · **Time** ~25 min
 > **Prerequisites:** [Prompt Versioning, Rollout and Rollback](01_Prompt_Versioning_Rollout_Rollback.md); Module 06 doc 2
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Cross Cutting Preparation/04-agentops-on-databricks.md`
+> **Source material:** `06_Interview_Prep/AI_Engineer/Cross Cutting Preparation/04-agentops-on-databricks.md`
 
 ## Why this matters
 

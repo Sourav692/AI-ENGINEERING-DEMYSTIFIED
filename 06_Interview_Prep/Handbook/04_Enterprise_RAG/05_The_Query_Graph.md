@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 5 of 10 · **Time** ~40 min
 > **Prerequisites:** docs 2–4 of this module; Module 01 doc 5 (LangGraph)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/06-architecture-end-to-end.md` §3, §5, §6; `docs/05-src-modules-reference.md` (`graph/*`, `authz/rate_limit.py`, `llm/client.py`)
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/06-architecture-end-to-end.md` §3, §5, §6; `docs/05-src-modules-reference.md` (`graph/*`, `authz/rate_limit.py`, `llm/client.py`)
 > **Lab:** `project/notebooks/02-hands-on-parts/part08-full-graph.ipynb`, `project/scripts/ask.py`
 
 ## Why this matters

@@ -2,7 +2,7 @@
 
 > **Level** 🟢 Foundations · **Module** 00 · **Doc** 3 of 3 · **Time** ~20 min
 > **Prerequisites:** none
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Cross Cutting Preparation/00-first-ten-minutes.html`
+> **Source material:** `06_Interview_Prep/AI_Engineer/Cross Cutting Preparation/00-first-ten-minutes.html`
 
 ## Why this matters
 

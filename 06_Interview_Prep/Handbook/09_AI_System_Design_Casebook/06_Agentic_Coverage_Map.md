@@ -2,7 +2,7 @@
 
 > **Level** 🔴 Design Mastery · **Module** 09 · **Doc** 6 of 6 · **Time** ~20 min
 > **Prerequisites:** [Case 1](01_Enterprise_AI_Assistant.md), [Case 2](02_Customer_Support_Assistant.md)
-> **Source material:** `4. FDE_Related_Preparation/System_Design and Delivery/Agentic Coverage Map.html`
+> **Source material:** `06_Interview_Prep/FDE/System_Design and Delivery/Agentic Coverage Map.html`
 
 ## Why this matters
 

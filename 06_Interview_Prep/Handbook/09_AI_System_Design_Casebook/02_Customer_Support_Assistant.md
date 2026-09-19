@@ -2,7 +2,7 @@
 
 > **Level** 🔴 Design Mastery · **Module** 09 · **Doc** 2 of 6 · **Time** ~30 min
 > **Prerequisites:** Module 03 doc 2, Module 04, Module 05 doc 5, Module 07
-> **Source material:** `4. FDE_Related_Preparation/System_Design and Delivery/6. Customer Support AI Assistant Design.md`
+> **Source material:** `06_Interview_Prep/FDE/System_Design and Delivery/6. Customer Support AI Assistant Design.md`
 
 ## The prompt
 

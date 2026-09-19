@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 3 of 5 · **Time** ~20 min
 > **Prerequisites:** [Reference Architecture and Handoffs](02_Reference_Architecture_Handoffs.md); Module 04 doc 7; Module 06 doc 2
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §4–5
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/09-multi-agent-orchestration.md` §4–5
 
 ## Why this matters
 

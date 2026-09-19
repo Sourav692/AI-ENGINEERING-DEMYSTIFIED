@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 06 · **Doc** 6 of 7 · **Time** ~50 min
 > **Prerequisites:** all of Module 04
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/Scale_Optimization.md`
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/Scale_Optimization.md`
 
 ## Why this matters
 

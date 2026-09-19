@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 06 · **Doc** 3 of 7 · **Time** ~30 min
 > **Prerequisites:** Module 04 docs 5 and 7 (the response cache, the evaluation harness)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Cross Cutting Preparation/03-cost-latency-cicd-rigor-and-build-vs-buy.md`
+> **Source material:** `06_Interview_Prep/AI_Engineer/Cross Cutting Preparation/03-cost-latency-cicd-rigor-and-build-vs-buy.md`
 
 ## Why this matters
 

@@ -2,7 +2,7 @@
 
 > **Level** 🟢 Foundations · **Module** 02 · **Doc** 4 of 5 · **Time** ~30 min
 > **Prerequisites:** [The 12-Part Framework](01_The_12_Part_Framework.md), [The 15 Principles](02_The_15_Principles.md)
-> **Source material:** `4. FDE_Related_Preparation/System_Design and Delivery/1. System Design Overview.md`
+> **Source material:** `06_Interview_Prep/FDE/System_Design and Delivery/1. System Design Overview.md`
 
 ## Why this matters
 

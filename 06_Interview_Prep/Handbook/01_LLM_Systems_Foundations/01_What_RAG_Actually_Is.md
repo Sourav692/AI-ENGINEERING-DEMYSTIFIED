@@ -2,7 +2,7 @@
 
 > **Level** 🟢 Foundations · **Module** 01 · **Doc** 1 of 5 · **Time** ~20 min
 > **Prerequisites:** Module 00
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/01-theory.md` §1–3
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/01-theory.md` §1–3
 
 ## Why this matters
 

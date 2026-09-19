@@ -2,7 +2,7 @@
 
 > **Level** 🟢 Foundations · **Module** 01 · **Doc** 3 of 5 · **Time** ~25 min
 > **Prerequisites:** [What RAG Actually Is](01_What_RAG_Actually_Is.md)
-> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/README.md`, `src/tools.py`, `src/brain.py`; `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/docs/01-theory.md` Part A §A.2–A.4
+> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/README.md`, `src/tools.py`, `src/brain.py`; `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/docs/01-theory.md` Part A §A.2–A.4 *(source not in this repo — the DevRev coding-round material was removed; kept as provenance)*
 
 ## Why this matters
 

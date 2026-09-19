@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 06 · **Doc** 7 of 7 · **Time** reference — revise from it before a design round
 > **Prerequisites:** docs 1–6 of this module
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Cross Cutting Preparation/Cross_Cutting_System_Design_Quick_Reference_v2.md` — kept as a reference artefact: the nine cross-cutting topics of this module condensed into templates, red flags and answer scripts. Read the teaching docs first; revise from this.
+> **Source material:** `06_Interview_Prep/AI_Engineer/Cross Cutting Preparation/Cross_Cutting_System_Design_Quick_Reference_v2.md` — kept as a reference artefact: the nine cross-cutting topics of this module condensed into templates, red flags and answer scripts. Read the teaching docs first; revise from this.
 
 ---
 

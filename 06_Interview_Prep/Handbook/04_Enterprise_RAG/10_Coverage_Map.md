@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 10 of 10 · **Time** ~25 min
 > **Prerequisites:** docs 1–8 of this module
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/07-system-design-coverage-map.md`
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/07-system-design-coverage-map.md`
 > **Note:** the original checks the project against sections (§4.2–§4.6, §6) of a company-specific system-design prep guide. Those section numbers are kept as labels below so the source stays traceable; the *topics* are what matter and are stated in full.
 
 ## Why this matters

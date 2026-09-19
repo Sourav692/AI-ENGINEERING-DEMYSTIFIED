@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 4 of 10 · **Time** ~35 min
 > **Prerequisites:** Module 01 doc 2; [The Ingestion Pipeline](03_Ingestion_Pipeline.md)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/06-architecture-end-to-end.md` §4–5; `docs/05-src-modules-reference.md` (`retrieval/*`); `README.md` (strategy comparison)
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/06-architecture-end-to-end.md` §4–5; `docs/05-src-modules-reference.md` (`retrieval/*`); `README.md` (strategy comparison)
 > **Lab:** `project/notebooks/02-hands-on-parts/part05-hybrid-search.ipynb`, `part06-query-transformation.ipynb`, `part07-reranking.ipynb`
 
 ## Why this matters

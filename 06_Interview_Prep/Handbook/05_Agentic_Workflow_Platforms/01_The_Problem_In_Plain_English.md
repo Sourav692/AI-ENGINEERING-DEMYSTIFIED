@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 05 · **Doc** 1 of 7 · **Time** ~30 min
 > **Prerequisites:** Module 01 doc 3, Module 03
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/docs/01-theory.md` Part A, §B.1, §B.6; `README.md` (business case)
+> **Source material:** `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/docs/01-theory.md` Part A, §B.1, §B.6; `README.md` (business case)
 > **Lab:** `project/scripts/run_workflow_demo.py`
 
 ## Why this matters

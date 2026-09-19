@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 2 of 10 · **Time** ~60 min
 > **Prerequisites:** [Why Enterprise Changes the Problem](01_Why_Enterprise_Changes_The_Problem.md)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/04-security-checks-reference.md` (all sections), `docs/01-theory.md` §7 (ABAC, the two-layer trick, the LLM is never the enforcement point)
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/04-security-checks-reference.md` (all sections), `docs/01-theory.md` §7 (ABAC, the two-layer trick, the LLM is never the enforcement point)
 > **Lab:** `project/notebooks/02-hands-on-parts/part02-policy-engine.ipynb`, `part03-compiling-policy-to-filter.ipynb`
 
 ## Why this matters

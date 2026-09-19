@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 2 of 5 · **Time** ~25 min
 > **Prerequisites:** [When Multi-Agent Is Justified](01_When_Multi_Agent_Is_Justified.md); Module 04, Module 05
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §2–3
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/09-multi-agent-orchestration.md` §2–3
 
 ## Why this matters
 

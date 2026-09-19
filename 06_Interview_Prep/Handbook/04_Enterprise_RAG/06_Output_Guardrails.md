@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 6 of 10 · **Time** ~20 min
 > **Prerequisites:** [The Query Graph](05_The_Query_Graph.md)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/01-theory.md` §8; `docs/04-security-checks-reference.md` §6 (checks E–I)
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/01-theory.md` §8; `docs/04-security-checks-reference.md` §6 (checks E–I)
 > **Lab:** `project/notebooks/02-hands-on-parts/part09-attacking-it.ipynb`
 
 ## Why this matters

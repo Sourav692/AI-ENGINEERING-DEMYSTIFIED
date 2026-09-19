@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 1 of 10 · **Time** ~35 min
 > **Prerequisites:** Module 01 docs 1–2
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/README.md` (business case), `docs/01-theory.md` §2, §7 (the three patterns, "groups overlap")
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/README.md` (business case), `docs/01-theory.md` §2, §7 (the three patterns, "groups overlap")
 > **Lab:** `project/notebooks/02-hands-on-parts/part01-corpus-and-permissions.ipynb`
 
 ## Why this matters

@@ -2,7 +2,7 @@
 
 > **Level** 🔴 Design Mastery · **Module** 09 · **Doc** 1 of 6 · **Time** ~30 min
 > **Prerequisites:** Module 02, Module 05 doc 3, Module 07 doc 1
-> **Source material:** `4. FDE_Related_Preparation/System_Design and Delivery/5. Enterprise AI Assistant Design.md`
+> **Source material:** `06_Interview_Prep/FDE/System_Design and Delivery/5. Enterprise AI Assistant Design.md`
 
 ## The prompt
 

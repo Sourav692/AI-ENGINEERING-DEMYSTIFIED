@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 04 · **Doc** 3 of 10 · **Time** ~35 min
 > **Prerequisites:** [Access Control with ABAC](02_Access_Control_ABAC.md); Module 01 doc 2 (chunking)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/06-architecture-end-to-end.md` §1–2; `docs/05-src-modules-reference.md` (`ingest/*`); `docs/07-system-design-coverage-map.md` §4.2
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/06-architecture-end-to-end.md` §1–2; `docs/05-src-modules-reference.md` (`ingest/*`); `docs/07-system-design-coverage-map.md` §4.2
 > **Lab:** `project/notebooks/02-hands-on-parts/part04-chunking-and-ingestion.ipynb`, `project/scripts/ingest.py`, `demo_second_connector.py`, `demo_incremental_sync.py`, `demo_acl_catalog_update.py`
 
 ## Why this matters

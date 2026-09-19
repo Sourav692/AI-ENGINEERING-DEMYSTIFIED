@@ -1,7 +1,7 @@
 # Appendix C · Interview Q&A Log
 
 > **Reference artefact.** A running log of conceptual questions asked while preparing the Enterprise RAG project (Module 04), with full answers. Kept as written; each answer deepens a point made in Module 04 doc 2 (the two-layer split), doc 3 (the ACL catalog), or doc 5 (`merge_filters`).
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/QA.md`
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/QA.md`
 
 ---
 

@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 05 · **Doc** 5 of 7 · **Time** ~40 min
 > **Prerequisites:** [Durability and Idempotency](04_Durability_And_Idempotency.md); Module 03 doc 5
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/README.md` (guardrail rules, staged rollout); `docs/01-theory.md` §A.6–A.7, §B.4; `docs/03-src-modules-reference.md` (`guardrails.py`, `workflows.py`, `identity.py`)
+> **Source material:** `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/README.md` (guardrail rules, staged rollout); `docs/01-theory.md` §A.6–A.7, §B.4; `docs/03-src-modules-reference.md` (`guardrails.py`, `workflows.py`, `identity.py`)
 > **Lab:** `project/scripts/demo_guardrail_failure.py` — the negative-control demo
 
 ## Why this matters

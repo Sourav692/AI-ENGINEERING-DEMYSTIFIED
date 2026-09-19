@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 08 · **Doc** 5 of 6 · **Time** ~20 min
 > **Prerequisites:** Module 04 docs 2 and 6, Module 06 doc 4, Module 07 doc 4 (Layer 8)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md` §8; `Enterprise RAG Platform/notebooks/02-hands-on-parts/part09-attacking-it.ipynb` (the attacks it runs); `Enterprise RAG Platform/docs/04-security-checks-reference.md` §6
+> **Source material:** `05_Projects/Enterprise_Multi_Agent_AI_Research_Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md` §8; `Enterprise RAG Platform/notebooks/02-hands-on-parts/part09-attacking-it.ipynb` (the attacks it runs); `Enterprise RAG Platform/docs/04-security-checks-reference.md` §6
 > **Lab:** `../04_Enterprise_RAG/project/notebooks/02-hands-on-parts/part09-attacking-it.ipynb`; `../07_Multi_Agent_Systems/reference_code/pyrit_dashboard/`
 
 ## Why this matters

@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 03 · **Doc** 1 of 5 · **Time** ~35 min + lab
 > **Prerequisites:** Module 01 (especially [The Tool-Calling Loop From Scratch](../01_LLM_Systems_Foundations/04_Tool_Calling_Loop_From_Scratch.md))
-> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/src/robustness.py`, `docs/DESIGN.md` §4, `tests/test_agent.py`
+> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/src/robustness.py`, `docs/DESIGN.md` §4, `tests/test_agent.py` *(source not in this repo — the DevRev coding-round material was removed; kept as provenance)*
 > **Lab:** `../01_LLM_Systems_Foundations/project/src/robustness.py` and its tests
 
 ## Why this matters

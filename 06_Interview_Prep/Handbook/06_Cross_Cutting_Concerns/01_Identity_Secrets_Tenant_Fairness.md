@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 06 · **Doc** 1 of 7 · **Time** ~25 min
 > **Prerequisites:** Module 04 doc 2 (ABAC), Module 05 doc 5 (guardrails)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Cross Cutting Preparation/01-identity-secrets-and-tenant-fairness.md`
+> **Source material:** `06_Interview_Prep/AI_Engineer/Cross Cutting Preparation/01-identity-secrets-and-tenant-fairness.md`
 
 ## Why this matters
 

@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 05 · **Doc** 7 of 7 · **Time** ~20 min
 > **Prerequisites:** docs 1–5 of this module
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/docs/04-system-design-coverage-map.md`
+> **Source material:** `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/docs/04-system-design-coverage-map.md`
 > **Note:** the original checks the project against §3 of a company-specific prep guide. Section labels are kept for traceability; the topics are stated in full.
 
 ## Why this matters

@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 06 · **Doc** 5 of 7 · **Time** ~25 min
 > **Prerequisites:** Module 04 docs 2–4
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/08-structured-data-and-connectors.md`
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/08-structured-data-and-connectors.md`
 
 ## Why this matters
 

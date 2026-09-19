@@ -2,7 +2,7 @@
 
 > **Level** 🔴 The FDE Role · **Module** 10 · **Doc** 2 of 7 · **Time** ~20 min
 > **Prerequisites:** Module 02
-> **Source material:** `4. FDE_Related_Preparation/System_Design and Delivery/9. Proj Delivery.md`
+> **Source material:** `06_Interview_Prep/FDE/System_Design and Delivery/9. Proj Delivery.md`
 
 ## Why this matters
 

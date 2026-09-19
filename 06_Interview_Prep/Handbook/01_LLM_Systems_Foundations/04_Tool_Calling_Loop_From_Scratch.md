@@ -2,7 +2,7 @@
 
 > **Level** 🟢 Foundations · **Module** 01 · **Doc** 4 of 5 · **Time** ~35 min + lab
 > **Prerequisites:** [What an Agent Actually Is](03_What_An_Agent_Actually_Is.md)
-> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/src/scratch_agent.py`, `src/brain.py`, `README.md`
+> **Source material:** `1. Company_Wise_Preparation/2. DevRev/Coding_Round/agent_tool_calling_demo/src/scratch_agent.py`, `src/brain.py`, `README.md` *(source not in this repo — the DevRev coding-round material was removed; kept as provenance)*
 > **Lab:** `project/notebooks/agent_tool_calling_demo.ipynb` · `project/src/scratch_agent.py` · `project/tests/test_agent.py`
 
 ## Why this matters

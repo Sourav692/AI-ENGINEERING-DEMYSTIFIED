@@ -2,7 +2,7 @@
 
 > **Level** 🟢 Foundations · **Module** 01 · **Doc** 2 of 5 · **Time** ~30 min
 > **Prerequisites:** [What RAG Actually Is](01_What_RAG_Actually_Is.md)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/01-theory.md` §4–6
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/01-theory.md` §4–6
 
 ## Why this matters
 

@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 4 of 5 · **Time** ~45 min
 > **Prerequisites:** docs 1–3 of this module; Module 02 doc 1 (the AI additions)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md`; `CODE/README.md`
+> **Source material:** `05_Projects/Enterprise_Multi_Agent_AI_Research_Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md`; `CODE/README.md`
 > **Reference:** `diagrams/` (nine per-layer `.mmd` files, the combined architecture HTML and PNG); `reference_code/` (the deployed AWS application)
 
 ## Why this matters

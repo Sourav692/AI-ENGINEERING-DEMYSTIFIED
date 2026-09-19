@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 06 · **Doc** 4 of 7 · **Time** ~30 min
 > **Prerequisites:** Module 04 doc 6 (the architectural defence), Module 05 doc 5 (guardrails)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/docs/05-security-tenancy-and-observability-gaps.md` §1–3
+> **Source material:** `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/docs/05-security-tenancy-and-observability-gaps.md` §1–3
 
 ## Why this matters
 

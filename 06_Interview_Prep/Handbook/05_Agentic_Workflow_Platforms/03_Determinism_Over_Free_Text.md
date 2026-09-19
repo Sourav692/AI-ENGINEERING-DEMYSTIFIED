@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 05 · **Doc** 3 of 7 · **Time** ~30 min
 > **Prerequisites:** [Canonical Events, Channels and Routing](02_Canonical_Events_And_Channels.md)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/docs/01-theory.md` §A.6, §B.3, §B.4; `docs/03-src-modules-reference.md` (`tools.py`, `workflows.py`, `models.py`); `README.md`
+> **Source material:** `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/docs/01-theory.md` §A.6, §B.3, §B.4; `docs/03-src-modules-reference.md` (`tools.py`, `workflows.py`, `models.py`); `README.md`
 > **Lab:** `project/src/agent_platform/tools.py`, `workflows.py`
 
 ## Why this matters

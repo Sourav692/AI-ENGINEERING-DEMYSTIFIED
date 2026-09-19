@@ -2,7 +2,7 @@
 
 > **Level** 🔴 The FDE Role · **Module** 10 · **Doc** 7 of 7 · **Time** ~20 min
 > **Prerequisites:** docs 3–4 of this module
-> **Source material:** `4. FDE_Related_Preparation/Delivery Framework from Scoping to Delivery/docs/04-system-design-coverage-map.md`; `README.md` ("What this deliberately does not do")
+> **Source material:** `06_Interview_Prep/AI_Engineer/Delivery Framework from Scoping to Delivery/docs/04-system-design-coverage-map.md`; `README.md` ("What this deliberately does not do")
 > **Note:** the original checks the project against §5 and §7 of a company-specific prep guide. Section labels are kept for traceability.
 
 ## Why this matters

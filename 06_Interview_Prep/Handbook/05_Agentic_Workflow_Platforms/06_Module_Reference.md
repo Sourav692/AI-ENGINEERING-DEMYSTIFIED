@@ -2,7 +2,7 @@
 
 > **Level** 🟡 Building Production Systems · **Module** 05 · **Doc** 6 of 7 · **Time** reference — use as needed
 > **Prerequisites:** docs 1–5 of this module
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workflow Automation Platform/docs/03-src-modules-reference.md`; `docs/02-architecture-end-to-end.md` §4
+> **Source material:** `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/docs/03-src-modules-reference.md`; `docs/02-architecture-end-to-end.md` §4
 > **Code:** `project/src/agent_platform/`
 
 ## The package in one paragraph

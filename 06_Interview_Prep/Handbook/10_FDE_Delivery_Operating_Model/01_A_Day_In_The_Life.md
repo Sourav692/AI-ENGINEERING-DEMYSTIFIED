@@ -2,7 +2,7 @@
 
 > **Level** 🔴 The FDE Role · **Module** 10 · **Doc** 1 of 7 · **Time** ~20 min
 > **Prerequisites:** Module 00 doc 2
-> **Source material:** `4. FDE_Related_Preparation/Senior_FDE_Day_to_Day.md`
+> **Source material:** `06_Interview_Prep/FDE/Senior_FDE_Day_to_Day.md`
 
 ## Why this matters
 

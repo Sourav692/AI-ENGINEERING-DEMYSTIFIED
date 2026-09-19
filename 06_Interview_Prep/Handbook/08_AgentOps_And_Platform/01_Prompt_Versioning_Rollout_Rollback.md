@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 08 · **Doc** 1 of 6 · **Time** ~20 min
 > **Prerequisites:** Module 04 doc 7 (the release gate), Module 05 doc 5 (staged rollout), Module 06 doc 3 (nightly runs, A/B)
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/10-agent-ops-and-channels.md` §1
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/10-agent-ops-and-channels.md` §1
 
 ## Why this matters
 

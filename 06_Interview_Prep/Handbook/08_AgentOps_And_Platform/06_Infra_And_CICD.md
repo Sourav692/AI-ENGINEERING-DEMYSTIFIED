@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 08 · **Doc** 6 of 6 · **Time** ~20 min
 > **Prerequisites:** Module 07 doc 4 (Layer 9), docs 1–3 of this module
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md` §9; `CODE/README.md`; `Enterprise RAG Platform/docs/03-theory-databricks.md` §12
+> **Source material:** `05_Projects/Enterprise_Multi_Agent_AI_Research_Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md` §9; `CODE/README.md`; `Enterprise RAG Platform/docs/03-theory-databricks.md` §12
 > **Reference:** `../07_Multi_Agent_Systems/reference_code/terraform/main.tf`, `.github/workflows/deploy.yml`, `bootstrap.sh`
 
 ## Why this matters
