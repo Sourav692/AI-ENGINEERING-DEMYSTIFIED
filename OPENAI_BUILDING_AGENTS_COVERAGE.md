@@ -3,21 +3,27 @@
 Maps every topic in OpenAI's [Building Agents track](https://developers.openai.com/tracks/building-agents)
 to where this repo teaches it, and names what is genuinely missing.
 
-**Checked against disk 2026-09-19.** Every path below was verified to exist.
+**Checked against disk 2026-09-19; rows re-verified and the tally recounted 2026-09-20.**
+Every path below was verified to exist.
 
-**The headline:** the repo covers the *concepts* well and the *OpenAI-specific surface* poorly.
-Agent loops, tool calling, routing, handoffs, memory, guardrails, structured output and
-RAG are all taught in depth — through LangChain/LangGraph. What is thin is OpenAI's own
-primitives: the Agents SDK beyond one foundations notebook, and the five server-side hosted
-tools. The Responses API is the third such gap and was **descoped on 2026-09-20** — the prep
-is concept-led, so the vendor's request layer does not earn notebook time.
+**The headline, as of 2026-09-20: every row is resolved.** The repo taught the *concepts*
+well from the start — agent loops, tool calling, routing, handoffs, memory, guardrails,
+structured output and RAG, all through LangChain/LangGraph. What was thin was OpenAI's own
+surface. Four notebooks closed the part of that surface which carried a concept the repo
+lacked — hosted vs client-side execution, hosted code execution, vision-driven computer use,
+and agentic image generation — and four rows were descoped because they were a vendor
+spelling of something already taught more deeply. The rule that separated the two is at the
+bottom of this document.
 
 | | Count |
 |---|---|
-| ✅ Covered | 18 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 1 |
+| ✅ Covered | 22 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 0 |
 | ⏭️ Descoped — deliberately not building | 4 |
 | ❌ Gap | 0 |
+
+*(26 rows. The count previously read 18 — it had been carried forward without recounting as
+rows flipped; corrected 2026-09-20 by counting the badges.)*
 
 ---
 
@@ -26,7 +32,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | Track topic | Repo coverage | Status |
 |---|---|---|
 | Reasoning vs. non-reasoning model choice; reasoning-effort levers | **Closed 2026-09-19.** `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/` — `01_Reasoning_vs_NonReasoning.ipynb` (measured on identical tasks, including one where reasoning loses) and `02_Reasoning_Effort_Levers.ipynb` (effort swept, knee located, plus the case where effort is the wrong lever). Applied at `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`. `get_llm()` gained a `reasoning_effort` passthrough to make it reachable | ✅ Covered |
-| **Responses API** (OpenAI's stateful core API) | ⏭️ **Descoped 2026-09-20 — not being built.** The prep is concept-led, not OpenAI-API-led, so the vendor's own request layer is not worth notebook time. Kept in the table for completeness. *Re-checked 2026-09-20: it is used once*, in `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/10_Hotel_Reservations_Multi_Agent_System/Module_2_Core_Agents/1_Environment_Setup.ipynb` — a `client.responses.create(model=..., instructions=..., input=...)` smoke test reading `response.output_text`. It appears, it is not taught: no statefulness, no conversation chaining, no contrast with chat-completions, and the cell depends on `google.colab.userdata` so it will not run locally. `ChatOpenAI` also exposes `use_responses_api`, so the stack can reach it without new dependencies | 🟡 Partial |
+| **Responses API** (OpenAI's stateful core API) | ⏭️ **Descoped 2026-09-20 — not being built.** The prep is concept-led, not OpenAI-API-led, so the vendor's own request layer is not worth notebook time. Kept in the table for completeness. *Re-checked 2026-09-20: it is used once*, in `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/10_Hotel_Reservations_Multi_Agent_System/Module_2_Core_Agents/1_Environment_Setup.ipynb` — a `client.responses.create(model=..., instructions=..., input=...)` smoke test reading `response.output_text`. It appears, it is not taught: no statefulness, no conversation chaining, no contrast with chat-completions, and the cell depends on `google.colab.userdata` so it will not run locally. `ChatOpenAI` also exposes `use_responses_api`, so the stack can reach it without new dependencies | ⏭️ Descoped |
 | **Agents SDK** (OpenAI's own) | ⏭️ **Descoped 2026-09-20 — not building the remaining folders.** `01_Foundations/01_Agents_Handoffs_Guardrails.ipynb` (23 cells) already covers Agent, tools, handoffs and input guardrails **and carries the LangGraph comparison table**, which was the only thing this partial was really worth. Its concepts are all taught generically elsewhere — the agent loop in Phase 3, handoffs in `Multi_Agent_Orchestration/`, guardrails in `Safety_and_Alignment/`. `02_Core_Capabilities/`, `03_Multi_Agent_Patterns/` and `04_Applications/` would add SDK surface, not concepts. | ⏭️ Descoped |
 | Augmenting agents with tools | `02_Core/03_LangGraph_Fundamentals/01_Foundations/` (`05_Augmented_LLM_with_Tools.ipynb`), `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` | ✅ Covered |
 
@@ -40,7 +46,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | File search (managed RAG) | `02_Core/04_Retrieval_and_RAG/` and `03_Advanced/08_Advanced_RAG/` — chunking, embeddings, vector stores, retrieval, reranking. Far deeper than the track. What is absent is the *managed* vector store where you hand OpenAI the files | ✅ Covered |
 | Code interpreter | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/09_Hosted_Code_Execution.ipynb` calls the hosted tool (`{"type": "code_interpreter", "container": {"type": "auto"}}`) on a statistics task the model gets wrong unaided, reads back **the source it executed**, and configures the container's `memory_limit` and `network_policy`. Code *generation* remains in `05_SWE_Agent_Applied.ipynb` and `3. AI_Agents_with_LangGraph/05_Reflective_Code_Generation_Agent/` | ✅ Covered |
 | Computer use | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` runs a real vision loop: the agent receives an actual PNG and returns `click(x, y)` from pixels alone — no element names, no accessibility tree. Pairs with `06_BrowserAgent_Computer_Use_Applied.ipynb`, which teaches the same loop with text observations | ✅ Covered |
-| Image generation as a mid-conversation tool call | `01_Foundations/00_Theory_and_Foundations/Model_Landscape_and_Hugging_Face/02_Diffusers/` covers image-generation *models*. An agent deciding to generate an image as a tool call is not shown | 🟡 Partial |
+| Image generation as a mid-conversation tool call | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/10_Agentic_Image_Generation.ipynb` — the agent decides to generate, writes its own prompt (readable as `revised_prompt`), and is also tested for **restraint** with the tool attached. Its core finding, reproduced on two independent runs: the agent narrates its artefact confidently while the label reads `NINTH STRFET` / `BET WI MORSIT ANED`, because the narration is written from the prompt, not the pixels. The notebook closes that with a vision-input audit turn and a refinement turn where `action` flips to `edit` on its own. Phase 1's `02_Diffusers/` keeps the *models*; this is the agentic loop around them | ✅ Covered |
 | MCP | `03_Advanced/09_Agent_Protocols/MCP/` — foundations, building servers, building clients, applications, plus `04_Applications/mcp_a2a_agentic_rag/`. Deeper than the track | ✅ Covered |
 
 ## 3. Orchestration
@@ -84,14 +90,12 @@ All four originally identified gaps are closed or deliberately descoped:
 | Hosted vs client-side tools | **Built** 2026-09-20 — `01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` |
 | Real computer use / frontend testing | **Built** 2026-09-20 — `01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` |
 | Responses API | **Descoped** 2026-09-20 — concept-led prep; conversation state is covered by LangGraph checkpointing |
+| Image generation as a tool call | **Built** 2026-09-20 — `01_Tool_Use/10_Agentic_Image_Generation.ipynb` |
 
-The 3 remaining partials are all of one kind: the concept is taught through a different
-vendor or framework than OpenAI's. For concept-led preparation that is not a deficiency —
-Tavily teaches web search, LangSmith teaches tracing, LangGraph checkpointing teaches
-sessions. The one worth revisiting if the target shifts is the **Agents SDK**, where three
-of four folders are still scope READMEs, because "how does this framework express handoffs
-versus LangGraph" is a comparison question and comparisons are what concept-led interviews
-probe.
+**Nothing is partial any more.** Every row is either built or deliberately descoped with a
+recorded reason. The four descopes share one shape — a vendor surface over a concept the
+repo teaches more deeply — so if the target ever becomes OpenAI-API-specific rather than
+concept-led, those four rows flip back and the reasons are already written down per row.
 
 ## When a partial is worth closing
 
@@ -119,10 +123,22 @@ Applying the rule to the rest (2026-09-20) descoped two more:
 - **Tracing** — a different vendor's dashboard for observability the repo already builds from
   scratch. Spans and token accounting do not change with the UI rendering them.
 
-**One partial remains: image generation as a mid-conversation tool call.** It is the only
-one that passes the rule, being the same hosted-execution axis as `07_` and `09_` — an agent
-deciding mid-conversation to *produce* an artefact rather than retrieve or compute one. The
-repo covers image-generation *models* in Phase 1, never an agent calling one as a tool.
+**Image generation was the last partial, and it passed the rule — built 2026-09-20.** It
+earned its place by adding a third axis rather than a fourth hosted tool. `07_` split tools
+by *who executes*; `09_` split hosted tools by *what you can see*; `10_` splits them by
+**what you can verify**:
+
+| | `web_search` | `code_interpreter` | `image_generation` |
+|---|---|---|---|
+| Oracle available | the source | re-run the computation | **none** |
+| Checking is | cheap, exact | cheap, exact | costly, approximate |
+| Failure looks like | a wrong fact | a wrong number | a *confident description of something else* |
+
+That last cell is the concept the repo did not have. Phase 1 teaches diffusion models, and
+`09_` teaches a tool whose output you can assert on. Neither teaches a tool that manufactures
+something unverifiable and then tells you it went well — which is why the notebook's verification
+turn (feed the PNG back to a vision model, ask for a *transcription* rather than a judgement)
+is the actual lesson, not the generation call.
 
 ## Related
 
