@@ -88,7 +88,7 @@ were deliberately not renumbered, which is why there is no `11_` under `03_Advan
 
 | Path | Type | Topics Covered |
 |---|---|---|
-| `MCP/mcp_a2a_agentic_rag/README.md` | md | Combined MCP + A2A + Agentic RAG architecture |
+| `MCP/04_Applications/mcp_a2a_agentic_rag/README.md` | md | Combined MCP + A2A + Agentic RAG architecture |
 | `MCP/04_Applications/Udemy_MCP_Mastery/07 MCP Tools Resources and Prompts/presentation/mcp_tools_resources_prompts_presentation.html` | html | MCP core primitives: tools, resources, prompts |
 | `MCP/04_Applications/Udemy_MCP_Mastery/08 MCP RAG with LangChain/presentation/mcp_rag_architecture.html` | html | RAG-over-MCP with LangChain architecture |
 | `MCP/04_Applications/Udemy_MCP_Mastery/09 Research Assistant with MCP and LangGraph/presentation/research_assistant.html` | html | Research-assistant agent combining MCP + LangGraph |

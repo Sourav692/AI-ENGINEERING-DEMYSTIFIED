@@ -437,7 +437,7 @@ None — this phase is notebooks only. `building-adaptive-rag/` moved to `05_Pro
 | `02_Building_Servers/Databricks_Apps/` | FastMCP server on Databricks Apps |
 | `03_Building_Clients/MCP_Essential/` | Own server+client, multi-server client, SSE, streamable HTTP |
 | `04_Applications/Udemy_MCP_Mastery/` | Claude Desktop, data-analysis servers, MCP+RAG, LangGraph research assistant, EC2 deploy |
-| `mcp_a2a_agentic_rag/` | MCP + A2A agentic RAG app |
+| `04_Applications/mcp_a2a_agentic_rag/` | MCP + A2A agentic RAG app (moved under `04_Applications/` 2026-09-19) |
 
 # Phase 10 — Alternative Agent Frameworks (`03_Advanced/10_Alternative_Agent_Frameworks/`)
 

@@ -16,5 +16,7 @@
 - Track shape here is `01_Foundations / 02_Building_Servers / 03_Building_Clients / 04_Applications` — a capability progression, not a learning arc. Match it.
 
 ## Don't
+- Six A2A notebooks under `A2A/02_Building_Agents_with_A2A/` and `A2A/03_Applications/` cite the app by its old path `09_Agent_Protocols/MCP/mcp_a2a_agentic_rag/` in markdown cells. It moved under `04_Applications/` on 2026-09-19; reorganizations don't edit notebook content, so fix those only when editing those notebooks for other reasons.
 
-- Don't add protocol-*using* applications that are really about something else. `mcp_a2a_agentic_rag/` also exists under Phase 8 as RAG-first — that duplication was a deliberate decision, not an accident to clean up.
+
+- Don't add protocol-*using* applications that are really about something else. `04_Applications/mcp_a2a_agentic_rag/` is the exception and lives here as the single canonical copy: A2A + MCP servers are its substance, RAG is the payload. Confirmed 2026-09-19 — earlier docs claimed a second copy under Phase 8, but none exists.

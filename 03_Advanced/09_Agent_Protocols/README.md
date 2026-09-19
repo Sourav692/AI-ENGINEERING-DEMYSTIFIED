@@ -6,6 +6,6 @@ The interoperability layer for agentic systems: how models reach tools & data (M
 
 | Track | Status | Scope |
 |---|---|---|
-| `MCP/` | ✅ Built | Servers, clients, Anthropic/Udemy/Educative courses, Databricks Apps server, plus `mcp_a2a_agentic_rag/` |
+| `MCP/` | ✅ Built | Servers, clients, Anthropic/Udemy/Educative courses, Databricks Apps server, plus `04_Applications/mcp_a2a_agentic_rag/` |
 | `ACP/` | 🚧 Planned | Agent Communication Protocol |
 | `A2A/` | 🚧 Planned | Agent2Agent Protocol |
