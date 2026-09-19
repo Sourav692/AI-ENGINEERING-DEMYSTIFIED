@@ -15,7 +15,8 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | | Count |
 |---|---|
 | ✅ Covered | 18 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 5 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 3 |
+| ⏭️ Descoped — deliberately not building | 2 |
 | ❌ Gap | 0 |
 
 ---
@@ -49,7 +50,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | Agent loop management | `02_Core/03_LangGraph_Fundamentals/` (whole phase) | ✅ Covered |
 | Handoffs | `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/03_agent_handoffs.ipynb`, plus the OpenAI-SDK version in the foundations notebook above | ✅ Covered |
 | Guardrails | `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/01_Moderating_Chains.ipynb`, `Production_Course_Ops/03_security_patterns.ipynb` | ✅ Covered |
-| Sessions / automatic history | `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/` (22 notebooks) and LangGraph checkpointing. OpenAI's `Session` object and `conversation_id` sharing specifically are not used | 🟡 Partial |
+| Sessions / automatic history | ⏭️ **Descoped 2026-09-20 — deliberately not building this.** OpenAI's `Session` is a *subset* of what the repo already teaches, so implementing it would teach less, not more. `Memory_and_State/` (23 notebooks) plus LangGraph checkpointing cover `thread_id` isolation (20 files), the `add_messages` reducer (21), `SqliteSaver` (7), summarisation (14), `get_state_history` time travel (3) and `update_state` (4) — none of which `Session` offers. Its one distinct idea, `conversation_id` server-side state, is the hosted-vs-client-side axis applied to memory, already taught in `01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` and `09_Hosted_Code_Execution.ipynb`; the trade-offs transfer unchanged. | ⏭️ Descoped |
 | Tracing | `03_Advanced/12_Production_and_Observability/LLMOps_and_AI_Infrastructure/Tracing_and_Observability/LangSmith/01_LangSmith_Basics.ipynb`. LangSmith, not OpenAI's built-in tracing dashboard | 🟡 Partial |
 | Multi-agent collaboration: routing, agent-as-tool, parallelization | `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/` (supervisor, swarm), `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/02_Routing/`, CrewAI + AutoGen in `03_Advanced/10_Alternative_Agent_Frameworks/` | ✅ Covered |
 
@@ -84,13 +85,35 @@ All four originally identified gaps are closed or deliberately descoped:
 | Real computer use / frontend testing | **Built** 2026-09-20 — `01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` |
 | Responses API | **Descoped** 2026-09-20 — concept-led prep; conversation state is covered by LangGraph checkpointing |
 
-The 5 remaining partials are all of one kind: the concept is taught through a different
+The 3 remaining partials are all of one kind: the concept is taught through a different
 vendor or framework than OpenAI's. For concept-led preparation that is not a deficiency —
 Tavily teaches web search, LangSmith teaches tracing, LangGraph checkpointing teaches
 sessions. The one worth revisiting if the target shifts is the **Agents SDK**, where three
 of four folders are still scope READMEs, because "how does this framework express handoffs
 versus LangGraph" is a comparison question and comparisons are what concept-led interviews
 probe.
+
+## When a partial is worth closing
+
+Three partials were closed by building (web search, code interpreter, computer use) and two
+were descoped. The test that separated them:
+
+> **Close it when the vendor's version teaches a concept you lack. Descope it when it is a
+> different spelling of one you have.**
+
+- **Web search, code interpreter, computer use** — passed. Hosted execution is a genuinely
+  different control, failure and cost model, and code interpreter went further by showing
+  that hosted visibility varies per tool.
+- **Responses API** — descoped. Concept-led prep; conversation state is covered by LangGraph
+  checkpointing. It remains in use as a *vehicle* for the hosted-tool notebooks.
+- **Sessions** — descoped, and for a stronger reason: `Session` is a strict subset of the
+  repo's memory coverage, so building it would teach a simpler API for a problem already
+  understood more deeply. The risk is not wasted effort but a worse mental model — a notebook
+  implying `Session` and LangGraph checkpointing are peers.
+
+The remaining three partials (Agents SDK, image generation, tracing) have not been tested
+against that rule. Of them, **image generation as a mid-conversation tool call** is the one
+that would pass, since it is the same hosted-execution axis as the two already built.
 
 ## Related
 
