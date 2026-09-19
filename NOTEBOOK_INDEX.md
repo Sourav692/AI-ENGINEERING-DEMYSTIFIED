@@ -316,13 +316,21 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 Anthropic workflow primitives. Parallelization = **fixed** fan-out. Orchestrator–Worker = **runtime** fan-out via `Send`.
 
+Each section holds `theory/` (a written explainer, indexed in `Study_Guides/TOPIC_DOCS_MAP.md`)
+and `notebooks/`. Some also keep a `notebooks/backup/` with an earlier or alternative take.
+
+**Filenames below were reconciled against disk 2026-09-19** — every row previously named
+notebooks that do not exist (`1_routing.ipynb`, `01_Parallelization.ipynb`,
+`5-Evaluator-optimizer.ipynb`, …), and none reflected the `notebooks/` level.
+
 | Section | Notebook | Topic |
 |---|---|---|
-| `1. Prompt_Chaining/` | `01_Prompt_Chaining.ipynb`, `02_Prompt_Chaining_Structured_Output.ipynb` | Sequential prompt-chaining |
-| `2. Routing/` | `1_routing.ipynb` (and/or `2-routing.ipynb`) | Router pattern |
-| `3. Parallelization/` | `01_Parallelization.ipynb`, `02_Parallel_Steps_Execution.ipynb`, `03_Parallelization_Alt.ipynb` | Fixed fan-out / fan-in |
-| `4. Orchestrator_Worker/` | `01_Orchestrator_Worker.ipynb`, `02_Orchestrator_Worker_with_Send_API.ipynb`, `03_Map_Reduce_with_Send_API.ipynb` | Dynamic workers + `Send` map-reduce |
-| `5. Evaluator_Optimizer/` | `5-Evaluator-optimizer.ipynb` | Evaluator-optimizer loop |
+| `1. Prompt_Chaining/` | `notebooks/Prompt_Chaining.ipynb` · `notebooks/backup/Prompt_Chaining_Structured_Output.ipynb` | Sequential prompt-chaining |
+| `2. Routing/` | `notebooks/Routing.ipynb` | Router pattern — routes to a specialised *handler* |
+| `2. Routing/` | `notebooks/Routing_By_Model_Tier.ipynb` (added 2026-09-19) | Same pattern on a different axis: the conditional edge picks a **model tier**, not a handler. Cheap triage escalates to a reasoning model, measured against all-cheap and all-reasoning baselines, with the router's own confusion matrix |
+| `3. Parallelization/` | `notebooks/Parallelization.ipynb` · `notebooks/backup/Parallelization_Sectioning_Example.ipynb` | Fixed fan-out / fan-in |
+| `4. Orchestrator_Worker/` | `notebooks/Orchestrator_Worker.ipynb` · `notebooks/backup/Orchestrator_Worker_Fixed_Workers_Flawed_Example.ipynb` · `notebooks/backup/Map_Reduce_with_Send_API.ipynb` | Dynamic workers + `Send` map-reduce |
+| `5. Evaluator_Optimizer/` | `notebooks/Evaluator_Optimizer.ipynb` | Evaluator-optimizer loop |
 
 ## `5. Agent Pattern/` / `Workflow_and_Agent_Patterns/`
 

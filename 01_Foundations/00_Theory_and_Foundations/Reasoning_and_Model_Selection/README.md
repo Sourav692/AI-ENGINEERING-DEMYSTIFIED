@@ -24,8 +24,8 @@ framework-independent, which is why they live in this stage.
 ## Where the applied version lives
 
 Routing *between* tiers at runtime — a cheap model triaging work to an expensive one — is
-a framework question, so it is not here. It belongs to the Routing workflow pattern:
-`02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/`.
+a framework question, so it is not here. It is built, in the Routing workflow pattern:
+[`02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`](../../../02_Core/05_AI_Agent_Fundamentals/4.%20Workflow_Pattern/2.%20Routing/notebooks/Routing_By_Model_Tier.ipynb).
 
 ## Why this is its own track
 

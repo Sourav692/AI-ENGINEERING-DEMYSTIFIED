@@ -13,9 +13,9 @@ five server-side hosted tools.
 
 | | Count |
 |---|---|
-| ✅ Covered | 11 |
+| ✅ Covered | 12 |
 | 🟡 Partial — concept taught, OpenAI's implementation not | 8 |
-| ❌ Gap | 4 |
+| ❌ Gap | 3 |
 
 ---
 
@@ -23,7 +23,7 @@ five server-side hosted tools.
 
 | Track topic | Repo coverage | Status |
 |---|---|---|
-| Reasoning vs. non-reasoning model choice; reasoning-effort levers | No notebook frames this as a design decision. `helpers/get_llm()` abstracts provider choice away, which is the opposite emphasis. `reasoning_effort` appears nowhere | ❌ Gap |
+| Reasoning vs. non-reasoning model choice; reasoning-effort levers | **Closed 2026-09-19.** `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/` — `01_Reasoning_vs_NonReasoning.ipynb` (measured on identical tasks, including one where reasoning loses) and `02_Reasoning_Effort_Levers.ipynb` (effort swept, knee located, plus the case where effort is the wrong lever). Applied at `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`. `get_llm()` gained a `reasoning_effort` passthrough to make it reachable | ✅ Covered |
 | **Responses API** (OpenAI's stateful core API) | Named in three places, used in none. The repo is LangChain/LangGraph-native and calls chat-completions style APIs | ❌ Gap |
 | **Agents SDK** (OpenAI's own) | `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/01_Foundations/01_Agents_Handoffs_Guardrails.ipynb` — 23 cells covering Agent, tools, handoffs and input guardrails, with an explicit LangGraph comparison. The track's other three folders are scope READMEs | 🟡 Partial |
 | Augmenting agents with tools | `02_Core/03_LangGraph_Fundamentals/01_Foundations/` (`05_Augmented_LLM_with_Tools.ipynb`), `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` | ✅ Covered |
@@ -72,21 +72,21 @@ five server-side hosted tools.
 
 ---
 
-## The four real gaps
+## The three real gaps
+
+*(Was four. "Reasoning-model selection as a design decision" was closed on 2026-09-19 —
+see the Core Concepts row above.)*
 
 1. **Responses API** — never used. Everything routes through LangChain abstractions, so the
    stateful-by-default request model is not experienced anywhere.
-2. **Reasoning-model selection as a design decision** — `helpers/get_llm()` deliberately hides
-   provider and model choice, which is useful for teaching but means the "which model, and how
-   much reasoning effort" tradeoff is never posed.
-3. **Hosted tools vs. client-side tools** — the repo executes every tool locally. The
+2. **Hosted tools vs. client-side tools** — the repo executes every tool locally. The
    architectural consequences of server-side execution are not discussed.
-4. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
+3. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
    but stops before screenshots, vision and a live GUI.
 
-The natural home for the first three is
+The natural home for the first two is
 `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`, whose `02_Core_Capabilities/`,
-`03_Multi_Agent_Patterns/` and `04_Applications/` folders are scope READMEs today. The fourth
+`03_Multi_Agent_Patterns/` and `04_Applications/` folders are scope READMEs today. The third
 extends `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/`.
 
 ## Related
