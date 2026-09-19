@@ -72,6 +72,16 @@ Every phase carries its own `CLAUDE.md`. Claude Code loads the root file always,
 
 **The per-phase track tables that used to live here have moved into those files.** Keeping them in two places is the same duplication the one-topic-one-phase rule exists to prevent. Go to the phase file for what a phase contains, what conventions apply inside it, and what must not be added to it.
 
+**Stage files** — loaded whenever you work anywhere under that stage. They carry the stage's entry rule and a routing table for which phase owns which topic.
+
+| Stage file | Covers |
+|---|---|
+| `01_Foundations/CLAUDE.md` | entry rule: no framework dependency; why `helpers` is deliberately unused across the whole stage |
+| `02_Core/CLAUDE.md` | routing across the four core phases; **`helpers` usage is not uniform here** — a per-phase table |
+| `03_Advanced/CLAUDE.md` | entry rule: requires agent knowledge; stage-wide gotchas (CrewAI env, Deep Agents file lock, don't-split rules) |
+
+**Phase files** — loaded on top of the stage file when you work inside that phase.
+
 | Phase file | Covers |
 |---|---|
 | `01_Foundations/00_Theory_and_Foundations/CLAUDE.md` | HF ecosystem, fine-tuning, coding essentials — and why the `helpers` factory is deliberately unused here |
@@ -90,7 +100,7 @@ Every phase carries its own `CLAUDE.md`. Claude Code loads the root file always,
 | `05_Projects/CLAUDE.md` | 15 projects, one venv each, the ruff-exclude rule |
 | `06_Interview_Prep/CLAUDE.md` | ⚠ purchased material and the path-anchored `.gitignore` that protects it |
 
-Two deeper files also exist and take precedence inside their trees: `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/CLAUDE.md` and `site/CLAUDE.md`.
+Files compose rather than override: root → stage → phase → any deeper file. Two deeper files also exist and take precedence inside their trees: `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/CLAUDE.md` and `site/CLAUDE.md`.
 
 ## Path-anchored config — repoint these whenever a folder moves
 
