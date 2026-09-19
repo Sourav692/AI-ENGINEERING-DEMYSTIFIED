@@ -14,9 +14,9 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 
 | | Count |
 |---|---|
-| ✅ Covered | 13 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 9 |
-| ❌ Gap | 1 |
+| ✅ Covered | 15 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 8 |
+| ❌ Gap | 0 |
 
 ---
 
@@ -38,7 +38,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | Web search | Tavily throughout, e.g. `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb`. Same concept, client-side provider | 🟡 Partial |
 | File search (managed RAG) | `02_Core/04_Retrieval_and_RAG/` and `03_Advanced/08_Advanced_RAG/` — chunking, embeddings, vector stores, retrieval, reranking. Far deeper than the track. What is absent is the *managed* vector store where you hand OpenAI the files | ✅ Covered |
 | Code interpreter | `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/05_SWE_Agent_Applied.ipynb` and `3. AI_Agents_with_LangGraph/05_Reflective_Code_Generation_Agent/` teach code-writing agents; the hosted-sandbox-as-a-tool pattern is not shown | 🟡 Partial |
-| Computer use | `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/06_BrowserAgent_Computer_Use_Applied.ipynb` — a 20-cell build over a deterministic mock browser exposed as tools, driven by a ReAct loop. Teaches the pattern; no screenshot/vision loop against a real GUI | 🟡 Partial |
+| Computer use | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` runs a real vision loop: the agent receives an actual PNG and returns `click(x, y)` from pixels alone — no element names, no accessibility tree. Pairs with `06_BrowserAgent_Computer_Use_Applied.ipynb`, which teaches the same loop with text observations | ✅ Covered |
 | Image generation as a mid-conversation tool call | `01_Foundations/00_Theory_and_Foundations/Model_Landscape_and_Hugging_Face/02_Diffusers/` covers image-generation *models*. An agent deciding to generate an image as a tool call is not shown | 🟡 Partial |
 | MCP | `03_Advanced/09_Agent_Protocols/MCP/` — foundations, building servers, building clients, applications, plus `04_Applications/mcp_a2a_agentic_rag/`. Deeper than the track | ✅ Covered |
 
@@ -59,7 +59,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 |---|---|---|
 | Support agent with human-in-the-loop | `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/` | ✅ Covered |
 | Customer-service agent network | `03_Advanced/08_Advanced_RAG/Agentic_RAG/1. Build_a_Healthcare_Customer_Support_Router_Agentic_RAG_System.ipynb`, `05_Projects/AI_Powered_Customer_Support/` | ✅ Covered |
-| Frontend testing agent (computer use) | Nearest is the mock-browser notebook above. No real browser automation, no vision loop, no test-assertion framing | ❌ Gap |
+| Frontend testing agent (computer use) | **Closed 2026-09-20.** Section 4 of `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` points the agent at a build with a deliberately broken coupon button and asserts on the end state. It also separates the two failure causes from the click log — control hit but state unchanged means the UI is broken; control never hit means the agent is | ✅ Covered |
 | Optimizing for speed / reliability / cost as an upfront choice | `03_Advanced/12_Production_and_Observability/LLMOps_and_AI_Infrastructure/` and `06_Interview_Prep/Study_Guides/Cost_Latency_Optimization/` (playbook, cram sheets, drill decks) cover this well — as operations, and the Study_Guides material does frame it as design levers | ✅ Covered |
 
 ## 5. Best Practices
@@ -73,34 +73,24 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 
 ---
 
-## The one real gap
+## No gaps left
 
-*(Was four. Reasoning-model selection was **closed** 2026-09-19. The Responses API was
-**downgraded to partial** 2026-09-20 — re-checking against disk found one real call that the
-original sweep missed, because it searched for the phrase "Responses API" rather than for
-`responses.create`.)*
+All four originally identified gaps are closed or deliberately descoped:
 
-1. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
-   but stops before screenshots, vision and a live GUI. `06_BrowserAgent_Computer_Use_Applied.ipynb`
-   says so itself: *"this is a simulation, not real browser automation"*, and its
-   `screenshot_text()` returns text rather than pixels. Vision exists elsewhere in the repo
-   (`M7_OpenAI_GPT_4o.ipynb`, `1-multimodalopenai.ipynb`) but is never wired into an
-   observe-decide-act loop.
+| Gap | Outcome |
+|---|---|
+| Reasoning-model selection | **Built** 2026-09-19 — `Reasoning_and_Model_Selection/` (2 notebooks) + `Routing_By_Model_Tier.ipynb` |
+| Hosted vs client-side tools | **Built** 2026-09-20 — `01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` |
+| Real computer use / frontend testing | **Built** 2026-09-20 — `01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` |
+| Responses API | **Descoped** 2026-09-20 — concept-led prep; conversation state is covered by LangGraph checkpointing |
 
-**Descoped, not forgotten:** the Responses API as a subject — statefulness,
-`previous_response_id` chaining, how it differs from chat-completions. Deliberately **not**
-being built (decided 2026-09-20): the preparation this doc serves is concept-led, and the
-concepts it would teach (conversation state, request chaining) are already covered by
-LangGraph checkpointing and memory. Revisit only if the target becomes OpenAI-API-specific.
-
-It extends `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/`, beside the
-notebook that already teaches the loop shape.
-
-**Note on the hosted-tools placement.** An earlier revision of this doc said that gap's home
-was `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`. It was built in Phase 5
-instead: the lesson is execution *topology*, which is a tool-use concept that Phase 5 owns,
-and it uses the raw `openai` client rather than the Agents SDK. Putting it in Phase 6 would
-have made that phase a second home for tool use.
+The 8 remaining partials are all of one kind: the concept is taught through a different
+vendor or framework than OpenAI's. For concept-led preparation that is not a deficiency —
+Tavily teaches web search, LangSmith teaches tracing, LangGraph checkpointing teaches
+sessions. The one worth revisiting if the target shifts is the **Agents SDK**, where three
+of four folders are still scope READMEs, because "how does this framework express handoffs
+versus LangGraph" is a comparison question and comparisons are what concept-led interviews
+probe.
 
 ## Related
 
