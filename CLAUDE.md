@@ -238,11 +238,10 @@ ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), 
 ## Known Gaps (don't build against these as if they exist)
 
 - **Every phase/track marked 🚧 Planned above has no content** — folders and scope-describing `README.md`s exist, but no notebooks/code. Don't assume any file exists under them without checking.
-- **154 notebooks** don't open with a proper `# Title` markdown cell (counted 2026-09-19, excluding `archive/` and `site/`) — e.g. `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/05_Subgraphs/01_Subgraphs.ipynb`, `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/LangGraph/01_Memory/02_Memory_Optimizations.ipynb`. Fixing it means editing notebook content, so it is deliberately unfixed. See `NOTEBOOK_INDEX.md`'s "Still open" section.
 
 ## Notebook Conventions
 
-- Title cell: `# Title` in first markdown cell
+- Title cell: `# Title` in the **first markdown cell** — cell 0 may legitimately be code (imports, env setup); what matters is that the first *markdown* cell is the title. Enforced by `scripts/check_repo_invariants.py`.
 - Section headers use `##` / `###` / `####` hierarchy
 - Code cells start with banner comments: `# ============ SECTION NAME ============`
 - Imports grouped: stdlib → third-party → local (`from helpers import get_llm`)

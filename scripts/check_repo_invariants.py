@@ -60,6 +60,40 @@ def check_notebooks_valid(nbs: list[Path]) -> None:
 
 
 # --------------------------------------------------------------------------
+# 1b. Every notebook opens on a title. The convention in CLAUDE.md is a
+#     '# Title' in the FIRST MARKDOWN CELL — cell 0 may legitimately be code
+#     (imports, env setup). 142 notebooks were brought into line on 2026-09-19;
+#     this keeps new ones from drifting back out.
+#     A styled HTML <h1> counts: five notebooks title themselves that way
+#     deliberately and there is no reason to rewrite them.
+# --------------------------------------------------------------------------
+H1_HTML = re.compile(r"<h1[ >]", re.I)
+
+
+def check_titles(nbs: list[Path]) -> None:
+    ok = 0
+    for nb in nbs:
+        try:
+            doc = json.loads(nb.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        mds = [c for c in doc.get("cells", []) if c.get("cell_type") == "markdown"]
+        if not mds:
+            fail("notebook-title", f"{nb.relative_to(ROOT)} has no markdown cell at all")
+            continue
+        src = "".join(mds[0].get("source", [])).strip()
+        if src.startswith("# ") or H1_HTML.search(src):
+            ok += 1
+        else:
+            fail(
+                "notebook-title",
+                f"{nb.relative_to(ROOT)} first markdown cell is not a '# Title' "
+                f"(starts {src[:40]!r})",
+            )
+    notes.append(f"notebook-title      {ok} notebooks open on a title")
+
+
+# --------------------------------------------------------------------------
 # 2. Relative data/ references resolve. Content moved a directory deeper than
 #    the paths inside it assumed — twice, in two different tracks.
 #    URLs are stripped first: https://.../main/data/x.csv is not a local path.
@@ -204,6 +238,7 @@ def check_purchased_material() -> None:
 def main() -> int:
     nbs = live_notebooks()
     check_notebooks_valid(nbs)
+    check_titles(nbs)
     check_data_refs(nbs)
     check_doc_paths()
     check_path_anchors()
