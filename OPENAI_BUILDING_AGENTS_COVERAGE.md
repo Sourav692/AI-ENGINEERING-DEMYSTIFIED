@@ -15,8 +15,8 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | | Count |
 |---|---|
 | ✅ Covered | 18 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 3 |
-| ⏭️ Descoped — deliberately not building | 2 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 1 |
+| ⏭️ Descoped — deliberately not building | 4 |
 | ❌ Gap | 0 |
 
 ---
@@ -27,7 +27,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 |---|---|---|
 | Reasoning vs. non-reasoning model choice; reasoning-effort levers | **Closed 2026-09-19.** `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/` — `01_Reasoning_vs_NonReasoning.ipynb` (measured on identical tasks, including one where reasoning loses) and `02_Reasoning_Effort_Levers.ipynb` (effort swept, knee located, plus the case where effort is the wrong lever). Applied at `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`. `get_llm()` gained a `reasoning_effort` passthrough to make it reachable | ✅ Covered |
 | **Responses API** (OpenAI's stateful core API) | ⏭️ **Descoped 2026-09-20 — not being built.** The prep is concept-led, not OpenAI-API-led, so the vendor's own request layer is not worth notebook time. Kept in the table for completeness. *Re-checked 2026-09-20: it is used once*, in `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/10_Hotel_Reservations_Multi_Agent_System/Module_2_Core_Agents/1_Environment_Setup.ipynb` — a `client.responses.create(model=..., instructions=..., input=...)` smoke test reading `response.output_text`. It appears, it is not taught: no statefulness, no conversation chaining, no contrast with chat-completions, and the cell depends on `google.colab.userdata` so it will not run locally. `ChatOpenAI` also exposes `use_responses_api`, so the stack can reach it without new dependencies | 🟡 Partial |
-| **Agents SDK** (OpenAI's own) | `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/01_Foundations/01_Agents_Handoffs_Guardrails.ipynb` — 23 cells covering Agent, tools, handoffs and input guardrails, with an explicit LangGraph comparison. The track's other three folders are scope READMEs | 🟡 Partial |
+| **Agents SDK** (OpenAI's own) | ⏭️ **Descoped 2026-09-20 — not building the remaining folders.** `01_Foundations/01_Agents_Handoffs_Guardrails.ipynb` (23 cells) already covers Agent, tools, handoffs and input guardrails **and carries the LangGraph comparison table**, which was the only thing this partial was really worth. Its concepts are all taught generically elsewhere — the agent loop in Phase 3, handoffs in `Multi_Agent_Orchestration/`, guardrails in `Safety_and_Alignment/`. `02_Core_Capabilities/`, `03_Multi_Agent_Patterns/` and `04_Applications/` would add SDK surface, not concepts. | ⏭️ Descoped |
 | Augmenting agents with tools | `02_Core/03_LangGraph_Fundamentals/01_Foundations/` (`05_Augmented_LLM_with_Tools.ipynb`), `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` | ✅ Covered |
 
 ## 2. Tools
@@ -51,7 +51,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | Handoffs | `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/03_agent_handoffs.ipynb`, plus the OpenAI-SDK version in the foundations notebook above | ✅ Covered |
 | Guardrails | `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/01_Moderating_Chains.ipynb`, `Production_Course_Ops/03_security_patterns.ipynb` | ✅ Covered |
 | Sessions / automatic history | ⏭️ **Descoped 2026-09-20 — deliberately not building this.** OpenAI's `Session` is a *subset* of what the repo already teaches, so implementing it would teach less, not more. `Memory_and_State/` (23 notebooks) plus LangGraph checkpointing cover `thread_id` isolation (20 files), the `add_messages` reducer (21), `SqliteSaver` (7), summarisation (14), `get_state_history` time travel (3) and `update_state` (4) — none of which `Session` offers. Its one distinct idea, `conversation_id` server-side state, is the hosted-vs-client-side axis applied to memory, already taught in `01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` and `09_Hosted_Code_Execution.ipynb`; the trade-offs transfer unchanged. | ⏭️ Descoped |
-| Tracing | `03_Advanced/12_Production_and_Observability/LLMOps_and_AI_Infrastructure/Tracing_and_Observability/LangSmith/01_LangSmith_Basics.ipynb`. LangSmith, not OpenAI's built-in tracing dashboard | 🟡 Partial |
+| Tracing | ⏭️ **Descoped 2026-09-20.** A different vendor's UI for a concept already taught: `LLMOps_and_AI_Infrastructure/Tracing_and_Observability/LangSmith/01_LangSmith_Basics.ipynb` plus the hand-rolled `InstrumentedLLM` wrapper in `Production_Course_Ops/01_monitoring.ipynb`, which builds spans, metrics and logging from scratch. Spans, latency and token accounting do not change with the dashboard rendering them. | ⏭️ Descoped |
 | Multi-agent collaboration: routing, agent-as-tool, parallelization | `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/` (supervisor, swarm), `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/02_Routing/`, CrewAI + AutoGen in `03_Advanced/10_Alternative_Agent_Frameworks/` | ✅ Covered |
 
 ## 4. Example Use Cases
@@ -111,9 +111,18 @@ were descoped. The test that separated them:
   understood more deeply. The risk is not wasted effort but a worse mental model — a notebook
   implying `Session` and LangGraph checkpointing are peers.
 
-The remaining three partials (Agents SDK, image generation, tracing) have not been tested
-against that rule. Of them, **image generation as a mid-conversation tool call** is the one
-that would pass, since it is the same hosted-execution axis as the two already built.
+Applying the rule to the rest (2026-09-20) descoped two more:
+
+- **Agents SDK** — the foundations notebook already carries the LangGraph comparison table,
+  which was the real value. The rest is SDK surface over concepts taught generically in
+  Phases 3, 5 and 7.
+- **Tracing** — a different vendor's dashboard for observability the repo already builds from
+  scratch. Spans and token accounting do not change with the UI rendering them.
+
+**One partial remains: image generation as a mid-conversation tool call.** It is the only
+one that passes the rule, being the same hosted-execution axis as `07_` and `09_` — an agent
+deciding mid-conversation to *produce* an artefact rather than retrieve or compute one. The
+repo covers image-generation *models* in Phase 1, never an agent calling one as a tool.
 
 ## Related
 
