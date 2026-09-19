@@ -14,8 +14,8 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 
 | | Count |
 |---|---|
-| ✅ Covered | 15 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 8 |
+| ✅ Covered | 16 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 7 |
 | ❌ Gap | 0 |
 
 ---
@@ -35,7 +35,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 |---|---|---|
 | Function calling mechanics | `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/`, plus `5. Agent Pattern/01_Tool_Use/02_Tool_Calling_vs_ReAct.ipynb` | ✅ Covered |
 | Function calling **vs. hosted built-ins** — the architectural split | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` runs the same capability both ways — `chat.completions` with your own function, then `responses.create` with a hosted `web_search` — and compares them on who executes, what you can see, what you can intercept, how they fail, and cost. Includes a guard cell that refuses a tool call, which is only possible client-side | ✅ Covered |
-| Web search | Tavily throughout, e.g. `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb`. Same concept, client-side provider | 🟡 Partial |
+| Web search | **Both halves now.** Client-side: Tavily across **38 notebooks**, e.g. `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb`. Hosted: `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` calls `responses.create(tools=[{"type": "web_search"}])` and contrasts the two. *(Was marked partial for "client-side provider only"; that stopped being true when 07 was built on 2026-09-20 and the row was not updated with it.)* | ✅ Covered |
 | File search (managed RAG) | `02_Core/04_Retrieval_and_RAG/` and `03_Advanced/08_Advanced_RAG/` — chunking, embeddings, vector stores, retrieval, reranking. Far deeper than the track. What is absent is the *managed* vector store where you hand OpenAI the files | ✅ Covered |
 | Code interpreter | `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/05_SWE_Agent_Applied.ipynb` and `3. AI_Agents_with_LangGraph/05_Reflective_Code_Generation_Agent/` teach code-writing agents; the hosted-sandbox-as-a-tool pattern is not shown | 🟡 Partial |
 | Computer use | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` runs a real vision loop: the agent receives an actual PNG and returns `click(x, y)` from pixels alone — no element names, no accessibility tree. Pairs with `06_BrowserAgent_Computer_Use_Applied.ipynb`, which teaches the same loop with text observations | ✅ Covered |
@@ -84,7 +84,7 @@ All four originally identified gaps are closed or deliberately descoped:
 | Real computer use / frontend testing | **Built** 2026-09-20 — `01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` |
 | Responses API | **Descoped** 2026-09-20 — concept-led prep; conversation state is covered by LangGraph checkpointing |
 
-The 8 remaining partials are all of one kind: the concept is taught through a different
+The 7 remaining partials are all of one kind: the concept is taught through a different
 vendor or framework than OpenAI's. For concept-led preparation that is not a deficiency —
 Tavily teaches web search, LangSmith teaches tracing, LangGraph checkpointing teaches
 sessions. The one worth revisiting if the target shifts is the **Agents SDK**, where three
