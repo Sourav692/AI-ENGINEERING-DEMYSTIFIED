@@ -538,7 +538,7 @@ text" — at the cost of nondeterminism and judge-model bias. Agent-specific met
 (`ToolCorrectnessMetric`, `TaskCompletionMetric`, trajectory match) score the *sequence* of actions,
 not just the final text.
 
-**Code** (`03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/RAG_Evaluation/1.Retriever_Evaluation_Metrics.ipynb`
+**Code** (`03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/RAG_Evaluation/1.Retriever_Evaluation_Metrics.ipynb` *(moved 2026-09-19 to the sibling repo `Agent_Evaluation_Demystified`; not in this repo)*
 and `multi-turn eval and tool evaluations/evaluation.ipynb`):
 ```python
 from deepeval.metrics import ContextualPrecisionMetric, ToolCorrectnessMetric
@@ -579,7 +579,7 @@ production run can be debugged from its trace instead of reproduced from scratch
 that triggered it. A tracer collects spans into a **trace** per request; a UI (Phoenix, LangSmith,
 MLflow) lets you query traces by attribute — "show me every trace where a tool call errored."
 
-**Code** (`03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Agent_Evaluation/DeepLearningAI_Arize/Lab 2 - Tracing your Agent/L5.ipynb`):
+**Code** (`03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Agent_Evaluation/DeepLearningAI_Arize/Lab 2 - Tracing your Agent/L5.ipynb`): *(moved 2026-09-19 to the sibling repo `Agent_Evaluation_Demystified`; not in this repo)*
 ```python
 from opentelemetry.trace import Status, StatusCode
 from openinference.semconv.trace import SpanAttributes

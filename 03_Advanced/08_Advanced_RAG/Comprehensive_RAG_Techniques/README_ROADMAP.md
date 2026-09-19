@@ -8,7 +8,7 @@ This is the well-known NirDiamant `RAG_Techniques` collection, merged in whole (
 |---|---|
 | `all_rag_techniques/` | 42 technique notebooks (LangChain + several LlamaIndex variants) |
 | `all_rag_techniques_runnable_scripts/` | Standalone `.py` scripts mirroring several of the notebooks |
-| `evaluation/` | Evaluation metrics/harnesses for this collection specifically (see also `03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/RAG_Evaluation/` for the main RAG eval track) |
+| `evaluation/` | Evaluation metrics/harnesses for this collection specifically (the repo-wide RAG eval material moved to the sibling repo `Agent_Evaluation_Demystified` on 2026-09-19; what remains here is scoped to this collection track) |
 | `data/`, `images/` | Shared assets used across the notebooks |
 | `tests/` | Import tests |
 

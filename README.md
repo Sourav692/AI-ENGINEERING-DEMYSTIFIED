@@ -186,7 +186,7 @@ Also includes `Design_Patterns_Reference.md` — a taxonomy write-up with diagra
 | `Memory_and_State/` | ✅ Built | `LangGraph/` (memory & threads + PostgreSQL long-term memory) + `LangChain/` (chat message memory, multi-user in-memory & SQL persistent storage) |
 | `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + peer-to-peer/swarm multi-agent architecture |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | `deepagents`-based multi-agent orchestration — see below |
-| `Evaluation_and_Eval_Harnesses/` | ✅ Built | `RAG_Evaluation/` (metrics + DeepEval drills + RAGAS); `Agent_Evaluation/` (Arize labs + CrewAI eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
+| ~~`Evaluation_and_Eval_Harnesses/`~~ | ❌ Removed 2026-09-19 | Evaluation is **not in this repo**. All of it — the 14-notebook tutorial, Arize/DeepLearning.AI labs, RAG_Evaluation, LLM_as_Judge — lives in the sibling repo `Agent_Evaluation_Demystified`. Verified by content hash before deletion: 147 files removed here, none unique. Don't recreate it |
 
 ### `Deep_Agents_and_Harness_Engineering/`
 
@@ -338,10 +338,9 @@ AI ENGINEERING/
 ├── 03_Advanced/07_Advanced_Agentic_Systems/              ✅ Built
 │   ├── Memory_and_State/                      LangGraph/, LangChain/
 │   ├── Multi_Agent_Orchestration/
-│   ├── Deep_Agents_and_Harness_Engineering/
-│   └── Evaluation_and_Eval_Harnesses/         RAG_Evaluation/, Agent_Evaluation/, LLM_as_Judge/
+│   └── Deep_Agents_and_Harness_Engineering/
 ├── 03_Advanced/08_Advanced_RAG/                          ✅ Built
-│   ├── RAG_with_LangGraph_Advanced/
+│   ├── Agentic_RAG/
 │   ├── Comprehensive_RAG_Techniques/
 │   ├── RAG_Ecosystem/                         rag_ecosystem.ipynb
 │   ├── GraphRAG/

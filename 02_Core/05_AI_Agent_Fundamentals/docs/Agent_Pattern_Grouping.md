@@ -193,7 +193,7 @@ No Fareed or Gulli notebook is titled evaluator–optimizer. Keep the local `5-E
 | Gulli  | [Chapter_20_Prioritization_(SuperSimplePM).ipynb](https://github.com/evoiz/Agentic-Design-Patterns/blob/main/chapter_notebooks/Chapter_20_Prioritization_(SuperSimplePM).ipynb)                     |
 | Gulli  | [Chapter_21_Exploration_Discovery_(Agent_Laboratory).ipynb](https://github.com/evoiz/Agentic-Design-Patterns/blob/main/chapter_notebooks/Chapter_21_Exploration_Discovery_(Agent_Laboratory).ipynb) |
 
-#### `Evaluation_and_Eval_Harnesses/` (Gulli eval; Fareed has no dedicated eval architecture)
+#### `Evaluation_and_Eval_Harnesses/` (Gulli eval; Fareed has no dedicated eval architecture) *(moved 2026-09-19 to the sibling repo `Agent_Evaluation_Demystified`; not in this repo)*
 
 | Source | Notebook                                                                                                                                                                                       |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

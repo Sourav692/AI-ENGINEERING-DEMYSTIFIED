@@ -31,14 +31,21 @@ design lever, hosted-vs-client-side tool execution, and real computer use.
 
 ## 2. "Evaluation Best Practices" guide — topic-by-topic coverage
 
-| Topic | Repo coverage | Status |
+> **⚠ Read the statuses below as describing the sibling repo, not this one.** Evaluation was
+> removed from this repo on 2026-09-19 — 147 files, verified by content hash as duplicated,
+> none unique — and lives in **`Agent_Evaluation_Demystified`**. Every `Evaluation_and_Eval_Harnesses/`,
+> `RAG_Evaluation/`, `Agent_Evaluation/` and `LLM_as_Judge/` path below resolves *there*. For this
+> repo, evaluation is a blanket gap by design; see the root `CLAUDE.md`. The mapping is kept
+> because the material still exists and is still what you would revise from.
+
+| Topic | Coverage (in `Agent_Evaluation_Demystified` unless noted) | Status |
 |---|---|---|
-| Eval types: industry benchmarks, standard scores, custom app-specific tests | `03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Tutorial_RAG_Agent_Tool_Evaluation/` (Modules 0-5, evaluation landscape → capstone) | ✅ Strong |
-| Eval-driven development methodology / continuous eval | Implicit across `Evaluation_and_Eval_Harnesses/`, but no notebook frames it as a development *process* the way the guide does | 🟡 Partial |
+| Eval types: industry benchmarks, standard scores, custom app-specific tests | `03_Advanced/07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Tutorial_RAG_Agent_Tool_Evaluation/` (Modules 0-5, evaluation landscape → capstone) | ✅ Strong *(moved 2026-09-19 to the sibling repo `Agent_Evaluation_Demystified`; not in this repo)* |
+| Eval-driven development methodology / continuous eval | Implicit across `Evaluation_and_Eval_Harnesses/`, but no notebook frames it as a development *process* the way the guide does | 🟡 Partial *(moved 2026-09-19 to the sibling repo `Agent_Evaluation_Demystified`; not in this repo)* |
 | 5-step eval workflow (objective → dataset → metrics → run/compare → continuous) | Closest match: `RAG_Evaluation/4. End_to_End_RAG_System_Evaluation.ipynb`; process framing itself is closer to `06_Interview_Prep/FDE/.../ch12_validation_and_measurement.md` than to a hands-on notebook | 🟡 Partial |
 | Single-turn / workflow eval (instruction following, functional correctness) | `RAG_Evaluation/2.Generator_Evaluation_Metrics.ipynb` | ✅ Strong |
 | Single-agent eval (tool selection accuracy, argument extraction) | `Agent_Evaluation/DeepLearningAI_Arize/Lab 3 - Adding Router & Skill Evaluations/L7.ipynb` | ✅ Strong |
-| Multi-agent eval (handoff accuracy, per-agent specialization) | `Agent_Evaluation/DeepLearningAI_Arize/Lab 4 - Adding Trajectory Evaluations/L9.ipynb`; `Tutorial_RAG_Agent_Tool_Evaluation/` Module 4 (agent trajectory eval) | ✅ Strong |
+| Multi-agent eval (handoff accuracy, per-agent specialization) | `Agent_Evaluation/DeepLearningAI_Arize/Lab 4 - Adding Trajectory Evaluations/L9.ipynb`; `Tutorial_RAG_Agent_Tool_Evaluation/` Module 4 (agent trajectory eval) | ✅ Strong *(moved 2026-09-19 to the sibling repo `Agent_Evaluation_Demystified`; not in this repo)* |
 | Metric-based evals (exact match, ROUGE/BLEU, function-call accuracy) | `RAG_Evaluation/1.Retriever_Evaluation_Metrics.ipynb`, `DeepEval_Metrics/` (contextual precision/recall/relevancy) | ✅ Strong |
 | Human evaluation (blinded comparison, consensus voting) | No dedicated hands-on notebook — theory only, in `ch12_validation_and_measurement.md` | ❌ Gap |
 | LLM-as-a-judge (pairwise, single-answer, reference-guided) | `RAG_Evaluation/3.Custom_LLM_as_a_Judge _(G-Eval).ipynb`; `LLM_as_Judge/DeepEval_GEval/test_firstdeepeval.py` | ✅ Strong |
@@ -51,8 +58,15 @@ design lever, hosted-vs-client-side tool execution, and real computer use.
 
 Everything below is a repeat theme, not five separate ones: **the repo has almost no first-party OpenAI agent-primitive coverage.** All the orchestration/guardrail/handoff/tracing depth here is real, but it's expressed in LangGraph/CrewAI/AutoGen vocabulary, not OpenAI's own.
 
-1. **Responses API** and **Agents SDK** — `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/` is a placeholder folder with no notebooks.
-2. **Computer Use** — zero coverage; no analogue anywhere in the repo.
+1. **Responses API** — never used anywhere; the repo is LangChain/LangGraph-native. The **Agents SDK** is
+   no longer a blank: `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/01_Foundations/01_Agents_Handoffs_Guardrails.ipynb`
+   is a 23-cell build covering Agent, tools, handoffs and input guardrails. `02_Core_Capabilities/`,
+   `03_Multi_Agent_Patterns/` and `04_Applications/` are still scope READMEs. *(Corrected 2026-09-19 —
+   this line previously said the folder was empty.)*
+2. **Computer Use** — partial, not zero. `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/06_BrowserAgent_Computer_Use_Applied.ipynb`
+   builds a ReAct loop over a deterministic mock browser exposed as tools. What is missing is the
+   screenshot/vision loop against a real GUI. *(Corrected 2026-09-19 — this line previously said
+   there was no analogue anywhere.)*
 3. **Code Interpreter / Image Generation as hosted agent tools** — model-level coverage exists (Phase 1), tool-calling-pattern coverage doesn't.
 4. **Human evaluation practice** (blinded review, consensus voting) and **adversarial/edge-case eval-set design** — the repo's eval strength is metrics and LLM-as-judge, not eval-set construction discipline.
 5. **RLHF/DPO/LoRA** and the eval → fine-tuning flywheel — explicitly planned, not built.
