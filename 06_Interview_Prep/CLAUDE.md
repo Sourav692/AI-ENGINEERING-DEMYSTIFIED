@@ -19,9 +19,15 @@ This track contains **third-party commercial material**. `.gitignore` lines ~160
 **Those patterns are path-anchored.** If this folder ever moves, repoint them in the same commit — when they broke during the 2026-09-19 restructure, 107 purchased vendor PDFs silently became committable. Verify after any move:
 
 ```bash
-git status --porcelain | grep -c '^??'   # expect 0
-git ls-files '06_Interview_Prep/FDE' | grep -c '\.md$'   # expect 122
+python3 scripts/check_repo_invariants.py     # asserts this and more, on every commit
+git status --porcelain | grep -c '^??'       # expect 0
+git ls-files '06_Interview_Prep/FDE' | grep -cE '\.(pdf|docx|pptx)$'   # expect 0
 ```
+
+The `.md` count is deliberately **not** pinned to a number any more. It was "expect 122"
+and went stale the same day, when two superseded drafts were archived out of
+`Star_Stories/` — a legitimate change that made the documented check fail. What actually
+matters is that **no vendor binary is tracked**, which is the invariant the checker asserts.
 
 `site/scripts/sync-content.mjs` also reads `SOURCE_ROOT = '06_Interview_Prep/FDE'` — the public site builds from this track.
 
