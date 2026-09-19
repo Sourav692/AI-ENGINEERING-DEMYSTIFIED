@@ -294,8 +294,8 @@ cd 05_Projects/LangGraph_Fullstack_Capstone/streamlit_apps/doc-entity-extractor 
 
 Everything below has a scope-describing `README.md` and (for framework/protocol phases) a first level of subfolders — but **no actual notebooks or code exist yet**.
 
-- **Phase 6 — Agent SDKs (First-Party)**: `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`
-- **Phase 11 — Claude Code & AI Coding Tools**: `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
+- **Phase 6 — Agent SDKs (First-Party)**: `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`, `Anthropic_Agent_SDK/`
+- **Phase 11 — Claude Code & AI Coding Tools**: `Claude_Code/`, `Agent_Skills/`, `Claude_API_Primitives/`, `AI_Coding_Tool_Landscape/`
 
 ---
 

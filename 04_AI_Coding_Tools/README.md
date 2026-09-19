@@ -19,7 +19,7 @@ Agentic coding harnesses and the wider AI coding-tool landscape. Composes what's
 - Building Agent Skills
 - Using Agent Skills
 
-**`Claude_API_and_Agent_SDK/`**
+**`Claude_API_Primitives/`**
 - Claude API
 - Agent SDK
 - Tool-use loops

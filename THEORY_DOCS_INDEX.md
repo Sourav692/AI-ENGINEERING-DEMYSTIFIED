@@ -57,7 +57,6 @@ were deliberately not renumbered, which is why there is no `11_` under `03_Advan
 | `5. Agent Pattern/03_Reflection/02-reflection-pattern.md` (+html) | md/html | Reflection pattern |
 | `5. Agent Pattern/03_Reflection/README_Reflection_Agents.md` | md | Reflection agents concept guide |
 | `5. Agent Pattern/03_Reflection/README_Reflexion_Agents.md` | md | Reflexion (self-critique + memory) agents |
-| `5. Agent Pattern/04-multiagent-pattern.md` (+html) | md/html | Multi-agent pattern (supervisor/collaboration) |
 | `5. Agent Pattern/04_Advanced_Cognitive_Patterns/README.md` | md | 17+ advanced agentic architectures (PEV, blackboard, tree-of-thoughts, RLHF, etc.) |
 | `docs/Agent_Pattern_Grouping.md` | md | Taxonomy of all agent design patterns |
 | `docs/Design_Patterns_Reference.md` | md | Reference guide to agentic design patterns |
@@ -239,6 +238,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | Path | Type | Topics Covered |
 |---|---|---|
 | _(evaluation guides)_ | — | **Moved 2026-09-19** to the sibling repo `Agent_Evaluation_Demystified` → `docs/interactive-labs/` (html + md companions) |
+| `06_Interview_Prep/Study_Guides/TOPIC_DOCS_MAP.md` | md | **Index, not content** — links the 23 standalone concept explainers that live out in the phases (agent/workflow patterns, RAG indexing & query transformation, memory layers, LangChain 0.x→1.x). Narrower cut of this file; added 2026-09-19 |
 | `06_Interview_Prep/Study_Guides/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
 | `06_Interview_Prep/Study_Guides/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
 | `06_Interview_Prep/Study_Guides/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |

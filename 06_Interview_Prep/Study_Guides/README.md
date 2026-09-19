@@ -137,6 +137,16 @@ can't measure.
 | Role tracks | Separate questions for the three target roles |
 | Self-check | Rapid-fire recall |
 
+## Also here — topic docs out in the phases
+
+[`TOPIC_DOCS_MAP.md`](TOPIC_DOCS_MAP.md) indexes the **23 standalone concept explainers that live
+out in the roadmap phases** — the agent/workflow pattern docs, RAG indexing and query-transformation
+guides, memory-layer field guides, and the LangChain 0.x→1.x diff.
+
+Those files deliberately stay beside the notebooks they explain rather than being collected here;
+the map is the discovery layer over them. Unlike the tutorials above, they are hand-written phase
+material, not `notebook-interview-tutorial` output.
+
 ## Regenerating
 
 ```

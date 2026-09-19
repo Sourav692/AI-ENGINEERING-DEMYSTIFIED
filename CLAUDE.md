@@ -26,7 +26,7 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
   05_AI_Agent_Fundamentals/                  ✅ Built — all agent-building content, both frameworks
 
 03_Advanced/                                 needs Core (specifically agents)
-  06_Agent_SDKs_First_Party/                 🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK
+  06_Agent_SDKs_First_Party/                 🚧 Planned — Google ADK, OpenAI Agents SDK, Google AI SDK, Anthropic Agent SDK
   07_Advanced_Agentic_Systems/               ✅ Built — memory, multi-agent orchestration, deep agents
   08_Advanced_RAG/                           ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned
   09_Agent_Protocols/                        ✅ Partially built — MCP built; ACP, A2A planned

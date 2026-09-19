@@ -341,7 +341,9 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 
 # Phase 6 — Agent SDKs (First-Party) (`03_Advanced/06_Agent_SDKs_First_Party/`) — 🚧 Planned
 
-`Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`
+`Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`, `Anthropic_Agent_SDK/`
+
+`Anthropic_Agent_SDK/` was added 2026-09-19 to hold `claude-agent-sdk`. The raw Anthropic Messages API stays in Phase 11's `04_AI_Coding_Tools/Claude_API_Primitives/` — this phase owns vendor agent *frameworks*, not provider APIs.
 
 # Phase 7 — Advanced Agentic Systems (`03_Advanced/07_Advanced_Agentic_Systems/`)
 
@@ -467,7 +469,7 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 
 # Phase 11 — Claude Code & AI Coding Tools (`04_AI_Coding_Tools/`) — 🚧 Planned
 
-`Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
+`Claude_Code/`, `Agent_Skills/`, `Claude_API_Primitives/`, `AI_Coding_Tool_Landscape/`
 
 # Phase 12 — Production & Observability (`03_Advanced/12_Production_and_Observability/`)
 

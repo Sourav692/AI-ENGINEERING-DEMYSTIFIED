@@ -1,3 +1,3 @@
-# Claude API & Agent SDK
+# 01_Foundations
 
 **Status:** 🚧 Planned — no content yet.

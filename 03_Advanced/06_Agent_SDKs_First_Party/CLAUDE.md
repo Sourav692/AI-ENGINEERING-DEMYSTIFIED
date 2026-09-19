@@ -6,12 +6,13 @@
 
 | Track | State |
 |---|---|
-| `Google_ADK/` · `Google_AI_SDK/` · `OpenAI_Agents_SDK/` | Mostly scope READMEs |
+| `Google_ADK/` · `Google_AI_SDK/` · `OpenAI_Agents_SDK/` · `Anthropic_Agent_SDK/` | Mostly scope READMEs |
 
 ## Conventions here
 
 - Needs the `protocols` extra for some SDKs (`google-adk`).
-- **A new first-party SDK is a track inside this phase, not a new phase.** Anthropic's Agent SDK is the exception — it sits in `04_AI_Coding_Tools/Claude_API_and_Agent_SDK/` because that phase owns the coding-tool vendor material.
+- **A new first-party SDK is a track inside this phase, not a new phase.** That includes Anthropic's — `Anthropic_Agent_SDK/` is reserved here beside `OpenAI_Agents_SDK/` and `Google_ADK/`.
+- **The Anthropic boundary is API-vs-SDK, not vendor.** This phase owns the Agent SDK (`claude-agent-sdk`). Building an agent by hand on the raw Messages API (`from anthropic import Anthropic`) is a coding-tool subject and stays in `04_AI_Coding_Tools/Claude_API_Primitives/`. Corrected 2026-09-19: that folder was called `Claude_API_and_Agent_SDK/` and this note used to hand it the whole Anthropic SDK topic, though it only ever contained raw-API material.
 
 ## Don't
 

@@ -82,7 +82,9 @@ Owns: all agent-building content, both frameworks, in one place.
 
 ## Phase 6 — `03_Advanced/06_Agent_SDKs_First_Party/` — 🚧 Planned
 
-Promoted to its own top-level phase (was a track inside the old combined LangGraph phase). `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`.
+Promoted to its own top-level phase (was a track inside the old combined LangGraph phase). `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`, `Anthropic_Agent_SDK/`.
+
+**`Anthropic_Agent_SDK/` added 2026-09-19.** Phase 6's CLAUDE.md previously carved Anthropic out as an exception, handing the whole Anthropic SDK topic to Phase 11's `Claude_API_and_Agent_SDK/`. But that folder only ever held one raw-Messages-API notebook, so the name claimed a topic it didn't cover — and would have become a genuine two-homes conflict the moment real `claude-agent-sdk` content landed. Resolved by splitting on **API vs SDK** rather than vendor: the framework is a track here beside the other first-party SDKs; the raw-API coding-agent notebook stays in Phase 11, renamed to `Claude_API_Primitives/`. Asked by the user as "should this folder move to Phase 6" — the answer was no for the notebook, yes for the name.
 
 ## Phase 7 — `03_Advanced/07_Advanced_Agentic_Systems/` — ✅ Built
 
@@ -135,7 +137,7 @@ Note: AutoGen `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were empty 
 
 Renamed from `11_Claude_Code_and_AI_Coding_Tools/` on 2026-09-19 — the old name baked one vendor into the folder; Codex/Cursor/Copilot are sibling tracks inside it.
 
-`Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`.
+`Claude_Code/`, `Agent_Skills/`, `Claude_API_Primitives/`, `AI_Coding_Tool_Landscape/`.
 
 ## Phase 1 — `01_Theory_and_Foundations/` — ✅ Partially built (optional/compressible)
 
@@ -225,3 +227,30 @@ If a fifth restructuring ever seems warranted, that's fine to raise — but re-r
 17. **2026-08-17 — `Resume-Genie` added as Phase 13 `Resume_Genie/`.** Streamlit + LangGraph career suite. Not CrewAI job-tailoring and not the AutoGen interview coach. GitHub source repo deleted after merge.
 
 18. **2026-09-08 — `production-course-main-code-main` (a standalone 38-notebook, 5-track course) split by topic across 5 already-built phases, not kept as a second top-level home.** Its own cleanup plan (`.cleanup/production-course-main-code-main_cleanup_plan.md`, Q-001) flagged it as sitting outside the roadmap entirely even though its 5 folders (LangChain foundations, RAG, LangGraph fundamentals, multi-agent, production/ops) each shadow the *shape* of an existing phase. Unlike `Comprehensive_RAG_Techniques`/`GraphRAG` (kept whole because notebooks share `helper_functions.py`/`data/`/`images/` via relative paths), this course's 5 folders have no cross-folder shared internals — each is self-contained — so the "split a multi-topic course by topic" pattern (History §4, §12) applied instead of the "keep a shared-internals collection whole" pattern (History §5, §7). Moved: `01_LangChain_Foundations/` → `02_Core/01_LangChain_Fundamentals/08_Production_Course_Foundations/`; `02_RAG_and_Retrieval/` → `02_Core/04_Retrieval_and_RAG/RAG_Production_Course/`; `02_Core/03_LangGraph_Fundamentals/` → `02_Core/03_LangGraph_Fundamentals/03_Production_Course/`; `04_Multi_Agent_Systems/` → `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/`; `05_Production_and_Operations/` → `03_Advanced/12_Production_and_Observability/Production_Course_Ops/`. `main.ipynb`/`main.py` (the course's connectivity-check entry point) went with the LangChain-foundations track as `00_main_connectivity_check.*`. Filename-checked against each target phase's existing notebooks first — no near-duplicate names found, so nothing was skipped. Root scaffolding (`pyproject.toml`, `uv.lock`, `README.md`, `graph*.png`, `.python-version`, `.gitignore`) was left in place at `production-course-main-code-main/` (now emptied of notebooks) rather than deleted, per the "never delete, only retire" convention — that folder is now just inert scaffolding, not a phase or track. Also applied the source cleanup plan's non-blocked items in the same pass: retired `03_embeddings.ipynb` (abandoned draft, superseded by `04_embeddings_deep.ipynb`) to `archive/`; added a short markdown note (not a code rewrite) to `05_checkpointing.ipynb` documenting the `config['configurable']`-vs-`context=` distinction (MIG-001); cleared a stale saved `ModuleNotFoundError` traceback from `07_error_handling.ipynb` (FMT-001); left `06_rag_pipeline.ipynb` and `02_cost_optimization.ipynb`'s out-of-order execution counts deferred (FMT-002/003) since no working Jupyter/kernel was available in this session to re-run them live.
+
+## Topic explainers stay in their phase — indexed, not moved (2026-09-19)
+
+Asked to sweep every stage for non-`README` markdown covering a specific topic and move it into
+`06_Interview_Prep/Study_Guides/`. Audited all **120** such files and did **not** move them. The
+breakdown is the reusable part:
+
+- **40 are functional runtime inputs**, not documentation — `Enterprise_RAG_Platform/data/corpus/*.md`
+  (22, ingested via `config.py: corpus_dir`), `AI_Powered_Customer_Support/knowledge_base/*.md` (4,
+  via `settings.py`), Deep Agents `skills/*/SKILL.md` (8, loaded by `builder.py`/`subagents.py`),
+  CrewAI `instructions/*.md` + `fake_resume.md` + `marketing_report.md` (5, read by the crew
+  notebooks), and `chainlit.md` (Chainlit welcome-screen config). Moving any of these breaks code.
+  **Always grep for a markdown file in `*.py`/`*.ipynb` before treating it as prose.**
+- **~30 are project-bound docs** (architecture, deployment, module reference, interview scripts) —
+  they belong with their project.
+- **~26 are link lists / meta** (`Reference_link*.md`, `Link.md`, `CONTRIBUTING.md`, …).
+- **23 are genuine topic explainers** — and these stay put, because moving them would split a
+  phase's topic across two homes (the exact rule this skill exists to enforce) and break the
+  `theory/` co-location the five workflow-pattern docs depend on. `Study_Guides/` is also not a
+  general archive: its README scopes it to `notebook-interview-tutorial` output.
+
+Resolution: `Study_Guides/TOPIC_DOCS_MAP.md` indexes all 23 in place, grouped by topic, with every
+link verified. **Discovery problems get an index, not a move.**
+
+One real duplicate surfaced and was fixed: `04-multiagent-pattern.md`/`.html` was byte-identical in
+Phase 5 and Phase 7; Phase 5's copy was retired to `archive/` since Phase 7 owns multi-agent
+orchestration.

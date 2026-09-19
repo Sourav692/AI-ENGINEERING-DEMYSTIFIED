@@ -9,3 +9,4 @@ First-party agent SDKs from the major labs, as their own phase — a distinct pa
 | `Google_ADK/` | Google's Agent Development Kit |
 | `OpenAI_Agents_SDK/` | OpenAI's Agents SDK / Responses API-based agent building |
 | `Google_AI_SDK/` | Google's general-purpose Gemini/GenAI SDK — not agent-framework-specific, distinct from `Google_ADK/` |
+| `Anthropic_Agent_SDK/` | Anthropic's Agent SDK (`claude-agent-sdk`). Raw Messages API work lives in `04_AI_Coding_Tools/Claude_API_Primitives/`, not here |
