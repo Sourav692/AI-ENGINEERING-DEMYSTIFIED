@@ -157,7 +157,7 @@ def main():
         help="Remove documents whose cosine similarity to a kept document is above this threshold.",
     )
     parser.add_argument(
-        "--data-path", type=str, default="data/customers-100.csv",
+        "--data-path", type=str, default="../data/customers-100.csv",
         help="Path to the customer dataset (relative to the repository root).",
     )
     args = parser.parse_args()
