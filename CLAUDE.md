@@ -225,8 +225,7 @@ ReAct, Tool Use (direct + ReAct), RAG (foundational + agentic/self-correcting), 
 ## Known Gaps (don't build against these as if they exist)
 
 - **Every phase/track marked 🚧 Planned above has no content** — folders and scope-describing `README.md`s exist, but no notebooks/code. Don't assume any file exists under them without checking.
-- Several LangGraph notebooks (e.g. `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/01_HITL_Basics.ipynb`, `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/LangGraph/01_Memory/02_Memory_Optimizations.ipynb`) don't open with a proper `# Title` markdown cell — see `NOTEBOOK_INDEX.md`'s "Still open" section.
-- Some `RAG_Demystified`-sourced notebooks in `02_Core/04_Retrieval_and_RAG/RAG_Naive_to_Production/` reference a shared `data/` folder via relative paths (`../../data/`-style) that may not resolve correctly post-move — a copy was brought along as `02_Core/04_Retrieval_and_RAG/shared_data/`, but exact path depth wasn't reconstructed.
+- **154 notebooks** don't open with a proper `# Title` markdown cell (counted 2026-09-19, excluding `archive/` and `site/`) — e.g. `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/05_Subgraphs/01_Subgraphs.ipynb`, `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/LangGraph/01_Memory/02_Memory_Optimizations.ipynb`. Fixing it means editing notebook content, so it is deliberately unfixed. See `NOTEBOOK_INDEX.md`'s "Still open" section.
 
 ## Notebook Conventions
 
