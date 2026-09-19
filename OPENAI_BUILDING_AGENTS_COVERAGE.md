@@ -14,8 +14,8 @@ five server-side hosted tools.
 | | Count |
 |---|---|
 | ✅ Covered | 12 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 8 |
-| ❌ Gap | 3 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 9 |
+| ❌ Gap | 2 |
 
 ---
 
@@ -24,7 +24,7 @@ five server-side hosted tools.
 | Track topic | Repo coverage | Status |
 |---|---|---|
 | Reasoning vs. non-reasoning model choice; reasoning-effort levers | **Closed 2026-09-19.** `01_Foundations/00_Theory_and_Foundations/Reasoning_and_Model_Selection/` — `01_Reasoning_vs_NonReasoning.ipynb` (measured on identical tasks, including one where reasoning loses) and `02_Reasoning_Effort_Levers.ipynb` (effort swept, knee located, plus the case where effort is the wrong lever). Applied at `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/notebooks/Routing_By_Model_Tier.ipynb`. `get_llm()` gained a `reasoning_effort` passthrough to make it reachable | ✅ Covered |
-| **Responses API** (OpenAI's stateful core API) | Named in three places, used in none. The repo is LangChain/LangGraph-native and calls chat-completions style APIs | ❌ Gap |
+| **Responses API** (OpenAI's stateful core API) | **Re-checked 2026-09-20: it is used once**, in `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/10_Hotel_Reservations_Multi_Agent_System/Module_2_Core_Agents/1_Environment_Setup.ipynb` — a `client.responses.create(model=..., instructions=..., input=...)` smoke test reading `response.output_text`. It appears, it is not taught: no statefulness, no conversation chaining, no contrast with chat-completions, and the cell depends on `google.colab.userdata` so it will not run locally. `ChatOpenAI` also exposes `use_responses_api`, so the stack can reach it without new dependencies | 🟡 Partial |
 | **Agents SDK** (OpenAI's own) | `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/01_Foundations/01_Agents_Handoffs_Guardrails.ipynb` — 23 cells covering Agent, tools, handoffs and input guardrails, with an explicit LangGraph comparison. The track's other three folders are scope READMEs | 🟡 Partial |
 | Augmenting agents with tools | `02_Core/03_LangGraph_Fundamentals/01_Foundations/` (`05_Augmented_LLM_with_Tools.ipynb`), `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/` | ✅ Covered |
 
@@ -72,21 +72,25 @@ five server-side hosted tools.
 
 ---
 
-## The three real gaps
+## The two real gaps
 
-*(Was four. "Reasoning-model selection as a design decision" was closed on 2026-09-19 —
-see the Core Concepts row above.)*
+*(Was four. Reasoning-model selection was **closed** 2026-09-19. The Responses API was
+**downgraded to partial** 2026-09-20 — re-checking against disk found one real call that the
+original sweep missed, because it searched for the phrase "Responses API" rather than for
+`responses.create`.)*
 
-1. **Responses API** — never used. Everything routes through LangChain abstractions, so the
-   stateful-by-default request model is not experienced anywhere.
-2. **Hosted tools vs. client-side tools** — the repo executes every tool locally. The
+1. **Hosted tools vs. client-side tools** — the repo executes every tool locally. The
    architectural consequences of server-side execution are not discussed.
-3. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
+2. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
    but stops before screenshots, vision and a live GUI.
 
-The natural home for the first two is
+Still worth building even though it is no longer a hard gap: **the Responses API as a
+subject** — statefulness, `previous_response_id` chaining, and how it differs from
+chat-completions. One smoke test in a Colab-only setup notebook is not coverage.
+
+The natural home for the first is
 `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`, whose `02_Core_Capabilities/`,
-`03_Multi_Agent_Patterns/` and `04_Applications/` folders are scope READMEs today. The third
+`03_Multi_Agent_Patterns/` and `04_Applications/` folders are scope READMEs today. The second
 extends `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/`.
 
 ## Related
