@@ -69,20 +69,20 @@ For these applications, LangChain simplifies the entire application lifecycle:
 
 **❓ Question answering with RAG**
 
-- [Documentation](https://python.langchain.com/docs/tutorials/rag/)
+- [Documentation](https://python.langchain.com/docs/14_Interview_Preparation/Study_Guides/rag/)
 - End-to-end Example: [Chat LangChain](https://chat.langchain.com) and [repo](https://github.com/langchain-ai/chat-langchain)
 
 **🧱 Extracting structured output**
 
-- [Documentation](https://python.langchain.com/docs/tutorials/extraction/)
+- [Documentation](https://python.langchain.com/docs/14_Interview_Preparation/Study_Guides/extraction/)
 - End-to-end Example: [LangChain Extract](https://github.com/langchain-ai/langchain-extract/)
 
 **🤖 Chatbots**
 
-- [Documentation](https://python.langchain.com/docs/tutorials/chatbot/)
+- [Documentation](https://python.langchain.com/docs/14_Interview_Preparation/Study_Guides/chatbot/)
 - End-to-end Example: [Web LangChain (web researcher chatbot)](https://weblangchain.vercel.app) and [repo](https://github.com/langchain-ai/weblangchain)
 
-And much more! Head to the [Tutorials](https://python.langchain.com/docs/tutorials/) section of the docs for more.
+And much more! Head to the [Tutorials](https://python.langchain.com/docs/14_Interview_Preparation/Study_Guides/) section of the docs for more.
 
 ## 🚀 How does LangChain help?
 
@@ -93,7 +93,7 @@ The main value props of the LangChain libraries are:
 built on top of `langchain-core`, has built-in support for [messages](https://python.langchain.com/docs/concepts/messages/), [tools](https://python.langchain.com/docs/concepts/tools/),
 and other LangChain abstractions. This makes it easy to combine components into
 production-ready applications with persistence, streaming, and other key features.
-Check out the LangChain [tutorials page](https://python.langchain.com/docs/tutorials/#orchestration) for examples.
+Check out the LangChain [tutorials page](https://python.langchain.com/docs/14_Interview_Preparation/Study_Guides/#orchestration) for examples.
 
 ## Components
 
@@ -111,7 +111,7 @@ Retrieval Augmented Generation involves [loading data](https://python.langchain.
 **🤖 Agents**
 
 Agents allow an LLM autonomy over how a task is accomplished. Agents make decisions about which Actions to take, then take that Action, observe the result, and repeat until the task is complete. [LangGraph](https://langchain-ai.github.io/langgraph/) makes it easy to use
-LangChain components to build both [custom](https://langchain-ai.github.io/langgraph/tutorials/)
+LangChain components to build both [custom](https://langchain-ai.github.io/langgraph/14_Interview_Preparation/Study_Guides/)
 and [built-in](https://langchain-ai.github.io/langgraph/how-tos/create-react-agent/)
 LLM agents.
 
@@ -120,7 +120,7 @@ LLM agents.
 Please see [here](https://python.langchain.com) for full documentation, which includes:
 
 - [Introduction](https://python.langchain.com/docs/introduction/): Overview of the framework and the structure of the docs.
-- [Tutorials](https://python.langchain.com/docs/tutorials/): If you're looking to build something specific or are more of a hands-on learner, check out our tutorials. This is the best place to get started.
+- [Tutorials](https://python.langchain.com/docs/14_Interview_Preparation/Study_Guides/): If you're looking to build something specific or are more of a hands-on learner, check out our tutorials. This is the best place to get started.
 - [How-to guides](https://python.langchain.com/docs/how_to/): Answers to “How do I….?” type questions. These guides are goal-oriented and concrete; they're meant to help you complete a specific task.
 - [Conceptual guide](https://python.langchain.com/docs/concepts/): Conceptual explanations of the key parts of the framework.
 - [API Reference](https://python.langchain.com/api_reference/): Thorough documentation of every class and method.

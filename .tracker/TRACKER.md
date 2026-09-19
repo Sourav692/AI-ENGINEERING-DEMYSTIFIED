@@ -347,7 +347,7 @@ Depends on Phases 5 & 7 — sequenced after both.
 
 ---
 
-## Phase 11 — Claude Code & AI Coding Tools (`11_Claude_Code_and_AI_Coding_Tools/`) 🚧 Planned
+## Phase 11 — Claude Code & AI Coding Tools (`11_AI_Coding_Tools/`) 🚧 Planned
 - [ ] **Claude Code** — planned, no content yet
 - [ ] **Agent Skills** — planned, no content yet
 - [ ] **Claude API and Agent SDK** — planned, no content yet

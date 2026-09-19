@@ -5,7 +5,7 @@ first and is the canonical content; the **interactive artifact** renders that sa
 content as a drillable page. Never let them disagree — build the artifact from the
 finished markdown, not in parallel with it.
 
-Both files live in `tutorials/`, side by side, so git tracks the rendered page as well
+Both files live in `14_Interview_Preparation/Study_Guides/`, side by side, so git tracks the rendered page as well
 as the guide. Never author the HTML in a scratchpad: publishing from a temp path leaves
 the page unversioned, and once the session ends there is no local copy to diff or edit.
 
@@ -40,7 +40,7 @@ concept write-ups.
 
 ## Deliverable 1 — the markdown study guide
 
-Path: `tutorials/<slug>_INTERVIEW_TUTORIAL.md`, where `<slug>` is the input folder
+Path: `14_Interview_Preparation/Study_Guides/<slug>_INTERVIEW_TUTORIAL.md`, where `<slug>` is the input folder
 name (or notebook stem for a single file), lowercased with underscores.
 
 ```
@@ -100,7 +100,7 @@ name (or notebook stem for a single file), lowercased with underscores.
 
 ## Deliverable 2 — the interactive artifact
 
-Path: `tutorials/<slug>_INTERVIEW_TUTORIAL.html` — the same `<slug>`, beside the
+Path: `14_Interview_Preparation/Study_Guides/<slug>_INTERVIEW_TUTORIAL.html` — the same `<slug>`, beside the
 markdown. Publish that path so the URL is tied to a file git tracks.
 
 Same content, rendered for drilling rather than reading. Load the

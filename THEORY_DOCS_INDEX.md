@@ -12,7 +12,7 @@ Excluded as non-theoretical: `.venv`/site-packages library docs, Claude Code too
 
 **Note:** on-disk phase numbering (`00_`–`17_`) has drifted from what the root `CLAUDE.md`
 documents (`01_`–`13_`) — the handbook (14), FDE prep (15), interview prep (16), OpenAI prep (17),
-plus top-level `docs/` and `tutorials/`, aren't reflected there at all. This index reflects what's
+plus top-level `docs/` and `14_Interview_Preparation/Study_Guides/`, aren't reflected there at all. This index reflects what's
 actually on disk.
 
 ## 00_Theory_and_Foundations
@@ -110,7 +110,7 @@ actually on disk.
 | `ShopUNow_Agentic_RAG_Capstone/WALKTHROUGH.md` | md | Multi-user conversational agentic RAG: LangGraph nodes, memory, routing |
 | `Realtime_Voice_AI_Agent_with_RAG/Docs/PROJECT_REPORT.md` | md | Real-time voice AI assistant + RAG architecture |
 
-## 14_AI_Engineering_Handbook
+## 14_Interview_Preparation/Handbook
 
 Handbook is structured as a full curriculum — every numbered chapter file within each module is a
 theory chapter (133 files total; excluded only `project/data/corpus/*.md` synthetic ticket/policy
@@ -141,7 +141,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `07_Multi_Agent_Systems/reference_code/README.md` | md | Autonomous research agent: multi-agent pipeline, red teaming, LLM eval architecture |
 | `10_FDE_Delivery_Operating_Model/project/README.md` | md | Gate-enforcing state machine for scoping-to-deployed-agent delivery framework |
 
-## 15_FDE_Related_Preparation
+## 14_Interview_Preparation/FDE
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -184,7 +184,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `System_Design and Delivery/Agentic Coverage Map.html` | html | Coverage map of agentic system design topics |
 | `System_Design and Delivery/Mock - AI Exception-Handling Assistant.md` | md | Mock interview design walkthrough for exception-handling assistant |
 
-## 16_AI_Engineer_Interview_Preparation
+## 14_Interview_Preparation/AI_Engineer
 
 | Path | Type | Topics Covered |
 |---|---|---|
@@ -216,7 +216,7 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `Enterprise RAG Platform/docs/Scale_Optimization.md` | md | Scale optimization strategies for enterprise RAG |
 | `Enterprise RAG Platform/INTERVIEW_SCRIPT.md, INTERVIEW_SCRIPT_DATABRICKS.md` | md | Interview walkthrough scripts covering the RAG platform's architecture/concepts |
 
-## 17_OpenAI_Applied_Engineer_Preparation
+## 14_Interview_Preparation/OpenAI_Applied
 
 *(the one file here, `OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md`, is a personal gap-analysis/planning doc rather than a concept explainer — excluded)*
 
@@ -233,26 +233,26 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `docs/chapter-6.html` | html | LangGraph fundamentals chapter 6 |
 | `docs/chapter-7.html` | html | LangGraph fundamentals chapter 7 |
 
-## tutorials/ (top-level, standalone interview/tutorial content)
+## 14_Interview_Preparation/Study_Guides/ (top-level, standalone interview/tutorial content)
 
 | Path | Type | Topics Covered |
 |---|---|---|
-| `tutorials/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
-| `tutorials/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
-| `tutorials/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |
-| `tutorials/07_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
-| `tutorials/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
-| `tutorials/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
-| `tutorials/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
-| `tutorials/chunking/01-chunking-strategies-by-doc-type.md` (+html) | md/html | Chunking strategies by document type |
-| `tutorials/chunking/chunking-by-doc-type.md` (+html) | md/html | Chunking by document type (companion/alt version) |
-| `tutorials/evaluation/00-evaluation-index.md` (+html) | md/html | Index of RAG/agent evaluation topics |
-| `tutorials/evaluation/01-deterministic-retrieval-metrics.md` (+html) | md/html | Deterministic retrieval evaluation metrics |
-| `tutorials/evaluation/02-llm-judged-retrieval-metrics.md` (+html) | md/html | LLM-as-judge retrieval evaluation metrics |
-| `tutorials/evaluation/03-generator-metrics.md` (+html) | md/html | Generator (answer-quality) evaluation metrics |
-| `tutorials/evaluation/04-tool-use-evaluation.md` (+html) | md/html | Tool-use evaluation for agents |
-| `tutorials/evaluation/05-agent-trajectory-evaluation.md` (+html) | md/html | Agent trajectory evaluation |
-| `tutorials/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
-| `tutorials/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
-| `tutorials/parent_document_retrieval_INTERVIEW_TUTORIAL.md` (+html) | md/html | Parent-document retrieval technique |
-| `tutorials/retrieval_strategies/rag_retrieval_strategies.md` (+html) | md/html | RAG retrieval strategies overview |
+| `14_Interview_Preparation/Study_Guides/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
+| `14_Interview_Preparation/Study_Guides/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
+| `14_Interview_Preparation/Study_Guides/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |
+| `14_Interview_Preparation/Study_Guides/07_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
+| `14_Interview_Preparation/Study_Guides/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
+| `14_Interview_Preparation/Study_Guides/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
+| `14_Interview_Preparation/Study_Guides/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
+| `14_Interview_Preparation/Study_Guides/chunking/01-chunking-strategies-by-doc-type.md` (+html) | md/html | Chunking strategies by document type |
+| `14_Interview_Preparation/Study_Guides/chunking/chunking-by-doc-type.md` (+html) | md/html | Chunking by document type (companion/alt version) |
+| `14_Interview_Preparation/Study_Guides/evaluation/00-evaluation-index.md` (+html) | md/html | Index of RAG/agent evaluation topics |
+| `14_Interview_Preparation/Study_Guides/evaluation/01-deterministic-retrieval-metrics.md` (+html) | md/html | Deterministic retrieval evaluation metrics |
+| `14_Interview_Preparation/Study_Guides/evaluation/02-llm-judged-retrieval-metrics.md` (+html) | md/html | LLM-as-judge retrieval evaluation metrics |
+| `14_Interview_Preparation/Study_Guides/evaluation/03-generator-metrics.md` (+html) | md/html | Generator (answer-quality) evaluation metrics |
+| `14_Interview_Preparation/Study_Guides/evaluation/04-tool-use-evaluation.md` (+html) | md/html | Tool-use evaluation for agents |
+| `14_Interview_Preparation/Study_Guides/evaluation/05-agent-trajectory-evaluation.md` (+html) | md/html | Agent trajectory evaluation |
+| `14_Interview_Preparation/Study_Guides/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
+| `14_Interview_Preparation/Study_Guides/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
+| `14_Interview_Preparation/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md` (+html) | md/html | Parent-document retrieval technique |
+| `14_Interview_Preparation/Study_Guides/retrieval_strategies/rag_retrieval_strategies.md` (+html) | md/html | RAG retrieval strategies overview |

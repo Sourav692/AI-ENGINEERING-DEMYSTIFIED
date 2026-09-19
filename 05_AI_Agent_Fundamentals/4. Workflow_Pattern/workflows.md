@@ -1,4 +1,4 @@
-Source: https://langchain-ai.github.io/langgraph/tutorials/workflows/
+Source: https://langchain-ai.github.io/langgraph/14_Interview_Preparation/Study_Guides/workflows/
 
 # Workflows and Agents
 
@@ -462,7 +462,7 @@ print(state["output"])
 * LangChain Academy
 * See our lesson on routing [here](https://github.com/langchain-ai/langchain-academy/blob/main/module-1/router.ipynb).
 * Examples
-* [Here](https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_adaptive_rag_local/) is RAG workflow that routes questions. See our video [here](https://www.youtube.com/watch?v=bq1Plo2RhYI).
+* [Here](https://langchain-ai.github.io/langgraph/14_Interview_Preparation/Study_Guides/rag/langgraph_adaptive_rag_local/) is RAG workflow that routes questions. See our video [here](https://www.youtube.com/watch?v=bq1Plo2RhYI).
 
 ##### Functional API
 
@@ -831,7 +831,7 @@ print(state["joke"])
 
 * Examples
 * [Here](https://github.com/langchain-ai/local-deep-researcher) is an assistant that uses evaluator-optimizer to improve a report. See our video [here](https://www.youtube.com/watch?v=XGuTzHoqlj8).
-* [Here](https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_adaptive_rag_local/) is a RAG workflow that grades answers for hallucinations or errors. See our video [here](https://www.youtube.com/watch?v=bq1Plo2RhYI).
+* [Here](https://langchain-ai.github.io/langgraph/14_Interview_Preparation/Study_Guides/rag/langgraph_adaptive_rag_local/) is a RAG workflow that grades answers for hallucinations or errors. See our video [here](https://www.youtube.com/watch?v=bq1Plo2RhYI).
 
 ##### Functional API
 

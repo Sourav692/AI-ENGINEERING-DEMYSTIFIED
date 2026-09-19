@@ -1,6 +1,6 @@
 ---
 name: fde-case-study-worksheet-v3
-description: Converts a long-form FDE system-design tutorial (a `_v2` chapter in `15_FDE_Related_Preparation/FDE_System_Design_Interview_20_Scenarios/Version_2/`) into a Version_3 case-study PAIR — a short blank practice worksheet plus a filled answer key — matching the format and ~100-line length of the Phase-01 CASE_STUDY_WORKSHEET reference docs. Use when the user asks to "make version 3", "convert Version_2 into the worksheet/answer-key format", "turn chapter N into a case study worksheet", "generate the answer keys for the 20 scenarios", or otherwise asks for the short worksheet+answer-key form of a scenario tutorial. Do NOT use to produce the long bullet-cram tutorials — that is `fde-tutorial-interview-format`.
+description: Converts a long-form FDE system-design tutorial (a `_v2` chapter in `14_Interview_Preparation/FDE/FDE_System_Design_Interview_20_Scenarios/Version_2/`) into a Version_3 case-study PAIR — a short blank practice worksheet plus a filled answer key — matching the format and ~100-line length of the Phase-01 CASE_STUDY_WORKSHEET reference docs. Use when the user asks to "make version 3", "convert Version_2 into the worksheet/answer-key format", "turn chapter N into a case study worksheet", "generate the answer keys for the 20 scenarios", or otherwise asks for the short worksheet+answer-key form of a scenario tutorial. Do NOT use to produce the long bullet-cram tutorials — that is `fde-tutorial-interview-format`.
 ---
 
 # FDE Case Study Worksheet + Answer Key (v3)
@@ -18,7 +18,7 @@ recasting it in the reference format — not paraphrasing the whole thing shorte
 Treat these two as the format contract. Read them before generating anything; match their
 section names, ordering, table columns, tone, and length.
 
-- Worksheet: `15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md`
+- Worksheet: `14_Interview_Preparation/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md`
 - Answer key: `.../04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md`
 
 If a rule below ever conflicts with those files, the files win.
@@ -240,10 +240,10 @@ pair on section names, bullet counts, and prose density:
 
 ```bash
 python3 .claude/skills/fde-case-study-worksheet-v3/scripts/check_density.py \
-  "15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md" \
-  "15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md" \
-  "15_FDE_Related_Preparation/FDE_System_Design_Interview_20_Scenarios/Version_3/NN_<slug>.md" \
-  "15_FDE_Related_Preparation/FDE_System_Design_Interview_20_Scenarios/Version_3/answer_keys/NN_<slug>_answer_key.md"
+  "14_Interview_Preparation/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md" \
+  "14_Interview_Preparation/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md" \
+  "14_Interview_Preparation/FDE/FDE_System_Design_Interview_20_Scenarios/Version_3/NN_<slug>.md" \
+  "14_Interview_Preparation/FDE/FDE_System_Design_Interview_20_Scenarios/Version_3/answer_keys/NN_<slug>_answer_key.md"
 ```
 
 It exits non-zero and names every offending section. Iterate until it prints `PASS`.

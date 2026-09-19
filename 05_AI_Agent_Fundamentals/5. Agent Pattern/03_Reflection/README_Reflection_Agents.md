@@ -183,8 +183,8 @@ This project is open source and available under the MIT License.
 ## Acknowledgements
 
 - Original LangChain repository:
-    - [Reflection](https://github.com/langchain-ai/langgraph/blob/main/docs/docs/tutorials/reflection)
-    - [Reflexion](https://github.com/langchain-ai/langgraph/tree/main/docs/docs/tutorials/reflexion)
+    - [Reflection](https://github.com/langchain-ai/langgraph/blob/main/docs/docs/14_Interview_Preparation/Study_Guides/reflection)
+    - [Reflexion](https://github.com/langchain-ai/langgraph/tree/main/docs/docs/14_Interview_Preparation/Study_Guides/reflexion)
 
 - Reflexion: Language Agents with Verbal Reinforcement Learning by [Shinn](https://arxiv.org/pdf/2303.11366) et al., 2023
 

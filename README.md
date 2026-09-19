@@ -356,7 +356,7 @@ AI ENGINEERING/
 │   ├── AutoGen/                                01_Foundations/, 02_Core_Capabilities/, 03_Multi_Agent_Patterns/, 04_Applications/
 │   ├── DSPy/                                   context-engineering-dspy/ (levels 1–5)
 │   └── PydanticAI/, Orchestration_Frameworks_Overview/  🚧 Planned
-├── 11_Claude_Code_and_AI_Coding_Tools/       🚧 Planned
+├── 11_AI_Coding_Tools/       🚧 Planned
 ├── 12_Production_and_Observability/          ✅ Partially built
 │   ├── DevOps_and_Deployment/                 🚧 Planned
 │   ├── LLMOps_and_AI_Infrastructure/           Tracing_and_Observability/, Caching_and_Performance/, Cost_Monitoring/

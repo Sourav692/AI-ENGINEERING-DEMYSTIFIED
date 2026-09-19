@@ -71,7 +71,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | `Memory_and_State/` | ✅ Built | `LangGraph/` + `LangChain/` (from `LangChain_Demystified`'s module 05) — both frameworks' memory content consolidated here, not left in their fundamentals phases. `LangGraph/01_Memory/memory/` also holds a LangGraph-native memory-layers tutorial series (`00_Memory_Layers_Guide.md` + one runnable LangGraph-agent notebook per layer, each built on a distinct LangGraph mechanism: short-term via `SqliteSaver`, session via `SqliteStore`+`TTLConfig`, semantic/episodic via `Store` namespaces, procedural via `Store`+`interrupt()`/`Command`) alongside the original combined LangGraph+SqliteSaver demo (`02_Agent_Memory_Types_SQLite.ipynb`) |
 | `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern + swarm, plus `Production_Course_Multi_Agent/` (added 2026-09-08, History §18) — 7 nb from the same merged-in "production-course" as the Phase 2/3/4/12 additions |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | The `deepagents` multi-agent framework — own `CLAUDE.md`, `app/`, `examples/`, `skills/`, `docs/`. **This directory (specifically its `app/` subfolder) has hit a Windows file lock 3 separate times** across different restructurings — always drain-contents-then-remove-shell, never assume `mv`/`git mv` will just work on it. |
-| `Evaluation_and_Eval_Harnesses/` | ✅ Built | `RAG_Evaluation/` (retriever/generator/end-to-end metrics, LLM-as-judge G-Eval from `RAG_Demystified`; DeepEval metric drills + RAGAS from `Agents_Evaluation_Demystified`); `Agent_Evaluation/` (DeepLearning.AI + Arize labs kept whole, plus CrewAI travel-planner eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
+| ~~`Evaluation_and_Eval_Harnesses/`~~ | ❌ Removed 2026-09-19 | **Evaluation lives in the sibling repo `Agent_Evaluation_Demystified` now, not here.** That repo had already migrated the same material into `courses/` + `labs/` and kept it more current. Verified by content hash: 147 files deleted here, none unique. Do not recreate an evaluation track in this repo — if eval content arrives, it goes to that repo. |
 
 ## Phase 8 — `08_Advanced_RAG/` — ✅ Built
 
@@ -109,7 +109,9 @@ Frameworks to pick up *after* Phases 2/3/5 — each standalone. **If a new agent
 
 Note: AutoGen `02_Core_Capabilities/` and `03_Multi_Agent_Patterns/` were empty after `AgenticAI_Projects_Demystified`; they were filled from `Autogen_Demystified`. Don't treat AutoGen intro notebooks in other courses as a third foundations track if they duplicate `Some_Simple_Agents/`.
 
-## Phase 11 — `11_Claude_Code_and_AI_Coding_Tools/` — 🚧 Planned
+## Phase 11 — `11_AI_Coding_Tools/` — 🚧 Planned
+
+Renamed from `11_Claude_Code_and_AI_Coding_Tools/` on 2026-09-19 — the old name baked one vendor into the folder; Codex/Cursor/Copilot are sibling tracks inside it.
 
 `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`.
 
@@ -138,7 +140,21 @@ Owns: deployment, LLMOps, observability, security, safety.
 
 ## Phase 13 — `13_Projects/` — ✅ Built (12 projects)
 
-Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 apps from `AgenticAI_Projects_Demystified` + `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat) + `Resume_Genie/` (Streamlit + LangGraph career suite). More capstones get added here as new phases produce content worth integrating.
+Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 apps from `AgenticAI_Projects_Demystified` + `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat) + `Resume_Genie/` (Streamlit + LangGraph career suite). More capstones get added here as new phases produce content worth integrating. **2026-09-19:** three enterprise platform builds (`Enterprise_Multi_Agent_AI_Research_Platform/`, `Enterprise_Agentic_Workflow_Automation_Platform/`, `Enterprise_RAG_Platform/`) moved in from what was Phase 16 — they had CODE/ trees and dependency manifests, so they were applications misfiled under interview prep. A vestigial `4. FDE_Related_Preparation/` husk (one orphaned `.gitignore`) was deleted at the same time.
+
+## Phase 14 — `14_Interview_Preparation/` — ✅ Built (added 2026-09-19)
+
+Owns: interview preparation. Created by collapsing four top-level phases plus `tutorials/` into one phase with five tracks — the same one-topic-one-phase fix applied at the top level.
+
+| Track | Was | Notes |
+|---|---|---|
+| `Handbook/` | `14_AI_Engineering_Handbook/` | 12-chapter prose handbook. **Kept whole deliberately** — it re-covers Phase 4/5/7/12 topics, so it looks like duplication, but it is prose not notebooks and splitting it across five phases would destroy the book. Same precedent as `Comprehensive_RAG_Techniques/` and the DSPy course. |
+| `FDE/` | `15_FDE_Related_Preparation/` | ⚠ Purchased third-party material. `.gitignore` lines 160–162 ignore everything under `1. Complete GEN AI FDE Interview System — Core + GenAI/` except `.md`. **Those patterns are path-anchored — if this folder ever moves again, repoint them in the same commit or the vendor PDFs silently become committable.** |
+| `AI_Engineer/` | `16_AI_Engineer_Interview_Preparation/` | Three enterprise platform builds were extracted to Phase 13 — they were applications, not prep. |
+| `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Eval tutorial + question banks went to `Agent_Evaluation_Demystified`. |
+| `Study_Guides/` | `tutorials/` | Per-phase interview study guides, Cost & Latency cram sheets + drill deck, chunking/retrieval notes. Ambiguous placement: the per-phase guides could arguably sit beside the phases they summarise. |
+
+Open duplicate: `Handbook/11_Telling_The_Story/stories/` and `FDE/Star_Stories/` are byte-identical (9 files), also present in `Agent_Evaluation_Demystified/Star_Stories/`.
 
 ## `archive/`, `docs/`, root scaffolding
 

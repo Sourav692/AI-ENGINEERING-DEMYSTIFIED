@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 13 numbered phases, each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
+This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 15 numbered phases (`00_`–`14_`, 0-indexed on disk), each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far:** Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially). Phases 6, 11 are scaffolded placeholders (folder + scope-describing `README.md`) with no content yet.
+**Built so far (disk numbering):** 00, 01, 02, 03, 04, 05, 07, 08, 13, 14 (fully); 09, 10, 12 (partially). 06 and 11 are scaffolded placeholders with no content yet.
+
+**Evaluation is not in this repo.** It lives in the sibling repo `Agent_Evaluation_Demystified` (removed here 2026-09-19 after a content-hash comparison found 147 duplicated files and none unique). Don't recreate an evaluation track here.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
@@ -38,9 +40,10 @@ This repo has a local, gitignored code-graph snapshot at `graphify-out/` (produc
 08_Advanced_RAG/                         ✅ Built — agentic/self-correcting RAG, GraphRAG, comprehensive RAG techniques; CacheRAG planned; needs Phases 5 & 7 first
 09_Agent_Protocols/                      ✅ Partially built — MCP built; ACP, A2A planned
 10_Alternative_Agent_Frameworks/         ✅ Partially built — CrewAI, AutoGen, DSPy built; PydanticAI + orchestration overview planned
-11_Claude_Code_and_AI_Coding_Tools/      🚧 Planned
+11_AI_Coding_Tools/      🚧 Planned
 12_Production_and_Observability/         ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
-13_Projects/                             ✅ Built — 12 projects: LangGraph/LangChain/RAG capstones + 9 more standalone full-stack apps
+13_Projects/                             ✅ Built — 15 projects: LangGraph/LangChain/RAG capstones + 9 standalone apps + 3 enterprise platforms
+14_Interview_Preparation/                ✅ Built — Handbook, FDE ⚠purchased, AI_Engineer, OpenAI_Applied, Study_Guides (collapsed from old phases 14–17 + tutorials/ on 2026-09-19)
 archive/                                 Retired notebooks from old Reference Course + RAG Bootcamp
 docs/                                    Static HTML tutorial microsite (LangGraph mechanics chapters only, for now)
 ```
@@ -108,7 +111,7 @@ Also `shared_data/` at this phase's root — supporting PDFs/data referenced by 
 | `Memory_and_State/`           | `LangGraph/` (memory & threads, long-term PostgreSQL memory) + `LangChain/` (chat/conversation memory, multi-user SQL persistence) |
 | `Multi_Agent_Orchestration/`  | Supervisor pattern, multi-agent swarm architecture |
 | `Deep_Agents_and_Harness_Engineering/` | Multi-agent orchestration via `deepagents` — see its own `CLAUDE.md` |
-| `Evaluation_and_Eval_Harnesses/` | `RAG_Evaluation/` (retriever/generator/end-to-end metrics, DeepEval drills, RAGAS, LLM-as-judge G-Eval); `Agent_Evaluation/` (DeepLearning.AI + Arize labs, CrewAI travel-planner eval); `LLM_as_Judge/` (DeepEval G-Eval intro) |
+| ~~`Evaluation_and_Eval_Harnesses/`~~ | **Removed 2026-09-19** — all evaluation content lives in the sibling repo `Agent_Evaluation_Demystified` (`courses/` + `labs/`). Don't recreate it here. |
 
 ### Phase 8 — `08_Advanced_RAG/` — internal tracks
 

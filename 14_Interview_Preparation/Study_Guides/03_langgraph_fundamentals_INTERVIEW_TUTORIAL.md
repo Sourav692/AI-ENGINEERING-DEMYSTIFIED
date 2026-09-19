@@ -1,7 +1,7 @@
 # 🕸️ LangGraph Fundamentals — Interview Tutorial
 
-| | |
-|---|---|
+| <br> | <br> |
+| --- | --- |
 | **Source** | `03_LangGraph_Fundamentals/01_Foundations/` (12 notebooks), `03_LangGraph_Fundamentals/02_Core_Capabilities/` (12 notebooks across Checkpointing, Routing, Human-in-the-Loop, Advanced State, Subgraphs, Async & Streaming, Retries, Cycles & Loops) |
 | **Notebooks** | 24 |
 | **Built** | 2026-09-16 |
@@ -11,7 +11,7 @@
 ## What this covers
 
 | Concept | Source notebook | Interview weight |
-|---|---|---|
+| --- | --- | --- |
 | State, nodes, edges — the graph primitives | `01_State_and_Graph_Basics.ipynb` | High |
 | Reducers (default overwrite vs. `add_messages`/`operator.add`) | `01_State_and_Graph_Basics.ipynb`, `02_MessageState.ipynb` | High |
 | Conditional edges — dynamic routing | `03_Conditional_Routing.ipynb` | High |
@@ -48,22 +48,22 @@ LangGraph models an application as a graph: a **state** (shared data every step 
 
 - **How it works**: `StateGraph(State)` builds a graph typed to a schema; `add_node`/`add_edge` wire functions and transitions; `.compile()` produces a runnable.
 - **Code** (`01_State_and_Graph_Basics.ipynb`):
-  ```python
-  from typing_extensions import TypedDict
-  from langgraph.graph import StateGraph, START, END
+```python
+from typing_extensions import TypedDict
+from langgraph.graph import StateGraph, START, END
 
-  class State(TypedDict):
-      messages: str
+class State(TypedDict):
+messages: str
 
-  def node_1(state: State) -> State:
-      return {"messages": "Hello this is node 1"}   # a partial state update
+def node_1(state: State) -> State:
+return {"messages": "Hello this is node 1"}   # a partial state update
 
-  builder = StateGraph(State)
-  builder.add_node("node_1", node_1)
-  builder.add_edge(START, "node_1")
-  builder.add_edge("node_1", END)
-  graph = builder.compile()
-  ```
+builder = StateGraph(State)
+builder.add_node("node_1", node_1)
+builder.add_edge(START, "node_1")
+builder.add_edge("node_1", END)
+graph = builder.compile()
+```
 - **Say this in an interview**: "A node returns a dict of the fields it wants to change, not the whole state — LangGraph merges that into the shared state using each field's reducer."
 
 ```mermaid
@@ -80,17 +80,17 @@ A **reducer** decides how a node's returned value merges into existing state. Wi
 
 - **How it works**: `Annotated[list, add_messages]` (or `operator.add`) tells LangGraph to append instead of overwrite, which is what lets a multi-node chain build a conversation instead of erasing it each step.
 - **Code** (`01_State_and_Graph_Basics.ipynb`):
-  ```python
-  from typing import Annotated
-  from langgraph.graph.message import add_messages
+```python
+from typing import Annotated
+from langgraph.graph.message import add_messages
 
-  class State(TypedDict):
-      messages: Annotated[list, add_messages]   # appends, doesn't overwrite
+class State(TypedDict):
+messages: Annotated[list, add_messages]   # appends, doesn't overwrite
 
-  def add_hello(state): return {"messages": "Hello!"}
-  def add_reply(state): return {"messages": "How are you?"}
-  # both nodes' outputs now accumulate in `messages` instead of clobbering each other
-  ```
+def add_hello(state): return {"messages": "Hello!"}
+def add_reply(state): return {"messages": "How are you?"}
+# both nodes' outputs now accumulate in `messages` instead of clobbering each other
+```
 - **Say this in an interview**: "The default reducer is overwrite — you opt into accumulation per field with `Annotated[type, reducer_fn]`, so a counter can overwrite while messages append, in the same state object."
 
 ---
@@ -101,16 +101,16 @@ A **conditional edge** calls a routing function after a node runs; whatever node
 
 - **How it works**: `add_conditional_edges(source, routing_fn, [possible_destinations])` — the routing function reads state and returns a string that must match a registered node name exactly.
 - **Code** (`03_Conditional_Routing.ipynb`):
-  ```python
-  def weather_routing(state: State) -> str:
-      if state["weather"] == "rainy":
-          return "rainy"
-      elif state["weather"] == "sunny":
-          return "sunny"
-      raise ValueError(f"Unknown weather condition: {state['weather']}")
+```python
+def weather_routing(state: State) -> str:
+if state["weather"] == "rainy":
+return "rainy"
+elif state["weather"] == "sunny":
+return "sunny"
+raise ValueError(f"Unknown weather condition: {state['weather']}")
 
-  graph_builder.add_conditional_edges("weather_node", weather_routing, ["rainy", "sunny"])
-  ```
+graph_builder.add_conditional_edges("weather_node", weather_routing, ["rainy", "sunny"])
+```
 - **Say this in an interview**: "A routing function is just a state → string mapping, so any decision — an LLM classification, a regex, a business rule — can drive the branch, and an unhandled case should raise loudly rather than fall through silently."
 
 ```mermaid
@@ -123,36 +123,36 @@ flowchart TD
 
 ---
 
-### 1.4 `Command` — combined routing + state update
+### 1.4 Command — combined routing + state update
 
 `Command` lets a node return a state update *and* pick the next node in one object, replacing a separate conditional-edge function for that transition.
 
 - **How it works**: `return Command(update={...}, goto="node_name")` — the type hint `Command[Literal["a", "b"]]` documents (and validates at compile time) every node this function can route to.
 - **Code** (`11_Command_Objects.ipynb`):
-  ```python
-  def check_temp_node(state: GraphState) -> Command[Literal["warn_user", "success"]]:
-      if state["temperature"] > 90:
-          return Command(update={"warning_sent": True}, goto="warn_user")
-      return Command(update={}, goto="success")
-  # no add_edge from check_temp_node needed — Command.goto handles it
-  ```
+```python
+def check_temp_node(state: GraphState) -> Command[Literal["warn_user", "success"]]:
+if state["temperature"] > 90:
+return Command(update={"warning_sent": True}, goto="warn_user")
+return Command(update={}, goto="success")
+# no add_edge from check_temp_node needed — Command.goto handles it
+```
 - **Say this in an interview**: "`Command` collapses 'what changed' and 'where next' into one return value, which is useful when the routing decision and the state update come from the same piece of logic and shouldn't be split across two functions."
 
 ---
 
-### 1.5 `TypedDict` vs. Pydantic `BaseModel` — when state validates itself
+### 1.5 TypedDict vs. Pydantic BaseModel — when state validates itself
 
 `TypedDict` state fields are type hints only — nothing enforces them at runtime. A Pydantic `BaseModel` is a drop-in replacement that validates every field the moment `.invoke()` is called.
 
 - **How it works**: with `TypedDict`, a bad type (an `int` where a `str` is annotated) sails past `graph.invoke()` and only fails once a node tries to use it. With `BaseModel`, `graph.invoke({"name": 123})` raises a `ValidationError` before any node runs.
 - **Code** (`08_Pydantic_State_Validation.ipynb`):
-  ```python
-  class PydanticState(BaseModel):
-      name: str          # enforced — ValidationError at graph.invoke() on bad input
+```python
+class PydanticState(BaseModel):
+name: str          # enforced — ValidationError at graph.invoke() on bad input
 
-  def greet_p(state: PydanticState) -> dict:
-      return {"name": f"Hello, {state.name}!"}   # attribute access, not state["name"]
-  ```
+def greet_p(state: PydanticState) -> dict:
+return {"name": f"Hello, {state.name}!"}   # attribute access, not state["name"]
+```
 - **Say this in an interview**: "TypedDict fails deep inside a node, Pydantic fails at the boundary — I use TypedDict for internal graphs I fully control, and switch to Pydantic the moment input comes from a user or API."
 
 ---
@@ -163,17 +163,17 @@ A node can declare a second parameter to receive either `RunnableConfig` (LangCh
 
 - **How it works**: LangGraph inspects the node's signature and passes `config`/`runtime` automatically when declared; `Runtime[ContextSchema]` additionally type-checks the context dataclass.
 - **Code** (`09_Node_Patterns.ipynb`, `10_Runtime_Context.ipynb`):
-  ```python
-  from langgraph.runtime import Runtime
-  from dataclasses import dataclass
+```python
+from langgraph.runtime import Runtime
+from dataclasses import dataclass
 
-  @dataclass
-  class ContextSchema:
-      user_id: str
+@dataclass
+class ContextSchema:
+user_id: str
 
-  def context_access_node(state: GraphState, runtime: Runtime[ContextSchema]) -> dict:
-      return {"greeting": f"Hello, {runtime.context.user_id}"}
-  ```
+def context_access_node(state: GraphState, runtime: Runtime[ContextSchema]) -> dict:
+return {"greeting": f"Hello, {runtime.context.user_id}"}
+```
 - **Say this in an interview**: "Config and context carry per-call settings — a user id, a feature flag, a language preference — that shouldn't be checkpointed as conversation state, and shouldn't be crammed into `configurable`, which LangGraph reserves for the checkpointer's own `thread_id`/`checkpoint_id`."
 
 ---
@@ -184,14 +184,14 @@ By default a `StateGraph` has one schema, so every internal bookkeeping field le
 
 - **How it works**: `OverallState` (what nodes read/write) inherits from `InputState`, `PrivateState`, and `OutputState`; `StateGraph(state_schema=OverallState, input_schema=InputState, output_schema=OutputState)` restricts what crosses the API boundary.
 - **Code** (`01_Advanced_State.ipynb`):
-  ```python
-  class InputState(TypedDict):   question: str
-  class PrivateState(TypedDict): llm_calls: int     # never sent or returned
-  class OutputState(TypedDict):  answer: str
-  class OverallState(InputState, PrivateState, OutputState): pass
+```python
+class InputState(TypedDict):   question: str
+class PrivateState(TypedDict): llm_calls: int     # never sent or returned
+class OutputState(TypedDict):  answer: str
+class OverallState(InputState, PrivateState, OutputState): pass
 
-  workflow = StateGraph(state_schema=OverallState, input_schema=InputState, output_schema=OutputState)
-  ```
+workflow = StateGraph(state_schema=OverallState, input_schema=InputState, output_schema=OutputState)
+```
 - **Say this in an interview**: "A single shared schema is fine for a demo — the moment a graph has a real caller, split input/output from internal state so a call counter or a scratch field doesn't become part of your public contract."
 
 ---
@@ -202,18 +202,19 @@ An "augmented LLM" calls a tool once; an **agent** wraps that in a loop — `age
 
 - **How it works**: `should_continue` inspects the last message for `tool_calls`; if present, route to a `ToolNode` and loop back to the agent; otherwise end. A tool that catches its own exception and returns a string keeps the failure inside the conversation instead of crashing the graph.
 - **Code** (`12_Tool_Calling_with_Error_Handling.ipynb`):
-  ```python
-  @tool
-  def divide(a: int, b: int) -> str:
-      try:
-          return str(a / b)
-      except ZeroDivisionError as e:
-          return f"Error: {e}"       # LLM sees this and can recover in-conversation
 
-  def should_continue(state: AgentState) -> Literal["tools", "end"]:
-      last = state["messages"][-1]
-      return "tools" if getattr(last, "tool_calls", None) else "end"
-  ```
+```python
+@tool
+def divide(a: int, b: int) -> str:
+try:
+return str(a / b)
+except ZeroDivisionError as e:
+return f"Error: {e}"       # LLM sees this and can recover in-conversation
+
+def should_continue(state: AgentState) -> Literal["tools", "end"]:
+last = state["messages"][-1]
+return "tools" if getattr(last, "tool_calls", None) else "end"
+```
 - **Say this in an interview**: "A tool that raises kills the graph run; a tool that catches and returns a descriptive string turns the failure into another message the model can react to — that's the difference between a crash and a graceful degrade."
 
 ```mermaid
@@ -232,15 +233,15 @@ A **checkpointer** saves a full snapshot of state after every node runs; a **thr
 
 - **How it works**: `graph.compile(checkpointer=...)` turns any graph stateful. `MemorySaver` is fast but gone on process exit; `SqliteSaver`/`PostgresSaver` share the same interface and survive restarts. `app.get_state(config)` reads the latest snapshot; `app.get_state_history(config)` walks every one, newest first.
 - **Code** (`01_Checkpointing.ipynb`):
-  ```python
-  from langgraph.checkpoint.sqlite import SqliteSaver
+```python
+from langgraph.checkpoint.sqlite import SqliteSaver
 
-  with SqliteSaver.from_conn_string(db_path) as saver:
-      app = graph.compile(checkpointer=saver)
-      config = {"configurable": {"thread_id": "persistent-user"}}
-      app.invoke({"messages": [HumanMessage("Remember: code ALPHA-7")]}, config)
-  # a brand-new SqliteSaver session against the same db_path can still recall it
-  ```
+with SqliteSaver.from_conn_string(db_path) as saver:
+app = graph.compile(checkpointer=saver)
+config = {"configurable": {"thread_id": "persistent-user"}}
+app.invoke({"messages": [HumanMessage("Remember: code ALPHA-7")]}, config)
+# a brand-new SqliteSaver session against the same db_path can still recall it
+```
 - **Say this in an interview**: "Two calls with the same `thread_id` share history; different `thread_id`s are fully independent — swapping `MemorySaver` for `SqliteSaver`/`PostgresSaver` is a one-line change because both implement the same checkpointer interface."
 
 <details>
@@ -270,22 +271,22 @@ flowchart LR
 
 ---
 
-### 1.10 Human-in-the-loop — `interrupt()` mechanics and the resume lifecycle
+### 1.10 Human-in-the-loop — interrupt() mechanics and the resume lifecycle
 
 `interrupt()` pauses execution *from inside a node*, hands a payload to the caller, and waits; `Command(resume=value)` supplies the human's answer and continues from exactly that point.
 
 - **How it works**: `interrupt(payload)` raises internally and surfaces `payload` on `result["__interrupt__"]`; the checkpointer holds the paused state. `interrupt_before=[...]`/`interrupt_after=[...]` are the compile-time alternative — no code change inside the node, just a pause between two named nodes.
 - **Code** (`01_HITL_Mechanics.ipynb`):
-  ```python
-  def human_node(state: State):
-      value = interrupt({"text_to_revise": state["some_text"]})  # pauses here
-      return {"some_text": value}                                 # runs on resume
+```python
+def human_node(state: State):
+value = interrupt({"text_to_revise": state["some_text"]})  # pauses here
+return {"some_text": value}                                 # runs on resume
 
-  graph = graph_builder.compile(checkpointer=InMemorySaver())
-  result = graph.invoke({"some_text": "original text"}, config)
-  # result["__interrupt__"] -> [{"text_to_revise": "original text"}]
-  final = graph.invoke(Command(resume="Edited text"), config)
-  ```
+graph = graph_builder.compile(checkpointer=InMemorySaver())
+result = graph.invoke({"some_text": "original text"}, config)
+# result["**interrupt**"] -> [{"text_to_revise": "original text"}]
+final = graph.invoke(Command(resume="Edited text"), config)
+```
 - **Say this in an interview**: "`interrupt()` needs a checkpointer to survive the pause — without one there's no saved state to resume from — and a node can call `interrupt()` repeatedly in a loop to re-prompt until it gets valid human input."
 
 <details>
@@ -329,13 +330,13 @@ sequenceDiagram
 
 - **How it works**: `interrupt_before=["assistant"]` pauses every turn before the LLM node runs; `graph.update_state(thread, {...})` lets you rewrite a human message while paused, so the agent responds to the edited version instead of the original; wrapping a tool's own body in `interrupt()` gates that one action specifically.
 - **Code** (`02_HITL_Patterns.ipynb`):
-  ```python
-  graph = builder.compile(interrupt_before=["assistant"], checkpointer=memory)
-  # ... graph pauses before every assistant turn ...
-  graph.update_state(thread, {"messages": [HumanMessage("No, please multiply 15 and 6")]})
-  for event in graph.stream(None, thread, stream_mode="values"):   # resumes with the edit
-      event['messages'][-1].pretty_print()
-  ```
+```python
+graph = builder.compile(interrupt_before=["assistant"], checkpointer=memory)
+# ... graph pauses before every assistant turn ...
+graph.update_state(thread, {"messages": [HumanMessage("No, please multiply 15 and 6")]})
+for event in graph.stream(None, thread, stream_mode="values"):   # resumes with the edit
+event['messages'][-1].pretty_print()
+```
 - **Say this in an interview**: "Approval, editing, and reviewable tool calls are the same primitive — pause and resume — applied at three different points: before a whole turn, on the state itself, or inside one specific tool."
 
 ---
@@ -346,16 +347,16 @@ A **subgraph** is a compiled `StateGraph` used as a node inside a parent graph. 
 
 - **How it works**: `main_graph.add_node("subgraph", subgraph)` works with zero glue code if both graphs use `MessagesState`. If the parent's key is named differently (e.g. `parent_messages`), a wrapper node calls `subgraph.invoke(...)` explicitly and copies the result back onto the parent's own key.
 - **Code** (`01_Subgraphs.ipynb`):
-  ```python
-  # Shared key name -> direct composition, no glue:
-  main_graph.add_node("subgraph", subgraph)          # subgraph shares MessagesState
+```python
+# Shared key name -> direct composition, no glue:
+main_graph.add_node("subgraph", subgraph)          # subgraph shares MessagesState
 
-  # Different key name -> explicit invocation + copy-back:
-  def invoke_subgraph(state: MessagesState):          # parent's own (different) schema
-      out = subgraph.invoke({"messages": state["parent_messages"]})
-      state["parent_messages"] = out["messages"]
-      return state
-  ```
+# Different key name -> explicit invocation + copy-back:
+def invoke_subgraph(state: MessagesState):          # parent's own (different) schema
+out = subgraph.invoke({"messages": state["parent_messages"]})
+state["parent_messages"] = out["messages"]
+return state
+```
 - **Say this in an interview**: "Subgraphs compose for free when the schemas share field names; the moment they don't, you write one wrapper node that translates keys at the boundary — that's the entire integration cost."
 
 ```mermaid
@@ -378,36 +379,36 @@ flowchart TB
 
 - **How it works**: converting a node to `async def` and calling `await model.ainvoke(...)` is the only change needed — graph structure stays identical. `stream_mode="updates"` yields one dict per finished node (good for "which step is it on"); `stream_mode="messages"` yields individual `AIMessageChunk` tokens (good for a typing effect), and chunks support `+` to reassemble the full message. `04_LLM_Powered_Chatbot.ipynb` first draws this same `invoke()` (blocks for the full response) vs. `stream()` (partial output as it's generated) distinction on a plain chatbot, before this notebook adds the async half.
 - **Code** (`01_Async_and_Streaming.ipynb`):
-  ```python
-  async def call_model(state: MessagesState):
-      response = await model.ainvoke(state["messages"])   # was: model.invoke(...)
-      return {"messages": [response]}
+```python
+async def call_model(state: MessagesState):
+response = await model.ainvoke(state["messages"])   # was: model.invoke(...)
+return {"messages": [response]}
 
-  gathered = None
-  async for msg, metadata in graph.astream(inputs, stream_mode="messages", config=config):
-      if isinstance(msg, AIMessageChunk):
-          gathered = msg if gathered is None else gathered + msg
-  ```
+gathered = None
+async for msg, metadata in graph.astream(inputs, stream_mode="messages", config=config):
+if isinstance(msg, AIMessageChunk):
+gathered = msg if gathered is None else gathered + msg
+```
 - **Say this in an interview**: "`ainvoke` is what you call from an async web handler so one slow request doesn't block others on the same process; `stream_mode` is a separate axis — pick `updates` for step-level progress UI, `messages` for token-level typing effects."
 
 ---
 
-### 1.14 Concurrency control for agent fan-out — `gather`, `TaskGroup`, and `Semaphore`
+### 1.14 Concurrency control for agent fan-out — gather, TaskGroup, and Semaphore
 
 An agent that calls three independent tools sequentially pays for all three latencies; running them concurrently with `asyncio.gather`/`TaskGroup` collapses that to roughly the slowest single call.
 
 - **How it works**: sequential `await`s serialize independent work; `asyncio.gather(*coros)` runs them concurrently. Unbounded fan-out gets you rate-limited fast, so a `Semaphore` caps how many calls run at once.
 - **Code** (`02_Async_Patterns_for_Agentic_Systems.ipynb`):
-  ```python
-  async def truly_async_agent():
-      r1 = await fake_llm("plan")
-      r2, r3, r4 = await asyncio.gather(       # 3 independent tools run concurrently
-          web_search("q"), vector_search("q"), sql_query("q"),
-      )
-      r5 = await fake_llm("summarise")
-      return r1, r2, r3, r4, r5
-  # measured: sync-style ~15s for a 5-step agent vs. async fan-out ~max single step
-  ```
+```python
+async def truly_async_agent():
+r1 = await fake_llm("plan")
+r2, r3, r4 = await asyncio.gather(       # 3 independent tools run concurrently
+web_search("q"), vector_search("q"), sql_query("q"),
+)
+r5 = await fake_llm("summarise")
+return r1, r2, r3, r4, r5
+# measured: sync-style ~15s for a 5-step agent vs. async fan-out ~max single step
+```
 - **Say this in an interview**: "Fanning out independent tool calls with `gather` turns a sum-of-latencies budget into a max-of-latencies budget — the plan and summarize calls stay sequential because each depends on the previous step's output, but the three lookups in the middle don't depend on each other."
 
 <details>
@@ -449,21 +450,21 @@ flowchart TD
 
 ---
 
-### 1.15 `RetryPolicy` — declarative, node-level retries with backoff and jitter
+### 1.15 RetryPolicy — declarative, node-level retries with backoff and jitter
 
 `RetryPolicy` attaches automatic retry behavior to a single node at graph-construction time, so a flaky call doesn't need hand-written `try`/`except` retry logic inside the node itself.
 
 - **How it works**: on a matching exception, LangGraph waits `initial_interval * backoff_factor^attempt` (capped at `max_interval`), optionally randomized by `jitter`, and retries up to `max_attempts` times; `retry_on` scopes retries to specific exception types so unrelated errors propagate immediately.
 - **Code** (`01_Retries.ipynb`):
-  ```python
-  builder.add_node(
-      "fetch_weather", fetch_weather,
-      retry_policy=RetryPolicy(
-          max_attempts=5, initial_interval=1.0, backoff_factor=2.0,
-          max_interval=10.0, jitter=True, retry_on=APIError,
-      ),
-  )
-  ```
+```python
+builder.add_node(
+"fetch_weather", fetch_weather,
+retry_policy=RetryPolicy(
+max_attempts=5, initial_interval=1.0, backoff_factor=2.0,
+max_interval=10.0, jitter=True, retry_on=APIError,
+),
+)
+```
 - **Say this in an interview**: "Exponential backoff without jitter means every caller retrying the same failure wakes up at the same instant and re-floods the service — `jitter=True` randomizes the wait so retries spread out instead of synchronizing into a second thundering herd."
 
 ---
@@ -474,25 +475,25 @@ Retries help with transient blips; a **circuit breaker** stops hammering a servi
 
 - **How it works**: the circuit breaker tracks a `closed → open → half-open` state machine — too many recent failures trips it `open` (calls rejected immediately, no real service hit); after `recovery_timeout`, one probe call is let through `half-open` to test recovery. A fallback chain tries models in priority order and caches successful responses so a repeated query short-circuits for free.
 - **Code** (`02_Manual_Reliability_Patterns.ipynb`):
-  ```python
-  class CircuitBreaker:
-      def call(self, func, *a, **kw):
-          if self.state == "open":
-              if time.time() - self.last_failure_time > self.recovery_timeout:
-                  self.state = "half-open"
-              else:
-                  raise Exception("Circuit breaker is OPEN")
-          try:
-              result = func(*a, **kw)
-              if self.state == "half-open":
-                  self.state, self.failures = "closed", 0   # full reset on ONE success
-              return result
-          except Exception as e:
-              self.failures += 1
-              if self.failures >= self.failure_threshold:
-                  self.state = "open"
-              raise
-  ```
+```python
+class CircuitBreaker:
+def call(self, func, *a, **kw):
+if self.state == "open":
+if time.time() - self.last_failure_time > self.recovery_timeout:
+self.state = "half-open"
+else:
+raise Exception("Circuit breaker is OPEN")
+try:
+result = func(*a, **kw)
+if self.state == "half-open":
+self.state, self.failures = "closed", 0   # full reset on ONE success
+return result
+except Exception as e:
+self.failures += 1
+if self.failures >= self.failure_threshold:
+self.state = "open"
+raise
+```
 - **Say this in an interview**: "A circuit breaker trades a slow failure for a fast one — once it's open, calls fail in microseconds instead of waiting out a timeout, which protects both the caller's latency budget and the struggling downstream service."
 
 ---
@@ -503,16 +504,16 @@ A cycle in LangGraph is nothing more than a conditional edge whose "not done" br
 
 - **How it works**: `generate → validate → (loop back to generate | finalize)` retries on a failing test case; `research → generate_questions → (loop back to research | synthesize)` uses the identical loop-back wiring to go deeper instead of to retry. Both guard the loop with a counter checked in the routing function.
 - **Code** (`01_Cycles_and_Loops.ipynb`):
-  ```python
-  def should_continue(state: CodeGenState) -> Literal["generate", "end"]:
-      if state["success"]:
-          return "end"
-      elif state["iteration"] >= state["max_iterations"]:   # the guard
-          return "end"
-      return "generate"                                      # loop back
+```python
+def should_continue(state: CodeGenState) -> Literal["generate", "end"]:
+if state["success"]:
+return "end"
+elif state["iteration"] >= state["max_iterations"]:   # the guard
+return "end"
+return "generate"                                      # loop back
 
-  graph.add_conditional_edges("validate", should_continue, {"generate": "generate", "end": "finalize"})
-  ```
+graph.add_conditional_edges("validate", should_continue, {"generate": "generate", "end": "finalize"})
+```
 - **Say this in an interview**: "A cycle is just a graph edge pointing backward — the interesting engineering is entirely in the guard condition, because the graph itself will happily loop forever without one."
 
 ```mermaid
@@ -531,24 +532,24 @@ flowchart LR
 
 - **How it works**: a Pydantic model constrains the classifier's output to a fixed set of categories, so the routing function branches on `state["category"]` with type safety instead of parsing free text; sentiment is classified the same way to trigger an escalation path for angry customers.
 - **Code** (`01_Router_Agentic_RAG_System.ipynb`):
-  ```python
-  class QueryCategory(BaseModel):
-      category: Literal["billing", "technical", "general"]
+```python
+class QueryCategory(BaseModel):
+category: Literal["billing", "technical", "general"]
 
-  class QuerySentiment(BaseModel):
-      sentiment: Literal["positive", "neutral", "negative"]
+class QuerySentiment(BaseModel):
+sentiment: Literal["positive", "neutral", "negative"]
 
-  def analyze_inquiry_sentiment(state: CustomerSupportState) -> dict:
-      result = llm.with_structured_output(QuerySentiment).invoke(state["inquiry"])
-      return {"sentiment": result.sentiment}
-  ```
+def analyze_inquiry_sentiment(state: CustomerSupportState) -> dict:
+result = llm.with_structured_output(QuerySentiment).invoke(state["inquiry"])
+return {"sentiment": result.sentiment}
+```
 - **Say this in an interview**: "Structured output turns a routing decision into a typed field instead of a string you have to parse defensively — the router's conditional edge trusts `category` exactly the way `weather_routing` trusts `state['weather']`, just produced by an LLM instead of a human."
 
 ---
 
 ## 2. Gotchas
 
-**`TypedDict` lets bad types travel deep before failing**
+`TypedDict`** lets bad types travel deep before failing**
 - **Symptom**: `typeddict_graph.invoke({"name": 123})` runs every node with no error, then raises a `TypeError` only when a node tries `name + " How are you?"` — an int has no string concatenation, so it fails deep inside node logic, not at the graph boundary.
 - **Cause**: `TypedDict` annotations are documentation only; LangGraph passes whatever dict values it's given straight into nodes.
 - **Fix**: switch the state schema to a Pydantic `BaseModel` for any graph that takes external input — `ValidationError` then fires at `graph.invoke()`, before any node runs.
@@ -560,13 +561,13 @@ flowchart LR
 - **Fix**: annotate the field with an accumulating reducer, `Annotated[list, add_messages]` for chat history or `Annotated[list, operator.add]` for any other list.
 - **Interview angle**: "Your chatbot forgot what the user said two turns ago — what's the first thing you check in the state schema?"
 
-**Interrupt resume re-runs the whole node, not just the code after `interrupt()`**
+**Interrupt resume re-runs the whole node, not just the code after **`interrupt()`
 - **Symptom**: a node that prints before calling `interrupt()` prints that line *twice* — once on the initial call, once again on `Command(resume=...)`.
 - **Cause**: LangGraph resumes an interrupted node by re-executing it from the top with the saved state; only the `interrupt()` call itself returns a different value (the human's input) on the second pass.
 - **Fix**: keep everything before an `interrupt()` call read-only/idempotent, or move side-effecting work after the interrupt point (or into its own node) so a resume never repeats it.
 - **Interview angle**: "Your human-in-the-loop node calls a billing API before pausing for approval — what happens on resume, and how do you fix it?"
 
-**`asyncio.gather(..., return_exceptions=True)` doesn't cancel its siblings on failure**
+`asyncio.gather(..., return_exceptions=True)`** doesn't cancel its siblings on failure**
 - **Symptom**: one tool call raises, but a second, unrelated in-flight call keeps running for its full duration instead of stopping.
 - **Cause**: `gather` collects results (or exceptions) as each coroutine finishes on its own; it has no structured-concurrency link between siblings, so nothing tells the others to stop.
 - **Fix**: use `asyncio.TaskGroup()` for agent tool fan-out — one member raising cancels every other task in the group automatically, surfaced as an `ExceptionGroup` caught with `except*`.
@@ -584,13 +585,13 @@ flowchart LR
 - **Fix**: check an iteration/depth counter in the same routing function that checks success, and route to a terminal node once either condition is met (LangGraph does back this with a hard default `recursion_limit` — around 25 super-steps by default, raising `GraphRecursionError` — but that's a safety net, not a substitute for a real guard).
 - **Interview angle**: "Your self-correcting agent loops on 3% of tasks that can never pass validation — how do you guarantee it terminates?"
 
-**A circuit breaker's `half-open` state fully resets on one success**
+**A circuit breaker's **`half-open`** state fully resets on one success**
 - **Symptom**: after tripping `open` from repeated failures, a single successful probe call resets the failure counter straight to zero — the breaker has no memory of how close it was to tripping again.
 - **Cause**: the `half-open → closed` transition in the reference implementation sets `self.failures = 0` unconditionally on any success, discarding the failure history entirely.
 - **Fix**: for a service that's flapping rather than fully down, track a rolling failure rate instead of an absolute counter that resets to zero on any single success.
 - **Interview angle**: "Your circuit breaker keeps flapping open/closed against a degraded-but-not-dead service — why, and what would you change?"
 
-**App-level context doesn't belong in `configurable` alongside checkpointer keys**
+**App-level context doesn't belong in **`configurable`** alongside checkpointer keys**
 - **Symptom**: stuffing a `user_id` or feature flag into `config["configurable"]` next to `thread_id` works today, but the notebook's own migration note flags it as the wrong place going forward.
 - **Cause**: LangGraph reserves `configurable` for the checkpointer's own addressing keys (`thread_id`, `checkpoint_id`); anything else sharing that namespace risks colliding with future checkpointer keys.
 - **Fix**: carry app-level runtime context through `context=` + a typed `Runtime[ContextSchema]` node parameter instead, keeping `configurable` exclusively the checkpointer's.
@@ -600,41 +601,41 @@ flowchart LR
 
 ## 3. Tradeoffs
 
-### State schema: `TypedDict` vs. Pydantic `BaseModel`
+### State schema: TypedDict vs. Pydantic BaseModel
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `TypedDict` | No runtime validation; bad input fails deep in a node | Lower overhead, dict-style access | Internal graphs, notebooks, you control every input |
 | Pydantic `BaseModel` | Slightly higher overhead; nodes must return dicts, never mutate | Fail-fast `ValidationError` at `invoke()` | Externally-facing graphs, user or API input |
 
 **The one-liner**: "TypedDict is fine until the input stops being yours to control — that's the exact moment to switch to Pydantic."
 
-### Checkpointer: `MemorySaver` vs. `SqliteSaver`/`PostgresSaver`
+### Checkpointer: MemorySaver vs. SqliteSaver/PostgresSaver
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `MemorySaver` | Wiped on process restart, single-process only | Zero setup, fastest iteration | Local dev, tests, a demo |
 | `SqliteSaver` / `PostgresSaver` | A real datastore to run and manage | Survives restarts, shareable across processes | Anything a user will actually resume tomorrow |
 
 **The one-liner**: "`MemorySaver` is a demo default — the moment a conversation needs to survive a restart or a second process, you're on a durable checkpointer."
 
-### Interrupt style: runtime `interrupt()` vs. compile-time `interrupt_before`/`interrupt_after`
+### Interrupt style: runtime interrupt() vs. compile-time interrupt_before/interrupt_after
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `interrupt()` inside a node | Code change inside the node; whole node re-runs on resume | Fine-grained control — pause mid-logic, validate in a loop | The pause point depends on data computed inside the node |
 | `interrupt_before`/`interrupt_after` | Only pauses between whole nodes | Zero code change inside the node itself | The pause point is always "before/after this node," full stop |
 
 **The one-liner**: "Compile-time interrupts are the right default for a fixed approval gate; reach for `interrupt()` only when the decision to pause depends on something the node just computed."
 
-### Agent fan-out: `asyncio.gather` vs. `asyncio.TaskGroup`
+### Agent fan-out: asyncio.gather vs. asyncio.TaskGroup
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `gather(..., return_exceptions=True)` | No sibling cancellation — a failed call leaves others running | Simple, works on any Python 3.x, one flat result list | You genuinely want every result regardless of individual failures |
 | `TaskGroup` (3.11+) | Requires Python 3.11+, `except*`/`ExceptionGroup` syntax | Structured concurrency — one failure cancels every sibling | Fanning out real tool calls where a stray in-flight call has cost or risk |
 
 **The one-liner**: "`gather` collects results independently; `TaskGroup` treats the whole fan-out as one unit of work that fails together — pick the second one the moment 'still running after a sibling failed' would be a problem."
 
-### Reliability: `RetryPolicy` vs. manual patterns (circuit breaker, fallback chain)
+### Reliability: RetryPolicy vs. manual patterns (circuit breaker, fallback chain)
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `RetryPolicy` | Only handles retry-and-hope; no cross-call memory of a service being *down* | Zero extra code — a `retry_policy=` kwarg on `add_node` | Transient, independent failures (timeouts, rate limits) |
 | Circuit breaker / fallback chain | You build and maintain state-machine/chain logic yourself | Stops hammering a dead service; degrades to another model instead of failing | A dependency can be *consistently* down, or you have a fallback worth trying |
 
@@ -642,7 +643,7 @@ flowchart LR
 
 ### Loop shape: retry-until-valid vs. iterative refinement
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Retry-until-valid (`generate → validate → loop`) | Terminates on a pass/fail signal only | Corrects a concrete, checkable failure (a failing test, a syntax error) | There's an objective validator to loop against |
 | Iterative refinement (`research → question → loop`) | No pass/fail signal — must terminate on depth alone | Produces progressively deeper output with no "correct" endpoint | The task has no binary success condition, only "more" |
 
@@ -650,7 +651,7 @@ flowchart LR
 
 ### Subgraph composition: shared schema vs. wrapper node
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Shared state schema (e.g. both use `MessagesState`) | The subgraph must adopt the parent's exact field names | Zero glue code — `add_node("sub", subgraph)` just works | Building the subgraph specifically for this parent |
 | Wrapper node translating keys | One extra node, extra invoke/copy-back logic | The subgraph stays reusable across parents with different schemas | The subgraph is meant to be dropped into multiple, differently-shaped parents |
 
@@ -658,7 +659,7 @@ flowchart LR
 
 ### Routing input: raw state field vs. LLM structured-output classification
 | Option | Costs you | Buys you | Pick when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Raw state field (e.g. `state["weather"]`) | Someone upstream must have already produced a clean, typed value | Deterministic, free, instant routing | The routing signal already exists as clean data |
 | LLM structured-output classification (`with_structured_output`) | An extra model call, plus its latency and cost, on every routed request | Can route on judgment (sentiment, intent) that no upstream system computed | The routing signal requires understanding free-text input |
 
@@ -669,25 +670,25 @@ flowchart LR
 ## 4. Top 10 interview questions: real-time agentic system design
 
 1. **"What's the difference between LangGraph's checkpointer and a cross-thread Store, and when do you use each?"**
-   The checkpointer is short-term, within-thread memory — it saves the full graph state after every step, scoped by `thread_id`, so one conversation can resume. A Store is long-term, cross-thread memory for facts that should persist across different conversations with the same user. Use the checkpointer for "resume this exact run," the Store for "remember this user forever." — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
-2. **"Your agent process crashes mid-run — how does resume actually work, and what doesn't survive the crash?"**
-   Resume re-enters at the node after the last saved checkpoint, without replaying already-completed work — but checkpoints recover *state*, not side effects already sent to the outside world. Any tool call that hit a real API before the crash may or may not have completed, so external actions need their own idempotency keys so a resumed run's retry doesn't duplicate them. — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
-3. **"Design the human escalation path for an agent that can take irreversible actions — what has to be in the handoff?"**
-   Escalate on policy-driven triggers (irreversible/high-value actions, repeated verification failures, budget exhaustion), not the agent's own judgment about when it's stuck. The handoff packet needs the original goal as an immutable copy, a side-effect ledger with external IDs, and the system's own classification of why it escalated — not the agent's self-reported explanation, which can be wrong exactly when escalation matters most. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
-4. **"What stops an agentic loop from running forever, and what breaks if you only implement one of the guards?"**
-   Production loops need three independent terminal paths: goal satisfaction (an externally checkable success condition), budget exhaustion (a hard step/token/time cap), and guard activation (loop or stagnation detection). Implement only the first and a task that can never succeed hangs forever; only the second and it burns a full budget on something that became impossible at step two; only the third and it never finishes cleanly on a slow-but-legitimate run. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
-5. **"You have nested retries at the model-call, tool-call, and step level — what's the worst-case wall-clock time?"**
-   Nested attempts multiply: worst-case time is roughly `steps × step_retries × call_retries × call_timeout`, plus accumulated backoff — a 30s call timeout with 3 SDK attempts, 2 step retries, across 40 steps, is over two hours worst case. Bound it by propagating an absolute deadline (not a duration) down through every layer, and reserve 10-20% of the task budget for wind-down. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
-6. **"How do you tell an agent stuck in exact repetition apart from one that's stagnating or cycling — and what do you do about each?"**
-   Exact repetition is the same tool call with the same arguments; stagnation is different actions producing no observable progress; cycling is alternating between conflicting states — each needs its own detector, since they have different root causes. Respond on a graduated ladder: inform the agent with explicit feedback first, then constrain its available choices, then escalate or terminate if the pattern persists. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
-7. **"LangGraph's default recursion limit trips at around 25 super-steps — what does that error actually mean, and is raising the limit the fix?"**
-   `GraphRecursionError` fires when a run exceeds the configured `recursion_limit` (a super-step count, not a token or wall-clock limit), almost always because a conditional edge routes back to itself with no path to `END`. Raising the limit just delays the same failure; the real fix is an iteration/depth counter checked in the routing function itself, with the recursion limit kept as a backstop, not the primary guard. — [LangGraph GraphRecursionError — Causes, Fix & Prevention, The Neural Base](https://theneuralbase.com/agents/errors/langgraph-graph-recursion-error/)
-8. **"Fan out three independent tool calls from an agent node — `gather` or `TaskGroup`, and why?"**
-   `TaskGroup` (Python 3.11+) is structured concurrency: if one task raises, every sibling task in the group is cancelled automatically, and the group surfaces failures as an `ExceptionGroup` caught with `except*`. Plain `gather` has no such link between siblings — a failed call doesn't stop the others, which matters when "still running" means "still spending money or holding a resource." — [asyncio.gather vs asyncio.wait vs asyncio.TaskGroup, Codemia](https://codemia.io/knowledge-hub/path/asynciogather_vs_asynciowait_vs_asynciotaskgroup)
-9. **"How do you fan a task out to N parallel workers in LangGraph and merge their results back?"**
-   Use the `Send` API to dispatch a variable number of parallel invocations of the same node (`Send("worker", payload)` per item), each producing a partial update that a reducer on the shared state field merges back together — the map-reduce pattern for an unknown-at-compile-time number of branches. — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
-10. **"Your chat UI needs a typing effect, not a spinner — which LangGraph stream mode, and what do you avoid leaking?"**
-    `stream_mode="messages"` yields individual LLM tokens as they're generated, which is what a typing effect needs — as opposed to `stream_mode="values"` (full state after every step) or `"updates"` (per-node deltas), both of which risk leaking internal state fields to a client that should only ever see the model's own output tokens. — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
+The checkpointer is short-term, within-thread memory — it saves the full graph state after every step, scoped by `thread_id`, so one conversation can resume. A Store is long-term, cross-thread memory for facts that should persist across different conversations with the same user. Use the checkpointer for "resume this exact run," the Store for "remember this user forever." — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
+1. **"Your agent process crashes mid-run — how does resume actually work, and what doesn't survive the crash?"**
+Resume re-enters at the node after the last saved checkpoint, without replaying already-completed work — but checkpoints recover *state*, not side effects already sent to the outside world. Any tool call that hit a real API before the crash may or may not have completed, so external actions need their own idempotency keys so a resumed run's retry doesn't duplicate them. — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
+1. **"Design the human escalation path for an agent that can take irreversible actions — what has to be in the handoff?"**
+Escalate on policy-driven triggers (irreversible/high-value actions, repeated verification failures, budget exhaustion), not the agent's own judgment about when it's stuck. The handoff packet needs the original goal as an immutable copy, a side-effect ledger with external IDs, and the system's own classification of why it escalated — not the agent's self-reported explanation, which can be wrong exactly when escalation matters most. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
+1. **"What stops an agentic loop from running forever, and what breaks if you only implement one of the guards?"**
+Production loops need three independent terminal paths: goal satisfaction (an externally checkable success condition), budget exhaustion (a hard step/token/time cap), and guard activation (loop or stagnation detection). Implement only the first and a task that can never succeed hangs forever; only the second and it burns a full budget on something that became impossible at step two; only the third and it never finishes cleanly on a slow-but-legitimate run. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
+1. **"You have nested retries at the model-call, tool-call, and step level — what's the worst-case wall-clock time?"**
+Nested attempts multiply: worst-case time is roughly `steps × step_retries × call_retries × call_timeout`, plus accumulated backoff — a 30s call timeout with 3 SDK attempts, 2 step retries, across 40 steps, is over two hours worst case. Bound it by propagating an absolute deadline (not a duration) down through every layer, and reserve 10-20% of the task budget for wind-down. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
+1. **"How do you tell an agent stuck in exact repetition apart from one that's stagnating or cycling — and what do you do about each?"**
+Exact repetition is the same tool call with the same arguments; stagnation is different actions producing no observable progress; cycling is alternating between conflicting states — each needs its own detector, since they have different root causes. Respond on a graduated ladder: inform the agent with explicit feedback first, then constrain its available choices, then escalate or terminate if the pattern persists. — [Agent Reliability Engineering Design Guide, hidekazu-konishi.com](https://hidekazu-konishi.com/entry/agent_reliability_engineering_design_guide.html)
+1. **"LangGraph's default recursion limit trips at around 25 super-steps — what does that error actually mean, and is raising the limit the fix?"**
+`GraphRecursionError` fires when a run exceeds the configured `recursion_limit` (a super-step count, not a token or wall-clock limit), almost always because a conditional edge routes back to itself with no path to `END`. Raising the limit just delays the same failure; the real fix is an iteration/depth counter checked in the routing function itself, with the recursion limit kept as a backstop, not the primary guard. — [LangGraph GraphRecursionError — Causes, Fix & Prevention, The Neural Base](https://theneuralbase.com/agents/errors/langgraph-graph-recursion-error/)
+1. **"Fan out three independent tool calls from an agent node — **`gather`** or **`TaskGroup`**, and why?"**
+`TaskGroup` (Python 3.11+) is structured concurrency: if one task raises, every sibling task in the group is cancelled automatically, and the group surfaces failures as an `ExceptionGroup` caught with `except*`. Plain `gather` has no such link between siblings — a failed call doesn't stop the others, which matters when "still running" means "still spending money or holding a resource." — [asyncio.gather vs asyncio.wait vs asyncio.TaskGroup, Codemia](https://codemia.io/knowledge-hub/path/asynciogather_vs_asynciowait_vs_asynciotaskgroup)
+1. **"How do you fan a task out to N parallel workers in LangGraph and merge their results back?"**
+Use the `Send` API to dispatch a variable number of parallel invocations of the same node (`Send("worker", payload)` per item), each producing a partial update that a reducer on the shared state field merges back together — the map-reduce pattern for an unknown-at-compile-time number of branches. — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
+1. **"Your chat UI needs a typing effect, not a spinner — which LangGraph stream mode, and what do you avoid leaking?"**
+`stream_mode="messages"` yields individual LLM tokens as they're generated, which is what a typing effect needs — as opposed to `stream_mode="values"` (full state after every step) or `"updates"` (per-node deltas), both of which risk leaking internal state fields to a client that should only ever see the model's own output tokens. — [Top 35 LangGraph Interview Questions (2026), Interview Coder](https://www.interviewcoder.co/blog/langgraph-interview-questions)
 
 ---
 
@@ -700,7 +701,7 @@ flowchart LR
 1. The router notebook classifies inquiries with an LLM into fixed categories — how do you know the classifier is accurate? *(Build a labeled eval set of inquiries with a known-correct category/sentiment, measure accuracy per class, not just overall.)*
 2. When would you route on a raw state field instead of an LLM classification? *(When the signal already exists as clean data — don't pay a model call to re-derive something you already have.)*
 3. Your router misclassifies angry customers as "neutral" sentiment — where do you look first? *(The classifier's prompt/schema and a labeled sample of misses — not the routing edge, which just trusts whatever category comes in.)*
-4. `RetryPolicy` retried a node 5 times before giving up — how does that show up in latency, and how do you budget for it? *(Worst case is `max_attempts` × backoff-summed delay; that has to fit inside your end-to-end latency SLA, not be additive on top of it.)*
+4. `RetryPolicy` retried a node 5 times before giving up — how does that show up in latency, and how do you budget for it? *(Worst case is *`max_attempts`* × backoff-summed delay; that has to fit inside your end-to-end latency SLA, not be additive on top of it.)*
 5. Streaming `stream_mode="messages"` vs. `"updates"` — which would you pick to show a user "searching knowledge base..." between tool calls? *("updates" — it's per-node, so you get a signal exactly when a named step finishes, not a token stream to parse for state changes.)*
 6. Pydantic state validation failed at `graph.invoke()` in production — is that a bug or working as intended? *(Working as intended — that's the fail-fast boundary; the bug is whatever upstream sent bad input.)*
 7. You added a circuit breaker in front of your LLM calls — what metric tells you it's helping vs. hurting? *(Compare p95 latency and error rate with the breaker on vs. off; if it trips on healthy-but-slow periods, the threshold is too aggressive.)*
@@ -714,13 +715,13 @@ flowchart LR
 
 **What they probe**: whether your loops terminate, your tools fail safely, and your state survives a crash or a resume.
 
-1. Your self-correcting code-gen loop never terminates on an impossible task — what's missing? *(An iteration cap checked in the same routing function that checks `success`, independent of whether the task can ever pass.)*
+1. Your self-correcting code-gen loop never terminates on an impossible task — what's missing? *(An iteration cap checked in the same routing function that checks *`success`*, independent of whether the task can ever pass.)*
 2. A human-in-the-loop node calls a paid API before its `interrupt()` — what happens on resume? *(The whole node re-runs from the top, including that API call, a second time — move the side effect after the interrupt point.)*
-3. Design the tool-call review pattern for a tool with real side effects (e.g. sending an email). *(Wrap the tool body itself in `interrupt()`, surfacing the exact call/args for approval before execution, not after.)*
-4. One tool in a 4-way `TaskGroup` fan-out throws — what happens to the other three? *(All three are cancelled automatically via structured concurrency, unlike plain `gather`, which lets them keep running.)*
-5. Where do you store per-request context like a user id so a node can read it but it never gets checkpointed? *(`context=` + a typed `Runtime[ContextSchema]` parameter — not `config["configurable"]`, which is reserved for the checkpointer's own keys.)*
+3. Design the tool-call review pattern for a tool with real side effects (e.g. sending an email). *(Wrap the tool body itself in *`interrupt()`*, surfacing the exact call/args for approval before execution, not after.)*
+4. One tool in a 4-way `TaskGroup` fan-out throws — what happens to the other three? *(All three are cancelled automatically via structured concurrency, unlike plain *`gather`*, which lets them keep running.)*
+5. Where do you store per-request context like a user id so a node can read it but it never gets checkpointed? *(*`context=`* + a typed *`Runtime[ContextSchema]`* parameter — not *`config["configurable"]`*, which is reserved for the checkpointer's own keys.)*
 6. A subgraph you built for one parent silently does nothing when dropped into a new parent graph — why? *(The new parent's state uses different key names; subgraphs only auto-compose when schemas share field names — otherwise you need a wrapper node.)*
-7. How do you make a checkpointed agent survive a pod restart mid-run? *(Swap `MemorySaver` for `SqliteSaver`/`PostgresSaver` — same interface, and resume re-enters at the last saved checkpoint.)*
+7. How do you make a checkpointed agent survive a pod restart mid-run? *(Swap *`MemorySaver`* for *`SqliteSaver`*/*`PostgresSaver`* — same interface, and resume re-enters at the last saved checkpoint.)*
 8. When is a circuit breaker worse than just letting retries run? *(Against a service that's flapping rather than fully down — the breaker's single-success reset can mask a service that's about to fail again.)*
 
 **Take-home task**:
@@ -731,12 +732,12 @@ flowchart LR
 
 **What they probe**: whether you can stand a checkpointed, human-gated LangGraph system up inside a specific customer's constraints, fast.
 
-1. Customer wants approvals on every refund over $500 — where does the interrupt go, and how do you avoid double-processing on resume? *(`interrupt()` inside the refund tool itself, gated before the side-effecting call — never after — so resume never re-issues a refund already sent.)*
-2. Their infra team says no in-memory checkpointing in production — what changes? *(Swap to `PostgresSaver`; the graph and node code don't change, only the `compile(checkpointer=...)` argument.)*
-3. Customer's data can't leave their VPC for an LLM classification call — how do you adapt the router pattern? *(Swap in a self-hosted/in-VPC model for `with_structured_output`; the routing edge and schema don't change, only which model produces the classification.)*
+1. Customer wants approvals on every refund over $500 — where does the interrupt go, and how do you avoid double-processing on resume? *(*`interrupt()`* inside the refund tool itself, gated before the side-effecting call — never after — so resume never re-issues a refund already sent.)*
+2. Their infra team says no in-memory checkpointing in production — what changes? *(Swap to *`PostgresSaver`*; the graph and node code don't change, only the *`compile(checkpointer=...)`* argument.)*
+3. Customer's data can't leave their VPC for an LLM classification call — how do you adapt the router pattern? *(Swap in a self-hosted/in-VPC model for *`with_structured_output`*; the routing edge and schema don't change, only which model produces the classification.)*
 4. It works in your demo, but their support tickets never trigger the escalation path — how do you find out why? *(Pull real ticket examples through the sentiment classifier manually and compare against the customer's own definition of "angry" — the demo's threshold may not match their data.)*
 5. Customer asks for the agent to "never get stuck" — how do you respond? *(Translate that into concrete termination paths — a step cap, a token budget, a wall-clock deadline — and show what each one guards against; "never" isn't an engineering spec.)*
-6. Their support team needs to see agent progress live, not just a final answer — which streaming mode, and why? *(`stream_mode="updates"` surfaces named steps for a progress UI without leaking raw model tokens or full internal state.)*
+6. Their support team needs to see agent progress live, not just a final answer — which streaming mode, and why? *(*`stream_mode="updates"`* surfaces named steps for a progress UI without leaking raw model tokens or full internal state.)*
 7. Explain to a non-engineer why the agent sometimes pauses for a minute mid-conversation. *(It's paused at a human-in-the-loop approval gate waiting for someone to approve or reject an action — not stuck, and it will resume exactly where it left off.)*
 8. Walk me through a LangGraph deployment that went badly. *(A strong answer volunteers a concrete failure shape from these notebooks — e.g. a resumed node re-firing a side effect, or a cycle with no guard — not a vague "it was hard.")*
 

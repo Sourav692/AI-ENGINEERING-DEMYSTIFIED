@@ -157,6 +157,6 @@ cell_*.txt
 # this file's directory, so the bare folder name would match nothing here.
 # Git will not descend into an excluded directory, so directories must be
 # re-included before a negation on the files inside them can apply.
-15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/**
-!15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/**/
-!15_FDE_Related_Preparation/1. Complete GEN AI FDE Interview System — Core + GenAI/**/*.md
+14_Interview_Preparation/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/**
+!14_Interview_Preparation/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/**/
+!14_Interview_Preparation/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/**/*.md

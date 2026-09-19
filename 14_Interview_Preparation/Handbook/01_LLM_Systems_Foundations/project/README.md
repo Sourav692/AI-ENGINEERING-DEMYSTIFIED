@@ -97,4 +97,4 @@ agent_tool_calling_demo/
 | Logging/observability | `observability.ToolCallLogger` |
 | Parallel vs sequential tradeoffs | `docs/DESIGN.md` |
 
-See the companion tutorial: [`../tutorials/03_Agent_Tool_Calling_Loop.md`](../tutorials/03_Agent_Tool_Calling_Loop.md).
+See the companion tutorial: [`../14_Interview_Preparation/Study_Guides/03_Agent_Tool_Calling_Loop.md`](../14_Interview_Preparation/Study_Guides/03_Agent_Tool_Calling_Loop.md).

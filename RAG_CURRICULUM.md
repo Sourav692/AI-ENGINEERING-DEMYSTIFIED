@@ -794,8 +794,8 @@ All source links below point to the locations observed during planning. Update t
 [multimodal-m8]: 13_Projects/RAG_Systems_Projects/M8_Multimodal_RAG_System_with_GPT_4o.ipynb
 [evaluation-tutorial]: 07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/Tutorial_RAG_Agent_Tool_Evaluation/
 [evaluation-drills]: 07_Advanced_Agentic_Systems/Evaluation_and_Eval_Harnesses/RAG_Evaluation/DeepEval_Metrics/
-[enterprise-handbook]: 14_AI_Engineering_Handbook/04_Enterprise_RAG/project/
-[enterprise-interview]: 16_AI_Engineer_Interview_Preparation/Enterprise RAG Platform/
+[enterprise-handbook]: 14_Interview_Preparation/Handbook/04_Enterprise_RAG/project/
+[enterprise-interview]: 14_Interview_Preparation/AI_Engineer/Enterprise RAG Platform/
 [multi-query]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/a. Multi_Query.ipynb
 [rag-fusion]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/b. RAG_Fusion.ipynb
 [step-back]: 04_Retrieval_and_RAG/04_Query_Transformation_Techniques/1. Rewriting or Query Expansion/c. Step_Back_Prompting.ipynb

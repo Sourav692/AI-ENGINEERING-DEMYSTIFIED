@@ -6,7 +6,7 @@
 | **Notebooks** | 60 |
 | **Built** | 2026-09-16 |
 | **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
-| **Note** | Section 4 is web-sourced live this run. Parent document retrieval (`06_RAG_Naive_to_Production/05_Parent_Document_Retriever`) gets one paragraph here — see `tutorials/parent_document_retrieval_INTERVIEW_TUTORIAL.md` for the dedicated deep dive. |
+| **Note** | Section 4 is web-sourced live this run. Parent document retrieval (`06_RAG_Naive_to_Production/05_Parent_Document_Retriever`) gets one paragraph here — see `14_Interview_Preparation/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md` for the dedicated deep dive. |
 
 ## What this covers
 
@@ -344,7 +344,7 @@ flowchart TD
 
 Sometimes the best unit to *search* isn't the best unit to *feed the LLM*. Multi-representation indexing stores a compact representation (a summary, or a small "child" chunk) for search, and swaps in a fuller document at generation time.
 
-- **How it works**: `MultiVectorRetriever` embeds LLM-generated summaries but stores the full original document in a linked docstore, keyed by the same ID; parent document retrieval does the same trick with a small/large chunk pair instead of a summary/original pair (full treatment in `tutorials/parent_document_retrieval_INTERVIEW_TUTORIAL.md`).
+- **How it works**: `MultiVectorRetriever` embeds LLM-generated summaries but stores the full original document in a linked docstore, keyed by the same ID; parent document retrieval does the same trick with a small/large chunk pair instead of a summary/original pair (full treatment in `14_Interview_Preparation/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md`).
 - **Code** (`03_Indexing_Techniques/Multi_Representation_Indexing.ipynb`):
   ```python
   retriever = MultiVectorRetriever(vectorstore=summary_vectorstore, byte_store=InMemoryByteStore(), id_key="doc_id")

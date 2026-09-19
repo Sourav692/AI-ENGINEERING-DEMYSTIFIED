@@ -6,7 +6,7 @@
 | **Notebooks** | 22 |
 | **Built** | 2026-09-16 |
 | **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
-| **Note** | Positioned as tutorial 6 in the interview-prep series (see [`tutorials/README.md`](README.md)); its source folder is this repo's own `07_Advanced_Agentic_Systems/Memory_and_State`, distinct from tutorials 1-5's `production-course-main-code-main` source. Section 4 is web-sourced live this run. |
+| **Note** | Positioned as tutorial 6 in the interview-prep series (see [`14_Interview_Preparation/Study_Guides/README.md`](README.md)); its source folder is this repo's own `07_Advanced_Agentic_Systems/Memory_and_State`, distinct from tutorials 1-5's `production-course-main-code-main` source. Section 4 is web-sourced live this run. |
 
 ## What this covers
 
@@ -30,7 +30,7 @@ Gaps specific to memory and state itself — not the generic 10-topic checklist:
 
 - **Evaluation of memory quality** `(not in your notebooks — build this)` — no notebook measures whether a saved fact was retrieved correctly, whether summarization dropped something load-bearing, or recall@k for a memory search. This bears directly on whether any of these memory layers actually work in production, so it belongs here rather than being waved off as a generic gap.
 - **Vector-indexed long-term memory search** `(not in your notebooks — build this)` — every `store.search()` call across the LangGraph notebooks is either an unfiltered namespace scan or a keyword/LLM-similarity check (Graph Memory, AWM); none configure a real embedding `index` on the `Store`. That is the difference between "works with 10 memories" and "works with 10,000."
-- **Streaming and async** — real, but not memory-specific to this folder; already tracked repo-wide (see `tutorials/README.md`'s "one gap nothing covers"). Not repeated here as a memory finding.
+- **Streaming and async** — real, but not memory-specific to this folder; already tracked repo-wide (see `14_Interview_Preparation/Study_Guides/README.md`'s "one gap nothing covers"). Not repeated here as a memory finding.
 
 ---
 

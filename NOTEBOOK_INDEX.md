@@ -2,6 +2,8 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
+> **⚠ This index is out of date with disk (flagged 2026-09-19).** It documents a 1-indexed 13-phase scheme (Phase 1 = `01_Theory_and_Foundations/`, Phase 2 = `02_LangChain_Fundamentals_and_Prompting/`). On disk the phases are 0-indexed `00_`–`14_`, Theory is `00_`, and LangChain/Prompting are two separate phases (`01_`, `02_`). Phases 14–17 were never added here at all. Treat the per-notebook tables as accurate and the phase *numbering* as stale until this is reconciled.
+
 This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6, 11 are scaffolded placeholders with no content yet.
 
 # Phase 1 — Theory & Foundations (`01_Theory_and_Foundations/`)
@@ -369,43 +371,11 @@ Not notebooks — Python scripts + a `deepagents`-based multi-agent system:
 | `app/` | Standalone deployable version (FastAPI + frontend, Docker) |
 | `docs/` | Architecture diagram, memory-types writeup |
 
-## `Evaluation_and_Eval_Harnesses/`
+## `Evaluation_and_Eval_Harnesses/` — MOVED OUT (2026-09-19)
 
-### `Tutorial_RAG_Agent_Tool_Evaluation/`
+Evaluation no longer lives in this repo. All of it — the 14-notebook tutorial, the DeepLearning.AI/Arize labs, RAG_Evaluation, LLM_as_Judge, the CrewAI travel-planner eval and the Databricks MLflow eval course — now lives in the sibling repo **`Agent_Evaluation_Demystified`**, which had already migrated the same material into `courses/` + `labs/` and kept it more current (every differing file was newer there; none was newer here).
 
-The single ordered learning path through everything else in this folder — 14 numbered notebooks (Modules 0–5: evaluation landscape → RAG eval → conversational/tool/task eval → agent trajectory eval → production tracing bridge → real multi-agent capstone) plus `TUTORIAL.md`, a theory-only companion doc (taxonomy, every metric's definition, LLM-as-judge caveats, master quick-reference — no code/API calls needed). See its own `README.md` for the full table of contents and `../TUTORIAL_PLAN.md` for build history and source mapping. Nothing below was deleted or modified to build this — it's additive, referencing the material below in place where a real relative-path/live-service dependency exists (the Arize labs, the CrewAI app).
-
-### `Agent_Evaluation/`
-
-| Path | Content |
-|---|---|
-| `DeepLearningAI_Arize/Lab 1 - Building your Agent/L3.ipynb` | Build the sales-agent used as the eval target |
-| `DeepLearningAI_Arize/Lab 2 - Tracing your Agent/L5.ipynb` | Tracing (kept with this course, not Phase 12) |
-| `DeepLearningAI_Arize/Lab 3 - Adding Router & Skill Evaluations/L7.ipynb` | Router & skill evaluations |
-| `DeepLearningAI_Arize/Lab 4 - Adding Trajectory Evaluations/L9.ipynb` | Trajectory evaluations |
-| `DeepLearningAI_Arize/Lab 5 - Adding Structure to your Evaluations/L11.ipynb` | Structured evaluation harness |
-| `DeepLearningAI_Arize/Appendix - Resources, Tips and Help/Appendix.ipynb` | Course appendix |
-| `CrewAI_Travel_Planner/` | CrewAI travel-planner app + DeepEval `TaskCompletionMetric` tests (`evaluate_endtoend_test.py`) |
-
-### `RAG_Evaluation/`
-
-| Path | Topic |
-|---|---|
-| `1.Retriever_Evaluation_Metrics.ipynb` | Retriever evaluation metrics |
-| `2.Generator_Evaluation_Metrics.ipynb` | Generator evaluation metrics |
-| `3.Custom_LLM_as_a_Judge _(G-Eval).ipynb` | Custom LLM-as-judge (G-Eval) |
-| `4. End_to_End_RAG_System_Evaluation.ipynb` | End-to-end RAG evaluation |
-| `Build_RAG_Pipeline_with_Source.ipynb` | Supporting pipeline |
-| `DeepEval_Metrics/Contextual_Precision.ipynb` | DeepEval contextual precision drill |
-| `DeepEval_Metrics/Contexual_Recall.ipynb` | DeepEval contextual recall drill (source filename spelling kept) |
-| `DeepEval_Metrics/Contextual_Relevancy.ipynb` | DeepEval contextual relevancy drill |
-| `RAGAS/` | RAGAS scripts (`Faithfulness.py`, `ContextRecall.py`, `Evaluate_RAG.py`, …) + `fastapi_rag_bot/` eval target |
-
-### `LLM_as_Judge/`
-
-| Path | Topic |
-|---|---|
-| `DeepEval_GEval/test_firstdeepeval.py` | Minimal DeepEval G-Eval correctness judge |
+Verified by content hash across both repos before deletion: 147 files removed here, 0 unique to this repo. Three markdown sources the migration had left behind (`TUTORIAL.md` → `courses/01-rag-agent-tool-evaluation/THEORY_GUIDE.md`, the interactive-lab `.md` companions, and two interview-prep documents) were moved across rather than deleted.
 
 # Phase 8 — Advanced RAG (`08_Advanced_RAG/`)
 
@@ -487,7 +457,7 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 
 ## `PydanticAI/`, `Orchestration_Frameworks_Overview/` — 🚧 Planned
 
-# Phase 11 — Claude Code & AI Coding Tools (`11_Claude_Code_and_AI_Coding_Tools/`) — 🚧 Planned
+# Phase 11 — Claude Code & AI Coding Tools (`11_AI_Coding_Tools/`) — 🚧 Planned
 
 `Claude_Code/`, `Agent_Skills/`, `Claude_API_and_Agent_SDK/`, `AI_Coding_Tool_Landscape/`
 
@@ -563,13 +533,28 @@ Not notebooks-only — `01_create_vector_databases.ipynb`, `02_agentic_rag_syste
 | 1 | `01_Theory_and_Foundations/` *(optional)* |
 | 6 | `06_Agent_SDKs_First_Party/` |
 | 9 | `09_Agent_Protocols/` |
-| 11 | `11_Claude_Code_and_AI_Coding_Tools/` |
+| 11 | `11_AI_Coding_Tools/` |
 
 ## Archive (`archive/`)
 
 Retired notebooks, kept for reference but not part of the learning path: `04_Reference_Course/` (9 notebooks) and `Ultimate_RAG_Bootcamp/` (6 notebooks + PDFs).
 
 ---
+
+
+# Phase 14 — Interview Preparation (`14_Interview_Preparation/`)
+
+Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` into one phase with five tracks — interview prep is one topic, and four top-level homes for it was the same duplication the one-topic-one-phase rule exists to prevent.
+
+| Track | Was | Content |
+|---|---|---|
+| `Handbook/` | `14_AI_Engineering_Handbook/` | 12-chapter written handbook (LLM systems → system design → robust agents → enterprise RAG → agentic workflow platforms → multi-agent → AgentOps → casebook → FDE delivery → telling the story). Kept whole: it re-covers topics Phases 4/5/7/12 own, but it is prose, not notebooks — same "kept whole" precedent as `Comprehensive_RAG_Techniques/`. |
+| `FDE/` | `15_FDE_Related_Preparation/` | Purchased GenAI FDE interview system, system-design scenarios, behavioural/leadership, STAR stories. ⚠ Third-party commercial material — `.gitignore` lines 160–162 keep everything except `.md` out of git. |
+| `AI_Engineer/` | `16_AI_Engineer_Interview_Preparation/` | Cross-cutting prep + delivery framework. Its three enterprise platform builds moved to Phase 13 (they were applications, not prep). |
+| `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Coverage/gap analysis + sample questions. Its Databricks eval tutorial and evaluation question banks went to `Agent_Evaluation_Demystified`. |
+| `Study_Guides/` | `tutorials/` | Per-phase `*_INTERVIEW_TUTORIAL.md` study guides (01/03/04/07/08/12), the Cost & Latency playbook cram sheets + drill deck, chunking and retrieval-strategy notes, drill hub. |
+
+**Known duplicate not yet resolved:** `Handbook/11_Telling_The_Story/stories/` and `FDE/Star_Stories/` hold byte-identical STAR story files (9 of them), and the same set also exists in `Agent_Evaluation_Demystified/Star_Stories/`.
 
 ## Known Discrepancies
 

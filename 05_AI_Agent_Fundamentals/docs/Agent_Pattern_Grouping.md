@@ -293,7 +293,7 @@ Naive / indexing RAG already in Phase 4; these notebooks are the **agentic** ret
 | Gulli  | [Appendix_C_(Code).ipynb](https://github.com/evoiz/Agentic-Design-Patterns/blob/main/chapter_notebooks/Appendix_C_(Code).ipynb)                                                             |
 | Gulli  | [Appendix_Pydantic.ipynb](https://github.com/evoiz/Agentic-Design-Patterns/blob/main/chapter_notebooks/Appendix_Pydantic.ipynb)                                                             |
 
-#### Phase 11 — `11_Claude_Code_and_AI_Coding_Tools/`
+#### Phase 11 — `11_AI_Coding_Tools/`
 
 | Source | Notebook                                                                                                                                                   |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
