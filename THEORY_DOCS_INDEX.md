@@ -247,9 +247,9 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `06_Interview_Prep/Study_Guides/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
 | `06_Interview_Prep/Study_Guides/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
 | `06_Interview_Prep/Study_Guides/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
-| `06_Interview_Prep/Study_Guides/chunking/01-chunking-strategies-by-doc-type.md` (+html) | md/html | Chunking strategies by document type |
-| `06_Interview_Prep/Study_Guides/chunking/chunking-by-doc-type.md` (+html) | md/html | Chunking by document type (companion/alt version) |
-| `06_Interview_Prep/Study_Guides/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
-| `06_Interview_Prep/Study_Guides/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
+| `06_Interview_Prep/Study_Guides/chunking/chunking-lab-and-drills.md` (+html) | md/html | Chunking lab writeup + 5 interview drills |
+| `06_Interview_Prep/Study_Guides/chunking/chunking-reference-by-doc-type.md` (+html) | md/html | Chunking reference by document type — per-type breakdown, comparison table, decision framework (companion to the lab above; complementary, not a duplicate — version) |
+| `06_Interview_Prep/Study_Guides/multi_agent/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
+| `06_Interview_Prep/Study_Guides/multi_agent/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
 | `06_Interview_Prep/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md` (+html) | md/html | Parent-document retrieval technique |
 | `06_Interview_Prep/Study_Guides/retrieval_strategies/rag_retrieval_strategies.md` (+html) | md/html | RAG retrieval strategies overview |
