@@ -254,3 +254,23 @@ link verified. **Discovery problems get an index, not a move.**
 One real duplicate surfaced and was fixed: `04-multiagent-pattern.md`/`.html` was byte-identical in
 Phase 5 and Phase 7; Phase 5's copy was retired to `archive/` since Phase 7 owns multi-agent
 orchestration.
+
+## New track: `Reasoning_and_Model_Selection/` in Phase 1 (2026-09-19)
+
+Closing a gap from `OPENAI_BUILDING_AGENTS_COVERAGE.md`: reasoning vs non-reasoning model
+choice had no home. Two placement calls worth keeping:
+
+- **Sibling track, not a module inside `Model_Landscape_and_Hugging_Face/`.** That track is
+  the Hugging Face ecosystem — Transformers, Diffusers, audio, Gradio. Frontier reasoning
+  models reached over an API are not HF-ecosystem content, and root `CLAUDE.md` gives this
+  phase "the model landscape" as a topic it owns, so a sibling is the right shape.
+- **The applied version is NOT here.** Routing between tiers at runtime needs LangGraph, and
+  `01_Foundations/CLAUDE.md` forbids framework dependencies stage-wide ("Needs a framework to
+  demonstrate → not this stage"). It goes to Phase 5's Routing workflow pattern. Same
+  prerequisite cut as foundational RAG (Phase 4) vs agentic RAG (Phase 8).
+
+A third notebook was proposed and **dropped before building**: an OpenAI-Agents-SDK
+"model choice per agent" notebook in Phase 6. The user pointed out it taught the same concept
+as the Phase 5 routing notebook, a phase apart — exactly the one-topic-two-homes split this
+skill exists to prevent. Per-agent model choice becomes a section inside a future Phase 6
+notebook about the SDK's capability surface, not a notebook about model selection.

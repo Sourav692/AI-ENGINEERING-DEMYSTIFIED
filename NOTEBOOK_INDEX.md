@@ -10,6 +10,17 @@ This repo is organized as a sequence of **phases**, each owning exactly one topi
 
 Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/` — 🚧 Planned. `Coding_Essentials_for_Agents/` is built.
 
+## `Reasoning_and_Model_Selection/` (added 2026-09-19)
+
+Which model, and how hard should it think. Raw `openai` SDK — no LangChain, no `helpers`, per the stage rule that this material teaches provider surfaces directly.
+
+| Notebook | Topic |
+|---|---|
+| `01_Reasoning_vs_NonReasoning.ipynb` | Reasoning as a training difference, not a prompt. One task through both model types, measuring latency / output tokens / reasoning tokens / correctness — including a mechanical-extraction task where the reasoning model is slower, dearer and no better |
+| `02_Reasoning_Effort_Levers.ipynb` | 🚧 Planned — effort as a dial, finding the knee |
+
+Added to close a gap named in `OPENAI_BUILDING_AGENTS_COVERAGE.md`. The applied counterpart — routing between tiers at runtime — is a framework question and belongs to `02_Core/05_AI_Agent_Fundamentals/4. Workflow_Pattern/2. Routing/`, not here.
+
 ## `Model_Landscape_and_Hugging_Face/`
 
 | Module | Notebooks | Topic |

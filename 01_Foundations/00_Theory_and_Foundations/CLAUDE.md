@@ -9,6 +9,7 @@
 | `Model_Landscape_and_Hugging_Face/` | Built | HF Hub setup, Transformers, Diffusers, audio/video models, Gradio (21 notebooks) |
 | `Fine_Tuning_and_RL/` | Built | SFT, data prep, training, eval (DeepLearning.AI labs) + Llama 2 AutoTrain. `02_Techniques/` (RLHF/DPO/LoRA) is planned |
 | `Coding_Essentials_for_Agents/` | Built | Python, files/DBs, Flask APIs, raw LLM API calls, threading/GIL, asyncio |
+| `Reasoning_and_Model_Selection/` | Partially built | Reasoning vs non-reasoning, measured (1 nb). Effort levers planned. Added 2026-09-19 as a sibling track, not a module inside `Model_Landscape_and_Hugging_Face/` — that track is the HF ecosystem, and API-reached frontier models are not that |
 | `Math_and_ML_Intuition/`, `Transformer_Architecture/` | Planned | scope READMEs only — no content |
 
 ## Conventions here

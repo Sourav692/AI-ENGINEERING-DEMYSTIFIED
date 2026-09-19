@@ -11,7 +11,7 @@
 
 ## Routing — where does new content go?
 
-- Teaches Python, HF, transformers, or fine-tuning → `00_Theory_and_Foundations/`
+- Teaches Python, HF, transformers, fine-tuning, or **which model to pick and how hard it should think** → `00_Theory_and_Foundations/`
 - Teaches prompting patterns independent of any framework → `02_Prompt_and_Context_Engineering/`
 - Needs a framework to demonstrate → **not this stage.** Send it to `02_Core/`.
 
