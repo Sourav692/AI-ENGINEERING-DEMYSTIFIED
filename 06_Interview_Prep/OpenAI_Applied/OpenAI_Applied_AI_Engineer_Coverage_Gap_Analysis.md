@@ -11,28 +11,21 @@ The Decomp round is discussion-based: clarify requirements, decompose an ambiguo
 
 ## 1. "Building Agents" track — topic-by-topic coverage
 
-| Module | Topic | Repo coverage | Status |
-|---|---|---|---|
-| 1. Core Concepts | Reasoning vs. non-reasoning model selection | No dedicated notebook framing this tradeoff explicitly | ❌ Gap |
-| 1. Core Concepts | Responses API (OpenAI's own stateful core API) | Not used anywhere — repo is LangChain/LangGraph-native | ❌ Gap |
-| 1. Core Concepts | Agents SDK (OpenAI's own) | `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/` — 🚧 Planned, empty | ❌ Gap |
-| 1. Core Concepts | Augmenting agents with tools (function calling vs. built-ins) | `02_Core/03_LangGraph_Fundamentals/01_Foundations/05_Augmented_LLM_with_Tools.ipynb`, `06_ReAct_Agent.ipynb`; `02_Core/05_AI_Agent_Fundamentals/LangChain_Tools_and_Agents/01_Tools_and_Functions/` | ✅ Strong |
-| 2. Tools | Function calling mechanics | Phase 3 `bind_tools` notebooks; Phase 5 `01_Tools_and_Functions/` (4 nb), `02_Agents/` | ✅ Strong |
-| 2. Tools | Web Search built-in tool | Tavily-based web search used across `02_Core/05_AI_Agent_Fundamentals/AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb` and others — same concept, different (non-OpenAI-hosted) provider | 🟡 Partial |
-| 2. Tools | File Search (RAG) | `02_Core/04_Retrieval_and_RAG/` (entire phase) + `03_Advanced/08_Advanced_RAG/` — chunking, embedding, retrieval, reranking, context integration | ✅ Strong |
-| 2. Tools | Code Interpreter (hosted sandbox tool) | `02_Core/05_AI_Agent_Fundamentals/AI_Agents_with_LangGraph/05_Reflective_Code_Generation_Agent/` covers code-generating agents, but not the "hosted sandbox the model calls as a tool" pattern | 🟡 Partial |
-| 2. Tools | Computer Use | No coverage anywhere in the repo | ❌ Gap |
-| 2. Tools | Image Generation as an agent tool call | `01_Theory_and_Foundations/Model_Landscape_and_Hugging_Face/02_Diffusers/` covers image-gen *models*, not an agent calling image-gen mid-conversation as a tool | 🟡 Partial |
-| 2. Tools | MCP (Model Context Protocol) | `03_Advanced/09_Agent_Protocols/MCP/` (all 4 tracks: foundations, building servers, building clients, applications) + `03_Advanced/08_Advanced_RAG/mcp_a2a_agentic_rag/` | ✅ Strong |
-| 3. Orchestration | Agent / Handoff / Guardrail / Session primitives (OpenAI SDK vocabulary) | Equivalent concepts exist under different names: handoffs → `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/Production_Course_Multi_Agent/03_agent_handoffs.ipynb`; sessions/memory → `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/`; guardrails → `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/` | 🟡 Partial (concept yes, OpenAI's exact vocabulary no) |
-| 3. Orchestration | Multi-agent collaboration (routing agent, agent-as-tool) | `03_Advanced/07_Advanced_Agentic_Systems/Multi_Agent_Orchestration/` (supervisor + swarm), `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/02_Routing/`, CrewAI/AutoGen in `03_Advanced/10_Alternative_Agent_Frameworks/` | ✅ Strong |
-| 4. Example Use Cases | Human-in-the-loop support agent | `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/03_Human_in_the_Loop/` (4 nb: basics, interrupt/resume, state modification, dynamic breakpoints) | ✅ Strong |
-| 4. Example Use Cases | Customer service agent networks | `02_Core/03_LangGraph_Fundamentals/02_Core_Capabilities/02_Routing/` (router agentic RAG), `03_Advanced/08_Advanced_RAG/RAG_with_LangGraph_Advanced/1. Build_a_Healthcare_Customer_Support_Router_Agentic_RAG_System.ipynb` | ✅ Strong |
-| 4. Example Use Cases | Frontend testing agent using computer vision | No coverage — same gap as Computer Use above | ❌ Gap |
-| 4. Example Use Cases | Optimization priorities (speed / reliability / cost) | `03_Advanced/12_Production_and_Observability/LLMOps_and_AI_Infrastructure/Cost_Monitoring/01_LLM_Cost_Monitoring.ipynb`, `Caching_and_Performance/` — covered as infra, not framed as an upfront design-choice lever | 🟡 Partial |
-| 5. Best Practices | User input guardrails (jailbreak prevention) | `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/01_Moderating_Chains.ipynb`; `03_Production_Course/07_error_handling.ipynb`; `Production_Course_Ops/03_security_patterns.ipynb` (prompt-injection/guardrail pedagogy) | ✅ Strong |
-| 5. Best Practices | Structured outputs | `02_Core/03_LangGraph_Fundamentals/01_Foundations/08_Pydantic_State_Validation.ipynb`; `02_Core/05_AI_Agent_Fundamentals/AI_Agents_with_LangGraph/02_Competitive_Intelligence_Agent.ipynb`; `4. Workflow_Pattern/1. Prompt_Chaining/02_Prompt_Chaining_Structured_Output.ipynb` | ✅ Strong |
-| 5. Best Practices | Production optimization (cost/latency/monitoring/deployment) | `03_Advanced/12_Production_and_Observability/` (whole phase) + `Production_Course_Ops/01_monitoring.ipynb`, `02_cost_optimization.ipynb` | ✅ Strong |
+**Moved to [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](../../OPENAI_BUILDING_AGENTS_COVERAGE.md) at
+the repo root (2026-09-19).** The table that used to sit here had drifted: it recorded the
+OpenAI Agents SDK track as "🚧 Planned, empty" when it has a 23-cell foundations notebook, said
+computer use had "no coverage anywhere" when
+`02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/06_BrowserAgent_Computer_Use_Applied.ipynb`
+exists, and cited 12 paths that the restructure had invalidated.
+
+Rather than keep two mappings of the same track in sync, the root file is now the single
+source and every path in it is verified against disk. Summary of what it found: **11 covered,
+8 partial, 4 real gaps** — the repo teaches the concepts thoroughly through LangChain/LangGraph
+and is thin on OpenAI's own surface (Responses API, the Agents SDK past foundations, and the
+five hosted tools).
+
+The four gaps worth closing for this round: the Responses API, reasoning-model selection as a
+design lever, hosted-vs-client-side tool execution, and real computer use.
 
 ---
 
