@@ -29,6 +29,35 @@ repos:
         # bulk-edit scripts key off those tags. Notebook-level `kernelspec` is
         # also kept, so notebooks still declare their kernel.
 
+  # Structural invariants. Every check guards something that has actually broken
+  # in this repo, silently: a folder rename that left .gitignore protecting
+  # nothing, notebooks moved a directory deeper than their relative data/ paths
+  # assumed, index docs naming folders that had been renamed weeks earlier, and
+  # a 0-byte notebook that sat tracked for weeks. None of those raise an error on
+  # their own — that is the whole reason this hook exists.
+  #
+  # Runs repo-wide on every commit (pass_filenames: false), not just on staged
+  # files: a rename in one folder breaks a reference in another. ~0.6s over 526
+  # notebooks, so the cost is not worth optimising away.
+  - repo: local
+    hooks:
+      - id: repo-invariants
+        name: check repo structural invariants
+        entry: python3 scripts/check_repo_invariants.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  # Scripted notebook edits can emit invalid JSON, and an empty file is not a
+  # notebook. Enabled 2026-09-19 after a 0-byte .ipynb was found tracked in
+  # 05_Projects/RAG_Systems_Projects/ — nbstripout rejected it at commit time
+  # with "No valid notebook detected", which is a confusing place to learn it.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+        files: \.ipynb$
+
 # ---------------------------------------------------------------------------
 # Optional extras — NOT enabled, because they were not part of what was agreed.
 # Each guards a failure this repo has actually hit; uncomment if you want them.

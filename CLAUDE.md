@@ -97,11 +97,24 @@ Three places hard-code repository paths. All three broke silently during the 202
 | `site/scripts/sync-content.mjs` `SOURCE_ROOT` | the public site builds from `06_Interview_Prep/FDE` | site build reads a dead path |
 | `pyproject.toml` `[tool.ruff] extend-exclude` | 5 JS frontend paths | frontends get linted as Python |
 
-Verification after any move:
+Verification after any move — **this is now automated**, run it directly or let the
+commit hook run it:
 ```bash
-git status --porcelain | grep -c '^??'                      # expect 0
-git ls-files '06_Interview_Prep/FDE' | grep -c '\.md$'       # expect 122
+python3 scripts/check_repo_invariants.py
 ```
+It asserts, repo-wide: every notebook is valid JSON and non-empty; every relative
+`data/` reference in a code cell resolves; every path named in `NOTEBOOK_INDEX.md`'s
+phase headings, `THEORY_DOCS_INDEX.md`'s headings and `Study_Guides/TOPIC_DOCS_MAP.md`'s
+links exists; all three path-anchored configs above still point at real folders; and no
+vendor `.pdf`/`.docx`/`.pptx` is tracked under `06_Interview_Prep/FDE`. Takes ~0.6s over
+526 notebooks and is wired into `.pre-commit-config.yaml`, so a commit that breaks any of
+them fails.
+
+**Each check exists because that thing actually broke silently**, most of them during the
+2026-09-19 restructure. Fix the path or the doc — don't weaken the check. The one
+deliberate exclusion is a `PROSE_NOT_PATHS` set in the script, for English text like
+"data/AI technologies" that pattern-matches as a path; it is keyed on the whole token so a
+real path cannot be silenced by accident.
 
 
 ## Environment Setup
