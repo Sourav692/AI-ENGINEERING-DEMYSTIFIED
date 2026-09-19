@@ -72,7 +72,8 @@ OPENAI_API_KEY=...          # OpenAI models
 GROQ_API_KEY=...            # Groq models (fast + free tier)
 GOOGLE_API_KEY=...          # Streamlit apps
 TAVILY_API_KEY=...          # Web search notebooks
-# Databricks credentials    # Auto-selected on macOS
+DATABRICKS_HOST=...         # the default provider, on every platform
+DATABRICKS_TOKEN=...
 ```
 
 ---
@@ -387,10 +388,14 @@ llm = get_llm()                # Auto-selects by platform
 embeddings = get_embeddings()
 ```
 
-| Platform | LLM                              | Embeddings                          |
+| | Provider | Model |
 | -------- | --------------------------------- | ------------------------------------ |
-| macOS    | Databricks (`claude-opus-4-6`)  | Databricks (`gte-large-en`)        |
-| Windows  | Groq (`gpt-oss-120b`)           | OpenAI (`text-embedding-3-small`)  |
+| LLM        | Databricks | `databricks-claude-opus-4-6` |
+| Embeddings | Databricks | `databricks-gte-large-en`    |
+
+The same default on every platform — the `sys.platform` branch was removed 2026-09-20,
+because a machine-dependent default meant identical notebooks gave different results and
+embeddings built on one OS were not comparable with the other.
 
 Override: `get_llm(provider="openai", model="gpt-4o")`
 

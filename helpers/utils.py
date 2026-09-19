@@ -29,7 +29,7 @@ from langchain_groq import ChatGroq
 # ChatOpenAI: LangChain wrapper for OpenAI's Chat API (GPT-3.5, GPT-4, etc.)
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from databricks_langchain import ChatDatabricks, DatabricksEmbeddings
+from databricks_langchain import DatabricksEmbeddings  # ChatDatabricks unused: chat goes via the AI Gateway
 from langchain_groq import ChatGroq
 from openai import OpenAI
 # python-dotenv: Loads environment variables from a .env file
@@ -154,20 +154,28 @@ def get_groq_llm(model_name: str = "llama-3.3-70b-versatile", temperature: float
     )
 
 
-def get_databricks_llm(model_name: str = "databricks-gpt-5-2", temperature: float = 0.1):
+def get_databricks_llm(model_name: str = "databricks-claude-opus-4-6", temperature: float = 0,
+                       **model_kwargs):
     """
-    Create and return a Databricks Chat LLM instance.
+    Create and return a Chat LLM served by Databricks, via ChatOpenAI pointed at the
+    workspace's OpenAI-compatible AI Gateway endpoint.
+
+    Requires DATABRICKS_HOST and DATABRICKS_TOKEN in the environment.
+
+    Fixed 2026-09-20. The previous version returned ``client.responses.create(...)`` —
+    the *result* of an API call rather than a chat model — so every caller's
+    ``.invoke()`` would fail. It also ignored ``model_name`` (hardcoding
+    ``system.ai.gemma-3-12b``), hardcoded one workspace URL instead of reading
+    DATABRICKS_HOST, and made a network call just to construct the object. The
+    verbose line in ``get_llm()`` hid it, because a Response object also has ``.model``.
     """
-
-    DATABRICKS_TOKEN = os.environ.get('DATABRICKS_TOKEN')
-
-    client = OpenAI(
-    api_key=DATABRICKS_TOKEN,
-    base_url="https://dbc-c93bb198-aa21.cloud.databricks.com/ai-gateway/mlflow/v1"
-    )
-    return client.responses.create(
-        model="system.ai.gemma-3-12b",
-        temperature=temperature
+    host = os.environ["DATABRICKS_HOST"].rstrip("/")
+    return ChatOpenAI(
+        model=model_name,
+        api_key=os.environ["DATABRICKS_TOKEN"],
+        base_url=f"{host}/ai-gateway/mlflow/v1",
+        temperature=temperature,
+        **model_kwargs,
     )
 
 
@@ -222,10 +230,11 @@ _EMBEDDING_FACTORIES = {
     "databricks": get_databricks_embeddings,
 }
 
-PLATFORM_EMBEDDING_DEFAULTS: dict[str, dict] = {
-    "win32":  {"factory": "openai",     "model": "text-embedding-3-small"},
-    "darwin": {"factory": "databricks", "model": "databricks-gte-large-en"},
-}
+#: Single default embedding provider/model — see DEFAULT_LLM for why this no longer
+#: branches on platform. Embeddings matter more than chat here: the same text embedded
+#: by two different models is not comparable, so a platform-dependent default meant a
+#: vector store built on one machine was quietly wrong when queried from the other.
+DEFAULT_EMBEDDINGS: dict = {"factory": "databricks", "model": "databricks-gte-large-en"}
 
 
 def get_embeddings(
@@ -242,17 +251,9 @@ def get_embeddings(
         from helpers import get_embeddings
         embeddings = get_embeddings()
     """
-    import sys
-
     if provider is None:
-        cfg = PLATFORM_EMBEDDING_DEFAULTS.get(sys.platform)
-        if cfg is None:
-            raise RuntimeError(
-                f"No default embeddings configured for platform {sys.platform!r}. "
-                "Pass provider= and model= explicitly."
-            )
-        provider = cfg["factory"]
-        model = model or cfg["model"]
+        provider = DEFAULT_EMBEDDINGS["factory"]
+        model = model or DEFAULT_EMBEDDINGS["model"]
 
     factory = _EMBEDDING_FACTORIES.get(provider)
     if factory is None:
@@ -269,12 +270,14 @@ def get_embeddings(
     return embeddings
 
 
-import sys
 
-PLATFORM_DEFAULTS: dict[str, dict] = {
-    "win32":  {"factory": "databricks_gateway", "model": "system.ai.gemma-3-12b"},
-    "darwin": {"factory": "databricks",         "model": "databricks-claude-opus-4-6"},
-}
+#: The single default provider/model, used when a caller names neither.
+#: Platform-independent by design (2026-09-20): this used to branch on ``sys.platform``,
+#: giving Windows and macOS different models, so the same notebook produced different
+#: results on different machines and neither was written down at the call site.
+#: Databricks serves both, so there is no reason to branch. Override per call with
+#: ``get_llm(provider=..., model=...)``.
+DEFAULT_LLM: dict = {"factory": "databricks", "model": "databricks-claude-opus-4-6"}
 
 _FACTORIES = {
     "openai":             get_openai_llm,
@@ -285,11 +288,17 @@ _FACTORIES = {
 }
 
 
-#: Providers whose LangChain class exposes a native ``reasoning_effort`` field.
-#: Checked against the installed packages, not assumed: ``ChatOpenAI`` and
-#: ``ChatGroq`` both carry it; ``ChatDatabricks`` carries neither it nor a
-#: ``model_kwargs``/``extra_body`` escape hatch, so there is no way to pass it.
-_REASONING_CAPABLE = {"openai", "groq"}
+#: Providers whose underlying class exposes a native ``reasoning_effort`` field.
+#: Checked against the installed packages, not assumed: ``ChatOpenAI`` and ``ChatGroq``
+#: both carry it. Every factory here except ``groq`` returns a ``ChatOpenAI`` — including
+#: the Databricks ones, which point ChatOpenAI at the workspace AI Gateway — so the field
+#: is present throughout. Whether the *served model* honours it is a runtime question and
+#: not something this set can answer.
+#:
+#: Note ``databricks_langchain.ChatDatabricks`` genuinely has no such field, but this
+#: module does not use that class for chat; the import is only kept for
+#: ``DatabricksEmbeddings``.
+_REASONING_CAPABLE = {"openai", "groq", "databricks", "databricks_gateway", "experientiallabs"}
 
 
 def get_llm(
@@ -313,21 +322,15 @@ def get_llm(
     meaningful on a reasoning model — setting it on a non-reasoning one is
     ignored by the provider, or errors, depending on the provider.
 
-    Note that the platform default on macOS is Databricks, whose
-    ``ChatDatabricks`` cannot express this at all. Rather than silently drop
-    the argument, this raises and tells you to pin a provider that can:
+    Passing it to a provider that cannot express it raises rather than silently
+    dropping the argument — measuring "effort made no difference" because the
+    parameter never reached the model is the worse failure.
 
         llm = get_llm(provider="openai", model="o4-mini", reasoning_effort="high")
     """
     if provider is None:
-        cfg = PLATFORM_DEFAULTS.get(sys.platform)
-        if cfg is None:
-            raise RuntimeError(
-                f"No default LLM configured for platform {sys.platform!r}. "
-                "Pass provider= and model= explicitly."
-            )
-        provider = cfg["factory"]
-        model = model or cfg["model"]
+        provider = DEFAULT_LLM["factory"]
+        model = model or DEFAULT_LLM["model"]
 
     factory = _FACTORIES.get(provider)
     if factory is None:

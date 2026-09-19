@@ -227,12 +227,20 @@ from helpers import get_llm, get_embeddings
 llm = get_llm(provider="openai", model="o4-mini", reasoning_effort="high")
 ```
 
-**Platform-aware defaults** (auto-selected when no provider specified):
+**One default, the same on every machine** (used when no provider is named):
 
-- **Windows**: Groq for LLM (`openai/gpt-oss-120b`), OpenAI for embeddings (`text-embedding-3-small`)
-- **macOS**: Databricks (`databricks-claude-opus-4-6` for LLM, `databricks-gte-large-en` for embeddings)
+| | Provider | Model |
+|---|---|---|
+| LLM | `databricks` | `databricks-claude-opus-4-6` |
+| Embeddings | `databricks` | `databricks-gte-large-en` |
 
-Override: `get_llm(provider="openai", model="gpt-4o")`. Note `get_databricks_llm`'s own standalone default model is `databricks-gpt-5-2` — distinct from the macOS platform-default override above, which is applied by `get_llm()` specifically.
+Override per call: `get_llm(provider="openai", model="gpt-4o")`.
+
+**The `sys.platform` branch was removed on 2026-09-20.** It gave Windows Groq and macOS
+Databricks, so the same notebook produced different results on different machines and
+neither model was named at the call site. Embeddings were the sharper problem: a vector
+store built on one platform was quietly incomparable when queried from the other.
+Databricks serves both platforms, so there was nothing to branch on.
 
 LangGraph-phase notebooks route all LLM/embedding initialization through this factory — never instantiate `ChatOpenAI`/`ChatGroq`/`ChatDatabricks` directly there. `LangChain_Fundamentals/` and its descendants, and the `RAG_Demystified`-sourced content in Phases 4/7/8/13, instantiate clients directly instead — a pre-existing property of the merged-in source repos, not a convention violation to fix.
 
