@@ -109,7 +109,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | `GraphRAG/` | ✅ Built | Knowledge-graph + RAG course (from `RAG_Demystified`) |
 | `CacheRAG/` | 🚧 Planned | |
 
-Also two standalone apps merged from `RAG_Demystified`: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (an MCP+A2A agentic RAG app — kept RAG-first here rather than split to Phase 9, per user decision).
+Notebooks only as of 2026-09-19. `building-adaptive-rag/` (merged from `RAG_Demystified`) moved to `05_Projects/Building_Adaptive_RAG/`; `mcp_a2a_agentic_rag/` lives in Phase 9's `MCP/` as the single copy.
 
 ## Phase 9 — `03_Advanced/09_Agent_Protocols/` — ✅ Partially built
 

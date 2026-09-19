@@ -1,6 +1,6 @@
 # 05 — Projects
 
-**Status:** ✅ Built — 15 projects, 32 notebooks.
+**Status:** ✅ Built — 16 projects, 32 notebooks.
 
 Capstone/integration projects combining multiple frameworks and competencies from earlier groups. A top-level group because projects are *applications* of many topics, not a topic themselves.
 
@@ -46,6 +46,10 @@ Flat by design: one folder per project, no grouping parent, even as the count pa
 - Vector DB + agentic RAG e-commerce capstone
 - Architecture PPTX and walkthrough
 
+**`Building_Adaptive_RAG/`** ✅ — the one project with no notebook; it is a CLI app
+- Adaptive RAG (query routing → retrieve → grade → generate → self-correct) as a deployable package
+- `src/{cli,models,workflow}/`, `main.py`, `tests/test_chains.py`, own `requirements.txt`
+
 **`AI_Powered_Customer_Support/`** ✅
 - Full-stack customer support agent
 - Docker, tests, notebooks
@@ -87,6 +91,7 @@ Flat by design: one folder per project, no grouping parent, even as the count pa
 - Most of the standalone apps came from `AgenticAI_Projects_Demystified`
 - `Personalized_Holiday_Management_Agent/` and `Resume_Genie/` came from their own GitHub repos
 - The three `Enterprise_*` platforms moved here on 2026-09-19 from what was Phase 16 — they had code trees and dependency manifests, so they were applications misfiled under interview prep
+- `Building_Adaptive_RAG/` moved here the same day from `03_Advanced/08_Advanced_RAG/building-adaptive-rag/` (originally from `RAG_Demystified`) by the same test — Phase 8 keeps the adaptive-RAG *topic* in `Agentic_RAG/`'s notebooks; this is its deployable form
 - See also `README_Full_Stack_Projects.md` — the source repo's own overview of the earlier full-stack set
 
 ## Running a project

@@ -4,10 +4,11 @@
 
 **Owns:** capstone and integration builds. A top-level stage folder: projects are *applications* of many topics, not a topic.
 
-15 projects, flat — one folder per project, no grouping parent. That flatness is an explicit decision that survived the count passing 10.
+16 projects, flat — one folder per project, no grouping parent. That flatness is an explicit decision that survived the count passing 10.
 
 Full-stack capstones: `LangGraph_Fullstack_Capstone/` (FastAPI + Angular + Postgres + unit tests + Streamlit apps), `LangChain_Microservices_Capstone/` (Docker, k8s-style manifests, frontend).
 Enterprise platforms (moved here from interview prep on 2026-09-19 — they had CODE trees and dependency manifests, so they were applications misfiled as prep): `Enterprise_Multi_Agent_AI_Research_Platform/`, `Enterprise_Agentic_Workflow_Automation_Platform/`, `Enterprise_RAG_Platform/`.
+`Building_Adaptive_RAG/` arrived the same day from `03_Advanced/08_Advanced_RAG/building-adaptive-rag/` by the same test — 25 `.py` files, `src/`, `tests/`, `main.py`, `requirements.txt`, zero notebooks. It is the only project here with no notebook, which is expected: it is a CLI app.
 
 ## Conventions here
 

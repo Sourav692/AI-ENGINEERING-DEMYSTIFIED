@@ -421,7 +421,7 @@ Single notebook `rag_ecosystem.ipynb` (plus README/requirements) from `rag-ecosy
 
 ## Additional apps in this phase
 
-`building-adaptive-rag/` — standalone adaptive-RAG app. `mcp_a2a_agentic_rag/` — agentic RAG app built on MCP + A2A protocols (original RAG-first copy still here; a copy also sits under Phase 9's `MCP/`).
+None — this phase is notebooks only. `building-adaptive-rag/` moved to `05_Projects/Building_Adaptive_RAG/` on 2026-09-19. `mcp_a2a_agentic_rag/` has only ever had one home, Phase 9's `MCP/`; the "copy in both phases" that earlier revisions of this file described did not exist on disk.
 
 # Phase 9 — Agent Protocols (`03_Advanced/09_Agent_Protocols/`)
 
@@ -513,6 +513,10 @@ Not notebooks — deployable apps and tests: `fullstackapp/` (FastAPI + Angular 
 ## `LangChain_Microservices_Capstone/`
 
 Not notebooks — LangChain deployed as microservices: Docker, k8s-style manifests, frontend, `service2/`, `service3/`.
+
+## `Building_Adaptive_RAG/` (moved here 2026-09-19)
+
+Not notebooks — a deployable adaptive-RAG CLI app: `src/{cli,models,workflow}/`, `main.py`, `tests/test_chains.py`, own `requirements.txt`, 25 `.py` files. Moved from `03_Advanced/08_Advanced_RAG/building-adaptive-rag/`; Phase 8 keeps the adaptive-RAG topic in `Agentic_RAG/`'s notebooks.
 
 ## `RAG_Systems_Projects/`
 

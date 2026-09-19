@@ -6,7 +6,7 @@
 | **Notebooks** | 48 (42 in `all_rag_techniques/` + 6 in `RAG_with_LangGraph_Advanced/`), plus 21 runnable `.py` mirrors of the same techniques |
 | **Built** | 2026-09-16 |
 | **Target roles** | Applied AI / AI Engineer · Agentic AI Engineer · Forward Deployed Engineer |
-| **Note** | Scope excludes `Comprehensive_RAG_Techniques/evaluation/` and the `GraphRAG`, `CacheRAG`, `RAG_Ecosystem`, `building-adaptive-rag` sibling folders — evaluation is its own separate tutorial, not covered here at all. Section 4 was web-sourced live this run. Given the technique count, this tutorial trades depth-per-technique for breadth across all of them, per the Density rule. |
+| **Note** | Scope excludes `Comprehensive_RAG_Techniques/evaluation/` and the `GraphRAG`, `CacheRAG`, `RAG_Ecosystem`, `building-adaptive-rag` sibling folders (the last has since moved to `05_Projects/Building_Adaptive_RAG/`) — evaluation is its own separate tutorial, not covered here at all. Section 4 was web-sourced live this run. Given the technique count, this tutorial trades depth-per-technique for breadth across all of them, per the Density rule. |
 
 ## What this covers
 

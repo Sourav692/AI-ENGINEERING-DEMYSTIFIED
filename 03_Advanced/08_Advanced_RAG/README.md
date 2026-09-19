@@ -12,4 +12,4 @@ Advanced retrieval patterns that depend on already knowing agents (Phase 5) and 
 | `GraphRAG/` | ✅ Built | Knowledge-graph-based retrieval — full KG+RAG course |
 | `CacheRAG/` | 🚧 Planned | Caching strategies for RAG |
 
-Also two standalone apps — see `README_apps.md`: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (MCP + A2A agentic RAG).
+This phase is notebooks only. `building-adaptive-rag/` moved to `05_Projects/Building_Adaptive_RAG/` on 2026-09-19; `mcp_a2a_agentic_rag/` lives in Phase 9's `MCP/`.

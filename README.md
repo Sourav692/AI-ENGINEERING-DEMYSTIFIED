@@ -229,7 +229,7 @@ Runs off the root environment — no separate install needed. A standalone deplo
 | `GraphRAG/` | ✅ Built | Knowledge-graph-based retrieval — full KG+RAG course |
 | `CacheRAG/` | 🚧 Planned | Caching strategies for RAG |
 
-Also two standalone apps: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (MCP + A2A agentic RAG).
+No standalone apps live in this phase. `building-adaptive-rag/` moved to `05_Projects/Building_Adaptive_RAG/` on 2026-09-19 (it is a deployable app, not a tutorial); `mcp_a2a_agentic_rag/` sits in Phase 9 under `MCP/`.
 
 ---
 
@@ -256,6 +256,7 @@ Also two standalone apps: `building-adaptive-rag/` and `mcp_a2a_agentic_rag/` (M
 | `LangChain_Microservices_Capstone/` | ✅ Built | LangChain deployed as microservices (Docker, k8s-style manifests, frontend) |
 | `RAG_Systems_Projects/` | ✅ Built | 7 applied RAG capstones — document search engine, multi-user conversational RAG, multimodal RAG, Q&A systems |
 | `ShopUNow_Agentic_RAG_Capstone/` | ✅ Built | Vector DB + agentic RAG e-commerce capstone |
+| `Building_Adaptive_RAG/` | ✅ Built | Deployable adaptive-RAG CLI app (moved from Phase 8, 2026-09-19) |
 | `AI_Powered_Customer_Support/`, `Automated_Candidate_Interview_Evaluation_System/`, `End_to_End_Medical_Chatbot/`, `Pipecat_QuickStart/`, `Realtime_Source_Code_Analyzer/`, `Realtime_Voice_AI_Agent_with_RAG/`, `Personalized_Holiday_Management_Agent/`, `Resume_Genie/` | ✅ Built | 8 more standalone full-stack apps |
 
 ```bash
@@ -344,11 +345,9 @@ AI ENGINEERING/
 │   ├── Comprehensive_RAG_Techniques/
 │   ├── RAG_Ecosystem/                         rag_ecosystem.ipynb
 │   ├── GraphRAG/
-│   ├── CacheRAG/                              🚧 Planned
-│   ├── building-adaptive-rag/
-│   └── mcp_a2a_agentic_rag/
+│   └── CacheRAG/                              🚧 Planned
 ├── 03_Advanced/09_Agent_Protocols/                       ✅ Partially built
-│   ├── MCP/                                   01_Foundations/ … 04_Applications/, mcp_a2a_agentic_rag/
+│   ├── MCP/                                   01_Foundations/ … 04_Applications/ (incl. mcp_a2a_agentic_rag/)
 │   ├── ACP/                                   🚧 Planned
 │   └── A2A/                                   🚧 Planned
 ├── 03_Advanced/10_Alternative_Agent_Frameworks/          ✅ Partially built

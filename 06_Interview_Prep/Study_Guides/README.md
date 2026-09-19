@@ -61,7 +61,8 @@ numbers match their source folder — `03_Advanced/07_Advanced_Agentic_Systems/M
 tutorial (both live under `03_Advanced/07_Advanced_Agentic_Systems`, different subfolders).
 `08_advanced_rag_techniques` deliberately excludes `GraphRAG`, `CacheRAG`,
 `RAG_Ecosystem`, `building-adaptive-rag` and the `evaluation/` subfolder — evaluation
-is covered as its own separate tutorial, not folded in here.
+is covered as its own separate tutorial, not folded in here. (`building-adaptive-rag`
+has since moved to `05_Projects/Building_Adaptive_RAG/`; it was excluded either way.)
 
 ## The interactive drill
 
