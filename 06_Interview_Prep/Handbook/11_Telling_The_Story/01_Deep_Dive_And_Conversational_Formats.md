@@ -2,7 +2,7 @@
 
 > **Level** 🔴 Telling the Story · **Module** 11 · **Doc** 1 of 2 · **Time** ~35 min, then practice
 > **Prerequisites:** Module 10 doc 2 (the six-stage delivery story); a project of your own
-> **Source material:** synthesised from the nine narratives in `4. FDE_Related_Preparation/Star_Stories/` — their shared structure, timing budgets, coaching notes and appendices
+> **Source material:** synthesised from the nine narratives in `06_Interview_Prep/FDE/Star_Stories/` (now grouped by engagement) — their shared structure, timing budgets, coaching notes and appendices
 
 ## Why this matters
 

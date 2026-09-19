@@ -1,5 +1,5 @@
 > **Level** 🔴 Telling the Story · **Module** 11 · **stories/** · **Format:** open-ended conversational guide
-> **Source material:** `4. FDE_Related_Preparation/Star_Stories/Enterprise_RAG_Conversational_Guide.md` — kept as a worked example of the format described in [Deep-Dive and Conversational Formats](../01_Deep_Dive_And_Conversational_Formats.md). It is one engineer's own engagement narrative; use it as a template for the shape, not a script to repeat.
+> **Source material:** `06_Interview_Prep/FDE/Star_Stories/Meridian_Assist_Enterprise_RAG/Enterprise_RAG_Conversational_Guide.md` — kept as a worked example of the format described in [Deep-Dive and Conversational Formats](../01_Deep_Dive_And_Conversational_Formats.md). It is one engineer's own engagement narrative; use it as a template for the shape, not a script to repeat.
 
 ---
 

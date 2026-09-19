@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 5 of 5 · **Time** ~30 min
 > **Prerequisites:** docs 1–3 of this module; Module 03 doc 2 (memory); Module 04 doc 2 (governance)
-> **Source material:** `4. FDE_Related_Preparation/Star_Stories/AIA_Technical_Implementation_Flow.md`
+> **Source material:** `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md`
 
 ## Why this matters
 

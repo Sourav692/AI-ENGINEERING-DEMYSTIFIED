@@ -97,7 +97,7 @@ All sources under `3. AI_Engineer_Interview_Preparation/Enterprise Agentic Workf
 | `02_Reference_Architecture_Handoffs.md` | R | `Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §2–3 |
 | `03_Failure_Isolation_And_Evaluation.md` | R | same, §4–5 |
 | `04_Case_Study_Research_Platform.md` | R | `Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md`; `CODE/README.md` |
-| `05_Case_Study_Supervisor_To_Deep_Agent.md` | R | `4. FDE_Related_Preparation/Star_Stories/AIA_Technical_Implementation_Flow.md` |
+| `05_Case_Study_Supervisor_To_Deep_Agent.md` | R | `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md` |
 | `diagrams/` | P | `Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/*.mmd`, `architecture.html`, `platform-architecture.html`, `PNG DIAAGRAM.png` (renamed `platform-architecture.png`) |
 | `reference_code/` | P | `Enteprise Multi-Agent AI Research Platform/CODE/` |
 
@@ -148,9 +148,9 @@ Not carried over: the `.html` twins of the markdown design docs in `System_Desig
 
 | Handbook doc | Treatment | Source |
 |---|---|---|
-| `01_Deep_Dive_And_Conversational_Formats.md` | N | synthesised from the nine narratives in `4. FDE_Related_Preparation/Star_Stories/` |
+| `01_Deep_Dive_And_Conversational_Formats.md` | N | synthesised from the nine narratives in `06_Interview_Prep/FDE/Star_Stories/` (now grouped by engagement) |
 | `02_Proof_vs_Cheat_Sheet_Honesty.md` | N | synthesised from the three coverage maps and the three project READMEs |
-| `stories/*.md` (9 files) | C | `4. FDE_Related_Preparation/Star_Stories/*.md`, same filenames |
+| `stories/*.md` (9 files) | C | `06_Interview_Prep/FDE/Star_Stories/*.md`, same filenames |
 | `stories/STAR_Stories_Client_Engagements.html` | C | `Star_Stories/star_stories.html` |
 | `stories/STAR_Stories_Technical_Build_Projects.html` | C | `Star_Stories/STAR Stories — Technical Build Projects.html` |
 

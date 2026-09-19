@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 1 of 5 · **Time** ~25 min
 > **Prerequisites:** Module 01 doc 3, Module 02 doc 4 (the travel-agent fixes), Module 05
-> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §1; `Enterprise Agentic Workflow Automation Platform/docs/05-security-tenancy-and-observability-gaps.md` §5; `4. FDE_Related_Preparation/System_Design and Delivery/6. Customer Support AI Assistant Design.md` §5; `4. FDE_Related_Preparation/Star_Stories/AIA_Technical_Implementation_Flow.md` §3
+> **Source material:** `3. AI_Engineer_Interview_Preparation/Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §1; `Enterprise Agentic Workflow Automation Platform/docs/05-security-tenancy-and-observability-gaps.md` §5; `4. FDE_Related_Preparation/System_Design and Delivery/6. Customer Support AI Assistant Design.md` §5; `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md` §3
 
 ## Why this matters
 

@@ -1,5 +1,5 @@
 > **Level** 🔴 Telling the Story · **Module** 11 · **stories/** · **Format:** 15–20 minute deep-dive
-> **Source material:** `4. FDE_Related_Preparation/Star_Stories/AIA_Enterprise_RAG_DeepDive_15-20min.md` — kept as a worked example of the format described in [Deep-Dive and Conversational Formats](../01_Deep_Dive_And_Conversational_Formats.md). It is one engineer's own engagement narrative; use it as a template for the shape, not a script to repeat.
+> **Source material:** `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Enterprise_RAG_DeepDive_15-20min.md` — kept as a worked example of the format described in [Deep-Dive and Conversational Formats](../01_Deep_Dive_And_Conversational_Formats.md). It is one engineer's own engagement narrative; use it as a template for the shape, not a script to repeat.
 
 ---
 

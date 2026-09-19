@@ -159,16 +159,16 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `Delivery Framework from Scoping to Delivery/docs/04-system-design-coverage-map.md` | md | Mapping of system-design concepts covered by the project |
 | `Delivery Framework from Scoping to Delivery/docs/05-security-gate-depth-and-tenant-scale.md` | md | Security gates and multi-tenant scaling concepts |
 | `Senior_FDE_Day_to_Day.md` | md | Senior Forward Deployed Engineer role/responsibilities |
-| `Star_Stories/AIA_Enterprise_RAG_Conversational_Guide.md` | md | Enterprise RAG project narrative (conversational format) |
-| `Star_Stories/AIA_Enterprise_RAG_DeepDive_15-20min.md` | md | Enterprise RAG project deep-dive narrative |
-| `Star_Stories/AIA_Enterprise_RAG_Governance_FDE_Script.md` | md | Enterprise RAG governance concepts, FDE-oriented script |
-| `Star_Stories/AIA_MultiAgent_Architecture_Mermaid.md` | md | Multi-agent system architecture (diagrammed) |
-| `Star_Stories/AIA_MultiAgent_Conversational_Guide.md` | md | Multi-agent system narrative (conversational format) |
-| `Star_Stories/AIA_MultiAgent_DeepDive_15-20min.md` | md | Multi-agent system deep-dive narrative |
-| `Star_Stories/AIA_Technical_Implementation_Flow.md` | md | Technical implementation flow for the AIA projects |
-| `Star_Stories/Bajaj_RapidLR_Technical_Implementation_Flow.md` | md | Technical implementation flow for the Bajaj RapidLR project |
-| `Star_Stories/Enterprise_RAG_Conversational_Guide.md` | md | Enterprise RAG narrative (conversational format) |
-| `Star_Stories/Enterprise_RAG_DeepDive_15-20min.md` | md | Enterprise RAG deep-dive narrative |
+| `Star_Stories/AIA_Group/AIA_Enterprise_RAG_Conversational_Guide.md` | md | Enterprise RAG project narrative (conversational format) |
+| `Star_Stories/AIA_Group/AIA_Enterprise_RAG_DeepDive_15-20min.md` | md | Enterprise RAG project deep-dive narrative |
+| `Star_Stories/AIA_Group/AIA_Enterprise_RAG_Governance_FDE_Script.md` | md | Enterprise RAG governance concepts, FDE-oriented script |
+| `Star_Stories/AIA_Group/AIA_MultiAgent_Architecture_Mermaid.md` | md | Multi-agent system architecture (diagrammed) |
+| `Star_Stories/AIA_Group/AIA_MultiAgent_Conversational_Guide.md` | md | Multi-agent system narrative (conversational format) |
+| `Star_Stories/AIA_Group/AIA_MultiAgent_DeepDive_15-20min.md` | md | Multi-agent system deep-dive narrative |
+| `Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md` | md | Technical implementation flow for the AIA projects |
+| `Star_Stories/Bajaj_RapidLR/Bajaj_RapidLR_Technical_Implementation_Flow.md` | md | Technical implementation flow for the Bajaj RapidLR project |
+| `Star_Stories/Meridian_Assist_Enterprise_RAG/Enterprise_RAG_Conversational_Guide.md` | md | Enterprise RAG narrative (conversational format) |
+| `Star_Stories/Meridian_Assist_Enterprise_RAG/Enterprise_RAG_DeepDive_15-20min.md` | md | Enterprise RAG deep-dive narrative |
 | `Star_Stories/STAR Stories — Technical Build Projects.html, star_stories.html` | html | STAR-format technical build project narratives |
 | `System_Design and Delivery/1. System Design Overview.md` (+html) | md/html | System design overview |
 | `System_Design and Delivery/2. System Design Components.md` (+html) | md/html | System design components |
