@@ -14,9 +14,9 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 
 | | Count |
 |---|---|
-| ✅ Covered | 12 |
+| ✅ Covered | 13 |
 | 🟡 Partial — concept taught, OpenAI's implementation not | 9 |
-| ❌ Gap | 2 |
+| ❌ Gap | 1 |
 
 ---
 
@@ -34,7 +34,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 | Track topic | Repo coverage | Status |
 |---|---|---|
 | Function calling mechanics | `02_Core/05_AI_Agent_Fundamentals/2. LangChain_Tools_and_Agents/01_Tools_and_Functions/`, plus `5. Agent Pattern/01_Tool_Use/02_Tool_Calling_vs_ReAct.ipynb` | ✅ Covered |
-| Function calling **vs. hosted built-ins** — the architectural split | Not framed anywhere. The repo always executes tools client-side; "the model calls a tool that runs on OpenAI's infrastructure" is a different failure/latency/cost model and is never contrasted | ❌ Gap |
+| Function calling **vs. hosted built-ins** — the architectural split | **Closed 2026-09-20.** `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/07_Hosted_vs_Client_Side_Tools.ipynb` runs the same capability both ways — `chat.completions` with your own function, then `responses.create` with a hosted `web_search` — and compares them on who executes, what you can see, what you can intercept, how they fail, and cost. Includes a guard cell that refuses a tool call, which is only possible client-side | ✅ Covered |
 | Web search | Tavily throughout, e.g. `02_Core/05_AI_Agent_Fundamentals/3. AI_Agents_with_LangGraph/01_Research_Assistant_Chatbot.ipynb`. Same concept, client-side provider | 🟡 Partial |
 | File search (managed RAG) | `02_Core/04_Retrieval_and_RAG/` and `03_Advanced/08_Advanced_RAG/` — chunking, embeddings, vector stores, retrieval, reranking. Far deeper than the track. What is absent is the *managed* vector store where you hand OpenAI the files | ✅ Covered |
 | Code interpreter | `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/05_SWE_Agent_Applied.ipynb` and `3. AI_Agents_with_LangGraph/05_Reflective_Code_Generation_Agent/` teach code-writing agents; the hosted-sandbox-as-a-tool pattern is not shown | 🟡 Partial |
@@ -73,17 +73,19 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 
 ---
 
-## The two real gaps
+## The one real gap
 
 *(Was four. Reasoning-model selection was **closed** 2026-09-19. The Responses API was
 **downgraded to partial** 2026-09-20 — re-checking against disk found one real call that the
 original sweep missed, because it searched for the phrase "Responses API" rather than for
 `responses.create`.)*
 
-1. **Hosted tools vs. client-side tools** — the repo executes every tool locally. The
-   architectural consequences of server-side execution are not discussed.
-2. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
-   but stops before screenshots, vision and a live GUI.
+1. **Real computer use / frontend testing** — the mock-browser notebook teaches the loop shape
+   but stops before screenshots, vision and a live GUI. `06_BrowserAgent_Computer_Use_Applied.ipynb`
+   says so itself: *"this is a simulation, not real browser automation"*, and its
+   `screenshot_text()` returns text rather than pixels. Vision exists elsewhere in the repo
+   (`M7_OpenAI_GPT_4o.ipynb`, `1-multimodalopenai.ipynb`) but is never wired into an
+   observe-decide-act loop.
 
 **Descoped, not forgotten:** the Responses API as a subject — statefulness,
 `previous_response_id` chaining, how it differs from chat-completions. Deliberately **not**
@@ -91,10 +93,14 @@ being built (decided 2026-09-20): the preparation this doc serves is concept-led
 concepts it would teach (conversation state, request chaining) are already covered by
 LangGraph checkpointing and memory. Revisit only if the target becomes OpenAI-API-specific.
 
-The natural home for the first is
-`03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`, whose `02_Core_Capabilities/`,
-`03_Multi_Agent_Patterns/` and `04_Applications/` folders are scope READMEs today. The second
-extends `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/`.
+It extends `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/`, beside the
+notebook that already teaches the loop shape.
+
+**Note on the hosted-tools placement.** An earlier revision of this doc said that gap's home
+was `03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`. It was built in Phase 5
+instead: the lesson is execution *topology*, which is a tool-use concept that Phase 5 owns,
+and it uses the raw `openai` client rather than the Agents SDK. Putting it in Phase 6 would
+have made that phase a second home for tool use.
 
 ## Related
 

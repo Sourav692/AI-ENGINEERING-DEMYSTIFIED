@@ -336,7 +336,7 @@ notebooks that do not exist (`1_routing.ipynb`, `01_Parallelization.ipynb`,
 
 | Section | Notebook | Topic |
 |---|---|---|
-| `01_Tool_Use/` | `01_Tool_Use_Agentic_Systems.ipynb`, `02_Tool_Calling_vs_ReAct.ipynb`, `03_Tool_Use_Alt.ipynb`, `04_ReAct_Alt.ipynb` | Tool-use strategies |
+| `01_Tool_Use/` | `01_Tool_Use_Agentic_Systems.ipynb`, `02_Tool_Calling_vs_ReAct.ipynb`, `03_Tool_Use_Alt.ipynb`, `04_ReAct_Alt.ipynb`, `05_SWE_Agent_Applied.ipynb`, `06_BrowserAgent_Computer_Use_Applied.ipynb`, `07_Hosted_vs_Client_Side_Tools.ipynb` | Tool-use strategies. `02_` compares loop *shapes*; `07_` (added 2026-09-20) compares execution *locations* — the same capability run client-side via `chat.completions` and hosted via `responses.create`, with the seam you only get client-side. `06_` is a deliberate simulation, not real browser automation |
 | `02_Planning/` | `01_Planning_ReAct_vs_Plan.ipynb`, `02_Planning_Decompose_Execute_Replan.ipynb` | Agent planning loops |
 | `03_Reflection/` | `01_Reflection_Agents.ipynb`, `02_Reflexion_Agents.ipynb`, `03/04_Reflection_Overview_Alt*.ipynb` | Reflection & Reflexion |
 | `06_Router/` | `01_Routing.ipynb` | Router pattern |
