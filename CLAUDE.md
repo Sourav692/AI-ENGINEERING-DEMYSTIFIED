@@ -220,7 +220,12 @@ Installed as an editable package (`hatchling` build). Imported in LangGraph-phas
 from helpers import get_llm, get_embeddings
 ```
 
-`get_llm(provider=None, model=None, temperature=0, verbose=True)` and `get_embeddings(provider=None, model=None, verbose=True)` — both keyword-only, both platform-aware when `provider`/`model` are omitted.
+`get_llm(provider=None, model=None, temperature=0, reasoning_effort=None, verbose=True)` and `get_embeddings(provider=None, model=None, verbose=True)` — both keyword-only, both platform-aware when `provider`/`model` are omitted.
+
+`reasoning_effort` (added 2026-09-19) forwards to the underlying chat model. Only `openai` and `groq` can express it — verified against the installed classes: `ChatOpenAI` and `ChatGroq` both have a `reasoning_effort` field, while **`ChatDatabricks` has neither that nor a `model_kwargs`/`extra_body` escape hatch**. Since Databricks is the macOS default, `get_llm(reasoning_effort=...)` **raises** there rather than silently dropping the argument; pin a provider that can express it:
+```python
+llm = get_llm(provider="openai", model="o4-mini", reasoning_effort="high")
+```
 
 **Platform-aware defaults** (auto-selected when no provider specified):
 

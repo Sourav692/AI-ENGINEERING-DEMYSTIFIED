@@ -56,7 +56,7 @@ load_dotenv()
 # LLM FACTORY FUNCTIONS
 # ============================================================================
 
-def get_openai_llm(model_name: str = "gpt-4o-mini", temperature: float = 0):
+def get_openai_llm(model_name: str = "gpt-4o-mini", temperature: float = 0, **model_kwargs):
     """
     Create and return an OpenAI Chat LLM instance.
     
@@ -95,11 +95,12 @@ def get_openai_llm(model_name: str = "gpt-4o-mini", temperature: float = 0):
     """
     return ChatOpenAI(
         model=model_name,
-        temperature=temperature
+        temperature=temperature,
+        **model_kwargs,
     )
 
 
-def get_groq_llm(model_name: str = "llama-3.3-70b-versatile", temperature: float = 0):
+def get_groq_llm(model_name: str = "llama-3.3-70b-versatile", temperature: float = 0, **model_kwargs):
     """
     Create and return a Groq Chat LLM instance.
     
@@ -148,7 +149,8 @@ def get_groq_llm(model_name: str = "llama-3.3-70b-versatile", temperature: float
     """
     return ChatGroq(
         model=model_name,
-        temperature=temperature
+        temperature=temperature,
+        **model_kwargs,
     )
 
 
@@ -283,11 +285,19 @@ _FACTORIES = {
 }
 
 
+#: Providers whose LangChain class exposes a native ``reasoning_effort`` field.
+#: Checked against the installed packages, not assumed: ``ChatOpenAI`` and
+#: ``ChatGroq`` both carry it; ``ChatDatabricks`` carries neither it nor a
+#: ``model_kwargs``/``extra_body`` escape hatch, so there is no way to pass it.
+_REASONING_CAPABLE = {"openai", "groq"}
+
+
 def get_llm(
     *,
     provider: str | None = None,
     model: str | None = None,
     temperature: float = 0,
+    reasoning_effort: str | None = None,
     verbose: bool = True,
 ):
     """
@@ -297,6 +307,17 @@ def get_llm(
     Usage in any notebook:
         from helpers import get_llm
         llm = get_llm()
+
+    ``reasoning_effort`` ("minimal" | "low" | "medium" | "high", provider
+    permitting) is forwarded to the underlying chat model. It is only
+    meaningful on a reasoning model — setting it on a non-reasoning one is
+    ignored by the provider, or errors, depending on the provider.
+
+    Note that the platform default on macOS is Databricks, whose
+    ``ChatDatabricks`` cannot express this at all. Rather than silently drop
+    the argument, this raises and tells you to pin a provider that can:
+
+        llm = get_llm(provider="openai", model="o4-mini", reasoning_effort="high")
     """
     if provider is None:
         cfg = PLATFORM_DEFAULTS.get(sys.platform)
@@ -318,10 +339,26 @@ def get_llm(
     if model:
         kwargs["model_name" if provider != "databricks" else "model_name"] = model
 
-    llm = factory(model_name=model, temperature=temperature) if model else factory(temperature=temperature)
+    extra: dict = {}
+    if reasoning_effort is not None:
+        if provider not in _REASONING_CAPABLE:
+            raise ValueError(
+                f"provider={provider!r} cannot express reasoning_effort — its LangChain "
+                f"class has no such field and no model_kwargs/extra_body passthrough. "
+                f"Pin one that can: {sorted(_REASONING_CAPABLE)}. For example "
+                f'get_llm(provider="openai", model="o4-mini", reasoning_effort="high").'
+            )
+        extra["reasoning_effort"] = reasoning_effort
+
+    llm = (
+        factory(model_name=model, temperature=temperature, **extra)
+        if model
+        else factory(temperature=temperature, **extra)
+    )
 
     if verbose:
         name = getattr(llm, "model_name", None) or getattr(llm, "model", None) or provider
-        print(f"LLM initialized: {name} (via {provider})")
+        suffix = f", reasoning_effort={reasoning_effort}" if reasoning_effort else ""
+        print(f"LLM initialized: {name} (via {provider}{suffix})")
 
     return llm
