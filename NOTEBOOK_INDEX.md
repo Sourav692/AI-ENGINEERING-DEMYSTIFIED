@@ -2,11 +2,11 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
-> **⚠ This index is out of date with disk (flagged 2026-09-19).** It documents a 1-indexed 13-phase scheme (Phase 1 = `01_Theory_and_Foundations/`, Phase 2 = `02_LangChain_Fundamentals_and_Prompting/`). On disk the phases are 0-indexed `00_`–`14_`, Theory is `00_`, and LangChain/Prompting are two separate phases (`01_`, `02_`). Phases 14–17 were never added here at all. Treat the per-notebook tables as accurate and the phase *numbering* as stale until this is reconciled.
+> **Reconciled with disk 2026-09-19.** Phase headings carry their full repo-relative path under the stage structure (`01_Foundations/`, `02_Core/`, `03_Advanced/`, `04_AI_Coding_Tools/`, `05_Projects/`, `06_Interview_Prep/`). The `Phase N` labels are the original roadmap numbers and were deliberately **not** renumbered, so every "Phase 7" reference across the other docs stays true. The one split: the old Phase 2 ("LangChain Fundamentals & Prompting") owned two topics, which the restructure separated into different stages — they appear below as **Phase 2a** (prompting, Foundations) and **Phase 2b** (LangChain, Core).
 
-This repo is organized as a sequence of 13 **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. **Built so far: Phases 2, 3, 4, 5, 7, 8, 13 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6, 11 are scaffolded placeholders with no content yet.
+This repo is organized as a sequence of **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. The phases are grouped into stages by *prerequisite*, not difficulty. **Built so far: Phases 2a, 2b, 3, 4, 5, 7, 8, 13, 14 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6 and 11 are scaffolded placeholders with no content yet.
 
-# Phase 1 — Theory & Foundations (`01_Theory_and_Foundations/`)
+# Phase 1 — Theory & Foundations (`01_Foundations/00_Theory_and_Foundations/`)
 
 Optional / compressible. `Math_and_ML_Intuition/`, `Transformer_Architecture/` — 🚧 Planned. `Coding_Essentials_for_Agents/` is built.
 
@@ -57,23 +57,44 @@ Python prerequisites for agent work (not LangChain, not Hugging Face Hub). From 
 | `05_Threading_and_Multiprocessing/` | 12 scripts — threads, processes, GIL, locks, queues |
 | `06_Asyncio/` | 10 scripts — `async`/`await`, workers, race conditions, deadlocks |
 
-# Phase 2 — LangChain Fundamentals & Prompting (`02_LangChain_Fundamentals_and_Prompting/`)
+# Phase 2a — Prompt & Context Engineering (`01_Foundations/02_Prompt_and_Context_Engineering/`)
 
-## `LangChain_Fundamentals/`
+## `Prompt_Engineering/`
+
+| Section | Notebook | Topic |
+|---|---|---|
+| `01_Core_Patterns/` | `M2_Exploring_Prompt_Engineering_Patterns.ipynb` | Core prompt-engineering patterns |
+| `02_Advanced_Patterns/` | `M3_Exploring_Advanced_Prompt_Engineering_Patterns.ipynb` | Advanced prompt-engineering patterns |
+| `03_Hands_On_by_Model/` | `M5_Google_Gemini.ipynb`, `M5_OpenAI_ChatGPT.ipynb`, `M6_Meta_Llama_3_2_1B_HuggingFace.ipynb`, `M6_Meta_Llama_3_2_90B_Groq.ipynb` | Hands-on pattern practice across 4 models/providers |
+| `04_Multimodal_Prompting/` | `M7_Google_Gemini.ipynb`, `M7_OpenAI_GPT_4o.ipynb` | Multimodal prompting |
+| `05_Real_World_Applications/` | `M7_GPT_4o_and_Llama_3_2_Real_World_Tasks.ipynb` | Applying patterns to real-world tasks |
+| `Assignments/` | `Assignment.ipynb` | Practice assignment (+ PDF, images) |
+
+## `Context_Engineering/` — 🚧 Planned
+
+# Phase 2b — LangChain Fundamentals (`02_Core/01_LangChain_Fundamentals/`)
+
+The modules sit directly under the phase folder (there is no intermediate `LangChain_Fundamentals/` directory).
 
 | # | Module | Topic |
 |---|---|---|
-| 1 | `01_Getting_Started/` | Commercial + open-source LLMs, natively and via LangChain; LangChain 1.x package split & moved imports (9 nb) |
-| 2 | `02_Inputs_Outputs_Prompts/` | Inputs/outputs, prompt templates, LLM vs ChatModel, output parsers (6 nb) |
-| 3 | `03_LCEL/` | LangChain Expression Language, Runnables, chain migrations (7 nb) |
-| 4 | `04_Chains/` | Chain basics, advanced chains, branching/routing/merging (4 nb) |
-| 5 | `05_Summarization/` | Text summarization; document-combining chains (stuff / map-reduce / refine) rewritten as LCEL (3 nb) |
+| 1 | `01_Getting_Started/` | Commercial + open-source LLMs, natively and via LangChain; LangChain 1.x package split & moved imports (8 nb) |
+| 2 | `02_Inputs_Outputs_Prompts/` | Inputs/outputs, prompt templates, LLM vs ChatModel, output parsers (5 nb) |
+| 3 | `03_Legacy_Chains/` | Pre-LCEL chain APIs — chain basics, output parsers, advanced chains (3 nb) |
+| 4 | `04_LCEL/` | LangChain Expression Language, Runnables, chain migrations, branching/routing/merging (7 nb) |
+| 5 | `05_Summarization/` | Text summarization; document-combining chains (stuff / map-reduce / refine) rewritten as LCEL (2 nb) |
+| 6 | `06_Workflow_Patterns/` | Prompt chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer (5 nb) |
+| 7 | `07_LangChain_1x_Agents_and_Middleware/` | LangChain 1.x `create_agent`, model integration, tools, messages, structured output, middleware, `interrupt` primitive (7 nb) |
 
-Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`. Tool-calling/agents, memory, RAG, LangSmith, advanced features, and microservices deployment moved to their own dedicated phases (see Known Discrepancies).
+> **Numbering caveat:** modules 3 and 4 were renamed during the LCEL/legacy-chain split, but the notebook
+> filename prefixes were not renumbered to match — `03_Legacy_Chains/` contains the `4.x_*` notebooks and
+> `04_LCEL/` contains the `3.x_*` notebooks. Folder order is the correct reading order.
+
+Also has `Docs/` (supporting PDFs/CSV), `images/`, and `LangChain_v0_vs_v1_Differences.md`. Tool-calling/agents, memory, RAG, LangSmith, advanced features, and microservices deployment moved to their own dedicated phases (see Known Discrepancies).
 
 ### `08_Production_Course_Foundations/` (added 2026-09-08)
 
-10 notebooks + a connectivity-check entry point, from a merged-in standalone "production-course" split by topic across the roadmap (see `.cleanup/production-course-main-code-main_cleanup_plan.md`). Kept as one added track rather than micro-split further, even though `08_conversation_memory.ipynb`/`09_langsmith_setup.ipynb` arguably belong to Phase 7/12 by strict topic — see `references/roadmap-map.md` History for the reasoning.
+10 notebooks + a connectivity-check entry point, from a merged-in standalone "production-course" split by topic across the roadmap. Kept as one added track rather than micro-split further, even though `08_conversation_memory.ipynb`/`09_langsmith_setup.ipynb` arguably belong to Phase 7/12 by strict topic — see `references/roadmap-map.md` History for the reasoning.
 
 | Notebook | Topic |
 |---|---|
@@ -88,19 +109,6 @@ Also has `Docs/` (supporting PDFs/CSV), `images/`, `Reference_Links.md`. Tool-ca
 | `08_conversation_memory.ipynb` | Conversation memory via `RunnableWithMessageHistory` |
 | `09_langsmith_setup.ipynb` | LangSmith setup |
 | `10_smart_bot_section1.ipynb` | Applied chatbot build |
-
-## `Prompt_and_Context_Engineering/Prompt_Engineering/`
-
-| Section | Notebook | Topic |
-|---|---|---|
-| `01_Core_Patterns/` | `M2_Exploring_Prompt_Engineering_Patterns.ipynb` | Core prompt-engineering patterns |
-| `02_Advanced_Patterns/` | `M3_Exploring_Advanced_Prompt_Engineering_Patterns.ipynb` | Advanced prompt-engineering patterns |
-| `03_Hands_On_by_Model/` | `M5_Google_Gemini.ipynb`, `M5_OpenAI_ChatGPT.ipynb`, `M6_Meta_Llama_3_2_1B_HuggingFace.ipynb`, `M6_Meta_Llama_3_2_90B_Groq.ipynb` | Hands-on pattern practice across 4 models/providers |
-| `04_Multimodal_Prompting/` | `M7_Google_Gemini.ipynb`, `M7_OpenAI_GPT_4o.ipynb` | Multimodal prompting |
-| `05_Real_World_Applications/` | `M7_GPT_4o_and_Llama_3_2_Real_World_Tasks.ipynb` | Applying patterns to real-world tasks |
-| `Assignments/` | `Assignment.ipynb` | Practice assignment (+ PDF, images) |
-
-## `Prompt_and_Context_Engineering/Context_Engineering/` — 🚧 Planned
 
 # Phase 3 — LangGraph Fundamentals (`02_Core/03_LangGraph_Fundamentals/`)
 
@@ -142,7 +150,7 @@ Note: `02_Routing/`'s notebooks are also agentic RAG examples — kept here rath
 
 ## `03_Production_Course/` (added 2026-09-08)
 
-8 notebooks from a merged-in standalone "production-course" split by topic across the roadmap (see `.cleanup/production-course-main-code-main_cleanup_plan.md`). Own internal numbering kept as-is.
+8 notebooks from a merged-in standalone "production-course" split by topic across the roadmap. Own internal numbering kept as-is.
 
 | Notebook | Topic |
 |---|---|
@@ -253,7 +261,7 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 ## `RAG_Production_Course/` (added 2026-09-08)
 
-7 notebooks from the same merged-in "production-course" as `02_Core/03_LangGraph_Fundamentals/03_Production_Course/` (see `.cleanup/production-course-main-code-main_cleanup_plan.md`).
+7 notebooks from the same merged-in "production-course" as `02_Core/03_LangGraph_Fundamentals/03_Production_Course/`.
 
 | Notebook | Topic |
 |---|---|
@@ -356,7 +364,7 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 |---|---|---|
 | `01_Agent_Patterns/` | `01_Agent_Patterns.ipynb`, `02_Supervisor_Multi_Agent_Alt.ipynb`, `03_Multi_Agent_Overview_Alt.ipynb` | Supervisor pattern + alternates |
 | `02_Multi_Agent_Swarm/` | `01_Multi_Agent_Swarm.ipynb` | Peer-to-peer/swarm multi-agent architecture |
-| `Production_Course_Multi_Agent/` (added 2026-09-08) | `01_multi_agent.ipynb`, `02_supervisor_agent.ipynb`, `03_agent_handoffs.ipynb`, `04_agent_communication.ipynb`, `05_parallel_agents.ipynb`, `06_hierarchical_agents.ipynb`, `07_multi_agent_research_system.ipynb` | 7 notebooks from the same merged-in "production-course" as the Phase 3/4 additions above — see `.cleanup/production-course-main-code-main_cleanup_plan.md` |
+| `Production_Course_Multi_Agent/` (added 2026-09-08) | `01_multi_agent.ipynb`, `02_supervisor_agent.ipynb`, `03_agent_handoffs.ipynb`, `04_agent_communication.ipynb`, `05_parallel_agents.ipynb`, `06_hierarchical_agents.ipynb`, `07_multi_agent_research_system.ipynb` | 7 notebooks from the same merged-in "production-course" as the Phase 3/4 additions above |
 
 ## `Deep_Agents_and_Harness_Engineering/`
 
@@ -477,7 +485,7 @@ Also `00_Advanced_LangChain_Overview.ipynb`.
 
 ## `Production_Course_Ops/` (added 2026-09-08)
 
-4 notebooks from the same merged-in "production-course" as the Phase 3/4/7 additions above — see `.cleanup/production-course-main-code-main_cleanup_plan.md`.
+4 notebooks from the same merged-in "production-course" as the Phase 3/4/7 additions above.
 
 | Notebook | Topic |
 |---|---|
@@ -595,7 +603,9 @@ Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` 
 
 - **2026-08-17 — `Resume-Genie` merged in** as Phase 13 `Resume_Genie/` (Streamlit + LangGraph career suite). Distinct from CrewAI job-application tailoring and the AutoGen interview coach. Skipped machine-specific `.claude/settings.json`.
 
+- **2026-09-19 — stage restructure reconciled into this index.** The phases were grouped into prerequisite stages (`01_Foundations/`, `02_Core/`, `03_Advanced/`, `04_AI_Coding_Tools/`, `05_Projects/`, `06_Interview_Prep/`) and this file's headings were repointed to match; all 15 now resolve against disk. `Phase N` labels were deliberately left unrenumbered so cross-doc "Phase 7"-style references stay true. The old Phase 2 owned two topics that the restructure put in different stages, so it split into **Phase 2a** (Prompt & Context Engineering, Foundations) and **Phase 2b** (LangChain Fundamentals, Core). Phase 2b's module table was also stale in content, not just path: `03_LCEL/`→`03_Legacy_Chains/` and `04_Chains/`→`04_LCEL/` had been renamed, modules `06_Workflow_Patterns/` and `07_LangChain_1x_Agents_and_Middleware/` were missing entirely, per-module notebook counts were wrong, and the listed `Reference_Links.md` does not exist in that folder (`LangChain_v0_vs_v1_Differences.md` does). Five dead references to `.cleanup/production-course-main-code-main_cleanup_plan.md` (directory no longer exists) were removed. Also removed at root in the same pass: `RAG_CURRICULUM.md` → `archive/` (a never-executed 2026-09-09 plan competing with the settled Phase 4/8 split), the tracked Databricks stub `__builtins__.pyi`, 23 `.DS_Store` files, and the local Chroma MCP store; `.tracker/` was untracked (it was committed despite being gitignored); and root `CLAUDE.md`'s 15-line "Check `graphify-out/` First" section was deleted, that directory having never existed on this clone.
+
 **Still open:**
 - Several notebooks don't open with a proper `# Title` markdown cell (mid-document subheading instead) — pre-existing, not fixed, would require editing notebook content.
-- `LangChain_Fundamentals/` and its descendants don't use the `helpers` factory (they instantiate LLM clients directly) — a pre-existing property of the merged-in source repo, not a convention violation.
+- `02_Core/01_LangChain_Fundamentals/` and its descendants don't use the `helpers` factory (they instantiate LLM clients directly) — a pre-existing property of the merged-in source repo, not a convention violation.
 - Several `RAG_Demystified`-sourced notebooks reference a shared `data/` folder via `../../data/`-style relative paths that may no longer resolve correctly after being moved into the new phase structure — not fixed, would require editing notebook content.

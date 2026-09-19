@@ -18,7 +18,7 @@ recasting it in the reference format — not paraphrasing the whole thing shorte
 Treat these two as the format contract. Read them before generating anything; match their
 section names, ordering, table columns, tone, and length.
 
-- Worksheet: `06_Interview_Prep/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md`
+- Worksheet: `06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md`
 - Answer key: `.../04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md`
 
 If a rule below ever conflicts with those files, the files win.
@@ -240,8 +240,8 @@ pair on section names, bullet counts, and prose density:
 
 ```bash
 python3 .claude/skills/fde-case-study-worksheet-v3/scripts/check_density.py \
-  "06_Interview_Prep/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md" \
-  "06_Interview_Prep/FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md" \
+  "06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/01_internal_knowledge_assistant.md" \
+  "06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/01_internal_knowledge_assistant_answer_key.md" \
   "06_Interview_Prep/FDE/FDE_System_Design_Interview_20_Scenarios/Version_3/NN_<slug>.md" \
   "06_Interview_Prep/FDE/FDE_System_Design_Interview_20_Scenarios/Version_3/answer_keys/NN_<slug>_answer_key.md"
 ```

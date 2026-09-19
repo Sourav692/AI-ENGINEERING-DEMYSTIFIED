@@ -42,13 +42,13 @@ const MODULES = [
           'and decomposition moves that every scenario builds on.',
         worksheetDir: join(
           SOURCE_ROOT,
-          '1. Complete GEN AI FDE Interview System — Core + GenAI',
+          'Complete GEN AI FDE Interview System — Core + GenAI',
           '01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION',
           '04_CASE_STUDY_WORKSHEET',
         ),
         answerKeyDir: join(
           SOURCE_ROOT,
-          '1. Complete GEN AI FDE Interview System — Core + GenAI',
+          'Complete GEN AI FDE Interview System — Core + GenAI',
           '01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION',
           '04_CASE_STUDY_WORKSHEET',
           'answer_keys',

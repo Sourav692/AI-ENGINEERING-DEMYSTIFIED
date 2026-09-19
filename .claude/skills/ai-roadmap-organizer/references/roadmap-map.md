@@ -171,7 +171,7 @@ Owns: interview preparation. Created by collapsing four top-level phases plus `t
 | Track | Was | Notes |
 |---|---|---|
 | `Handbook/` | `14_AI_Engineering_Handbook/` | 12-chapter prose handbook. **Kept whole deliberately** — it re-covers Phase 4/5/7/12 topics, so it looks like duplication, but it is prose not notebooks and splitting it across five phases would destroy the book. Same precedent as `Comprehensive_RAG_Techniques/` and the DSPy course. |
-| `FDE/` | `15_FDE_Related_Preparation/` | ⚠ Purchased third-party material. `.gitignore` lines 160–162 ignore everything under `1. Complete GEN AI FDE Interview System — Core + GenAI/` except `.md`. **Those patterns are path-anchored — if this folder ever moves again, repoint them in the same commit or the vendor PDFs silently become committable.** |
+| `FDE/` | `15_FDE_Related_Preparation/` | ⚠ Purchased third-party material. `.gitignore` lines 160–162 ignore everything under `Complete GEN AI FDE Interview System — Core + GenAI/` except `.md`. **Those patterns are path-anchored — if this folder ever moves again, repoint them in the same commit or the vendor PDFs silently become committable.** |
 | `AI_Engineer/` | `16_AI_Engineer_Interview_Preparation/` | Three enterprise platform builds were extracted to Phase 13 — they were applications, not prep. |
 | `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Eval tutorial + question banks went to `Agent_Evaluation_Demystified`. |
 | `Study_Guides/` | `tutorials/` | Per-phase interview study guides, Cost & Latency cram sheets + drill deck, chunking/retrieval notes. Ambiguous placement: the per-phase guides could arguably sit beside the phases they summarise. |

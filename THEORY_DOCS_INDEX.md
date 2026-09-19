@@ -10,10 +10,11 @@ Excluded as non-theoretical: `.venv`/site-packages library docs, Claude Code too
 `README.md`s that only list folder contents with no concept explanation, and process/meta docs
 (task boards, plans, decision logs, progress checklists, gap analyses).
 
-**Note:** on-disk phase numbering (`00_`–`17_`) has drifted from what the root `CLAUDE.md`
-documents (`01_`–`13_`) — the handbook (14), FDE prep (15), interview prep (16), OpenAI prep (17),
-plus top-level `docs/` and `06_Interview_Prep/Study_Guides/`, aren't reflected there at all. This index reflects what's
-actually on disk.
+**Note:** section headings below are full repo-relative paths under the stage structure
+(`01_Foundations/`, `02_Core/`, `03_Advanced/`, `05_Projects/`, `06_Interview_Prep/`) and were
+verified against disk on 2026-09-19 — all 18 resolve. The earlier `00_`–`17_` flat numbering this
+note used to warn about no longer exists; phase numbers inside each stage are the original ones and
+were deliberately not renumbered, which is why there is no `11_` under `03_Advanced/`.
 
 ## 01_Foundations/00_Theory_and_Foundations
 

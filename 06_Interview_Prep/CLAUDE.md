@@ -14,7 +14,7 @@
 
 ## ⚠ Licensing — read before touching `FDE/`
 
-This track contains **third-party commercial material**. `.gitignore` lines ~160–162 ignore everything under `FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/` **except** `.md` files.
+This track contains **third-party commercial material**. `.gitignore` lines ~160–162 ignore everything under `FDE/Complete GEN AI FDE Interview System — Core + GenAI/` **except** `.md` files.
 
 **Those patterns are path-anchored.** If this folder ever moves, repoint them in the same commit — when they broke during the 2026-09-19 restructure, 107 purchased vendor PDFs silently became committable. Verify after any move:
 

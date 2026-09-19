@@ -22,7 +22,7 @@ Two sets, both using a consistent schema.
 
 | Set | Location | Count |
 | --- | --- | --- |
-| Core Scenarios | `1. Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/` | 10 worksheets + 10 keys |
+| Core Scenarios | `Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/` | 10 worksheets + 10 keys |
 | System Design Scenarios | `FDE_System_Design_Interview_20_Scenarios/Version_3/` | 12 worksheets + 12 keys |
 
 Only `.md` files are used. The PDFs and `.docx` files in those folders are out of scope.
@@ -225,7 +225,7 @@ into the blanks, downloaded as `.md`. Print stylesheet for a clean PDF.
 
 ## Git and deployment
 
-`.gitignore` currently ignores the whole `1. Complete GEN AI FDE Interview System —
+`.gitignore` currently ignores the whole `Complete GEN AI FDE Interview System —
 Core + GenAI/` folder at line 153, with no explanatory comment. The folder holds 4 PDFs
 and 11 `.docx` files, so the likely original motive was binary bloat.
 

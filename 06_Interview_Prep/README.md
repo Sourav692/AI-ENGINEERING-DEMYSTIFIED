@@ -4,7 +4,7 @@
 
 **5 tracks · 21 notebooks · ~330 markdown documents.**
 
-> ⚠ **`FDE/` contains purchased third-party material.** Everything under `FDE/1. Complete GEN AI FDE Interview System — Core + GenAI/` except `.md` files is gitignored by design. If that folder ever moves, the path-anchored rules in the root `.gitignore` must move with it — see this group's `CLAUDE.md`.
+> ⚠ **`FDE/` contains purchased third-party material.** Everything under `FDE/Complete GEN AI FDE Interview System — Core + GenAI/` except `.md` files is gitignored by design. If that folder ever moves, the path-anchored rules in the root `.gitignore` must move with it — see this group's `CLAUDE.md`.
 
 ## Topics covered
 
