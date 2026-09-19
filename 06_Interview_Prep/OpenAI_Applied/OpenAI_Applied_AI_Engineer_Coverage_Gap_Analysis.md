@@ -11,8 +11,10 @@ The Decomp round is discussion-based: clarify requirements, decompose an ambiguo
 
 ## 1. "Building Agents" track — topic-by-topic coverage
 
-**Moved to [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](../../OPENAI_BUILDING_AGENTS_COVERAGE.md) at
-the repo root (2026-09-19).** The table that used to sit here had drifted: it recorded the
+**Moved to [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](OPENAI_BUILDING_AGENTS_COVERAGE.md)
+(2026-09-19; it sat at the repo root until 2026-09-20, when it moved here beside this
+file — see also the teaching companion
+[`OPENAI_BUILDING_AGENTS_TUTORIAL.md`](OPENAI_BUILDING_AGENTS_TUTORIAL.md)).** The table that used to sit here had drifted: it recorded the
 OpenAI Agents SDK track as "🚧 Planned, empty" when it has a 23-cell foundations notebook, said
 computer use had "no coverage anywhere" when
 `02_Core/05_AI_Agent_Fundamentals/5. Agent Pattern/01_Tool_Use/06_BrowserAgent_Computer_Use_Applied.ipynb`

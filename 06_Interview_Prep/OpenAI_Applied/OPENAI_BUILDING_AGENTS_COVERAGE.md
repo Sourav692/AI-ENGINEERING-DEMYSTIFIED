@@ -4,7 +4,9 @@ Maps every topic in OpenAI's [Building Agents track](https://developers.openai.c
 to where this repo teaches it, and names what is genuinely missing.
 
 **Checked against disk 2026-09-19; rows re-verified and the tally recounted 2026-09-20.**
-Every path below was verified to exist.
+Every path below was verified to exist. **All paths are relative to the repository root**,
+not to this file — this document moved into `06_Interview_Prep/OpenAI_Applied/` on
+2026-09-20 and the paths were deliberately left absolute-from-root so they stay copy-pasteable.
 
 **The headline, as of 2026-09-20: every row is resolved.** The repo taught the *concepts*
 well from the start — agent loops, tool calling, routing, handoffs, memory, guardrails,
@@ -142,13 +144,13 @@ is the actual lesson, not the generation call.
 
 ## Related
 
-**`OPENAI_BUILDING_AGENTS_TUTORIAL.md`** (root) is the teaching companion to this file — the
+**[`OPENAI_BUILDING_AGENTS_TUTORIAL.md`](OPENAI_BUILDING_AGENTS_TUTORIAL.md)** (beside this file) is the teaching companion — the
 same track walked through in plain language, 3–4 lines per concept, with the notebook path
 for each and Mermaid diagrams for the loop, the hosted/client-side split, the multi-agent
 shapes and the guardrail pipeline. **This document is the audit; that one is the lesson.**
 Keep them in step: if a row here changes status, the matching section there changes too.
 
-`06_Interview_Prep/OpenAI_Applied/OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md` analyses
+[`OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md`](OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md) (also beside this file) analyses
 this same track alongside OpenAI's Evaluation Best Practices guide, scoped to interview prep.
 Its section 1 now points here rather than restating the mapping — it had drifted, claiming the
 Agents SDK track was empty and that computer use had no coverage, both of which were out of date.

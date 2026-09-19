@@ -43,6 +43,23 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 
 > For the complete, up-to-date notebook-by-notebook listing, see [`NOTEBOOK_INDEX.md`](NOTEBOOK_INDEX.md) — it's the source of truth for what actually exists.
 
+### 🧭 New here? Start with the guided tutorial
+
+**[Building Agents — A Plain-English Tutorial](06_Interview_Prep/OpenAI_Applied/OPENAI_BUILDING_AGENTS_TUTORIAL.md)**
+walks OpenAI's [Building Agents track](https://developers.openai.com/tracks/building-agents)
+end to end in simple language — **3–4 lines per concept, no jargon**, with the notebook in
+this repo that teaches each one, and Mermaid diagrams for the agent loop, the
+hosted-vs-your-own-tools split, guardrails, and the three multi-agent shapes.
+
+It doubles as a **study tracker**: every concept ends with a `- [ ] TODO` asking you to
+produce something small — a number you measured, a failure you reproduced — so ticking the
+box means you actually did it. 24 in total. There's a weekend-length shortlist near the end
+if you can't do all of it.
+
+Its companion, [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](06_Interview_Prep/OpenAI_Applied/OPENAI_BUILDING_AGENTS_COVERAGE.md),
+is the audit behind it: every track topic mapped to where this repo teaches it —
+**22 covered, 0 gaps, 4 deliberately skipped with the reason recorded for each.**
+
 **Why RAG is split across two phases, not duplicated:** Phase 4 covers *foundational* RAG (chunking, basic retrieval, embeddings theory, each framework's straightforward implementation) — nothing there requires knowing agents. Phase 8, "Advanced RAG," covers agentic/self-correcting RAG, CacheRAG, and GraphRAG — patterns that genuinely depend on understanding agents (Phase 5) and advanced agentic systems (Phase 7) first, so it's deliberately sequenced after both rather than bundled into Phase 4.
 
 ---
