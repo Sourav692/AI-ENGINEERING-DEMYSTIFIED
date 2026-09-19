@@ -14,8 +14,8 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 
 | | Count |
 |---|---|
-| ✅ Covered | 17 |
-| 🟡 Partial — concept taught, OpenAI's implementation not | 6 |
+| ✅ Covered | 18 |
+| 🟡 Partial — concept taught, OpenAI's implementation not | 5 |
 | ❌ Gap | 0 |
 
 ---
@@ -68,7 +68,7 @@ is concept-led, so the vendor's request layer does not earn notebook time.
 |---|---|---|
 | Input guardrails, jailbreak prevention | `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/`, `Production_Course_Ops/03_security_patterns.ipynb` | ✅ Covered |
 | Structured outputs | `02_Core/01_LangChain_Fundamentals/07_LangChain_1x_Agents_and_Middleware/7.4_Structured_Output.ipynb`, `02_Core/03_LangGraph_Fundamentals/01_Foundations/08_Pydantic_State_Validation.ipynb` | ✅ Covered |
-| Output guardrails | Covered as moderation; a separate output-validation stage before display is thinner | 🟡 Partial |
+| Output guardrails | **Re-checked 2026-09-20: covered, and better than this row claimed.** `03_Advanced/12_Production_and_Observability/Safety_and_Alignment/03_Guardrails_LLM_and_Rule_Based.ipynb` implements `rule_based_output_guardrail()` and `llm_output_guardrail()`, wires a full input-guardrail → agent → output-guardrail pipeline, and walks a response blocked for leaking the system prompt. *(Was marked partial as "covered as moderation; a separate output-validation stage is thinner" — that description predated this notebook.)* | ✅ Covered |
 | Production monitoring | `03_Advanced/12_Production_and_Observability/` (whole phase) | ✅ Covered |
 
 ---
@@ -84,7 +84,7 @@ All four originally identified gaps are closed or deliberately descoped:
 | Real computer use / frontend testing | **Built** 2026-09-20 — `01_Tool_Use/08_Vision_Driven_Computer_Use.ipynb` |
 | Responses API | **Descoped** 2026-09-20 — concept-led prep; conversation state is covered by LangGraph checkpointing |
 
-The 6 remaining partials are all of one kind: the concept is taught through a different
+The 5 remaining partials are all of one kind: the concept is taught through a different
 vendor or framework than OpenAI's. For concept-led preparation that is not a deficiency —
 Tavily teaches web search, LangSmith teaches tracing, LangGraph checkpointing teaches
 sessions. The one worth revisiting if the target shifts is the **Agents SDK**, where three
