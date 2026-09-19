@@ -142,6 +142,12 @@ is the actual lesson, not the generation call.
 
 ## Related
 
+**`OPENAI_BUILDING_AGENTS_TUTORIAL.md`** (root) is the teaching companion to this file — the
+same track walked through in plain language, 3–4 lines per concept, with the notebook path
+for each and Mermaid diagrams for the loop, the hosted/client-side split, the multi-agent
+shapes and the guardrail pipeline. **This document is the audit; that one is the lesson.**
+Keep them in step: if a row here changes status, the matching section there changes too.
+
 `06_Interview_Prep/OpenAI_Applied/OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md` analyses
 this same track alongside OpenAI's Evaluation Best Practices guide, scoped to interview prep.
 Its section 1 now points here rather than restating the mapping — it had drifted, claiming the
