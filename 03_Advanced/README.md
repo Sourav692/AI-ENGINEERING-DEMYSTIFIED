@@ -49,7 +49,6 @@ RAG that needs agents.
 - CRAG
 
 **Other**
-- `building-adaptive-rag/` — standalone app
 - 🚧 `CacheRAG/` — planned
 
 ### `09_Agent_Protocols/` — 10 notebooks
