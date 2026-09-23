@@ -1,20 +1,35 @@
 # G09 — Enterprise Coding Assistant: Main Interview Guide
 
+**Coding in an IDE** is type, get a suggestion, keep going. If the ghost text is late, you already typed past it. If it used a repo you cannot clone, that’s a leak.
+
+**G09 covers one slice:** fast inline complete from code you may read, plus slower explain/test on another path. Not “send the monorepo to a giant model.”
+
+End to end, as intern Alex typing in a private repo:
+
+1. **Keystroke.** We know Alex’s identity and what the code host says they can read.
+2. **We take a tiny context** — cursor, file, imports — not the whole company.
+3. **Cache or retrieve only snippets inside that ACL.** Recheck before the model.
+4. **A small model streams a short completion** in about 300 ms.
+5. **A gate drops** invented APIs, secrets, license clashes. Timeout → show nothing.
+6. **“Explain this function”** is a slower, larger-model path. Accepts are logged without keeping source.
+
+That’s it: **tiny permitted context → fast suggest → validate or stay silent.** Training on private code stays out unless they contract it.
+
 An inline completion must arrive before the developer’s next keystroke **and** respect a private repository’s permissions. Design the context funnel and latency budget first. Do not send the whole repository to a large model, and do not let a cached or retrieved snippet cross an access boundary.
 
 The [source study](G09_Enterprise_Coding_Assistant.md) combines the under-300 ms coding-assistant anchor with the enterprise private-repository variant. The latter adds incremental indexing, repository ACLs, licensing and productivity proof; it keeps the same fast completion spine.
 
 ## 1. Questions to ask the interviewer
 
-| Ask | What the answer changes |
-|---|---|
-| Are suggestions real-time as the user types? What p95 and first-token target? | Whether completion needs the sub-300 ms hot path or a slower interactive path |
-| Which IDEs, languages, and tasks come first? | Extension protocol, validators, and model routes |
-| How much of the repository may be used? What does the code host say this developer can read? | Permission mirror, symbol index, context budget |
-| Can code leave the customer’s environment? Is training on private code allowed? | Cloud versus private deployment, masking, provider contract |
-| What kinds of output must be blocked: nonexistent API, secret, unsafe pattern, license conflict? | Validation gate and release suite |
-| What would prove developer value beyond clicks or suggestions served? | Acceptance slices and controlled productivity comparison |
-| What is the peak typing load and model-cost budget? | Cache, rate limits, inference capacity, completion length cap |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Are suggestions real-time as the user types? What p95 and first-token target? | Must the ghost text appear before the next keystroke, or is a 2-second “explain this” okay? | Sub-300 ms hot path vs a slower interactive path. |
+| Which IDEs, languages, and tasks come first? | Is v1 VS Code + Python completion, or also Java refactor in IntelliJ? | Extension protocol, validators, and model routes. |
+| How much of the repository may be used? What does the code host say this developer can read? | Can it complete from a private repo this intern cannot clone? | Permission mirror, symbol index, and context budget. |
+| Can code leave the customer’s environment? Is training on private code allowed? | Does a private snippet go to a public API, and may we train on it? | Cloud vs private deploy, masking, and the provider contract. |
+| What kinds of output must be blocked: nonexistent API, secret, unsafe pattern, license conflict? | If it invents an API or pastes an AWS key, do we still show it? | Validation gate and release suite. |
+| What would prove developer value beyond clicks or suggestions served? | Did people accept junk completions, or did they actually finish PRs faster? | Acceptance slices and a productivity comparison. |
+| What is the peak typing load and model-cost budget? | At 10 a.m., can a keystroke storm bankrupt the GPU bill? | Cache, rate limits, inference capacity, and completion length cap. |
 
 ## 2. Requirements and budget
 

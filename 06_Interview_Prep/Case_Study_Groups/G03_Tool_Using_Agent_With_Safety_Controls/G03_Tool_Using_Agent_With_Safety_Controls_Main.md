@@ -1,5 +1,20 @@
 # G03 — Tool-Using Agent with Safety Controls: Main Interview Guide
 
+**Ops automation** is turning a messy email into a real system change: CRM note, refund, lookup.
+
+**G03 covers one slice:** the model proposes the next small action; other services decide if it may run. The model never holds the keys.
+
+End to end, as a “refund this VIP” email:
+
+1. **Support agent Sara delegates** the case.
+2. **The planner proposes one step** — read the email, or check eligibility, not “do everything.”
+3. **Registry and validation check** the tool and arguments.
+4. **Policy says allow, block, or needs a human.**
+5. **A broker mints a short, narrow token.** The gateway runs once and writes a receipt.
+6. **If it is looping or a bad refund is in flight**, operators kill new calls, queues, and tokens.
+
+That’s it: **propose → validate → decide → maybe approve → execute once → record.** Shell access and unrestricted refunds stay out.
+
 > **Core idea:** The model proposes one bounded action. Deterministic services validate, authorize, approve, execute, and record it. The agent never holds broad credentials or decides whether its own action is allowed.
 
 Use this for the spoken design. The [Deep Dive](G03_Tool_Using_Agent_With_Safety_Controls_Deep_Dive.md) holds the mechanics, and the unchanged [source case](G03_Tool_Using_Agent_With_Safety_Controls.md) holds the full reference.

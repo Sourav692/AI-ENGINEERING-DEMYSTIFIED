@@ -1,5 +1,20 @@
 # G17 — Logistics Exception Handling: Main Interview Guide
 
+**Exception handling** is: a shipment should have moved, it didn’t, ops must tell the customer or the carrier. Customs is not a chatbot decision.
+
+**G17 covers one slice:** watch feeds, detect a hold/miss/weather, draft or auto-resolve only what policy allows. Humans always own customs.
+
+End to end, as a missed scan in Frankfurt:
+
+1. **Carrier webhook or batch file** becomes one event.
+2. **We detect the exception** and pull shipment value, route, freeze rules.
+3. **Policy gate:** weather delay with a known playbook might auto-message; **customs always queues a human.**
+4. **Ops sees a draft** — next scan, customer text, proposed carrier call — not a silent write.
+5. **Allowed auto-resolve runs once** through a gateway with an audit row.
+6. **SAP/weather variants** add more signals; the gate does not get looser.
+
+That’s it: **feed → detect → policy → draft or narrow auto → audit.** “Just ping the carrier for every blip” stays out.
+
 > **Source:** [G17_Logistics_Exception_Handling.md](G17_Logistics_Exception_Handling.md), especially §§1–10. Use the [Deep Dive](G17_Logistics_Exception_Handling_Deep_Dive.md) for gate, reliability and evaluation detail and the [Cheat Sheet](G17_Logistics_Exception_Handling_Cheat_Sheet.md) for rehearsal.
 
 ## Anchor and related case

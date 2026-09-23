@@ -1,5 +1,20 @@
 # G15 — Agent Platform for Non-Technical Users: Main Interview Guide
 
+**No-code agent process** is: a support lead draws a workflow — reply, tag, refund — without writing Python. The hard part is a real refund happening **once**, and stopping if the box crashes.
+
+**G15 covers one slice:** events in, versioned spec, guardrails, durable steps. A future LLM may draft a spec; the demo engine is deterministic.
+
+End to end, as Cascade’s “small refunds without a human”:
+
+1. **Email/Slack becomes a canonical event** with tenant id.
+2. **One live workflow matches**, or we record why none did. Entity lock so two copies don’t double-pay.
+3. **Each step checkpoints.** Arguments must match the schema.
+4. **A $500 refund hits a $50 cap** — refuse, don’t clamp to $50.
+5. **Approval pause or allow-list.** Then one idempotent write.
+6. **Crash mid-way resumes from the checkpoint**, not from “guess we should refund again.”
+
+That’s it: **event → one spec → guardrail → execute once → recover.** Authors cannot secretly approve their own live refunds.
+
 > **Full source:** [G15_Agent_Platform_For_Non_Technical_Users.md](G15_Agent_Platform_For_Non_Technical_Users.md), especially §§1–12 for the anchor and §13 for Cascade Robotics. Use the [Deep Dive](G15_Agent_Platform_For_Non_Technical_Users_Deep_Dive.md) for guardrail and recovery mechanics and the [Cheat Sheet](G15_Agent_Platform_For_Non_Technical_Users_Cheat_Sheet.md) for rehearsal.
 
 ## The anchor and its related case
@@ -13,13 +28,13 @@ The anchor asks for a multi-tenant platform where non-technical users configure 
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| How non-technical is the author: forms, templates or plain-English creation? | Determines authoring surface and reviewable spec. |
-| Which channels and who owns their integrations? | Defines adapters, threading and dedup behavior. |
-| Are actions read-only, reversible or destructive? | Defines approval, spend and audit policy. |
-| What is the blast radius of a bad workflow? | Sets default budgets and rollout gates. |
-| Is multi-tenancy required from day one? | Makes tenant identity part of every event, spec, lock and policy. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| How non-technical is the author: forms, templates or plain-English creation? | Do they pick a template, fill a form, or type “refund angry VIP emails”? | Authoring UI and the reviewable spec. |
+| Which channels and who owns their integrations? | Is Slack ours, and if two copies of the same email arrive, who dedups? | Adapters, threading, and dedup. |
+| Are actions read-only, reversible or destructive? | Tag a ticket, or refund $500? | Approval, spend caps, and audit. |
+| What is the blast radius of a bad workflow? | If someone publishes a loop, can it refund every customer tonight? | Default budgets and rollout gates. |
+| Is multi-tenancy required from day one? | Can Acme’s workflow accidentally run on Globex’s tickets? | Tenant ID on every event, spec, lock, and policy. |
 
 ## Requirements and the $500 refund
 

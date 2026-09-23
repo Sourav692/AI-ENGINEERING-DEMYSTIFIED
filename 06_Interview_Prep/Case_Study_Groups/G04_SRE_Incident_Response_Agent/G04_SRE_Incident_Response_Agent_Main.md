@@ -1,5 +1,20 @@
 # G04 — SRE Incident Response Agent: Main Interview Guide
 
+**Incident response** is: pages go off, someone finds a cause, someone changes production. Wrong rollback at 3 a.m. is worse than a slow summary.
+
+**G04 covers one slice:** collapse the alert storm, look with read-only tools, then *suggest* a fix. Humans still approve writes.
+
+End to end, as checkout 5xx after a deploy:
+
+1. **400 alerts hit.** Rules or a small model fold them into one investigation.
+2. **We attach service, last deploy, owner, freeze.**
+3. **We read metrics, logs, traces in parallel** and mark empty vs down vs denied.
+4. **A strong model ranks causes** from that pack, with citations and coverage gaps.
+5. **It proposes a rollback command**, blast radius, runbook, dry-run — it does not run it.
+6. **Owner/commander click yes.** One gateway executes once. Timeline records it.
+
+That’s it: **dedupe → read → hypothesize → propose → human → maybe write.** Auto-restart of prod is later, if ever.
+
 > **Core idea:** Dedupe the alert storm, investigate with read-only tools, show evidence and missing sources, then stage any mitigation for human approval. The agent runs outside the failure it is investigating.
 
 Use this guide for the interview. The [Deep Dive](G04_SRE_Incident_Response_Agent_Deep_Dive.md) contains the technical drills, and the unchanged [source case](G04_SRE_Incident_Response_Agent.md) is the full reference.

@@ -1,5 +1,20 @@
 # G18 — Consumer-Scale Chat Service: Main Interview Guide
 
+**Consumer chat** is ChatGPT-shaped: many people, many turns, stream tokens, remember the thread, don’t go bankrupt on GPUs. The **model is stateless**; the **product is not**.
+
+**G18 covers one slice:** sessions, streaming, admission, moderation, cost. Not training the foundation model.
+
+End to end, as free-tier user Sam:
+
+1. **Sam hits send.** Admission and quotas — paid may skip the line.
+2. **We load the conversation** (and deletion rules). Not the whole history dumped raw if it won’t fit.
+3. **Moderation on the way in.**
+4. **A GPU pool streams tokens.** Batching and fair queues keep neighbors alive.
+5. **Moderation on the way out.** Tools (files, search, code) are sandboxed and step-capped if they exist.
+6. **Turn is stored.** If inference dies, failover — don’t pretend the chat never happened.
+
+That’s it: **admit → load state → infer stream → moderate → persist.** “We’ll train a new model in this round” stays out unless they ask.
+
 > **Source:** [G18_Consumer_Scale_Chat_Service.md](G18_Consumer_Scale_Chat_Service.md), especially §§1–12. Use the [Deep Dive](G18_Consumer_Scale_Chat_Service_Deep_Dive.md) for sizing and trade-offs and the [Cheat Sheet](G18_Consumer_Scale_Chat_Service_Cheat_Sheet.md) for rehearsal. The source builds its design from one-line “Design ChatGPT/Claude” prompts; all scale figures are explicit whiteboard assumptions, not measured service facts.
 
 ## The anchor and variant

@@ -1,5 +1,20 @@
 # G08 — Document Review Copilot: Main Interview Guide
 
+**Document review** is: a packet arrives, a human decides yes/no against a rule (payer, law, playbook). Reading is cheap. **Signing** is expensive.
+
+**G08 covers one slice:** extract evidence, compare to the right rule version, cite the exact span, draft. A named human still decides.
+
+End to end, as prior auth for a procedure:
+
+1. **Packet and payer rule ingest.** If page 7’s table is unreadable, we stop ingest.
+2. **Clinician opens the case** with patient scope.
+3. **We pull the rule that was in force on the procedure date.**
+4. **We extract fields and the supporting sentences.**
+5. **We draft “meets criteria” only where the span actually says that.** Bad citation → no green draft.
+6. **Clinician approves or rejects.** We never send to the payer alone.
+
+That’s it: **evidence → rule → cited draft → human.** Autonomous clinical or legal yes is out.
+
 **Extraction is cheap; judgment is expensive.** The copilot extracts evidence, compares it with the governing rule, cites the exact supporting span, and drafts. A named clinician, compliance reviewer, or lawyer makes the material decision. Missing evidence, a broken citation, or uncertain access stops the path.
 
 The [source study](G08_Document_Review_Copilot.md) treats three cases as variations of one spine:
@@ -13,15 +28,15 @@ The [source study](G08_Document_Review_Copilot.md) treats three cases as variati
 
 ## 1. Questions to ask the interviewer
 
-| Ask | What the answer changes |
-|---|---|
-| Which document and decision are slow or risky today? Who owns the final call? | First slice, reviewer, approval route |
-| What is read-only, draft-only, or externally submitted? | Tool allowlist and whether write-back exists at launch |
-| What is the governing source: payer rule, regulation, or playbook? How is its effective version selected? | Rule ingestion, versioning, and retrieval |
-| Which fields or tables are crucial, and what extraction coverage is acceptable? | Typed schema, parser mode, ingestion gate |
-| Which PHI, privileged, or financial fields may enter prompts, logs, and the model provider? | Data minimization, redaction, deployment boundary |
-| What must the assistant refuse or escalate? What evidence must the reviewer see? | Risk tiers, span verifier, review UI |
-| How much false-positive burden can the reviewer absorb, and what cost per true issue is acceptable? | Screening tiers and evaluation thresholds |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which document and decision are slow or risky today? Who owns the final call? | Is this a prior-auth packet a clinician must sign, or a contract a lawyer must sign? | First slice, named reviewer, and approval route. |
+| What is read-only, draft-only, or externally submitted? | Can it only highlight a clause, draft a letter, or actually send it to the payer? | Tool allowlist and whether write-back exists at launch. |
+| What is the governing source: payer rule, regulation, or playbook? How is its effective version selected? | Which year’s payer rule applies to this procedure date? | Rule ingestion, versioning, and retrieval. |
+| Which fields or tables are crucial, and what extraction coverage is acceptable? | If the table on page 7 is unreadable, do we still draft an approval? | Typed schema, parser mode, and the ingest gate. |
+| Which PHI, privileged, or financial fields may enter prompts, logs, and the model provider? | Can diagnosis codes go to a US cloud model, or only a redacted summary? | Minimization, redaction, and where the model runs. |
+| What must the assistant refuse or escalate? What evidence must the reviewer see? | If the cited span does not support “meets medical necessity,” does the reviewer still see a green draft? | Risk tiers, span verifier, and review UI. |
+| How much false-positive burden can the reviewer absorb, and what cost per true issue is acceptable? | If we flag 50 harmless files to catch one real issue, will reviewers ignore the tool? | Screening tiers and eval thresholds. |
 
 ## 2. Requirements and first release
 

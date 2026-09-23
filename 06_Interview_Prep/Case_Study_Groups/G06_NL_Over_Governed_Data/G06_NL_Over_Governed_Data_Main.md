@@ -1,5 +1,20 @@
 # G06 — Natural Language over Governed Data: Main Interview Guide
 
+**Analytics process** is: someone asks a business question, SQL hits the warehouse, a number shows up on a slide. The trap is **valid SQL for the wrong meaning of “revenue.”**
+
+**G06 covers one slice:** map the question to an approved metric, then a read-only query with a paper trail. Not “chat with every table.”
+
+End to end, as an exec asking “What’s Q3 revenue?”
+
+1. **We resolve who they are** and which rows they may see.
+2. **We pin “revenue” to Finance’s versioned metric**, not a guess.
+3. **If 30-day vs 90-day is unclear**, we ask or send to an analyst — we do not pick.
+4. **We generate SQL, parse it, cap the scan**, then run read-only.
+5. **We return the number, the SQL, lineage, freshness.** Prose is checked against the numbers.
+6. **Next quarter we can replay** who asked, which metric version, which SQL hash.
+
+That’s it: **metric first → permitted SQL → bounded run → explain from the result.** Writes and inventing KPIs stay out.
+
 The failure to design against is **valid SQL that answers the wrong business question**. “Revenue” can mean booked, recognized, or collected revenue; the model cannot choose that definition on the business’s behalf. Anchor the question to a versioned metric before exposing a physical schema, then bound and audit every query.
 
 This is the anchor for the related executive-dashboard and retail-forecast explanation cases in the [source study](G06_NL_Over_Governed_Data.md). Learn the governed query path once; change the final explanation and review workflow for each variant.
@@ -13,15 +28,15 @@ This is the anchor for the related executive-dashboard and retail-forecast expla
 
 ## 1. Questions to ask the interviewer
 
-| Ask | What the answer changes |
-|---|---|
-| Who owns “revenue,” “active customer,” and the other first ten metrics? Is a semantic layer already approved? | Registry scope, owner sign-off, and whether the largest part of the project already exists |
-| Which warehouse, dialect, and approved datasets are in scope? | SQL generator, catalog adapter, parser, and policy rules |
-| Where are row and column permissions enforced today? | Reuse warehouse-native security or build a missing enforcement layer |
-| When a term maps to two metrics or grains, should we clarify, refuse, or send it to an analyst? | Ambiguity gate and review queue |
-| What are the latency and scan-cost limits? Are large requests allowed to run asynchronously? | Query budget, timeouts, caching, and queue boundary |
-| Must users see SQL, lineage, freshness, and a reconstruction of past answers? | Response format and append-only `QueryRun` record |
-| Which explanations are board-facing or action-triggering? | Cross-check and human review threshold |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Who owns “revenue,” “active customer,” and the other first ten metrics? Is a semantic layer already approved? | If Finance means recognized revenue and Sales means booked, who wins — or does that dictionary already exist? | Registry scope, owners, and whether you wire to an existing layer or build one. |
+| Which warehouse, dialect, and approved datasets are in scope? | Are we on Snowflake over approved finance views, or every table in the lake? | SQL generator, catalog adapter, parser, and policy rules. |
+| Where are row and column permissions enforced today? | If a regional manager asks for all salaries, does the warehouse already hide those rows? | Reuse warehouse ACLs, or build the missing layer. |
+| When a term maps to two metrics or grains, should we clarify, refuse, or send it to an analyst? | If “active customer” could mean 30-day or 90-day, do we ask, refuse, or hand it to an analyst? | Ambiguity gate and review queue. |
+| What are the latency and scan-cost limits? Are large requests allowed to run asynchronously? | If a question would scan a year of events, do we block it, queue it, or blow the warehouse bill? | Query budget, timeouts, cache, and async queue. |
+| Must users see SQL, lineage, freshness, and a reconstruction of past answers? | Next quarter, can we prove which SQL and metric version produced last month’s board number? | Response format and append-only `QueryRun` record. |
+| Which explanations are board-facing or action-triggering? | Is this a FYI chart, or will someone change prices from this answer? | Extra checks and the human-review line. |
 
 ## 2. Requirements and success
 

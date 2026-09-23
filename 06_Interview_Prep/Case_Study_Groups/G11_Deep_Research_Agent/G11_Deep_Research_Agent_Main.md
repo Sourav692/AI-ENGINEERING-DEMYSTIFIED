@@ -1,5 +1,20 @@
 # G11 — Deep Research Agent: Main Interview Guide
 
+**Research process** is: a question, hunt on the web and in *your* files, a cited brief. Failed hunt should look incomplete, not confident-fake.
+
+**G11 covers one slice:** bounded, read-only research with citations. It cannot send email or buy anything.
+
+End to end, as “Who is Acme’s CEO, with sources?”
+
+1. **You authenticate.** Budgets and rate limits lock in. First signal in seconds.
+2. **A planner splits work:** public web vs your Drive. Web never inherits Drive tokens.
+3. **Subagents search.** Wikipedia timeout is “couldn’t check,” not “not found.”
+4. **Findings go to a ledger.** A grader asks: enough coverage, or one more hop?
+5. **A synthesizer writes only from that ledger.** Every fact needs a citation.
+6. **A verifier and sanitizer** strip bad links/HTML. Gaps stay visible.
+
+That’s it: **plan → search in isolation → cite or show the hole → stop.** External actions stay out.
+
 > **Source:** [G11_Deep_Research_Agent.md](G11_Deep_Research_Agent.md). Use the [Deep Dive](G11_Deep_Research_Agent_Deep_Dive.md) for state and security mechanics and the [Cheat Sheet](G11_Deep_Research_Agent_Cheat_Sheet.md) for rehearsal.
 
 ## The case in one sentence
@@ -8,14 +23,14 @@ Build a read-only research agent for public web and a user's private documents: 
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| What is an acceptable citation, and must every factual claim have one? | Defines evidence schema and verifier. |
-| Which sources are public and which are user-scoped? | Defines tool identities and isolation boundaries. |
-| What happens when a source is unavailable or search finds nothing? | Distinguishes `UNAVAILABLE` from `EMPTY` and controls partial answers. |
-| What makes a research run complete? | Sets coverage rubric, hop cap and no-progress stop rule. |
-| May answers contain external links, images or rendered HTML? | Defines egress sanitization and exfiltration controls. |
-| Is $0.20 a hard cap or target, and at what traffic peak? | Sets model routing and search budgets. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| What is an acceptable citation, and must every factual claim have one? | If we say “Acme’s CEO is Jane,” must we show the URL and span, or is a vibe okay? | Evidence schema and verifier. |
+| Which sources are public and which are user-scoped? | Can the web agent see my Drive, or only public pages? | Tool identities and isolation. |
+| What happens when a source is unavailable or search finds nothing? | If Wikipedia timed out, do we say “not found” or “we couldn’t check”? | `EMPTY` vs `UNAVAILABLE`, and when a partial answer is allowed. |
+| What makes a research run complete? | After 12 hops we still lack a number — keep going, or stop and show the gap? | Coverage rubric, hop cap, and no-progress stop. |
+| May answers contain external links, images or rendered HTML? | Can the answer include a tracking pixel or a `javascript:` link from a random page? | Egress sanitization. |
+| Is $0.20 a hard cap or target, and at what traffic peak? | At noon, if a run would cost $0.50, do we stop mid-research? | Model routing and search budgets. |
 
 ## Requirements and sizing
 

@@ -1,5 +1,20 @@
 # G10 — High-Volume Batch Pipeline: Main Interview Guide
 
+**Overnight batch** is: a huge file must be classified before morning. Miss the window and the site publishes nothing — or publishes a partial, if they allow it.
+
+**G10 covers one slice:** freeze the job, chew through 100 million records, retry the flaky ones, quarantine the junk, publish by policy. Not a chat agent picking the next task.
+
+End to end, as Tuesday’s 6 a.m. catalog job:
+
+1. **Ops creates the job.** Input and model versions freeze. No silent prompt tweaks mid-run.
+2. **We partition and queue** work. Workers pull with leases.
+3. **The model labels a record.** Typed validation accepts or rejects the shape.
+4. **A 429 retries.** Garbage JSON goes to quarantine, not an infinite loop.
+5. **Each success writes once** with an idempotency key, then checkpoints.
+6. **At 4 a.m. we are behind.** Named owner publishes 90% or holds all — they already said which.
+
+That’s it: **snapshot → partition → infer → validate → checkpoint → publish or hold.** Interactive Q&A is out.
+
 > **Source:** [G10_High_Volume_Batch_Pipeline.md](G10_High_Volume_Batch_Pipeline.md). This guide is the interview route through the unchanged source; use the [Deep Dive](G10_High_Volume_Batch_Pipeline_Deep_Dive.md) for mechanics and the [Cheat Sheet](G10_High_Volume_Batch_Pipeline_Cheat_Sheet.md) for rehearsal.
 
 ## The case in one sentence
@@ -8,15 +23,15 @@ Classify 100 million records overnight, finish within a six-hour window, recover
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| Is 6 a.m. a hard publication deadline? Is partial output acceptable? | Defines reconciliation, fallback and publication policy. |
-| What is the record-size and token distribution, not just the mean? | Determines throughput, batching and cost forecast. |
-| Is inference deterministic and which model/prompt/schema versions must be replayable? | Defines snapshot and idempotency key. |
-| What provider quotas, tenant limits and regional restrictions apply? | Sizes rate coordination and worker pool. |
-| Which errors are transient versus permanent? | Separates retry from quarantine and review. |
-| Who owns a missed deadline and which fallback model is approved? | Makes the 4 a.m. response actionable. |
-| Must output be complete, ordered, auditable or available incrementally? | Defines sink and publication contract. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Is 6 a.m. a hard publication deadline? Is partial output acceptable? | If we miss 6 a.m., do we publish 90% of scores or hold everything? | Reconciliation, fallback, and publication policy. |
+| What is the record-size and token distribution, not just the mean? | Are most records 200 tokens, or is there a fat tail of 8k-token files? | Throughput, batching, and cost forecast. |
+| Is inference deterministic and which model/prompt/schema versions must be replayable? | If we rerun Tuesday’s job, must we get the same labels from the same model snapshot? | Snapshot and idempotency key. |
+| What provider quotas, tenant limits and regional restrictions apply? | Does the provider cap us at 2k RPM, and must EU records stay in the EU? | Rate coordination and worker pool. |
+| Which errors are transient versus permanent? | Is a 429 a retry, or is bad JSON a quarantine forever? | Retry vs quarantine and review. |
+| Who owns a missed deadline and which fallback model is approved? | At 4 a.m., who can switch to the cheaper model — and is that model even allowed? | The 4 a.m. runbook. |
+| Must output be complete, ordered, auditable or available incrementally? | Can downstream start reading finished partitions, or must the file be whole and ordered? | Sink and publication contract. |
 
 ## Requirements and sizing
 

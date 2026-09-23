@@ -1,5 +1,20 @@
 # G07 — Secure Multi-Tenant AI Platform: Main Interview Guide
 
+**Multi-tenant AI** is one platform, many customers. Cheaper than a stack per customer. The failure is **Acme seeing Globex’s docs**, in a cache, a log, or a prompt.
+
+**G07 covers one slice:** identity → tenant stamp that never changes → every store and model call respects it. Not “put tenant_id on a row and hope.”
+
+End to end, as Acme user Maya asking her assistant:
+
+1. **SSO proves Maya is Acme.** That tenant id is frozen on the request.
+2. **Quotas and region** — maybe Frankfurt only, including logs.
+3. **Retrieval, cache, and the model see only Acme bytes.**
+4. **If Globex is noisy**, fair queues protect Maya; we don’t leak by sharing a hot cache key.
+5. **Spend is metered before the model call**, so Acme cannot burn Globex’s budget.
+6. **If Acme leaves**, we prove keys and copies are gone.
+
+That’s it: **verify tenant once → enforce everywhere → meter and isolate.** Arbitrary tenant plugins stay out.
+
 The promise is one affordable AI platform for many customers **without a cross-tenant read, write, cache hit, or model context leak**. A tenant ID on a row is insufficient. Derive tenant context from verified identity once, keep it immutable, and enforce it independently at every storage and inference boundary.
 
 G07 is the [source study](G07_Secure_Multi_Tenant_AI_Platform.md)’s anchor for the shared platform, per-tenant budget, noisy-neighbor, and cross-tenant retrieval cases.
@@ -13,15 +28,15 @@ G07 is the [source study](G07_Secure_Multi_Tenant_AI_Platform.md)’s anchor for
 
 ## 1. Questions to ask the interviewer
 
-| Ask | What the answer changes |
-|---|---|
-| Which tenant data classes and AI tasks are in scope? | Storage, inference, logging, and first-release trust surface |
-| Are residency rules hard, customer-specific, or preferences? Do logs and backups count? | Regional placement and local enforcement |
-| Which tenants may share, and what qualifies for dedicated capacity, keys, or clusters? | Tier design and isolation cost |
-| What does “predictable performance” mean per tenant? What is peak skew? | Quotas, fair queues, and reserved lanes |
-| Do customers federate identity or bring keys? What does verified deletion require? | Membership mapping, key management, inventory, and offboarding |
-| Which budgets are contractual, and can tenants choose model tiers? | Pre-call admission, routing, metering, and billing |
-| What proof must an auditor or incident commander see? | Negative isolation suite, tenant-scoped audit, retention |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which tenant data classes and AI tasks are in scope? | Are we hosting chat over tickets, or also embeddings of contracts and logs of prompts? | Storage, inference, logging, and the first-release trust surface. |
+| Are residency rules hard, customer-specific, or preferences? Do logs and backups count? | If a German tenant’s data cannot leave Frankfurt, do chat logs and backups count? | Regional placement and what must stay local. |
+| Which tenants may share, and what qualifies for dedicated capacity, keys, or clusters? | Can tenant A sit next to tenant B on the same GPU, or do banks get their own cluster? | Tiers and how much isolation you pay for. |
+| What does “predictable performance” mean per tenant? What is peak skew? | If one tenant sends 20× traffic, do the other 499 get slow? | Quotas, fair queues, and reserved lanes. |
+| Do customers federate identity or bring keys? What does verified deletion require? | When a customer leaves, can we prove every copy — including keys — is gone? | Membership mapping, keys, inventory, and offboarding. |
+| Which budgets are contractual, and can tenants choose model tiers? | Can a tenant burn $10k overnight on a frontier model, or do we stop them before the call? | Pre-call admission, routing, metering, and billing. |
+| What proof must an auditor or incident commander see? | After a suspected leak, can we show tenant B’s docs never entered tenant A’s context? | Isolation tests, tenant-scoped audit, and retention. |
 
 ## 2. Requirements and sizing
 

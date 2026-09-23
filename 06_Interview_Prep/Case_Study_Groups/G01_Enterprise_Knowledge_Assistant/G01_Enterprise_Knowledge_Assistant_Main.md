@@ -1,5 +1,20 @@
 # G01 — Enterprise Knowledge Assistant: Interview Guide
 
+**Knowledge work** is people looking up how the company actually runs: policies, runbooks, product docs. The same question is not the same answer if you are an intern vs a VP.
+
+**G01 covers one slice:** ask an internal question and get a cited answer you are allowed to see. Not a general Google, not a ticket bot.
+
+End to end, as Priya (Tier-1 support):
+
+1. **She asks** “What’s the SLA for enterprise plus?”
+2. **We check who she is** — tenant, role, groups.
+3. **We retrieve only docs she may open.** The VP handbook never enters the model.
+4. **The model writes from that pack** and cites the passages.
+5. **If sources disagree or evidence is thin**, we say so, or abstain, or escalate.
+6. **If she is later moved off that group**, yesterday’s cached hit is dead.
+
+That’s it: **who you are → what you may read → cited answer or stop.** Building a new policy is out of scope.
+
 > **Core idea:** This is not primarily a vector-search problem. It is a permission-aware RAG problem. Different employees can ask the same question and legitimately need different answers.
 
 

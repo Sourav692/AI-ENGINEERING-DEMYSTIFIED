@@ -1,5 +1,20 @@
 # G12 — Scoping to Deployed Agent: Main Interview Guide
 
+**Delivery process** is: customer wants an agent, you ship something real in two weeks, with a named person who can say stop.
+
+**G12 covers one slice:** intake → gates → a small live agent → rollback. Not “we’ll figure production out later.” The source uses a Northwind support-triage demo.
+
+End to end, as Northwind tickets:
+
+1. **Intake:** success is “first response under five minutes,” not “launch an agent.” SME and sources named now.
+2. **Security and data access** — Zendesk + Confluence + Salesforce read. If that’s a six-week ticket, two weeks is a lie.
+3. **Configure, golden set, baseline eval.**
+4. **Shadow, then a tested rollback** (kill send in two minutes).
+5. **Limited production.** Humans still send. Autonomy is earned.
+6. **Sponsor go/no-go and handover.** A failed gate does not become a quiet exception.
+
+That’s it: **name the outcome → prove each gate → ship small → own rollback.** Open-ended custom planners wait.
+
 > **Source:** [G12_Scoping_To_Deployed_Agent.md](G12_Scoping_To_Deployed_Agent.md). The [Deep Dive](G12_Scoping_To_Deployed_Agent_Deep_Dive.md) covers gate mechanics and limitations; the [Cheat Sheet](G12_Scoping_To_Deployed_Agent_Cheat_Sheet.md) is for rehearsal.
 
 ## The case in one sentence
@@ -8,14 +23,14 @@ Turn a customer request into a governed, two-week agent deployment with measurab
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| What customer outcome and baseline define success by week four? | Prevents a build with no measurable value. |
-| Who is the sponsor, subject-matter expert and go/no-go owner? | Assigns approvals and escalation. |
-| Which data sources, credentials and policies are available now? | Determines whether the two-week plan is feasible. |
-| Which accelerator parts can be reused, and what is bespoke? | Controls delivery time and future maintenance. |
-| What happens when a gate fails or an SME misses a deadline? | Defines no-go, escalation and schedule impact. |
-| Which agent actions require human review, and how is rollback tested? | Sets production autonomy and containment. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| What customer outcome and baseline define success by week four? | Are we cutting first-response time from 40 minutes to 5, or just “launch an agent”? | Whether the build has a measurable goal. |
+| Who is the sponsor, subject-matter expert and go/no-go owner? | If the Confluence owner is on vacation, who can still say ship or stop? | Approvals and escalation. |
+| Which data sources, credentials and policies are available now? | Do we already have Zendesk + Salesforce read access, or is that a six-week ticket? | Whether two weeks is even possible. |
+| Which accelerator parts can be reused, and what is bespoke? | Can we reuse the support template, or are we writing a custom planner? | Delivery time and later maintenance. |
+| What happens when a gate fails or an SME misses a deadline? | If golden-set review slips two days, do we ship anyway? | No-go, escalation, and schedule impact. |
+| Which agent actions require human review, and how is rollback tested? | If drafts go weird, can we kill send in two minutes? | Production autonomy and containment. |
 
 Do not start the engagement clock without measurable success metrics, a named SME and named sources. The source uses those as intake requirements.
 

@@ -1,5 +1,20 @@
 # G13 — Evaluation and Release Gating: Main Interview Guide
 
+**Release process** is: you want to change a prompt or model on a live app. A dashboard is not a decision. **Pass, block, or hold** is.
+
+**G13 covers one slice:** a shared gate for ~30 apps vs a pinned production baseline. Not auto-tuning.
+
+End to end, as the refund-bot prompt change:
+
+1. **Someone files a release** with frozen artifacts (prompt, model, retrieval, policy).
+2. **A versioned suite and rubric run** in a sandbox — not on live customers.
+3. **Deterministic checks plus a calibrated LLM grader** score quality, safety, latency, cost.
+4. **Policy compares to the pinned live version.** Groundedness −2% might auto-block or wait for a human — they already said which.
+5. **Hold goes to the risk owner**, not a random engineer override.
+6. **A prod miss becomes a golden-set case** before the next ship.
+
+That’s it: **pin candidate → eval vs baseline → pass/block/hold → learn.** Shipping on vibes stays out.
+
 > **Source:** [G13_Evaluation_And_Release_Gating.md](G13_Evaluation_And_Release_Gating.md). The [Deep Dive](G13_Evaluation_And_Release_Gating_Deep_Dive.md) expands the gate, graders and incident; the [Cheat Sheet](G13_Evaluation_And_Release_Gating_Cheat_Sheet.md) is for rehearsal.
 
 ## The case in one sentence
@@ -8,14 +23,14 @@ Build a shared platform for 30 AI applications that makes a controlled **pass, b
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| Which applications are critical, and what counts as a release? | Sets suite tiers and per-app policies. |
-| Who owns labels, rubrics, review and override authority? | Determines trusted evidence and decision rights. |
-| What is the release window and acceptable evaluation spend? | Sizes workers and suite schedule. |
-| Which traces contain PII, secrets or proprietary prompts? | Defines redaction, retention and tenant access. |
-| Which regressions must block automatically versus hold for review? | Shapes thresholds and confidence bands. |
-| How are post-release failures fed back into tests? | Keeps the golden set current. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which applications are critical, and what counts as a release? | Is changing a prompt on the refund bot a “release” that must pass the suite? | Suite tiers and per-app policies. |
+| Who owns labels, rubrics, review and override authority? | Can an engineer override a safety fail, or only the risk owner? | Trusted evidence and who may decide. |
+| What is the release window and acceptable evaluation spend? | Do we have 20 minutes and $200 per candidate, or overnight and unlimited? | Workers and suite schedule. |
+| Which traces contain PII, secrets or proprietary prompts? | Can eval logs contain a customer SSN from a test ticket? | Redaction, retention, and tenant access. |
+| Which regressions must block automatically versus hold for review? | If groundedness drops 2%, is that an automatic block or a meeting? | Thresholds and confidence bands. |
+| How are post-release failures fed back into tests? | When prod invents a policy, does that case join the golden set before the next ship? | How the suite stays current. |
 
 ## Requirements and scale
 

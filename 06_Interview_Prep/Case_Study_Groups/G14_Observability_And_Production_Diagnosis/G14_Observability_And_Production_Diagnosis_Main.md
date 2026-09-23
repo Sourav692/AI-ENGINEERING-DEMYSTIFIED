@@ -1,5 +1,20 @@
 # G14 — Observability and Production Diagnosis: Main Interview Guide
 
+**Diagnosis process** is: a user says “it’s slow and sometimes wrong.” You need the hop that hurt — without turning traces into a second copy of their tickets.
+
+**G14 covers one slice:** one correlation id through the AI path, redacted spans, tenant-scoped debug. Not a new product feature.
+
+End to end, as Acme’s German refund flow:
+
+1. **Request gets a correlation id** at auth.
+2. **Each hop records time and outcome** — retrieval, model, tool — not the raw prompt by default.
+3. **A classifier redacts** before storage. “Retrieval 1.2s, 3 docs” yes; full SSN no.
+4. **Support sees Acme only.** L1 cannot open Globex tickets to “help debug.”
+5. **You see first token vs last sentence**, empty retrieval vs made-up answer vs tool 500.
+6. **Errors and outliers stay; most happy traffic is sampled.**
+
+That’s it: **trace the path → hide the secrets → find the hop.** Telemetry must not stall the user.
+
 > **Full source:** [G14_Observability_And_Production_Diagnosis.md](G14_Observability_And_Production_Diagnosis.md), especially §§1–9 for the anchor architecture and §§10–15 for incidents and variants. Use the [Deep Dive](G14_Observability_And_Production_Diagnosis_Deep_Dive.md) for diagnostic detail and the [Cheat Sheet](G14_Observability_And_Production_Diagnosis_Cheat_Sheet.md) for rehearsal.
 
 ## The anchor and its family
@@ -16,14 +31,14 @@ The anchor is a customer-facing AI application that is “slow and sometimes wro
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| What is slow: first token, full response or a specific workflow percentile? | Sets the SLO and timing spans. |
-| What is wrong: empty retrieval, unsupported answer, tool failure or partial response? | Defines outcome labels and quality checks. |
-| Which tenants and workflows are affected? | Determines sampling and blast radius. |
-| What content is forbidden in telemetry by default? | Defines the no-capture list and redaction boundary. |
-| Who must diagnose incidents, and what may support see? | Sets tenant-scoped views and access roles. |
-| What overhead, retention and sampling budget are acceptable? | Sizes the collector and store. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| What is slow: first token, full response or a specific workflow percentile? | Is the user staring at a blank box, or waiting for the last sentence? | SLO and which spans to time. |
+| What is wrong: empty retrieval, unsupported answer, tool failure or partial response? | Empty search, made-up answer, tool 500, or a truncated reply? | Outcome labels and quality checks. |
+| Which tenants and workflows are affected? | Is only Acme’s German refund flow slow, or everyone? | Sampling and blast radius. |
+| What content is forbidden in telemetry by default? | Can we store the full prompt, or only “retrieval 1.2s, 3 docs”? | No-capture list and redaction. |
+| Who must diagnose incidents, and what may support see? | Can L1 support open another tenant’s raw tickets while debugging? | Tenant-scoped views and access roles. |
+| What overhead, retention and sampling budget are acceptable? | Can we afford 100% traces for 90 days, or 5% for 14? | Collector and store size. |
 
 ## Requirements and sizing
 

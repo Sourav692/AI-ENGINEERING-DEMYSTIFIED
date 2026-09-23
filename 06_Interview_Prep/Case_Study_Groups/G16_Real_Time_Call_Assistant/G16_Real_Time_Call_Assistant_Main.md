@@ -1,5 +1,20 @@
 # G16 — Real-Time Call Assistant: Main Interview Guide
 
+**A sales call** has three clocks: hours before, three seconds while they talk, minutes after. Mixing those clocks makes the live panel freeze.
+
+**G16 covers one slice:** a short live bullet for the rep, then a careful summary and CRM proposal later. The model does not write CRM.
+
+End to end, as Sara on an Acme call:
+
+1. **This morning** we pack her account snapshot (same idea as G05).
+2. **Customer asks a question.** We wait for end of utterance. Consent must already be on.
+3. **ASR streams.** PII is redacted before storage or the model.
+4. **A small prompt + snapshot** (maybe live price/stock) yields one bullet in ~3 s. Timeout → stay silent, don’t stall.
+5. **After hang-up**, a slower model drafts summary, actions, CRM fields.
+6. **Sara edits and approves** any CRM write.
+
+That’s it: **prep before → tiny live suggest → rich after, with a human on writes.** Voice-out and auto-send are out (that’s a different product).
+
 > **Full source:** [G16_Real_Time_Call_Assistant.md](G16_Real_Time_Call_Assistant.md), especially §§1–11 for the design and §14 for the sub-3-second pivot. Use the [Deep Dive](G16_Real_Time_Call_Assistant_Deep_Dive.md) for budgets and evaluation and the [Cheat Sheet](G16_Real_Time_Call_Assistant_Cheat_Sheet.md) for rehearsal. Much of the source design is explicitly its author's construction from a question prompt and latency drill; its time allocations are planning assumptions, not measured vendor guarantees.
 
 ## One call, three clocks
@@ -14,14 +29,14 @@ Before the call, hours are available to prepare permission-scoped account contex
 
 ## Questions to ask the interviewer
 
-| Ask | Design consequence |
-|---|---|
-| What exactly must complete within three seconds? | Keeps only the first useful live bullet on the hot path. |
-| Can account context be prepared before the call? | Removes most CRM reads from live latency. |
-| Is streaming acceptable, and what happens on timeout? | Sets first-bullet SLO and silent fallback. |
-| Which facts must be current, such as price or stock? | Defines a tiny allowlist of parallel, timed live lookups. |
-| Which languages and call types are in scope? | Sets ASR and evaluation slices. |
-| Is recording consent present in each region, and who approves CRM changes? | Determines privacy and action boundaries. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| What exactly must complete within three seconds? | One live bullet for the rep, or a full summary and CRM draft? | Only the first useful live bullet on the hot path. |
+| Can account context be prepared before the call? | Can we load Acme’s open opps this morning, or fetch CRM while the customer is talking? | Whether CRM sits on the live clock. |
+| Is streaming acceptable, and what happens on timeout? | If the model is slow, do we show a partial bullet or stay silent? | First-bullet SLO and silent fallback. |
+| Which facts must be current, such as price or stock? | Must live price or stock be fetched now, or is this morning’s snapshot okay? | A tiny allowlist of timed live lookups. |
+| Which languages and call types are in scope? | Sales in English only, or support in Spanish too? | ASR and evaluation slices. |
+| Is recording consent present in each region, and who approves CRM changes? | Can we transcribe a German call without consent, and can the model write the CRM? | Privacy and the action boundary. |
 
 ## Requirements and latency budget
 

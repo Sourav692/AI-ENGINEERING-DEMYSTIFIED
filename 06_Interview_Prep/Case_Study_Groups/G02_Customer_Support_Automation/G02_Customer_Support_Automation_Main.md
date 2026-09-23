@@ -1,5 +1,20 @@
 # G02 — Customer Support Automation: Main Interview Guide
 
+**Support process** is a customer has a problem, someone answers or acts, and we close the case without making money or data worse.
+
+**G02 covers one slice:** chat/email/voice in, then answer, get approval, or hand off. Not a free-form company agent.
+
+End to end, as a double-charge ticket:
+
+1. **Message lands** — “You billed me twice.”
+2. **We verify it’s them** before any account tool.
+3. **We look up live billing and the refund policy.**
+4. **A model drafts a reply or a refund proposal.** It does not pay anyone yet.
+5. **A policy gate checks** identity, amount, freshness, duplicates.
+6. **Safe FAQ goes out. Money waits for a human. Unclear cases get a full handoff pack.**
+
+That’s it: **verify → facts → draft → gate → answer, approve, or escalate.** Lawsuits and open negotiation stay human.
+
 > **Core idea:** Build a routed decision pipeline that knows when to answer, when to ask for approval, and when to hand off. The model can draft and recommend; verified identity and a deterministic policy gateway decide whether an account action may happen.
 
 The unchanged [source case](G02_Customer_Support_Automation.md) is the full reference. Use this guide for the spoken design, the [Deep Dive](G02_Customer_Support_Automation_Deep_Dive.md) for follow-ups, and the [Cheat Sheet](G02_Customer_Support_Automation_Cheat_Sheet.md) for last-minute recall.
