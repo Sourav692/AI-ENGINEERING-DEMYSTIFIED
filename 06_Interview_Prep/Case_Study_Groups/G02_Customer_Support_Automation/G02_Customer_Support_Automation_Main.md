@@ -51,17 +51,37 @@ Learn the shared decision pipeline here, then change the boundary that dominates
 
 ## 3. Architecture you can draw
 
-```text
-Channel gateway → Identity/assurance → Intent + risk router
-             → Approved policy + live account facts → Draft / proposed action
-             → Deterministic tool policy gateway → Decision
-                                                ├─ Answer / safe auto-resolve
-                                                ├─ Human approval → scoped action tool
-                                                └─ Handoff with context + reason
+This simplifies the [source architecture, §4](G02_Customer_Support_Automation.md#4-draw-the-architecture-end-to-end) for a whiteboard explanation.
 
-Control plane: risk tags, thresholds, tool allowlists, policy/model versions,
-               routing rules, per-intent and per-tool kill switches.
-Every stage: trace, outcome, latency, cost, audit event.
+```mermaid
+flowchart LR
+    subgraph CTRL[Control plane]
+        RULES[Risk tags, thresholds, tool allowlists, policy versions]
+        KILL[Kill switches by intent and tool]
+    end
+
+    subgraph FLOW[Support decision path]
+        CH[Chat, email, web or voice] --> GW[Channel gateway]
+        GW --> ID[Verify identity and assurance]
+        ID --> ROUTE[Classify intent and risk]
+        ROUTE --> FACTS[Approved policy and live account facts]
+        FACTS --> DRAFT[Draft reply or proposed action]
+        DRAFT --> GATE{Deterministic tool policy gate}
+        GATE -->|Safe answer| ANSWER[Answer or auto-resolve]
+        GATE -->|Approval needed| APPROVE[Human approval]
+        GATE -->|Risk or missing facts| HANDOFF[Handoff with context and reason]
+        GATE -->|Permitted action| TOOL[Scoped tool execution]
+        APPROVE -->|Approved| TOOL
+        TOOL --> SOR[(CRM, orders, billing, tickets)]
+    end
+
+    ID -->|Verification fails| LIMITED[Generic help or handoff]
+    RULES -.-> ROUTE
+    RULES -.-> GATE
+    KILL -.-> GATE
+    GATE -.-> AUDIT[(Audit and quality outcomes)]
+    TOOL -.-> AUDIT
+    HANDOFF -.-> AUDIT
 ```
 
 **Three boundaries to point at:**

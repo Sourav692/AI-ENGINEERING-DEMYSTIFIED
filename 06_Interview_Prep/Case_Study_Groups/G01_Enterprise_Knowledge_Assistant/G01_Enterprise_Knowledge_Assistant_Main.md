@@ -131,6 +131,38 @@ Identity mapping, ACL/ABAC policy, source configuration, retrieval configuration
 
 Ingestion, normalization, indexing, query authorization, retrieval, reranking, evidence selection, generation, citation verification and response/escalation.
 
+### Architecture diagram
+
+This is the interview-size version of the [source architecture, §5](G01_Enterprise_Knowledge_Assistant.md#5-draw-the-architecture-end-to-end).
+
+```mermaid
+flowchart LR
+    subgraph ING[Asynchronous ingestion]
+        SRC[Enterprise sources] --> QUEUE[Events and backfill]
+        QUEUE --> NORM[Normalize content and ACLs]
+        NORM -->|No usable ACL| REFUSE[Refuse to index]
+        NORM -->|Usable ACL| INDEX[(Keyword and vector indexes)]
+    end
+
+    subgraph QRY[Authorized query path]
+        USER[User] --> ID[Identity and groups]
+        ID --> FILTER[Compile permission filter]
+        FILTER --> RET[Hybrid retrieval with prefilter]
+        RET --> CHECK[Live policy post-check]
+        CHECK --> RERANK[Rerank authorized evidence]
+        RERANK --> GRADE{Enough evidence?}
+        GRADE -->|No| ABSTAIN[Abstain or escalate]
+        GRADE -->|Yes| LLM[Generate cited answer]
+        LLM --> VERIFY[Verify citations and output]
+        VERIFY --> ANSWER[Answer]
+    end
+
+    INDEX --> RET
+    POLICY[ACL and ABAC policy] -.-> NORM
+    POLICY -.-> FILTER
+    POLICY -.-> CHECK
+```
+
 ### Trust boundary
 
 ~~~text
