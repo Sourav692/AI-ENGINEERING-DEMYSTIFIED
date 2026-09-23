@@ -2,6 +2,36 @@
 
 > **Core idea:** This is not primarily a vector-search problem. It is a permission-aware RAG problem. Different employees can ask the same question and legitimately need different answers.
 
+
+## G01 is the anchor case study
+
+Use this guide as the **master case study** for enterprise RAG and knowledge-assistant interviews. Learn the shared architecture here, then adapt it to each variant's dominant constraint.
+
+| Related case | What changes from G01 |
+|---|---|
+| **Enterprise Support Assistant** | Support knowledge, tickets and runbooks become central; add workflow integrations, escalation paths and customer-specific visibility. |
+| **Legal RAG** | Increase citation precision, source authority, version tracking, auditability and review; control cost while handling high-risk answers. |
+| **Sub-100ms Search** | Latency dominates; use permission-aware precomputation and caches, bounded retrieval and often remove live generation from the hot path. |
+| **Enterprise / LLM Search** | Emphasize broad source coverage, relevance, freshness, scale and search UX; preserve the same authorization boundary. |
+| **Meridian Assist** | Keep the enterprise-assistant foundation, then adapt source systems, users, workflows and domain-specific policies to the scenario. |
+| **Security / incident cases** | Focus on threat model, blast radius, detection, containment, revocation, recovery and evidence that no unauthorized data escaped. |
+
+~~~text
+                         G01
+          Enterprise Knowledge Assistant
+                           |
+       +-------------------+--------------------+
+       |                   |                    |
+ Enterprise Support     Legal RAG      Enterprise / LLM Search
+       |                   |                    |
+       +----------+--------+--------------------+
+                  |                             
+       Sub-100ms Search, Meridian Assist, Security / Incident cases
+                  |
+     Same core: identity → authorization → retrieval → grounded answer
+       Adapt the data, workflow and dominant quality constraint
+~~~
+
 ## 0. The mental model
 
 ~~~text
@@ -420,7 +450,31 @@ Use permission-aware caching, bounded top-k, selective reranking, model routing,
 
 ---
 
-## 16. Safe caching
+## 16. Scalability, latency & cost: production design
+
+Use one framework: **measure the workload, find the bottleneck, then bound or route the expensive work without weakening authorization or answer quality.**
+
+| Concern | What drives it | Production choices | What to measure |
+|---|---|---|---|
+| **Scalability** | Corpus size, peak QPS, ACL/group cardinality, ingestion churn | Separate asynchronous ingestion from serving; partition/shard by tenant or useful scope; incremental indexing and tombstones; bounded candidate sets; scale stateless serving independently | Peak and sustained QPS, queue lag, index freshness, retrieval capacity, error rate |
+| **Latency** | Identity/policy lookup, retrieval, reranking, generation and verification | Apply authorization in retrieval; keep top-k bounded; rerank selectively; parallelize independent safe work; use permission-aware caches; stream when useful; set stage deadlines and degrade to safe partial results or abstention | p50/p95/p99 per stage, timeout rate, cache hit rate, time to first token |
+| **Cost** | Embedding/index refresh, search, reranking, model calls and context tokens | Incremental/batched embeddings; route simple tasks to smaller models; compress evidence; cap top-k/context; rerank only when expected quality gain justifies it; cache only with permission/version-aware keys | Cost per request and tenant, tokens, embedding/index spend, rerank rate, cost by route |
+
+### How to reason through it in an interview
+
+1. **Quantify first.** Ask for corpus size, average and peak QPS, concurrency, freshness/revocation SLO, p95 target, quality target and cost budget. State assumptions if the interviewer has no numbers.
+2. **Protect the invariant.** Authorization pre-filtering and the final policy check stay in place. A timeout or cache hit must never bypass permissions or serve stale revoked content.
+3. **Optimize the measured bottleneck.** Profile each stage before choosing a fix. Reduce candidate count or skip reranking only when evaluation shows quality remains acceptable; route up to a stronger model for high-risk or difficult synthesis.
+4. **Scale ingestion separately.** Queue connector work, make it idempotent, process changes incrementally, and reconcile periodically. This prevents backfills from competing with interactive serving.
+5. **Set safe degradation paths.** On a deadline, stop optional reranking or return fewer verified results; if authorization/freshness cannot be established, fail closed and abstain.
+6. **Prove the trade-off.** Replay representative queries across personas and track answer quality, citation correctness, leakage, latency and cost together. Zero leakage remains a release gate.
+
+**Interview-ready answer:**
+
+> “I’d start by quantifying corpus size, peak QPS, freshness, latency and cost targets. I’d separate asynchronous ingestion from online serving and scale retrieval and generation independently. On the query path I’d enforce permissions inside retrieval, keep top-k and context bounded, and use reranking and model size selectively based on measured quality. I’d cache only with tenant, permission and index or policy versions in the key, and invalidate on changes. Then I’d track p95 by stage, cost per request, freshness and answer quality together. Under pressure I can skip optional work or abstain, but I never relax authorization.”
+
+---
+## 17. Safe caching
 
 Never cache simply:
 
