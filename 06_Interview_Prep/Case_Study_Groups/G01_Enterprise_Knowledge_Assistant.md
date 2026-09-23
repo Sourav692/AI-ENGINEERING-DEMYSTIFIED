@@ -147,41 +147,56 @@ Document(id, source, title, version, owner, acl_policy_id, sensitivity, effectiv
 One diagram carries the whole design, and the two that follow are zoom-ins on its halves. The organising split is control plane against data plane: policy, configuration, credentials, schedules and evaluation rules live in the control plane, and every live question, evidence fetch, enforcement decision and answer lives in the data plane. A control-plane change is a release; a data-plane call is a request.
 
 ```
- ╔══════════════════════════════════ CONTROL PLANE (changes are releases) ══════════════════════════════════╗
- ║  ABAC policy + ACL mapping rules · connector schedules · credentials (secrets manager) · IdP / SCIM sync   ║
- ║  prompt + model versions · retrieval policy (α, top-k, rerank gate) · eval rules + leak suite · budgets    ║
- ╚═══════════════════════════════════════════╤═══════════════════════════════════════════════════════════════╝
-                                             │ configures every box below
- ╔══════════════════════════════════ DATA PLANE (calls are requests) ═══════════════════════════════════════╗
- ║                                                                                                           ║
- ║  INGESTION — asynchronous                                                                                 ║
- ║   Drive · SharePoint · Slack · Wikis · Tickets                                                            ║
- ║        │ change events + periodic backfill + reconciliation                                               ║
- ║        v                                                                                                  ║
- ║   connectors ─> normalise ─> ACL NORMALISER ─> parse / OCR / chunk ─> embed ─┬─> keyword index (tenant)   ║
- ║                                   │ refuse: no usable ACL                    ├─> vector index  (tenant)   ║
- ║                                   v                                          └─> metadata store           ║
- ║                             versions · tombstones (deleted_at) · acl_policy_id · source event IDs         ║
- ║                                                                                                           ║
- ║  QUERY — synchronous, ordered by risk                                                                     ║
- ║   user ─> gateway ─> AUTHORIZE ─> PLAN ─> RETRIEVE ─> ENFORCE ─> RERANK ─> GRADE ─> GENERATE ─> VERIFY ─> answer
- ║            authN     resolve     multi-   hybrid,     ABAC     20 -> 6   enough     LLM         citation  ║
- ║            via IdP   groups,     hop?     pre-filter  post-              evidence?  gateway,    check +   ║
- ║                      compile     split    inside the  check,             │ no       guardrails  output    ║
- ║                      filter               search, RRF live,              v                     policy    ║
- ║                                                      redact           REFUSE + escalate                  ║
- ║                                                                                                           ║
- ║  OBSERVABILITY — every stage writes                                                                       ║
- ║   trace store (replayable runs) ─> eval service (golden set · leak suite · shadow mode)                  ║
- ║                                 ─> dashboards (freshness lag · refusal + escalation · cost/answer ·       ║
- ║                                    layer-1 vs layer-2 disagreement)                                        ║
- ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+CONTROL PLANE                         a change here is a release
+  ABAC policy + ACL mapping
+  connector schedules, credentials, IdP / SCIM
+  prompt + model versions, retrieval policy (alpha, top-k, rerank gate)
+  eval rules, leak suite, budgets
+        |
+        | configures everything below
+        v
+DATA PLANE                            a call here is a request
+
+INGEST  (async)
+  Drive, SharePoint, Slack, Wikis, Tickets
+        |
+        | change events + backfill + reconciliation
+        v
+  connectors --> normalise --> ACL normaliser --> chunk --> embed
+                                    |                          |
+                                    | no usable ACL          +--> keyword index (per tenant)
+                                    v                        +--> vector index  (per tenant)
+                                 REFUSE                      +--> metadata store
+                                                                 versions, tombstones,
+                                                                 acl_policy_id, source event IDs
+
+QUERY  (sync, ordered by risk)
+  user
+   --> gateway     authN via IdP
+   --> AUTHORIZE   resolve groups, compile the filter
+   --> PLAN        split a multi-hop question
+   --> RETRIEVE    hybrid search inside the filter, RRF
+   --> ENFORCE     ABAC post-check, live, redact          <-- trust boundary
+   --> RERANK      20 down to 6
+   --> GRADE       enough evidence?
+         | no
+         +--> REFUSE + escalate
+         | yes
+   --> GENERATE    LLM gateway, guardrails
+   --> VERIFY      citation check + output policy
+   --> answer
+
+OBSERVABILITY  (every stage writes)
+  trace store
+    --> eval        golden set, leak suite, shadow mode
+    --> dashboards  freshness lag, refusal, cost/answer,
+                    layer-1 vs layer-2 disagreement
 ```
 
 The same flow, for a viewer that draws Mermaid:
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph CP[Control plane]
         POL[ABAC policy + ACL mapping]
         CFG[Connector schedules · credentials]
