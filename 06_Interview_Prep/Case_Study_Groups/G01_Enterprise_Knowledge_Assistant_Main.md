@@ -49,37 +49,43 @@ Clarify:
 
 ---
 
-## 2. Requirements: make them testable
+## 2. Requirements: Functional + Non-Functional
 
-### Must
+The easiest way to frame requirements in an interview is:
 
-| Requirement | Test |
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
+
+### Functional requirements — what the system must do
+
+1. **Ingest enterprise sources** — Drive, SharePoint, Slack, Confluence/wiki, Jira/tickets, etc.
+2. **Normalize permissions** — convert source-specific ACLs/groups into a common authorization model.
+3. **Retrieve authorized content** — unauthorized chunks must never enter model context.
+4. **Answer questions** — use retrieved evidence rather than unsupported model knowledge.
+5. **Provide citations** — citations should point to the actual supporting, authorized evidence.
+6. **Abstain when necessary** — if evidence is weak or unavailable, do not guess.
+7. **Handle changes** — propagate document updates, deletions, ACL changes and revocations.
+8. **Support different personas/tenants** — the same query can legitimately produce different results.
+9. **Audit decisions** — preserve enough information to explain why an answer was produced.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
 |---|---|
-| Incremental ingestion | A source change does not require full reindex |
-| Version + ACL preservation | We can reconstruct what a user could see |
-| Query-time authorization | Unauthorized chunks never enter model context |
-| Grounded answers | Citations point to permitted evidence |
-| Abstention | Weak evidence does not produce a confident guess |
-| Deletion freshness | Deleted/revoked content disappears within its SLO |
-| Auditability | We can replay why an answer was produced |
+| **Security** | Zero unauthorized disclosure; fail closed on authorization failure |
+| **Latency** | Chat target around p95 <3s; tighter targets need caching/precomputation |
+| **Freshness** | ACL changes/deletions reflected within a defined SLO |
+| **Scalability** | Example: 100k employees, 50M chunks, 100 QPS peak |
+| **Availability** | Degrade safely when retrieval/reranking/LLM components fail |
+| **Cost** | Define a cost/request budget and control model + retrieval spend |
+| **Auditability** | Replay why an answer and authorization decision occurred |
+| **Reliability** | Idempotent ingestion, retries, backfill and reconciliation |
+| **Maintainability** | Centralized, deterministic authorization rather than scattered permission logic |
 
-### Should
+### Interview shortcut
 
-- Hybrid retrieval and reranking
-- Confidence / missing-evidence signals
-- Admin controls
-- Safe feedback and evaluation
-- Source freshness dashboards
+If asked **“What are the requirements?”**, say:
 
-### Out of MVP
-
-- Write-back
-- Personal files
-- Unapproved web
-- Cross-tenant search
-- Persistent memory
-
-If writes are later added: allowlist tools, validate arguments, make actions idempotent, preview risky actions and require approval where needed.
+> **“Functionally, I need to ingest enterprise data, understand permissions, retrieve only authorized evidence, and generate a cited answer or abstain. Non-functionally, the big constraints are zero data leakage, permission freshness, latency, scalability, cost, and auditability.”**
 
 ---
 
@@ -567,6 +573,7 @@ Five beats:
 
 | Interviewer asks | Mental trigger |
 |---|---|
+| Functional vs non-functional? | What it does vs how well/under what constraints |
 | Why not post-filter? | Wastes top-k and hurts recall |
 | Why two checks? | Fast pre-filter + authoritative post-check |
 | ACL changes? | Query-time enforcement |
