@@ -392,6 +392,6 @@ All paths are relative to `06_Interview_Prep/`.
 | 6, 9, 11 | `Study_Guides/12_production_and_operations_INTERVIEW_TUTORIAL.md`, sections 1.2 (streaming), 1.10 (circuit breaker), 1.17 (moderation) and the input-vs-output moderation trade-off |
 | 6, 12 | `Case_Study_Groups/G14_Observability_And_Production_Diagnosis.md`, sections 2 and 9 and card 15.10 |
 | 8, 11 | `Case_Study_Groups/G07_Secure_Multi_Tenant_AI_Platform.md`, sections 7 and 8 |
-| 9 | `Case_Study_Groups/G01_Enterprise_Knowledge_Assistant.md`, section 6 |
+| 9 | `Case_Study_Groups/G01_Enterprise_Knowledge_Assistant/G01_Enterprise_Knowledge_Assistant.md`, section 6 |
 | 12 | `Case_Study_Groups/G13_Evaluation_And_Release_Gating.md` (release gate) |
 | Every table and section marked own construction, all sizing figures, the self-drill card | Built for this page from the sources' arguments; not source material |
