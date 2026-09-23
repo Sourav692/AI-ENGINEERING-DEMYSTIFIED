@@ -1,7 +1,7 @@
 # Worked Example — The Travel Agent
 
 > **Level** 🟢 Foundations · **Module** 02 · **Doc** 4 of 5 · **Time** ~30 min
-> **Prerequisites:** [The 12-Part Framework](01_The_12_Part_Framework.md), [The 15 Principles](02_The_15_Principles.md)
+> **Prerequisites:** [The 12-Part Framework](../../../Handbook/02_System_Design_Fundamentals/01_The_12_Part_Framework.md), [The 15 Principles](../../../Handbook/02_System_Design_Fundamentals/02_The_15_Principles.md)
 > **Source material:** `06_Interview_Prep/FDE/System_Design and Delivery/1. System Design Overview.md`
 
 ## Why this matters
@@ -157,4 +157,4 @@ The five fixes generalise into five questions to ask of any multi-agent diagram,
 - What does the synthesiser do that "the diagram continues as a single line" hides?
 - Draw the corrected architecture from memory.
 
-**Next →** [The 60-Minute Whiteboard Method](05_The_60_Minute_Whiteboard_Method.md)
+**Next →** [The 60-Minute Whiteboard Method](../../../Handbook/02_System_Design_Fundamentals/05_The_60_Minute_Whiteboard_Method.md)

@@ -14,26 +14,26 @@ The dependency inversion is the distinctive risk: the observability stack the ag
 
 The [source discovery, §1](G04_SRE_Incident_Response_Agent.md#1-name-the-read-only-boundary-before-drawing-anything) gives the full set. Ask these before choosing tools:
 
-| Question to ask | What the answer decides |
-|---|---|
-| Which alert class and responder decision are in scope first? | Pilot boundary, golden set, and runbook subset. |
-| Who is on call, who owns the service, and who approves a mitigation? | Identity, ownership map, and approval route. |
-| Which diagnostics are read-only, which writes may be proposed, and which are forbidden? | Tool allowlist and exact write boundary. |
-| Which telemetry sources are authoritative, fresh, and permissioned? | Parallel queries, ACL filtering, coverage status, and stale warnings. |
-| What alert burst and first-output target must hold? | Dedupe capacity and 30-second stage budget. |
-| What evidence must support a cause or proposed command? | Citation/provenance, confidence, simulation, and refusal rule. |
-| What proves a 30-day pilot helped? | Hypothesis precision, responder acceptance, time to useful output, and reversal rate. |
-| What audit and rollback evidence is required? | Incident timeline, proposal schema, and change controls. |
+| Question to ask                                                                         | What it's really asking                                                                              | What you then decide                                                       |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Which alert class and responder decision are in scope first?                            | Are we helping with "checkout 5xx" first, or trying to cover every page in week one?                 | Pilot slice, golden set, and which runbooks you load.                      |
+| Who is on call, who owns the service, and who approves a mitigation?                    | When we want to roll back, whose phone buzzes — on-call, service owner, or incident commander?      | Identity, ownership map, and who can approve a write.                      |
+| Which diagnostics are read-only, which writes may be proposed, and which are forbidden? | Can it run logs itself, only*suggest* a restart, and never run a destructive command?              | Tool allowlist and the exact write line.                                   |
+| Which telemetry sources are authoritative, fresh, and permissioned?                     | If Prometheus is down in the same outage, do we pretend we looked, or say we couldn't see?           | Parallel reads, ACLs, coverage status, and stale warnings.                 |
+| What alert burst and first-output target must hold?                                     | When 400 alerts hit in 90 seconds, can we still give a useful summary in 30?                         | Dedupe capacity and the 30-second budget.                                  |
+| What evidence must support a cause or proposed command?                                 | If we recommend a rollback, can we show the deploy, the metric, and the runbook — or is it a guess? | Citations, confidence, simulation, and when to refuse.                     |
+| What proves a 30-day pilot helped?                                                      | After a month, did responders actually use the summaries, or just ignore them?                       | Precision, acceptance, time to a useful summary, and how often we reverse. |
+| What audit and rollback evidence is required?                                           | After a bad rollback, can we reconstruct who approved it and what command ran?                       | Incident timeline, proposal record, and change controls.                   |
 
 If the interviewer cannot provide all numbers, state assumptions for throughput, latency, horizon, accuracy, cost, autonomy, data class, and recovery. Name the oracle: post-incident review of the hypothesis and outcome.
 
 ### G04 is the anchor for its incident variants
 
-| Related case | What changes from G04 |
-|---|---|
-| SRE triage worksheet and mocks | Requirements, source ownership, golden set, and rollout probes become more explicit. |
+| Related case                                    | What changes from G04                                                                                           |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| SRE triage worksheet and mocks                  | Requirements, source ownership, golden set, and rollout probes become more explicit.                            |
 | Operations/incident-response assistant question | Tests the progression from read-only investigation to suggested, approved, then narrowly autonomous mitigation. |
-| Latency self-drill | Raw telemetry and serial diagnostics become the dominant bottleneck; pre-aggregate and parallelize. |
+| Latency self-drill                              | Raw telemetry and serial diagnostics become the dominant bottleneck; pre-aggregate and parallelize.             |
 
 ## 2. Requirements and first-release scope
 
@@ -50,14 +50,14 @@ First release: one alert class, read-only investigation, staged proposals. No au
 
 ### Non-functional requirements
 
-| Constraint | Source-case target or rule |
-|---|---|
-| Latency | First useful summary <30 s from alert; follow-ups 3–8 s; long investigations async with progress. |
-| Burst | Design for 400 alerts in 90 s, not only the 1,200/day average. |
-| Availability | Run outside affected blast radius; report each missing/degraded source. |
-| Security | SSO, service ownership, scoped read credentials, redacted logs, human approval for writes. |
-| Reliability | Permission uncertainty, absent destructive-action simulation, or missing approval fail closed. Telemetry gaps degrade visibly. |
-| Cost | Rules/small models cluster alerts; strong model synthesizes hypotheses; bound lookback and tokens. |
+| Constraint   | Source-case target or rule                                                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Latency      | First useful summary <30 s from alert; follow-ups 3–8 s; long investigations async with progress.                             |
+| Burst        | Design for 400 alerts in 90 s, not only the 1,200/day average.                                                                 |
+| Availability | Run outside affected blast radius; report each missing/degraded source.                                                        |
+| Security     | SSO, service ownership, scoped read credentials, redacted logs, human approval for writes.                                     |
+| Reliability  | Permission uncertainty, absent destructive-action simulation, or missing approval fail closed. Telemetry gaps degrade visibly. |
+| Cost         | Rules/small models cluster alerts; strong model synthesizes hypotheses; bound lookback and tokens.                             |
 
 These are the source’s interview assumptions and example targets, not claims of observed load.
 
@@ -95,7 +95,6 @@ flowchart LR
 - **Step 6.** **Get the right approval.** Apply read/propose/execute and freeze policies, then ask the owner and commander; a declined proposal is recorded without a write.
 - **Step 7.** **Execute and check.** Route an approved command through the authorized tool gateway, execute idempotently, verify its effect, and add the decision to the incident timeline.
 
-
 **Model and agent role:** The incident agent uses read-only tools to gather evidence. Rules or a small model handle alert clustering, while a strong LLM synthesizes hypotheses and proposes mitigation. The agent cannot execute a production change without the human approval and tool gateway shown above.
 
 **Three boundaries:** dedupe before model calls; read-only investigation before approval; all approved writes through one gateway. Keep the agent outside the affected service’s blast radius. The summary states which sources were reached, stale, empty, or unavailable, so a confident hypothesis cannot conceal missing evidence.
@@ -116,15 +115,15 @@ At 10×, provider quotas and telemetry rate limits likely bind first. Per-servic
 
 ## 6. Failure and safety playbook
 
-| Failure | Safe response |
-|---|---|
-| Metrics/logs/traces slow or missing | Return `UNAVAILABLE` or partial coverage within timeout; lower confidence and name the gap. |
-| Deploy metadata absent | State that deploy correlation was not possible. |
-| Runbook stale or absent | Mark proposal unguided/stale; do not imply approval. |
-| Injection in log/runbook | Treat content as data; exclude flagged chunks; no tool authority from text. |
-| Alert storm | Attach alerts to the active cluster; queue visibly; do not silently drop. |
-| Approval or policy unavailable | No execution. Proposal waits, expires, or a responder acts manually. |
-| Model provider degraded | Read-only investigation continues through a bounded fallback route. |
+| Failure                             | Safe response                                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| Metrics/logs/traces slow or missing | Return`UNAVAILABLE` or partial coverage within timeout; lower confidence and name the gap. |
+| Deploy metadata absent              | State that deploy correlation was not possible.                                              |
+| Runbook stale or absent             | Mark proposal unguided/stale; do not imply approval.                                         |
+| Injection in log/runbook            | Treat content as data; exclude flagged chunks; no tool authority from text.                  |
+| Alert storm                         | Attach alerts to the active cluster; queue visibly; do not silently drop.                    |
+| Approval or policy unavailable      | No execution. Proposal waits, expires, or a responder acts manually.                         |
+| Model provider degraded             | Read-only investigation continues through a bounded fallback route.                          |
 
 Use a visible degradation ladder chosen from system health, with the selected rung in the trace and responder view. Circuit breakers should use a windowed failure rate with a minimum sample, because agent traffic is bursty.
 
@@ -140,12 +139,12 @@ For a 45-minute round: requirements and oracle (8), records/action space (4), ar
 
 > “I’d start with a read-only incident assistant. It deduplicates an alert storm before any model call, builds service/deploy context, queries telemetry in parallel, and presents ranked hypotheses with evidence and explicit source coverage within 30 seconds. Since telemetry can fail during the incident, it distinguishes empty from unavailable and runs outside the affected blast radius. A mitigation is an exact, blast-radius-aware proposal; only the service owner and incident commander can approve a write through a gateway. I’d validate precision against post-incident reviews, shadow it first, then ship live read-only summaries before allowing approved low-risk actions.”
 
-| Follow-up | Short answer |
-|---|---|
-| Restart automatically? | Read-only first, then suggestions, then human-approved execution; autonomy only for proven low-risk reversible work. |
-| What breaks at 10×? | Telemetry quotas and provider limits; cap per service and pre-aggregate. |
-| What if a source says nothing? | Show whether it was `EMPTY` or `UNAVAILABLE`; never infer from a missing source. |
-| Slow prototype? | Decompose stages, parallelize reads, send less telemetry, stream, keep verification. |
-| How do you know it helps? | Post-incident hypothesis precision, source coverage, responder acceptance, reversal rate. |
+| Follow-up                      | Short answer                                                                                                         |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Restart automatically?         | Read-only first, then suggestions, then human-approved execution; autonomy only for proven low-risk reversible work. |
+| What breaks at 10×?           | Telemetry quotas and provider limits; cap per service and pre-aggregate.                                             |
+| What if a source says nothing? | Show whether it was`EMPTY` or `UNAVAILABLE`; never infer from a missing source.                                  |
+| Slow prototype?                | Decompose stages, parallelize reads, send less telemetry, stream, keep verification.                                 |
+| How do you know it helps?      | Post-incident hypothesis precision, source coverage, responder acceptance, reversal rate.                            |
 
 **Final mental model:** Dedupe → read-only evidence → ranked hypothesis + coverage → proposal → human approval → safe gateway → verified outcome.

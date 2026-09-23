@@ -14,16 +14,16 @@ Use a double-charge request as the running example. A fluent reply is not enough
 
 These questions set the first-release boundary. The [source case, §1](G02_Customer_Support_Automation.md#1-reframe-the-chatbot-as-a-routed-decision-pipeline) has the complete discovery table.
 
-| Question to ask                                                                        | What the answer decides                                                          |
-| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Which channels are in scope, and what are monthly volume and peak concurrency?         | Channel gateway, capacity, and whether voice transcripts join the same pipeline. |
-| Which intents may be answered or acted on automatically, and which need approval?      | Risk tags, tool policy rules, and the first-release scope.                       |
-| How is the customer verified, and which account or payment fields are sensitive?       | Assurance level and which tools are unavailable before authentication.           |
-| What is the approval threshold for refunds, and who owns that policy?                  | The deterministic check on every money-moving action.                            |
-| How current must policy, order status, and account data be before a promise or action? | Live lookups versus versioned caches and stale-data handling.                    |
-| What should a human receive at handoff, and how quickly?                               | Handoff fields, escalation route, and its latency target.                        |
-| How many languages are needed, and what happens when detection is uncertain?           | Language fallback and escalation path.                                           |
-| Which legal, financial, or safety cases must remain human-reviewed?                    | Non-goals, approval gates, and launch sequence.                                  |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which channels are in scope, and what are monthly volume and peak concurrency? | Is this chat-only, or also email and voice — and how many tickets hit at once on Monday morning? | Channel gateway, capacity, and whether voice joins the same pipeline. |
+| Which intents may be answered or acted on automatically, and which need approval? | Can it answer "where's my order" alone, or must a human approve a refund? | Risk tags, tool policy, and what v1 may do. |
+| How is the customer verified, and which account or payment fields are sensitive? | Before we show the last four of the card, how do we know it's actually them? | Assurance level, and which tools stay locked until auth. |
+| What is the approval threshold for refunds, and who owns that policy? | At what amount does a manager have to click yes, and who wrote that rule? | The money check on every refund. Do not invent a threshold. |
+| How current must policy, order status, and account data be before a promise or action? | If billing is ten minutes behind, can we still promise a refund? | Live lookup vs cache, and what to do when data is stale. |
+| What should a human receive at handoff, and how quickly? | When we give up, does the agent get the full story in seconds, or just a transcript later? | Handoff fields, route, and how fast it must arrive. |
+| How many languages are needed, and what happens when detection is uncertain? | If we aren't sure the customer wrote Portuguese, do we guess or hand off? | Language fallback and when to escalate. |
+| Which legal, financial, or safety cases must remain human-reviewed? | Is a lawsuit threat ever allowed to auto-reply? | What is out of scope, which gates stay human, and launch order. |
 
 If the interviewer cannot provide numbers, say which assumptions you are making. Keep money-moving and account-changing actions gated until identity, authority, and policy are clear.
 

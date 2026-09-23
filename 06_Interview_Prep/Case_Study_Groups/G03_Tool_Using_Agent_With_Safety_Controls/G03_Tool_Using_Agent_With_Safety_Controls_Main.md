@@ -14,15 +14,15 @@ The same request matters differently to operations, security, finance, and tool 
 
 The [source discovery table, §1](G03_Tool_Using_Agent_With_Safety_Controls.md#1-name-the-model-as-the-proposer-never-the-authority) gives the full set. These seven change the controls. Email and tool output stay untrusted either way, so that is assumed rather than asked.
 
-| Question to ask                                                              | What the answer decides                                                                                                                                      |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Which actions are reversible, and where is the money or permission boundary? | Which steps auto-run, which need a human, and which are blocked. Refunds and permission changes sit behind the approval line unless the interviewer sets one. |
-| Does the agent act as the user, a service account, or a delegated actor?     | Whose identity rides on each tool call, how wide a token is, and how much damage one injected instruction can cause.                                         |
-| What can run autonomously, what needs approval, and what is forbidden?       | The allow / needs-approval / forbidden matrix, the tool allowlist, and how far the first rollout may go.                                                     |
-| Which systems own customer, identity, and refund truth?                      | Which systems the planner may read live, and that task-state progress is never a substitute for CRM, identity, or money records.                             |
-| What must be logged and retained for an audit or dispute?                    | Which fields the decision ledger stores and for how long, so any action can be reconstructed.                                                                |
-| How can operators stop an in-flight task?                                    | That a kill switch must halt new tool calls, cancel queued work, and revoke tokens — not only block new chats.                                               |
-| What workload and business outcome matter?                                   | Planner and tool capacity, how many approvers you need, and the metric that sets how much autonomy you ship.                                                 |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which actions are reversible, and where is the money or permission boundary? | If the agent refunds the wrong person, can we undo it — and at what amount does a human have to say yes? | Which steps auto-run, which wait for a person, and which never run. Do not invent a refund threshold. |
+| Does the agent act as the user, a service account, or a delegated actor? | If a bad email tricks the agent, whose account does the damage land on — the user's, a shared robot, or a narrow "this ticket only" role? | How wide the token is, and how much one injected instruction can change. |
+| What can run autonomously, what needs approval, and what is forbidden? | Can it write a CRM note on its own, must a manager approve a refund, and is "change payment details" simply not allowed? | The allow / ask a human / never-do-this list, and how far v1 may go. |
+| Which systems own customer, identity, and refund truth? | If the agent's todo list says "refunded" but billing says "not refunded," which one do we trust? | Read live from CRM, identity, and refund systems. Task state is progress, not money. |
+| What must be logged and retained for an audit or dispute? | If a customer later disputes a refund, can you prove exactly what happened — and how long do you keep that proof? | Ledger fields (who, proposal, policy, approval, receipt) and how long they are kept. |
+| How can operators stop an in-flight task? | If a bad refund loop is already running, how do we stop work that started — not only the next chat? | Kill switch must halt new tool calls, cancel queued work, and revoke tokens. |
+| What workload and business outcome matter? | How busy is peak, and are we optimizing for faster handling or fewer wrong refunds? | Planner/tool size, how many approvers you need, and how much autonomy you ship. |
 
 If approval policy is unspecified, assume a human gate for irreversible actions; do not invent a permissive refund threshold.
 

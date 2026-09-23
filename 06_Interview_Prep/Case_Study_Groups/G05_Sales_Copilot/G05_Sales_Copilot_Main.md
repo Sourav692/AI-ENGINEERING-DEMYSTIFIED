@@ -14,16 +14,16 @@ An account executive has a meeting soon. They need an **account summary**, **opp
 
 The [source discovery, §1](G05_Sales_Copilot.md#1-name-the-workflow-and-the-risk-boundary-before-drawing-anything) expands these questions:
 
-| Question to ask | What the answer decides |
-|---|---|
-| Which sales task is slow or inconsistent, and what decision follows the brief? | First workflow, five outputs, and useful success metric. |
-| Who uses, reviews, and owns a wrong answer or outbound claim? | Approval roles, audit audience, and escalation. |
-| Which tasks are read-only, draft-only, or require approved write-back? | Tool allowlist and first-release boundary. |
-| Which systems are authoritative, fresh, and permissioned by account/territory? | Connector map, structured versus semantic route, snapshot freshness. |
-| Which claims, prices, discounts, or customer references are approved externally? | Claim verifier and pricing policy versions. |
-| What must be refused when evidence or access is missing? | Abstention, staleness labels, and fallback behavior. |
-| What should a 30-day pilot prove? | Brief accuracy, prep time, adoption, claim safety, and business outcomes. |
-| What must an audit reconstruct? | Evidence IDs, versions, permission checks, draft approval, and write receipt. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which sales task is slow or inconsistent, and what decision follows the brief? | Is this "prep me for the Acme call in 20 minutes," and does the brief change what they say on the call? | First workflow, the five outputs, and the success metric. |
+| Who uses, reviews, and owns a wrong answer or outbound claim? | If the email claims a certification we don't have, who gets blamed — the rep, sales ops, or legal? | Who approves, who audits, and who we escalate to. |
+| Which tasks are read-only, draft-only, or require approved write-back? | Can it show CRM facts, only draft an email, or actually update the opportunity after a click? | Tool allowlist and what v1 may write. |
+| Which systems are authoritative, fresh, and permissioned by account/territory? | Can a rep see a peer's deal in another territory, and is last quarter's usage still "current"? | Connectors, structured vs semantic route, and snapshot freshness. |
+| Which claims, prices, discounts, or customer references are approved externally? | Can the draft promise 20% off, or only prices from the approved sheet? | Claim verifier and which pricing policy version is live. |
+| What must be refused when evidence or access is missing? | If we don't have the contract, do we invent a renewal date or say we don't know? | Abstain, mark stale, or fall back. |
+| What should a 30-day pilot prove? | After a month, did prep get faster without fake claims going out? | Accuracy, prep time, adoption, claim safety, and outcomes. |
+| What must an audit reconstruct? | If legal asks why that email mentioned HIPAA, can we show the source, the permission check, and who approved send? | Evidence IDs, versions, permission checks, draft approval, and write receipt. |
 
 If these answers are missing, keep the first release read-only, restrict sources to approved accounts, and treat external drafts and CRM writes as gated.
 

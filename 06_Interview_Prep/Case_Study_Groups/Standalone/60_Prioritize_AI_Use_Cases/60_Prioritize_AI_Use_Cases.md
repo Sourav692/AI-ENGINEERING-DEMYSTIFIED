@@ -242,7 +242,7 @@ flowchart TB
 | Observability | Cost per successful outcome and adoption are the portfolio's scoreboard | #7 | All of them |
 | Portfolio office | Holds the card register, re-scores quarterly, records kill decisions | Wave 0 | The next thirty ideas |
 
-The platform view is *(own construction)*. Its gateway pieces come from the repo's gateway material. [#100 Production LLM Gateway](../100_Production_LLM_Gateway/) designs that component in full. [G13 Evaluation and Release Gating](../../G13_Evaluation_And_Release_Gating.md) covers the harness.
+The platform view is *(own construction)*. Its gateway pieces come from the repo's gateway material. [#100 Production LLM Gateway](../100_Production_LLM_Gateway/) designs that component in full. [G13 Evaluation and Release Gating](../../G13_Evaluation_And_Release_Gating/G13_Evaluation_And_Release_Gating.md) covers the harness.
 
 ## 10. Sequence the Portfolio in Waves
 
@@ -274,7 +274,7 @@ The stage gates reuse the delivery framework's shape: a named, checkable conditi
 
 The gate names and roles adapt Handbook Module 10's six gates, including `data_access_granted`, `eval_baseline_met`, `rollback_tested` and `success_metrics_met`, from a single engagement to a portfolio *(own construction)*. The delivery framework's week-4 retention metric is the adoption kill signal. It is recorded as "none" until measured, never as a fake zero. Its accelerator reuse rate becomes the portfolio's platform health metric.
 
-Re-score the whole register every quarter. Pilot data replaces estimates, so the portfolio corrects itself. A Later item whose data problem was solved by an enabler moves up without anyone lobbying for it. [G12 Scoping to Deployed Agent](../../G12_Scoping_To_Deployed_Agent.md) covers the gate mechanics in depth.
+Re-score the whole register every quarter. Pilot data replaces estimates, so the portfolio corrects itself. A Later item whose data problem was solved by an enabler moves up without anyone lobbying for it. [G12 Scoping to Deployed Agent](../../G12_Scoping_To_Deployed_Agent/G12_Scoping_To_Deployed_Agent.md) covers the gate mechanics in depth.
 
 ## 12. Say No to the Executive's Pet Project Without Losing the Executive
 
@@ -430,6 +430,6 @@ All paths are relative to `06_Interview_Prep/`.
 | 10 | `Handbook/10_FDE_Delivery_Operating_Model/05_Cross_Team_Collaboration.md`: two-phase delivery and narrowing the first build |
 | 2, 3 | `Handbook/10_FDE_Delivery_Operating_Model/02_End_To_End_AI_Delivery_Six_Stages.md`: anchor on business value and quantified impact |
 
-Related packs, for cross-reference rather than repetition: [G12 Scoping to Deployed Agent](../../G12_Scoping_To_Deployed_Agent.md) for gate mechanics; [G13 Evaluation and Release Gating](../../G13_Evaluation_And_Release_Gating.md) for the eval harness; [#61 Scale a Prototype to Production](../61_Scale_Prototype_To_Production/) for what happens after a Now item's pilot succeeds; [#62 Build When Customer Data Is Poor](../62_Build_When_Customer_Data_Is_Poor/) for items blocked on data readiness; [Decomposition Classics #67–#69](../Decomposition_Classics_67_68_69/) for decomposing a single chosen use case; [#100 Production LLM Gateway](../100_Production_LLM_Gateway/) for the gateway enabler.
+Related packs, for cross-reference rather than repetition: [G12 Scoping to Deployed Agent](../../G12_Scoping_To_Deployed_Agent/G12_Scoping_To_Deployed_Agent.md) for gate mechanics; [G13 Evaluation and Release Gating](../../G13_Evaluation_And_Release_Gating/G13_Evaluation_And_Release_Gating.md) for the eval harness; [#61 Scale a Prototype to Production](../61_Scale_Prototype_To_Production/) for what happens after a Now item's pilot succeeds; [#62 Build When Customer Data Is Poor](../62_Build_When_Customer_Data_Is_Poor/) for items blocked on data readiness; [Decomposition Classics #67–#69](../Decomposition_Classics_67_68_69/) for decomposing a single chosen use case; [#100 Production LLM Gateway](../100_Production_LLM_Gateway/) for the gateway enabler.
 
 Sections 2, 3 (the card), 4 (the gates table), 5 to 13, 14 (script, spoken answer and follow-ups apart from the first) and 15 are own construction. They were built for this page from the sources' arguments and are not source material. The repo has no worked portfolio-prioritisation case.

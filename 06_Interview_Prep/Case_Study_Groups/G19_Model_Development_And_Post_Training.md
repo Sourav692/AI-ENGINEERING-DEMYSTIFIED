@@ -4,7 +4,7 @@
 
 ◷ 24 min
 
-These four prompts are one pipeline asked four ways, not four different systems. Each question fixes a different constraint, and that constraint changes exactly one stage: data, SFT, post-training, evaluation or deployment. This page consolidates group G20 of `CASE_STUDY_INDEX.xlsx` into one read for the day before.
+These four prompts are one pipeline asked four ways, not four different systems. Each question fixes a different constraint, and that constraint changes exactly one stage: data, SFT, post-training, evaluation or deployment. This page consolidates group G19 of `CASE_STUDY_INDEX.xlsx` into one read for the day before.
 
 | Case in the group | What it contributes here |
 |---|---|

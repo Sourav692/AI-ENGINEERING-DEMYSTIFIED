@@ -68,16 +68,16 @@ Answer / Abstain / Escalate
 
 Ask the questions that change a design decision. The [source case, §1](G01_Enterprise_Knowledge_Assistant.md#1-name-permission-fidelity-as-the-constraint-before-drawing-anything) expands these into the full discovery table.
 
-| Question to ask | What the answer decides |
-|---|---|
-| Which source is authoritative for each content type, and what if sources disagree? | Source priority, conflict handling, and whether to surface uncertainty. |
-| Must inherited permissions and group changes be checked live, or is bounded sync lag acceptable? | Query-time authorization design and the permitted stale window. |
-| How fast must updates, deletions, and access revocations take effect? | Freshness SLO, event processing, tombstones, and reconciliation cadence. |
-| Should answers synthesize across sources, and do citations need a passage or whole document? | Evidence selection, context budget, and citation granularity. |
-| What should happen when evidence is weak, retrieval fails, or sources conflict? | Answer, label staleness, abstain, or escalate rules. |
-| Who asks questions, who investigates wrong answers, and who owns an over-sharing incident? | Personas, escalation ownership, and trace access. |
-| What are p95 latency, scale, residency, retention, and cost limits? | Stage budget, partitioning, region placement, and audit retention. |
-| Who may inspect traces, and what must an audit reconstruct? | Logged IDs, versions, policy decisions, evidence, and citation set. |
+| Question to ask | What it's really asking | What you then decide |
+| --- | --- | --- |
+| Which source is authoritative for each content type, and what if sources disagree? | If Confluence says one SLA and the handbook PDF says another, which one do we quote? | Source ranking, how conflicts are shown, and whether to flag uncertainty. |
+| Must inherited permissions and group changes be checked live, or is bounded sync lag acceptable? | If someone just left a group, can they still get last week's docs in the answer? | Live auth vs a named stale window. |
+| How fast must updates, deletions, and access revocations take effect? | If a doc is deleted or access is revoked, how long can it still appear in an answer? | Freshness SLO, tombstones, and how often you reconcile. |
+| Should answers synthesize across sources, and do citations need a passage or whole document? | Can we blend three docs into one answer, and must the citation be the exact paragraph? | Evidence mix, context budget, and citation grain. |
+| What should happen when evidence is weak, retrieval fails, or sources conflict? | If we only have a maybe, do we still answer, or say we don't know? | Answer, mark stale, abstain, or escalate. |
+| Who asks questions, who investigates wrong answers, and who owns an over-sharing incident? | When an intern sees a salary doc they shouldn't, who gets paged — and who may open the traces? | Personas, incident owner, and who can inspect traces. |
+| What are p95 latency, scale, residency, retention, and cost limits? | How fast, how many users, which country the data must stay in, and what we can spend? | Latency budget, partitioning, region, and how long logs are kept. |
+| Who may inspect traces, and what must an audit reconstruct? | After a leak scare, can we prove which docs went into the model and who was allowed to see them? | Logged IDs, versions, policy, evidence, and citation set. |
 
 If answers are unavailable, state the assumptions before drawing: read-only, query-time permission checks, passage citations, and fail-closed behavior on uncertain access.
 

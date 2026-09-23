@@ -14,7 +14,7 @@ Scaling a prototype a thousandfold is not a bigger deployment of the same system
 | Production study guide (`12_production_and_operations`) | Sections 7 and 8: retries, breakers, fallback, degradation, budgets, the 99.9% answer |
 | Handbook Module 08 doc 1 and Module 10 doc 4 | Sections 10 and 12: shadow, canary, pointer-flip rollback, override rate, week-4 retention |
 | Handbook Module 06 doc 1 | Section 7: identity, fair queuing |
-| G07, G13, G14, G19, G21 and Standalone #100 | Cross-linked by section instead of re-explained |
+| G07, G13, G14, G18, G20 and Standalone #100 | Cross-linked by section instead of re-explained |
 
 **The repo has talking points for this prompt, not a worked design.** Question 17 lists what to cover and one follow-up. Everything that turns that list into an architecture, a sizing walk and a rollout is *own construction*, built from the sources above. Every number is a stated assumption for the whiteboard, not a measurement.
 
@@ -465,5 +465,5 @@ All paths are relative to `06_Interview_Prep/`.
 | 7 | `Case_Study_Groups/G07_Secure_Multi_Tenant_AI_Platform.md`, sections 7 and 8 |
 | 9 | `Case_Study_Groups/G13_Evaluation_And_Release_Gating.md`, sections 5–8 and 14 |
 | 6, 13 | `Case_Study_Groups/G14_Observability_And_Production_Diagnosis.md` (observability design and cost cards) |
-| 4 | `Case_Study_Groups/G19_Consumer_Scale_Chat_Service.md` §3 and `Case_Study_Groups/G21_LLM_Inference_Serving.md` §3 (the same sizing method at larger scale) |
+| 4 | `Case_Study_Groups/G18_Consumer_Scale_Chat_Service.md` §3 and `Case_Study_Groups/G20_LLM_Inference_Serving.md` §3 (the same sizing method at larger scale) |
 | Every table and section marked own construction, all sizing and cost figures, the self-drill card | Built for this page from the sources' arguments; not source material |

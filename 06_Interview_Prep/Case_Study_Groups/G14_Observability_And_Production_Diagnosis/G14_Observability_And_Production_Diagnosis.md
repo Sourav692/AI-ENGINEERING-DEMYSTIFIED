@@ -366,7 +366,7 @@ The follow-up is "would you fine-tune the model?" Classify the problem first. A 
 
 **#74, diagnose high latency in an LLM inference pipeline.** This is the layer below the application. Walk the full stack: tokenization, network, batch size, KV cache, post-processing. Two facts carry the answer *(from the additions file, section B)*. Prefill processes the whole prompt in parallel and sets time to first token, so it scales with input tokens. Decode generates one token at a time and sets tokens per second, so it scales with output tokens. A frozen UI points at prompt size, retrieval and queueing. An answer that starts fast then drags points at output length.
 
-Batch size trades throughput for per-request latency, because a larger batch waits longer to fill. The KV cache holds attention state for tokens already processed. Its memory caps how many sequences fit on a GPU at once, and a full cache forces queueing. Post-processing is usually small, but a synchronous evaluator or logger on the hot path is not. The same stack walk anchors G21 on inference serving, so prepare it once.
+Batch size trades throughput for per-request latency, because a larger batch waits longer to fill. The KV cache holds attention state for tokens already processed. Its memory caps how many sequences fit on a GPU at once, and a full cache forces queueing. Post-processing is usually small, but a synchronous evaluator or logger on the hot path is not. The same stack walk anchors G20 on inference serving, so prepare it once.
 
 ## 13. Roll Out in Four Phases With Named Owners
 
@@ -588,4 +588,4 @@ All paths are relative to `06_Interview_Prep/`.
 | 15.1 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, playbook row for #44; `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, §16 case 7 |
 | 15.2–15.8 | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, §15 scenarios 1, 2, 6, 7, 10, 11, 12 (#104, #105, #109, #110, #113, #114, #115) and §4's four verbs |
 | 5 (ASCII diagram, "Fails how" column), 3 (owner table), 15 ("Do not" on §15 cards), and every item marked own construction | Built for this page from the sources' arguments; not source material |
-| Related | G21 (LLM inference serving) shares #74's stack walk |
+| Related | G20 (LLM inference serving) shares #74's stack walk |

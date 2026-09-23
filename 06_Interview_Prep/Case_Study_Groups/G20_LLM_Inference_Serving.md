@@ -4,7 +4,7 @@
 
 ◷ 26 min
 
-These prompts look like AI questions and are graded as distributed-systems questions: queues, batches, load balancing, health and backpressure. Treat the GPU as an expensive, stateful server with a memory budget, and the rest follows. This page consolidates group G21 of `CASE_STUDY_INDEX.xlsx` into one read for the day before.
+These prompts look like AI questions and are graded as distributed-systems questions: queues, batches, load balancing, health and backpressure. Treat the GPU as an expensive, stateful server with a memory budget, and the rest follows. This page consolidates group G20 of `CASE_STUDY_INDEX.xlsx` into one read for the day before.
 
 | Case in the group | What it contributes here |
 |---|---|
@@ -13,7 +13,7 @@ These prompts look like AI questions and are graded as distributed-systems quest
 | #77 Anthropic: token-generation service at 100,000 requests per second | Section 13: the anchor scaled out, with admission control |
 | #79 Anthropic: review a junior developer's batching design | Section 14: the anchor used as a critique rubric |
 | #74 OpenAI favourite: diagnose high latency in an LLM inference pipeline | Section 15: the stack walk, shared with G14 |
-| Self-drill for G21 *(own construction)* | Section 17 |
+| Self-drill for G20 *(own construction)* | Section 17 |
 
 **Read this first.** The repo has no worked design for this group and no notes on continuous batching, paged attention or any serving engine. The design on this page is therefore *own construction*. It is built from general serving practice. It is grounded where the repo does speak: the air-gapped chapter's replica memory and sizing formula, and the cost playbook additions on prefill, decode, Little's Law and goodput. Every number below is a stated assumption, never a benchmark. In the room, say "I would replace these with a load test of the actual model."
 
