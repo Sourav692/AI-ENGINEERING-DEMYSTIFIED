@@ -178,6 +178,49 @@ One diagram carries the whole design, and the two that follow are zoom-ins on it
  ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 ```
 
+The same flow, for a viewer that draws Mermaid:
+
+```mermaid
+flowchart LR
+    subgraph CP[Control plane]
+        POL[ABAC policy + ACL mapping]
+        CFG[Connector schedules · credentials]
+        VER[Prompt / model / retrieval versions]
+        EVR[Eval rules + leak suite]
+    end
+
+    subgraph ING[Ingestion — async]
+        SRC[Drive · SharePoint · Slack · Wikis · Tickets] --> Q[Event + backfill queue]
+        Q --> CON[Connectors] --> NORM[Normalise] --> ACL[ACL normaliser]
+        ACL -- no usable ACL --> REF[Refuse to index]
+        ACL --> CHUNK[Parse / OCR / chunk] --> EMB[Embed]
+        EMB --> KW[(Keyword index)]
+        EMB --> VEC[(Vector index)]
+        ACL --> META[(Metadata: versions, tombstones)]
+    end
+
+    subgraph QRY[Query — sync, ordered by risk]
+        U[User] --> GW[Gateway: authN via IdP] --> AUTH[Authorize: resolve groups, compile filter]
+        AUTH --> PLAN[Plan: split multi-hop] --> RET[Retrieve: hybrid pre-filtered, RRF]
+        RET --> ENF[Enforce: ABAC post-check, live, redact] --> RR[Rerank 20 to 6] --> GR{Enough evidence?}
+        GR -- no --> ESC[Refuse + escalate]
+        GR -- yes --> GEN[Generate via LLM gateway] --> VFY[Verify citations + output policy] --> ANS[Answer]
+    end
+
+    subgraph OBS[Observability]
+        TR[(Trace store)] --> EVAL[Eval service] & DASH[Dashboards]
+    end
+
+    KW --> RET
+    VEC --> RET
+    META --> ENF
+    POL -.-> ACL & ENF
+    CFG -.-> CON
+    VER -.-> RET & GEN
+    EVR -.-> EVAL
+    AUTH & RET & ENF & GEN & VFY --> TR
+```
+
 Components, in the order they exist and the order they fail:
 
 | Component                     | Responsibility                                                                                             | Fails how                                              |
