@@ -14,16 +14,16 @@ Use a double-charge request as the running example. A fluent reply is not enough
 
 These questions set the first-release boundary. The [source case, §1](G02_Customer_Support_Automation.md#1-reframe-the-chatbot-as-a-routed-decision-pipeline) has the complete discovery table.
 
-| Question to ask | What the answer decides |
-|---|---|
-| Which channels are in scope, and what are monthly volume and peak concurrency? | Channel gateway, capacity, and whether voice transcripts join the same pipeline. |
-| Which intents may be answered or acted on automatically, and which need approval? | Risk tags, tool policy rules, and the first-release scope. |
-| How is the customer verified, and which account or payment fields are sensitive? | Assurance level and which tools are unavailable before authentication. |
-| What is the approval threshold for refunds, and who owns that policy? | The deterministic check on every money-moving action. |
-| How current must policy, order status, and account data be before a promise or action? | Live lookups versus versioned caches and stale-data handling. |
-| What should a human receive at handoff, and how quickly? | Handoff fields, escalation route, and its latency target. |
-| How many languages are needed, and what happens when detection is uncertain? | Language fallback and escalation path. |
-| Which legal, financial, or safety cases must remain human-reviewed? | Non-goals, approval gates, and launch sequence. |
+| Question to ask                                                                        | What the answer decides                                                          |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Which channels are in scope, and what are monthly volume and peak concurrency?         | Channel gateway, capacity, and whether voice transcripts join the same pipeline. |
+| Which intents may be answered or acted on automatically, and which need approval?      | Risk tags, tool policy rules, and the first-release scope.                       |
+| How is the customer verified, and which account or payment fields are sensitive?       | Assurance level and which tools are unavailable before authentication.           |
+| What is the approval threshold for refunds, and who owns that policy?                  | The deterministic check on every money-moving action.                            |
+| How current must policy, order status, and account data be before a promise or action? | Live lookups versus versioned caches and stale-data handling.                    |
+| What should a human receive at handoff, and how quickly?                               | Handoff fields, escalation route, and its latency target.                        |
+| How many languages are needed, and what happens when detection is uncertain?           | Language fallback and escalation path.                                           |
+| Which legal, financial, or safety cases must remain human-reviewed?                    | Non-goals, approval gates, and launch sequence.                                  |
 
 If the interviewer cannot provide numbers, say which assumptions you are making. Keep money-moving and account-changing actions gated until identity, authority, and policy are clear.
 
@@ -31,13 +31,13 @@ If the interviewer cannot provide numbers, say which assumptions you are making.
 
 Learn the shared decision pipeline here, then change the boundary that dominates each variant.
 
-| Related case | What changes from G02 |
-|---|---|
-| Customer Support Assistant at 1M conversations/day | Planner only for multi-system requests; three distinct memory layers; model routing and large-scale serving. |
-| Multi-Tenant SaaS Support Assistant | Add a tenant predicate to every retrieval and tool call; test for cross-tenant leakage. |
-| ServiceNow Ticket Automation Agent | Classify, prioritize, assign, and request missing details; obey the existing ITIL change process. |
-| Agentic Support Workflow / customer-support interview mocks | Probe handoff quality, wrong refunds, stale facts, confidence, rollout, and the requested automation target. |
-| Study-guide implementations | Show how branches, interrupts, retrieval, durable state, and specialist tools implement the same control boundaries. |
+| Related case                                                | What changes from G02                                                                                                |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Customer Support Assistant at 1M conversations/day          | Planner only for multi-system requests; three distinct memory layers; model routing and large-scale serving.         |
+| Multi-Tenant SaaS Support Assistant                         | Add a tenant predicate to every retrieval and tool call; test for cross-tenant leakage.                              |
+| ServiceNow Ticket Automation Agent                          | Classify, prioritize, assign, and request missing details; obey the existing ITIL change process.                    |
+| Agentic Support Workflow / customer-support interview mocks | Probe handoff quality, wrong refunds, stale facts, confidence, rollout, and the requested automation target.         |
+| Study-guide implementations                                 | Show how branches, interrupts, retrieval, durable state, and specialist tools implement the same control boundaries. |
 
 ## 2. Requirements and scope
 
@@ -53,14 +53,14 @@ Learn the shared decision pipeline here, then change the boundary that dominates
 
 ### Non-functional requirements — how well it must do it
 
-| Constraint | Example from the source case |
-|---|---|
-| Latency | Routine p95 <3 s; ambiguous p95 <8 s; high-risk handoff bundle p95 <15 s. The high-risk final decision remains human. |
-| Availability | At the illustrative 2M tickets/month and 100 QPS peak, routing and escalation keep accepting work while optional enrichment is shed. |
-| Security | Customer text stays untrusted; tools are scoped per workflow; identity is checked before account access. |
-| Reliability | Timeouts and incomplete facts lead to a safe handoff; possible side effects are reconciled before retry. |
-| Auditability | Preserve actor, model/tool/policy versions, validated fields, decision, and override in an immutable trail. |
-| Cost and outcome | Optimize net value per resolved case, including wrong resolutions and repeat contacts, rather than raw deflection. |
+| Constraint       | Example from the source case                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Latency          | Routine p95 <3 s; ambiguous p95 <8 s; high-risk handoff bundle p95 <15 s. The high-risk final decision remains human.                |
+| Availability     | At the illustrative 2M tickets/month and 100 QPS peak, routing and escalation keep accepting work while optional enrichment is shed. |
+| Security         | Customer text stays untrusted; tools are scoped per workflow; identity is checked before account access.                             |
+| Reliability      | Timeouts and incomplete facts lead to a safe handoff; possible side effects are reconciled before retry.                             |
+| Auditability     | Preserve actor, model/tool/policy versions, validated fields, decision, and override in an immutable trail.                          |
+| Cost and outcome | Optimize net value per resolved case, including wrong resolutions and repeat contacts, rather than raw deflection.                   |
 
 **First-release exclusions:** autonomous legal complaints, open-ended negotiation, unsupervised refunds or cancellations, cross-system repair without review, and ambiguous proactive outreach.
 
@@ -124,13 +124,13 @@ The automation layer owns the **case workflow and evidence of its decisions**. C
 
 ## 4. Decide what can happen
 
-| Request | Path |
-|---|---|
-| Public FAQ | Retrieve approved policy or use a safe versioned cache; answer or queue if evidence is weak. |
-| Order status | Verify identity if account-specific; fetch current order status; answer only from the returned facts. |
-| Refund, cancellation, address or payment change | Check live facts and assurance; gateway applies allowlist and threshold; require approval where policy says so. |
-| Legal/safety issue, unclear language, conflicting evidence | Escalate with reason codes and context. |
-| Tool timeout after an action may have executed | Mark pending, inspect action record or ledger, then confirm, continue waiting, or escalate. Never blindly repeat it. |
+| Request                                                    | Path                                                                                                                 |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Public FAQ                                                 | Retrieve approved policy or use a safe versioned cache; answer or queue if evidence is weak.                         |
+| Order status                                               | Verify identity if account-specific; fetch current order status; answer only from the returned facts.                |
+| Refund, cancellation, address or payment change            | Check live facts and assurance; gateway applies allowlist and threshold; require approval where policy says so.      |
+| Legal/safety issue, unclear language, conflicting evidence | Escalate with reason codes and context.                                                                              |
+| Tool timeout after an action may have executed             | Mark pending, inspect action record or ledger, then confirm, continue waiting, or escalate. Never blindly repeat it. |
 
 Use a planner only when the request truly spans systems, such as refunding an order, cancelling a warranty, notifying shipping, and creating a ticket. A simple “track my order” request should take the direct lookup path. Keep session context, cross-session customer history, and enterprise knowledge as separate memory layers; they have different freshness and privacy rules.
 
@@ -156,13 +156,13 @@ Retries are bounded and jittered, failed jobs remain inspectable, and timeouts n
 
 The source’s sizing exercise assumes **2M tickets/month, 100 QPS peak, and 20 languages**. With an illustrative 70% routine / 20% ambiguous / 10% escalated mix and 2 / 3 / 1 model calls respectively, that is about **4.2M model calls/month**, before retries and moderation. The same assumptions imply roughly **2.2M–2.4M retrieval calls/month**. Treat these as interview assumptions, not measured production demand.
 
-| Pressure | Design response |
-|---|---|
-| Peak QPS or incident burst | Stateless gateway/router, ordered queues by customer or case, rate limits per user/tenant/tool, circuit breakers, shed optional enrichment. |
-| Latency | Budget by risk tier; direct lookup for simple work, bounded retrieval/context, selective reasoning, streaming for perceived speed, background actions where allowed. |
-| Freshness | Cache approved policy by version and safe FAQ answers by tenant/permission/version; fetch live identity, money, account status, and authorization. |
-| Cost | Trace spend by intent; use rules or a small model for classification/FAQ, a stronger model for ambiguous or high-risk synthesis, and a planner only for multi-system work. |
-| Growth toward 10M conversations/day | Partition retrieval by product/region/language/business unit, isolate escalation and offline work, regionalize for residency, and scale stateless services independently. |
+| Pressure                            | Design response                                                                                                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Peak QPS or incident burst          | Stateless gateway/router, ordered queues by customer or case, rate limits per user/tenant/tool, circuit breakers, shed optional enrichment.                                |
+| Latency                             | Budget by risk tier; direct lookup for simple work, bounded retrieval/context, selective reasoning, streaming for perceived speed, background actions where allowed.       |
+| Freshness                           | Cache approved policy by version and safe FAQ answers by tenant/permission/version; fetch live identity, money, account status, and authorization.                         |
+| Cost                                | Trace spend by intent; use rules or a small model for classification/FAQ, a stronger model for ambiguous or high-risk synthesis, and a planner only for multi-system work. |
+| Growth toward 10M conversations/day | Partition retrieval by product/region/language/business unit, isolate escalation and offline work, regionalize for residency, and scale stateless services independently.  |
 
 The business check is **NetValue = time saved − model/retrieval cost − wrong-resolution cost − repeat-contact cost**. Lower model spend is not a win if it creates expensive recontacts.
 
@@ -201,14 +201,14 @@ Spend the hour roughly as follows: opening and requirements (10 min), architectu
 
 ### Interviewer trigger → short answer
 
-| Asked | Say |
-|---|---|
-| Why not a general chatbot? | It must decide whether to answer, approve, act, or hand off. |
-| Model is confident? | Confidence helps routing; the gateway still enforces action permission. |
-| Duplicate refund? | Idempotency, immutable action record, ledger reconciliation after timeout. |
-| Human takeover? | Structured handoff with evidence, attempted actions, and reason. |
-| What to automate first? | High-volume, low-harm, stable, reversible intents. |
-| What proves success? | Safe automation and customer outcomes, not deflection alone. |
-| Cost spike? | Measure by intent, route, bound work, cache safe FAQ answers. |
+| Asked                      | Say                                                                        |
+| -------------------------- | -------------------------------------------------------------------------- |
+| Why not a general chatbot? | It must decide whether to answer, approve, act, or hand off.               |
+| Model is confident?        | Confidence helps routing; the gateway still enforces action permission.    |
+| Duplicate refund?          | Idempotency, immutable action record, ledger reconciliation after timeout. |
+| Human takeover?            | Structured handoff with evidence, attempted actions, and reason.           |
+| What to automate first?    | High-volume, low-harm, stable, reversible intents.                         |
+| What proves success?       | Safe automation and customer outcomes, not deflection alone.               |
+| Cost spike?                | Measure by intent, route, bound work, cache safe FAQ answers.              |
 
 **Final mental model:** Verify → Classify risk → Fetch authoritative facts → Draft → Policy gate → Answer / approve / hand off → Audit and learn.

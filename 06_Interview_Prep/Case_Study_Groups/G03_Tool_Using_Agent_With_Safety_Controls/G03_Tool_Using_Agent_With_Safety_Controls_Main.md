@@ -12,28 +12,28 @@ The same request matters differently to operations, security, finance, and tool 
 
 ### Questions to ask the interviewer
 
-The [source discovery table, §1](G03_Tool_Using_Agent_With_Safety_Controls.md#1-name-the-model-as-the-proposer-never-the-authority) gives the full set. These questions change the controls:
+The [source discovery table, §1](G03_Tool_Using_Agent_With_Safety_Controls.md#1-name-the-model-as-the-proposer-never-the-authority) gives the full set. These seven change the controls. Email and tool output stay untrusted either way, so that is assumed rather than asked.
 
-| Question to ask | What the answer decides |
-|---|---|
-| Which actions are reversible, and where is the money or permission boundary? | Action risk tiers and the human approval threshold. |
-| Does the agent act as the user, a service account, or a delegated actor? | Identity propagation, token scope, and blast radius. |
-| What can run autonomously, what needs approval, and what is forbidden? | Tool allowlist, policy verdicts, and rollout scope. |
-| Which systems own customer, identity, and refund truth? | Live reads, reconciliation, and where workflow state must not substitute for business state. |
-| What must be logged and retained for an audit or dispute? | Decision ledger fields and retention policy. |
-| How can operators stop an in-flight task? | Kill switch, queued work cancellation, and token revocation. |
-| What workload and business outcome matter? | Planner/tool capacity, approval staffing, and success metric. |
+| Question to ask                                                              | What the answer decides                                                                                                                                      |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Which actions are reversible, and where is the money or permission boundary? | Which steps auto-run, which need a human, and which are blocked. Refunds and permission changes sit behind the approval line unless the interviewer sets one. |
+| Does the agent act as the user, a service account, or a delegated actor?     | Whose identity rides on each tool call, how wide a token is, and how much damage one injected instruction can cause.                                         |
+| What can run autonomously, what needs approval, and what is forbidden?       | The allow / needs-approval / forbidden matrix, the tool allowlist, and how far the first rollout may go.                                                     |
+| Which systems own customer, identity, and refund truth?                      | Which systems the planner may read live, and that task-state progress is never a substitute for CRM, identity, or money records.                             |
+| What must be logged and retained for an audit or dispute?                    | Which fields the decision ledger stores and for how long, so any action can be reconstructed.                                                                |
+| How can operators stop an in-flight task?                                    | That a kill switch must halt new tool calls, cancel queued work, and revoke tokens — not only block new chats.                                               |
+| What workload and business outcome matter?                                   | Planner and tool capacity, how many approvers you need, and the metric that sets how much autonomy you ship.                                                 |
 
 If approval policy is unspecified, assume a human gate for irreversible actions; do not invent a permissive refund threshold.
 
 ### G03 is the anchor for its variants
 
-| Related case | What changes from G03 |
-|---|---|
-| Enterprise assistant over 100+ apps | Tool discovery and registry loading at scale; enterprise identity must reach every application. |
-| Enterprise workflow automation / reported agent design prompts | More orchestration and memory detail, with the same proposal-to-execution boundary. |
-| Slow, looping, or timed-out agent | Step budgets, cached safe reads, async work, per-tool timeouts, and explicit stop conditions dominate. |
-| Refund near miss | Separate planner failure from gateway enforcement success; contain risky bulk plans. |
+| Related case                                                   | What changes from G03                                                                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Enterprise assistant over 100+ apps                            | Tool discovery and registry loading at scale; enterprise identity must reach every application.        |
+| Enterprise workflow automation / reported agent design prompts | More orchestration and memory detail, with the same proposal-to-execution boundary.                    |
+| Slow, looping, or timed-out agent                              | Step budgets, cached safe reads, async work, per-tool timeouts, and explicit stop conditions dominate. |
+| Refund near miss                                               | Separate planner failure from gateway enforcement success; contain risky bulk plans.                   |
 
 ## 2. Requirements and scope
 
@@ -50,14 +50,14 @@ The first usable version also needs a tool registry, a real approval record, and
 
 ### Non-functional requirements
 
-| Constraint | Source-case planning example |
-|---|---|
-| Latency | Budget model planning separately from tool time; low-risk task completion around p95 <15 s. Approval queue needs an escalation rule. |
-| Capacity | 50,000 users, 20 QPS peak, 10 actions/task imply roughly 200 tool actions/s; read parallelism and write limits differ. |
-| Security | No broad reusable secret in the model. Tool observations remain untrusted. Scope tokens by tenant, workflow, action, and expiry. |
-| Reliability | Policy or broker failure closes writes; uncertain side effects reconcile before retry. |
-| Cost and safety | Hard ceilings on steps, tool calls, spend, refund amount, destinations, and concurrency. |
-| Audit and operability | Tamper-evident decision ledger and a kill switch without deployment. |
+| Constraint            | Source-case planning example                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Latency               | Budget model planning separately from tool time; low-risk task completion around p95 <15 s. Approval queue needs an escalation rule. |
+| Capacity              | 50,000 users, 20 QPS peak, 10 actions/task imply roughly 200 tool actions/s; read parallelism and write limits differ.               |
+| Security              | No broad reusable secret in the model. Tool observations remain untrusted. Scope tokens by tenant, workflow, action, and expiry.     |
+| Reliability           | Policy or broker failure closes writes; uncertain side effects reconcile before retry.                                               |
+| Cost and safety       | Hard ceilings on steps, tool calls, spend, refund amount, destinations, and concurrency.                                             |
+| Audit and operability | Tamper-evident decision ledger and a kill switch without deployment.                                                                 |
 
 These are illustrative interview numbers, not measured production demand. Risk is a decision aid: **impact × likelihood × irreversibility**. It yields autonomous, conditional, approval-required, or blocked action tiers.
 
@@ -117,14 +117,14 @@ The four core security controls are **untrusted observations, narrow credentials
 
 ## 5. Failure and recovery
 
-| Failure | Safe response |
-|---|---|
-| Malicious instruction in email or tool output | Treat as data; policy blocks any scope change; preserve evidence. |
-| Policy engine or credential broker down | No writes. Only explicitly permitted, non-sensitive cached reads may degrade. |
-| Tool succeeds but response is lost | Query the action record by idempotency key; reconcile before retry. |
-| Approval became stale | Re-request against the current record/version; do not reuse it. |
-| Repeated tool loop | Step/retry cap, breaker, cached result, explicit stop or human handoff. |
-| Proposed refund exceeds task limit | Schema/limit validation rejects it before policy evaluation. |
+| Failure                                       | Safe response                                                                 |
+| --------------------------------------------- | ----------------------------------------------------------------------------- |
+| Malicious instruction in email or tool output | Treat as data; policy blocks any scope change; preserve evidence.             |
+| Policy engine or credential broker down       | No writes. Only explicitly permitted, non-sensitive cached reads may degrade. |
+| Tool succeeds but response is lost            | Query the action record by idempotency key; reconcile before retry.           |
+| Approval became stale                         | Re-request against the current record/version; do not reuse it.               |
+| Repeated tool loop                            | Step/retry cap, breaker, cached result, explicit stop or human handoff.       |
+| Proposed refund exceeds task limit            | Schema/limit validation rejects it before policy evaluation.                  |
 
 The kill switch must stop new tool calls, cancel queued work, revoke or expire tokens, and mark in-flight tasks for downstream rejection. A dashboard flag that merely blocks new user requests is insufficient.
 
@@ -154,12 +154,12 @@ Spend roughly 50 minutes: opening/scope (12), architecture and one-request walk 
 
 > “The model interprets requests and proposes one bounded action. A registry and validator check the tool and arguments; deterministic policy returns allow, block, or approval. A broker mints a short-lived scoped token, and an idempotent gateway executes once and writes a receipt. Tool output is untrusted, writes fail closed, and budgets cap loops and spend. I would ship read-only first, add reversible writes with a revert plan, keep money behind human approval, and gate expansion on zero unsafe or duplicate effects.”
 
-| Follow-up | Short answer |
-|---|---|
-| Can the model hold credentials? | No; a trusted broker mints one scoped token for an approved action. |
-| How do you avoid duplicate refunds? | Durable business-action key, stored receipt, reconciliation after uncertainty. |
-| What if an email instructs a refund? | Email is data; policy and gateway decide, never the email or model. |
-| Why not direct integrations? | One gateway centralizes authorization, validation, audit, and idempotency. |
-| When do you stop? | On risk, ambiguity, missing state, stale approval, policy failure, or budget ceiling. |
+| Follow-up                            | Short answer                                                                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------- |
+| Can the model hold credentials?      | No; a trusted broker mints one scoped token for an approved action.                   |
+| How do you avoid duplicate refunds?  | Durable business-action key, stored receipt, reconciliation after uncertainty.        |
+| What if an email instructs a refund? | Email is data; policy and gateway decide, never the email or model.                   |
+| Why not direct integrations?         | One gateway centralizes authorization, validation, audit, and idempotency.            |
+| When do you stop?                    | On risk, ambiguity, missing state, stale approval, policy failure, or budget ceiling. |
 
 **Final mental model:** Propose → validate → decide → approve if needed → scope credential → execute once → record → stop or repeat within budget.
