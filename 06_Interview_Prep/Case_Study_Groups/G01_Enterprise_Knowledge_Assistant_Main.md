@@ -1,0 +1,609 @@
+# G01 — Enterprise Knowledge Assistant: Interview Guide
+
+> **Core idea:** This is not primarily a vector-search problem. It is a permission-aware RAG problem. Different employees can ask the same question and legitimately need different answers.
+
+## 0. The mental model
+
+~~~text
+User
+  ↓
+Identity
+  ↓
+Authorization
+  ↓
+Query understanding
+  ↓
+Permission-aware retrieval
+  ↓
+Rerank
+  ↓
+Evidence selection
+  ↓
+LLM
+  ↓
+Citation / policy verification
+  ↓
+Answer / Abstain / Escalate
+~~~
+
+**The LLM is never the authorization system.** If the user cannot see a document, that document must not enter the model context.
+
+---
+
+## 1. How I would open
+
+> “Anyone can build multi-source RAG. The difficult part is that a Tier-1 agent, a Tier-3 engineer and an account manager may ask the same question but should see different information. So I’ll treat permission fidelity as the primary constraint and optimize retrieval quality inside that boundary.”
+
+Clarify:
+
+- Which sources are authoritative?
+- How are permissions inherited?
+- How quickly must permission changes and deletions take effect?
+- What happens when sources disagree?
+- Do we need passage-level citations?
+- What should happen when evidence is weak?
+- What are p95 latency, cost, residency and retention targets?
+- Who can inspect traces and audit logs?
+
+**Default MVP:** read-only Q&A; Drive, SharePoint, Slack, wiki and tickets; multi-tenant; ABAC/ACL-aware; query-time authorization; passage citations; sub-3-second chat target; no write-back, personal files, unapproved web, cross-tenant search or persistent memory.
+
+---
+
+## 2. Requirements: make them testable
+
+### Must
+
+| Requirement | Test |
+|---|---|
+| Incremental ingestion | A source change does not require full reindex |
+| Version + ACL preservation | We can reconstruct what a user could see |
+| Query-time authorization | Unauthorized chunks never enter model context |
+| Grounded answers | Citations point to permitted evidence |
+| Abstention | Weak evidence does not produce a confident guess |
+| Deletion freshness | Deleted/revoked content disappears within its SLO |
+| Auditability | We can replay why an answer was produced |
+
+### Should
+
+- Hybrid retrieval and reranking
+- Confidence / missing-evidence signals
+- Admin controls
+- Safe feedback and evaluation
+- Source freshness dashboards
+
+### Out of MVP
+
+- Write-back
+- Personal files
+- Unapproved web
+- Cross-tenant search
+- Persistent memory
+
+If writes are later added: allowlist tools, validate arguments, make actions idempotent, preview risky actions and require approval where needed.
+
+---
+
+## 3. Architecture
+
+Think in two planes.
+
+### Control plane
+
+Identity mapping, ACL/ABAC policy, source configuration, retrieval configuration, model routing, evaluation, audit policy and admin controls.
+
+### Data plane
+
+Ingestion, normalization, indexing, query authorization, retrieval, reranking, evidence selection, generation, citation verification and response/escalation.
+
+### Trust boundary
+
+~~~text
+Retrieve only what the user may see
+              ↓
+        final policy check
+              ↓
+             LLM
+~~~
+
+Forbidden content must stay outside the model context.
+
+---
+
+## 4. Ingestion: normalize permissions first
+
+A connector does more than download documents. It translates each source's permission model into one internal representation.
+
+Keep:
+
+- stable source/document ID
+- tenant
+- owner
+- version
+- updated-at
+- principals/groups
+- classification
+- deletion/tombstone state
+- ingestion checkpoint
+- ACL/index version
+
+Typical source concerns:
+
+| Source | Main risk |
+|---|---|
+| Drive | Inherited sharing, personal files, external sharing |
+| SharePoint | Broken inheritance, stale site/library permissions |
+| Slack | Private channels/DMs, secrets, prompt injection |
+| Wiki | Page restrictions, stale policy, malicious content |
+| Tickets | Customer visibility, PII, exact ticket/error identifiers |
+
+**Rule:** no usable ACL means do not silently assume “internal”. Embeddings are derived search state, not the permission authority.
+
+---
+
+## 5. Freshness and deletion
+
+Use:
+
+~~~text
+Source event
+ → Queue
+ → Fetch authoritative record
+ → Normalize content + ACL
+ → Index / tombstone
+ → Reconciliation
+~~~
+
+Use change events where possible, idempotent processing, backfill, tombstones and periodic reconciliation.
+
+Important distinction:
+
+> **Authorization correctness and freshness correctness are different checks.**
+
+A connector can miss a delete while the ACL still looks valid. If freshness is outside the agreed SLO, fail closed or clearly withhold/label the answer.
+
+---
+
+## 6. Authorization: two layers
+
+### Layer 1 — Pre-filter
+
+Compile the user's identity/attributes into the search filter.
+
+Examples: tenant, groups, clearance, region, project, customer/account, classification.
+
+This improves retrieval quality and latency because forbidden documents never compete for top-k.
+
+### Layer 2 — Authoritative post-check
+
+Before generation, verify the final evidence set again.
+
+This catches:
+
+- live revocation
+- stale ACLs
+- time-based embargoes
+- need-to-know rules
+- redaction obligations
+- changes between retrieval and generation
+
+### Why not only post-filter?
+
+If top-10 contains six forbidden documents, filtering afterward leaves only four useful candidates. The user may miss relevant authorized evidence.
+
+> **Pre-filter for efficiency and recall. Post-check for correctness.**
+
+---
+
+## 7. ABAC
+
+ACL asks “can this principal access this document?”
+
+ABAC can combine:
+
+- user tenant
+- groups
+- department
+- clearance
+- region
+- document classification
+- customer/account
+- time window
+
+Authorization stays deterministic. **Never ask the LLM to decide whether a user is allowed to see something.**
+
+---
+
+## 8. Retrieval
+
+Use hybrid retrieval.
+
+**Dense search:** semantic similarity and paraphrases.
+
+**BM25/lexical search:** ticket IDs, error codes, policy IDs, product names and exact identifiers.
+
+**RRF:** combine rank from dense and lexical systems.
+
+Then rerank the **authorized** candidate pool.
+
+Correct order:
+
+~~~text
+Authorize
+ → Retrieve
+ → Fuse
+ → Rerank
+ → Select evidence
+ → Generate
+~~~
+
+Not retrieve → rerank everything → remove forbidden documents.
+
+---
+
+## 9. Reranking and context
+
+Reranking improves ordering but adds latency/cost.
+
+Use it for ambiguous queries or when quality justifies it. Reduce or skip it for safe cache hits, high-confidence single-source answers and very tight latency targets.
+
+Do not stuff the entire top-k into the prompt.
+
+Use:
+
+1. authorized candidates
+2. rerank
+3. evidence selection
+4. compression if needed
+5. generation
+
+A small, high-quality evidence set is usually better than prompt stuffing.
+
+---
+
+## 10. Generation, citations and abstention
+
+The LLM should answer from selected evidence.
+
+~~~text
+Evidence
+ → Answer
+ → Citation builder
+ → Citation verifier
+ → Output policy
+ → User
+~~~
+
+Every citation must refer to evidence the user is authorized to see and that actually supports the claim.
+
+If evidence is insufficient:
+
+> **Abstain.**
+
+Possible outcomes:
+
+- Answer
+- Answer with limitation/staleness warning
+- Abstain
+- Escalate
+
+---
+
+## 11. Prompt injection
+
+Retrieved documents are **data, not instructions**.
+
+A wiki page can contain malicious text telling the model to ignore its instructions. The model must not turn that into a tool action or security decision.
+
+Use:
+
+- clear instruction/data boundaries
+- deterministic authorization
+- tool gateway
+- allowlisted tools/actions
+- argument validation
+- output checks
+- human approval for risky writes
+
+Prompt injection is not solved by prompting alone.
+
+---
+
+## 12. Evaluation
+
+Evaluate separate layers.
+
+### Retrieval
+
+- Recall@k
+- MRR/NDCG where useful
+- exact-match retrieval for IDs/errors
+- source coverage
+
+### Grounding
+
+- answer supported by evidence
+- citation correctness
+- citation completeness
+
+### Security
+
+- unauthorized retrieval
+- unauthorized citation
+- cross-tenant leakage
+- revoked/deleted document tests
+
+**Leakage is a release gate, not merely a metric.** One exposure blocks release.
+
+### Freshness
+
+Test update, deletion, ACL revocation and reconciliation lag.
+
+### Operations
+
+Track p50/p95/p99 latency, token usage, cost/request, cache hit rate, escalation rate, connector lag, index freshness and model/version changes.
+
+---
+
+## 13. Persona-based testing
+
+Create a persona × document visibility matrix.
+
+Example personas:
+
+- Tier-1 support
+- Tier-3 engineer
+- account manager
+- security/admin
+- external contractor
+- cross-tenant user
+
+Run the same questions as each identity.
+
+The question is not just “did we get the right answer?” but:
+
+> **“Did each persona get the right authorized answer?”**
+
+Include negative cases where the correct result is zero accessible documents.
+
+---
+
+## 14. Observability and audit
+
+A replayable trace should capture, subject to privacy policy:
+
+- request ID
+- identity/tenant reference
+- source event/version
+- ACL/index version
+- policy decision
+- retrieved IDs
+- final evidence/citations
+- model/version
+- prompt/template version
+- stage latency
+- cost
+- output policy decision
+
+The audit system itself needs access control.
+
+---
+
+## 15. Scale and latency
+
+Use round numbers as reasoning examples.
+
+| Number | What it forces |
+|---|---|
+| 100k employees | ACL/identity cardinality |
+| 50M chunks | Refresh/deletion problem |
+| 20 QPS | Average load |
+| 100 QPS | Peak serving pressure |
+| <3 s | Chat-grade target |
+| <8 s | Relaxed interactive target |
+| ~100 ms | Generation cannot stay on the hot path |
+
+At 100 QPS and ~3 seconds of generation, there can be roughly 300 in-flight generations. That is a serving problem.
+
+Latency should be budgeted across:
+
+**identity/auth → retrieval → rerank → generation → verification**
+
+Use permission-aware caching, bounded top-k, selective reranking, model routing, async ingestion and circuit breakers.
+
+**Timeouts must degrade safely; they must never fail open.**
+
+---
+
+## 16. Safe caching
+
+Never cache simply:
+
+~~~text
+query → answer
+~~~
+
+Use a key containing at least:
+
+~~~text
+tenant
++ permission signature
++ index version
++ query
+~~~
+
+Potentially also model/prompt version.
+
+Invalidate on ACL changes, deletes, source updates and index/policy changes.
+
+---
+
+## 17. Multi-tenancy
+
+Isolation should exist across:
+
+- identity
+- authorization
+- retrieval filters
+- cache keys
+- storage/index partitioning
+- audit
+- evaluation
+
+A cross-tenant principal with broad groups must still return zero results for another tenant.
+
+---
+
+## 18. Failure playbook
+
+**Retrieval down:** partial safe coverage or abstain; never invent.
+
+**LLM down:** retrieval-only result if useful/safe, otherwise abstain.
+
+**Connector down:** serve only data still inside its freshness SLO.
+
+**Permission service down:** fail closed.
+
+**Missed deletion:** tombstone + reconciliation + revalidation.
+
+**Reranker too slow:** smaller candidate set, cheaper reranker or selective reranking.
+
+**Embedding model changes:** version index, offline eval, staged cutover and rollback.
+
+**Long context hurts quality:** tighten evidence and compress.
+
+---
+
+## 19. Cost optimization
+
+Think:
+
+~~~text
+Measure
+ → Route
+ → Bound
+ → Compress
+ → Selective rerank
+ → Cache safely
+~~~
+
+Use smaller models for classification/routing, calibrated top-k, selective reranking, evidence compression, batch embeddings and incremental indexing.
+
+For legal/high-risk RAG:
+
+~~~text
+auth
+ → tenant/ACL filters
+ → hybrid retrieval
+ → optional rerank
+ → compressed evidence
+ → cited answer
+ → audit
+~~~
+
+Simple clause lookup can use a cheaper model. High-risk synthesis can escalate.
+
+---
+
+## 20. 100 ms pivot
+
+At ~100 ms, ordinary end-to-end generation cannot remain on the hot path.
+
+Use:
+
+- cached embeddings
+- cached permission-aware retrieval
+- verified semantic answer cache
+- pre-filter inside search
+- selective/skip reranking
+- precomputation for common queries
+- streaming where appropriate
+
+This becomes closer to a permission-aware search product with a cached-answer layer.
+
+---
+
+## 21. Databricks
+
+Important lesson:
+
+> **Governed source data does not automatically make a copied search index governed.**
+
+Verify:
+
+- where identity is evaluated
+- how revocation propagates
+- whether the index can inherit source governance
+- how row/column controls interact with indexing
+- deletion/ACL SLO
+
+Ask the interviewer:
+
+1. Is Unity Catalog the governance boundary today?
+2. Are groups SCIM-synced or managed in-workspace?
+3. How faithfully must source permissions be mirrored?
+4. What is the revocation SLO?
+
+Prove the design with a persona-by-document visibility matrix rather than only verbal claims.
+
+---
+
+## 22. Interview story
+
+Opening:
+
+> “I built an enterprise AI search system where the hardest part wasn't finding the right answer. It was making sure the same question produced the right answer for the right person.”
+
+Five beats:
+
+1. **Problem:** multiple roles need different slices of the same information.
+2. **Decision:** authorization becomes a retrieval constraint.
+3. **Design:** normalize ACLs → pre-filter → retrieve → post-check → rerank → evidence → generate → verify.
+4. **Lessons:** bad test labels, untested security rules and model-based security decisions can all mislead you.
+5. **Limitation:** a small corpus can make retrieval strategies look similar; large-scale retrieval claims need a representative corpus.
+
+---
+
+## 23. Interview trigger → answer
+
+| Interviewer asks | Mental trigger |
+|---|---|
+| Why not post-filter? | Wastes top-k and hurts recall |
+| Why two checks? | Fast pre-filter + authoritative post-check |
+| ACL changes? | Query-time enforcement |
+| Deletion missed? | Tombstone + reconciliation |
+| Why hybrid? | Semantic + exact match |
+| Why rerank after auth? | Rank only authorized pool |
+| Prompt injection? | Retrieved text is data |
+| Hallucination? | Evidence + citation + abstain |
+| Scale? | Peak QPS + refresh |
+| No leaks? | Fail closed + leak suite |
+| 100 ms? | Remove generation from hot path |
+| Cost? | Route + bound + selective rerank + cache |
+| Databricks? | Verify governance at the index boundary |
+
+---
+
+## 24. 60-minute delivery
+
+| Time | Focus |
+|---|---|
+| 0–2 min | Problem + permission constraint |
+| 2–5 min | Clarifying questions + requirements |
+| 5–10 min | Architecture |
+| 10–20 min | Permission model |
+| 20–30 min | Retrieval + reranking |
+| 30–40 min | Generation + citations + security |
+| 40–50 min | Scale + latency + cost + reliability |
+| 50–60 min | Evaluation + incidents + close |
+
+### Final mental model
+
+> **Permission first. Retrieval second. Generation third.**
+
+Remember the flow:
+
+**Identity → Authorization → Pre-filter → Hybrid retrieval → Rerank → Evidence → LLM → Verify → Answer/Abstain/Escalate.**
+
+And the release rule:
+
+> **Leak count must be zero.**
