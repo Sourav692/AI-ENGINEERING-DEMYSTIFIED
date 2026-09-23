@@ -19,32 +19,57 @@ The failure to design against is **valid SQL that answers the wrong business que
 
 This is the anchor for the related executive-dashboard and retail-forecast explanation cases in the [source study](G06_NL_Over_Governed_Data.md). Learn the governed query path once; change the final explanation and review workflow for each variant.
 
-| Case | Shared foundation | What changes |
-|---|---|---|
-| NL-to-SQL analytics assistant | Governed metric → permitted schema → validated read-only query | General business questions and SQL safety |
-| Executive Dashboard Copilot | Same metric registry and query evidence | KPI variance narrative, dashboard freshness, analyst escalation |
-| Retail Demand Forecast Explainer | Same governed evidence and result checks | Deterministic driver statistics from sales, promotions, inventory, weather, and events; human review of planning actions |
-| AIA governed data assistant | Governed metric views and auditable asset resolution | Supervisor routes to Genie, a narrow SQL/RAG worker, deterministic analysis, or visualization; later specialized domain agents |
+| Case                             | Shared foundation                                                | What changes                                                                                                                   |
+| -------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| NL-to-SQL analytics assistant    | Governed metric → permitted schema → validated read-only query | General business questions and SQL safety                                                                                      |
+| Executive Dashboard Copilot      | Same metric registry and query evidence                          | KPI variance narrative, dashboard freshness, analyst escalation                                                                |
+| Retail Demand Forecast Explainer | Same governed evidence and result checks                         | Deterministic driver statistics from sales, promotions, inventory, weather, and events; human review of planning actions       |
+| AIA governed data assistant      | Governed metric views and auditable asset resolution             | Supervisor routes to Genie, a narrow SQL/RAG worker, deterministic analysis, or visualization; later specialized domain agents |
 
 ## 1. Questions to ask the interviewer
 
-| Question to ask | What it's really asking | What you then decide |
-| --- | --- | --- |
+| Question to ask                                                                                                   | What it's really asking                                                                                        | What you then decide                                                            |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Who owns “revenue,” “active customer,” and the other first ten metrics? Is a semantic layer already approved? | If Finance means recognized revenue and Sales means booked, who wins — or does that dictionary already exist? | Registry scope, owners, and whether you wire to an existing layer or build one. |
-| Which warehouse, dialect, and approved datasets are in scope? | Are we on Snowflake over approved finance views, or every table in the lake? | SQL generator, catalog adapter, parser, and policy rules. |
-| Where are row and column permissions enforced today? | If a regional manager asks for all salaries, does the warehouse already hide those rows? | Reuse warehouse ACLs, or build the missing layer. |
-| When a term maps to two metrics or grains, should we clarify, refuse, or send it to an analyst? | If “active customer” could mean 30-day or 90-day, do we ask, refuse, or hand it to an analyst? | Ambiguity gate and review queue. |
-| What are the latency and scan-cost limits? Are large requests allowed to run asynchronously? | If a question would scan a year of events, do we block it, queue it, or blow the warehouse bill? | Query budget, timeouts, cache, and async queue. |
-| Must users see SQL, lineage, freshness, and a reconstruction of past answers? | Next quarter, can we prove which SQL and metric version produced last month’s board number? | Response format and append-only `QueryRun` record. |
-| Which explanations are board-facing or action-triggering? | Is this a FYI chart, or will someone change prices from this answer? | Extra checks and the human-review line. |
+| Which warehouse, dialect, and approved datasets are in scope?                                                     | Are we on Snowflake over approved finance views, or every table in the lake?                                   | SQL generator, catalog adapter, parser, and policy rules.                       |
+| Where are row and column permissions enforced today?                                                              | If a regional manager asks for all salaries, does the warehouse already hide those rows?                       | Reuse warehouse ACLs, or build the missing layer.                               |
+| When a term maps to two metrics or grains, should we clarify, refuse, or send it to an analyst?                   | If “active customer” could mean 30-day or 90-day, do we ask, refuse, or hand it to an analyst?               | Ambiguity gate and review queue.                                                |
+| What are the latency and scan-cost limits? Are large requests allowed to run asynchronously?                      | If a question would scan a year of events, do we block it, queue it, or blow the warehouse bill?               | Query budget, timeouts, cache, and async queue.                                 |
+| Must users see SQL, lineage, freshness, and a reconstruction of past answers?                                     | Next quarter, can we prove which SQL and metric version produced last month’s board number?                   | Response format and append-only`QueryRun` record.                             |
+| Which explanations are board-facing or action-triggering?                                                         | Is this a FYI chart, or will someone change prices from this answer?                                           | Extra checks and the human-review line.                                         |
 
 ## 2. Requirements and success
 
-**Functional:** resolve a question to a governed metric first; retrieve only permitted tables, joins, and freshness context; ask on ambiguity; produce dialect-specific SQL; parse its AST and check tables, columns, joins, shape, and estimated scan; execute through a read-only gateway; return the result, SQL, metric lineage, and caveats. A prose explanation is generated from the structured result and checked against its numbers. Keep a query-run audit with actor, decision, SQL hash, bytes scanned, and metric/schema/policy versions.
+**Functional**
 
-**Non-functional:** correctness outranks speed; warehouse-native row/column policies and entitlement checks protect every execution; policy failure or suspicious scans fail closed. The source’s copilot examples target **3–8 s** interactive responses, with longer work asynchronous and visible. Enforce row limits, timeouts, date windows, and scan budgets. Cache metric and schema metadata with versions and TTLs; keep credentials narrow and logs redacted.
+- Resolve the question to a governed metric first.
+- Retrieve only permitted tables, joins, and freshness context.
+- Ask when the term is ambiguous.
+- Produce dialect-specific SQL.
+- Parse the AST and check tables, columns, joins, shape, and estimated scan.
+- Execute through a read-only gateway.
+- Return the result, SQL, metric lineage, and caveats.
+- Generate prose from the structured result and check it against the numbers.
+- Keep a query-run audit: actor, decision, SQL hash, bytes scanned, and metric/schema/policy versions.
 
-**First release:** ten owner-approved metrics, golden question/SQL/result cases, analyst shadow review, then a small executive audience. It is not a general interface to every warehouse table, a write-query tool, or a machine that defines business metrics.
+**Non-functional**
+
+- Correctness outranks speed.
+- Warehouse-native row/column policies and entitlements protect every execution.
+- Policy failure or a suspicious scan fails closed.
+- Interactive target **3–8 s**; longer work is async and visible.
+- Enforce row limits, timeouts, date windows, and scan budgets.
+- Cache metric and schema metadata with versions and TTLs.
+- Keep credentials narrow and logs redacted.
+
+**First release**
+
+- Ten owner-approved metrics.
+- Golden question / SQL / result cases.
+- Analyst shadow review, then a small executive audience.
+- Not a general interface to every warehouse table.
+- Not a write-query tool.
+- Not a machine that defines business metrics.
 
 ## 3. Architecture
 
@@ -96,25 +121,25 @@ flowchart LR
 
 ## 4. Three decisions to defend
 
-| Decision | Default and reason | Failure to avoid |
-|---|---|---|
-| Semantic layer before schema | Resolve a named, versioned business metric before searching physical tables | Valid SQL using the wrong grain, exclusions, or definition |
-| Clarify before query | Show supported meanings; a numeric confidence gate can trigger clarification (the AIA supervisor used **<60%** for its own intent clarification) | A plausible answer to an unstated business interpretation |
-| Fixed operations or managed SQL before open SQL | Use reviewed operations or curated Genie-like views for common questions; allow hand-generated SQL only in a narrower approved path | Invented columns, excessive scans, and permission drift |
+| Decision                                        | Default and reason                                                                                                                                    | Failure to avoid                                           |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Semantic layer before schema                    | Resolve a named, versioned business metric before searching physical tables                                                                           | Valid SQL using the wrong grain, exclusions, or definition |
+| Clarify before query                            | Show supported meanings; a numeric confidence gate can trigger clarification (the AIA supervisor used**<60%** for its own intent clarification) | A plausible answer to an unstated business interpretation  |
+| Fixed operations or managed SQL before open SQL | Use reviewed operations or curated Genie-like views for common questions; allow hand-generated SQL only in a narrower approved path                   | Invented columns, excessive scans, and permission drift    |
 
 For mixed questions, route each subtask to its right source: semantic search finds related prose, structured queries compute counts and sums, direct lookup resolves IDs. A retail “why” answer computes drivers deterministically and lets the LLM narrate them; correlation is not proof of causation.
 
 ## 5. Failure playbook
 
-| Symptom | Response |
-|---|---|
-| Correct-looking number uses the wrong metric | Block publication, preserve the query run and versions, clarify or send to an analyst, then add a golden case. |
-| Schema drift or a dropped join key | Stop the affected template, refresh the catalog, review any changed definition before resuming. |
-| Join fan-out inflates totals | Check cardinality and expected row count before execution; refuse or show the expansion explicitly. |
-| Scan estimate or live scan exceeds budget | Narrow the date range or use an approved pre-aggregation; cancel and explain rather than “try it.” |
-| Policy engine or entitlement check unavailable | Fail closed. Do not substitute an unrestricted service account. |
-| Warehouse or summary service unavailable | Queue if freshness permits; return a safe table-only result when only explanation fails. |
-| Summary contradicts the table | Reject the prose, serve the table and lineage, alert the review queue. |
+| Symptom                                        | Response                                                                                                       |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Correct-looking number uses the wrong metric   | Block publication, preserve the query run and versions, clarify or send to an analyst, then add a golden case. |
+| Schema drift or a dropped join key             | Stop the affected template, refresh the catalog, review any changed definition before resuming.                |
+| Join fan-out inflates totals                   | Check cardinality and expected row count before execution; refuse or show the expansion explicitly.            |
+| Scan estimate or live scan exceeds budget      | Narrow the date range or use an approved pre-aggregation; cancel and explain rather than “try it.”           |
+| Policy engine or entitlement check unavailable | Fail closed. Do not substitute an unrestricted service account.                                                |
+| Warehouse or summary service unavailable       | Queue if freshness permits; return a safe table-only result when only explanation fails.                       |
+| Summary contradicts the table                  | Reject the prose, serve the table and lineage, alert the review queue.                                         |
 
 ## 6. Scale, latency, and cost
 
