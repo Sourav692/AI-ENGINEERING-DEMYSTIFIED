@@ -67,14 +67,14 @@ This diagram condenses the [source architecture, §4](G04_SRE_Incident_Response_
 
 ```mermaid
 flowchart LR
-    ALERT[Alerts] --> DEDUPE[Dedupe and correlate before model call]
+    ALERT[Alerts] --> DEDUPE[Dedupe and correlate: rules or small model]
     DEDUPE --> CAP[Cap investigations per service]
     CAP --> CONTEXT[Service, deploy, flag, owner context]
     CONTEXT --> READ[Parallel bounded telemetry reads]
     READ --> COVER[Typed results and source coverage]
-    COVER --> HYP[Ranked hypotheses with evidence]
+    COVER --> HYP[Strong LLM: ranked hypotheses with evidence]
     HYP --> SUMMARY[First useful summary]
-    SUMMARY --> PROP[Proposal: command, blast radius, runbook, simulation]
+    SUMMARY --> PROP[Agent proposal: command, blast radius, runbook, simulation]
     PROP --> APPROVE{Owner and commander approve?}
     APPROVE -->|No| TIMELINE[Record decision]
     APPROVE -->|Yes| GATE[Authorize and validate in tool gateway]
@@ -87,14 +87,16 @@ flowchart LR
 
 ### Step-by-step architecture
 
-- **Step 1.** **Collapse alerts first.** Correlate and deduplicate incoming alerts, then cap concurrent investigations per service before model calls.
+- **Step 1.** **Collapse alerts first.** Rules or a small model correlate and deduplicate alerts; cap concurrent investigations per service before any strong-LLM call.
 - **Step 2.** **Assemble incident context.** Add service ownership, recent deploys, and flag changes to the investigation.
 - **Step 3.** **Read telemetry within bounds.** Query relevant sources in parallel with limits; record whether each result is available, empty, stale, or denied.
-- **Step 4.** **Form an evidence-backed view.** Rank hypotheses and produce the first useful summary with citations and source coverage.
+- **Step 4.** **Form an evidence-backed view.** The strong LLM synthesizes ranked hypotheses from bounded telemetry; the agent presents a cited first summary with source coverage.
 - **Step 5.** **Prepare a mitigation.** If action is warranted, propose the exact command, blast radius, runbook, and simulation result.
 - **Step 6.** **Get the right approval.** Apply read/propose/execute and freeze policies, then ask the owner and commander; a declined proposal is recorded without a write.
 - **Step 7.** **Execute and check.** Route an approved command through the authorized tool gateway, execute idempotently, verify its effect, and add the decision to the incident timeline.
 
+
+**Model and agent role:** The incident agent uses read-only tools to gather evidence. Rules or a small model handle alert clustering, while a strong LLM synthesizes hypotheses and proposes mitigation. The agent cannot execute a production change without the human approval and tool gateway shown above.
 
 **Three boundaries:** dedupe before model calls; read-only investigation before approval; all approved writes through one gateway. Keep the agent outside the affected service’s blast radius. The summary states which sources were reached, stale, empty, or unavailable, so a confident hypothesis cannot conceal missing evidence.
 

@@ -2,6 +2,8 @@
 
 The [Main guide](G03_Tool_Using_Agent_With_Safety_Controls_Main.md) is the spoken design. This is its technical backup; the unchanged [source case](G03_Tool_Using_Agent_With_Safety_Controls.md) keeps the complete synthesis and references.
 
+**Model and agent roles:** The LLM agent planner produces one bounded `ActionProposal` from task state and tool observations. The registry, validator, policy point, approver, broker, and idempotent gateway remain separate deterministic authorities; the planner never executes directly.
+
 ## 1. Policy, state, and execution records
 
 `AgentTask(id, actor, goal, state, step_budget)` tracks the workflow, not customer or financial truth. `ToolDefinition(name, schema, data_class, scopes)` limits the legal tool space. `ActionProposal(id, task_id, tool, args_hash, policy_decision)` is the model’s recommendation. `PolicyDecision(proposal_id, verdict, scopes, reason)` is the deterministic verdict. `ActionReceipt(proposal_id, idempotency_key, outcome)` is proof of the side effect. Canonicalize arguments before hashing, and return the stored receipt when the same business action is retried.

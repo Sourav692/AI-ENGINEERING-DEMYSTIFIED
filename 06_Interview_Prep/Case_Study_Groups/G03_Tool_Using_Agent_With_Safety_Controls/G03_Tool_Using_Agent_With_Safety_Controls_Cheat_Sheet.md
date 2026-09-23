@@ -10,6 +10,8 @@ Use the [Main guide](G03_Tool_Using_Agent_With_Safety_Controls_Main.md) to pract
 
 **Authenticate → bounded proposal → registered typed tool → validate → policy: allow/block/approve → scoped token → idempotent gateway → system of record → receipt/audit → continue or stop.**
 
+**LLM/agent role:** The agent's LLM planner proposes one bounded tool call; policy, approval, and the gateway control execution.
+
 ## Ask first
 
 Actions reversible? Money boundary? Delegated identity? What needs approval? Systems of record? Audit/retention? How to stop in-flight work? Peak task and tool load?

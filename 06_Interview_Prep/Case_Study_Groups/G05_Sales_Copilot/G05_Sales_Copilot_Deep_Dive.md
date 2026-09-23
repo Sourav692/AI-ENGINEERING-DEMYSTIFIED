@@ -2,6 +2,8 @@
 
 Use the [Main guide](G05_Sales_Copilot_Main.md) for the spoken answer. This is the technical backup; the unchanged [source case](G05_Sales_Copilot.md) keeps the full synthesis, interview script, and references.
 
+**Model and agent roles:** Deterministic routes handle common snapshots, CRM counts, and exact lookups; a bounded agent path handles ambiguous multi-step asks. The LLM copilot summarizes and drafts from authorized evidence, while the claim verifier and approval gateway control external claims and CRM writes.
+
 ## 1. Source and permission map
 
 | Source | Authority and freshness | Permission detail and failure |

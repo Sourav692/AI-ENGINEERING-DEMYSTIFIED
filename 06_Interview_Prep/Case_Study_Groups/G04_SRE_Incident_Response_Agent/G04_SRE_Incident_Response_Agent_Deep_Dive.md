@@ -2,6 +2,8 @@
 
 The [Main guide](G04_SRE_Incident_Response_Agent_Main.md) is the spoken answer. This is its technical backup; the unchanged [source case](G04_SRE_Incident_Response_Agent.md) has the complete reference and interview scripts.
 
+**Model and agent roles:** Rules or a small model collapse alerts before the strong LLM synthesizes ranked hypotheses from bounded, read-only telemetry. The incident agent may propose a mitigation, but only human approval plus the gateway permits a write.
+
 ## 1. Telemetry map and dependency inversion
 
 | Source | Useful facts | Likely incident failure |

@@ -78,9 +78,11 @@ flowchart LR
     subgraph FLOW[Support decision path]
         CH[Chat, email, web or voice] --> GW[Channel gateway]
         GW --> ID[Verify identity and assurance]
-        ID --> ROUTE[Classify intent and risk]
+        ID --> ROUTE[Intent and risk router: rules or model]
         ROUTE --> FACTS[Approved policy and live account facts]
-        FACTS --> DRAFT[Draft reply or proposed action]
+        ROUTE -->|Multi-system request| PLAN[Bounded support-agent planner]
+        PLAN --> FACTS
+        FACTS --> DRAFT[LLM response generator: draft or proposed action]
         DRAFT --> GATE{Deterministic tool policy gate}
         GATE -->|Safe answer| ANSWER[Answer or auto-resolve]
         GATE -->|Approval needed| APPROVE[Human approval]
@@ -103,12 +105,14 @@ flowchart LR
 
 - **Step 1.** **Receive the request.** The channel gateway normalizes chat, email, web, or voice into a support case.
 - **Step 2.** **Verify the customer.** Check identity and assurance; failed verification permits only generic help or handoff, not account actions.
-- **Step 3.** **Route by intent and risk.** Classify the request and apply the configured risk tags, thresholds, and kill switches.
-- **Step 4.** **Gather facts.** Read approved policy and current account facts before drafting a reply or proposing an action.
+- **Step 3.** **Route by intent and risk.** Rules or a small model classify the request; only a multi-system case invokes a bounded support-agent planner.
+- **Step 4.** **Gather facts.** Retrieve approved policy and live account facts; the LLM response generator then drafts a reply or proposed tool action.
 - **Step 5.** **Gate the proposal.** The deterministic policy gate checks identity, allowed tools, thresholds, freshness, and required approval.
 - **Step 6.** **Choose the outcome.** Return a safe answer, send a case with context to a human, or obtain approval for an action that needs it.
 - **Step 7.** **Execute and record.** Send permitted actions through the scoped tool gateway to the system of record; audit the decision and outcome.
 
+
+**Model and agent role:** The LLM drafts and proposes; a bounded agent planner coordinates only requests that truly span systems. Simple lookups use direct routes. Neither the LLM nor the planner authorizes an account action; the deterministic gateway and human approval path do that.
 
 **Three boundaries to point at:**
 

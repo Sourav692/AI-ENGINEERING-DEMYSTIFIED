@@ -153,12 +153,13 @@ flowchart LR
     subgraph QRY[Authorized query path]
         USER[User] --> ID[Identity and groups]
         ID --> FILTER[Compile permission filter]
-        FILTER --> RET[Hybrid retrieval with prefilter]
+        FILTER --> PLAN[Query planner: split multi-hop if needed]
+        PLAN --> RET[Hybrid retrieval with prefilter]
         RET --> CHECK[Live policy post-check]
         CHECK --> RERANK[Rerank authorized evidence]
         RERANK --> GRADE{Enough evidence?}
         GRADE -->|No| ABSTAIN[Abstain or escalate]
-        GRADE -->|Yes| LLM[Generate cited answer]
+        GRADE -->|Yes| LLM[LLM gateway: generate cited answer]
         LLM --> VERIFY[Verify citations and output]
         VERIFY --> ANSWER[Answer]
     end
@@ -174,11 +175,13 @@ flowchart LR
 - **Step 1.** **Ingest sources.** Source events and backfills bring enterprise documents into an asynchronous pipeline.
 - **Step 2.** **Normalize permissions.** Convert content and source ACLs into a consistent form; refuse to index an item if it has no usable ACL.
 - **Step 3.** **Build the search indexes.** Put eligible content into keyword and vector indexes for hybrid retrieval.
-- **Step 4.** **Establish the user's scope.** Authenticate the user, resolve groups and attributes, and compile the ACL/ABAC permission filter.
+- **Step 4.** **Establish the user's scope.** Authenticate the user, resolve groups and attributes, compile the ACL/ABAC permission filter, and plan a multi-hop question only when needed.
 - **Step 5.** **Retrieve and check.** Run hybrid search with that filter, then apply a live policy post-check before any candidate reaches reranking or the model.
 - **Step 6.** **Select evidence.** Rerank only authorized candidates and decide whether the evidence is sufficient; abstain or escalate if it is not.
-- **Step 7.** **Answer and verify.** Generate a cited answer from the selected evidence, verify citations and output, then return the answer.
+- **Step 7.** **Answer and verify.** The LLM gateway generates a cited answer from authorized evidence; citation and output checks run before returning it.
 
+
+**Model and agent role:** This is an LLM-powered RAG assistant. A query planner may decompose a multi-hop question, but it does not grant access; deterministic ACL/ABAC checks decide what the LLM may see. The LLM gateway handles generation and model routing after those checks. It is not a free-running write agent.
 
 ### Trust boundary
 

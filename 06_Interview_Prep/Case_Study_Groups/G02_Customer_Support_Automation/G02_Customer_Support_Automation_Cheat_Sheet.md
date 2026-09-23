@@ -10,6 +10,8 @@ Use the [Main guide](G02_Customer_Support_Automation_Main.md) for the spoken ans
 
 **Channel → Verify identity → Classify intent/risk → Fetch approved policy + live facts → Draft/propose → Deterministic policy gate → Answer / approval / handoff → Audit.**
 
+**LLM/agent role:** Rules or a small model route; the LLM drafts; a bounded support-agent planner handles multi-system cases. The policy gateway decides whether any tool action runs.
+
 ## Five rules
 
 1. Verify identity before account data or account tools.

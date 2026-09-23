@@ -22,6 +22,8 @@ Workflow and decision? Who uses/reviews? Which tasks read/draft/write? Which sou
 
 **Write:** proposed exact fields → preview → human approval → allowlisted idempotent gateway → CRM receipt.
 
+**LLM/agent role:** The copilot LLM summarizes and drafts; a bounded agent handles ambiguous steps. Common CRM lookups are deterministic, and the model cannot approve claims or writes.
+
 ## Rules
 
 1. Snapshot is a materialized view, not an authorization decision; recheck after territory change.

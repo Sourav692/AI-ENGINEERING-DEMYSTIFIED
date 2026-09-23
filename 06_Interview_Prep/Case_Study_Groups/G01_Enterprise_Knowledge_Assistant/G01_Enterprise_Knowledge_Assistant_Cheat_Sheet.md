@@ -16,6 +16,8 @@ Security loop:
 
 **Source events → ACL + Version + Tombstone → Index → Reconciliation**
 
+**LLM/agent role:** LLM gateway generates from authorized evidence; optional multi-hop planning never decides access. This is a RAG assistant, not an autonomous write agent.
+
 ## Five rules
 
 1. Permission first, retrieval second, generation third.

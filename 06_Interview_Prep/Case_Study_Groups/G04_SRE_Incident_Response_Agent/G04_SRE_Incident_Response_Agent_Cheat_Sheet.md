@@ -10,6 +10,8 @@ Use the [Main guide](G04_SRE_Incident_Response_Agent_Main.md) to practice speaki
 
 **Alerts → dedupe/correlate → cap per-service investigations → parallel read-only telemetry → typed coverage → ranked hypothesis + evidence → proposal → owner/commander approval → gateway → verify effect/timeline.**
 
+**LLM/agent role:** Rules or a small model dedupe alerts; the strong LLM synthesizes hypotheses. The incident agent proposes mitigation, and humans approve production writes.
+
 ## Ask first
 
 Which alert class? Who approves? Which sources and owners? What is read-only? Burst and first-output target? Required evidence/simulation? Pilot oracle? Audit and rollback?

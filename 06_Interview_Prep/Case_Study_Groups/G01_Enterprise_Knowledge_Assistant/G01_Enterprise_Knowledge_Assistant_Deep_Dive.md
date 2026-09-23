@@ -2,6 +2,8 @@
 
 This is the technical backup for the Main Interview Guide. It keeps the details you may need when the interviewer goes deeper.
 
+**Model and agent roles:** The query planner may split a multi-hop question, while the LLM gateway generates from the final authorized evidence set. The assistant is primarily a RAG workflow; ACL/ABAC enforcement and citation verification remain deterministic.
+
 ## 1. ACL normalization
 
 Different systems use direct grants, groups, nested groups, inheritance, item overrides, classifications and time windows.

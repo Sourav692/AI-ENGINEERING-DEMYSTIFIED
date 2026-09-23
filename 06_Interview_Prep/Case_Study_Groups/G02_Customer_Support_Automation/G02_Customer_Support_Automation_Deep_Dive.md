@@ -2,6 +2,8 @@
 
 This is the technical backup for the [Main Interview Guide](G02_Customer_Support_Automation_Main.md). The unchanged [source case](G02_Customer_Support_Automation.md) contains the full synthesis and references.
 
+**Model and agent roles:** Rules or a small model route intent and risk. The LLM response generator drafts a reply or proposed action; a bounded planner is reserved for multi-system requests. The policy gateway and approver, not the model, authorize effects.
+
 ## 1. Source authority and freshness
 
 | Source | Authority | Query-time rule | Cache boundary |

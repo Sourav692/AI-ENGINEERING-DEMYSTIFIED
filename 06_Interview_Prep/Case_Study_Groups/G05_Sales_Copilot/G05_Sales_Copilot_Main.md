@@ -75,12 +75,12 @@ flowchart LR
     end
     subgraph ASK[Interactive ask]
         REP[Rep] --> ID[SSO, role, territory, stage]
-        ID --> ROUTE[Route: snapshot, structured lookup, or prose]
+        ID --> ROUTE[Route: snapshot, structured lookup, prose, or bounded agent]
         ROUTE --> FETCH[Fetch authorized evidence]
         CACHE --> FETCH
         DATA --> FETCH
         FETCH --> CHECK[Fresh permission post-check and redaction]
-        CHECK --> GEN[Grounded brief, risks, questions, or draft]
+        CHECK --> GEN[LLM copilot: grounded brief, risks, questions, or draft]
         GEN --> VERIFY{Claims approved and cited?}
         VERIFY -->|No| ESC[Refuse or escalate]
         VERIFY -->|Yes| ANSWER[Answer or draft]
@@ -104,11 +104,13 @@ flowchart LR
 - **Step 1.** **Prepare authorized data.** Connect CRM and other sources, mirror their ACLs, and exclude records whose permissions cannot be represented.
 - **Step 2.** **Precompute a rep-scoped snapshot.** Keep structured facts and searchable prose; a calendar trigger builds a meeting snapshot as the rep and caches it with a permission signature.
 - **Step 3.** **Resolve the current rep context.** At question time, check SSO identity, role, territory, and deal stage.
-- **Step 4.** **Route and fetch.** Choose a snapshot, structured lookup, or prose search and gather candidate evidence.
+- **Step 4.** **Route and fetch.** Use deterministic snapshot, structured lookup, or prose routes for common asks; reserve a bounded agent path for ambiguous multi-step asks.
 - **Step 5.** **Recheck access.** Apply fresh permission checks and field redaction before using cached or live evidence; a snapshot never grants access.
-- **Step 6.** **Ground and verify.** Build the brief, risks, questions, or draft from authorized evidence, then check that claims are cited and approved; otherwise refuse or escalate.
+- **Step 6.** **Ground and verify.** The LLM copilot builds the brief, risks, questions, or draft from authorized evidence; verify citations and approved claims, or refuse and escalate.
 - **Step 7.** **Control CRM write-back.** Preview exact proposed fields, require the rep's approval, and send approved updates through the allowlisted idempotent gateway; discard and log rejected changes.
 
+
+**Model and agent role:** The LLM copilot summarizes and drafts from permission-checked evidence. A bounded agent can coordinate ambiguous next steps, but common CRM counts and lookups stay on reviewed deterministic routes. The model cannot approve an external claim or write to CRM.
 
 **Three boundaries:** precompute keeps slow source fan-out off the question path; the permission post-check protects a snapshot after a territory change; preview and approval protect every CRM write. Precomputation speeds access but never grants access.
 
