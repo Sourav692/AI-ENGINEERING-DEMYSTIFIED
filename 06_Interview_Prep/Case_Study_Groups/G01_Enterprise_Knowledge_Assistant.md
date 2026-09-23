@@ -60,50 +60,69 @@ Scope out loud before the first box: read-only Q&A over the five sources, role- 
 
 ## 2. State Requirements as Testable Constraints
 
-A requirement the customer cannot test is a preference. "Make it fast" is a preference; "p95 under 3 seconds on the interactive path" is a constraint, and only the second one changes the architecture. Split the functional list with MoSCoW so the launch gate is the smallest set that still keeps the customer's promise.
+A requirement that cannot fail a test is a preference. "Make it fast" is a preference; "p95 under 3 s" is a constraint. Split with MoSCoW: Must is the launch gate. If the interviewer forces a tradeoff, protect Must first.
 
-The must-haves are four. Ingest Drive, SharePoint, Slack, wikis and tickets incrementally, so no source change forces a full reindex. Preserve document versions and ACL metadata, so retrieval can answer "what was visible to this user at this time?" Resolve the requester's effective permissions at query time and filter candidates before anything reaches the model. Generate answers grounded in retrieved passages, with passage-level citations. Abstain when evidence is weak, because a correct refusal beats a confident hallucination.
+| Priority | Functional requirement | Accepted when |
+| -------- | ---------------------- | ------------- |
+| Must | Incremental ingest of Drive, SharePoint, Slack, wikis, tickets | A source change never requires a full reindex |
+| Must | Preserve versions and ACL metadata | Retrieval can answer "what was visible to this user at this time?" |
+| Must | Resolve effective permissions at query time; filter before the model | Unauthorised chunks never enter the context window |
+| Must | Grounded answers with passage-level citations | Every citation is in the permitted retrieval set |
+| Must | Abstain on weak evidence | A correct refusal beats a confident hallucination |
+| Should | Hybrid retrieval and reranking | Policy IDs, error codes and ticket numbers match lexically |
+| Should | Show confidence, missing evidence and escalation reason | Uncertain or high-risk answers are labeled, not guessed |
+| Should | Safe feedback for evaluation | No raw-prompt dump; no training on customer data without governance |
+| Should | Admin controls: sources, freshness, policy, blocked actions, audit export | An operator can change those without a code release |
+| Could | Richer analytics, more sources, tenant ranking, OCR, human-review workflows | Out of MVP; must not distort the first architecture |
 
-The should-haves belong in the first usable version. Hybrid retrieval and reranking, because keyword matching carries the policy IDs, error codes and ticket numbers that dense retrieval blurs. Confidence, missing evidence and the escalation reason shown when the system is uncertain or the policy risk is high. Safe feedback signals recorded for evaluation, never raw prompts stored indiscriminately and never training on customer data without governance. Admin controls for source inclusion, freshness thresholds, policy rules, blocked actions and audit export. Richer analytics, broader source coverage, tenant-specific ranking, multimodal OCR and human review workflows can wait.
+**Won't (MVP):** write-back to tickets or docs; personal files; unapproved web; cross-tenant search; memory beyond a session. A later write tool is allowlisted, previewed, idempotent and human-approved.
 
-Declare the non-goals, because every enterprise assistant sprawls into a platform if nobody stops it:
+**Non-functional (operating constraints):**
 
-- generating tasks in downstream systems
-- editing documents or tickets
-- personal files outside approved repositories
-- unapproved web sources
-- cross-tenant search across subsidiaries
-- conversational memory beyond a session
+| Constraint | Testable form |
+| ---------- | ------------- |
+| Latency | p95, never "fast enough". 3–8 s normal; under 3 s if chat-grade; longer work is async. Slice identity → ACL → retrieval → rerank → generate; each stage times out and degrades, never fails open |
+| Availability | Connector, index or model down: partial coverage, labeled staleness, or refuse — never a silent guess |
+| Cost | Embedding, index and tokens estimated separately. Cost per answer. Cache stable docs; prune retrieval; small models for classification; expensive reasoning only where risk justifies it |
+| Security | SSO via the IdP; ABAC over source ACLs; filter before the model; revocations fan out to indexes and caches; secrets never in prompts; no training on customer data unless the contract allows it |
+| Audit | Immutable: source event IDs, index/ACL versions, request ID, retrieved docs, policy decision, model/prompt version, exact citation set shown |
+| Reliability | Fail closed on permissions, deletion sync, citation check, stale data. Degrade on retrieval quality. Queue background reindex |
 
-If a write tool is added later it is allowlisted, previewed, idempotent and human-approved.
+Every Must has an owner:
 
-The non-functional requirements are the operating constraints, and each one is stated so a test can fail it.
+| Requirement | Component |
+| ----------- | --------- |
+| Incremental ingest | Connectors, change-event processor, ingestion queue with backfill |
+| Version and ACL preservation | Metadata store, ACL normaliser, permission-aware index, audit log |
+| Hybrid retrieval and reranking | Keyword index, vector index, fusion, reranker |
+| Grounded answers with citations | LLM gateway, evidence selector, citation builder and verifier |
+| No cross-user disclosure | Identity mapping, authorization filter, policy enforcement point, output policy |
+| p95 latency | Query service, caches, rerank budget, model timeout |
+| Deletion freshness SLO | Connector sync, tombstones, reconciliation job, reindex |
+| Graceful degradation | Circuit breakers, fallbacks, partial-answer policy |
 
-| Constraint           | Stated so it can be tested                                                                                                                                                                                                                                                                                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Latency              | p95 as a percentile, never "fast enough". 3 to 8 s for normal questions, under 3 s where chat-grade is demanded; longer workflows go asynchronous with progress state. The budget is sliced across identity resolution, ACL filtering, hybrid retrieval, reranking and generation, each with a timeout that degrades rather than fails open                                                    |
-| Availability         | Business-critical support hours. When a connector, index or model provider fails: partial coverage, labeled staleness, or refusal, never a silent guess                                                                                                                                                                                                                                        |
-| Cost                 | Embedding, index and token cost estimated independently. At 50 million chunks the refresh pipeline outgrows the initial embedding job. Token budgets, caching of stable documents, retrieval pruning, small models for classification, expensive reasoning routed only where risk justifies it. Reported as cost per answer and per workflow                                                   |
-| Security and privacy | SSO through the customer's IdP; ABAC over source-level ACLs; effective permissions filter candidates before the model sees content; revocations fan out to every index and cache; encryption in transit and at rest; connector secrets in a secrets manager, never in prompts; PII redaction as an obligation attached to an allow; no training on customer data unless the contract allows it |
-| Audit and compliance | Immutable record of source event IDs, index and ACL version stamps, request IDs, retrieved document IDs, policy decisions, model and prompt version, and the exact citation set shown. Deletions and revocations leave retrieval within a freshness SLO per content class                                                                                                                      |
-| Reliability          | Fail closed on permission checks, deletion sync, citation validation and stale data. Degrade on retrieval quality. Queue background reindexing                                                                                                                                                                                                                                                 |
+## 3. Size on Peak QPS and Permission Refresh
 
-Every must-have then needs an owner in the architecture, and the traceability table is the proof.
+Round numbers, not a capacity plan. Each figure kills a naive design.
 
-| Requirement                         | Primary component(s)                                                                   |
-| ----------------------------------- | -------------------------------------------------------------------------------------- |
-| Incremental heterogeneous ingestion | Connectors, change-event processor, ingestion queue with backfill                      |
-| Version and ACL preservation        | Metadata store, ACL normalizer, permission-aware index, audit log                      |
-| Hybrid retrieval and reranking      | Keyword index, vector index, fusion, reranker service                                  |
-| Grounded answers with citations     | LLM gateway, evidence selector, citation builder and verifier                          |
-| No cross-user disclosure            | Identity mapping, authorization filter, policy enforcement point, output policy engine |
-| p95 latency target                  | Query service, caches, reranking budget, model timeout policy                          |
-| Deletions freshness SLO             | Connector sync, tombstones, reconciliation job, reindex pipeline                       |
-| Graceful degradation                | Circuit breakers, fallback paths, partial-answer policy                                |
+| Quantity | Figure | What it forces |
+| -------- | ------ | -------------- |
+| Employees | 100k | Identity and ACL cardinality, not 100k concurrent. Post-filter does not scale when almost every query has a different permission set |
+| Corpus | 50M chunks | The first embed job is doable. Refresh is the hard part: a permission change or deletion must update indexes and caches without a 50M rebuild |
+| Average load | 20 QPS | Untuned sync retrieve → rerank → generate looks fine |
+| Peak load | 100 QPS | 5× the work on the same path. Rerank and generate dominate. They queue, p95 blows the 3 s budget, or you drop |
 
-Size the system with round numbers, because precision is not the point and sensitivity is. Assume 100,000 employees, 50 million chunks after splitting, 20 QPS average and 100 QPS peak. Those four numbers already force decisions. A design that works at 20 QPS collapses at 100 QPS if retrieval, reranking and generation all run synchronously and untuned. A system that can index 50 million chunks once still fails if it cannot refresh stale permissions or deletions fast enough.
+Say these five in the room:
 
-## 3. Map Every Source With Its Permission Model
+1. Size on **peak QPS and refresh**, not "we indexed once."
+2. Slice the latency budget: identity/ACL (cheap) vs retrieve vs rerank vs generate (expensive). Timeouts degrade; they never fail open.
+3. Cache by tenant + permission signature + index version, so repeats skip rerank and generate.
+4. Pre-filter inside search. Never retrieve forbidden chunks and throw them away.
+5. Ingestion is async; query is sync. Event + backfill + reconciliation is how 50M stays permission-correct.
+
+Rough check: 100 QPS × 3 s generate ≈ 300 in-flight generations. That is a serving problem. 20 QPS hides it.
+
+## 4. Map Every Source With Its Permission Model
 
 The connector's real job is translating each source system's permission model into one internal model. Getting that translation wrong is the number one cause of enterprise RAG leaks, so map the permission model per source before choosing an embedding model.
 
@@ -119,7 +138,7 @@ State the integration assumptions aloud. Every source record has a stable ID, an
 
 The core records follow from that. Document(id, source, title, version, owner, acl_policy_id, sensitivity, effective_date, deleted_at). Chunk(id, document_id, text, section_path, citation_url, embedding_ref, offsets, acl_hash). Ticket(id, customer_id, product, severity, symptoms, resolution, linked_docs). Feedback(event_id, user_id, answer_id, rating, correction). QueryTrace(id, actor_hash, query_type, retrieval_set, policy_decision, model_version, prompt_version, citation_set, latency, outcome). A chunk must not outlive its parent's authorization and freshness guarantees; `deleted_at` tombstones a document out of retrieval without erasing its history.
 
-## 4. Draw the Architecture End to End
+## 5. Draw the Architecture End to End
 
 One diagram carries the whole design, and the two that follow are zoom-ins on its halves. The organising split is control plane against data plane: policy, configuration, credentials, schedules and evaluation rules live in the control plane, and every live question, evidence fetch, enforcement decision and answer lives in the data plane. A control-plane change is a release; a data-plane call is a request.
 
@@ -215,7 +234,7 @@ Read the components in dependency order, because that is the order they have to 
 
 Three boundaries are worth pointing at while the diagram is up. The sync/async boundary sits between ingestion and query, so a slow connector never blocks a user and a burst of questions never blocks a reindex. The trust boundary sits at ENFORCE: everything to its left may hold text the user cannot see, nothing to its right may. And state is owned in one place each: source systems own truth, the metadata store owns versions and tombstones, the indexes own derived search state, and the trace store owns what happened. Caches sit beside the indexes as latency optimisations keyed on tenant, permission signature and version, and are invalidated on permission change.
 
-## 5. Normalise Permissions at Ingestion and Refuse What Has None
+## 6. Normalise Permissions at Ingestion and Refuse What Has None
 
 Ingestion is asynchronous and the query path is synchronous. The two are split into a control plane and a data plane. The control plane holds policy, config, credentials, connector scheduling and evaluation rules. The data plane holds live questions, evidence fetch, enforcement and responses. Connectors feed an event-plus-backfill queue, so events carry near-real-time updates and backfill catches missed items and outages. A parser, OCR and chunker normalize PDFs, slides, tickets and chat threads. An ACL normalizer maps each source's permissions into one attribute-based model. Two indexes are written, keyword for exact names and vector for paraphrase, partitioned per tenant.
 
@@ -233,7 +252,7 @@ Ingestion is asynchronous and the query path is synchronous. The two are split i
 
 The validate step is the one to point at. A document that arrives with no usable permissions is refused rather than defaulted to "internal", because a default is a guess and a guess about permissions is a latent leak. Say both lines while drawing: the connector's job is permission translation, and nothing without a usable ACL gets indexed.
 
-## 6. Enforce Before the Model Sees Anything
+## 7. Enforce Before the Model Sees Anything
 
 Authorize first and enforce before generation, and encode that order in the graph's edges rather than in a code convention someone can forget. A model cannot leak text that never entered its context.
 
@@ -328,7 +347,7 @@ The LLM is never the enforcement point. Prompts are suggestions.
 
 Never write "do not reveal confidential information" in a prompt and call it access control. Unauthorised text never enters the context window, so there is nothing to reveal regardless of what the user types. Retrieved documents and tool outputs are untrusted input. They must never alter the system prompt or unlock capability.
 
-## 7. Retrieve Hybrid, Fuse by Rank, Rerank After Enforcement
+## 8. Retrieve Hybrid, Fuse by Rank, Rerank After Enforcement
 
 Hybrid retrieval is the baseline, not the advanced option, because enterprise text is full of error codes, SKUs, ticket IDs and workspace IDs. Embeddings blur `MRD-5031` and `MRD-4290` because they look alike; BM25 treats them as rare tokens and nails them. BM25 in turn is fooled by common words on a paraphrase. Dense finds what means the same; lexical finds what says the same.
 
@@ -362,7 +381,7 @@ HyDE hallucinates a plausible answer on purpose, embeds that instead of the ques
 
 The interaction worth naming is that reranking runs after ACL enforcement. A restricted user's top-5 is then the best of their authorised pool, not a diluted version of someone else's. Post-filtering would rerank documents they cannot see and hand them an empty context. More context is not automatically better context either. Keep the candidate set tight, prefer precision and expose provenance through citations. Widen the context only as far as a synthesis task needs.
 
-## 8. Degrade on Everything Except Authorisation
+## 9. Degrade on Everything Except Authorisation
 
 Design the failure path with the happy path, because a design that only describes success is half an architecture. The rule that organises the table is that authorisation fails closed and everything else degrades visibly. Say the last row slowly.
 
@@ -382,7 +401,7 @@ Replay the path under the one failure that matters most: a connector misses a de
 
 Then say what breaks first at 10×. BM25 over the authorised pool breaks first. Rebuilding the lexical index per request over the permitted subset is correct and does not scale. The production answer is a lexical store with native document-level security such as OpenSearch DLS, or a cached per-group shard. Embedding cost on re-ingest is held down by a content-hash cache that re-embeds only what changed. ACL changes are decoupled from content reindexing, because ACL sync is cheap and re-embedding is not. LLM calls dominate latency, so cache embeddings, cache retrieval, semantic-cache responses, parallelise fan-out and stream tokens so perceived latency drops.
 
-## 9. Gate the Release on a Leak Count, Not a Score
+## 10. Gate the Release on a Leak Count, Not a Score
 
 A retrieval regression is a bug to fix next sprint. A leak is an incident. So the security suite blocks the release outright instead of lowering a score, and it runs the same question as different personas and asserts restricted material never appears.
 
@@ -409,7 +428,7 @@ The war story to tell here happened building this, and it lands. The first versi
 
 Make every run a replayable record: prompt version, retrieved chunk IDs, policy decisions, tool calls, tokens, latency, cost, groundedness. Three audiences read that one artefact: the engineer debugging a bad answer, the auditor asking whether this user ever saw that document, and finance asking which tenant is burning the budget. Store structured traces rather than raw prompts, with a redacted fingerprint if more is needed. Prompt retention creates its own privacy problem. The structured trace already answers whether retrieval missed, permissions over-filtered, the model ignored the evidence, or the template changed.
 
-## 10. Roll Out One Corpus at a Time
+## 11. Roll Out One Corpus at a Time
 
 Week one at a customer is not the whole diagram. It is one source connected, the ACL translation provably right for three personas, a golden set built with their SMEs, and the leak test standing. That proves the risky part, the permission model, before anyone argues about embeddings, and everything else is incremental.
 
@@ -447,7 +466,7 @@ Close on the trade-offs and what would change them.
 | Hybrid + multi-query as default      | yes                                                                                                     | measurement showing the extra latency does not pay for itself on this corpus           |
 | Real-time sync vs scheduled indexing | mixed: event-driven for high-churn sources, scheduled for stable ones, reconciliation for missed events | the customer's freshness tolerance turns out to be same-day, then scheduled everywhere |
 
-## 11. Deliver It in Sixty Minutes
+## 12. Deliver It in Sixty Minutes
 
 Spend minutes in proportion to risk, not diagram size. Authorization and freshness deserve more of the hour than embeddings, and a candidate who spends twenty minutes on embeddings and one on permissions has optimised the wrong thing. Write the budget in the corner of the board.
 
@@ -508,7 +527,7 @@ python scripts/demo_access_control.py --matrix   # visibility matrix, no LLM cos
 python scripts/evaluate.py --kinds security      # the zero-leak gate
 ```
 
-## 12. Say What Changes on Databricks
+## 13. Say What Changes on Databricks
 
 The design is the same on the Lakehouse; what changes is the deep dive, and it opens with a trap most candidates fall into. Draw the wrong design first, then break it.
 
@@ -649,7 +668,7 @@ Two things were not verified end to end, and say so. The managed reranker was re
 
 Ask a Databricks interviewer three things. Is Unity Catalog the governance boundary today, or does Hive metastore remain to migrate? Are account groups SCIM-synced or managed in-workspace, which decides whether live revocation works? How faithfully must source-system permissions be mirrored per document? The artefact to bring is the persona-by-document visibility matrix, generated by running the same `SELECT count(*) FROM kb.chunks_secure` as each identity.
 
-## 13. Tell It as Something Built
+## 14. Tell It as Something Built
 
 For "tell me about something you built", the same system is a story, and the beats stand alone so they can be played in whatever order the conversation goes. Lead with one sentence and then stop talking; the next question chooses the next beat.
 
@@ -667,7 +686,7 @@ Deploy the limitations beat before being asked. The test set is 22 documents. At
 
 Close on whichever thread the conversation ended on. On trust: an FDE's job is turning a technical guarantee into something a customer's security team can sign off on. On platforms: never assume a guarantee travels between systems until it has been verified on their specific platform. On limitations: better to say exactly where the edges of what has been proven are than to let them be found later.
 
-## 14. Answer the Cost Pivot in Ten Minutes
+## 15. Answer the Cost Pivot in Ten Minutes
 
 The interviewer's pivot after a good design is "now it has to run under a strict budget". Here it arrives as a legal team wanting RAG over contracts and policies, with a strict budget, mandatory citations and a latency target under 8 seconds. Answer it right after the design, in the same sitting, using the same architecture.
 
@@ -686,7 +705,7 @@ The second pivot on this system is latency rather than budget: "the naive RAG fl
 
 The sixty-second line for the budget case: legal quality forces citations and escalation, budget forces top-k and routing, and the 8-second target rules out heavy rerank on every query. So pilot on a limited document set with cost instrumented from day one. Every strong cost answer is generated by four verbs in order. Measure, by tracing and attributing first. Route, matching model and path to risk. Bound, with limits on steps, tokens, top-k, timeouts and budgets. Cache safely, with tenant, permission and version in the key. Deliver it in six moves: frame the business impact, decompose the path, name the largest measured driver, fix safely, prove with before and after, prevent recurrence.
 
-## 15. Debug the Incidents on This Design
+## 16. Debug the Incidents on This Design
 
 Incidents and production scenarios on this system are not new designs; they are questions about where the design would have caught the failure. Answer each as detect, contain, root cause, prevent, and point at the section that answers it.
 
@@ -705,7 +724,7 @@ Incidents and production scenarios on this system are not new designs; they are 
 ## Key Takeaways
 
 - Permission fidelity is the load-bearing constraint, named in the first two minutes, because an assistant that leaks is worse than none.
-- Requirements are stated so a test can fail them: four must-haves as the launch gate, percentile latency, a non-goals list and a component owner for every constraint.
+- Requirements are stated so a test can fail them: MoSCoW Must as the launch gate, percentile latency, explicit Won't, and a component owner for every constraint.
 - Every source is mapped with its own permission model, and a source without a usable ACL is excluded rather than defaulted.
 - One end-to-end diagram splits control plane from data plane, and the trust boundary sits at ENFORCE: text the user cannot see exists only to its left.
 - Ingestion normalises permissions into one attribute model and refuses anything it cannot normalise.
