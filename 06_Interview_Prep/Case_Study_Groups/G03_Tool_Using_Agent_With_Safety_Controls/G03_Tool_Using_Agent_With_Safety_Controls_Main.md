@@ -86,6 +86,17 @@ flowchart TB
     KILL -.-> GATE
 ```
 
+### Step-by-step architecture
+
+- **Step 1.** **Establish delegation.** Authenticate the user and determine which actions the user may delegate.
+- **Step 2.** **Plan one bounded step.** The planner reads task state and proposes a single next action within its budget.
+- **Step 3.** **Validate the tool call.** Resolve the tool's typed schema and check arguments, data class, and action limits.
+- **Step 4.** **Apply policy.** Block and record a disallowed action, allow a safe one, or request human approval for the exact payload before expiry.
+- **Step 5.** **Grant narrow authority.** For an allowed or approved action, the broker issues a short-lived scoped token; budgets and the kill switch still apply.
+- **Step 6.** **Execute once through the gateway.** The idempotent gateway calls the target system and prevents a retry from becoming a second side effect.
+- **Step 7.** **Close the loop.** Store the action receipt in the audit ledger and task state; continue planning only from the recorded result.
+
+
 **Say the boundaries:** the planner can propose, the registry defines legal tool shapes, validation rejects malformed or over-limit arguments, policy decides, approval binds to the exact state, the broker supplies one narrow capability, and the gateway is the only write path. A proposal is not proof of execution; the receipt is. The task state store remembers workflow progress, while downstream systems remain the business systems of record.
 
 ## 4. Walk one request

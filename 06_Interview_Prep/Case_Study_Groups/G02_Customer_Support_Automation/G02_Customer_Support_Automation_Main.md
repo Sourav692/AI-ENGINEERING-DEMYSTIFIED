@@ -99,6 +99,17 @@ flowchart LR
     HANDOFF -.-> AUDIT
 ```
 
+### Step-by-step architecture
+
+- **Step 1.** **Receive the request.** The channel gateway normalizes chat, email, web, or voice into a support case.
+- **Step 2.** **Verify the customer.** Check identity and assurance; failed verification permits only generic help or handoff, not account actions.
+- **Step 3.** **Route by intent and risk.** Classify the request and apply the configured risk tags, thresholds, and kill switches.
+- **Step 4.** **Gather facts.** Read approved policy and current account facts before drafting a reply or proposing an action.
+- **Step 5.** **Gate the proposal.** The deterministic policy gate checks identity, allowed tools, thresholds, freshness, and required approval.
+- **Step 6.** **Choose the outcome.** Return a safe answer, send a case with context to a human, or obtain approval for an action that needs it.
+- **Step 7.** **Execute and record.** Send permitted actions through the scoped tool gateway to the system of record; audit the decision and outcome.
+
+
 **Three boundaries to point at:**
 
 - **Identity:** pre-auth FAQ can use a limited generic mode; account tools require verified assurance.

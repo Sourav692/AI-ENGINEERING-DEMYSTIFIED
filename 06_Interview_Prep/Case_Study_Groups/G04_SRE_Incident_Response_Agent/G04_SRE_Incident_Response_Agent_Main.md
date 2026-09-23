@@ -85,6 +85,17 @@ flowchart LR
     POLICY -.-> GATE
 ```
 
+### Step-by-step architecture
+
+- **Step 1.** **Collapse alerts first.** Correlate and deduplicate incoming alerts, then cap concurrent investigations per service before model calls.
+- **Step 2.** **Assemble incident context.** Add service ownership, recent deploys, and flag changes to the investigation.
+- **Step 3.** **Read telemetry within bounds.** Query relevant sources in parallel with limits; record whether each result is available, empty, stale, or denied.
+- **Step 4.** **Form an evidence-backed view.** Rank hypotheses and produce the first useful summary with citations and source coverage.
+- **Step 5.** **Prepare a mitigation.** If action is warranted, propose the exact command, blast radius, runbook, and simulation result.
+- **Step 6.** **Get the right approval.** Apply read/propose/execute and freeze policies, then ask the owner and commander; a declined proposal is recorded without a write.
+- **Step 7.** **Execute and check.** Route an approved command through the authorized tool gateway, execute idempotently, verify its effect, and add the decision to the incident timeline.
+
+
 **Three boundaries:** dedupe before model calls; read-only investigation before approval; all approved writes through one gateway. Keep the agent outside the affected service’s blast radius. The summary states which sources were reached, stale, empty, or unavailable, so a confident hypothesis cannot conceal missing evidence.
 
 ## 4. How investigation works

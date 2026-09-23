@@ -99,6 +99,17 @@ flowchart LR
     POLICY -.-> GATE
 ```
 
+### Step-by-step architecture
+
+- **Step 1.** **Prepare authorized data.** Connect CRM and other sources, mirror their ACLs, and exclude records whose permissions cannot be represented.
+- **Step 2.** **Precompute a rep-scoped snapshot.** Keep structured facts and searchable prose; a calendar trigger builds a meeting snapshot as the rep and caches it with a permission signature.
+- **Step 3.** **Resolve the current rep context.** At question time, check SSO identity, role, territory, and deal stage.
+- **Step 4.** **Route and fetch.** Choose a snapshot, structured lookup, or prose search and gather candidate evidence.
+- **Step 5.** **Recheck access.** Apply fresh permission checks and field redaction before using cached or live evidence; a snapshot never grants access.
+- **Step 6.** **Ground and verify.** Build the brief, risks, questions, or draft from authorized evidence, then check that claims are cited and approved; otherwise refuse or escalate.
+- **Step 7.** **Control CRM write-back.** Preview exact proposed fields, require the rep's approval, and send approved updates through the allowlisted idempotent gateway; discard and log rejected changes.
+
+
 **Three boundaries:** precompute keeps slow source fan-out off the question path; the permission post-check protects a snapshot after a territory change; preview and approval protect every CRM write. Precomputation speeds access but never grants access.
 
 ## 4. Source authority and permission fidelity

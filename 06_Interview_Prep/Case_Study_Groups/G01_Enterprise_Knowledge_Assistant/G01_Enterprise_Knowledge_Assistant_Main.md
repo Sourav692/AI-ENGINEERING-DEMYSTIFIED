@@ -169,6 +169,17 @@ flowchart LR
     POLICY -.-> CHECK
 ```
 
+### Step-by-step architecture
+
+- **Step 1.** **Ingest sources.** Source events and backfills bring enterprise documents into an asynchronous pipeline.
+- **Step 2.** **Normalize permissions.** Convert content and source ACLs into a consistent form; refuse to index an item if it has no usable ACL.
+- **Step 3.** **Build the search indexes.** Put eligible content into keyword and vector indexes for hybrid retrieval.
+- **Step 4.** **Establish the user's scope.** Authenticate the user, resolve groups and attributes, and compile the ACL/ABAC permission filter.
+- **Step 5.** **Retrieve and check.** Run hybrid search with that filter, then apply a live policy post-check before any candidate reaches reranking or the model.
+- **Step 6.** **Select evidence.** Rerank only authorized candidates and decide whether the evidence is sufficient; abstain or escalate if it is not.
+- **Step 7.** **Answer and verify.** Generate a cited answer from the selected evidence, verify citations and output, then return the answer.
+
+
 ### Trust boundary
 
 ~~~text
