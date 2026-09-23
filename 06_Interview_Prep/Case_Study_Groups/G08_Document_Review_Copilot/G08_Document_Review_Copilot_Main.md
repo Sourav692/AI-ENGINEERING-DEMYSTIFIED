@@ -47,9 +47,11 @@ flowchart LR
     subgraph REV[One review case]
         USER[Reviewer request] --> AUTH[Identity, role, patient or matter scope]
         AUTH --> RR[Retrieve permitted rule effective for case]
+        AUTH --> EVID[Retrieve permitted case evidence]
         IDX --> RR
+        IDX --> EVID
         RR --> EX[Small model: typed field and span extraction]
-        IDX --> EX
+        EVID --> EX
         EX --> CMP[Deterministic compare and gap check]
         CMP --> RISK{Risk and completeness}
         RISK -->|Routine| STRUCT[Structured evidence draft]
@@ -69,7 +71,7 @@ flowchart LR
 
 - **Step 1.** Ingest case records and governing rules with version, effective date, ACL, and page/span metadata.
 - **Step 2.** Parse text and tables. For a high-risk policy, low table or page coverage fails ingestion and triggers OCR/table reprocessing; missing content cannot be retrieved later.
-- **Step 3.** Authenticate the reviewer and apply role plus patient, matter, or tenant scope before retrieving the rule in force for this case.
+- **Step 3.** Authenticate the reviewer and apply role plus patient, matter, or tenant scope before retrieving both the rule in force and the case evidence.
 - **Step 4.** A small model extracts typed fields and exact evidence spans. Low-confidence fields become gaps, never invented facts.
 - **Step 5.** Compare fields with the governing criteria, detect missing or conflicting evidence, and assign a risk tier.
 - **Step 6.** Use a structured routine draft or send flagged risk to a strong LLM for an evidence-backed draft. Missing or conflicting support takes the refusal/escalation branch.
