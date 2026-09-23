@@ -10,7 +10,22 @@ The unchanged [source case](G02_Customer_Support_Automation.md) is the full refe
 
 Use a double-charge request as the running example. A fluent reply is not enough: the system must verify the customer, check live billing facts, apply the refund policy, avoid a duplicate refund, and hand off cleanly if anything is uncertain.
 
-Ask early about six areas: **channels and peak volume; permitted actions and approval thresholds; identity and sensitive data; source freshness; human escalation; languages.** Ask which legal, financial, or safety categories remain human-reviewed. If the interviewer gives no numbers, state assumptions and keep money-moving and account-changing actions gated.
+### Questions to ask the interviewer
+
+These questions set the first-release boundary. The [source case, §1](G02_Customer_Support_Automation.md#1-reframe-the-chatbot-as-a-routed-decision-pipeline) has the complete discovery table.
+
+| Question to ask | What the answer decides |
+|---|---|
+| Which channels are in scope, and what are monthly volume and peak concurrency? | Channel gateway, capacity, and whether voice transcripts join the same pipeline. |
+| Which intents may be answered or acted on automatically, and which need approval? | Risk tags, tool policy rules, and the first-release scope. |
+| How is the customer verified, and which account or payment fields are sensitive? | Assurance level and which tools are unavailable before authentication. |
+| What is the approval threshold for refunds, and who owns that policy? | The deterministic check on every money-moving action. |
+| How current must policy, order status, and account data be before a promise or action? | Live lookups versus versioned caches and stale-data handling. |
+| What should a human receive at handoff, and how quickly? | Handoff fields, escalation route, and its latency target. |
+| How many languages are needed, and what happens when detection is uncertain? | Language fallback and escalation path. |
+| Which legal, financial, or safety cases must remain human-reviewed? | Non-goals, approval gates, and launch sequence. |
+
+If the interviewer cannot provide numbers, say which assumptions you are making. Keep money-moving and account-changing actions gated until identity, authority, and policy are clear.
 
 ### G02 is the anchor for its support-automation variants
 

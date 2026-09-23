@@ -64,16 +64,22 @@ Answer / Abstain / Escalate
 
 > “Anyone can build multi-source RAG. The difficult part is that a Tier-1 agent, a Tier-3 engineer and an account manager may ask the same question but should see different information. So I’ll treat permission fidelity as the primary constraint and optimize retrieval quality inside that boundary.”
 
-Clarify:
+### Questions to ask the interviewer
 
-- Which sources are authoritative?
-- How are permissions inherited?
-- How quickly must permission changes and deletions take effect?
-- What happens when sources disagree?
-- Do we need passage-level citations?
-- What should happen when evidence is weak?
-- What are p95 latency, cost, residency and retention targets?
-- Who can inspect traces and audit logs?
+Ask the questions that change a design decision. The [source case, §1](G01_Enterprise_Knowledge_Assistant.md#1-name-permission-fidelity-as-the-constraint-before-drawing-anything) expands these into the full discovery table.
+
+| Question to ask | What the answer decides |
+|---|---|
+| Which source is authoritative for each content type, and what if sources disagree? | Source priority, conflict handling, and whether to surface uncertainty. |
+| Must inherited permissions and group changes be checked live, or is bounded sync lag acceptable? | Query-time authorization design and the permitted stale window. |
+| How fast must updates, deletions, and access revocations take effect? | Freshness SLO, event processing, tombstones, and reconciliation cadence. |
+| Should answers synthesize across sources, and do citations need a passage or whole document? | Evidence selection, context budget, and citation granularity. |
+| What should happen when evidence is weak, retrieval fails, or sources conflict? | Answer, label staleness, abstain, or escalate rules. |
+| Who asks questions, who investigates wrong answers, and who owns an over-sharing incident? | Personas, escalation ownership, and trace access. |
+| What are p95 latency, scale, residency, retention, and cost limits? | Stage budget, partitioning, region placement, and audit retention. |
+| Who may inspect traces, and what must an audit reconstruct? | Logged IDs, versions, policy decisions, evidence, and citation set. |
+
+If answers are unavailable, state the assumptions before drawing: read-only, query-time permission checks, passage citations, and fail-closed behavior on uncertain access.
 
 **Default MVP:** read-only Q&A; Drive, SharePoint, Slack, wiki and tickets; multi-tenant; ABAC/ACL-aware; query-time authorization; passage citations; sub-3-second chat target; no write-back, personal files, unapproved web, cross-tenant search or persistent memory.
 
