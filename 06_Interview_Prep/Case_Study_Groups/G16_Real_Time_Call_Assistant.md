@@ -451,5 +451,5 @@ All paths are relative to `06_Interview_Prep/` unless they start with `05_Projec
 | 14 | `Study_Guides/Cost_Latency_Optimization/CORE_8_DRIVERS_MEMORIZE.md`, the two latency-only add-ons |
 | 14 | `Study_Guides/Cost_Latency_Optimization/ADDITIONS_BEYOND_PLAYBOOK.md`, "Streaming works but users abandon mid-answer" |
 | 2, 4, 6 | `05_Projects/Realtime_Voice_AI_Agent_with_RAG/Docs/PROJECT_REPORT.md`: the voice pipeline, "<2 second response latency", Silero VAD, Deepgram Nova-2 |
-| 3, 5, 9 | `Case_Study_Groups/G05_Sales_Copilot.md`, sections 5, 6 and 8: the snapshot, the CRM permission mirror, preview-then-approve |
+| 3, 5, 9 | `Case_Study_Groups/G05_Sales_Copilot/G05_Sales_Copilot.md`, sections 5, 6 and 8: the snapshot, the CRM permission mirror, preview-then-approve |
 | 2 (budget), 4 (diagrams, component table), 10, 12, 13, and every item marked own construction | Built for this page from the sources' arguments; not source material |

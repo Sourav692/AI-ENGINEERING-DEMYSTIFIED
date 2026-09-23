@@ -459,4 +459,4 @@ All paths are relative to `06_Interview_Prep/`.
 | 3, 8, 9, 10, 12, 14 | `Study_Guides/07_multi_agent_systems_INTERVIEW_TUTORIAL.md`, sections 1.6, 2, 3 and question 7 (#103) |
 | 14 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #10 |
 | 2 (MoSCoW split), 4 (trust-zone diagrams, component table), 9 (ladder), 10 (metric table), 13 (spoken answer, lines), and every item marked own construction | Built for this page from the sources' arguments; not source material |
-| Not included | Chapter 28's "Worked Design Two", the incident response agent, belongs to group G04 and is covered in `G04_SRE_Incident_Response_Agent.md` |
+| Not included | Chapter 28's "Worked Design Two", the incident response agent, belongs to group G04 and is covered in `G04_SRE_Incident_Response_Agent/G04_SRE_Incident_Response_Agent.md` |
