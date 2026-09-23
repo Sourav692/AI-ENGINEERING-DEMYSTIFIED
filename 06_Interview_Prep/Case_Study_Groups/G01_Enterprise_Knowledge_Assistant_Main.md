@@ -497,7 +497,7 @@ Invalidate on ACL changes, deletes, source updates and index/policy changes.
 
 ---
 
-## 17. Multi-tenancy
+## 18. Multi-tenancy
 
 Isolation should exist across:
 
@@ -513,7 +513,7 @@ A cross-tenant principal with broad groups must still return zero results for an
 
 ---
 
-## 18. Failure playbook
+## 19. Failure playbook
 
 **Retrieval down:** partial safe coverage or abstain; never invent.
 
@@ -533,7 +533,7 @@ A cross-tenant principal with broad groups must still return zero results for an
 
 ---
 
-## 19. Cost optimization
+## 20. Cost optimization
 
 Think:
 
@@ -564,7 +564,7 @@ Simple clause lookup can use a cheaper model. High-risk synthesis can escalate.
 
 ---
 
-## 20. 100 ms pivot
+## 21. 100 ms pivot
 
 At ~100 ms, ordinary end-to-end generation cannot remain on the hot path.
 
@@ -582,7 +582,7 @@ This becomes closer to a permission-aware search product with a cached-answer la
 
 ---
 
-## 21. Databricks
+## 22. Databricks
 
 Important lesson:
 
@@ -607,7 +607,7 @@ Prove the design with a persona-by-document visibility matrix rather than only v
 
 ---
 
-## 22. Interview story
+## 23. Interview story
 
 Opening:
 
@@ -623,7 +623,7 @@ Five beats:
 
 ---
 
-## 23. Interview trigger → answer
+## 24. Interview trigger → answer
 
 | Interviewer asks | Mental trigger |
 |---|---|
@@ -644,7 +644,7 @@ Five beats:
 
 ---
 
-## 24. 60-minute delivery
+## 25. 60-minute delivery
 
 | Time | Focus |
 |---|---|
