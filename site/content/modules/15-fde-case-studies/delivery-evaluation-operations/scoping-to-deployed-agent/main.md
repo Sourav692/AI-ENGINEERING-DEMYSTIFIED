@@ -23,14 +23,14 @@ Turn a customer request into a governed, two-week agent deployment with measurab
 
 ## Questions to ask the interviewer
 
-| Question to ask | What it's really asking | What you then decide |
-| --- | --- | --- |
-| What customer outcome and baseline define success by week four? | Are we cutting first-response time from 40 minutes to 5, or just “launch an agent”? | Whether the build has a measurable goal. |
-| Who is the sponsor, subject-matter expert and go/no-go owner? | If the Confluence owner is on vacation, who can still say ship or stop? | Approvals and escalation. |
-| Which data sources, credentials and policies are available now? | Do we already have Zendesk + Salesforce read access, or is that a six-week ticket? | Whether two weeks is even possible. |
-| Which accelerator parts can be reused, and what is bespoke? | Can we reuse the support template, or are we writing a custom planner? | Delivery time and later maintenance. |
-| What happens when a gate fails or an SME misses a deadline? | If golden-set review slips two days, do we ship anyway? | No-go, escalation, and schedule impact. |
-| Which agent actions require human review, and how is rollback tested? | If drafts go weird, can we kill send in two minutes? | Production autonomy and containment. |
+| Question to ask                                                       | What it's really asking                                                               | What you then decide                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| What customer outcome and baseline define success by week four?       | Are we cutting first-response time from 40 minutes to 5, or just “launch an agent”? | Whether the build has a measurable goal. |
+| Who is the sponsor, subject-matter expert and go/no-go owner?         | If the Confluence owner is on vacation, who can still say ship or stop?               | Approvals and escalation.                |
+| Which data sources, credentials and policies are available now?       | Do we already have Zendesk + Salesforce read access, or is that a six-week ticket?    | Whether two weeks is even possible.      |
+| Which accelerator parts can be reused, and what is bespoke?           | Can we reuse the support template, or are we writing a custom planner?                | Delivery time and later maintenance.     |
+| What happens when a gate fails or an SME misses a deadline?           | If golden-set review slips two days, do we ship anyway?                               | No-go, escalation, and schedule impact.  |
+| Which agent actions require human review, and how is rollback tested? | If drafts go weird, can we kill send in two minutes?                                  | Production autonomy and containment.     |
 
 Do not start the engagement clock without measurable success metrics, a named SME and named sources. The source uses those as intake requirements.
 
@@ -60,14 +60,14 @@ The easiest way to frame requirements in an interview is:
 
 ### Non-functional requirements — how well / under what constraints
 
-| Requirement | Example target / constraint |
-|---|---|
-| **Schedule** | Two-week delivery target. |
-| **Governance** | Auditability, separation of duties; failed gate stops advancement. |
-| **Reuse** | Accelerators over bespoke planners. |
-| **Security** | Tenant isolation, secure credentials. |
-| **Reliability** | Reliable escalations; demo rollback under two minutes. |
-| **Value** | Measurable first value. Northwind demo: first response <5 min; ≥60% zero-edit sends by week four. |
+| Requirement           | Example target / constraint                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| **Schedule**    | Two-week delivery target.                                                                          |
+| **Governance**  | Auditability, separation of duties; failed gate stops advancement.                                 |
+| **Reuse**       | Accelerators over bespoke planners.                                                                |
+| **Security**    | Tenant isolation, secure credentials.                                                              |
+| **Reliability** | Reliable escalations; demo rollback under two minutes.                                             |
+| **Value**       | Measurable first value. Northwind demo: first response <5 min; ≥60% zero-edit sends by week four. |
 
 ### Interview shortcut
 
@@ -115,15 +115,15 @@ flowchart TB
 
 ## Gates, evidence and ownership
 
-| Stage | Source gate | Signer |
-|---|---|---|
-| Scoping, days 1–2 | `security_review_passed` | Security reviewer |
-| Data readiness, days 3–4 | `data_access_granted` | Customer SME; pending access escalates on day 3 |
-| Configure, days 5–7 | `golden_set_signed_off` | Customer SME |
-| Evaluate, days 8–9 | `eval_baseline_met` | FDE |
-| Shadow, days 10–11 | `rollback_tested` | FDE |
-| Limited production, days 12–13 | `success_metrics_met` | Sponsor |
-| Day 14 | Go/no-go and handover | Named decision owner |
+| Stage                           | Source gate                | Signer                                          |
+| ------------------------------- | -------------------------- | ----------------------------------------------- |
+| Scoping, days 1–2              | `security_review_passed` | Security reviewer                               |
+| Data readiness, days 3–4       | `data_access_granted`    | Customer SME; pending access escalates on day 3 |
+| Configure, days 5–7            | `golden_set_signed_off`  | Customer SME                                    |
+| Evaluate, days 8–9             | `eval_baseline_met`      | FDE                                             |
+| Shadow, days 10–11             | `rollback_tested`        | FDE                                             |
+| Limited production, days 12–13 | `success_metrics_met`    | Sponsor                                         |
+| Day 14                          | Go/no-go and handover      | Named decision owner                            |
 
 The gate API should reject wrong roles, missing evidence and skipped prior stages; deny decisions override optimistic state and every attempt is logged. Free-text evidence is weak: require structured checklist items and links to evaluation or rollback proof. A no-go is a valid outcome.
 
