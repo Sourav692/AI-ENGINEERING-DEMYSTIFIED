@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
-import { getSearchIndex } from '@/lib/content'
 import { SITE } from '@/lib/registry'
 import { SearchDialog } from '@/components/SearchDialog'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -44,8 +43,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const searchIndex = await getSearchIndex()
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -74,7 +71,7 @@ export default async function RootLayout({
               <HeaderLink href="/guide">How to use</HeaderLink>
             </nav>
             <div className="ml-auto flex items-center gap-1.5">
-              <SearchDialog entries={searchIndex} />
+              <SearchDialog />
               <ThemeToggle />
             </div>
           </div>

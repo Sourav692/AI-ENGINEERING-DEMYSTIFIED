@@ -15,6 +15,10 @@ export type ScenarioMeta = {
   title: string
   /** Short label shown instead of the order number, e.g. `G01` in FDE Case Studies. */
   tag?: string
+  /** Reading pages only: the page's tabs, in display order. */
+  tabs?: ReadingTab[]
+  /** Reading pages only: `track/slug` of the same case's interactive worksheet in Module 01. */
+  practice?: string
 }
 
 export type TrackMeta = {
@@ -40,6 +44,8 @@ export type ScenarioRef = {
   tag?: string
   /** True for reading pages (FDE Case Studies): read-only, tabbed, progress by tab. */
   reading?: boolean
+  tabs?: ReadingTab[]
+  practice?: string
 }
 
 export type ScenarioSection = Section & {
@@ -80,22 +86,16 @@ export function scenarioHref(ref: {
 }
 
 /**
- * The tabs of a reading page, in display order; the first opens by default.
- * Must match `DOC_TABS` in `scripts/case-studies.mjs`, which writes one file per id.
+ * One tab of a reading page. Tabs vary per page — the grouped case studies have four,
+ * a standalone case can have one to five — so the list comes from the manifest, written
+ * by `scripts/case-studies.mjs`, which also writes one `<id>.md` per tab.
  */
-export const READING_TABS = [
-  { id: 'main', label: 'Main' },
-  { id: 'deep-dive', label: 'Deep Dive' },
-  { id: 'cheat-sheet', label: 'Cheat Sheet' },
-  { id: 'full-pack', label: 'Full Pack' },
-] as const
-
-export type ReadingTabId = (typeof READING_TABS)[number]['id']
+export type ReadingTab = { id: string; label: string }
 
 export type CaseStudy = {
   ref: ScenarioRef
   title: string
-  docs: { tab: ReadingTabId; label: string; doc: ReadingDocument }[]
+  docs: { tab: string; label: string; doc: ReadingDocument }[]
   prev: ScenarioRef | null
   next: ScenarioRef | null
 }

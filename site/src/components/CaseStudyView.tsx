@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { CaseStudy, ReadingTabId } from '@/lib/scenario'
-import { READING_TABS, scenarioHref } from '@/lib/scenario'
+import type { CaseStudy } from '@/lib/scenario'
+import { scenarioHref } from '@/lib/scenario'
 import type { ReadingDocument } from '@/lib/reading'
 import { loadRead, notifyProgress, saveRead } from '@/lib/storage'
 import { Diagram } from './Diagram'
@@ -22,29 +22,29 @@ import { Diagram } from './Diagram'
  * panel is shown.
  */
 
-const DEFAULT_TAB: ReadingTabId = READING_TABS[0].id
-
-function tabForHash(hash: string): { tab: ReadingTabId; anchor: string | null } | null {
+function tabForHash(
+  hash: string,
+  tabs: string[],
+): { tab: string; anchor: string | null } | null {
   const id = decodeURIComponent(hash.replace(/^#/, ''))
   if (!id) return null
-  const exact = READING_TABS.find((t) => t.id === id)
-  if (exact) return { tab: exact.id, anchor: null }
-  // Longest id first, so `deep-dive-…` is not claimed by a shorter tab id.
-  const owner = [...READING_TABS]
-    .sort((a, b) => b.id.length - a.id.length)
-    .find((t) => id.startsWith(`${t.id}-`))
-  return owner ? { tab: owner.id, anchor: id } : null
+  if (tabs.includes(id)) return { tab: id, anchor: null }
+  // Longest id first, so `tutorial-v1-…` is not claimed by a shorter tab id.
+  const owner = [...tabs].sort((a, b) => b.length - a.length).find((t) => id.startsWith(`${t}-`))
+  return owner ? { tab: owner, anchor: id } : null
 }
 
 export function CaseStudyView({ study }: { study: CaseStudy }) {
   const progressId = `${study.ref.trackId}/${study.ref.slug}`
-  const [active, setActive] = useState<ReadingTabId>(DEFAULT_TAB)
-  const [visited, setVisited] = useState<Set<ReadingTabId>>(() => new Set([DEFAULT_TAB]))
+  const tabIds = study.docs.map((d) => d.tab)
+  const tabKey = tabIds.join('|')
+  const [active, setActive] = useState<string>(tabIds[0])
+  const [visited, setVisited] = useState<Set<string>>(() => new Set([tabIds[0]]))
   const [read, setRead] = useState<string[]>([])
   const [hydrated, setHydrated] = useState(false)
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const show = useCallback((tab: ReadingTabId) => {
+  const show = useCallback((tab: string) => {
     setActive(tab)
     setVisited((prev) => (prev.has(tab) ? prev : new Set(prev).add(tab)))
   }, [])
@@ -57,7 +57,7 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
     setHydrated(true)
 
     const apply = () => {
-      const target = tabForHash(window.location.hash)
+      const target = tabForHash(window.location.hash, tabKey.split('|'))
       if (!target) return
       show(target.tab)
       if (target.anchor) {
@@ -72,10 +72,10 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
     apply()
     window.addEventListener('hashchange', apply)
     return () => window.removeEventListener('hashchange', apply)
-  }, [progressId, show])
+  }, [progressId, show, tabKey])
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const selectTab = (tab: ReadingTabId, scroll = false) => {
+  const selectTab = (tab: string, scroll = false) => {
     show(tab)
     // replaceState, not a hash assignment: a tab click should not pile up history
     // entries, and should not make the browser jump to an element.
@@ -86,10 +86,10 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
     }
   }
 
-  const toggleRead = (tab: ReadingTabId) => {
+  const toggleRead = (tab: string) => {
     setRead((prev) => {
       const next = prev.includes(tab) ? prev.filter((t) => t !== tab) : [...prev, tab]
-      saveRead(progressId, next, READING_TABS.length)
+      saveRead(progressId, next, study.docs.length)
       notifyProgress()
       return next
     })
@@ -97,23 +97,25 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
 
   return (
     <article>
+      {/* One document needs no tab bar; the mark-as-read control below still works. */}
+      {study.docs.length > 1 && (
       <div
         ref={tabsRef}
         className="no-print sticky top-[3.75rem] z-20 -mx-4 mb-8 border-y border-border bg-bg/85 px-4 backdrop-blur-md sm:mx-0 sm:rounded-lg sm:border sm:px-2"
       >
         <div role="tablist" aria-label="Case study documents" className="flex gap-1 overflow-x-auto py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {READING_TABS.map((tab) => {
-            const selected = active === tab.id
-            const done = hydrated && read.includes(tab.id)
+          {study.docs.map(({ tab: id, label }) => {
+            const selected = active === id
+            const done = hydrated && read.includes(id)
             return (
               <button
-                key={tab.id}
+                key={id}
                 type="button"
                 role="tab"
-                id={`tab-${tab.id}`}
+                id={`tab-${id}`}
                 aria-selected={selected}
-                aria-controls={`panel-${tab.id}`}
-                onClick={() => selectTab(tab.id)}
+                aria-controls={`panel-${id}`}
+                onClick={() => selectTab(id)}
                 className={`flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-[0.875rem] font-medium transition-colors ${
                   selected
                     ? 'bg-accent-soft text-accent'
@@ -121,17 +123,18 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
                 }`}
               >
                 {done && <Check className="h-3.5 w-3.5 text-success" />}
-                {tab.label}
+                {label}
               </button>
             )
           })}
           {hydrated && (
             <span className="ml-auto hidden shrink-0 self-center pr-2 text-[0.75rem] tabular-nums text-subtle sm:inline">
-              {read.length} of {READING_TABS.length} read
+              {read.length} of {study.docs.length} read
             </span>
           )}
         </div>
       </div>
+      )}
 
       {study.docs.map(({ tab, label, doc }, i) => {
         const nextTab = study.docs[i + 1]

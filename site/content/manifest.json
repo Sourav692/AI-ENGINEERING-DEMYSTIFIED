@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T07:42:35.490Z",
+  "generatedAt": "2026-09-24T08:07:22.238Z",
   "modules": [
     {
       "id": "01-customer-discovery-and-decomposition",
@@ -257,25 +257,97 @@
               "slug": "enterprise-knowledge-assistant",
               "order": 1,
               "title": "Enterprise Knowledge Assistant",
-              "tag": "G01"
+              "tag": "G01",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "nl-over-governed-data",
               "order": 6,
               "title": "Natural Language over Governed Data",
-              "tag": "G06"
+              "tag": "G06",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "document-review-copilot",
               "order": 8,
               "title": "Document Review Copilot",
-              "tag": "G08"
+              "tag": "G08",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "deep-research-agent",
               "order": 11,
               "title": "Deep Research Agent",
-              "tag": "G11"
+              "tag": "G11",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             }
           ]
         },
@@ -288,43 +360,169 @@
               "slug": "customer-support-automation",
               "order": 2,
               "title": "Customer Support Automation",
-              "tag": "G02"
+              "tag": "G02",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "tool-using-agent-with-safety-controls",
               "order": 3,
               "title": "Tool-Using Agent with Safety Controls",
-              "tag": "G03"
+              "tag": "G03",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "sre-incident-response-agent",
               "order": 4,
               "title": "SRE Incident Response Agent",
-              "tag": "G04"
+              "tag": "G04",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "sales-copilot",
               "order": 5,
               "title": "Sales Copilot",
-              "tag": "G05"
+              "tag": "G05",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "enterprise-coding-assistant",
               "order": 9,
               "title": "Enterprise Coding Assistant",
-              "tag": "G09"
+              "tag": "G09",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "real-time-call-assistant",
               "order": 16,
               "title": "Real-Time Call Assistant",
-              "tag": "G16"
+              "tag": "G16",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "logistics-exception-handling",
               "order": 17,
               "title": "Logistics Exception Handling",
-              "tag": "G17"
+              "tag": "G17",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             }
           ]
         },
@@ -337,31 +535,121 @@
               "slug": "secure-multi-tenant-ai-platform",
               "order": 7,
               "title": "Secure Multi-Tenant AI Platform",
-              "tag": "G07"
+              "tag": "G07",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "high-volume-batch-pipeline",
               "order": 10,
               "title": "High-Volume Batch Pipeline",
-              "tag": "G10"
+              "tag": "G10",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "agent-platform-for-non-technical-users",
               "order": 15,
               "title": "Agent Platform for Non-Technical Users",
-              "tag": "G15"
+              "tag": "G15",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "consumer-scale-chat-service",
               "order": 18,
               "title": "Consumer-Scale Chat Service",
-              "tag": "G18"
+              "tag": "G18",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "llm-inference-serving",
               "order": 20,
               "title": "LLM Inference Serving",
-              "tag": "G20"
+              "tag": "G20",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             }
           ]
         },
@@ -374,19 +662,73 @@
               "slug": "scoping-to-deployed-agent",
               "order": 12,
               "title": "Scoping to Deployed Agent",
-              "tag": "G12"
+              "tag": "G12",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "evaluation-and-release-gating",
               "order": 13,
               "title": "Evaluation and Release Gating",
-              "tag": "G13"
+              "tag": "G13",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             },
             {
               "slug": "observability-and-production-diagnosis",
               "order": 14,
               "title": "Observability and Production Diagnosis",
-              "tag": "G14"
+              "tag": "G14",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
             }
           ]
         },
@@ -399,7 +741,259 @@
               "slug": "model-development-and-post-training",
               "order": 19,
               "title": "Model Development and Post-Training",
-              "tag": "G19"
+              "tag": "G19",
+              "tabs": [
+                {
+                  "id": "main",
+                  "label": "Main"
+                },
+                {
+                  "id": "deep-dive",
+                  "label": "Deep Dive"
+                },
+                {
+                  "id": "cheat-sheet",
+                  "label": "Cheat Sheet"
+                },
+                {
+                  "id": "full-pack",
+                  "label": "Full Pack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "standalone-designs",
+          "title": "Standalone Designs",
+          "blurb": "Full system designs with no sibling in the groups above — each is its own problem, from an air-gapped deployment to a gateway in front of every model call.",
+          "scenarios": [
+            {
+              "slug": "recruiting-platform",
+              "order": 4,
+              "title": "AI-Powered Recruiting Platform",
+              "tag": "#4",
+              "tabs": [
+                {
+                  "id": "casebook",
+                  "label": "Casebook"
+                },
+                {
+                  "id": "full-design",
+                  "label": "Full Design"
+                }
+              ]
+            },
+            {
+              "slug": "travel-agent-worked-example",
+              "order": 14,
+              "title": "Travel Agent: the 12-Part Framework Worked Through",
+              "tag": "#14",
+              "tabs": [
+                {
+                  "id": "worked-example",
+                  "label": "Worked Example"
+                },
+                {
+                  "id": "framework-overview",
+                  "label": "Framework Overview"
+                }
+              ]
+            },
+            {
+              "slug": "air-gapped-ai-system",
+              "order": 19,
+              "title": "AI System for an Air-Gapped Environment",
+              "tag": "#19",
+              "tabs": [
+                {
+                  "id": "worksheet",
+                  "label": "Worksheet"
+                },
+                {
+                  "id": "answer-key",
+                  "label": "Answer Key"
+                },
+                {
+                  "id": "tutorial-v2",
+                  "label": "Tutorial V2"
+                },
+                {
+                  "id": "tutorial-v1",
+                  "label": "Tutorial V1"
+                }
+              ],
+              "practice": "system-design/ai-system-for-an-air-gapped-environment"
+            },
+            {
+              "slug": "reliable-workflow-orchestration",
+              "order": 23,
+              "title": "Reliable Workflow Orchestration System",
+              "tag": "#23",
+              "tabs": [
+                {
+                  "id": "worksheet",
+                  "label": "Worksheet"
+                },
+                {
+                  "id": "answer-key",
+                  "label": "Answer Key"
+                },
+                {
+                  "id": "tutorial-v2",
+                  "label": "Tutorial V2"
+                },
+                {
+                  "id": "tutorial-v1",
+                  "label": "Tutorial V1"
+                }
+              ],
+              "practice": "system-design/reliable-workflow-orchestration-system"
+            },
+            {
+              "slug": "configurable-platform-customer-workflows",
+              "order": 25,
+              "title": "Configurable Platform for Customer-Specific Workflows",
+              "tag": "#25",
+              "tabs": [
+                {
+                  "id": "worksheet",
+                  "label": "Worksheet"
+                },
+                {
+                  "id": "answer-key",
+                  "label": "Answer Key"
+                },
+                {
+                  "id": "tutorial-v2",
+                  "label": "Tutorial V2"
+                },
+                {
+                  "id": "tutorial-v1",
+                  "label": "Tutorial V1"
+                }
+              ],
+              "practice": "system-design/configurable-platform-customer-specific-workflows"
+            },
+            {
+              "slug": "enterprise-chatbot-platform",
+              "order": 26,
+              "title": "Enterprise Chatbot Platform",
+              "tag": "#26",
+              "tabs": [
+                {
+                  "id": "worksheet",
+                  "label": "Worksheet"
+                },
+                {
+                  "id": "answer-key",
+                  "label": "Answer Key"
+                },
+                {
+                  "id": "tutorial-v2",
+                  "label": "Tutorial V2"
+                },
+                {
+                  "id": "tutorial-v1",
+                  "label": "Tutorial V1"
+                },
+                {
+                  "id": "tutorial-v1-uncondensed",
+                  "label": "Tutorial V1 (Uncondensed)"
+                }
+              ],
+              "practice": "system-design/enterprise-chatbot-platform"
+            },
+            {
+              "slug": "self-adapting-agent",
+              "order": 80,
+              "title": "Agent That Adapts to New Tasks",
+              "tag": "#80",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
+            },
+            {
+              "slug": "personal-assistant-with-memory",
+              "order": 98,
+              "title": "Personal Assistant That Remembers You",
+              "tag": "#98",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
+            },
+            {
+              "slug": "production-llm-gateway",
+              "order": 100,
+              "title": "Production LLM Gateway",
+              "tag": "#100",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "judgement-and-decomposition",
+          "title": "Judgement & Decomposition",
+          "blurb": "Questions that test how you think rather than what you draw: which use cases to fund, how to scale a prototype, what to do with poor data, and how to break an open-ended problem down in sixty minutes.",
+          "scenarios": [
+            {
+              "slug": "prioritize-ai-use-cases",
+              "order": 60,
+              "title": "Prioritise AI Use Cases for a Large Enterprise",
+              "tag": "#60",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
+            },
+            {
+              "slug": "scale-prototype-to-production",
+              "order": 61,
+              "title": "Scale a Prototype from 100 to 100,000 Users",
+              "tag": "#61",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
+            },
+            {
+              "slug": "build-when-customer-data-is-poor",
+              "order": 62,
+              "title": "Build When the Customer’s Data Is Poor",
+              "tag": "#62",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
+            },
+            {
+              "slug": "decomposition-classics-67-68-69",
+              "order": 67,
+              "title": "Decomposition Classics: 911, Bank Fraud, Medication Errors",
+              "tag": "#67–69",
+              "tabs": [
+                {
+                  "id": "guide",
+                  "label": "Guide"
+                }
+              ]
             }
           ]
         }

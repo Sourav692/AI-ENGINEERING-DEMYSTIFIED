@@ -151,7 +151,7 @@ export function ScenarioList({ scenarios }: { scenarios: ScenarioRef[] }) {
                 aria-hidden
                 className={`h-2.5 w-2.5 shrink-0 rounded-full border-2 ${DOT[status]}`}
               />
-              <span className={`${scenario.tag ? 'w-8' : 'w-6'} shrink-0 text-[0.8125rem] font-semibold tabular-nums text-subtle`}>
+              <span className={`${scenario.tag ? 'w-12' : 'w-6'} shrink-0 whitespace-nowrap text-[0.8125rem] font-semibold tabular-nums text-subtle`}>
                 {scenario.tag ?? String(scenario.order).padStart(2, '0')}
               </span>
               <span className="flex-1 text-[0.9375rem] font-medium group-hover:text-accent">

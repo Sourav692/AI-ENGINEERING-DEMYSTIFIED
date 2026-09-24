@@ -6,7 +6,7 @@ import { cache } from 'react'
 import { parseDocument, type Section } from './parse'
 import { parseReading, readingText, toPlainText } from './reading'
 import { ANSWER_KEY_MAP, CLOSING_SECTION_KEY } from './mapping'
-import { READING_TABS, scenarioHref } from './scenario'
+import { scenarioHref } from './scenario'
 import type {
   CaseStudy,
   Manifest,
@@ -55,6 +55,8 @@ export const getAllScenarios = cache(async (): Promise<ScenarioRef[]> => {
         title: scenario.title,
         order: scenario.order,
         tag: scenario.tag,
+        tabs: scenario.tabs,
+        practice: scenario.practice,
         reading: module.kind === 'reading',
       })),
     ),
@@ -128,7 +130,7 @@ export const getCaseStudy = cache(
 
     const base = join(CONTENT_DIR, 'modules', moduleId, trackId, slug)
     const docs = await Promise.all(
-      READING_TABS.map(async (tab) => ({
+      (ref.tabs ?? []).map(async (tab) => ({
         tab: tab.id,
         label: tab.label,
         doc: parseReading(await readFile(join(base, `${tab.id}.md`), 'utf8'), tab.id),

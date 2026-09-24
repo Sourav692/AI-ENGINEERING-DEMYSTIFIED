@@ -137,9 +137,9 @@ export const MODULES: ModuleMeta[] = [
     number: 15,
     title: 'FDE Case Studies',
     blurb:
-      'Twenty system-design case studies, each read at three depths: the interview ' +
-      'guide, a deep dive for follow-up questions, and a one-page cheat sheet — plus ' +
-      'the full sourced pack behind them.',
+      'Twenty grouped system-design case studies, each read at three depths — interview ' +
+      'guide, deep dive and cheat sheet, plus the full sourced pack — and thirteen ' +
+      'standalone cases, from one-off designs to judgement and decomposition questions.',
     status: 'live',
     kind: 'reading',
   },

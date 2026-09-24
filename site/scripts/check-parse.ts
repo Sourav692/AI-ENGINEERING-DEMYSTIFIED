@@ -19,7 +19,6 @@ import { parseDocument } from '../src/lib/parse.ts'
 import type { Block } from '../src/lib/parse.ts'
 import { ANSWER_KEY_MAP } from '../src/lib/mapping.ts'
 import { parseReading } from '../src/lib/reading.ts'
-import { READING_TABS } from '../src/lib/scenario.ts'
 
 const CONTENT = resolve(import.meta.dirname, '..', 'content')
 
@@ -121,12 +120,16 @@ const manifest = JSON.parse(await readFile(join(CONTENT, 'manifest.json'), 'utf8
  * pointing into the repo, which is a dead link on the site. The sync step rewrites
  * every repo link, so one surviving here means that rewrite missed a case.
  */
-async function checkReading(mod: { id: string; tracks: { id: string; scenarios: { slug: string }[] }[] }) {
+async function checkReading(mod: {
+  id: string
+  tracks: { id: string; scenarios: { slug: string; tabs?: { id: string }[] }[] }[]
+}) {
   for (const track of mod.tracks) {
-    for (const { slug } of track.scenarios) {
+    for (const { slug, tabs = [] } of track.scenarios) {
+      if (tabs.length === 0) failures.push(`${track.id}/${slug}: no tabs in the manifest`)
       let sections = 0
       let diagrams = 0
-      for (const tab of READING_TABS) {
+      for (const tab of tabs) {
         const label = `${track.id}/${slug}/${tab.id}`
         const raw = await readFile(join(CONTENT, 'modules', mod.id, track.id, slug, `${tab.id}.md`), 'utf8').catch(() => null)
         if (raw === null) {
@@ -156,7 +159,7 @@ async function checkReading(mod: { id: string; tracks: { id: string; scenarios: 
         }
       }
       diagramTotal += diagrams
-      rows.push(`  ${`${track.id}/${slug}`.padEnd(52)} ${String(sections).padStart(3)} sec  ${diagrams} diagram(s)  (4 tabs)`)
+      rows.push(`  ${`${track.id}/${slug}`.padEnd(52)} ${String(sections).padStart(3)} sec  ${diagrams} diagram(s)  (${tabs.length} tab${tabs.length === 1 ? '' : 's'})`)
     }
   }
 }

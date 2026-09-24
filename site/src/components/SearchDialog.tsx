@@ -5,13 +5,34 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { SearchEntry } from '@/lib/scenario'
 
 /**
- * Full-text search over every worksheet and answer-key section.
+ * Full-text search over every worksheet, answer-key and case-study section.
  *
- * The index is built at build time and shipped as props, so searching costs one
- * pass over an in-memory array — no backend, no network, works offline.
+ * The index is a static file built at build time (`/search-index.json`). It is fetched
+ * the first time search opens rather than embedded in every page, because at over a
+ * megabyte it would otherwise weigh down every page view for a feature most visits
+ * never use. Searching itself is one pass over an in-memory array — no backend.
  */
-export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
+let indexRequest: Promise<SearchEntry[]> | null = null
+
+function loadIndex(): Promise<SearchEntry[]> {
+  // One request per page load, shared by every open. A failed fetch clears the
+  // promise so the next open retries instead of caching the failure.
+  indexRequest ??= fetch('/search-index.json')
+    .then((r) => {
+      if (!r.ok) throw new Error(`search index: HTTP ${r.status}`)
+      return r.json() as Promise<SearchEntry[]>
+    })
+    .catch((error) => {
+      indexRequest = null
+      throw error
+    })
+  return indexRequest
+}
+
+export function SearchDialog() {
   const router = useRouter()
+  const [entries, setEntries] = useState<SearchEntry[] | null>(null)
+  const [loadFailed, setLoadFailed] = useState(false)
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
@@ -21,6 +42,7 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
   // Opening always starts from a clean slate. Done here rather than in an effect
   // watching `open` so the reset happens with the state change that caused it.
   const openDialog = useCallback(() => {
+    setLoadFailed(false)
     setQuery('')
     setActive(0)
     setOpen(true)
@@ -46,7 +68,20 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const results = useMemo(() => search(entries, query), [entries, query])
+  // Fetch the index the first time search opens. The state updates land in the
+  // promise callbacks, after the effect has returned.
+  useEffect(() => {
+    if (!open || entries) return
+    let live = true
+    loadIndex()
+      .then((index) => live && setEntries(index))
+      .catch(() => live && setLoadFailed(true))
+    return () => {
+      live = false
+    }
+  }, [open, entries])
+
+  const results = useMemo(() => search(entries ?? [], query), [entries, query])
 
   // A new query invalidates the highlighted row, so they change together.
   const handleQueryChange = useCallback((value: string) => {
@@ -88,6 +123,10 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
       <button
         type="button"
         onClick={openDialog}
+        // Start the download on intent, so the index is usually there by the time the
+        // dialog opens.
+        onPointerEnter={() => void loadIndex().catch(() => {})}
+        onFocus={() => void loadIndex().catch(() => {})}
         aria-label="Search all case studies"
         aria-keyshortcuts="Meta+K Control+K"
         className="flex items-center gap-2 rounded-md border border-border bg-surface px-2.5 py-1.5 text-[0.8125rem] text-subtle transition-colors hover:border-border-strong hover:text-muted"
@@ -131,12 +170,22 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
             </div>
 
             <ul ref={listRef} className="overflow-y-auto py-1.5">
-              {query.trim() === '' && (
+              {loadFailed && (
+                <li className="px-4 py-6 text-center text-[0.875rem] text-subtle">
+                  Search could not load. Check your connection and open it again.
+                </li>
+              )}
+              {!loadFailed && !entries && query.trim() !== '' && (
+                <li className="px-4 py-6 text-center text-[0.875rem] text-subtle">
+                  Loading the search index…
+                </li>
+              )}
+              {query.trim() === '' && !loadFailed && (
                 <li className="px-4 py-6 text-center text-[0.875rem] text-subtle">
                   Search every worksheet, answer key and case study.
                 </li>
               )}
-              {query.trim() !== '' && results.length === 0 && (
+              {entries && query.trim() !== '' && results.length === 0 && (
                 <li className="px-4 py-6 text-center text-[0.875rem] text-subtle">
                   Nothing matched “{query}”.
                 </li>

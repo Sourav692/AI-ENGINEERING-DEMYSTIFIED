@@ -5,6 +5,7 @@ import { getAllScenarios, getCaseStudy, getScenario } from '@/lib/content'
 import { getModule } from '@/lib/registry'
 import { ScenarioView } from '@/components/ScenarioView'
 import { CaseStudyView } from '@/components/CaseStudyView'
+import type { CaseStudy } from '@/lib/scenario'
 
 type Params = { module: string; track: string; scenario: string }
 
@@ -118,14 +119,51 @@ async function CaseStudyPage({
           <span className="text-[0.8125rem] text-subtle">{study.ref.trackTitle}</span>
         </div>
         <h1 className="text-[2rem] font-bold leading-[1.2] tracking-[-0.02em]">{study.title}</h1>
-        <p className="no-print mt-3 text-[0.9375rem] leading-relaxed text-muted">
-          Start with Main, the guide you would talk through in the interview. Deep Dive holds
-          the detail for follow-up questions, Cheat Sheet is the one-page revision, and Full
-          Pack is the complete sourced write-up behind all three.
-        </p>
+        <CaseStudyIntro study={study} />
       </header>
 
       <CaseStudyView study={study} />
     </div>
+  )
+}
+
+/**
+ * The line under a case study's title says how to read *its* tabs. Grouped cases share
+ * one four-tab shape; standalone cases vary, and a one-document case needs no advice.
+ */
+function CaseStudyIntro({ study }: { study: CaseStudy }) {
+  const tabs = study.docs.map((d) => d.tab)
+  const practice = study.ref.practice
+  let text: string | null = null
+  if (tabs[0] === 'main') {
+    text =
+      'Start with Main, the guide you would talk through in the interview. Deep Dive holds ' +
+      'the detail for follow-up questions, Cheat Sheet is the one-page revision, and Full ' +
+      'Pack is the complete sourced write-up behind all three.'
+  } else if (tabs.includes('worksheet')) {
+    text =
+      'Try the Worksheet before opening the Answer Key. The two tutorials walk the same case ' +
+      'at length: V2 in cram form, V1 as the original chapter tutorial.'
+  } else if (tabs.length > 1) {
+    text = 'Each tab is a separate document on this case, in the order worth reading them.'
+  }
+  if (!text && !practice) return null
+  return (
+    <p className="no-print mt-3 text-[0.9375rem] leading-relaxed text-muted">
+      {text}
+      {practice && (
+        <>
+          {' '}
+          The worksheet is also available as an{' '}
+          <Link
+            href={`/modules/01-customer-discovery-and-decomposition/${practice}`}
+            className="font-medium text-accent underline underline-offset-2 hover:text-accent-hover"
+          >
+            interactive worksheet in Module 01
+          </Link>
+          , where your answers are saved as you type.
+        </>
+      )}
+    </p>
   )
 }
