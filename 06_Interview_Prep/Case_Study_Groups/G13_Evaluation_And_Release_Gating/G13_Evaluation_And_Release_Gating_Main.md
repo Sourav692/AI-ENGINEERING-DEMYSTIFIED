@@ -32,13 +32,41 @@ Build a shared platform for 30 AI applications that makes a controlled **pass, b
 | Which regressions must block automatically versus hold for review? | If groundedness drops 2%, is that an automatic block or a meeting? | Thresholds and confidence bands. |
 | How are post-release failures fed back into tests? | When prod invents a policy, does that case join the golden set before the next ship? | How the suite stays current. |
 
-## Requirements and scale
+## Requirements: Functional + Non-Functional
 
-**Functional:** pin candidate prompt/model/retrieval/tool/policy artifacts; select versioned suites and rubrics; run deterministic and model-based checks; compare candidate with pinned baseline; gate critical slices and four outcome dimensions; route uncertain/disputed cases to humans; record decisions, owners and overrides; sample production failures into a reviewed test pipeline.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** p95 release evaluation within roughly 20 minutes, reproducibility, tenant isolation, sandboxed runners, trustworthy grader calibration, bounded cost and fail-closed behavior when evidence is missing. Do not assume one universal rubric across applications. The first version does not automate tuning or broadly share tenant datasets.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-At 30 apps × 20 candidates/day × 5,000 cases, the full naive volume is **3 million case executions/day**. At 2–5 model/evaluator calls each, that is **6–15 million calls/day**. A six-hour release window raises the required rate to roughly 278–694 calls/s, versus 69–174/s spread across a day. At 2.5 calls/s/worker, that is about 112–278 workers before headroom in the six-hour window. Tier suites and use a shared elastic pool with tenant quotas.
+### Functional requirements — what the system must do
+
+1. **Pin candidate artifacts** — prompt, model, retrieval, tool, policy.
+2. **Select versioned suites and rubrics.**
+3. **Run deterministic and model-based checks.**
+4. **Compare to the pinned production baseline.**
+5. **Gate critical slices** and four outcome dimensions (quality, safety, latency, cost).
+6. **Route uncertain or disputed cases to humans.**
+7. **Record decisions, owners, and overrides.**
+8. **Sample production failures** into a reviewed test pipeline.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | p95 release evaluation within ~20 minutes. |
+| **Reproducibility** | Same artifacts, same suite, same decision. |
+| **Security** | Tenant isolation; sandboxed runners. |
+| **Trust** | Calibrated graders; fail closed when evidence is missing. |
+| **Cost** | Bounded eval spend. |
+| **Scale (illustrative)** | 30 apps × 20 candidates/day × 5,000 cases = **3M executions/day**; 2–5 calls each ⇒ **6–15M calls/day**. Six-hour window ≈ 278–694 calls/s (~112–278 workers at 2.5 calls/s). Tier suites; shared elastic pool with tenant quotas. |
+
+Do not assume one universal rubric. v1 does not auto-tune or broadly share tenant datasets.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, pin the candidate, run the suite vs live baseline, then pass, block, or hold. Non-functionally, about 20 minutes, reproducible, fail closed, and humans own overrides.”**
 
 ## Architecture
 

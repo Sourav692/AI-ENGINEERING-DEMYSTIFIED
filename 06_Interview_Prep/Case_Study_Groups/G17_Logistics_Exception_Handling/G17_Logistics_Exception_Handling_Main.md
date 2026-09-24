@@ -36,13 +36,40 @@ This is a modest-user, high-stakes exception system. It watches carrier feeds, d
 | What are the shipment-value and confidence rules? | Sets the narrow auto path and calibration work. |
 | Which regions may store or access shipment data? | Determines regional data planes and application access. |
 
-## Requirements and sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** ingest webhook and CSV/EDI drops; normalize and deduplicate; detect disruptions; produce a proposed resolution with signals and confidence; enforce customs-first, value and confidence policy; auto-execute eligible actions idempotently; let agents approve/edit/reject all others; audit every verdict and action. New carriers should be adapters rather than core rewrites.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** zero customs holds auto-resolved, EU data kept in EU, no silently lost exception or double action, separate freshness metrics for real-time versus batch, low time-to-draft, least-privilege carrier credentials, and cost per resolved exception. A missing exception type, shipment value or confidence routes to a human.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-About 60% of carriers send webhooks at roughly **200 events/s combined peak**; 40% drop files every **2–6 hours**. There are about **150 agents**, around **40 concurrent** at handoff, handling **30–50 cases each per day**. A peak-rate-all-day upper bound is ~17.3M events/day, while human cases are roughly 4,500–7,500/day. Detect cheaply on all events; call the resolution model only for exceptions. The source explicitly treats the daily event figure as an upper-bound calculation, not measured daily volume.
+### Functional requirements — what the system must do
+
+1. **Ingest webhooks and CSV/EDI drops.**
+2. **Normalize and deduplicate.**
+3. **Detect disruptions.**
+4. **Propose a resolution** with signals and confidence.
+5. **Enforce customs-first, value, and confidence policy.**
+6. **Auto-execute only eligible actions**, idempotently.
+7. **Let agents approve / edit / reject** all others.
+8. **Audit every verdict and action.** New carriers are adapters, not core rewrites.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Safety** | Zero customs holds auto-resolved; missing type/value/confidence → human. |
+| **Residency** | EU data stays in EU. |
+| **Reliability** | No silently lost exception or double action. |
+| **Freshness** | Separate metrics for real-time vs batch feeds. |
+| **Latency / cost** | Low time-to-draft; cost per resolved exception. |
+| **Security** | Least-privilege carrier credentials. |
+| **Load (illustrative)** | ~60% carriers webhooks, ~**200 events/s** combined peak; 40% files every 2–6 h. ~150 agents, ~40 concurrent, 30–50 cases/day. Upper bound ~17.3M events/day vs ~4,500–7,500 human cases/day. Detect cheaply on all events; model only exceptions. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, ingest feeds, detect, draft, then a policy gate — customs always human. Non-functionally, no double actions, EU stays in EU, and we don’t call the model on every webhook.”**
 
 ## Architecture
 

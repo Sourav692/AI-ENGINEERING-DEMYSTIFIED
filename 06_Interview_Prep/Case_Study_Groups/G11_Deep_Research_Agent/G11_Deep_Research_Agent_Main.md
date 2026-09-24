@@ -23,22 +23,49 @@ Build a read-only research agent for public web and a user's private documents: 
 
 ## Questions to ask the interviewer
 
-| Question to ask | What it's really asking | What you then decide |
-| --- | --- | --- |
-| What is an acceptable citation, and must every factual claim have one? | If we say “Acme’s CEO is Jane,” must we show the URL and span, or is a vibe okay? | Evidence schema and verifier. |
-| Which sources are public and which are user-scoped? | Can the web agent see my Drive, or only public pages? | Tool identities and isolation. |
-| What happens when a source is unavailable or search finds nothing? | If Wikipedia timed out, do we say “not found” or “we couldn’t check”? | `EMPTY` vs `UNAVAILABLE`, and when a partial answer is allowed. |
-| What makes a research run complete? | After 12 hops we still lack a number — keep going, or stop and show the gap? | Coverage rubric, hop cap, and no-progress stop. |
-| May answers contain external links, images or rendered HTML? | Can the answer include a tracking pixel or a `javascript:` link from a random page? | Egress sanitization. |
-| Is $0.20 a hard cap or target, and at what traffic peak? | At noon, if a run would cost $0.50, do we stop mid-research? | Model routing and search budgets. |
+| Question to ask                                                        | What it's really asking                                                              | What you then decide                                                |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| What is an acceptable citation, and must every factual claim have one? | If we say “Acme’s CEO is Jane,” must we show the URL and span, or is a vibe okay? | Evidence schema and verifier.                                       |
+| Which sources are public and which are user-scoped?                    | Can the web agent see my Drive, or only public pages?                                | Tool identities and isolation.                                      |
+| What happens when a source is unavailable or search finds nothing?     | If Wikipedia timed out, do we say “not found” or “we couldn’t check”?           | `EMPTY` vs `UNAVAILABLE`, and when a partial answer is allowed. |
+| What makes a research run complete?                                    | After 12 hops we still lack a number — keep going, or stop and show the gap?        | Coverage rubric, hop cap, and no-progress stop.                     |
+| May answers contain external links, images or rendered HTML?           | Can the answer include a tracking pixel or a`javascript:` link from a random page? | Egress sanitization.                                                |
+| Is $0.20 a hard cap or target, and at what traffic peak?               | At noon, if a run would cost $0.50, do we stop mid-research?                         | Model routing and search budgets.                                   |
 
-## Requirements and sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** authenticate and rate-limit; plan a bounded research task; search the web and user documents with separate privileges; merge typed evidence; check coverage and replan if useful; synthesize with citations; verify claims and sanitize rendered output; stream status and return explicit gaps.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** p95 run latency <90s, first progress <3s, roughly $0.20/run, strict cross-user isolation, bounded tool calls and retries, auditable citations, safe handling of untrusted web content. The agent is read-only and cannot take external actions.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-40,000 runs/day averages about 28/minute. A rough 3× peak is about 100/minute; at 70 seconds of active time that implies roughly 120 in flight, or around 170 slots at 70% utilization. These are planning estimates, not a precise queueing guarantee. A naive seven-step plan can send around 30,000 input tokens, so context isolation and routing are primary cost levers.
+### Functional requirements — what the system must do
+
+1. **Authenticate and rate-limit.**
+2. **Plan a bounded research task.**
+3. **Search web and user documents with separate privileges.**
+4. **Merge typed evidence.**
+5. **Check coverage and replan** if useful and budget remains.
+6. **Synthesize with citations.**
+7. **Verify claims and sanitize** rendered output.
+8. **Stream status and return explicit gaps.**
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | p95 run <90 s; first progress <3 s. |
+| **Cost** | Roughly **$0.20/run**. |
+| **Security** | Strict cross-user isolation; untrusted web content sanitized. |
+| **Bounds** | Cap tool calls and retries. |
+| **Audit** | Citations are auditable. |
+| **Autonomy** | Read-only; no external actions. |
+| **Scale (illustrative)** | 40,000 runs/day ≈ 28/min; 3× peak ≈ 100/min; ~70 s active ⇒ ~120 in flight (~170 slots at 70% util.). Naive seven-step plans can send ~30k input tokens. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, plan bounded research, search public and private sources separately, cite every claim, and show gaps. Non-functionally, under 90 seconds, about 20 cents, no cross-user leak, and no invented certainty.”**
 
 ## Architecture
 
@@ -82,9 +109,41 @@ flowchart LR
 
 ## Evaluation, rollout and variants
 
-Score outcome and trajectory: citation support, unsupported-claim rate, coverage, cross-user leak rate, p95 latency, first signal, cost/run, hop count and tool routing. Test poisoned web pages, missing documents, conflicting sources, empty search and unavailable tools. Audit not only final answers but the evidence ledger and link sanitizer.
+### What to score
 
-The related AWS research platform uses API limits, Bedrock guardrails, Redis/RDS memory, a search–summarize–write–critic loop and observability, but its source notes lack of per-user ACL and deterministic release gating; those defaults cannot be imported unchanged into this enterprise case. The supervisor-worker variant justifies multiple agents for parallelism, distinct permissions or context isolation. If decomposition is predictable, a deterministic workflow is simpler.
+Score **outcome and trajectory**, not only the final paragraph.
+
+| Metric | What it catches |
+|---|---|
+| Citation support | Claims that are not backed by the ledger |
+| Unsupported-claim rate | Invented facts |
+| Coverage | Plan items left unanswered |
+| Cross-user leak rate | Private docs in another user’s run |
+| p95 latency / first signal | Slow runs; silent first seconds |
+| Cost/run | Budget blow-ups |
+| Hop count and tool routing | Loops, wrong worker, wasted searches |
+
+### What to test
+
+- Poisoned web pages
+- Missing documents
+- Conflicting sources
+- Empty search (`EMPTY`)
+- Unavailable tools (`UNAVAILABLE`)
+
+Audit **the evidence ledger and the link sanitizer**, not only the final answer.
+
+### Related AWS research platform
+
+It uses API limits, Bedrock guardrails, Redis/RDS memory, a search–summarize–write–critic loop, and observability.
+
+Its source **does not** give per-user ACL or deterministic release gating. Do **not** copy those defaults into this enterprise case.
+
+### When to use multiple agents
+
+A supervisor–worker split is worth it for **parallelism**, **distinct permissions**, or **context isolation** (web vs Drive).
+
+If the decomposition is predictable, a **deterministic workflow** is simpler.
 
 ## Two-minute interview answer
 

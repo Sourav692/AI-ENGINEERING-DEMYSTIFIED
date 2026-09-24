@@ -38,38 +38,47 @@ This is the anchor for the related executive-dashboard and retail-forecast expla
 | Must users see SQL, lineage, freshness, and a reconstruction of past answers?                                     | Next quarter, can we prove which SQL and metric version produced last month’s board number?                   | Response format and append-only`QueryRun` record.                             |
 | Which explanations are board-facing or action-triggering?                                                         | Is this a FYI chart, or will someone change prices from this answer?                                           | Extra checks and the human-review line.                                         |
 
-## 2. Requirements and success
+## 2. Requirements: Functional + Non-Functional
 
-**Functional**
+The easiest way to frame requirements in an interview is:
 
-- Resolve the question to a governed metric first.
-- Retrieve only permitted tables, joins, and freshness context.
-- Ask when the term is ambiguous.
-- Produce dialect-specific SQL.
-- Parse the AST and check tables, columns, joins, shape, and estimated scan.
-- Execute through a read-only gateway.
-- Return the result, SQL, metric lineage, and caveats.
-- Generate prose from the structured result and check it against the numbers.
-- Keep a query-run audit: actor, decision, SQL hash, bytes scanned, and metric/schema/policy versions.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-**Non-functional**
+### Functional requirements — what the system must do
 
-- Correctness outranks speed.
-- Warehouse-native row/column policies and entitlements protect every execution.
-- Policy failure or a suspicious scan fails closed.
-- Interactive target **3–8 s**; longer work is async and visible.
-- Enforce row limits, timeouts, date windows, and scan budgets.
-- Cache metric and schema metadata with versions and TTLs.
-- Keep credentials narrow and logs redacted.
+1. **Resolve to a governed metric first** — before any physical schema.
+2. **Retrieve only permitted tables, joins, and freshness context.**
+3. **Ask on ambiguity** — do not pick between two approved meanings.
+4. **Produce dialect-specific SQL.**
+5. **Parse the AST** — check tables, columns, joins, shape, and estimated scan.
+6. **Execute through a read-only gateway.**
+7. **Return result, SQL, metric lineage, and caveats.**
+8. **Generate prose from the structured result** — check it against the numbers.
+9. **Audit the query run** — actor, decision, SQL hash, bytes scanned, metric/schema/policy versions.
 
-**First release**
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Correctness** | Outranks speed; valid SQL for the wrong metric still fails. |
+| **Security** | Warehouse-native row/column policies and entitlements on every execution. |
+| **Fail-closed** | Policy failure or a suspicious scan does not run. |
+| **Latency** | Interactive **3–8 s**; longer work async and visible. |
+| **Cost guards** | Row limits, timeouts, date windows, scan budgets. |
+| **Operability** | Versioned metric/schema cache with TTLs; narrow credentials; redacted logs. |
+
+### First release
 
 - Ten owner-approved metrics.
 - Golden question / SQL / result cases.
 - Analyst shadow review, then a small executive audience.
-- Not a general interface to every warehouse table.
-- Not a write-query tool.
-- Not a machine that defines business metrics.
+- Not a general interface to every warehouse table, a write-query tool, or a machine that defines business metrics.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, pin the metric, generate checked read-only SQL, and explain from the result. Non-functionally, warehouse ACLs, scan budgets, 3–8 second interactive asks, and a replayable query-run record.”**
 
 ## 3. Architecture
 

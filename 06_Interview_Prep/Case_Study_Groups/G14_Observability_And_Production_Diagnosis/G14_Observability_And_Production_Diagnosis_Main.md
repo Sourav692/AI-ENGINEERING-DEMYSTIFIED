@@ -40,13 +40,36 @@ The anchor is a customer-facing AI application that is “slow and sometimes wro
 | Who must diagnose incidents, and what may support see? | Can L1 support open another tenant’s raw tickets while debugging? | Tenant-scoped views and access roles. |
 | What overhead, retention and sampling budget are acceptable? | Can we afford 100% traces for 90 days, or 5% for 14? | Collector and store size. |
 
-## Requirements and sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** propagate one correlation ID through auth, tenant resolution, retrieval, LLM/model calls, tools, post-processing and queues; collect structured per-hop timings and outcome tags; show global health separately from tenant-scoped support views; let support find a request family without reading raw content; keep an access audit independent of sampled debugging traces.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** telemetry cannot block the user request; overhead stays within an agreed budget; no full prompts, raw documents, secrets or unbounded free-form labels by default; redaction occurs before storage; tenant isolation and bounded retention are enforced. Audit evidence for protected actions has a stricter failure policy than ordinary traces.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-The source's supplementary sizing example assumes 500 requests/s and roughly six spans/request, or 3,000 raw spans/s. Retain all errors and latency outliers, about 2–5% of traffic, and head-sample about 5% of normal traffic. At around 200 bytes per redacted span and 30 days, storage is on the order of hundreds of GB, depending on actual sampling. The hard capacity question is whether classification and export can keep up safely, not only disk space. Treat these figures as illustrative, not as the anchor's measured workload.
+### Functional requirements — what the system must do
+
+1. **Propagate one correlation ID** through auth, tenant, retrieval, model, tools, post-process, and queues.
+2. **Collect structured per-hop timings and outcome tags.**
+3. **Separate global health from tenant-scoped support views.**
+4. **Let support find a request family without raw content.**
+5. **Keep an access audit** independent of sampled debug traces.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Non-blocking** | Telemetry cannot stall the user request. |
+| **Overhead** | Stay within an agreed budget. |
+| **Privacy** | No full prompts, raw documents, secrets, or unbounded free-form labels by default; redact before storage. |
+| **Isolation** | Tenant isolation; bounded retention. |
+| **Audit** | Protected-action evidence has a stricter failure policy than ordinary traces. |
+| **Volume (illustrative)** | 500 rps × ~6 spans ≈ 3,000 raw spans/s. Keep all errors/outliers (~2–5%) plus ~5% of normal traffic. ~200 B/redacted span × 30 days ⇒ hundreds of GB. Classifier/export capacity matters more than disk. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, one ID through every hop, timings and outcomes, tenant-scoped debug. Non-functionally, don’t block the user, don’t store the prompt, and still find why it was slow or wrong.”**
 
 ## Architecture
 

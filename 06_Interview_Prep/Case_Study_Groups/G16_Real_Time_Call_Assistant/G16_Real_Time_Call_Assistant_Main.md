@@ -38,13 +38,39 @@ Before the call, hours are available to prepare permission-scoped account contex
 | Which languages and call types are in scope? | Sales in English only, or support in Spanish too? | ASR and evaluation slices. |
 | Is recording consent present in each region, and who approves CRM changes? | Can we transcribe a German call without consent, and can the model write the CRM? | Privacy and the action boundary. |
 
-## Requirements and latency budget
+## Requirements: Functional + Non-Functional
 
-**Functional:** ingest telephony audio with consent; diarize speakers; stream ASR; redact PII before transcript storage or model use; show timely, short live suggestions; asynchronously summarize calls and extract cited action items; propose CRM field updates with confidence; let the rep correct or approve; enforce retention and record corrections for evaluation.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** p95 first useful bullet under three seconds after end-of-utterance, with timeout reported separately; post-call proposal in minutes; permission-scoped CRM context; no unredacted PII in logs; no recording or transcription without consent; no CRM write without approval; cost per call measured; accuracy sliced by language and call type. These are source design targets, not measured production results.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-The source's illustrative live budget is ~300ms end-of-utterance detection, 300ms final ASR segment, 100ms trigger, 100ms snapshot read, 150ms optional playbook retrieval, 400ms model first token, 500ms first bullet and 150ms network/UI: about **2.0s total**, leaving roughly a second under the 3s target. The stages and headroom need real measurement. Streaming improves time to first visible text; it does not reduce total generation time or cost.
+### Functional requirements — what the system must do
+
+1. **Ingest telephony audio with consent.**
+2. **Diarize speakers and stream ASR.**
+3. **Redact PII** before transcript storage or model use.
+4. **Show short live suggestions** in time.
+5. **Summarize asynchronously** and extract cited action items.
+6. **Propose CRM field updates** with confidence; the rep corrects or approves.
+7. **Enforce retention** and record corrections for evaluation.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Live latency** | p95 first useful bullet <3 s after end-of-utterance; timeout reported separately. Illustrative budget ~2.0 s (300 ms EOU, 300 ms ASR, 100 ms trigger, 100 ms snapshot, 150 ms playbook, 400 ms first token, 500 ms bullet, 150 ms net/UI). Streaming helps first pixel, not total cost. |
+| **Post-call** | Proposal in minutes. |
+| **Security** | Permission-scoped CRM; no unredacted PII in logs; no record/transcribe without consent. |
+| **Writes** | No CRM write without approval. |
+| **Cost / quality** | Cost per call; accuracy sliced by language and call type. |
+
+These are source design targets, not measured production results.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, consent, live bullet, later summary and CRM proposal the rep approves. Non-functionally, three seconds on the live path, PII redacted, and the live lane never waits on post-call work.”**
 
 ## Architecture
 

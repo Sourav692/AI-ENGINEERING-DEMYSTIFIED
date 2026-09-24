@@ -38,13 +38,42 @@ The [source study](G08_Document_Review_Copilot.md) treats three cases as variati
 | What must the assistant refuse or escalate? What evidence must the reviewer see? | If the cited span does not support “meets medical necessity,” does the reviewer still see a green draft? | Risk tiers, span verifier, and review UI. |
 | How much false-positive burden can the reviewer absorb, and what cost per true issue is acceptable? | If we flag 50 harmless files to catch one real issue, will reviewers ignore the tool? | Screening tiers and eval thresholds. |
 
-## 2. Requirements and first release
+## 2. Requirements: Functional + Non-Functional
 
-**Functional:** retrieve the rule effective for the case; extract relevant fields and exact source spans; compare evidence with criteria; flag missing, stale, or conflicting facts; classify risk; produce an editable draft with a span citation for every claim; verify that each span supports the claim and the user may view it; route material or uncertain cases to a named human; audit evidence IDs, rule/prompt/model versions, edits, and approval.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** source ACL and patient/matter scope must hold before generation; PHI and privileged content are minimized in prompts and redacted from logs; no customer-data training without agreement. The source examples call for **3–8 s** interactive questions, **10–20 s** packet generation, and overnight batch for bulk surveillance, with analyst drill-down under **10 s**. Fail closed on access, stale governing rule, missing citation, or material approval; degrade visibly on non-authoritative formatting and source outages. Measure cost per document **and per true issue found**.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-**Version one:** one document type, one rule source, internal drafts, every material case approved. No autonomous clinical, legal, or regulatory decision and no external submission. An unmapped ACL or critical parser coverage failure excludes the source until repaired.
+### Functional requirements — what the system must do
+
+1. **Retrieve the governing rule** effective for the case.
+2. **Extract fields and exact source spans.**
+3. **Compare evidence with criteria** — flag missing, stale, or conflicting facts.
+4. **Classify risk.**
+5. **Draft with a span citation for every claim** — editable.
+6. **Verify each span** supports the claim and the user may view it.
+7. **Route material or uncertain cases** to a named human.
+8. **Audit** evidence IDs, rule/prompt/model versions, edits, and approval.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Security** | Source ACL and patient/matter scope before generation; PHI/privilege minimized in prompts and redacted from logs; no customer-data training without agreement. |
+| **Latency** | **3–8 s** interactive; **10–20 s** packet generation; overnight batch for bulk surveillance; analyst drill-down <**10 s**. |
+| **Fail-closed** | Access fail, stale governing rule, missing citation, or missing material approval. |
+| **Degradation** | Non-authoritative formatting and source outages degrade visibly. |
+| **Cost** | Per document **and** per true issue found. |
+
+### First release
+
+One document type, one rule source, internal drafts, every material case approved. No autonomous clinical, legal, or regulatory decision and no external submission. Unmapped ACL or critical parser coverage failure excludes the source until repaired.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, extract evidence, match the right rule version, cite the span, and send material cases to a named human. Non-functionally, fail closed on access or broken citations, and measure cost per true issue, not just per document.”**
 
 ## 3. Architecture
 

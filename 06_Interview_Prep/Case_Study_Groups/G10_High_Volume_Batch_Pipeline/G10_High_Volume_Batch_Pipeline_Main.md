@@ -33,13 +33,40 @@ Classify 100 million records overnight, finish within a six-hour window, recover
 | Who owns a missed deadline and which fallback model is approved? | At 4 a.m., who can switch to the cheaper model — and is that model even allowed? | The 4 a.m. runbook. |
 | Must output be complete, ordered, auditable or available incrementally? | Can downstream start reading finished partitions, or must the file be whole and ordered? | Sink and publication contract. |
 
-## Requirements and sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** create, inspect, pause and replay jobs; freeze input and model configuration; partition and process records; validate typed outputs; write once logically; retry transient failures; quarantine permanent failures; reconcile and publish according to the agreed policy.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** six-hour completion, bounded cost and provider calls, tenant isolation, secure records and results, durable checkpoints, recoverable workers, observable ETA and explicit incident ownership. Authorization applies to job APIs and data paths; queue messages carry opaque identifiers rather than payloads.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-At 100 million records in 21,600 seconds, the baseline is about **4,630 records/s**; 15% headroom makes the target about **5,320 records/s**. At 250 input plus 20 output tokens each, one run uses about **27 billion tokens** before retries. The source states 5.15 billion here, but that multiplication is incorrect; use 100 million × 270. A 5% retry rate adds roughly 5% to inference spend. Replace these assumptions with the customer's token distribution and measured provider throughput. A 10× run needs about 53,200 records/s with the same headroom.
+### Functional requirements — what the system must do
+
+1. **Create, inspect, pause, and replay jobs.**
+2. **Freeze input and model configuration.**
+3. **Partition and process records.**
+4. **Validate typed outputs.**
+5. **Write once logically.**
+6. **Retry transient failures; quarantine permanent ones.**
+7. **Reconcile and publish** by the agreed policy.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Deadline** | Six-hour completion window. |
+| **Cost** | Bounded spend and provider calls. |
+| **Security** | Tenant isolation; secure records/results; auth on job APIs and data paths. |
+| **Reliability** | Durable checkpoints, recoverable workers; queue messages carry opaque IDs, not payloads. |
+| **Operability** | Observable ETA and explicit incident ownership. |
+| **Throughput (illustrative)** | 100M records / 21,600 s ≈ **4,630 rec/s**; 15% headroom ≈ **5,320 rec/s**. 270 tokens/record ≈ **27B tokens**/run (use 100M × 270, not the source’s 5.15B). 5% retries add ~5% spend. 10× ≈ 53,200 rec/s. |
+
+Replace token assumptions with the customer’s distribution and measured provider throughput.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, freeze the job, process partitions, validate, write once, retry or quarantine, then publish by policy. Non-functionally, hit the six-hour window, isolate tenants, and know at 4 a.m. whether partial output is allowed.”**
 
 ## Architecture
 

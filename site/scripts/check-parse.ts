@@ -18,6 +18,8 @@ import { join, resolve } from 'node:path'
 import { parseDocument } from '../src/lib/parse.ts'
 import type { Block } from '../src/lib/parse.ts'
 import { ANSWER_KEY_MAP } from '../src/lib/mapping.ts'
+import { parseReading } from '../src/lib/reading.ts'
+import { READING_TABS } from '../src/lib/scenario.ts'
 
 const CONTENT = resolve(import.meta.dirname, '..', 'content')
 
@@ -113,7 +115,57 @@ let diagramTotal = 0
 
 const manifest = JSON.parse(await readFile(join(CONTENT, 'manifest.json'), 'utf8'))
 
+/**
+ * Reading modules (FDE Case Studies) have no blanks to find. What can go wrong there is
+ * different: a tab file missing, a mermaid fence printed as source, or a link still
+ * pointing into the repo, which is a dead link on the site. The sync step rewrites
+ * every repo link, so one surviving here means that rewrite missed a case.
+ */
+async function checkReading(mod: { id: string; tracks: { id: string; scenarios: { slug: string }[] }[] }) {
+  for (const track of mod.tracks) {
+    for (const { slug } of track.scenarios) {
+      let sections = 0
+      let diagrams = 0
+      for (const tab of READING_TABS) {
+        const label = `${track.id}/${slug}/${tab.id}`
+        const raw = await readFile(join(CONTENT, 'modules', mod.id, track.id, slug, `${tab.id}.md`), 'utf8').catch(() => null)
+        if (raw === null) {
+          failures.push(`${label}: missing tab document`)
+          continue
+        }
+        const doc = parseReading(raw, tab.id)
+        if (!doc.title) failures.push(`${label}: no # title`)
+        const titled = doc.sections.filter((x) => x.title).length
+        if (titled === 0) failures.push(`${label}: no ## sections — the tab would have no contents list`)
+        sections += titled
+        for (const section of doc.sections) {
+          for (const chunk of section.chunks) {
+            if (chunk.kind === 'diagram') {
+              diagrams++
+              continue
+            }
+            if (/language-mermaid/.test(chunk.html)) {
+              failures.push(`${label}: a mermaid fence rendered as prose in "${section.title ?? 'intro'}"`)
+            }
+            for (const [, href] of chunk.html.matchAll(/href="([^"]*)"/g)) {
+              if (!/^(https?:|mailto:|#|\/)/.test(href)) {
+                failures.push(`${label}: link still points into the repo: ${href}`)
+              }
+            }
+          }
+        }
+      }
+      diagramTotal += diagrams
+      rows.push(`  ${`${track.id}/${slug}`.padEnd(52)} ${String(sections).padStart(3)} sec  ${diagrams} diagram(s)  (4 tabs)`)
+    }
+  }
+}
+
 for (const mod of manifest.modules) {
+  if (mod.kind === 'reading') {
+    await checkReading(mod)
+    continue
+  }
   for (const track of mod.tracks) {
     const expect = EXPECTATIONS[track.id]
     if (!expect) {
@@ -227,11 +279,11 @@ for (const mod of manifest.modules) {
 }
 
 console.log(rows.join('\n'))
-console.log(`\n  ${diagramTotal} mermaid diagram(s) parsed across all answer keys`)
+console.log(`\n  ${diagramTotal} mermaid diagram(s) parsed across answer keys and case studies`)
 
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):`)
   for (const f of failures) console.error(`  ✗ ${f}`)
   process.exit(1)
 }
-console.log(`\n✓ all worksheets and answer keys parse cleanly`)
+console.log(`\n✓ all worksheets, answer keys and case studies parse cleanly`)

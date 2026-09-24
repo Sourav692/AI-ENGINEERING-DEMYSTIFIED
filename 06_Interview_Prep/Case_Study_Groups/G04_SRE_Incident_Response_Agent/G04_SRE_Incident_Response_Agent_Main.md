@@ -50,31 +50,43 @@ If the interviewer cannot provide all numbers, state assumptions for throughput,
 | Operations/incident-response assistant question | Tests the progression from read-only investigation to suggested, approved, then narrowly autonomous mitigation. |
 | Latency self-drill                              | Raw telemetry and serial diagnostics become the dominant bottleneck; pre-aggregate and parallelize.             |
 
-## 2. Requirements and first-release scope
+## 2. Requirements: Functional + Non-Functional
 
-### Functional requirements
+The easiest way to frame requirements in an interview is:
 
-1. Correlate alerts with logs, metrics, traces, deployments, flags, and approved runbooks.
-2. Produce ranked hypotheses with supporting evidence, uncertainty, and source coverage.
-3. Run only authorized, read-only diagnostics automatically.
-4. Build a mitigation proposal with exact command, blast radius, evidence, runbook, freeze status, and simulation where possible.
-5. Route writes through service-owner/incident-commander approval and one tool gateway.
-6. Record timeline, policy decisions, source gaps, and outcomes for replay.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-First release: one alert class, read-only investigation, staged proposals. No autonomous restarts or rollbacks, no destructive command without a dry run, no action during a freeze without its owner, and no source with unmapped ACL metadata.
+### Functional requirements — what the system must do
 
-### Non-functional requirements
+1. **Correlate the alert** — logs, metrics, traces, deploys, flags, and approved runbooks.
+2. **Rank hypotheses** — evidence, uncertainty, and source coverage.
+3. **Run read-only diagnostics** — only authorized tools, automatically.
+4. **Propose a mitigation** — exact command, blast radius, evidence, runbook, freeze, simulation where possible.
+5. **Route writes through humans** — service owner / incident commander, then one tool gateway.
+6. **Record the timeline** — policy decisions, source gaps, and outcomes for replay.
 
-| Constraint   | Source-case target or rule                                                                                                     |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Latency      | First useful summary <30 s from alert; follow-ups 3–8 s; long investigations async with progress.                             |
-| Burst        | Design for 400 alerts in 90 s, not only the 1,200/day average.                                                                 |
-| Availability | Run outside affected blast radius; report each missing/degraded source.                                                        |
-| Security     | SSO, service ownership, scoped read credentials, redacted logs, human approval for writes.                                     |
-| Reliability  | Permission uncertainty, absent destructive-action simulation, or missing approval fail closed. Telemetry gaps degrade visibly. |
-| Cost         | Rules/small models cluster alerts; strong model synthesizes hypotheses; bound lookback and tokens.                             |
+### Non-functional requirements — how well / under what constraints
 
-These are the source’s interview assumptions and example targets, not claims of observed load.
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | First useful summary <30 s from alert; follow-ups 3–8 s; long investigations async with progress. |
+| **Burst** | Design for 400 alerts in 90 s, not only 1,200/day average. |
+| **Availability** | Run outside the affected blast radius; report missing or degraded sources. |
+| **Security** | SSO, service ownership, scoped read credentials, redacted logs, human approval for writes. |
+| **Reliability** | Uncertain permission, missing destructive-action simulation, or missing approval fail closed. Telemetry gaps degrade visibly. |
+| **Cost** | Rules/small models cluster alerts; strong model synthesizes; bound lookback and tokens. |
+
+These are the source’s interview assumptions, not observed load.
+
+### First release
+
+One alert class, read-only investigation, staged proposals. No autonomous restarts or rollbacks, no destructive command without a dry run, no action during a freeze without its owner, and no source with unmapped ACL metadata.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, I dedupe, read telemetry, rank cited hypotheses, and stage a mitigation for approval. Non-functionally, first useful output under 30 seconds in a burst, fail closed on writes, and never hide a dead source.”**
 
 ## 3. Architecture
 

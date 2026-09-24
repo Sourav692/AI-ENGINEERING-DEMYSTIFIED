@@ -36,13 +36,39 @@ The anchor asks for a multi-tenant platform where non-technical users configure 
 | What is the blast radius of a bad workflow? | If someone publishes a loop, can it refund every customer tonight? | Default budgets and rollout gates. |
 | Is multi-tenancy required from day one? | Can Acme’s workflow accidentally run on Globex’s tickets? | Tenant ID on every event, spec, lock, and policy. |
 
-## Requirements and the $500 refund
+## Requirements: Functional + Non-Functional
 
-**Functional:** normalize channels into a canonical event; choose one live workflow or a named non-selection; store versioned declarative workflows; validate typed tool arguments; checkpoint every step; deduplicate side effects; apply per-step guardrails; require role-checked promotion through draft, testing, shadow, live and autonomous stages.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** tenant isolation, no unauthorized destructive action, actual-dollar spend caps, max steps and cost, crash recovery, idempotency under redelivery, one active run per target entity, audit of every allow/deny, and separation between author and approver. The source's deterministic demo has 21 tests and no LLM; it establishes the safety engine's behavior, not the safety of a future LLM planner.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-Cascade Robotics wants small refunds without bothering a human. A **$500 refund** on a tenant with a **$50 cap** is refused, never clamped to $50. Even autonomous status cannot bypass that cap; `issue_refund` also needs a tenant allow-list entry or human approval. A retry cannot refund a second time.
+### Functional requirements — what the system must do
+
+1. **Normalize channels** into a canonical event with tenant id.
+2. **Choose one live workflow** or a named non-selection.
+3. **Store versioned declarative workflows.**
+4. **Validate typed tool arguments.**
+5. **Checkpoint every step; deduplicate side effects.**
+6. **Apply per-step guardrails.**
+7. **Promote with role checks** through draft, testing, shadow, live, autonomous.
+
+A **$500 refund** on a **$50 cap** is refused, never clamped. Autonomous status cannot bypass the cap. `issue_refund` needs allow-list or human approval. A retry cannot refund twice.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Security** | Tenant isolation; no unauthorized destructive action; author ≠ approver. |
+| **Spend** | Actual-dollar caps; max steps and cost. |
+| **Reliability** | Crash recovery; idempotency under redelivery; one active run per target entity. |
+| **Audit** | Every allow/deny recorded. |
+| **Demo note** | Source demo: 21 tests, no LLM — safety engine behavior, not a future LLM planner. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, one event, one versioned workflow, typed args, checkpointed steps. Non-functionally, tenant isolation, real spend caps that refuse not clamp, recover after crash, execute once.”**
 
 ## Architecture
 

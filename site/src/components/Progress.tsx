@@ -41,6 +41,8 @@ function useProgress(scenarios: ScenarioRef[]) {
 
 export function ModuleProgress({ scenarios }: { scenarios: ScenarioRef[] }) {
   const progress = useProgress(scenarios)
+  // Reading modules count pages read, not worksheets mastered.
+  const reading = scenarios.some((s) => s.reading)
 
   const done = progress
     ? Object.values(progress).filter((s) => s === 'mastered').length
@@ -61,14 +63,18 @@ export function ModuleProgress({ scenarios }: { scenarios: ScenarioRef[] }) {
         <Ring percent={progress ? percent : 0} />
         <div>
           <div className="text-[0.9375rem] font-semibold tabular-nums">
-            {progress ? `${done} of ${total}` : `${total} scenarios`}
+            {progress ? `${done} of ${total}` : `${total} ${reading ? 'case studies' : 'scenarios'}`}
           </div>
           <div className="text-[0.75rem] text-subtle">
             {progress
               ? started > 0
-                ? `mastered · ${started} in progress`
-                : 'mastered'
-              : 'with answer keys'}
+                ? `${reading ? 'read' : 'mastered'} · ${started} in progress`
+                : reading
+                  ? 'read'
+                  : 'mastered'
+              : reading
+                ? 'to read'
+                : 'with answer keys'}
           </div>
         </div>
       </div>
@@ -116,6 +122,12 @@ export function Ring({ percent, size = 40 }: { percent: number; size?: number })
   )
 }
 
+const READING_LABELS: Record<Status, string> = {
+  'not-started': 'Not started',
+  practiced: 'In progress',
+  mastered: 'Read',
+}
+
 const DOT: Record<Status, string> = {
   'not-started': 'border-border-strong',
   practiced: 'border-accent bg-accent/40',
@@ -139,15 +151,15 @@ export function ScenarioList({ scenarios }: { scenarios: ScenarioRef[] }) {
                 aria-hidden
                 className={`h-2.5 w-2.5 shrink-0 rounded-full border-2 ${DOT[status]}`}
               />
-              <span className="w-6 shrink-0 text-[0.8125rem] font-semibold tabular-nums text-subtle">
-                {String(scenario.order).padStart(2, '0')}
+              <span className={`${scenario.tag ? 'w-8' : 'w-6'} shrink-0 text-[0.8125rem] font-semibold tabular-nums text-subtle`}>
+                {scenario.tag ?? String(scenario.order).padStart(2, '0')}
               </span>
               <span className="flex-1 text-[0.9375rem] font-medium group-hover:text-accent">
                 {scenario.title}
               </span>
               {progress && status !== 'not-started' && (
                 <span className="hidden shrink-0 text-[0.75rem] text-subtle sm:inline">
-                  {STATUS_LABELS[status]}
+                  {scenario.reading ? READING_LABELS[status] : STATUS_LABELS[status]}
                 </span>
               )}
               <svg viewBox="0 0 16 16" aria-hidden className="h-3.5 w-3.5 shrink-0 text-subtle transition-transform group-hover:translate-x-0.5">

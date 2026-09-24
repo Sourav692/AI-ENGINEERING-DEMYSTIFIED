@@ -133,7 +133,7 @@ export function SearchDialog({ entries }: { entries: SearchEntry[] }) {
             <ul ref={listRef} className="overflow-y-auto py-1.5">
               {query.trim() === '' && (
                 <li className="px-4 py-6 text-center text-[0.875rem] text-subtle">
-                  Search across all 22 case studies.
+                  Search every worksheet, answer key and case study.
                 </li>
               )}
               {query.trim() !== '' && results.length === 0 && (

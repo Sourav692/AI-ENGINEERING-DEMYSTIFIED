@@ -24,13 +24,37 @@ The anchor asks for end-to-end batching of LLM requests, including **which GPU h
 | Peak/burst shape, tenants and priorities? | Sets admission, fairness and headroom. |
 | What should a caller see after mid-stream failure? | Chooses continuation versus explicit partial error. |
 
-## Requirements and illustrative sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** validate/tokenize requests; apply per-tenant token budgets; route to a healthy GPU with free KV capacity; continuously batch variable-length generation; demultiplex responses by request ID; stream/cancel; handle replica/zone failure; reject overload early. Add model-version canary/drain and detailed queue-versus-service metrics.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** proposed source example of p95 TTFT ≤500ms and TPOT ≤50ms at 1,000 rps, 99.9% explicit completion/failure, no lost or misdelivered request, tenant fairness, bounded queue and goodput within SLO. The source targets ≤70% measured replica capacity for headroom; actual thresholds need load tests.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-With assumed **1,000 input / 250 output tokens**, one replica processing **20K input tokens/s prefill** and **2.5K output tokens/s aggregate decode**, one request costs `1000/20000 + 250/2500 = 0.15 replica-seconds`. At **1,000 rps** and **70% utilization**, the compute estimate is about **214 replicas**. About seven seconds/request implies ~7,000 in flight; at 64 sequences/replica, slot count needs ~110 replicas, so compute is the tighter estimate. These rates are assumptions; load-test the chosen model and hardware.
+### Functional requirements — what the system must do
+
+1. **Validate and tokenize requests.**
+2. **Apply per-tenant token budgets.**
+3. **Route to a healthy GPU with free KV capacity.**
+4. **Continuously batch variable-length generation.**
+5. **Demultiplex by request ID; stream and cancel.**
+6. **Handle replica / zone failure; reject overload early.**
+7. **Canary/drain model versions** and split queue vs service metrics.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | Proposed p95 TTFT ≤500 ms, TPOT ≤50 ms at 1,000 rps. Load-test for real. |
+| **Reliability** | 99.9% explicit completion or failure; no lost or misdelivered request. |
+| **Fairness** | Tenant fairness; bounded queue; goodput within SLO. |
+| **Headroom** | ≤70% measured replica capacity. |
+| **Sizing (illustrative)** | 1,000 in / 250 out tokens; replica 20K in tok/s prefill, 2.5K out tok/s decode ⇒ 0.15 replica-s/request. 1,000 rps at 70% ≈ **214 replicas**. ~7 s/request ⇒ ~7,000 in flight; 64 seq/replica ⇒ ~110 slot replicas — compute is tighter. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, admit, place on a replica with KV room, batch, stream, cancel, fail loud. Non-functionally, TTFT and TPOT SLOs, no lost streams, and tenant fairness — the model only does prefill and decode.”**
 
 ## Architecture
 

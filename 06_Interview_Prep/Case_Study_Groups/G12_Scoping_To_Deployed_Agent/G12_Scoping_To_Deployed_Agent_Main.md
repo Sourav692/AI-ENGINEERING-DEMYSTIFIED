@@ -23,24 +23,57 @@ Turn a customer request into a governed, two-week agent deployment with measurab
 
 ## Questions to ask the interviewer
 
-| Question to ask | What it's really asking | What you then decide |
-| --- | --- | --- |
-| What customer outcome and baseline define success by week four? | Are we cutting first-response time from 40 minutes to 5, or just “launch an agent”? | Whether the build has a measurable goal. |
-| Who is the sponsor, subject-matter expert and go/no-go owner? | If the Confluence owner is on vacation, who can still say ship or stop? | Approvals and escalation. |
-| Which data sources, credentials and policies are available now? | Do we already have Zendesk + Salesforce read access, or is that a six-week ticket? | Whether two weeks is even possible. |
-| Which accelerator parts can be reused, and what is bespoke? | Can we reuse the support template, or are we writing a custom planner? | Delivery time and later maintenance. |
-| What happens when a gate fails or an SME misses a deadline? | If golden-set review slips two days, do we ship anyway? | No-go, escalation, and schedule impact. |
-| Which agent actions require human review, and how is rollback tested? | If drafts go weird, can we kill send in two minutes? | Production autonomy and containment. |
+| Question to ask                                                       | What it's really asking                                                               | What you then decide                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| What customer outcome and baseline define success by week four?       | Are we cutting first-response time from 40 minutes to 5, or just “launch an agent”? | Whether the build has a measurable goal. |
+| Who is the sponsor, subject-matter expert and go/no-go owner?         | If the Confluence owner is on vacation, who can still say ship or stop?               | Approvals and escalation.                |
+| Which data sources, credentials and policies are available now?       | Do we already have Zendesk + Salesforce read access, or is that a six-week ticket?    | Whether two weeks is even possible.      |
+| Which accelerator parts can be reused, and what is bespoke?           | Can we reuse the support template, or are we writing a custom planner?                | Delivery time and later maintenance.     |
+| What happens when a gate fails or an SME misses a deadline?           | If golden-set review slips two days, do we ship anyway?                               | No-go, escalation, and schedule impact.  |
+| Which agent actions require human review, and how is rollback tested? | If drafts go weird, can we kill send in two minutes?                                  | Production autonomy and containment.     |
 
 Do not start the engagement clock without measurable success metrics, a named SME and named sources. The source uses those as intake requirements.
 
-## Requirements
+## Requirements: Functional + Non-Functional
 
-**Functional delivery requirements:** intake and scope; evidence-backed security and data access; configured agent; signed golden set; baseline evaluation; shadow run; tested rollback; limited production; sponsor decision; runbook, dashboard and owner handover. Each stage advances only after its own gate, with authorized role and evidence recorded.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional delivery requirements:** two-week target, auditability, separation of duties, reusable accelerators, tenant isolation, secure credentials, reliable escalations, rollback under two minutes in the demo, and measurable first value. A failed gate must stop advancement, not become an undocumented exception.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-**Northwind agent requirements:** triage the top three Zendesk ticket categories, use Confluence knowledge and Salesforce read-only context, redact sensitive data, draft grounded replies, apply escalation rules, and keep people in control of sending while autonomy is earned. The demo target is first response under five minutes and at least 60% zero-edit sends by week four.
+### Functional requirements — what the system must do
+
+**Delivery**
+
+1. **Intake and scope** — measurable outcome, named SME, named sources.
+2. **Evidence-backed security and data access.**
+3. **Configure the agent and sign a golden set.**
+4. **Baseline evaluation, shadow, tested rollback.**
+5. **Limited production, sponsor go/no-go, handover** — runbook, dashboard, owner.
+6. **Advance only after each gate** — authorized role and evidence recorded.
+
+**Northwind agent (demo)**
+
+1. **Triage the top three Zendesk categories.**
+2. **Use Confluence plus Salesforce read-only context.**
+3. **Redact sensitive data; draft grounded replies; apply escalation rules.**
+4. **Keep people in control of sending** while autonomy is earned.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement           | Example target / constraint                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| **Schedule**    | Two-week delivery target.                                                                          |
+| **Governance**  | Auditability, separation of duties; failed gate stops advancement.                                 |
+| **Reuse**       | Accelerators over bespoke planners.                                                                |
+| **Security**    | Tenant isolation, secure credentials.                                                              |
+| **Reliability** | Reliable escalations; demo rollback under two minutes.                                             |
+| **Value**       | Measurable first value. Northwind demo: first response <5 min; ≥60% zero-edit sends by week four. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, gated two-week delivery plus a small triage agent that drafts, not sends. Non-functionally, two weeks, tested rollback, and a number for first-response time — not ‘launch an agent.’”**
 
 ## Architecture: delivery gates and the deployed agent
 
@@ -82,15 +115,15 @@ flowchart TB
 
 ## Gates, evidence and ownership
 
-| Stage | Source gate | Signer |
-|---|---|---|
-| Scoping, days 1–2 | `security_review_passed` | Security reviewer |
-| Data readiness, days 3–4 | `data_access_granted` | Customer SME; pending access escalates on day 3 |
-| Configure, days 5–7 | `golden_set_signed_off` | Customer SME |
-| Evaluate, days 8–9 | `eval_baseline_met` | FDE |
-| Shadow, days 10–11 | `rollback_tested` | FDE |
-| Limited production, days 12–13 | `success_metrics_met` | Sponsor |
-| Day 14 | Go/no-go and handover | Named decision owner |
+| Stage                           | Source gate                | Signer                                          |
+| ------------------------------- | -------------------------- | ----------------------------------------------- |
+| Scoping, days 1–2              | `security_review_passed` | Security reviewer                               |
+| Data readiness, days 3–4       | `data_access_granted`    | Customer SME; pending access escalates on day 3 |
+| Configure, days 5–7            | `golden_set_signed_off`  | Customer SME                                    |
+| Evaluate, days 8–9             | `eval_baseline_met`      | FDE                                             |
+| Shadow, days 10–11             | `rollback_tested`        | FDE                                             |
+| Limited production, days 12–13 | `success_metrics_met`    | Sponsor                                         |
+| Day 14                          | Go/no-go and handover      | Named decision owner                            |
 
 The gate API should reject wrong roles, missing evidence and skipped prior stages; deny decisions override optimistic state and every attempt is logged. Free-text evidence is weak: require structured checklist items and links to evaluation or rollback proof. A no-go is a valid outcome.
 

@@ -17,6 +17,7 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { syncCaseStudies } from './case-studies.mjs'
 
 const SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = resolve(SITE_DIR, '..')
@@ -255,6 +256,9 @@ async function main() {
     }
     modules.push({ id: mod.id, tracks })
   }
+
+  // Reading module: the G01–G20 interview guides, one page per group with tabs.
+  modules.push(await syncCaseStudies({ repoRoot: REPO_ROOT, outDir: OUT_DIR }))
 
   const manifest = { generatedAt: new Date().toISOString(), modules }
   await writeFile(join(OUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))

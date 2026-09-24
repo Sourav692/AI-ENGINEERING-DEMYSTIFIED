@@ -31,11 +31,35 @@ The [source study](G09_Enterprise_Coding_Assistant.md) combines the under-300 ms
 | What would prove developer value beyond clicks or suggestions served? | Did people accept junk completions, or did they actually finish PRs faster? | Acceptance slices and a productivity comparison. |
 | What is the peak typing load and model-cost budget? | At 10 a.m., can a keystroke storm bankrupt the GPU bill? | Cache, rate limits, inference capacity, and completion length cap. |
 
-## 2. Requirements and budget
+## 2. Requirements: Functional + Non-Functional
 
-**Functional:** IDE single- and multi-line completion, repository-grounded context under code-host ACLs, validation before display, and accept/partial-accept/reject telemetry without retaining source. Explain, test generation, bug fix, refactor, Q&A, and code search run on a separate slower route. Index repository code incrementally on push by symbol, file, and dependency rather than generic token windows.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** p95 inline completion **under 300 ms** end to end; source’s illustrative stage budget is **~10 ms cache, ~40 ms context, ~200 ms streamed small-model inference, ~50 ms validation**. That totals the entire limit, so leave operational headroom rather than treating each estimate as a guaranteed allowance. A cache hit is faster; a slow request is suppressed rather than shown after the user has moved on. Never train on private enterprise code without explicit consent, never retain source in telemetry, mask secrets before context leaves the IDE, and fail closed on stale access or validation. The source discusses millions of developers and bursty keystrokes; scale stateless APIs, sharded indexes, and GPU inference while measuring the p95 under load.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
+
+### Functional requirements — what the system must do
+
+1. **Complete inline** — single- and multi-line in the IDE.
+2. **Ground in the repository** — only under code-host ACLs.
+3. **Validate before display** — syntax, APIs, secrets, license, unsafe patterns.
+4. **Record accept / partial-accept / reject** — without retaining source.
+5. **Route slower tasks separately** — explain, tests, bug fix, refactor, Q&A, code search.
+6. **Index incrementally on push** — symbol, file, dependency, not a generic token dump.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | p95 inline **<300 ms** end to end. Illustrative split: ~10 ms cache, ~40 ms context, ~200 ms streamed small-model, ~50 ms validation — leave headroom. |
+| **UX on miss** | Cache hit is faster; a slow request is suppressed rather than shown after the user has moved on. |
+| **Security** | No training on private code without consent; no source in telemetry; mask secrets before context leaves the IDE; fail closed on stale access or validation. |
+| **Scale** | Millions of developers and bursty keystrokes; stateless APIs, sharded indexes, GPU inference; measure p95 under load. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, complete from code this developer may read, validate, then show or stay silent. Non-functionally, under 300 milliseconds, no leaked snippets, and no private-code training.”**
 
 ## 3. Architecture
 

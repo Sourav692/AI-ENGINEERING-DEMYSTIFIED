@@ -7,6 +7,7 @@ export default async function HomePage() {
   const scenarios = await getAllScenarios()
   const liveModules = MODULES.filter((m) => m.status === 'live')
   const firstLive = liveModules[0]
+  const caseStudies = liveModules.find((m) => m.kind === 'reading')
   const scenariosIn = (moduleId: string) =>
     scenarios.filter((s) => s.moduleId === moduleId)
 
@@ -40,6 +41,36 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
+
+      {caseStudies && (
+        <section className="mt-12">
+          <Link
+            href={`/modules/${caseStudies.id}`}
+            className="group flex flex-col gap-4 rounded-xl border border-accent/30 bg-accent-soft/40 p-5 transition-colors hover:border-accent sm:flex-row sm:items-center"
+          >
+            <div className="flex-1">
+              <div className="mb-1.5 flex items-center gap-2.5">
+                <span className="rounded-full bg-accent px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-white">
+                  New
+                </span>
+                <span className="text-[0.8125rem] font-semibold uppercase tracking-[0.1em] text-accent">
+                  Module {String(caseStudies.number).padStart(2, '0')}
+                </span>
+              </div>
+              <h2 className="text-[1.25rem] font-semibold tracking-[-0.014em] group-hover:text-accent">
+                {caseStudies.title}
+              </h2>
+              <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-muted">
+                {caseStudies.blurb}
+              </p>
+            </div>
+            <span className="shrink-0 text-[0.9375rem] font-semibold text-accent">
+              Read {scenariosIn(caseStudies.id).length}{' '}
+              {scenariosIn(caseStudies.id).length === 1 ? 'case study' : 'case studies'} →
+            </span>
+          </Link>
+        </section>
+      )}
 
       <section className="mt-16">
         <div className="mb-5 flex items-baseline justify-between gap-4">
@@ -86,7 +117,8 @@ export default async function HomePage() {
                     href={`/modules/${module.id}`}
                     className="text-[0.875rem] font-semibold text-accent transition-colors hover:text-accent-hover"
                   >
-                    All {scenariosIn(module.id).length} scenarios →
+                    All {scenariosIn(module.id).length}{' '}
+                    {module.kind === 'reading' ? 'case studies' : 'scenarios'} →
                   </Link>
                 </div>
               </div>

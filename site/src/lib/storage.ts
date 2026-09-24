@@ -52,6 +52,7 @@ const answersKey = (scenario: string) => `${PREFIX}:answers:${scenario}`
 const scoresKey = (scenario: string) => `${PREFIX}:scores:${scenario}`
 const statusKey = (scenario: string) => `${PREFIX}:status:${scenario}`
 const rowsKey = (scenario: string) => `${PREFIX}:rows:${scenario}`
+const readKey = (scenario: string) => `${PREFIX}:read:${scenario}`
 
 export type Answers = Record<string, string>
 export type Scores = Record<string, number>
@@ -70,11 +71,28 @@ export const saveExtraRows = (s: string, v: ExtraRows) => write(rowsKey(s), v)
 export const loadStatus = (s: string) => read<Status>(statusKey(s), 'not-started')
 export const saveStatus = (s: string, v: Status) => write(statusKey(s), v)
 
+/**
+ * Reading pages (FDE Case Studies) track which tabs the reader has marked as read.
+ * The page's status is derived from that and written through `saveStatus`, so the
+ * progress rings and lists work unchanged: some tabs read = practiced (shown as
+ * "In progress"), every tab read = mastered (shown as "Read").
+ */
+export const loadRead = (s: string) => read<string[]>(readKey(s), [])
+
+export function saveRead(s: string, tabs: string[], totalTabs: number): boolean {
+  const status: Status =
+    tabs.length === 0 ? 'not-started' : tabs.length >= totalTabs ? 'mastered' : 'practiced'
+  const ok = write(readKey(s), tabs)
+  saveStatus(s, status)
+  return ok
+}
+
 export function clearScenario(scenario: string): void {
   remove(answersKey(scenario))
   remove(scoresKey(scenario))
   remove(statusKey(scenario))
   remove(rowsKey(scenario))
+  remove(readKey(scenario))
 }
 
 export function clearEverything(): void {

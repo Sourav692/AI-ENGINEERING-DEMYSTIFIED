@@ -15,6 +15,8 @@ export type ModuleMeta = {
   title: string
   blurb: string
   status: ModuleStatus
+  /** Reading pages (tabbed guides) rather than fill-in worksheets. */
+  kind?: 'reading'
 }
 
 export const SITE = {
@@ -129,6 +131,17 @@ export const MODULES: ModuleMeta[] = [
       'manager round, and leadership-principle answers grounded in engagements you ' +
       'actually ran — including an honest mark on the ones they do not cover.',
     status: 'live',
+  },
+  {
+    id: '15-fde-case-studies',
+    number: 15,
+    title: 'FDE Case Studies',
+    blurb:
+      'Twenty system-design case studies, each read at three depths: the interview ' +
+      'guide, a deep dive for follow-up questions, and a one-page cheat sheet — plus ' +
+      'the full sourced pack behind them.',
+    status: 'live',
+    kind: 'reading',
   },
 ]
 

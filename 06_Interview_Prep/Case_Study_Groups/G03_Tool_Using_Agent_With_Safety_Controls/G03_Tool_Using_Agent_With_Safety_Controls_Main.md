@@ -50,31 +50,45 @@ If approval policy is unspecified, assume a human gate for irreversible actions;
 | Slow, looping, or timed-out agent                              | Step budgets, cached safe reads, async work, per-tool timeouts, and explicit stop conditions dominate. |
 | Refund near miss                                               | Separate planner failure from gateway enforcement success; contain risky bulk plans.                   |
 
-## 2. Requirements and scope
+## 2. Requirements: Functional + Non-Functional
 
-### Functional requirements
+The easiest way to frame requirements in an interview is:
 
-1. Authenticate the delegating actor and record their rights.
-2. Let the planner propose one bounded next action, not perform it.
-3. Resolve a declared tool and validate its typed arguments and data class.
-4. Return a deterministic **allow / block / needs-approval** decision.
-5. Mint a short-lived, least-privilege credential only for an approved action.
-6. Execute through one idempotent gateway, record the receipt, and stop safely on uncertainty.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-The first usable version also needs a tool registry, a real approval record, and a tested kill switch. Exclude free-form code or shell execution, open-ended tool discovery, unbounded loops, cross-tenant access, self-modifying policy, and unrestricted refunds.
+### Functional requirements — what the system must do
 
-### Non-functional requirements
+1. **Authenticate the delegating actor** — record their rights.
+2. **Propose one bounded next action** — the planner does not perform it.
+3. **Resolve a declared tool** — validate typed arguments and data class.
+4. **Decide allow / block / needs-approval** — deterministic policy, not the model.
+5. **Mint a short-lived least-privilege credential** — only for an approved action.
+6. **Execute once through an idempotent gateway** — record the receipt; stop safely on uncertainty.
 
-| Constraint            | Source-case planning example                                                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Latency               | Budget model planning separately from tool time; low-risk task completion around p95 <15 s. Approval queue needs an escalation rule. |
-| Capacity              | 50,000 users, 20 QPS peak, 10 actions/task imply roughly 200 tool actions/s; read parallelism and write limits differ.               |
-| Security              | No broad reusable secret in the model. Tool observations remain untrusted. Scope tokens by tenant, workflow, action, and expiry.     |
-| Reliability           | Policy or broker failure closes writes; uncertain side effects reconcile before retry.                                               |
-| Cost and safety       | Hard ceilings on steps, tool calls, spend, refund amount, destinations, and concurrency.                                             |
-| Audit and operability | Tamper-evident decision ledger and a kill switch without deployment.                                                                 |
+The first usable version also needs a tool registry, a real approval record, and a tested kill switch.
 
-These are illustrative interview numbers, not measured production demand. Risk is a decision aid: **impact × likelihood × irreversibility**. It yields autonomous, conditional, approval-required, or blocked action tiers.
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | Budget planner time separately from tool time; low-risk completion around p95 <15 s; approval queue needs an escalation rule. |
+| **Capacity** | 50,000 users, 20 QPS peak, 10 actions/task ≈ 200 tool actions/s; reads parallelize, writes do not. |
+| **Security** | No broad reusable secret in the model; tool observations untrusted; tokens scoped by tenant, workflow, action, expiry. |
+| **Reliability** | Policy or broker failure closes writes; uncertain side effects reconcile before retry. |
+| **Cost and safety** | Hard ceilings on steps, tool calls, spend, refund amount, destinations, and concurrency. |
+| **Audit and operability** | Tamper-evident decision ledger and a kill switch without a deploy. |
+
+These are illustrative interview numbers, not measured production demand. Risk is **impact × likelihood × irreversibility**.
+
+### First release
+
+Exclude free-form code or shell, open-ended tool discovery, unbounded loops, cross-tenant access, self-modifying policy, and unrestricted refunds.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, the model proposes one bounded action; policy, approval, a scoped token, and an idempotent gateway decide and execute. Non-functionally, fail closed on writes, bound loops and spend, keep a ledger, and keep a kill switch.”**
 
 ## 3. Architecture
 

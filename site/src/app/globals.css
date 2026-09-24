@@ -160,6 +160,79 @@ body {
 }
 
 /*
+ * Reading pages (FDE Case Studies) render whole markdown documents, so they need the
+ * elements a worksheet never produces: sub-headings, quotes, rules and wide tables.
+ */
+.reading h3 {
+  margin: 1.75rem 0 0.6rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.011em;
+}
+.reading h4,
+.reading h5 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.reading h3:first-child,
+.reading h4:first-child {
+  margin-top: 0;
+}
+.reading blockquote {
+  margin-block: 1rem;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+  padding: 0.65rem 1rem;
+  color: var(--text-muted);
+}
+.reading blockquote p {
+  margin-block: 0.4rem;
+}
+.reading hr {
+  margin-block: 2rem;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.reading .table-wrap {
+  margin-block: 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+/* Native scrollbars follow color-scheme, not the site's tokens: without this a table
+   that scrolls sideways draws a light scrollbar across a dark page. */
+.dark .reading .table-wrap {
+  color-scheme: dark;
+}
+.reading table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+.reading th {
+  background: var(--surface-2);
+  font-weight: 600;
+  text-align: left;
+}
+.reading th,
+.reading td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  min-width: 8rem;
+}
+.reading tr:last-child td {
+  border-bottom: 0;
+}
+.reading td + td,
+.reading th + th {
+  border-left: 1px solid var(--border);
+}
+
+/*
  * Fenced code. `.code-block` is the parser's own code blocks; `.prose pre` catches
  * anything marked still emits on the prose path, so neither can render unstyled.
  */

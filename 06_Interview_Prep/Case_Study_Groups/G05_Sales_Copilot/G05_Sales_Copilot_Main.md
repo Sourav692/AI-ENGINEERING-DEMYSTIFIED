@@ -50,29 +50,41 @@ If these answers are missing, keep the first release read-only, restrict sources
 | Slow agentic CRM assistant            | Serial tool calls and agent steps dominate; precompute, cache, parallelize reads, and bound the graph.        |
 | Sales email model-regression incident | Claim-level release gates, online unsupported-claim monitoring, and block-mode policy enforcement dominate.   |
 
-## 2. Requirements and scope
+## 2. Requirements: Functional + Non-Functional
 
-### Functional requirements
+The easiest way to frame requirements in an interview is:
 
-1. Produce the five workflow outputs, each with its own risk level.
-2. Ingest approved CRM, transcript, email/calendar, product, pricing, support, and warehouse sources with IDs, freshness, and ACL metadata.
-3. Pre-filter by tenant, role, territory, sharing rules, and field access; recheck before generation/serving.
-4. Cite account facts and opportunity risks to fetched records; expose missing evidence.
-5. Verify every outbound claim against approved messaging and versioned pricing policy.
-6. Preview exact CRM field changes and require approval before any write-back.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-First release excludes autonomous email sending, unapproved CRM writes, disallowed price/discount quotes, lead scoring, out-of-territory access, and independent long-term customer memory.
+### Functional requirements — what the system must do
 
-### Non-functional requirements
+1. **Produce the five workflow outputs** — each with its own risk level.
+2. **Ingest approved sources** — CRM, transcripts, email/calendar, product, pricing, support, warehouse, with IDs, freshness, and ACL metadata.
+3. **Filter by permission** — tenant, role, territory, sharing, field access; recheck before generation or serving.
+4. **Cite account facts and risks** — from fetched records; expose missing evidence.
+5. **Verify outbound claims** — approved messaging and versioned pricing policy.
+6. **Preview CRM field changes** — require approval before write-back.
 
-| Constraint   | Source-case target or rule                                                                                                           |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Latency      | Interactive answers around 3–8 s; pre-meeting brief built ahead of time; long work async.                                           |
-| Availability | During selling hours, serve a permitted last snapshot with a staleness label when safe, or refuse.                                   |
-| Security     | SSO, CRM record/field permissions, tenant/region constraints, scoped secrets, no customer-data training without contract permission. |
-| Correctness  | Unsupported external claims blocked; missing citations or uncertain access fail closed.                                              |
-| Audit        | Queries, evidence, permissions, model/policy version, draft approvals, final output, write receipt.                                  |
-| Cost         | Budget per workflow; cache stable sources; prune retrieval; small models for routing, stronger model only when justified.            |
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | Interactive answers around 3–8 s; pre-meeting brief built ahead of time; long work async. |
+| **Availability** | During selling hours, serve a permitted last snapshot with a staleness label when safe, or refuse. |
+| **Security** | SSO, CRM record/field permissions, tenant/region constraints, scoped secrets; no customer-data training without contract permission. |
+| **Correctness** | Unsupported external claims blocked; missing citations or uncertain access fail closed. |
+| **Audit** | Queries, evidence, permissions, model/policy version, draft approvals, final output, write receipt. |
+| **Cost** | Budget per workflow; cache stable sources; prune retrieval; small models for routing, stronger model only when justified. |
+
+### First release
+
+Exclude autonomous email sending, unapproved CRM writes, disallowed price/discount quotes, lead scoring, out-of-territory access, and independent long-term customer memory.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, I prep a permission-scoped brief, cite facts, block unapproved claims, and preview CRM writes. Non-functionally, 3–8 second asks, recheck access at serve time, and never let a snapshot outlive a territory change.”**
 
 ## 3. Architecture
 

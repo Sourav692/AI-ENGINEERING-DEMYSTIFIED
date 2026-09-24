@@ -24,13 +24,38 @@ The anchor is “design a model that solves math problems,” walking from data 
 | Adapt an existing base model or pretrain? | Changes budget by orders of magnitude. |
 | What GPU-hour, latency and device limits apply? | Chooses model size, adapters and deployment path. |
 
-## Requirements and sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** collect answer-checkable examples; deduplicate and decontaminate against evaluation; SFT on worked solutions and honest “ill-posed” cases; sample model attempts; score correctness/working/style with the appropriate verifier or preference method; update and checkpoint; gate on held-out accuracy, general ability, safety and contamination before release.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** reproducible data/config/seed/checkpoint lineage, fixed compute budget with stop rules, no hidden benchmark leakage, no unmeasured general-skill regression, no safety gain achieved by blanket refusal. A phone variant must fit memory and meet latency/battery targets on the actual supported device.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-Illustrative source calculation: a **7B** model on **100K problems × 500 tokens = 50M SFT tokens** needs about **2.1×10¹⁸ FLOPs** by the rough `6 × parameters × tokens` rule. **50K prompts × 8 rollouts × 1K tokens** generate **400M tokens**, about **5.6×10¹⁸ FLOPs** to generate before about **1.68×10¹⁹ FLOPs** of updates. These approximations show why sampled post-training and evaluation dominate the experimental budget. The source’s ~2 GPU-hour SFT estimate depends on an assumed effective throughput, not a guarantee.
+### Functional requirements — what the system must do
+
+1. **Collect answer-checkable examples.**
+2. **Deduplicate and decontaminate** against evaluation.
+3. **SFT** on worked solutions and honest “ill-posed” cases.
+4. **Sample model attempts.**
+5. **Score** correctness / working / style with the right verifier or preference method.
+6. **Update and checkpoint.**
+7. **Gate release** on held-out accuracy, general ability, safety, and contamination.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Reproducibility** | Data / config / seed / checkpoint lineage. |
+| **Budget** | Fixed compute with stop rules. |
+| **Integrity** | No hidden benchmark leakage; no unmeasured general-skill regression. |
+| **Safety** | No safety “win” from blanket refusal. |
+| **On-device variant** | Fit memory; meet latency/battery on the real phone. |
+| **FLOPs (illustrative)** | 7B × 50M SFT tokens ≈ 2.1×10¹⁸ FLOPs (`6ND`). 50K prompts × 8 rollouts × 1K ≈ 400M gen tokens ≈ 5.6×10¹⁸ gen + 1.68×10¹⁹ update. Sampled post-training and eval dominate. ~2 GPU-hour SFT is an assumed-throughput sketch, not a guarantee. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, clean data, SFT, sample, score, checkpoint, then a held-out gate. Non-functionally, reproducible lineage, no eval leak, and the model does not approve its own release.”**
 
 ## Architecture
 

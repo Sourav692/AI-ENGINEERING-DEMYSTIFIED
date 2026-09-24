@@ -4,9 +4,11 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { cache } from 'react'
 import { parseDocument, type Section } from './parse'
+import { parseReading, readingText, toPlainText } from './reading'
 import { ANSWER_KEY_MAP, CLOSING_SECTION_KEY } from './mapping'
-import { scenarioHref } from './scenario'
+import { READING_TABS, scenarioHref } from './scenario'
 import type {
+  CaseStudy,
   Manifest,
   Scenario,
   ScenarioRef,
@@ -52,6 +54,8 @@ export const getAllScenarios = cache(async (): Promise<ScenarioRef[]> => {
         slug: scenario.slug,
         title: scenario.title,
         order: scenario.order,
+        tag: scenario.tag,
+        reading: module.kind === 'reading',
       })),
     ),
   )
@@ -67,7 +71,7 @@ export const getScenario = cache(
     const index = all.findIndex(
       (s) => s.moduleId === moduleId && s.trackId === trackId && s.slug === slug,
     )
-    if (index === -1) return null
+    if (index === -1 || all[index].reading) return null
     const ref = all[index]
 
     const base = join(CONTENT_DIR, 'modules', moduleId, trackId)
@@ -109,12 +113,64 @@ export const getScenario = cache(
   },
 )
 
+const SEARCH_TEXT_CAP = 500
+
+/**
+ * A reading page: one group's four documents, each parsed for display. prev/next stay
+ * inside the module, so the last case study does not lead into a worksheet.
+ */
+export const getCaseStudy = cache(
+  async (moduleId: string, trackId: string, slug: string): Promise<CaseStudy | null> => {
+    const siblings = (await getAllScenarios()).filter((s) => s.moduleId === moduleId)
+    const index = siblings.findIndex((s) => s.trackId === trackId && s.slug === slug)
+    if (index === -1 || !siblings[index].reading) return null
+    const ref = siblings[index]
+
+    const base = join(CONTENT_DIR, 'modules', moduleId, trackId, slug)
+    const docs = await Promise.all(
+      READING_TABS.map(async (tab) => ({
+        tab: tab.id,
+        label: tab.label,
+        doc: parseReading(await readFile(join(base, `${tab.id}.md`), 'utf8'), tab.id),
+      })),
+    )
+
+    return {
+      ref,
+      title: ref.title,
+      docs,
+      prev: index > 0 ? siblings[index - 1] : null,
+      next: index < siblings.length - 1 ? siblings[index + 1] : null,
+    }
+  },
+)
+
 /** Build-time search index. Section-level so results land on a specific heading. */
 export const getSearchIndex = cache(async (): Promise<SearchEntry[]> => {
   const all = await getAllScenarios()
   const entries: SearchEntry[] = []
 
   for (const ref of all) {
+    if (ref.reading) {
+      const study = await getCaseStudy(ref.moduleId, ref.trackId, ref.slug)
+      if (!study) continue
+      const href = scenarioHref(ref)
+      for (const { label, doc } of study.docs) {
+        for (const section of doc.sections) {
+          if (!section.title) continue
+          entries.push({
+            title: `${ref.tag} · ${study.title}`,
+            section: toPlainText(section.title),
+            kind: label,
+            href: `${href}#${section.id}`,
+            // Capped: the index ships to every page, and these guides are long. The
+            // opening of a section carries its claim, which is what a search hits.
+            text: `${toPlainText(section.title)} ${readingText(section)}`.slice(0, SEARCH_TEXT_CAP),
+          })
+        }
+      }
+      continue
+    }
     const scenario = await getScenario(ref.moduleId, ref.trackId, ref.slug)
     if (!scenario) continue
     const href = scenarioHref(ref)

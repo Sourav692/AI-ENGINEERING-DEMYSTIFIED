@@ -32,13 +32,39 @@ That’s it: **admit → load state → infer stream → moderate → persist.**
 | Files, search and code tools? | Adds untrusted data, sandbox and step caps. |
 | Serve existing models or train them? | Keeps the answer on serving and product state. |
 
-## Requirements and sizing
+## Requirements: Functional + Non-Functional
 
-**Functional:** send and stream messages; persist/list/rename/delete conversations; carry within-conversation context; enforce user/tier limits; moderate input and output; stop generation on user request or disconnect. Files, search, sandboxed code, inspectable/erasable memory and sharing are follow-on product features.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** illustrative p95 first token under 1s and 99.9% send-and-stream availability, zero cross-user reads, durable partial answers, tenant/user-scoped deletion across history/memory/files/caches, fair queuing by tier, measured moderation errors and cost per daily active user. These are proposed targets from the constructed source, not an existing product SLA.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-Source sizing assumption: **100M daily users × 10 messages = 1B/day**, about **11,600 messages/s average** and **35,000/s at a 3× peak**. At 400 output tokens, peak is ~14M output tokens/s; at 2,000 input tokens, ~70M input tokens/s. Eight-second streams imply ~280,000 simultaneous streams by Little’s Law. At an assumed 100 concurrent streams per replica, ~2,800 replicas are a planning estimate. Replace every rate with measured prompt, output and GPU throughput distributions.
+### Functional requirements — what the system must do
+
+1. **Send and stream messages.**
+2. **Persist, list, rename, delete conversations.**
+3. **Carry within-conversation context.**
+4. **Enforce user / tier limits.**
+5. **Moderate input and output.**
+6. **Stop on user cancel or disconnect.**
+
+Files, search, sandboxed code, inspectable memory, and sharing are follow-on features.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency / availability** | Illustrative p95 first token <1 s; 99.9% send-and-stream. Constructed targets, not a product SLA. |
+| **Security** | Zero cross-user reads; user-scoped deletion across history, memory, files, caches. |
+| **Reliability** | Durable partial answers. |
+| **Fairness** | Queues by tier. |
+| **Cost** | Moderation error rate and cost per DAU. |
+| **Scale (illustrative)** | 100M users × 10 msgs = 1B/day ≈ 11,600/s avg, 35,000/s at 3× peak. 400 out tokens ⇒ ~14M out tokens/s; 2,000 in ⇒ ~70M in tokens/s. 8 s streams ⇒ ~280k in flight; 100 streams/replica ⇒ ~2,800 replicas. Replace with measured GPU throughput. |
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, stream a turn, store the thread, moderate both ways, cancel cleanly. Non-functionally, first token fast, no cross-user leak, fair queues, and the model stays stateless — the product holds state.”**
 
 ## Architecture
 

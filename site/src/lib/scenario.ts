@@ -1,4 +1,5 @@
 import type { Block, Section, ParsedDocument } from './parse'
+import type { ReadingDocument } from './reading'
 
 /**
  * Types and helpers shared by server and client code.
@@ -8,7 +9,13 @@ import type { Block, Section, ParsedDocument } from './parse'
  * the browser bundle and fail the build, so anything both sides need belongs here.
  */
 
-export type ScenarioMeta = { slug: string; order: number; title: string }
+export type ScenarioMeta = {
+  slug: string
+  order: number
+  title: string
+  /** Short label shown instead of the order number, e.g. `G01` in FDE Case Studies. */
+  tag?: string
+}
 
 export type TrackMeta = {
   id: string
@@ -19,7 +26,8 @@ export type TrackMeta = {
 
 export type Manifest = {
   generatedAt: string
-  modules: { id: string; tracks: TrackMeta[] }[]
+  /** `kind: 'reading'` marks a module of reading pages rather than worksheets. */
+  modules: { id: string; kind?: 'reading'; tracks: TrackMeta[] }[]
 }
 
 export type ScenarioRef = {
@@ -29,6 +37,9 @@ export type ScenarioRef = {
   slug: string
   title: string
   order: number
+  tag?: string
+  /** True for reading pages (FDE Case Studies): read-only, tabbed, progress by tab. */
+  reading?: boolean
 }
 
 export type ScenarioSection = Section & {
@@ -54,7 +65,8 @@ export type Scenario = {
 export type SearchEntry = {
   title: string
   section: string
-  kind: 'worksheet' | 'answer key'
+  /** 'worksheet' | 'answer key' for worksheets; the tab label for reading pages. */
+  kind: string
   href: string
   text: string
 }
@@ -65,4 +77,25 @@ export function scenarioHref(ref: {
   slug: string
 }): string {
   return `/modules/${ref.moduleId}/${ref.trackId}/${ref.slug}`
+}
+
+/**
+ * The tabs of a reading page, in display order; the first opens by default.
+ * Must match `DOC_TABS` in `scripts/case-studies.mjs`, which writes one file per id.
+ */
+export const READING_TABS = [
+  { id: 'main', label: 'Main' },
+  { id: 'deep-dive', label: 'Deep Dive' },
+  { id: 'cheat-sheet', label: 'Cheat Sheet' },
+  { id: 'full-pack', label: 'Full Pack' },
+] as const
+
+export type ReadingTabId = (typeof READING_TABS)[number]['id']
+
+export type CaseStudy = {
+  ref: ScenarioRef
+  title: string
+  docs: { tab: ReadingTabId; label: string; doc: ReadingDocument }[]
+  prev: ScenarioRef | null
+  next: ScenarioRef | null
 }

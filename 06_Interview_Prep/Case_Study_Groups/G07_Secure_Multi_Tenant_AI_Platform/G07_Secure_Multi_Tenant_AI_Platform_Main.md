@@ -38,15 +38,44 @@ G07 is the [source study](G07_Secure_Multi_Tenant_AI_Platform.md)’s anchor for
 | Which budgets are contractual, and can tenants choose model tiers? | Can a tenant burn $10k overnight on a frontier model, or do we stop them before the call? | Pre-call admission, routing, metering, and billing. |
 | What proof must an auditor or incident commander see? | After a suspected leak, can we show tenant B’s docs never entered tenant A’s context? | Isolation tests, tenant-scoped audit, and retention. |
 
-## 2. Requirements and sizing
+## 2. Requirements: Functional + Non-Functional
 
-**Functional:** tenant onboarding and policy configuration; immutable tenant context on every request; per-tenant quotas, keys, regions, and retention; tenant-scoped data, cache, queues, vector retrieval, and inference; auditable administration; a dedicated tier for justified exceptions; coordinated export and deletion.
+The easiest way to frame requirements in an interview is:
 
-**Non-functional:** zero confirmed cross-tenant exposure; one tenant cannot cause unbounded latency for neighbors; measure p95 and cost by tenant, not only fleet average; security failures fail closed. Control-plane changes are auditable. The source’s sizing exercise uses **500 tenants, 50,000 active users, 200 QPS peak, and 20× workload skew**. Mean load is only 0.4 QPS per tenant, which hides the heavy tenants. A 2-second SLO implies fewer hops; a 15-second workflow can use a durable queue.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-**Scope fence:** no arbitrary tenant plugins in the core, universal custom runtime, cross-region active-active writes for everyone, or unlimited model choice at launch. Model selection is an approved platform capability, not tenant-supplied arbitrary execution.
+### Functional requirements — what the system must do
 
-The unit-economics frame is `C_tenant = C_fixed/N + C_usage + C_isolation`. Share fixed capacity when safe; pay the isolation premium when residency, risk, or performance requires it.
+1. **Onboard tenants and configure policy.**
+2. **Stamp immutable tenant context** on every request from verified identity.
+3. **Apply per-tenant quotas, keys, regions, and retention.**
+4. **Scope data, cache, queues, retrieval, and inference** to that tenant.
+5. **Make administration auditable.**
+6. **Offer a dedicated tier** for justified exceptions.
+7. **Coordinate export and deletion** when a tenant leaves.
+
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Security** | Zero confirmed cross-tenant exposure; security failures fail closed. |
+| **Fairness** | One tenant cannot cause unbounded latency for neighbors. |
+| **Observability** | Measure p95 and cost by tenant, not only fleet average. |
+| **Audit** | Control-plane changes are auditable. |
+| **Scale (illustrative)** | 500 tenants, 50,000 active users, 200 QPS peak, 20× workload skew. Mean 0.4 QPS/tenant hides heavy tenants. |
+| **Latency shape** | A 2 s SLO implies fewer hops; a 15 s workflow can use a durable queue. |
+
+Unit economics: `C_tenant = C_fixed/N + C_usage + C_isolation`. Share when safe; pay isolation for residency, risk, or performance.
+
+### First release
+
+No arbitrary tenant plugins in the core, no universal custom runtime, no cross-region active-active writes for everyone, no unlimited model choice at launch. Model selection is an approved platform capability, not tenant-supplied execution.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, derive tenant once and enforce it at every store and model call. Non-functionally, zero cross-tenant leaks, per-tenant p95 and cost, fail closed, and isolation you can prove to an auditor.”**
 
 ## 3. Architecture
 

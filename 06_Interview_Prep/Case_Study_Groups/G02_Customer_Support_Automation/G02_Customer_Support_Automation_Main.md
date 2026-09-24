@@ -54,30 +54,42 @@ Learn the shared decision pipeline here, then change the boundary that dominates
 | Agentic Support Workflow / customer-support interview mocks | Probe handoff quality, wrong refunds, stale facts, confidence, rollout, and the requested automation target.         |
 | Study-guide implementations                                 | Show how branches, interrupts, retrieval, durable state, and specialist tools implement the same control boundaries. |
 
-## 2. Requirements and scope
+## 2. Requirements: Functional + Non-Functional
 
-### Functional requirements — what it must do
+The easiest way to frame requirements in an interview is:
 
-1. Normalize chat, email, web, or voice transcripts into one case envelope.
-2. Classify the request by intent and risk before choosing an answer or action path.
-3. Verify identity before accessing account data or invoking account tools.
-4. Retrieve approved policy and current customer/order facts; draft an evidence-backed response.
-5. Run proposed actions through authorization, validation, freshness, threshold, and approval checks.
-6. Escalate with the full conversation, evidence, attempted actions, and the reason automation stopped.
-7. Record decisions, tool calls, human overrides, and outcomes for audit and learning.
+> **Functional = what the system does. Non-functional = how well it does it and what constraints it must satisfy.**
 
-### Non-functional requirements — how well it must do it
+### Functional requirements — what the system must do
 
-| Constraint       | Example from the source case                                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Latency          | Routine p95 <3 s; ambiguous p95 <8 s; high-risk handoff bundle p95 <15 s. The high-risk final decision remains human.                |
-| Availability     | At the illustrative 2M tickets/month and 100 QPS peak, routing and escalation keep accepting work while optional enrichment is shed. |
-| Security         | Customer text stays untrusted; tools are scoped per workflow; identity is checked before account access.                             |
-| Reliability      | Timeouts and incomplete facts lead to a safe handoff; possible side effects are reconciled before retry.                             |
-| Auditability     | Preserve actor, model/tool/policy versions, validated fields, decision, and override in an immutable trail.                          |
-| Cost and outcome | Optimize net value per resolved case, including wrong resolutions and repeat contacts, rather than raw deflection.                   |
+1. **Normalize intake** — chat, email, web, or voice transcripts into one case envelope.
+2. **Classify intent and risk** — before choosing an answer or action path.
+3. **Verify identity** — before account data or account tools.
+4. **Retrieve live facts** — approved policy and current customer/order state; draft from evidence.
+5. **Gate proposed actions** — authorization, validation, freshness, threshold, and approval.
+6. **Escalate with context** — conversation, evidence, attempted actions, and why automation stopped.
+7. **Audit the case** — decisions, tool calls, overrides, and outcomes.
 
-**First-release exclusions:** autonomous legal complaints, open-ended negotiation, unsupervised refunds or cancellations, cross-system repair without review, and ambiguous proactive outreach.
+### Non-functional requirements — how well / under what constraints
+
+| Requirement | Example target / constraint |
+|---|---|
+| **Latency** | Routine p95 <3 s; ambiguous p95 <8 s; high-risk handoff bundle p95 <15 s. Final high-risk decision stays human. |
+| **Availability** | Illustrative 2M tickets/month and 100 QPS peak; routing and escalation keep accepting work while optional enrichment is shed. |
+| **Security** | Customer text untrusted; tools scoped per workflow; identity before account access. |
+| **Reliability** | Timeouts and incomplete facts → safe handoff; reconcile possible side effects before retry. |
+| **Auditability** | Actor, model/tool/policy versions, validated fields, decision, and override in an immutable trail. |
+| **Cost and outcome** | Net value per resolved case, including wrong resolutions and repeat contacts — not raw deflection. |
+
+### First release
+
+Exclude autonomous legal complaints, open-ended negotiation, unsupervised refunds or cancellations, cross-system repair without review, and ambiguous proactive outreach.
+
+### Interview shortcut
+
+If asked **“What are the requirements?”**, say:
+
+> **“Functionally, I need to verify the customer, pull live facts, draft from evidence, and gate any account action. Non-functionally, the constraints are latency by risk tier, fail-closed money moves, audit, and net value rather than deflection.”**
 
 ## 3. Architecture you can draw
 
