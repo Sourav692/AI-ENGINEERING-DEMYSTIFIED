@@ -12,51 +12,47 @@ Design an AI-powered recruiting platform that screens resumes, matches candidate
 
 Recruiters upload a job description, receive resumes in bulk, get candidates ranked by fit, generate questions and scorecards, schedule interviews, receive a recommendation — **while remaining in control of the final decision.** That last clause is the whole design constraint: an AI-*assisted* workflow, not an autonomous hiring system.
 
-| Question | Answer | What it decides |
-|---|---|---|
-| Enterprise hiring or staffing agencies? | Differs | Multi-tenancy and volume assumptions |
-| Real-time or batch matching? | Batch for bulk ingestion; near-real-time for recruiter search | Two processing modes |
-| Can recruiters override AI recommendations? | Yes, always | Human-in-the-loop is first-class |
-| Fully automated or human-assisted decisions? | Human-assisted | Every downstream choice bends toward explainability |
-| Compliance — GDPR, EEOC? | Yes | Fairness monitoring and audit are non-negotiable |
+| Question                                     | Answer                                                        | What it decides                                     |
+| -------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------- |
+| Enterprise hiring or staffing agencies?      | Differs                                                       | Multi-tenancy and volume assumptions                |
+| Real-time or batch matching?                 | Batch for bulk ingestion; near-real-time for recruiter search | Two processing modes                                |
+| Can recruiters override AI recommendations?  | Yes, always                                                   | Human-in-the-loop is first-class                    |
+| Fully automated or human-assisted decisions? | Human-assisted                                                | Every downstream choice bends toward explainability |
+| Compliance — GDPR, EEOC?                    | Yes                                                           | Fairness monitoring and audit are non-negotiable    |
 
 **Functional:** upload JD and resumes; extract structured info; rank by fit; semantic search across profiles; generate questions and scorecards; recommend decisions; schedule; summarise feedback; recruiter chatbot; learn from past decisions. **Non-functional:** thousands of resumes/hour; accuracy; low hallucination; secure PII; scale; **explainable rankings**; compliance; cost.
 
 ## Step 2 — High-level architecture: two intake paths, one ranked pipeline
 
-```
-Recruiter Portal
-│
-Authentication Service
-│
-API Gateway / Load Balancer
-┌──────────────┴──────────────┐
-Resume Upload          Job Description Upload
-│                              │
-OCR / Document Parser         JD Parser
-└──────────────┬──────────────┘
-     Structured Extraction Service
-                │
-       Candidate Profile Builder
-                │
-       Embedding Generation Service
-                │
-       Vector Database (candidate & JD embeddings)
-                │
-       Similarity Search Engine
-                │
-          Candidate Ranking
-┌──────────────┴──────────────┐
-Interview Question         AI Judge
-Generator                  Scoring
-└──────────────┬──────────────┘
-         Evaluation Pipeline
-                │
-        Human Recruiter Review
-                │
-         Interview Scheduler
-                │
-          Candidate Portal
+```mermaid
+flowchart TD
+    A[Recruiter Portal] --> B[Authentication Service]
+    B --> C[API Gateway / Load Balancer]
+
+    C --> D[Resume Upload]
+    C --> E[Job Description Upload]
+
+    D --> F[OCR / Document Parser]
+    E --> G[JD Parser]
+
+    F --> H[Structured Extraction Service]
+    G --> H
+
+    H --> I[Candidate Profile Builder]
+    I --> J[Embedding Generation Service]
+    J --> K[("Vector Database<br/>(candidate & JD embeddings)")]
+    K --> L[Similarity Search Engine]
+    L --> M[Candidate Ranking]
+
+    M --> N[Interview Question Generator]
+    M --> O[AI Judge Scoring]
+
+    N --> P[Evaluation Pipeline]
+    O --> P
+
+    P --> Q[Human Recruiter Review]
+    Q --> R[Interview Scheduler]
+    R --> S[Candidate Portal]
 ```
 
 **Structured extraction is the seam between "documents" and "data":** everything before it deals with PDFs and free text; everything after deals with comparable, rankable profiles. Module 06's chunking-by-format lesson — resumes vary wildly, and the parser has to produce one consistent shape.
@@ -99,14 +95,14 @@ AI ranking never bypasses a human.
 
 ## Trade-offs
 
-| Decision | Pros | Cons |
-|---|---|---|
-| Keyword matching | Fast, simple | Misses semantically similar candidates |
-| Embedding-based search | Better discovery | Compute cost |
-| Fully automated hiring | Faster | Legal and ethical risk |
-| Human-in-the-loop | Oversight, fairness | Slower |
-| Large reasoning model | Better summaries and questions | Latency, cost |
-| Smaller model | Faster, cheaper | Lower reasoning |
+| Decision               | Pros                           | Cons                                   |
+| ---------------------- | ------------------------------ | -------------------------------------- |
+| Keyword matching       | Fast, simple                   | Misses semantically similar candidates |
+| Embedding-based search | Better discovery               | Compute cost                           |
+| Fully automated hiring | Faster                         | Legal and ethical risk                 |
+| Human-in-the-loop      | Oversight, fairness            | Slower                                 |
+| Large reasoning model  | Better summaries and questions | Latency, cost                          |
+| Smaller model          | Faster, cheaper                | Lower reasoning                        |
 
 ## Follow-ups to have ready
 
