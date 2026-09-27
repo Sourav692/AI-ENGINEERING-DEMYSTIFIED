@@ -1,6 +1,6 @@
 # Incident Response Agent for an SRE Team
 
-*A write-capable agent under a 30-second latency floor: fast enough to matter mid-incident, never fast enough to skip the human.*
+*A write-capable agent under a 30-second latency ceiling: fast enough to matter mid-incident, never fast enough to skip the human.*
 
 ◷ 29 min
 
@@ -10,7 +10,7 @@ The hard part of this system is not correlating logs with deploys. It is that th
 | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | #11 Incident Response Agent for an SRE team, Cracking ch 28 (anchor)        | Sections 1, 4 to 9 and 11: the four decisions, the arithmetic, the falsifying metric, the script, follow-ups, rubric, recovery |
 | #32 SRE Incident Triage Agent, purchased worksheet + answer key + two mocks | Sections 2, 3, 9, 10 and the spoken answer; the mock's probes and objections in section 11                                     |
-| #58 OpenAI Q14 Operations / Incident-Response Assistant                     | The discussion checklist and the "restart production automatically?" progression in sections 1 and 10                          |
+| #58 OpenAI-style practice Q14, Operations / Incident-Response Assistant     | The discussion checklist and the "restart production automatically?" progression in sections 1 and 10                          |
 | Self-drill for#11, Drill Add-ons tab                                        | Section 12                                                                                                                     |
 | Cracking ch 23 and ch 05 pattern vocabulary                                 | Typed results, tool gateway, degradation ladder, circuit breaker in sections 6 and 8                                           |
 
@@ -47,9 +47,9 @@ Map the people, because each notices a different failure first.
 | Platform SRE / security | Owns tool credentials and the audit trail                    | An agent holding write scope it should not          | Scoped read-only credentials, allowlisted tools, full audit                         | Signs off each new tool and source      |
 | Engineering manager     | Tracks MTTA and trust                                        | A tool responders stopped reading                   | Hypothesis precision, acceptance rate, later reversal rate                          | Approves rollout stages                 |
 
-Scope out loud before the first box. Read-only investigation over the observability stack, staged mitigation with approval, one alert class first, and no autonomous production changes. Say the OpenAI follow-up's own progression as the roadmap: read-only investigation, then suggested remediation, then human-approved execution, then limited autonomous action only for low-risk, reversible operations.
+Scope out loud before the first box. Read-only investigation over the observability stack, staged mitigation with approval, one alert class first, and no autonomous production changes. Say the practice prompt's own progression as the roadmap: read-only investigation, then suggested remediation, then human-approved execution, then limited autonomous action only for low-risk, reversible operations.
 
-The OpenAI question-bank entry lists what the interviewer expects to hear discussed. Use it as a coverage check on the way out:
+This OpenAI-style practice prompt lists what an interviewer would expect to hear discussed. Use it as a coverage check on the way out:
 
 - logs, metrics, traces, alerts, tickets and runbooks
 - time-window correlation
@@ -109,7 +109,7 @@ The agent's inputs are the systems that break during incidents, so map each sour
 
 | Data source                           | What it holds                    | Owner                    | Freshness           | Permission model           | Risk during an incident                                                         |
 | ------------------------------------- | -------------------------------- | ------------------------ | ------------------- | -------------------------- | ------------------------------------------------------------------------------- |
-| Prometheus / Grafana                  | Metrics, dashboards, alert rules | Platform SRE             | Seconds             | Org and team folders       | Query storms during a spike; the metrics store itself under pressure            |
+| Prometheus / Grafana                  | Metrics, dashboards, alert rules | Platform SRE             | Seconds             | Grafana org, team and folder roles (Prometheus has no fine-grained authz) | Query storms during a spike; the metrics store itself under pressure            |
 | Datadog / New Relic                   | Metrics, APM traces, logs        | Observability team       | Seconds to a minute | Role-based, per-service    | Rate limits; partial data during ingestion lag                                  |
 | Logs                                  | Application and infra logs       | Service teams            | Seconds             | Index-level, PII-sensitive | Secrets and PII in log lines; volume that overflows context                     |
 | Traces                                | Distributed traces               | Observability team       | Seconds             | Per-service                | Sampling hides the failing request; trace backend degraded                      |
@@ -248,7 +248,7 @@ The design point is the burst, not the daily average. 1,200 alerts a day is triv
 
 So deduplicate and correlate with rules and a small model before any strong-model call, and cap concurrent investigations per service. A cluster of alerts on one service within one window becomes one investigation. Alerts that arrive while it runs attach to it as new signals rather than opening new runs.
 
-The same rule governs what enters the model's context. Raw logs, traces and deploy diffs are input tokens, and under a latency floor the win is in what is not sent. Pre-aggregate telemetry first: bucket the metric, diff the deploy, count the log signature, sample the trace. Bound the lookback window. Send the summary and keep the raw slice reachable by a tool call if the hypothesis needs it. Reserve the strong model for hypothesis synthesis and use smaller models or rules for clustering and correlation.
+The same rule governs what enters the model's context. Raw logs, traces and deploy diffs are input tokens, and under a latency ceiling the win is in what is not sent. Pre-aggregate telemetry first: bucket the metric, diff the deploy, count the log signature, sample the trace. Bound the lookback window. Send the summary and keep the raw slice reachable by a tool call if the hypothesis needs it. Reserve the strong model for hypothesis synthesis and use smaller models or rules for clustering and correlation.
 
 ## 6. Investigate Read-Only, Stage the Mitigation
 
@@ -268,7 +268,7 @@ flowchart LR
     R --> I["INVALID — bad input, here's what to fix"]
 ```
 
-Never explain a denial. A `DENIED` that says "restarts of this service need commander approval" reads to the model as an instruction, and the next attempt is a restart phrased as a scale-to-zero. Denials are a dead end to the model, with the reason logged for humans.
+Never explain a denial. A `DENIED` that says "restarts of this service need commander approval" can read to the model as a hint, and the next attempt may be the same restart phrased as a scale-to-zero. Denials are a dead end to the model, with the reason logged for humans.
 
 Every write, once approved, walks through one gateway in one order. Authorize before validating, otherwise a denied caller learns the tool's schema from the validation error. Validate the arguments against the schema. Execute with a timeout and an idempotency key, which is a hash of run id, tool name and arguments, so a retry after a timeout runs the restart once. Classify the result into the five states. Trim it to the declared fields before it returns. Log all of it.
 
@@ -293,9 +293,9 @@ Hold credentials to match. Read tools run with scoped read-only credentials. Wri
 
 ## 7. Say the Latency Arithmetic Aloud
 
-Thirty seconds is a floor, not a target. A first useful summary must land inside it while 400 alerts arrive, because a responder who has already started typing a manual query stops reading the agent. Say the budget in slices and where each second goes.
+Thirty seconds is a ceiling, not a target. A first useful summary must land inside it while 400 alerts arrive, because a responder who has already started typing a manual query stops reading the agent. Say the budget in slices and where each second goes.
 
-Dedupe and correlation are rules, so they cost under a second. Context building reads a cached service catalog, deploy metadata and flag history in parallel, another second or two. Telemetry queries fan out in parallel with bounded lookback windows and a per-query timeout, budgeted at five to ten seconds for the slowest source, with `UNAVAILABLE` returned rather than waited for. Pre-aggregation runs on the query results as they arrive. Hypothesis synthesis on the strong model is the largest slice, ten to fifteen seconds, streamed so the first ranked cause appears before the last. Citation and evidence verification runs inline for anything that will become a proposal, and asynchronously for explanatory text.
+Dedupe and correlation are rules, so they cost under a second. Context building reads a cached service catalog, deploy metadata and flag history in parallel, another second or two. Telemetry queries fan out in parallel with bounded lookback windows and a per-query timeout, budgeted at five to ten seconds for the slowest source, with `UNAVAILABLE` returned rather than waited for. Pre-aggregation runs on the query results as they arrive. In my budget, hypothesis synthesis on the strong model is the largest slice, ten to fifteen seconds, streamed so the first ranked cause appears before the last. Citation and evidence verification runs inline for anything that will become a proposal, and asynchronously for explanatory text.
 
 The mock's objection is the one to rehearse: the prototype takes 18 seconds and users will not adopt it. The answer is not a faster model. Break the 18 seconds into authentication, retrieval, reranking, generation, tool calls and verification, then fix the slice that dominates. Parallelise independent queries. Cache embeddings and the service catalog. Reduce top-k before reranking. Stream partial responses. Route low-risk requests to a smaller model. Remove tool calls that do not change the hypothesis. Keep citation verification. It is a safety feature, and it can be made asynchronous for low-risk explanatory answers without being removed for proposals. Avoid long chain-of-thought loops in a live incident; a bounded set of parallel checks beats a long serial reasoning chain.
 
@@ -316,7 +316,7 @@ Partial dependency degradation is the normal operating condition here, not an ed
 | Approval gate unreachable or approver absent | Fail closed. No execution. The proposal waits or expires; the responder acts manually with the evidence                            |
 | Policy engine or credential service down     | Fail closed on every write; reads continue with cached scopes only if the scope is read-only                                       |
 
-Instrument the ladder. A degradation ladder is an ordered set of rungs from full capability to honest refusal, selected by a pure function of a health snapshot. The selected rung is disclosed to the responder and emitted as a span attribute. A circuit breaker per telemetry source trips on a windowed failure rate with a minimum sample size, never on consecutive failures. Agent traffic is bursty, so a consecutive-failure trigger either trips constantly or never trips at all.
+Instrument the ladder. A degradation ladder is an ordered set of rungs from full capability to honest refusal, selected by a pure function of a health snapshot. The selected rung is disclosed to the responder and emitted as a span attribute. In this design, a breaker per telemetry source trips on a windowed failure rate with a minimum sample size, not on a run of consecutive failures. Agent traffic is bursty, so a consecutive-failure trigger tends to trip too often or too late.
 
 Then say what breaks first at 10×. The binding constraint is provider quota and the telemetry sources' rate limits during a storm, so the per-service cap and the pre-aggregation are what scale, not the model. Ten times the alerts means ten times the correlation load on rules and small models, which is cheap, and the same number of strong-model calls per real incident. Source coverage per investigation is the metric that shows the sources falling behind before the responders notice.
 
@@ -327,7 +327,7 @@ The falsifying metric is hypothesis precision, confirmed in post-incident review
 | Metric                                      | What it proves                                      | Strong threshold                                             | Dataset / method                  | Owner               |
 | ------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------ | --------------------------------- | ------------------- |
 | Hypothesis precision                        | The ranked cause was right                          | Agreed per alert class; below it, responders stop reading    | Post-incident review labels       | SRE lead            |
-| Time to first useful output                 | The floor holds under burst                         | Under 30 s at 400 alerts in 90 s                             | Replay of historical alert storms | Platform            |
+| Time to first useful output                 | The ceiling holds under burst                       | Under 30 s at 400 alerts in 90 s                             | Replay of historical alert storms | Platform            |
 | Source coverage per investigation           | The agent said what it could not reach              | Reported on 100% of runs; coverage itself tracked per source | Trace store                       | Observability       |
 | Approval decision time                      | Proposals are decidable                             | About 10 s median mid-incident                               | Approval log                      | Incident commanders |
 | Later reversal rate on approved mitigations | Approved actions were right                         | Trending to zero; any reversal reviewed                      | Post-incident review              | SRE lead            |
@@ -351,7 +351,7 @@ Red-team the boundary with the attacks specific to this system:
 - unsafe automation attempts: restart, scale, flag flip, rollback without approval, or during a freeze
 - staleness attacks where an old runbook contradicts the current one
 
-The offline gate cannot detect small regressions, so the rollout itself becomes the detector: shadow evaluation on live alerts with disagreement rate as the signal, then a canary with guardrails and automatic rollback. Pin model versions, evaluate before adopting a new one, and keep a second provider behind an adapter.
+An offline gate of a few hundred cases usually can't detect small regressions with confidence, so the rollout itself becomes the detector: shadow evaluation on live alerts with disagreement rate as the signal, then a canary with guardrails and automatic rollback. Pin model versions, evaluate before adopting a new one, and keep a second provider behind an adapter.
 
 ## 10. Roll Out Read-Only First
 
@@ -367,7 +367,7 @@ Week one at a customer is not the whole diagram. It is one alert class, the tele
 | Week 6-8 | Approved low-risk actions: create the Jira, draft the timeline, recommend a rollback. Never auto-remediation first                |
 | After    | Expand alert classes and sources only while hypothesis precision, false mitigation rate, latency and cost hold; rehearse rollback |
 
-State the rollback conditions before the pilot: a leak, a high-risk wrong hypothesis acted upon, latency over the floor during a real incident, or responders ignoring the output. The OpenAI follow-up asks whether the agent should restart production services automatically, and the answer is the progression above: read-only investigation, suggested remediation, human-approved execution, then limited autonomous action only for low-risk, reversible operations.
+State the rollback conditions before the pilot: a leak, a high-risk wrong hypothesis acted upon, latency over the ceiling during a real incident, or responders ignoring the output. The practice prompt's follow-up asks whether the agent should restart production services automatically, and the answer is the progression above: read-only investigation, suggested remediation, human-approved execution, then limited autonomous action only for low-risk, reversible operations.
 
 ## 11. Deliver It in Forty-Five Minutes
 
@@ -407,8 +407,8 @@ The lines that carry the round:
 4. *"Empty and unavailable are different facts. Source coverage is an output field."*
 5. *"Deduplicate and correlate before any model call. One thorough investigation beats 400 shallow ones."*
 6. *"The falsifying metric is hypothesis precision. An ignored incident tool is worse than none."*
-7. *"Under a latency floor the win is in what you do not send."*
-8. *"Trip circuit breakers on a windowed failure rate with a minimum sample, never on consecutive failures."*
+7. *"Under a latency ceiling the win is in what you do not send."*
+8. *"Trip circuit breakers on a windowed failure rate with a minimum sample, not on a run of consecutive failures."*
 
 The follow-ups arrive from a known bank, and each has a prepared shape.
 
@@ -461,7 +461,7 @@ Ask them something at the end:
 
 ## 12. Answer the Latency Pivot in Ten Minutes
 
-The interviewer's pivot after a good design is "it misses its 30-second floor." Answer it in the same sitting, on the same architecture, with the self-drill card.
+The interviewer's pivot after a good design is "it misses its 30-second ceiling." Answer it in the same sitting, on the same architecture, with the self-drill card.
 
 |                       |                                                                                                                                                                         |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -469,7 +469,7 @@ The interviewer's pivot after a good design is "it misses its 30-second floor." 
 | Cheapest lever first  | Pre-aggregate telemetry before the model sees it; parallel read-only diagnostics; a small model for correlation and the strong model only for the hypothesis; cap steps |
 | Metric that proves it | Input tokens per request; time to first hypothesis; step count; timeout rate                                                                                            |
 | Do not                | Feed the model everything and ask it to find the needle                                                                                                                 |
-| 60-second line        | Under a latency floor the win is in what is not sent. Summarise telemetry first, run diagnostics in parallel, and spend the strong model on the hypothesis only         |
+| 60-second line        | Under a latency ceiling the win is in what is not sent. Summarise telemetry first, run diagnostics in parallel, and spend the strong model on the hypothesis only         |
 
 Every strong cost or latency answer is generated by four verbs in order. Measure, by tracing and attributing first. Route, matching model and path to risk. Bound, with limits on steps, tokens, lookback windows, timeouts and budgets. Cache safely, with the service catalog, runbooks and deploy metadata keyed on version. Deliver it in six moves: frame the impact, decompose the path, name the largest measured driver, fix safely, prove with before and after, prevent recurrence.
 
@@ -497,7 +497,7 @@ Every strong cost or latency answer is generated by four verbs in order. Measure
 3. **Why deduplicate before any model call?** 400 alerts in 90 seconds would otherwise become 400 shallow investigations; one thorough investigation per correlated cluster, capped per service, is the design point.
 4. **What is the falsifying metric?** Hypothesis precision, confirmed in post-incident review. Below a threshold responders stop reading, and an ignored tool still consumes attention.
 5. **What breaks first, in the strong shape?** The metrics store returns empty during a partial outage, the agent treats empty as valid, ships a confident hypothesis with no evidence; the signal is citation-free hypothesis rate; the fix is a typed result distinguishing empty from unavailable.
-6. **Why never explain a denial?** The model reads the reason as an instruction and finds a workaround, such as splitting one refund into two or phrasing a restart as a scale-to-zero. Denials are a dead end; the reason is logged for humans.
+6. **Why never explain a denial?** The model can read the reason as a hint and look for a workaround, such as splitting one refund into two or phrasing a restart as a scale-to-zero. Denials are a dead end; the reason is logged for humans.
 7. **What is in a proposal?** The exact command, the blast radius, the evidence, the runbook, the change-freeze status and a simulation result, routed to the service owner and the commander.
 8. **Why does the gateway authorize before it validates?** Otherwise a denied caller learns the tool's schema from the validation error it receives.
 9. **What is the latency answer to an 18-second prototype?** Decompose the budget, parallelise independent queries, cache the catalog and embeddings, reduce top-k, stream partial output, route low-risk requests down, and keep citation verification, made asynchronous for explanatory text only.
@@ -515,3 +515,16 @@ All paths are relative to `06_Interview_Prep/`.
 | 1, 10, 11                                         | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md`, question 14                                                                                                                               |
 | 12                                                | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill for #11                                                                                                                                                                          |
 | Not included                                      | `ch06_orchestration_context_engineering.md`, which the design does not cite beyond sub-agent isolation; `Handbook/07_Multi_Agent_Systems/04_Case_Study_Research_Platform.md`, which ch 28 does not reference                          |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Grafana roles and permissions](https://grafana.com/docs/grafana/latest/administration/roles-and-permissions/) — Grafana org, team and folder permissions
+- [Prometheus security model](https://prometheus.io/docs/operating/security/) — Prometheus has no fine-grained authorization
+- [Datadog API rate limits](https://docs.datadoghq.com/api/latest/rate-limits/) — query APIs are rate-limited
+- [AWS Post-Event Summary, us-east-1, 7 Dec 2021](https://aws.amazon.com/message/12721/) — monitoring degraded during the incident it should observe
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — limit what an agent can do around a denial
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html) — check authorization first on every request
+- [Resilience4j – CircuitBreaker](https://resilience4j.readme.io/docs/circuitbreaker) — windowed failure-rate breaker with a minimum call count
+- [Miller 2024, Adding Error Bars to Evals](https://arxiv.org/abs/2411.00640) — small eval sets can't detect small differences
+- [MSRC: How Microsoft defends against indirect prompt injection attacks](https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks) — prompt defences reduce risk but are not boundaries
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — prompt-level defences are probabilistic

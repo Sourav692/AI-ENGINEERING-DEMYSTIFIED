@@ -63,10 +63,17 @@ export function BeforeYouStart({ meta, children }: { meta: EditorialMeta; childr
       {children}
       <p className="text-[0.75rem] text-subtle sm:col-span-2">
         {SOURCE_STATUS_LABELS[meta.sourceStatus]}
-        {meta.lastReviewed ? ` · Last reviewed ${meta.lastReviewed}` : ''}
+        {meta.lastReviewed ? ` · Key facts checked against official sources on ${formatDate(meta.lastReviewed)}` : ''}
       </p>
     </section>
   )
+}
+
+/** "2026-09-27" -> "27 Sep 2026". Parsed by hand so the server and browser agree. */
+function formatDate(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return `${d} ${months[m - 1]} ${y}`
 }
 
 export function Fact({ term, children }: { term: string; children: React.ReactNode }) {

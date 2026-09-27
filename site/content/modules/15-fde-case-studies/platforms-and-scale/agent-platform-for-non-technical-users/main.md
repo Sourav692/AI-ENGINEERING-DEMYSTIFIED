@@ -122,7 +122,7 @@ flowchart TB
 
 ## Rollout, scale and honest gaps
 
-Start with one channel and one non-destructive workflow, then prove negative guardrail cases and staged promotion before enabling refunds. The demo's in-process locks and idempotency dicts are not shared across workers; production needs a distributed lock or database uniqueness and a durable shared idempotency store. The source also lacks a visual builder, natural-language-to-spec compiler, real LLM planner, automatic retry wrapper, secret vault integration, output PII redaction and gradual version migration. A compiled natural-language spec should land in `DRAFT` for review, never straight in `LIVE`.
+Start with one channel and one non-destructive workflow, then prove negative guardrail cases and staged promotion before enabling refunds. The demo's in-process locks and idempotency dicts are not shared across workers; production needs a distributed lock (database uniqueness, or a Redis lease checked with a fencing token) and a durable shared idempotency store. The source also lacks a visual builder, natural-language-to-spec compiler, real LLM planner, automatic retry wrapper, secret vault integration, output PII redaction and gradual version migration. A compiled natural-language spec should land in `DRAFT` for review, never straight in `LIVE`.
 
 ## Two-minute interview answer
 

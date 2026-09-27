@@ -550,6 +550,9 @@ for (const track of [
 ]) {
   FAMILY_META[track] = {
     ...CASE_STUDY_BASE,
+    // Round 1 of the fact check (CONTENT-18): every high- and medium-priority claim in
+    // the twenty grouped cases checked against official docs and papers.
+    lastReviewed: '2026-09-27',
     difficulty: 'Advanced',
     outcomes: [
       'Explain the system end to end at interview depth, including its dangerous constraint',
@@ -600,7 +603,7 @@ export const REVISION_META: EditorialMeta = {
     'concept is new rather than rusty, open the “learn first” link instead.',
   minutes: 12,
   sourceStatus: 'original',
-  lastReviewed: null,
+  lastReviewed: '2026-09-27',
 }
 
 export const ORIENTATION_META: EditorialMeta = {
@@ -623,6 +626,8 @@ export const FINAL_REHEARSAL_META: EditorialMeta = {
   ...REVISION_META,
   prerequisites: ['The eighteen reviews, or equivalent study'],
   outcomes: ['Walk the full interview flow from memory in one pass'],
+  // Not part of fact-check round 1, so it must not inherit the reviews' date.
+  lastReviewed: null,
   howToUse:
     'Read it the evening before or the morning of the interview. Anything that does not come ' +
     'back quickly points to the review to reopen.',

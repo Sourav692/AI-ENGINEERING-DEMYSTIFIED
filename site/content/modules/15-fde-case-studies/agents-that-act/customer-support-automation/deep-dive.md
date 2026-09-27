@@ -110,12 +110,12 @@ Rollout: agent-assist first; prove retrieval, routing, handoff, and audit; autom
 
 These are **example implementations**, not mandatory product choices:
 
-1. **Multilingual triage (#95):** detect language → classify → route → draft → translate back. An intent branch needs a default arm. Example p95 <3 s allocation: 200 ms detection, 300 ms classification, 1.5 s streamed drafting, 500 ms translation. Bound retries and provide a classifier fallback.
+1. **Multilingual triage (#95):** detect language → classify → route → draft → translate back. An intent branch needs a default arm. Example p95 <3 s allocation: 200 ms detection, 300 ms classification, 1.5 s streamed drafting, 500 ms translation (2.5 s total). Bound retries and provide a classifier fallback.
 2. **Human-gated graph (#96):** structured `{category, risk_level}` output; interrupt inside refund/deletion tool; durable Postgres checkpoint keyed by ticket; idempotent side effect keyed by ticket and action; concurrent read-only lookups; at most three self-correction iterations before escalation.
 3. **Agentic RAG (#97):** separate product-doc and runbook indexes, each hybrid BM25/vector for exact error codes; cheap router; retrieve 20/source concurrently, rerank merged candidates to five when scores are close; 400 ms retrieval budget; cite source and abstain below relevance threshold; weekly labeled recall@k gate.
 4. **Growing support search (#99):** wiki, ticket, and release-note sources with per-source hybrid weights; incremental append and source metadata; coverage-gap grading and human fallback for new error codes; cross-encoder rerank of fused top 20 under a 1.5 s p95 target; track fallback rate.
 5. **Travel booking (#101):** supervisor with read-only booking lookup, RAG policy QA, and one write-capable change/cancel specialist. Compute refund amount with pure logic; example >$200 approval interrupt; idempotency by booking and request ID; durable conversation checkpoint, separate customer memory, 15-step and cost ceilings; direct workflow for simple baggage FAQ.
-6. **Parent-document retrieval (#102):** example child chunks 300–400 characters and parent passages 1,500–2,000; shared Postgres vector/doc store, HNSW after a few thousand vectors, idempotent daily append keyed by article ID and modification time; p95 <2 s budget dominated by streamed generation; cap final `k` at 3–4 and abstain below similarity threshold.
+6. **Parent-document retrieval (#102):** example child chunks of about 400 characters and parents of about 2,000 (LangChain's example sizes; tune on your data); shared Postgres vector/doc store, HNSW once exact scans start to eat the latency budget, idempotent daily append keyed by article ID and modification time; p95 <2 s budget dominated by streamed generation; cap final `k` at 3–4 and abstain below similarity threshold.
 
 Keep these mock-specific thresholds attached to their scenarios. They are not global G02 requirements.
 

@@ -215,9 +215,9 @@ Cross-conversation memory is a different store with a different key. A checkpoin
 
 ## 6. Stream Every Answer and Cancel the Ones Nobody Reads
 
-Stream every answer, and treat the closed connection as a cost signal. Streaming buys perceived latency, not real latency. The production study guide says it directly: total generation time is unchanged, but the first token arrives in milliseconds.
+Stream every answer, and treat the closed connection as a cost signal. Streaming buys perceived latency, not real latency. The production study guide makes the point: total generation time is unchanged, but the first token arrives in well under a second instead of after the whole answer.
 
-Use Server-Sent Events for the chat stream. The traffic is one-way from server to client after the request, SSE runs over plain HTTP through every proxy, and reconnect is built in. Keep WebSockets for the paths that genuinely need both directions at once, such as voice. Each stream carries a message ID, so a reconnect resumes from the persisted partial answer instead of regenerating it *(own construction)*.
+Use Server-Sent Events for the chat stream. The traffic is one-way from server to client after the request, SSE runs over plain HTTP, so it passes most proxies that don't buffer, and the browser's EventSource reconnects on its own. Keep WebSockets for the paths that genuinely need both directions at once, such as voice. Each stream carries a message ID, so a reconnect resumes from the persisted partial answer instead of regenerating it *(own construction)*.
 
 A user who leaves mid-answer is still costing GPU time. The cost additions name this scenario: *"cancel the stream + any in-flight tool calls on abandon — otherwise you pay for tokens nobody read."* The gateway detects the closed connection and sends a cancel to the inference request. That frees the batch slot and its KV cache and stops any tool call in flight. The Stop button uses the same path. Measure abandonment against first-token time and answer length, because a rising abandon rate is often a first-token problem in disguise. G14's card 15.10 carries the same lesson.
 
@@ -225,7 +225,7 @@ A user who leaves mid-answer is still costing GPU time. The cost additions name 
 
 Route on two axes: the user's tier and the turn's difficulty. The tier sets which models a user may reach and at what quota. The task sets which of those models a turn actually needs. A greeting does not need the premium model; a long proof might.
 
-The cost additions quantify the lever. Output is roughly five times the price of input across current tiers. A router that moves 80% of traffic from Opus 5 to Haiku 4.5 is a ~5× unit-cost cut on that slice. That single sentence is what "model routing" is worth, and it belongs in the answer.
+The cost additions quantify the lever. On Claude's current price list, output costs five times input on every tier; other vendors' ratios differ. A router that moves 80% of traffic from Opus 5.5 ($4/$20 per million input/output tokens) to Haiku 4.5 ($1/$5) is a ~4× unit-cost cut on that slice (list prices as of Sep 2026). That single sentence is what "model routing" is worth, and it belongs in the answer.
 
 Then name the trade-off most candidates miss. Prompt caches are scoped to a model, so a cheap-to-medium-to-premium cascade means separate cold prefixes. On a chat product whose input is mostly repeated history, a cascade can forfeit more in cache than it saves in price. The additions give the rule: measure one strong model at lower effort before building the cascade. Route at the start of a conversation where possible, and keep a conversation on one model unless the user changes it *(own construction)*.
 
@@ -241,7 +241,7 @@ Separate the two kinds of 429 when load spikes. The additions say it plainly: *"
 
 Moderate input before it reaches a GPU and output before it reaches a screen. The production guide's rule settles why both: the model can repeat something sensitive the user said two turns ago, so an input-only check never catches it. Input moderation buys half the cost; input plus output buys the multi-turn catch. A consumer chat product is multi-turn by definition.
 
-Input moderation runs as a fast classifier at the gateway, before admission, so a blocked message never spends GPU time. Output moderation runs on the stream in chunks and can halt it mid-answer with an explanation. Moderation APIs flag a fixed taxonomy of severe harm only, so mild abuse passes. The guide names two independent layers, the model's trained refusals and the moderation classifier, and neither substitutes for an app-specific policy. Track false positives as closely as false negatives, because over-blocking is a product failure users notice first *(own construction)*.
+Input moderation runs as a fast classifier at the gateway, before admission, so a blocked message never spends GPU time. Output moderation runs on the stream in chunks and can halt it mid-answer with an explanation. Moderation APIs score a fixed set of categories, and at default thresholds milder or app-specific abuse can still pass. The guide names two independent layers, the model's trained refusals and the moderation classifier, and neither substitutes for an app-specific policy. Track false positives as closely as false negatives, because over-blocking is a product failure users notice first *(own construction)*.
 
 Files and tools carry indirect prompt injection, which the question bank lists as a Tier 2 probe. An uploaded PDF or a fetched web page is data, and data must not gain the authority of instructions. Store uploads in object storage, scan them, parse asynchronously, then chunk and embed per user. Retrieval over them is filtered by `user_id` at query time, the same two-layer idea as G01 section 6. Tool steps are capped per turn. The code sandbox runs with no network and no credentials, and is destroyed after the session *(own construction)*.
 
@@ -251,7 +251,7 @@ Chat is the best case for prefix caching, because each turn is the previous turn
 
 Build the prompt so the stable parts come first and never move. Freeze the system prompt per version. Order the tool list deterministically. Put timestamps, request IDs and the user's new message after the last cache breakpoint. The additions list the silent invalidators behind a sudden cache-hit drop: a `datetime.now()` in the system prompt, unsorted JSON keys, a tool list whose order varies, a prompt-version bump, a model swap. Prove it with the cache-read token counter, not by guessing.
 
-A cache is only warm on the machine that holds it. Route every turn of a conversation to the replica that served the previous one, so its KV cache still holds the history *(own construction)*. Session affinity trades some load-balancing freedom for a large cut in prefill work. When the replica is gone, the turn still succeeds, only slower and at full input price. Summarisation interacts with caching too: rewriting the summary changes the prefix, so fold history in large steps rather than every turn.
+A cache is only warm on the machine that holds it. Route every turn of a conversation to the replica that served the previous one, so its KV cache still holds the history *(own construction)*. Session affinity trades some load-balancing freedom for a large cut in prefill work. When the replica is gone, the turn still succeeds, only slower, because the new replica must prefill the whole history again. Summarisation interacts with caching too: rewriting the summary changes the prefix, so fold history in large steps rather than every turn.
 
 ## 11. Serve From Many Regions and Fail Over Cold, Not Closed
 
@@ -370,7 +370,7 @@ Every strong cost answer follows four verbs in order. Measure tokens and stage t
 2. **Walk the sizing from 100M daily users to open streams.** 1B messages a day, about 11,600/s average, about 35,000/s at a 3× peak; at 8 s per answer, Little's Law gives about 280,000 open streams.
 3. **Why does time to first token depend on history length?** Prefill processes the whole prompt before the first token, and history is most of the prompt.
 4. **What does the context builder send on turn 40 of a conversation?** The frozen system prompt, a rolling summary, the recent turns, relevant user memory and file chunks, then the new message, in that order.
-5. **Why SSE rather than WebSockets for chat?** The stream is one-way after the request, SSE runs over plain HTTP through every proxy, and reconnect is built in.
+5. **Why SSE rather than WebSockets for chat?** The stream is one-way after the request, SSE runs over plain HTTP, so it passes most proxies that don't buffer, and the browser's EventSource reconnects on its own.
 6. **What happens when a user closes the tab mid-answer?** The gateway cancels the inference request and any tool call, freeing the batch slot and KV cache; the partial answer is already persisted.
 7. **Why can a model cascade raise cost on a chat product?** Prompt caches are scoped to a model, so each model in the cascade starts cold on a prompt that is mostly repeated history.
 8. **How do a rate limit and a fair queue differ?** The limit decides whether a request may proceed; the queue decides the order admitted requests are served under load.
@@ -395,3 +395,15 @@ All paths are relative to `06_Interview_Prep/`.
 | 9 | `Case_Study_Groups/G01_Enterprise_Knowledge_Assistant/G01_Enterprise_Knowledge_Assistant.md`, section 6 |
 | 12 | `Case_Study_Groups/G13_Evaluation_And_Release_Gating.md` (release gate) |
 | Every table and section marked own construction, all sizing figures, the self-drill card | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Artificial Analysis LLM leaderboard (TTFT column)](https://artificialanalysis.ai/leaderboards/models) — real first-token times are hundreds of ms to over a second, not milliseconds
+- [WHATWG HTML Standard: Server-sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html) — SSE over plain HTTP, EventSource auto-reconnect, proxies that drop idle connections
+- [vLLM docs: OpenAI-compatible server](https://docs.vllm.ai/en/stable/serving/openai_compatible_server/) — disconnect aborts the request and frees its slot; KV reuse is compute, not a per-token price, when self-hosted
+- [vLLM issue #10087](https://github.com/vllm-project/vllm/issues/10087) — abort on disconnect can break behind middleware, so cancellation must be propagated
+- [Claude docs: Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) — Opus 5.5 is the current Opus; Opus 5 is legacy
+- [Claude docs: Pricing](https://platform.claude.com/docs/en/about-claude/pricing) — Opus 5.5 $4/$20 and Haiku 4.5 $1/$5 per million tokens (4×); output is 5× input on every Claude tier
+- [Claude docs: Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — caches are per model, exact-prefix matched in tools → system → messages order, and broken by volatile content
+- [OpenAI API docs: Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) — exact-prefix matching and per-model caches on another vendor
+- [OpenAI API docs: Moderation](https://developers.openai.com/api/docs/guides/moderation) — moderation returns category scores; thresholds and policy are the app's job

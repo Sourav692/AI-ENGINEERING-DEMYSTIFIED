@@ -86,10 +86,10 @@ Both are measurable from data the customer already has, not "the agent should be
 |---|---|---|
 | Time to deploy | Day 14, or a named gate explains why not | The promise is the process, not the date |
 | Agent latency | First response under 5 minutes on the top 3 categories | The customer's own success metric |
-| Quality at handover | Eval score clears the agreed baseline (0.83 vs 0.75 in the demo) | The number true when responsibility transfers |
-| Safety of rollout | Rollback tested, not documented (verified under 2 min in the demo) | The first real action must not be the first unwatched one |
+| Quality at handover | Eval score clears the agreed baseline (the demo scripts 0.83 against 0.75; no real eval harness runs) | The number true when responsibility transfers |
+| Safety of rollout | Rollback tested, not documented (the demo's sign-off text says under 2 min; scripted, not timed) | The first real action must not be the first unwatched one |
 | Auditability | Every gate decision replayable with signer, role, evidence and reason | "Why did it stall at day 3?" has one answer |
-| Data access | Read-only tokens, scoped to the engagement, revoked at handover | The delivery process holds live customer credentials |
+| Data access | Read-only access (for Zendesk, OAuth with the `read` scope; its API tokens are all-or-nothing and being retired), scoped to the engagement, revoked at handover | The delivery process holds live customer credentials |
 | Repeatability | Accelerator reuse rate tracked per engagement (83% on Northwind) | The measure of productised versus bespoke |
 
 **Constraints.** Two calendar weeks. A customer SME who has other work. Security review before any connection is made. Three of the six gates need a customer signature, so customer-side delay is the default risk.
@@ -235,12 +235,12 @@ The order is not optional. Configuring against unconnected data fails, evaluatin
 |---|---|---|---|---|
 | 0 | Intake | Measurable metrics, a named SME, named sources; otherwise refused | `case_study.json` accepted | — |
 | 1–2 | Scoping and qualification | Metrics written down and measurable; SME assigned; security review started | `scoping_questionnaire.pdf`, `success_metrics_signoff.pdf`; Zendesk and Confluence connectors pulled; "SEC-2026-0142 review report, no blocking findings" | Security reviewer |
-| 3–4 | Data readiness | Sources connected; access live and verified, not "requested" | "Read-only Zendesk/Confluence/Salesforce tokens verified live"; escalation check runs on day 3 | Customer SME |
+| 3–4 | Data readiness | Sources connected; access live and verified, not "requested" | "Read-only Zendesk (OAuth read scope), Confluence (scoped token) and Salesforce (read-only integration user) access verified live"; escalation check runs on day 3 | Customer SME |
 | 5–7 | Configure, do not code | Assembled from the library and configured for this customer | Triage prompt, golden-set harness, PII policy pulled; Northwind escalation policy built custom; `golden_set_v1.json` | Customer SME ("golden_set_v1.json reviewed, 40 cases approved") |
-| 8–9 | Evaluate and iterate | Golden set signed off as representative; baseline clears the bar | "eval_baseline_report.pdf - 0.83 vs 0.75 agreed baseline" | FDA |
-| 10–11 | Shadow mode | Agent sees real traffic, decides, takes no action; humans compare | 5 shadow approvals, 2 overridden; "rollback_runbook.md - tested in staging, verified <2min" | FDA |
+| 8–9 | Evaluate and iterate | Golden set signed off as representative; baseline clears the bar | "eval_baseline_report.pdf - 0.83 vs 0.75 agreed baseline" (scripted value, no eval harness run) | FDA |
+| 10–11 | Shadow mode | Agent sees real traffic, decides, takes no action; humans compare | 5 shadow approvals, 2 overridden; "rollback_runbook.md - tested in staging, verified <2min" (scripted text, not timed) | FDA |
 | 12–13 | Limited production | Agent acts for real with a human approving, and a tested rollback | 6 approvals, 1 overridden; cumulative override rate 0.27 | — |
-| 14 | Go/no-go and handover | The day-1 metric was met; runbook, dashboards, owner handed over | "Week-2 metrics: first-response 4m12s, 63% zero-edit sends"; `handover_runbook.md`, `dashboards_live.url` | Sponsor |
+| 14 | Go/no-go and handover | The day-1 metric was met; runbook, dashboards, owner handed over | "Week-2 metrics: first-response 4m12s, 63% zero-edit sends" (scripted evidence text in the demo, not measured); `handover_runbook.md`, `dashboards_live.url` | Sponsor |
 
 The table's last two evidence columns come from `scripts/run_engagement_demo.py`. Shadow mode and limited production are the same two-step trust ladder as Module 05's `SHADOW` and `LIVE`. Never let a system's first real action also be the first time nobody is watching.
 
@@ -289,7 +289,7 @@ The Northwind stall answers "are the gates real?" in three rows:
 
 Immeasurable-metric refusal is the cheapest, highest-signal move in the design, so say it before drawing a single box. Intake raises `ScopingRefused` and creates no engagement at all. It is the delivery version of Module 04's refusal to index a document with no usable ACL.
 
-The SME requirement is refused at intake for a structural reason. Three of the six gates need an SME signature. An engagement with no SME cannot finish, and it is better to know on day 0 than on day 8.
+The SME requirement is refused at intake for a structural reason. Two of the six gates need an SME signature, and every later gate waits on them. An engagement with no SME cannot finish, and it is better to know on day 0 than on day 8.
 
 The trade-off has a revisit condition. A strategic customer may be accepted despite the risk. Then intake needs an explicit override path with its own sign-off, never a silent bypass.
 
@@ -468,7 +468,7 @@ Every strong cost answer follows four verbs in order. Measure cost per resolved 
 2. **Name the seven stages, their days, and what blocks each.** Scoping 1–2, data readiness 3–4, configure 5–7, evaluate 8–9, shadow 10–11, limited production 12–13, go/no-go 14; blocked in turn by security review, data access, golden set, eval baseline, rollback tested, success metrics.
 3. **State the three deny rules.** `wrong_role`, `no_evidence`, `prior_gate_incomplete`, deny overriding, every attempt logged.
 4. **What separates `golden_set_signed_off` from `eval_baseline_met`?** The first certifies the test is representative, signed by the SME; the second certifies the agent passed it, signed by the FDA.
-5. **Why refuse at intake instead of warning?** A clock against an unmeasurable goal is worse than no clock, and an engagement without an SME cannot pass three of its six gates.
+5. **Why refuse at intake instead of warning?** A clock against an unmeasurable goal is worse than no clock, and an engagement without an SME cannot pass the two SME gates, so nothing after them.
 6. **What does the reuse rate measure, and what is Northwind's?** Reused pulls over total pulls; 83%, five of six, with one custom guardrail policy.
 7. **How can a structurally real gate still be a rubber stamp?** Free-text evidence cannot prove adversarial testing happened; require a checklist.
 8. **What breaks first at scale?** FDA capacity, with gates queueing behind a calendar rather than the customer.
@@ -488,3 +488,11 @@ All paths are relative to `06_Interview_Prep/`.
 | 6, 9, 10, 12 | `Handbook/10_FDE_Delivery_Operating_Model/04_Gates_Risks_Metrics.md`; `AI_Engineer/Delivery Framework from Scoping to Delivery/docs/05-security-gate-depth-and-tenant-scale.md` |
 | 15 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #9 |
 | 3 (MoSCoW split, agent requirements, non-functional table), 4 (triage agent diagrams, component failure column), 15 (fit to the framework), and every item marked own construction | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Demo script `run_engagement_demo.py`](https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Handbook/10_FDE_Delivery_Operating_Model/project/scripts/run_engagement_demo.py) — the 0.83 eval score, "verified <2min" rollback and week-2 metrics are hard-coded evidence strings, not measurements
+- [Gate definitions `gates.py`](https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Handbook/10_FDE_Delivery_Operating_Model/project/src/delivery_framework/gates.py) — the customer SME signs two gates; the FDA signs the eval and rollback gates
+- [Zendesk: Announcing the removal of API tokens](https://support.zendesk.com/hc/en-us/articles/10851263566234-Announcing-the-removal-of-API-tokens-as-an-authentication-method-for-API-requests) — API tokens are all-or-nothing; no new tokens from 27 Oct 2026, all off 30 Apr 2027
+- [Zendesk: Creating and using OAuth tokens with the API](https://developer.zendesk.com/documentation/authentication/creating-and-using-oauth-tokens-with-the-api/) — read-only access needs the OAuth `read` scope
+- [Atlassian: Scoped API tokens in Confluence Cloud](https://support.atlassian.com/confluence/kb/scoped-api-tokens-in-confluence-cloud/) — Confluence supports scoped tokens

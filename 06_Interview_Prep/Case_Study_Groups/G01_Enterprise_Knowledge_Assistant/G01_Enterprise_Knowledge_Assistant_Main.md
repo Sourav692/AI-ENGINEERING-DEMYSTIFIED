@@ -501,8 +501,8 @@ Use round numbers as reasoning examples.
 | 50M chunks | Refresh/deletion problem |
 | 20 QPS | Average load |
 | 100 QPS | Peak serving pressure |
-| <3 s | Chat-grade target |
-| <8 s | Relaxed interactive target |
+| <3 s | Chat-grade target in this design |
+| <8 s | Relaxed interactive target in this design |
 | ~100 ms | Generation cannot stay on the hot path |
 
 At 100 QPS and ~3 seconds of generation, there can be roughly 300 in-flight generations. That is a serving problem.
@@ -654,6 +654,8 @@ This becomes closer to a permission-aware search product with a cached-answer la
 Important lesson:
 
 > **Governed source data does not automatically make a copied search index governed.**
+
+On Databricks the index is Databricks AI Search (formerly Vector Search), and AI Search does not enforce Unity Catalog row filters or column masks.
 
 Verify:
 

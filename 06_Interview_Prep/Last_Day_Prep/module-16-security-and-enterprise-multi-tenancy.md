@@ -258,3 +258,13 @@ Neither replaces resource checks in retrieval or enterprise tools. Provider sele
 ### 30-Second Answer
 
 > “I’d establish verified identity and tenant scope, then enforce resource-level access in retrieval, state, and tools. The agent would receive only necessary operations, while credentials remain in trusted execution. I’d isolate tenant data across caches, jobs, logs, and results, check business policy and approval for writes, and trace sensitive data and residency through providers, telemetry, backups, and failover.”
+
+## Sources (checked 27 Sep 2026)
+
+- [OWASP GenAI LLM07:2025 System Prompt Leakage](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) — access control before model context; permission-aware retrieval
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — access control before model context; untrusted retrieved and tool input
+- [OWASP GenAI LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/) — permission-aware retrieval
+- [European Commission: Rules on international data transfers](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/rules-international-data-transfers_en) — GDPR transfers vs residency
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — untrusted retrieved and tool input
+- [Amazon Bedrock User Guide: Cross-Region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) — cross-region inference
+- [Amazon Bedrock User Guide: Geographic cross-Region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/geographic-cross-region-inference.html) — cross-region inference

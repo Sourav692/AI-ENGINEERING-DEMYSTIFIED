@@ -136,7 +136,7 @@ The mitigation is always a proposal first. Compute blast radius from the service
 
 ## 5. Latency, scale, and cost
 
-At the source’s burst of **400 alerts/90 s**, one investigation per alert would overload the telemetry stack and produce noisy summaries. Dedupe/correlation should take under a second; context building ~1–2 s; parallel telemetry fan-out ~5–10 s for the slowest source; strong-model synthesis ~10–15 s, streamed; verification completes the under-30-second first output. Track time to first useful hypothesis, not only final response time.
+At the source’s burst of **400 alerts/90 s**, one investigation per alert would overload the telemetry stack and produce noisy summaries. Dedupe/correlation should take under a second; context building ~1–2 s; parallel telemetry fan-out ~5–10 s for the slowest source; strong-model synthesis ~10–15 s in this budget, streamed; verification completes the under-30-second first output. Track time to first useful hypothesis, not only final response time.
 
 At 10×, provider quotas and telemetry rate limits likely bind first. Per-service caps and pre-aggregation keep strong-model calls tied to real incidents rather than alert count. Profile input tokens and serial steps before choosing a faster model. Cache versioned service catalogs/runbooks, shrink lookback and top-k, and parallelize independent read-only calls. Spend is per resolved investigation; it remains visible even when a SEV-1 justifies a larger budget.
 
@@ -152,7 +152,7 @@ At 10×, provider quotas and telemetry rate limits likely bind first. Per-servic
 | Approval or policy unavailable      | No execution. Proposal waits, expires, or a responder acts manually.                         |
 | Model provider degraded             | Read-only investigation continues through a bounded fallback route.                          |
 
-Use a visible degradation ladder chosen from system health, with the selected rung in the trace and responder view. Circuit breakers should use a windowed failure rate with a minimum sample, because agent traffic is bursty.
+Use a visible degradation ladder chosen from system health, with the selected rung in the trace and responder view. In this design, circuit breakers use a windowed failure rate with a minimum sample, because agent traffic is bursty.
 
 ## 7. Evaluation and rollout
 

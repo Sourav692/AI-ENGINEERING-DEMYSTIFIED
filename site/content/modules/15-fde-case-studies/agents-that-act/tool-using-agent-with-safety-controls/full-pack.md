@@ -10,7 +10,7 @@ The hard part of this system is not getting a model to call a tool. It is that a
 |---|---|
 | #22 Tool-Using AI Agent with Safety Controls (anchor) | Sections 1 to 10: the design, requirements, evaluation and rollout |
 | #1 Enterprise AI Assistant over 100+ internal applications | Section 6: REST, function calling, MCP and agent frameworks as layers; the tool registry at scale; identity propagation |
-| #50 OpenAI Q6, AI Agent for Enterprise Workflow Automation | Section 11: the focus list and the refund follow-up |
+| #50 OpenAI-style practice Q6, AI Agent for Enterprise Workflow Automation | Section 11: the focus list and the refund follow-up |
 | #82 Reported Salesforce prompt: agent loop, tool interfaces, memory, orchestration, safety | Section 6 and 11: the loop shape and the Tier 2 probes |
 | #90 Incident: refund tool called above the approval threshold | Section 13 |
 | #107 and #118 §15 scenarios: agent loops on tools, tool workflow times out | Section 12 |
@@ -266,7 +266,7 @@ The tool layer is where the "agent over 100+ applications" case joins this one. 
  REST / SOAP / SQL   what actually EXECUTES
 ```
 
-REST is ideal when the interface is stable, operations are deterministic and no reasoning is needed. But a model does not natively understand authentication, endpoint discovery or request schemas, so REST alone never adds up to an assistant. Function calling works while the tool count is small. The model chooses reasonably among twenty functions. Scale to 1,500 functions across 100 applications and it breaks: prompt size explodes, selection gets inaccurate, every schema has to be maintained and re-embedded. MCP solves discoverability, one server per application advertising its tools and resources, so the assistant asks what is exposed instead of hardcoding schemas. MCP does not replace REST; REST remains the transport, and an MCP server may call REST, SOAP, SQL or a legacy system underneath. The axis that separates REST from function calling is who decides to make the call: fixed application code, or the model from natural language. Same wire call, two layers, because another REST endpoint is cheap and another function the model must choose between costs prompt space and accuracy.
+REST is ideal when the interface is stable, operations are deterministic and no reasoning is needed. But a model does not natively understand authentication, endpoint discovery or request schemas, so REST alone never adds up to an assistant. Function calling works while the tool count is small. The model chooses reasonably among twenty functions. Scale to 1,500 functions across 100 applications and it breaks: prompt size explodes, selection gets inaccurate, every schema has to be maintained and re-embedded. MCP solves discoverability, one server per application advertising its tools and resources, so the assistant asks what is exposed instead of hardcoding schemas. MCP does not replace REST; MCP itself runs JSON-RPC over stdio or Streamable HTTP, and an MCP server may call REST, SOAP, SQL or a legacy system underneath. The axis that separates REST from function calling is who decides to make the call: fixed application code, or the model from natural language. Same wire call, two layers, because another REST endpoint is cheap and another function the model must choose between costs prompt space and accuracy.
 
 | Technology | Best use |
 |---|---|
@@ -419,7 +419,7 @@ The follow-ups arrive in a predictable order, and each has a prepared answer.
 | How do you stop duplicate refunds? | Idempotency at the business-action layer, not only the API layer. Every refund carries a durable identifier tied to case, customer and policy decision; before execution the workflow checks whether it completed, is in flight or partially applied, and on retry returns the existing outcome |
 | What if the email contains malicious instructions? | Assume it will. Email is untrusted input, never command authority. The model classifies and extracts facts and does not obey embedded instructions about overrides, credentials or approvals. Prompt separation, tool allowlisting, policy outside the model, strict role boundaries |
 | How does the kill switch work mid-task? | More than a flag on new requests: halt new tool invocations, cancel queued workflows, revoke or expire delegated tokens, and mark in-flight tasks so downstream services reject completion. The state machine makes the pause point explicit |
-| OpenAI Q6, an agent that reads incoming requests and performs actions across Salesforce, SAP, Jira and email: "The agent wants to issue a refund. Should it be allowed to do so automatically?" | Only below a threshold, only as a delegated actor with a scoped token, only through the idempotent gateway, and only where the revert path is proven. Above the threshold it creates a proposed refund ticket for approval. Assume the model will occasionally be wrong and design so the blast radius is limited |
+| OpenAI-style practice Q6, an agent that reads incoming requests and performs actions across Salesforce, SAP, Jira and email: "The agent wants to issue a refund. Should it be allowed to do so automatically?" | Only below a threshold, only as a delegated actor with a scoped token, only through the idempotent gateway, and only where the revert path is proven. Above the threshold it creates a proposed refund ticket for approval. Assume the model will occasionally be wrong and design so the blast radius is limited |
 | How do tool schemas reduce hallucinated actions? (Tier 2) | Typed arguments, enums over free text, required fields, a data-class and risk label per tool, and validation before policy so a malformed proposal never reaches authorization |
 | How do you sandbox tool execution? | Restricted adapters only, no shell escape, per-tool concurrency limits, and a gateway that is the only path to any write API |
 | How do you control cost explosions from runaway tool calls? | Step budgets per task, retry caps, a circuit breaker on repeated identical calls, per-user and global concurrency, and a spend ceiling that trips the kill switch |
@@ -555,3 +555,9 @@ All paths are relative to `06_Interview_Prep/`.
 | 12 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, row 22; `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md` §15 scenarios 4 and 15, §4 and §5 |
 | 13 | `FDE/Complete GEN AI FDE Interview System — Core + GenAI/05_PRODUCTION_DEBUGGING_OBSERVABILITY_AND_OPTIMIZATION/04_PRODUCTION_INCIDENT_LOGS/06_tool_call_near_miss.md` |
 | Not included | The V1 long tutorial for chapter 11, the V2 tutorial's section 5 working code and contract tests, and the site mirror under `site/content/`, which repeat the above in other forms |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [MCP specification 2025-11-25 – Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) — MCP is JSON-RPC over stdio or Streamable HTTP, not REST
+- [Claude docs – Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool) — selection degrades with many tools; load tools on demand
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — indirect injection from any content the model reads

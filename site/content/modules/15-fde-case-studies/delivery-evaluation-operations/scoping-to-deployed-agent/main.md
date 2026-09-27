@@ -120,8 +120,8 @@ flowchart TB
 | Scoping, days 1–2              | `security_review_passed` | Security reviewer                               |
 | Data readiness, days 3–4       | `data_access_granted`    | Customer SME; pending access escalates on day 3 |
 | Configure, days 5–7            | `golden_set_signed_off`  | Customer SME                                    |
-| Evaluate, days 8–9             | `eval_baseline_met`      | FDE                                             |
-| Shadow, days 10–11             | `rollback_tested`        | FDE                                             |
+| Evaluate, days 8–9             | `eval_baseline_met`      | FDA (Forward Deployed Architect)                |
+| Shadow, days 10–11             | `rollback_tested`        | FDA                                             |
 | Limited production, days 12–13 | `success_metrics_met`    | Sponsor                                         |
 | Day 14                          | Go/no-go and handover      | Named decision owner                            |
 
@@ -129,7 +129,7 @@ The gate API should reject wrong roles, missing evidence and skipped prior stage
 
 ## Trade-offs, cost and honest limits
 
-Northwind reuses five of six accelerator components (about 83%); the bespoke part is escalation policy. The demonstration reports 4m12s first response, 63% zero-edit sends, .83 evaluation score against .75 baseline, and rollback under two minutes. Week-four retention was not observed; `None` does not mean zero. The source's deterministic gate demo has 17 tests but does not implement full agent provisioning, eval-harness wiring, scope-change approval, versioned rollback or multi-engagement operations. State those gaps plainly in the interview.
+Northwind reuses five of six accelerator components (about 83%); the bespoke part is escalation policy. The demo script hard-codes 4m12s first response, 63% zero-edit sends, a .83 evaluation score against a .75 baseline, and a rollback note saying under two minutes; none of these was measured or timed. Week-four retention was not observed; `None` does not mean zero. The source's deterministic gate demo has 17 tests but does not implement full agent provisioning, eval-harness wiring, scope-change approval, versioned rollback or multi-engagement operations. State those gaps plainly in the interview.
 
 For cost, agree on cost per resolved ticket at intake; bound model steps and tokens, reuse common connectors, and sample evaluation proportionally to risk. Keep customer credentials in a vault with scoped access and revoke or transfer them at handover. Record tenant boundaries and override rate. A low-cost pilot that fails its outcome metric is not success.
 

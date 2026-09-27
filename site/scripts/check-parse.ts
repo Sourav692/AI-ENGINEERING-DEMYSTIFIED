@@ -463,7 +463,7 @@ for (const file of scanFiles) {
     .replace(/```[\s\S]*?```/g, ' ')
   for (const [word] of text.matchAll(/\b[a-z]{4,}\b/g)) lowerWords.add(word)
   for (const [token] of text.matchAll(/\b[A-Z][A-Z0-9]{1,6}\b/g)) {
-    if (defined.has(token) || NOT_ACRONYMS.has(token) || /^(G\d{2}|[A-Z]\d{1,3})$/.test(token)) continue
+    if (defined.has(token) || NOT_ACRONYMS.has(token) || /^(G\d{2}|[A-Z]\d{1,3}|LLM\d{2})$/.test(token)) continue
     if (!acronymPages.has(token)) acronymPages.set(token, new Set())
     acronymPages.get(token)!.add(file)
   }

@@ -22,7 +22,7 @@ Say the framing sentence in the first two minutes, because a design that starts 
 
 > *"Anyone can wire an LLM to a tool call. The hard part is letting someone who has never seen a stack trace configure that safely — which means the system has to make the dangerous decisions itself, deterministically, and never delegate them to the model's judgement in the moment."*
 
-The prompt, verbatim from the DevRev prep guide: *"Design an AI agent platform for non-technical users to configure workflow automations across multiple channels."* Four phrases carry it.
+The prompt, as quoted in a DevRev system-design prep document: *"Design an AI agent platform for non-technical users to configure workflow automations across multiple channels."* Four phrases carry it.
 
 | Phrase in the prompt | What it really means |
 |---|---|
@@ -370,7 +370,7 @@ The source project contains no LLM at all, on purpose, so every property can be 
 
 The scale answer is one sentence of mechanism and one of storage:
 
-> *"Every lock and idempotency key in this demo lives in an in-process dict - correct in shape, wrong in storage. At real volume that becomes a distributed lock (Redis, or a unique-constraint row in a database) and a durable idempotency store shared across workers. The mechanism doesn't change - `acquire_lock`/`release_lock` stay the same two functions - only where they're backed changes."*
+> *"Every lock and idempotency key in this demo lives in an in-process dict - correct in shape, wrong in storage. At real volume that becomes a distributed lock (a unique-constraint row in a database, or a Redis lease checked with a fencing token) and a durable idempotency store shared across workers. The mechanism doesn't change - `acquire_lock`/`release_lock` stay the same two functions - only where they're backed changes."*
 
 The failure table tells the interviewer what a workflow does, not what breaks.
 
@@ -526,3 +526,10 @@ All paths are relative to `06_Interview_Prep/`.
 | 2, 6, 13 | `Handbook/05_Agentic_Workflow_Platforms/project/data/case_study.json`; `project/README.md` (verified results, 21 tests) |
 | 15 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #8 |
 | 3 (split and owner table), 4 (full-platform ASCII, Mermaid, failure column), 15 (mapping levers onto the design), and every item marked own construction | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Redis docs: Distributed locks with Redis](https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/) — Redis lock patterns and their limits
+- [Kleppmann: How to do distributed locking](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html) — a lease lock needs a fencing token to be safe
+- [Slack docs: Events API](https://docs.slack.dev/apis/events-api/) — failed event deliveries are retried, so redelivery is normal
+- [Stripe API reference: Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — passing an idempotency key to a provider that supports it

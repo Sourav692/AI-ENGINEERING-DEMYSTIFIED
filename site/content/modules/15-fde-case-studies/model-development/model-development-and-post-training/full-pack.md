@@ -76,7 +76,7 @@ Run the numbers on the math model *(all figures are assumptions, arithmetic is e
 | Post-training rollouts | 50K prompts × 8 samples × 1,000 tokens = 4e8 generated tokens | 2 × 7e9 × 4e8 = 5.6e18 FLOPs to generate |
 | Post-training updates | Training on those 4e8 tokens | 6 × 7e9 × 4e8 = 1.68e19 FLOPs |
 
-The lesson is in the ratio. SFT is cheap. Post-training with sampled rollouts costs roughly ten times more, and generation runs well below peak throughput because it is memory-bound. So the compute budget belongs to post-training and to evaluation, not to the supervised stage.
+The lesson is in the ratio. SFT is cheap. With these assumed workloads, post-training with sampled rollouts costs roughly ten times more, and generation runs well below peak throughput because it is memory-bound. So the compute budget belongs to post-training and to evaluation, not to the supervised stage.
 
 Memory decides the hardware shape. A full fine-tune with the Adam optimiser in mixed precision needs roughly 16 bytes per parameter for weights, gradients and optimiser state. That is about 112 GB for a 7B model *(assumption: the rule of thumb, before activations)*. It does not fit on one 80 GB card. Either shard the optimiser state across GPUs or train a small adapter instead of the full weights. Section 9 returns to both.
 
@@ -172,7 +172,7 @@ Draw from four sources *(own construction)*. Public problem sets with known answ
 
 The Foundations labs show the mechanical half of this stage. They contrast a pretraining corpus with a company fine-tuning dataset. They format examples as question-answer pairs with a prompt template, store them as JSONL, tokenise with padding and truncation, and split into train and test. That is the plumbing. The judgement is in what the Cracking book's learning chapter calls the three gates of the data flywheel.
 
-Deduplicate first. The book's worked failure had 140,000 traces that were only about 9,000 distinct requests after dedup. Split by time and by source, never at random, because a random split puts near-twins on both sides. Route low-agreement, high-impact examples to human adjudication, because an automatic label is not the same as a correct one. Ship a datasheet with every dataset: collection window, filters, dedup method, split strategy, label source and known biases.
+Deduplicate first. In the book's worked example, 140,000 traces turned out to be only about 9,000 distinct requests after dedup. Split by time and by source, never at random, because a random split puts near-twins on both sides. Route low-agreement, high-impact examples to human adjudication, because an automatic label is not the same as a correct one. Ship a datasheet with every dataset: collection window, filters, dedup method, split strategy, label source and known biases.
 
 ## 6. Teach the Format With SFT, Then Stop
 
@@ -182,7 +182,7 @@ The Foundations labs make the contrast concrete. They compare a base model with 
 
 Three rules follow *(own construction)*. Keep SFT short, because a model that over-fits the worked solutions reproduces their exact wording and loses flexibility. Mix general instruction data in, so the model does not forget how to follow ordinary requests. Include examples that decline an ill-posed problem, or the model will never learn that "this has no unique answer" is a legal output.
 
-Parameter-efficient fine-tuning is the default for iteration. An adapter method such as LoRA trains a small set of added weights and leaves the base model frozen. QLoRA does the same on a base model loaded at 4-bit precision. The repo's Llama 2 AutoTrain notebook names both flags, `use_peft` and `use_int4`, as its route to fitting a 7B model on modest hardware. Use adapters for fast experiments. Move to a full fine-tune only when an adapter demonstrably plateaus below the target.
+Parameter-efficient fine-tuning is the default for iteration. An adapter method such as LoRA trains a small set of added weights and leaves the base model frozen. QLoRA does the same on a base model loaded at 4-bit precision. The repo's Llama 2 AutoTrain notebook uses `--use_peft` and `--use_int4` (current AutoTrain calls them `--peft` and `--quantization int4`) to fit a 7B model on modest hardware. Use adapters for fast experiments. Move to a full fine-tune only when an adapter demonstrably plateaus below the target.
 
 ## 7. Reward Correct Answers, Not Confident Ones
 
@@ -196,7 +196,7 @@ The scorer is the whole design, and math offers three choices *(own construction
 | Reward model on steps | Is each step of the working valid? | Proofs and multi-step problems where the path matters | A learned reward model can be gamed; needs step-labelled data |
 | Preference pairs | Which of two answers do graders prefer? | Style, clarity, tutoring tone, anything not checkable by program | Graders prefer confident, long answers unless told otherwise |
 
-Two update methods sit on top of the scorer. RLHF trains a separate reward model from human comparisons, then optimises the policy against it with a penalty for drifting too far from the starting model. DPO, direct preference optimisation, skips the separate reward model. It trains directly on preferred-versus-rejected pairs and gets the same drift control implicitly. DPO is simpler to run and more stable. RL with a verifier is stronger when correctness can be checked by program, which is exactly the math case.
+Two update methods sit on top of the scorer. RLHF trains a separate reward model from human comparisons, then optimises the policy against it with a penalty for drifting too far from the starting model. DPO, direct preference optimisation, skips the separate reward model. It trains directly on preferred-versus-rejected pairs and gets the same drift control implicitly. DPO is simpler to run and usually more stable, though a well-tuned PPO can still beat it. RL with a verifier is stronger when correctness can be checked by program, which is exactly the math case.
 
 The drift penalty is not optional. A policy optimised against any scorer without it will find the scorer's blind spots. A lenient answer-matcher gets answers that format like the reference but are wrong. A length-biased reward model gets padding. Keep the penalty, and audit high-reward samples by hand every round.
 
@@ -204,7 +204,7 @@ The drift penalty is not optional. A policy optimised against any scorer without
 
 ## 8. Evaluate on Problems the Model Has Never Seen
 
-An eval score is only as honest as the wall between training and test data. The Cracking book's worked failure makes the point. A fine-tune reported 94% on a held-out set against an 81% baseline, then hit about 78% in production. The held-out set was split at random from traces with heavy duplication. The honest number after dedup, a time-based split and human relabelling was near 83%, and production matched it within two points. When an offline gain looks surprisingly large, suspect leakage first.
+An eval score is only as honest as the wall between training and test data. The Cracking book's worked example makes the point. A fine-tune reported 94% on a held-out set against an 81% baseline, then hit only about 78% in production. The held-out set was split at random from traces with heavy duplication. After dedup, a time-based split and human relabelling, the retrained model's honest score was near 83%, and its later production result landed within two points of that. When an offline gain looks surprisingly large, suspect leakage first.
 
 Build the eval suite in five slices *(own construction)*.
 
@@ -250,7 +250,7 @@ Plot two numbers against each other for every checkpoint. The first is the harmf
 
 Post-training carries the policy. Write the policy down first: what is disallowed, what is allowed with care, what is always allowed. Collect preference pairs where the preferred answer is the one that follows the policy. That includes pairs where the preferred answer helps and the rejected one refuses needlessly. Train with RLHF or DPO on those pairs. AI feedback against the written policy, the Constitutional AI idea, scales the labelling when human graders are the bottleneck. Humans still audit a sample.
 
-The repo's enterprise RAG output guardrail makes the same point at the application layer. Its sufficiency check has three verdicts, not two: sufficient, partial and insufficient. The middle one exists because refusing a two-part question when only one part is unanswerable is the most common over-refusal. The model-level version is the same idea. Answer the safe part, decline the unsafe part, and say which is which.
+The repo's enterprise RAG output guardrail makes the same point at the application layer. Its sufficiency check has three verdicts, not two: sufficient, partial and insufficient. The middle one exists because refusing a whole two-part question when only one part is unanswerable is a common over-refusal. The model-level version is the same idea. Answer the safe part, decline the unsafe part, and say which is which.
 
 Red-team continuously. Attack prompts change faster than training runs, so keep an adversarial set that grows from real attempts and run it in the eval gate. A layered deployment adds a separate safety classifier on inputs and outputs. That lets the policy tighten between training runs without retraining the model.
 
@@ -265,7 +265,7 @@ Size the weights first. Memory for weights is parameters × bytes per parameter.
 | 3B parameters | 6 GB | 3 GB | 1.5 GB |
 | 1B parameters | 2 GB | 1 GB | 0.5 GB |
 
-A phone shares its memory with the operating system and other apps. Assume a budget of 1 to 2 GB for the model *(assumption)*. That points at a 1B to 3B model at 4-bit. The air-gapped chapter's sizing adds the reminder that weights are not the whole bill: runtime overhead, the KV cache at the target context length and buffers come on top. Cap the context length, because the KV cache grows with it.
+A phone shares its memory with the operating system and other apps. Assume a budget of 1 to 2 GB for the model *(assumption)*. That points at about a 1B model at 4-bit; a 3B model needs ~1.5 GB for weights alone, so it only fits at the top of that budget. The air-gapped chapter's sizing adds the reminder that weights are not the whole bill: runtime overhead, the KV cache at the target context length and buffers come on top. Cap the context length, because the KV cache grows with it.
 
 Two techniques make the small model good enough. Distillation trains the small student on a large teacher's outputs. The repo's system-design components doc frames it the same way: a smaller model trained on a larger one's outputs for a task-specific workload. The Cracking book names a hard cost or latency ceiling as one of the three situations where parameter updates earn their cost, and distillation is how. Quantisation then compresses the trained student. Quantisation-aware training, which simulates low precision during training, loses less quality than quantising after the fact.
 
@@ -275,9 +275,9 @@ Measure everything on the device, not on the server. Report quality of the quant
 
 ## 12. Decide When Parameter Updates Earn Their Cost
 
-Training is the most expensive way to change a model's behaviour, so defend it before proposing it. The Cracking book's learning chapter orders four places improvement can live: context, memory, procedure and parameters. Each is roughly ten times slower and costlier to iterate on than the one before. Work down that list, not up.
+Training is the most expensive way to change a model's behaviour, so defend it before proposing it. The Cracking book's learning chapter orders four places improvement can live: context, memory, procedure and parameters. Each is slower and costlier to change than the one before; the book calls it roughly ten times per step, as a rough order, not a measurement. Work down that list, not up.
 
-The book names three situations where parameter updates decisively win. Strict format or protocol adherence at high volume, where a small tuned model matches a larger prompted one at a fraction of serving cost. Domain vocabulary the base model lacks. A hard cost or latency ceiling after cheaper surfaces are exhausted, where distillation buys the ceiling back. It is equally blunt about the losing case: knowledge gaps are a retrieval problem, and fine-tuning does not fix a model not knowing something.
+The book names three situations where parameter updates decisively win. Strict format or protocol adherence at high volume, where a small tuned model can often match a larger prompted one at a fraction of serving cost. Domain vocabulary the base model lacks. A hard cost or latency ceiling after cheaper surfaces are exhausted, where distillation buys the ceiling back. It is equally blunt about the losing case: knowledge gaps are mainly a retrieval problem, and fine-tuning is a weak, unreliable way to teach a model new facts.
 
 Map the four prompts onto that rule *(own construction)*. The math model (#84) wins on reasoning behaviour that prompting cannot install. The training system (#73) is parameter updates by definition. The harm-versus-help model (#81) wins because refusal behaviour lives in the weights, with classifiers as a faster outer layer. The phone model (#83) is the latency-ceiling case exactly. Say the rule aloud before the pipeline, because it shows the choice was earned rather than assumed.
 
@@ -305,7 +305,7 @@ The interviewer will change a constraint mid-round; the question bank says so ex
 | How do you know the eval is not contaminated? | Overlap check between train and test by n-grams and embeddings; remove any hit; report results only on the clean set |
 | Why not just SFT on more solutions? | SFT teaches the shape of an answer; finding answers to unseen problems comes from training on the model's own attempts against a checker |
 | Why keep a drift penalty? | Without it the policy games the scorer's blind spots: formatting tricks, padding, confident wrong answers |
-| DPO or RLHF? | DPO for preference data, simpler and stable; RL with a verifier where correctness is checkable by program |
+| DPO or RLHF? | DPO for preference data, simpler and usually more stable; RL with a verifier where correctness is checkable by program |
 | How do you stop general ability collapsing? | Mix general data into SFT and post-training; regression suite with a maximum allowed drop in the gate |
 | What if the offline gain is huge? | Suspect leakage first: check dedup, the split and whether labels came from the system being replaced |
 
@@ -374,3 +374,21 @@ All paths are relative to the repository root unless stated.
 | 14 | `06_Interview_Prep/Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_FULL_PLAYBOOK.md` (fine-tuning and GPU hosting cost rows; the four verbs) |
 | 2, 3, 4, 7, 9, 10, 11, 14, and every item marked own construction | Built for this page; the RLHF, DPO, parallelism and scaling material is general knowledge, not repo content |
 | Not available | `01_Foundations/00_Theory_and_Foundations/Fine_Tuning_and_RL/02_Techniques/` (RLHF, DPO, LoRA) and `Transformer_Architecture/` are planned and empty; the repo's own gap analysis lists them as a gap |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Kaplan et al. 2020, Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) — training ≈ 6 × parameters × tokens FLOPs; generation ≈ 2 × parameters per token
+- [Rajbhandari et al. 2019, ZeRO](https://arxiv.org/abs/1910.02054) — ~16 bytes per parameter for mixed-precision Adam (≈112 GB for 7B)
+- [Hoffmann et al. 2022, Training Compute-Optimal LLMs (Chinchilla)](https://arxiv.org/abs/2203.15556) — ~20 training tokens per parameter
+- [AutoTrain LLM fine-tuning parameters](https://huggingface.co/docs/autotrain/main/en/params/llm_finetuning_params) — current flag names `--peft` and `--quantization int4`
+- [Singhal et al. 2023, A Long Way to Go: Length Correlations in RLHF](https://arxiv.org/abs/2310.03716) — graders favour longer answers
+- [Hosking et al. 2023, Human Feedback is not Gold Standard](https://arxiv.org/abs/2309.16349) — graders favour assertive, confident answers
+- [Rafailov et al. 2023, Direct Preference Optimization](https://arxiv.org/abs/2305.18290) — DPO trains on preference pairs with no separate reward model
+- [Xu et al. 2024, Is DPO Superior to PPO for LLM Alignment?](https://arxiv.org/abs/2404.10719) — well-tuned PPO can match or beat DPO
+- [Lambert et al. 2024, Tulu 3 (RLVR)](https://arxiv.org/abs/2411.15124) — RL with a programmatic verifier works well where correctness is checkable
+- [DeepSeek-AI 2025, DeepSeek-R1](https://arxiv.org/abs/2501.12948) — rule-based rewards for math and code
+- [PyTorch blog: Quantization-Aware Training for LLMs](https://pytorch.org/blog/quantization-aware-training/) — QAT loses less quality than post-training quantisation
+- [Ovadia et al. 2023, Fine-Tuning or Retrieval?](https://arxiv.org/abs/2312.05934) — RAG beats fine-tuning for injecting new facts; fine-tuning does so weakly
+- [Zhao et al. 2024, LoRA Land](https://arxiv.org/abs/2405.00732) — small LoRA-tuned models often match larger prompted ones on narrow tasks, varying by task
+- `06_Interview_Prep/FDE/Cracking_Agentic_AI_System_Design_Interviews/ch08_learning_in_agentic_systems.md` — the book's worked example (140,000 → 9,000 traces; 94% / 78% / 83%) and the four learning surfaces
+- `05_Projects/Enterprise_RAG_Platform/src/enterprise_rag/graph/nodes.py` — the partial-verdict over-refusal point is a code comment, not measured data

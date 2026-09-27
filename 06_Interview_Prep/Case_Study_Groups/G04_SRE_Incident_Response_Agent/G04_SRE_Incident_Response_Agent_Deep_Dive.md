@@ -59,7 +59,7 @@ For a slow prototype, trace auth, retrieval, rerank, model, tools, verification.
 | Approval/policy/credential service down | No execution; proposal waits or expires. |
 | Injection in runbook/log | Content remains data, flagged chunk excluded; no new tool authority. |
 
-Choose the degradation rung by a deterministic health snapshot, disclose it to the responder, and emit it as a trace attribute. Trip a source breaker on windowed failure rate with minimum sample size; consecutive-failure triggers misbehave under bursty incident traffic. Permission uncertainty and writes fail closed. Telemetry gaps degrade visibly.
+Choose the degradation rung by a deterministic health snapshot, disclose it to the responder, and emit it as a trace attribute. Trip a source breaker on windowed failure rate with minimum sample size; consecutive-failure triggers can misbehave under bursty incident traffic. Permission uncertainty and writes fail closed. Telemetry gaps degrade visibly.
 
 ## 7. Evaluation, red team, and rollout
 

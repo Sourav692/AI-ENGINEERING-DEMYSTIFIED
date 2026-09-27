@@ -22,7 +22,7 @@ The proposed runtime path is Zendesk ticket → PII redaction → classification
 
 ## 4. Outcomes and limitations
 
-The demo reports 4m12s first response, 63% zero-edit sends, .83 evaluation score against .75 baseline, rollback under two minutes, .27 override rate, first value in one day and `deployed True` at day 14. These are scripted demonstration results. The actual week-four retention field is unavailable, so it cannot support a retention claim. The 17 tests demonstrate gate enforcement, not agent quality in live production.
+The demo reports 4m12s first response, 63% zero-edit sends, .83 evaluation score against .75 baseline, a rollback note saying under two minutes (never timed), .27 override rate, first value in one day and `deployed True` at day 14. These are scripted demonstration results. The actual week-four retention field is unavailable, so it cannot support a retention claim. The 17 tests demonstrate gate enforcement, not agent quality in live production.
 
 The source calls out missing scope-change sponsor approval, real provisioning, eval-harness integration, versioned rollback and concurrent-engagement scaling. A production plan should add these before promising the same calendar broadly. If data access, security or golden-set agreement fails, a no-go is safer than silently compressing later stages.
 

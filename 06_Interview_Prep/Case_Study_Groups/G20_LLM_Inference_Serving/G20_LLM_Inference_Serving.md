@@ -50,7 +50,7 @@ The should-haves make it operable. Per-tenant quotas and priorities. Cancellatio
 | First-token latency (TTFT) | p95 ≤ 500 ms at peak for interactive traffic |
 | Per-token latency (TPOT) | p95 ≤ 50 ms between streamed tokens |
 | Throughput | 1,000 rps sustained at peak with the anchor request shape |
-| Utilization target | ≤ 70% of measured replica capacity, because latency knees past roughly 70–80% *(additions file, section D)* |
+| Utilization target | ≤ 70% of measured replica capacity, because queueing delay climbs steeply past roughly 70–80% utilization (rule of thumb) *(additions file, section D)* |
 | Availability | 99.9% of requests complete or fail explicitly; none vanish |
 | Failover | Loss of one GPU loses no un-streamed request; loss of one zone keeps service at reduced headroom |
 | Fairness | No tenant above its quota can raise another tenant's p95 |
@@ -78,11 +78,11 @@ Replicas = ⌈ (QPS × Tokens_request) / (TokensPerSecond_replica × Utilization
 
 That chapter also warns that a candidate who talks GPU count without throughput misses the bottleneck. One who talks memory without throughput misses the placement constraint. Both checks follow.
 
-**Step one: token work per request.** Prefill and decode run at very different rates, so price each request in replica-seconds. Every rate below is an assumption for an illustrative 8B-class model on one 80 GB GPU *(own construction)*.
+**Step one: token work per request.** Prefill and decode run at very different rates, so price each request in replica-seconds. Every rate below is an assumption for an illustrative 8B-class model on one 80 GB H100-class GPU; an A100's peak compute could not reach this prefill rate *(own construction)*.
 
 | Assumption | Value |
 |---|---|
-| Prefill rate per replica | 20,000 input tokens/s |
+| Prefill rate per replica (assumed, H100-class) | 20,000 input tokens/s |
 | Decode rate per replica | 2,500 output tokens/s aggregate, at ~64 concurrent sequences |
 | Anchor request | 1,000 input, 250 output tokens |
 | Peak arrival | 1,000 rps |
@@ -186,7 +186,7 @@ Read the components in request order *(own construction)*.
 | 09 | Demultiplexer | Returns each sequence's tokens to its caller by `request_id` | Closed: an unmatched ID is dropped and logged, never misdelivered |
 | 10 | Detokenizer and post-processor | Incremental text, stop sequences, safety or schema checks | Degrades: skip optional checks, never skip required ones |
 | 11 | Streaming layer | Server-sent events or websocket, flushes per token | Degrades: fall back to whole response |
-| 12 | Autoscaler | Scales on queue depth and KV use, not on CPU | Degrades: headroom absorbs the minutes a GPU takes to load |
+| 12 | Autoscaler | Scales on queue depth and KV use, not on CPU | Degrades: headroom absorbs the minutes a new replica often takes to provision and load |
 | 13 | Rollout controller | Drains a replica before upgrade; canaries a new model version | Closed: a failing canary stops the rollout |
 
 Point at three boundaries while the diagram is up. Admission is the only place load is refused, so no queue downstream grows without limit. The router decides where but never how, because only the replica sees its memory. And the request ID is the thread through everything, so a response can never reach the wrong caller.
@@ -232,7 +232,7 @@ Per token: 2 (keys and values) × 32 × 8 × 128 × 2 bytes = **128 KiB**. The a
 
 Reserving each sequence's maximum length up front wastes most of that memory, because most sequences stop early. Paged attention allocates KV in small fixed-size blocks, such as 16 tokens, on demand. Blocks need not be contiguous, so fragmentation mostly disappears. Blocks can also be shared. Requests with an identical system prompt point at the same prefix blocks, which is prefix caching at the serving layer.
 
-When the pool fills anyway, the scheduler must choose a victim. Preempt the lowest-priority or youngest sequence. Either recompute its KV later or swap it to CPU memory. Never let an allocation failure crash the replica, because that turns one long prompt into an outage for 64 callers.
+When the pool fills anyway, the scheduler must choose a victim. Preempt the lowest-priority or youngest sequence. Recompute its KV later, which is vLLM V1's default, or, in engines that support it, swap it to CPU memory. Never let an allocation failure crash the replica, because that turns one long prompt into an outage for 64 callers.
 
 ## 8. Route by Free Capacity, Not by Turn
 
@@ -254,9 +254,9 @@ A GPU fails in ways a process check cannot see. The process stays alive while th
 | Readiness | Is the model loaded and the scheduler accepting? | Remove from the registry; send no traffic |
 | Deep probe | Can it generate one token inside, say, 200 ms? | Drain and evict; alert on repeated failure |
 
-A failed replica takes its KV cache with it, so in-flight sequences cannot continue elsewhere. The recovery depends on what the caller has already seen. If no token has streamed, retry the request from scratch on another replica. The caller sees only extra latency. If tokens have streamed, re-prefill the prompt plus the emitted tokens on a new replica and continue. Only greedy decoding makes that continuation exact; with sampling, the text may diverge. The honest alternative is an explicit error with the partial output, and the product decides which.
+A failed replica takes its KV cache with it, so in-flight sequences cannot continue elsewhere. The recovery depends on what the caller has already seen. If no token has streamed, retry the request from scratch on another replica. The caller sees only extra latency. If tokens have streamed, re-prefill the prompt plus the emitted tokens on a new replica and continue. Greedy decoding makes that continuation very likely to match, but not guaranteed, because batch size and GPU kernels can change the floating-point results. With sampling, the text may diverge. The honest alternative is an explicit error with the partial output, and the product decides which.
 
-Retries need a budget. When a zone degrades, naive retries multiply load exactly when capacity drops, which is a retry storm. Cap retries at a fixed share of traffic, such as 10%, with jittered backoff. Key them by `request_id` so a duplicate is detected, not re-run. Keep N+1 headroom per zone, and fail over between zones at the router. A new GPU takes minutes to load weights, so headroom, not autoscaling, absorbs a sudden loss *(the cold-start driver, CORE_8 drivers file)*.
+Retries need a budget. When a zone degrades, naive retries multiply load exactly when capacity drops, which is a retry storm. Cap retries at a fixed share of traffic, such as 10%, with jittered backoff. Key them by `request_id` so a duplicate is detected, not re-run. Keep N+1 headroom per zone, and fail over between zones at the router. A new GPU replica often takes minutes to provision, pull the image and load weights, so headroom, not autoscaling, absorbs a sudden loss *(the cold-start driver, CORE_8 drivers file)*.
 
 ## 10. Admit Less Work Before the Queue Admits Too Much
 
@@ -272,7 +272,7 @@ Streaming changes perceived latency, not total latency. A user reading the first
 
 Stream over server-sent events or a websocket, and flush per token. Watch for proxies that buffer responses; one buffering hop turns streaming back into a seven-second wait. Report TTFT and TPOT as separate SLOs, because they break for different reasons *(additions file, section D)*.
 
-Cancellation is a cost control, not only a courtesy. When a caller disconnects, the sequence keeps decoding unless someone stops it, burning GPU time on tokens nobody reads *(additions file, section E)*. Propagate the disconnect to the scheduler, which evicts the sequence and frees its KV blocks at the next step.
+Cancellation is a cost control, not only a courtesy. When a caller disconnects, the sequence can keep decoding if any hop fails to pass the disconnect on, burning GPU time on tokens nobody reads *(additions file, section E)*. Propagate the disconnect to the scheduler, which evicts the sequence and frees its KV blocks at the next step.
 
 ## 12. Shrink It to One GPU for the Synchronous Variant (#75)
 
@@ -304,7 +304,7 @@ The architecture adds four things at this scale.
 
 **Backpressure across layers.** Cells report saturation upward. The global balancer shifts traffic before a cell's queue deepens.
 
-**Headroom over autoscaling.** GPUs take minutes to start, so autoscaling follows the daily curve while reserved headroom absorbs bursts. Prefix caching and short output caps are the cheapest capacity at this size, because they cut replica-seconds per request directly.
+**Headroom over autoscaling.** New GPU replicas often take minutes to provision and load, so autoscaling follows the daily curve while reserved headroom absorbs bursts. Prefix caching and short output caps are the cheapest capacity at this size, because they cut replica-seconds per request directly.
 
 ## 14. Review the Junior Design Against the Anchor (#79)
 
@@ -407,7 +407,7 @@ Decode was two-thirds of the anchor's replica-seconds in section 3, so output le
 3. **Why does static batching fail generative traffic?** A batch ends when its longest sequence ends, so short answers wait and their slots sit idle.
 4. **How does context length change concurrency?** At 128 KiB a token, an 8,000-token sequence needs about 1 GB of KV, so a ~50 GB pool holds about 50 sequences.
 5. **How is "which GPU has capacity?" answered?** Replicas heartbeat free KV, running and waiting counts to a registry. The router samples two, picks the better one, and the replica rejects quickly if the request does not fit.
-6. **A GPU dies mid-generation. What happens to its requests?** Un-streamed ones retry from scratch elsewhere. Streamed ones re-prefill prompt plus emitted tokens, exact only under greedy decoding, or fail explicitly with the partial output.
+6. **A GPU dies mid-generation. What happens to its requests?** Un-streamed ones retry from scratch elsewhere. Streamed ones re-prefill prompt plus emitted tokens, likely but not guaranteed to match under greedy decoding, or fail explicitly with the partial output.
 7. **Why charge admission by tokens rather than requests?** One tenant's long prompts cost many times another's short ones, so request counts let a heavy tenant starve light ones.
 8. **In #75, why bound the queue at two batches?** A deeper queue only serves requests that have already missed the SLO, and synchronous callers hold a connection each while they wait.
 9. **What is the first question for #77?** What each request is. A chat answer and a one-token score differ by almost an order of magnitude in fleet size.
@@ -428,3 +428,19 @@ All paths are relative to `06_Interview_Prep/`.
 | 15 | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md`, question 9 (latency decomposition and "which latency" split) |
 | Cross-references | `Case_Study_Groups/G14_Observability_And_Production_Diagnosis.md` section 12 (#74 from the application's traces); `G10_High_Volume_Batch_Pipeline.md` (admission before the quota breach); `G11_Deep_Research_Agent.md` (Little's Law used for provisioning); `G07_Secure_Multi_Tenant_AI_Platform.md` (quotas and noisy neighbours) |
 | 2 to 17 wherever marked *(own construction)*: every throughput, memory and latency figure; continuous batching, chunked prefill, paged KV, power-of-two routing, health layers, cells | Built for this page from general serving practice. The repo has no worked design and no serving-engine notes for these topics, so treat them as the candidate's own reasoning, not a sourced claim |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [NVIDIA H100 datasheet](https://resources.nvidia.com/en-us-gpu-resources/h100-datasheet-24306) — the assumed 20,000 tok/s prefill for an 8B model needs H100-class compute
+- [Hugging Face tokenizers: Decoders](https://huggingface.co/docs/tokenizers/api/decoders) — streaming decode must buffer partial characters
+- [Agrawal et al. 2024, Sarathi-Serve](https://arxiv.org/abs/2403.02310) — a long prefill stalls co-batched decodes; chunked prefill fixes it
+- [vLLM docs: Optimization and Tuning](https://docs.vllm.ai/en/latest/configuration/optimization.html) — V1 preempts by recompute by default; chunked prefill
+- [Kwon et al. 2023, PagedAttention](https://arxiv.org/abs/2309.06180) — KV memory caps concurrency; max-length reservation wastes memory; paged, non-contiguous blocks
+- [vLLM API: CacheConfig](https://docs.vllm.ai/en/latest/api/vllm/config/cache.html) — default KV block size of 16 tokens
+- [Mitzenmacher 2001, The Power of Two Choices in Randomized Load Balancing](https://dl.acm.org/doi/10.1109/71.963420) — two random choices spread load almost as well as full information
+- [Mitzenmacher 2000, How Useful Is Old Information?](https://perso.ens-lyon.fr/loris.marchal/scheduling/Mitzenmacher.pdf) — two choices tolerate stale load data
+- [Thinking Machines 2025, Defeating Nondeterminism in LLM Inference](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) — greedy output can differ across batch sizes and kernels
+- [NVIDIA blog: Reducing cold-start latency with Run:ai Model Streamer](https://developer.nvidia.com/blog/reducing-cold-start-latency-for-llm-inference-with-nvidia-runai-model-streamer) — weight loading alone can take seconds; provisioning is what takes minutes
+- [Azure SDK blog: Load models up to 6x faster with Run:ai Model Streamer](https://devblogs.microsoft.com/azure-sdk/eliminate-llm-cold-starts-load-models-up-to-6x-faster-with-azure-blob-storage-and-runai-model-streamer/) — faster weight streaming for cold starts
+- [vLLM docs: OpenAI-compatible server](https://docs.vllm.ai/en/stable/serving/openai_compatible_server/) — the engine aborts a request when the client disconnects
+- [vLLM issue #10087](https://github.com/vllm-project/vllm/issues/10087) — abort breaks when middleware fails to pass the disconnect on

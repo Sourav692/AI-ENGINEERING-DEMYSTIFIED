@@ -149,7 +149,7 @@ The trajectory is the observable sequence of steps, tool requests/results, state
 Request → Route → Tool A → Observation → Tool B → Result
 ```
 
-Record decision summaries, evidence, and operations; private model chain-of-thought is not required for evaluation or audit.
+In my design, evaluation and audit rely on decision summaries, evidence and tool calls, not the model's private chain-of-thought, which is often hidden and not always faithful.
 
 #### 9. Evaluate Outcome and Efficiency — A Finished Loop Is Not Success
 
@@ -322,3 +322,13 @@ Inspect observable operations and evidence rather than private model chain-of-th
 ### 30-Second Answer
 
 > “I’d keep known rules in a workflow and use a bounded agent where observations need to guide the next step. I’d justify multiple agents only if specialization or independent work improves the result. Tools would be validated and authorized, actions would pass policy and approval, and long tasks would preserve state for safe recovery. I’d evaluate task success, the observable path, latency, and cost.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — checkpoints don't stop duplicate side effects
+- [LangGraph docs - Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts) — checkpoints don't stop duplicate side effects
+- [Anthropic Engineering, How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — multi-agent overhead
+- [Cemri et al. 2025, Why Do Multi-Agent LLM Systems Fail? (MAST, arXiv 2503.13657)](https://arxiv.org/abs/2503.13657) — multi-agent overhead
+- [Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)](https://arxiv.org/abs/2505.05410) — chain-of-thought is not always faithful
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — untrusted retrieved and tool input
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — untrusted retrieved and tool input

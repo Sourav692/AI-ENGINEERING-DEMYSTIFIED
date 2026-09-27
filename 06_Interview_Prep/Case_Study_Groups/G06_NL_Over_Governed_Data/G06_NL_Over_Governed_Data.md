@@ -395,7 +395,7 @@ request received
   -> parse SQL AST
   -> validate tables, columns, joins, limits, and query shape
   -> if policy or semantic check fails: reject + log redacted evidence
-  -> execute with read-only identity and warehouse-native RLS/CLS
+  -> execute read-only as the user (on-behalf-of) under warehouse-native RLS/CLS
   -> if scan/time budget exceeded: cancel + surface safe fallback
   -> if results pass checks: mask sensitive fields
   -> generate summary from structured result
@@ -411,7 +411,7 @@ A query that runs is not a query that is right. So the evaluation separates two 
 | Semantic correctness | Matches analyst review on scope | Any silent mismatch | Golden question/SQL/result cases | Analytics lead |
 | Execution accuracy | No unexplained regression on the golden set | Any unexplained regression | Golden-set replay on every change | Application owner |
 | Policy violations | 0 escaped | > 0 escaped; investigate repeated blocks (more than five identical blocked attempts in a day) | Policy decisions in the query-run audit | Security |
-| Bytes scanned per answer | Within the 7-day baseline | > 20% above baseline | Warehouse telemetry | Data platform |
+| Warehouse compute per answer (bytes scanned or DBU/credit time) | Within the 7-day baseline | > 20% above baseline | Warehouse telemetry | Data platform |
 | User trust score | ≥ launch target (4.2/5 or 80% positive) | Two consecutive review periods of decline, even if usage rises | In-product feedback and periodic survey | Product |
 | p95 latency and escalation volume | Within target; escalations trending down | Breach or rising escalations | Request traces plus analyst ticket counts | Platform / SRE |
 | Groundedness and citation accuracy (copilot personas) | ≥ 90% supported claims; ≥ 95% correct citations | Below | Golden Q&A with SME review; source-span audit | ML / eval |
@@ -464,7 +464,7 @@ Decide what is configuration, adapter, shared service and core product, because 
 |---|---|---|---|
 | Correct SQL answers the wrong business question | Analytics lead | Golden cases, semantic review, approved metric catalog | A valid query passes execution but fails analyst review |
 | Policy block frustrates users | Security + product | Better clarifying prompts and explanation text | Repeated blocked attempts on the same workflow |
-| Warehouse cost spikes | Platform owner | Query limits, result caching, scan monitoring | Bytes scanned per answer drifts upward |
+| Warehouse cost spikes | Platform owner | Query limits, result caching, scan monitoring | Warehouse compute per answer drifts upward |
 
 ## 12. Deliver It in Fifty Minutes
 
@@ -506,7 +506,7 @@ Name the trade-offs with a balanced verdict each. Raw schema prompting versus se
 | How do you handle "revenue" with three definitions? | Name the ambiguity and force clarification. Show the supported definitions, default only where the business has an approved canonical meaning, and surface the definition used. If it is asked often, put it in the semantic layer with explicit aliases |
 | What if the SQL is valid but catastrophically expensive? | Valid is not safe. A cost-estimation and policy step before execution looks for unbounded scans, missing date filters, explosive joins and table-specific budget breaches. Too expensive: narrow the question, propose a cheaper rewrite, or require a privileged approval |
 | What is the riskiest assumption in this design? | That the model can infer business meaning from the prompt. Say the rehearsed line from section 5 |
-| How do you keep a service account from reading unrestricted data on a user's behalf? | Warehouse-native RLS/CLS on a read-only identity, entitlements resolved per request and re-checked at execution, and schema metadata filtered to what the user may see |
+| How do you keep a service account from reading unrestricted data on a user's behalf? | Run the query as the user (on-behalf-of login) so warehouse-native RLS/CLS applies to them, not to the service account; resolve entitlements per request and re-check at execution; filter schema metadata to what the user may see |
 | Two queries look different but should return the same number. How do you know? | Golden cases pair question, approved SQL and expected result shape; semantic correctness is judged against the governed definition, not by comparing SQL text |
 | The executive says the number changed since last quarter. Why? | Metric versions are retained; the query run records the metric and schema versions used, so the two runs are diffed by definition, not by guesswork |
 | How does an executive get an explanation, not just a table? | Section 8: summary generated from the structured result and cross-checked; drivers computed deterministically and narrated; uncertain explanations escalated to an analyst |
@@ -551,12 +551,12 @@ classify_intent → clarify_or_disambiguate → resolve_assets_with_context_inde
     → route_to_{genie | multi_tool | analysis | visualization} → compose_answer
 ```
 
-Intent is classified with a confidence score. Clarification fires only below 60%. The supervisor, and only the supervisor, resolves assets against a 16-asset Context Index of Genie Spaces, metric views, tables and document indexes, with endorsed assets ranked first. It passes the resolved list to one of four specialists on shared state. Centralising resolution costs one hop of latency. It buys a single auditable source of truth for what data any answer is based on. Two workers resolving to different tables for the same question is a governance nightmare in insurance.
+Intent is classified with a confidence score. Clarification fires only below 60%. The supervisor, and only the supervisor, resolves assets against a 16-asset Context Index of Genie Spaces (now Genie Agents; Genie itself is now Genie One), metric views, tables and document indexes, with endorsed assets ranked first. It passes the resolved list to one of four specialists on shared state. Centralising resolution costs one hop of latency. It buys a single auditable source of truth for what data any answer is based on. Two workers resolving to different tables for the same question is a governance nightmare in insurance.
 
 | Agent | Role | Tools | The trade-off it embodies |
 |---|---|---|---|
-| **Genie** | BI specialist | Genie Space API (managed text-to-SQL) | A managed service over a hand-rolled text-to-SQL chain: less flexible, but far lower prompt- and SQL-injection surface, and non-engineers can curate the underlying tables directly |
-| **Multi-Tool** | Generalist | LLM-generated SQL + Vector Search RAG over policy docs | The *one* place hand-generated SQL was allowed, for ad-hoc questions outside Genie's curated scope, under deliberately narrower governance |
+| **Genie** | BI specialist | Genie Conversation API (managed text-to-SQL; Genie Spaces renamed Genie Agents in 2026) | A managed service over a hand-rolled text-to-SQL chain: less flexible, but its SQL is always read-only and runs under each user's Unity Catalog permissions, and analysts curate the space's tables, instructions and example SQL without code |
+| **Multi-Tool** | Generalist | LLM-generated SQL + Databricks AI Search (formerly Vector Search) RAG over policy docs | The *one* place hand-generated SQL was allowed, for ad-hoc questions outside Genie's curated scope, under deliberately narrower governance |
 | **Data Analysis** | Statistical | Z-score anomaly detection, trend statistics | Kept **deterministic**: thresholds are computed, not "reasoned about", so the model cannot invent a plausible but wrong number |
 | **Visualization** | Dashboard creator | Lakeview REST API | Publishes real, clickable dashboards rather than a static chart image, closing the loop on the weeks-long dashboard pain |
 
@@ -566,19 +566,19 @@ The governance beat sits underneath, in five pieces:
 - short-term memory in a Delta table keyed by thread, short retention, so conversations survive a restart and stay auditable
 - base-plus-overlay prompts in a governed table with a five-minute cache, so behaviour is tunable without a redeploy
 - MLflow tracing on every node, so a wrong answer traces to the exact node and tool call
-- an AI Gateway doing rate limiting, PII filtering and guardrails in front of the endpoint, because the raw endpoint is never exposed
+- an AI Gateway (now Unity Gateway) doing rate limiting, PII filtering and guardrails on the model endpoints the agent calls (as of 2026 it can't guardrail the agent endpoint itself), because the raw endpoint is never exposed
 
 | Requirement | Why LangGraph fit |
 |---|---|
-| **Conditional routing on confidence** | Explicit conditional edges: `classify_intent` routes to `clarify_or_disambiguate` only when confidence < 60%. Role-based delegation frameworks do not expose deterministic branching this cleanly |
-| **Durable, resumable state** | Multi-turn conversations backed by Delta checkpoints, a governance requirement; every conversation state must be auditable. The checkpointer abstraction maps directly onto a Delta table |
+| **Conditional routing on confidence** | Explicit conditional edges: `classify_intent` routes to `clarify_or_disambiguate` only when confidence < 60%. Role-based crews delegate by conversation; CrewAI Flows now add `@router` branching, but a LangGraph conditional edge states it most directly |
+| **Durable, resumable state** | Multi-turn conversations backed by Delta checkpoints, a governance requirement; every conversation state must be auditable. In this build I wrote a custom checkpointer over a Delta table; Databricks' documented path today is a Lakebase (Postgres) checkpointer |
 | **Deterministic composition** | A governed insurance environment cannot tolerate open-ended agent-to-agent chat deciding its own flow. The graph is inspectable and fixed at build time: eight nodes, each nameable |
 
-The second-pivot beat is the same failure one level up. As domains grew, the supervisor's own tool list re-approached the original bloat. So the fix was applied again, as a deep-agent pattern. An orchestrator delegates to fully self-contained sub-agents, one per analytics domain: customer, distribution channels, policy and underwriting, claims. Each has its own prompt, small toolset, context window and Genie Space. A memory-manager sub-agent owns long-term memory in a categorised table of preference, fact, decision, project and feedback. The cost was more infrastructure surface. The gain was a ceiling on tool-selection degradation that does not reappear as the system grows.
+The second-pivot beat is the same failure one level up. As domains grew, the supervisor's own tool list re-approached the original bloat. So the fix was applied again, as a deep-agent pattern. An orchestrator delegates to fully self-contained sub-agents, one per analytics domain: customer, distribution channels, policy and underwriting, claims. Each has its own prompt, small toolset, context window and Genie Space (now a Genie Agent). A memory-manager sub-agent owns long-term memory in a categorised table of preference, fact, decision, project and feedback. The cost was more infrastructure surface. The gain was a ceiling on tool-selection degradation that does not reappear as the system grows.
 
-The platform-reality beat: the managed multi-agent feature wasn't an option for this customer at the time, so I hand-built the supervisor. More code to own, in exchange for a production path nobody outside the engagement controlled.
+The platform-reality beat: the managed multi-agent feature (now Agent Bricks Supervisor Agent, GA in 2026) wasn't an option for this customer at the time, so I hand-built the supervisor. More code to own, in exchange for a production path nobody outside the engagement controlled.
 
-State the results honestly. Time-to-insight went from days to minutes. Dashboard delivery went from weeks to governed self-serve. Adoption grew after rollout, though I can't attribute it cleanly, and it's worth saying exactly that before being asked. MVP in about two months. If rebuilt today: instrument resolution-time and accuracy metrics from day one rather than relying on tracing for post-hoc debugging, and invest earlier in the offline evaluation dataset.
+State the results honestly. In that engagement, the team reported time-to-insight going from days to minutes. Dashboard delivery went from weeks to governed self-serve. Adoption grew after rollout, though I can't attribute it cleanly, and it's worth saying exactly that before being asked. MVP in about two months. If rebuilt today: instrument resolution-time and accuracy metrics from day one rather than relying on tracing for post-hoc debugging, and invest earlier in the offline evaluation dataset.
 
 Close on whichever thread the conversation ended on. On the pivots: the same failure showed up twice at two scales, and both times the fix was the same instinct, specialise and keep each unit's context small. On governance: the part that matters most at an insurer is something provably safe to hand to a regulated business user. On results: better to say exactly what can and cannot be claimed than to let a number go unquestioned.
 
@@ -594,7 +594,7 @@ The interviewer's pivot after a good design is "the warehouse bill and the model
 | Do not | Retry with a stronger model until the SQL runs |
 | The sixty-second line | *"Valid SQL that answers the wrong question is the failure, so the fix is a semantic layer and validation, not more retries. That also removes the schema from every prompt."* |
 
-Add the warehouse side in the same breath. Bytes scanned per answer is the cost metric that matters. Scan budgets and bounded date windows are the lever. A rising 7-day average is the alert. Every strong cost answer is generated by four verbs in order. Measure, by tracing and attributing first. Route, matching model and path to risk. Bound, with limits on steps, tokens, top-k, timeouts and budgets. Cache safely, with tenant, permission and version in the key.
+Add the warehouse side in the same breath. Warehouse compute per answer is the cost metric that matters: bytes scanned on BigQuery on-demand, DBU or credit time on Databricks and Snowflake. Scan budgets and bounded date windows are the lever. A rising 7-day average is the alert. Every strong cost answer is generated by four verbs in order. Measure, by tracing and attributing first. Route, matching model and path to risk. Bound, with limits on steps, tokens, top-k, timeouts and budgets. Cache safely, with tenant, permission and version in the key.
 
 ---
 
@@ -621,7 +621,7 @@ Add the warehouse side in the same breath. Bytes scanned per answer is the cost 
 2. **What is consulted before any physical table, and why?** The semantic metric registry, because "revenue" must anchor on the governed definition before the system searches for tables the model thinks look relevant.
 3. **What number makes "ask when unsure" testable?** A confidence threshold on intent classification; the insurer supervisor clarifies below 60%.
 4. **Why parse SQL instead of regex-filtering it?** Regex cannot understand aliases, nested selects, CTEs, comments or obfuscation; a parser inspects statements, tables, columns, joins, functions, limits and aggregate semantics.
-5. **Where is row-level security enforced, and what is re-checked at execution?** In the warehouse, natively, on a read-only identity; entitlement and policy are re-checked at the moment of execution so a user who lost access between planning and execution is refused.
+5. **Where is row-level security enforced, and what is re-checked at execution?** In the warehouse, natively, with the read-only query run as the user so the policies apply to them, not to a shared service account; entitlement and policy are re-checked at the moment of execution so a user who lost access between planning and execution is refused.
 6. **How is a summary that contradicts its table handled?** The summary is generated from the structured result and cross-checked; a mismatch returns the table alone and alerts the review queue.
 7. **State the fail-open versus fail-closed pattern by category.** Authorization closed; connectivity degrade or queue; ambiguity human; suspicious scan closed and alert.
 8. **What is the release gate, and what is it not?** Semantic correctness against the governed definition judged by analyst review; not execution success on the golden set, which only proves the SQL ran.
@@ -644,3 +644,24 @@ All paths are relative to `06_Interview_Prep/`.
 | 5 (router, fixed operations) | `Handbook/06_Cross_Cutting_Concerns/05_Structured_Data_Routers_Connectors.md` |
 | 14 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #17 |
 | Not included | The V2 tutorial's section 5 working code, API contracts and contract tests beyond the hidden-column sketch; the V1 long tutorial; the purchased worksheets' blank templates; the insurer 15–20 minute deep-dive script, which repeats section 13 in fixed order |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Snowflake docs: Understanding row access policies](https://docs.snowflake.com/en/user-guide/security-row-intro) — row policies evaluate the role running the query
+- [Databricks docs: Row filters and column masks](https://docs.databricks.com/aws/en/data-governance/unity-catalog/filters-and-masks/) — filters and masks evaluate the session user, so run queries as the user
+- [OpenAI API docs: Function calling](https://developers.openai.com/api/docs/guides/function-calling) — guidance to keep the tool count per turn small
+- [Gan & Sun 2025, RAG-MCP: Mitigating Prompt Bloat in LLM Tool Selection](https://arxiv.org/abs/2505.03275) — tool-selection accuracy falls as the tool pool grows
+- [Create and manage a Genie Agent (Databricks)](https://docs.databricks.com/aws/en/genie-agents/set-up) — analysts curate tables, instructions and example SQL
+- [Genie Agents concepts (Databricks)](https://docs.databricks.com/aws/en/genie-agents/concepts) — generated queries are always read-only and use each user's permissions
+- [AI/BI and Genie One release notes 2026 (Databricks)](https://docs.databricks.com/aws/en/ai-bi/release-notes/2026) — Genie renamed Genie One; Genie Spaces renamed Genie Agents
+- [Use the Genie Agents API (Databricks)](https://docs.databricks.com/aws/en/genie-agents/conversation-api) — the Genie Conversation API for programmatic text-to-SQL
+- [Use dashboard APIs to create and manage dashboards (Databricks)](https://docs.databricks.com/aws/en/dashboards/tutorials/dashboard-crud-api) — the Lakeview API still carries that name and can create and publish dashboards
+- [AI Gateway for serving endpoints (legacy), supported features (Databricks)](https://docs.databricks.com/aws/en/ai-gateway/overview-serving-endpoints) — guardrails and rate limits not supported on agent endpoints
+- [Configure guardrails (legacy) (Databricks)](https://docs.databricks.com/aws/en/ai-gateway/guardrails) — PII and safety guardrails on model endpoints
+- [CrewAI docs: Flows](https://docs.crewai.com/en/concepts/flows) — `@router` gives CrewAI deterministic branching
+- [Agent memory and sessions (Databricks)](https://docs.databricks.com/aws/en/generative-ai/agent-framework/stateful-agents) — the documented checkpointer is Lakebase (Postgres), not Delta
+- [databricks_langchain CheckpointSaver API](https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_langchain.html) — the Lakebase-backed LangGraph checkpointer
+- [Use Supervisor Agent to create a coordinated multi-agent system (Databricks)](https://docs.databricks.com/aws/en/generative-ai/agent-bricks/multi-agent-supervisor) — the managed multi-agent option today
+- [Agent Bricks Supervisor Agent is Now GA (Databricks blog)](https://www.databricks.com/blog/agent-bricks-supervisor-agent-now-ga-orchestrate-enterprise-agents) — Supervisor Agent general availability
+- [BigQuery pricing](https://cloud.google.com/bigquery/pricing) — on-demand queries bill by bytes processed
+- [Databricks serverless billing](https://docs.databricks.com/aws/en/admin/system-tables/serverless-billing) — Databricks SQL bills compute time in DBUs

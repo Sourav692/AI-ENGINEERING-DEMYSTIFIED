@@ -58,7 +58,7 @@ The easiest way to frame requirements in an interview is:
 | Requirement | Example target / constraint |
 |---|---|
 | **Safety** | Zero customs holds auto-resolved; missing type/value/confidence → human. |
-| **Residency** | EU data stays in EU. |
+| **Residency** | EU data stays in EU (the customer's rule; GDPR itself allows transfers with safeguards). |
 | **Reliability** | No silently lost exception or double action. |
 | **Freshness** | Separate metrics for real-time vs batch feeds. |
 | **Latency / cost** | Low time-to-draft; cost per resolved exception. |

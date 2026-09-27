@@ -59,7 +59,7 @@ The easiest way to frame requirements in an interview is:
 | **Bounds** | Cap tool calls and retries. |
 | **Audit** | Citations are auditable. |
 | **Autonomy** | Read-only; no external actions. |
-| **Scale (illustrative)** | 40,000 runs/day ≈ 28/min; 3× peak ≈ 100/min; ~70 s active ⇒ ~120 in flight (~170 slots at 70% util.). Naive seven-step plans can send ~30k input tokens. |
+| **Scale (illustrative)** | 40,000 runs/day ≈ 28/min; 3× peak ≈ 100/min; ~70 s mean time in system ⇒ ~120 in flight (~170 slots at 70% util.). Naive seven-step plans can send ~30k input tokens plus output on the premium model. |
 
 ### Interview shortcut
 
@@ -101,7 +101,7 @@ flowchart LR
 
 **Isolation is the hard boundary.** Web pages and retrieved content are untrusted. The web agent gets no private-document credentials. Prompt text cannot enforce this. The final rendered answer is also an egress path, so strip Markdown images and fetch-inducing markup. Never share private-answer caches across users.
 
-**Parallel merge must be correct.** If branches write a single `summary` field, last-write-wins can silently drop findings. Store a list of typed evidence with an append/concatenate reducer, provenance and dedupe. Sum budget consumption across branches.
+**Parallel merge must be correct.** If branches write a single `summary` field, a hand-rolled last-write-wins merge can silently drop findings (LangGraph raises `InvalidUpdateError` instead when the key has no reducer). Store a list of typed evidence with an append/concatenate reducer, provenance and dedupe. Sum budget consumption across branches.
 
 **Termination matters.** Use a hard hop cap (the source gives eight as an example), per-run money/tool limits and no-progress detection. Distinguish no evidence found from a failed source. On a cap or outage, provide a partial answer with the missing section named.
 

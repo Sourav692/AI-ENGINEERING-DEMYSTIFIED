@@ -260,3 +260,9 @@ Sensitive write without successful authorization or required policy check → st
 ### 30-Second Answer
 
 > “I’d separate recommendation from authority: the agent proposes, policy and permissions decide, and a controlled executor acts. High-impact cases would use a durable human approval workflow tied to the exact action. Before execution I’d revalidate inputs, authorization, and policy. Missing checks would block sensitive writes, and a kill switch would disable the relevant action path while audit records preserve what happened.”
+
+## Sources (checked 27 Sep 2026)
+
+- [OWASP GenAI LLM07:2025 System Prompt Leakage](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) — access control before model context
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — access control before model context; untrusted retrieved and tool input
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — untrusted retrieved and tool input

@@ -8,7 +8,7 @@ Use the [Main guide](/modules/15-fde-case-studies/agents-that-act/sales-copilot#
 
 | Source | Authority and freshness | Permission detail and failure |
 |---|---|---|
-| Salesforce/HubSpot CRM | Accounts, opportunities, contacts, activities; minutes via change events and reconciliation | Owner, role hierarchy, territory, sharing rules, field-level security. Wrong scope leaks peer pipeline or stale stage. |
+| Salesforce/HubSpot CRM | Accounts, opportunities, contacts, activities; minutes via change events and reconciliation | Org-wide defaults, owner, role hierarchy, territory, sharing rules for records; field-level security for fields. Wrong scope leaks peer pipeline or stale stage. |
 | Gong/Zoom calls | Participant statements; hours after a call | Participant/manager access and regional recording consent; PII and injection in transcripts. |
 | Email/calendar | Threads, invites; near real time | Mailbox owner or explicit delegation; never read another rep’s mailbox. |
 | Product docs | Approved feature descriptions; updated by product marketing | Some partner-only; superseded features and roadmap claims are dangerous. |
@@ -20,7 +20,7 @@ Each record needs stable ID, owner, updated time, and ACL metadata; exclude unma
 
 ## 2. Identity and CRM sharing mirror
 
-Validate the customer IdP token’s signature, audience, and expiry, then map customer groups into local roles. Alert on group-mapping drift; provision a new user only to their own tenant with minimal rights. The CRM mirror carries `owner_id`, `territory_ids`, role visibility, sharing rules, and field masks for sensitive amount/stage data. Compile tenant, territory, and role into the retrieval pre-filter. Recheck live attributes and field masks after retrieval and before generation or serving a snapshot. A count or aggregate containing forbidden rows violates the same zero-leak gate as a document excerpt.
+Validate the customer IdP token’s signature, audience, and expiry, then map customer groups into local roles. Alert on group-mapping drift; provision a new user only to their own tenant with minimal rights. The CRM mirror carries `owner_id`, `territory_ids`, role visibility, sharing rules, and field masks for sensitive fields such as amount. Compile tenant, territory, and role into the retrieval pre-filter. Recheck live attributes and field masks after retrieval and before generation or serving a snapshot. A count or aggregate containing forbidden rows violates the same zero-leak gate as a document excerpt.
 
 Connector credentials are vault references, resolved at use time, never written into model prompts or traces. Scope each connection to one customer and use per-tenant encryption boundaries where required. Embeddings and snapshots are derived state, not authorization authority.
 
@@ -55,7 +55,7 @@ Use reviewed operations such as get account by ID, opportunities by stage, inter
 | Policy engine, ACL mapping, or approval down | Fail closed. |
 | Missing evidence or stale source | List what was not checked; abstain or escalate. |
 | Unapproved claim or price | Block external draft, not merely warn. |
-| Transcript/email injection | Content is evidence, never tool or policy instruction. |
+| Transcript/email injection | Content is untrusted evidence; it may still sway the model, so tools and policy stay gated outside it. |
 | Vector path unavailable | Use authorized keyword/structured path where supported and label limitation. |
 | Model route down | Queue draft/long work with progress, or use approved fallback. |
 

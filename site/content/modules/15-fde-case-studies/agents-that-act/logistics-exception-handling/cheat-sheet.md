@@ -14,7 +14,7 @@ Agent proposes; gate decides. Exception type comes from detection, never from th
 
 ## Numbers and rules
 
-~200 webhook events/s peak; files every 2–6 hours; ~150 agents/~40 concurrent. Auto only when **non-customs**, value **< $500**, confidence above threshold. Missing field → human. EU data stays EU. Batch lateness is visible.
+~200 webhook events/s peak; files every 2–6 hours; ~150 agents/~40 concurrent. Auto only when **non-customs**, value **< $500**, confidence above threshold. Missing field → human. EU data stays EU (customer rule, not GDPR). Batch lateness is visible.
 
 ## Failure and proof
 

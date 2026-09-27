@@ -27,7 +27,7 @@ Workflow and decision? Who uses/reviews? Which tasks read/draft/write? Which sou
 ## Rules
 
 1. Snapshot is a materialized view, not an authorization decision; recheck after territory change.
-2. CRM owner, role hierarchy, territory, sharing rules, and field masks all matter.
+2. CRM org-wide defaults, owner, role hierarchy, territory, sharing rules, and field masks all matter.
 3. Structured counts and ID lookups use reviewed CRM operations, not vector similarity.
 4. Opportunity risk comes from fetched fields and interactions, not model memory.
 5. External claims require approved playbook/policy evidence; verifier **blocks**.
@@ -39,7 +39,7 @@ Interactive **3–8 s**. Example gates: ≥90% grounded claims, ≥95% citations
 
 ## Failure card
 
-CRM down → authorized stale snapshot labeled, no writes. Territory changed → invalidate and reauthorize. Missing fact → say so. Price/certification unapproved → block draft. Injected email/transcript → data, never instructions.
+CRM down → authorized stale snapshot labeled, no writes. Territory changed → invalidate and reauthorize. Missing fact → say so. Price/certification unapproved → block draft. Injected email/transcript → untrusted data; write tools stay gated outside the model.
 
 ## Rollout
 
@@ -47,7 +47,7 @@ One connector + territory matrix → offline golden set → shadow → read-only
 
 ## Latency answer
 
-30–45 s prep comes from agent steps and serial tools. Precompute, deterministic route, permission-scoped cache, parallel safe reads, bounded graph. Measure step count, tool time, cache hit, p95, cost/workflow.
+30–45 s prep likely comes from agent steps and serial tools (confirm in traces). Precompute, deterministic route, permission-scoped cache, parallel safe reads, bounded graph. Measure step count, tool time, cache hit, p95, cost/workflow.
 
 ## Regression card
 

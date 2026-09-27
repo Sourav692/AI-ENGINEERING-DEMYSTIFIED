@@ -10,7 +10,7 @@ The runnable project has no LLM. That is intentional for deterministic proof. A 
 
 ## 2. Routing and concurrency
 
-Adapters normalize once at the edge. The router matches tenant, `LIVE` status and `(channel,event_type)` trigger; highest priority wins. It returns `no_trigger_match` when none qualifies. A target-entity lock then refuses a second active run with `entity_locked`, even if priorities are accidentally equal. Priority is a configuration choice; the lock is a safety invariant. In Cascade Robotics, ticket triage priority 10 beats a legacy tagger at priority 1 on the same webhook trigger. A production lock needs a distributed backing or database uniqueness rather than an in-process dict.
+Adapters normalize once at the edge. The router matches tenant, `LIVE` status and `(channel,event_type)` trigger; highest priority wins. It returns `no_trigger_match` when none qualifies. A target-entity lock then refuses a second active run with `entity_locked`, even if priorities are accidentally equal. Priority is a configuration choice; the lock is a safety invariant. In Cascade Robotics, ticket triage priority 10 beats a legacy tagger at priority 1 on the same webhook trigger. A production lock needs database uniqueness, or a distributed lease checked with a fencing token, rather than an in-process dict.
 
 ## 3. One execution loop and action-level idempotency
 

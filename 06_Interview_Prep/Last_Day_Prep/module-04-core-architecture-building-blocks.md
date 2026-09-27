@@ -289,3 +289,8 @@ Check failure behavior too: a queue does not add capacity, a checkpoint does not
 ### 30-Second Answer
 
 > “I’d assign responsibilities from requirements: entry controls to the API Gateway, capability selection to the router, workflow coordination to the orchestrator, and durable progress to the state store. Model-call controls belong to the Model Gateway. I’d add caching, queues, or events only when reuse, task duration, traffic, or consumer requirements justify them.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — checkpoints don't stop duplicate side effects; at-least-once redelivery
+- [LangGraph docs - Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts) — checkpoints don't stop duplicate side effects

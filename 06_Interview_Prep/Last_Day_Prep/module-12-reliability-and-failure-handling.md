@@ -239,3 +239,10 @@ Model recovery does not replace enterprise-tool recovery or business-action reco
 ### 30-Second Answer
 
 > “I’d classify each failure, bound waiting and retries, and protect failing dependencies with backoff, jitter, and circuit breakers. I’d use compatible fallbacks or preserve safe partial functionality. For long tasks, I’d resume durable progress; for uncertain writes, I’d reconcile status and preserve idempotency. Failed background work would have an owned recovery path, and users would see the actual outcome.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — checkpoints don't stop duplicate side effects
+- [LangGraph docs - Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts) — checkpoints don't stop duplicate side effects
+- [Stripe API reference - Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — idempotency key reuse and scope
+- [IETF draft-ietf-httpapi-idempotency-key-header-07 (expired) s2.7](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) — idempotency key reuse and scope

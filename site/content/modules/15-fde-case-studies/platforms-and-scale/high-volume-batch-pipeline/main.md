@@ -58,7 +58,7 @@ The easiest way to frame requirements in an interview is:
 | **Security** | Tenant isolation; secure records/results; auth on job APIs and data paths. |
 | **Reliability** | Durable checkpoints, recoverable workers; queue messages carry opaque IDs, not payloads. |
 | **Operability** | Observable ETA and explicit incident ownership. |
-| **Throughput (illustrative)** | 100M records / 21,600 s ≈ **4,630 rec/s**; 15% headroom ≈ **5,320 rec/s**. 270 tokens/record ≈ **27B tokens**/run (use 100M × 270, not the source’s 5.15B). 5% retries add ~5% spend. 10× ≈ 53,200 rec/s. |
+| **Throughput (illustrative)** | 100M records / 21,600 s ≈ **4,630 rec/s**; 15% headroom ≈ **5,320 rec/s**. 270 tokens/record ≈ **27B tokens**/run (100M × 270). 5% retries add ~5% spend. 10× ≈ 53,200 rec/s. |
 
 Replace token assumptions with the customer’s distribution and measured provider throughput.
 

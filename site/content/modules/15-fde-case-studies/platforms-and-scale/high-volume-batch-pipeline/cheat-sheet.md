@@ -14,7 +14,7 @@ The model classifies or extracts; deterministic orchestration owns the workflow.
 
 ## Numbers
 
-100M / 6h ≈ **4,630 records/s**; +15% ≈ **5,320/s**. At 270 tokens/record, ≈ **27B tokens/run** before retries (the source's 5.15B figure is an arithmetic error). At 10×, ≈ **53,200/s** with margin. Confirm against measured token and latency distributions.
+100M / 6h ≈ **4,630 records/s**; +15% ≈ **5,320/s**. At 270 tokens/record, ≈ **27B tokens/run** before retries (100M × 270). At 10×, ≈ **53,200/s** with margin. Confirm against measured token and latency distributions.
 
 ## Failure answer
 

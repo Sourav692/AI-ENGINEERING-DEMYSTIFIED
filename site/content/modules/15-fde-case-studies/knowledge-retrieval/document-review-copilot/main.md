@@ -129,7 +129,7 @@ flowchart LR
 | Boundary | Why it exists |
 |---|---|
 | Typed extraction schema | Payer, plan, procedure, diagnosis, date, therapy, lab, imaging; or jurisdiction/obligation/evidence; or clause type/playbook/deviation. Comparison needs named facts. |
-| Parser coverage gate | A table-heavy PDF flattened into prose may silently lose an approval matrix. Check detected versus extracted tables and page coverage before indexing. |
+| Parser coverage gate | A table-heavy PDF flattened into prose by a plain text loader may silently lose an approval matrix. Check detected versus extracted tables and page coverage before indexing. |
 | Rule version | Payer rule by plan/procedure/date of service; regulation by jurisdiction/product; playbook by clause type and effective date. |
 | Span-level citation | A correct answer with a misleading citation can be more dangerous than refusal. The verifier checks the actual supporting span, not the nearest ranked chunk. |
 | Sensitive-data boundary | Restrict what enters prompt, index, logs, provider, and reviewer view; no permission granted by a prompt instruction. |

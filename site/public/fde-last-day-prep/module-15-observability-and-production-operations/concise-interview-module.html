@@ -234,7 +234,7 @@ Tool errors ↑          → Dependency issue candidate
 <blockquote>
 <p>“I’d connect model and tool usage to the task outcome, not just monitor CPU and HTTP status.”</p>
 </blockquote>
-<p>Capture evidence references and decision summaries, not private model chain-of-thought. Apply minimization or redaction to sensitive fields.</p>
+<p>Capture evidence references and decision summaries, not private model chain-of-thought, which is often hidden and not always faithful. Apply minimization or redaction to sensitive fields.</p>
 <h4 id="5-audit-reconstruct-business-decisions">5. Audit — Reconstruct Business Decisions<a class="anchor" href="#5-audit-reconstruct-business-decisions" aria-label="Link to 5. Audit — Reconstruct Business Decisions">#</a></h4>
 <p>Record who requested and approved an action, applicable evidence/policy, exact action, and confirmed result. Protect audit records according to customer access and retention requirements.</p>
 <pre><code class="language-text">Request + identity → Evidence + policy → Approval → Action/result
@@ -388,6 +388,12 @@ SLA: Customer agreement about the promised service
 <li>Define an SLI and SLO for interactive response latency, and explain how an SLA differs.</li>
 </ol>
 <hr>
+
+<h2 id="sources-checked-27-sep-2026">Sources (checked 27 Sep 2026)<a class="anchor" href="#sources-checked-27-sep-2026" aria-label="Link to Sources (checked 27 Sep 2026)">#</a></h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2505.05410" target="_blank" rel="noopener">Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)</a> — chain-of-thought is not always faithful</li>
+<li><a href="https://prometheus.io/docs/practices/naming/" target="_blank" rel="noopener">Prometheus - Metric and label naming</a> — bounded metric labels</li>
+</ul>
 
     <div class="source-note">Generated from module-15-observability-and-production-operations.md</div>
   </main>

@@ -18,7 +18,7 @@ Data classes? Residency for data/logs/backups? Shared versus dedicated exception
 
 ## Seven layers
 
-**Row · object · cache · queue · log · vector index · key.** The store refuses an unscoped read. Vector scoping happens at ingest, query, and final context assembly. Cache keys include tenant + permission signature + version.
+**Row · object · cache · queue · log · vector index · key.** The store refuses an unscoped read (RLS, with an app role that is not owner, superuser or BYPASSRLS). Vector scoping happens at ingest, query, and final context assembly. Cache keys include tenant + permission signature + version.
 
 ## Numbers and trade-off
 

@@ -4,7 +4,7 @@
 
 ## 1. Data quality and split integrity
 
-Math's advantage is program-checkable final answers. Use public, licensed, expert-written and filtered synthetic problems. Rejection sampling keeps synthetic answers only when verified. Deduplicate near-duplicates before train/test splitting, then separate by time and source; random splits over near-identical traces inflate accuracy. Record a datasheet with collection period, filters, split method, label source and known bias. Use human adjudication for hard, high-impact or low-agreement labels. A source example of duplicated traces produced a 94% offline score but roughly 78% production performance; after deduplication/time split/relabeling, the honest offline score was near 83%.
+Math's advantage is program-checkable final answers. Use public, licensed, expert-written and filtered synthetic problems. Rejection sampling keeps synthetic answers only when verified. Deduplicate near-duplicates before train/test splitting, then separate by time and source; random splits over near-identical traces inflate accuracy. Record a datasheet with collection period, filters, split method, label source and known bias. Use human adjudication for hard, high-impact or low-agreement labels. A source example of duplicated traces produced a 94% offline score but roughly 78% production performance; after deduplication/time split/relabeling, the retrained model's honest offline score was near 83%, and its later production result landed within two points of that.
 
 ## 2. SFT, scoring and updates
 
@@ -22,7 +22,7 @@ In #73's pretraining variant, an illustrative 20 tokens/parameter means 140B tok
 
 Gate on pass@1 for clean unseen problems, valid working on a stratified sample, general regression, fabrication on ill-posed problems and safety/over-refusal. Report temperature and sampling method: greedy pass@1 cannot be compared to majority vote over eight samples. Check overlap by n-grams/embeddings and attach a contamination report. Treat an unexpectedly large gain as a leakage investigation, not an automatic win.
 
-For #81, plot harmful-compliance rate against over-refusal on benign prompts that sound risky. A model that refuses everything fails usefulness. Define written policy; use preference pairs for helpful and safe behavior, AI feedback only with human auditing, and red-team cases in the gate. An input/output safety classifier can change faster than weights. For #83, distill a teacher into a 1B–3B student, quantize to fit device memory and evaluate polite behavior with rude or provocative prompts. Include KV cache, runtime overhead, first-token time, tokens/s and battery on-device; a full-precision server eval is insufficient.
+For #81, plot harmful-compliance rate against over-refusal on benign prompts that sound risky. A model that refuses everything fails usefulness. Define written policy; use preference pairs for helpful and safe behavior, AI feedback only with human auditing, and red-team cases in the gate. An input/output safety classifier can change faster than weights. For #83, distill a teacher into a small student (about 1B for a 1–2 GB budget; a 3B model needs ~1.5 GB at 4-bit for weights alone), quantize to fit device memory and evaluate polite behavior with rude or provocative prompts. Include KV cache, runtime overhead, first-token time, tokens/s and battery on-device; a full-precision server eval is insufficient.
 
 ## 5. When weights are the right surface
 

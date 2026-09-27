@@ -172,7 +172,7 @@ Traces: Correlated path
 Audit: Business decision/action trail
 ```
 
-Observe tool operations, state transitions, decision summaries, and evidence; private model chain-of-thought is not required. Shadow candidates must not duplicate real actions. Keep telemetry access and retention appropriate to sensitive data.
+Observe tool operations, state transitions, decision summaries, and evidence, not private model chain-of-thought, which is often hidden and not always faithful. Shadow candidates must not duplicate real actions. Keep telemetry access and retention appropriate to sensitive data.
 
 ## 8. Enterprise Security — Module 16
 
@@ -224,3 +224,23 @@ Why this choice?→ Requirement + trade-off + verification
 ```
 
 **Closing check:** every important box should have a customer requirement, a failure behavior, and a way to verify that it worked.
+
+## Sources (checked 27 Sep 2026)
+
+- [OWASP GenAI LLM07:2025 System Prompt Leakage](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) — access control before model context; permission-aware retrieval
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — access control before model context; untrusted retrieved and tool input
+- [Claude docs - Rate limits](https://platform.claude.com/docs/en/api/rate-limits) — provider rate limits cap throughput
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — checkpoints don't stop duplicate side effects; at-least-once redelivery
+- [LangGraph docs - Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts) — checkpoints don't stop duplicate side effects
+- [Anthropic Engineering, How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — multi-agent overhead
+- [Cemri et al. 2025, Why Do Multi-Agent LLM Systems Fail? (MAST, arXiv 2503.13657)](https://arxiv.org/abs/2503.13657) — multi-agent overhead
+- [Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)](https://arxiv.org/abs/2505.05410) — chain-of-thought is not always faithful
+- [Stripe API reference - Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — idempotency key reuse and scope
+- [IETF draft-ietf-httpapi-idempotency-key-header-07 (expired) s2.7](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) — idempotency key reuse and scope
+- [OpenAI API docs - Batch API](https://developers.openai.com/api/docs/guides/batch) — batch discounts
+- [Claude docs - Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) — batch discounts
+- [Zheng et al. 2023, Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (arXiv 2306.05685)](https://arxiv.org/abs/2306.05685) — LLM-judge bias, calibration
+- [OWASP GenAI LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/) — permission-aware retrieval
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — untrusted retrieved and tool input
+- [Amazon Bedrock User Guide: Cross-Region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) — cross-region inference
+- [Amazon Bedrock User Guide: Geographic cross-Region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/geographic-cross-region-inference.html) — cross-region inference

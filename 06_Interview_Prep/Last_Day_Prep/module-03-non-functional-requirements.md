@@ -157,7 +157,7 @@ Evidence + policy + approval + action result
                  Business audit
 ```
 
-Capture decision summaries and evidence, not private model reasoning.
+Capture decision summaries and evidence, not private model reasoning, which is often hidden and not always faithful.
 
 ### 4. Requirement → Component Reasoning
 
@@ -307,3 +307,8 @@ Confirm targets with the customer. Label assumptions. For quality, specify the r
 ### 30-Second Answer
 
 > “I’d define the workload first, then agree on latency, availability, quality, security, safety, and cost targets. I’d measure both system behavior and successful task completion, including peak traffic and dependency failures. For business actions, I’d require safe retries and recovery. These targets would drive the architecture and evaluation criteria.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Claude docs - Rate limits](https://platform.claude.com/docs/en/api/rate-limits) — provider rate limits cap throughput
+- [Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)](https://arxiv.org/abs/2505.05410) — chain-of-thought is not always faithful

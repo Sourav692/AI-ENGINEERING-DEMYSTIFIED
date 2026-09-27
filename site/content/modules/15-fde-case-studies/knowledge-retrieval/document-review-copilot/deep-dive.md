@@ -18,7 +18,7 @@ Map EHR/FHIR, payer PDFs, regulatory library, advisor communications, CLM/playbo
 
 PDF layout is a correctness boundary. Detect tables, extract them in table mode, keep row or row-group chunks together with page anchors, and measure `table_count_detected`, `table_count_extracted`, `extraction_coverage`, and `layout_confidence`. Validate reading order; apply OCR/table fallback where needed. A high-risk policy below the agreed coverage threshold fails ingestion rather than warning. Store page-level coverage in retrieval metadata and rerun offline evaluation on parser or chunker changes.
 
-Minimize PHI and privileged material before prompts, redact logs, retain evidence IDs and policy versions, and audit break-the-glass access where allowed. The retrieval filter checks role plus patient/matter/tenant scope; the output verifier checks it again for each cited span. A retrieved email, clause, or payer PDF is evidence, not instructions to the system.
+Minimize PHI and privileged material before prompts, redact logs, retain evidence IDs and policy versions, and audit break-the-glass access where allowed. The retrieval filter checks role plus patient/matter/tenant scope; the output verifier checks it again for each cited span. A retrieved email, clause, or payer PDF is untrusted evidence; keeping it apart from the task lowers injection risk but does not stop it, so retrieved text can never trigger an action or widen access.
 
 ## 3. Models, verification, and decisions
 

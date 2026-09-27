@@ -272,3 +272,10 @@ The controlled tool layer owns enterprise operations; downstream authorization r
 ### 30-Second Answer
 
 > “I’d connect the agent through approved tools with validated arguments and scoped access. Reads need freshness and permission checks; writes also need policy, safe execution, and confirmation. I’d use stable action identifiers for idempotent retries, reconcile write timeouts, and bound dependency waiting and retries. Repeated failures would trigger a circuit breaker and a defined fallback or deferred state.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Stripe API reference - Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — idempotency key reuse and scope
+- [IETF draft-ietf-httpapi-idempotency-key-header-07 (expired) s2.7](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) — idempotency key reuse and scope
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — untrusted retrieved and tool input
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — untrusted retrieved and tool input

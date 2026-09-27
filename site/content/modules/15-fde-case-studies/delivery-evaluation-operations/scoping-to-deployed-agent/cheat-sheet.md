@@ -20,7 +20,7 @@ The delivery gates are deterministic; the model cannot approve itself.
 
 ## Demo facts and caveat
 
-Northwind: five of six components reused; 4m12s first response; 63% zero-edit sends; eval .83 versus .75 baseline; rollback <2 min; 17 gate tests. These are scripted/demo results; week-four retention is unobserved. Real provisioning, eval wiring and versioned rollback remain gaps in the source.
+Northwind: five of six components reused; 4m12s first response; 63% zero-edit sends; eval .83 versus .75 baseline; rollback note “<2 min” (not timed); 17 gate tests. These are scripted/demo results; week-four retention is unobserved. Real provisioning, eval wiring and versioned rollback remain gaps in the source.
 
 ## Close
 

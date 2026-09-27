@@ -265,3 +265,10 @@ Scheduler/orchestrator capacity controls connect the boundaries into one task bu
 ### 30-Second Answer
 
 > “I’d define peak requests, concurrency, task duration, and model/tool demand, then find the bottleneck. I’d use tenant limits and admission control, bounded fair queues where appropriate, and horizontally scalable workers with durable state. I’d scale where capacity can grow, apply backpressure or shedding during overload, and preserve tenant isolation and safe action execution.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Claude docs - Rate limits](https://platform.claude.com/docs/en/api/rate-limits) — provider rate limits cap throughput
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — checkpoints don't stop duplicate side effects; at-least-once redelivery
+- [LangGraph docs - Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts) — checkpoints don't stop duplicate side effects
+- [Little 1961, A Proof for the Queuing Formula L = λW](https://pubsonline.informs.org/doi/10.1287/opre.9.3.383) — Little's Law

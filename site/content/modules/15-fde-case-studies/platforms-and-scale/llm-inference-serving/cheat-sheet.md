@@ -13,7 +13,7 @@ Health evicts sick GPUs; disconnect cancels and frees KV.
 
 ## Assumed anchor arithmetic
 
-`1000/20000 + 250/2500 = 0.15` replica-seconds. `1000 rps × 0.15 / 0.70 ≈ 214` replicas. ~7,000 in-flight streams ÷ 64 slots ≈ 110 slot-limited replicas; compute binds. Source rates are illustrative, not benchmarks.
+`1000/20000 + 250/2500 = 0.15` replica-seconds. `1000 rps × 0.15 / 0.70 ≈ 214` replicas. ~7,000 in-flight streams ÷ 64 slots ≈ 110 slot-limited replicas; compute binds. Source rates are illustrative (H100-class GPU), not benchmarks.
 
 ## Five rules
 

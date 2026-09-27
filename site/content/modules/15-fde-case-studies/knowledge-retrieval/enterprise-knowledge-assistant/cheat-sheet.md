@@ -91,8 +91,8 @@ Retrieved content = **data, not instructions**.
 | 50M chunks | Refresh/deletion problem |
 | 20 QPS | Average |
 | 100 QPS | Peak serving |
-| <3 s | Chat target |
-| <8 s | Relaxed interactive |
+| <3 s | Chat target (design choice) |
+| <8 s | Relaxed interactive (design choice) |
 | ~100 ms | Generation leaves hot path |
 
 ## Cost / latency
@@ -126,6 +126,8 @@ Never simply:
 ## Databricks
 
 > **Governed source ≠ automatically governed search index.**
+
+Databricks AI Search (formerly Vector Search) does not enforce Unity Catalog row filters or column masks.
 
 Verify identity propagation, revocation, index restrictions and deletion/ACL SLO.
 

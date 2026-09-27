@@ -181,7 +181,7 @@ Request → Evidence → Policy / approval → Action result
 Resolved? Reopened? Human override? → Outcome feedback
 ```
 
-Capture decision summaries and supporting evidence, not private model reasoning. Keep records within the customer's privacy and retention rules.
+Capture decision summaries and supporting evidence, not private model reasoning, which is often hidden and not always faithful. Keep records within the customer's privacy and retention rules.
 
 ### 4. Requirement → Component Reasoning
 
@@ -367,3 +367,9 @@ Do not force every component into the design. Routing does not automatically mea
 > “For this support use case, the system must understand requests and retain relevant context, retrieve authorized policy knowledge, and access live order data. It should route requests, produce grounded answers or recommendations, and execute allowed refunds with policy checks and approval where required. It must clarify or escalate failures, record important decisions and actions, and capture resolution outcomes. I’ll select the requirements that apply, then define the non-functional targets.”
 
 For action failures, never claim completion without confirmation. Unknown status requires reconciliation; retries must prevent duplicate side effects.
+
+## Sources (checked 27 Sep 2026)
+
+- [OWASP GenAI LLM07:2025 System Prompt Leakage](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) — access control before model context
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — access control before model context
+- [Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)](https://arxiv.org/abs/2505.05410) — chain-of-thought is not always faithful

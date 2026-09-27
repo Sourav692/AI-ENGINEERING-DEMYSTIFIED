@@ -15,7 +15,7 @@ Access audit is separate. Telemetry export never blocks the user.
 ## Four rules
 
 - No full prompts, raw documents, secrets or unbounded labels by default.
-- Redact before storage; missing salt is an error.
+- Redact before storage; a missing HMAC key is an error.
 - Keep rare failures with error overrides, exemplars and incident sampling.
 - Missing auth, cross-tenant lookup and required audit evidence fail closed.
 

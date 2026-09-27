@@ -10,7 +10,7 @@ Job creation should be idempotent. Expose create, status, pause and replay-failu
 
 ## 2. Capacity arithmetic and cost
 
-100 million / six hours is about 4,630 records/s. Fifteen percent capacity margin brings the target to about 5,320. At 10× volume, the same window needs about 53,200/s including margin. If one record averages 270 tokens, the base run is **27 billion tokens**; include retries, long-tail records and output variance in the estimate. The source's 5.15-billion-token total is an arithmetic error: 100 million × 270 = 27 billion. A provider's tokens/s quota may be the real ceiling even if CPU workers look idle.
+100 million / six hours is about 4,630 records/s. Fifteen percent capacity margin brings the target to about 5,320. At 10× volume, the same window needs about 53,200/s including margin. If one record averages 270 tokens, the base run is **27 billion tokens**; include retries, long-tail records and output variance in the estimate. Check it as 100 million × 270 = 27 billion, not the tokens/s rate times one hour. A provider's tokens/s quota may be the real ceiling even if CPU workers look idle.
 
 Plan with measured distributions: p50/p95 record tokens, model latency, batch efficiency, provider throttling, sink throughput and hot partitions. ETA is remaining work divided by observed *effective* throughput, adjusted for the straggler tail. An average-rate graph alone hides deadline failure.
 

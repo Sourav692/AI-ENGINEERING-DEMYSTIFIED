@@ -218,7 +218,7 @@ Correct evidence present → Inspect generation next
 <p>Check routing, tool selection, argument validity, access/policy compliance, observable trajectory, and actual completion.</p>
 <pre><code class="language-text">Request → Tool request → Arguments → Result → Final state
 </code></pre>
-<p>Evaluate recorded operations and decision summaries, not private model chain-of-thought. Allow different valid paths when the task permits them.</p>
+<p>Evaluate recorded operations and decision summaries, not private model chain-of-thought, which is often hidden and not always faithful. Allow different valid paths when the task permits them.</p>
 <blockquote>
 <p>“The response and the enterprise state must agree about what actually happened.”</p>
 </blockquote>
@@ -370,6 +370,12 @@ Production → Outcomes / traces → New cases / regression checks
 <li>A candidate improves overall scores but fails more high-risk cases. How do you make the release decision?</li>
 </ol>
 <hr>
+
+<h2 id="sources-checked-27-sep-2026">Sources (checked 27 Sep 2026)<a class="anchor" href="#sources-checked-27-sep-2026" aria-label="Link to Sources (checked 27 Sep 2026)">#</a></h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2505.05410" target="_blank" rel="noopener">Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)</a> — chain-of-thought is not always faithful</li>
+<li><a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener">Zheng et al. 2023, Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (arXiv 2306.05685)</a> — LLM-judge bias, calibration</li>
+</ul>
 
     <div class="source-note">Generated from module-13-ai-evaluation.md</div>
   </main>

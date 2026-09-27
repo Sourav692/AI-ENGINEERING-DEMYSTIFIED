@@ -27,7 +27,7 @@ The prompt: the FDE is embedded with a mid-size logistics customer. They want an
 | **Data volume and freshness per carrier?** | Mixed. ~60% of carriers push real-time webhooks — scan events, status changes — ~200 events/s combined at peak. ~40%, mostly smaller regional carriers, provide batch file drops (CSV/EDI) every 2–6 hours, a few thousand records each | Ingestion needs **both** a streaming path and a scheduled batch path feeding the same pipeline — not a single uniform interface |
 | **Who are the users, and what scale?** | Internal only — the customer's ops team. ~150 agents across three shifts, ~40 concurrent at peak during shift handoff, each handling 30–50 cases a day | **Low-DAU, high-stakes-per-interaction.** Scale pressure comes from event throughput, not concurrent users — a very different sizing profile from a consumer assistant |
 | **What is the auto-resolve vs human-approval boundary?** | Value- and confidence-based: under $500 shipment value + high confidence → auto-resolve. **Customs/regulatory holds → always human, regardless of confidence.** Over $500, or below the confidence threshold → always human | **The core risk-boundary decision.** It defines a policy layer in front of every auto-resolution, with customs as a distinct always-gated path — not just a low-confidence case |
-| **Regional or multi-tenant topology?** | One customer, one assistant experience, operating across US, EU and APAC with different carriers per region — and **EU data cannot leave the EU** | Rules out a single global deployment or data store. Regional data isolation behind one coherent experience |
+| **Regional or multi-tenant topology?** | One customer, one assistant experience, operating across US, EU and APAC with different carriers per region — and the customer requires that **EU data stays in the EU** (their requirement; GDPR itself allows transfers with safeguards) | Rules out a single global deployment or data store. Regional data isolation behind one coherent experience |
 
 Each answer moved a box. That adaptation is the signal the round scores. The example the source gives for auto-resolve is concrete: rebooking a missed scan on a known route.
 
@@ -237,7 +237,7 @@ Three details make the gate trustworthy *(own construction)*. Take the exception
 
 ## 7. Share the Logic, Isolate the Data by Region
 
-EU data cannot leave the EU, so a single global deployment is out. The pattern has two halves. A **shared control plane** holds agent logic, model routing, policy definitions and the UI, deployed identically in each region. A **regional data plane** holds the event store, any vector store and the audit log, and never replicates across regions.
+The customer requires EU data to stay in the EU, so a single global deployment is out. That is their rule, stricter than GDPR, which allows transfers with safeguards. The pattern has two halves. A **shared control plane** holds agent logic, model routing, policy definitions and the UI, deployed identically in each region. A **regional data plane** holds the event store, any vector store and the audit log, and never replicates across regions.
 
 ```
         Shared Control Plane (logic, policy, UI — versioned identically)
@@ -363,7 +363,7 @@ Spend the hour on the four questions, the gate and the evaluation plan. The inge
 
 The two-minute spoken answer *(own construction from the source's summary)*:
 
-> *This is a modest-scale, high-stakes system: 150 ops agents, not millions of users, so the pressure comes from event throughput and correctness. Carriers report two ways, about 60% by real-time webhook at around 200 events a second and 40% by batch drops every two to six hours, so I ingest both and converge them after ingestion into one normalised stream, diffing batch drops against last known state and surfacing their lateness instead of hiding it. Detection classifies customs holds, missed scans and weather delays, and only exceptions reach the Resolution Agent, which drafts an action with a confidence score and reasons but never executes anything. That decision belongs to the Policy Gate, a separate component: customs and regulatory holds go to a human first and always, and only then does the rule apply that under $500 and above the threshold auto-resolves. Auto-resolve actions carry idempotency keys and sit behind circuit breakers that fall back to a human. EU data cannot leave the EU, so I run a shared control plane with regional data planes. Every verdict and action goes to an immutable audit log, and every draft shows why. I would prove it offline on replayed history, then in shadow mode, then with staged auto-resolve, with a zero on customs auto-resolutions as a release gate.*
+> *This is a modest-scale, high-stakes system: 150 ops agents, not millions of users, so the pressure comes from event throughput and correctness. Carriers report two ways, about 60% by real-time webhook at around 200 events a second and 40% by batch drops every two to six hours, so I ingest both and converge them after ingestion into one normalised stream, diffing batch drops against last known state and surfacing their lateness instead of hiding it. Detection classifies customs holds, missed scans and weather delays, and only exceptions reach the Resolution Agent, which drafts an action with a confidence score and reasons but never executes anything. That decision belongs to the Policy Gate, a separate component: customs and regulatory holds go to a human first and always, and only then does the rule apply that under $500 and above the threshold auto-resolves. Auto-resolve actions carry idempotency keys and sit behind circuit breakers that fall back to a human. The customer requires EU data to stay in the EU, which is stricter than GDPR, so I run a shared control plane with regional data planes. Every verdict and action goes to an immutable audit log, and every draft shows why. I would prove it offline on replayed history, then in shadow mode, then with staged auto-resolve, with a zero on customs auto-resolutions as a release gate.*
 
 The lines that carry the round *(own construction from the source's arguments)*:
 
@@ -455,3 +455,7 @@ All paths are relative to `06_Interview_Prep/`.
 | 14 | `Study_Guides/Cost_Latency_Optimization/CORE_8_DRIVERS_MEMORIZE.md`, drivers 5 (agent steps and tool calls) and 6 (retries) |
 | 3, 10, 11 (the mapping), 14, and every item marked own construction | Built for this page from the sources' arguments; not source material |
 | Cross-references | G03 (deny-first gate), G07 (tenancy ladder), G15 (channel adapters) in this folder |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [European Commission: Rules on international data transfers](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/rules-international-data-transfers_en) — GDPR allows transfers out of the EU with safeguards, so "EU data stays in the EU" is the customer's rule

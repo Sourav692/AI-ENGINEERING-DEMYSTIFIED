@@ -9,7 +9,7 @@ Throughput is not the hard part of this system. The hard part is the decision at
 | Case in the group | What it contributes here |
 |---|---|
 | #21 High-Volume Batch Inference System, 100M records before 6 a.m. (anchor) | Sections 1 to 12 and 14: the design, requirements, sizing, failure policy, evaluation, rollout and delivery |
-| #49 OpenAI Q5 Enterprise Document-Processing Platform (bank, millions of documents) | Section 13: extraction schema, confidence, human review and format drift on the same spine |
+| #49 OpenAI-style practice prompt Q5, Enterprise Document-Processing Platform (bank, millions of documents) | Section 13: extraction schema, confidence, human review and format drift on the same spine |
 | #42 Nightly PDF summarisation is too expensive (playbook drill) | Section 15, first card |
 | #116 §15 scenario 13, batch embedding job became too expensive | Section 15, second card |
 
@@ -93,13 +93,13 @@ Split what the system must do from how well it must do it. "Batch the model call
 | Constraint | Stated so it can be tested |
 |---|---|
 | Latency | `RPS = (N_records / T_window) × (1 + h)`. 100M records in a 6-hour window is about 4,630 records/sec, or 5,320 with 15% headroom. The budget covers queueing, batching, writeback, validation and reconciliation, not only inference |
-| Availability | The pipeline accepts and processes work throughout its window; sized against the tail of large or slow records, not the mean, because the last 5% of a batch is the hardest |
+| Availability | The pipeline accepts and processes work throughout its window; sized against the tail of large or slow records, not the mean, because the slowest few percent of records (stragglers) decide when the batch finishes |
 | Correctness | No missing or duplicate logical results; bounded replay from durable checkpoints after any crash |
 | Quality | An agreed error rate, confidence threshold or validation pass rate before publishing |
 | Freshness | Results available downstream within an agreed time after the source closes |
 | Security | Inputs, prompts and outputs protected per the customer's access and retention rules across every hop |
 | Compliance | An auditable record of which snapshot, model version and partition produced every classification |
-| Cost | Cost per million records measured; retries, which can double token spend, and stragglers, which keep workers warm, watched as cost lines |
+| Cost | Cost per million records measured; retries, which re-spend full tokens per retried record (5% retries ≈ 5% more spend; a retry storm can double it), and stragglers, which keep workers warm, watched as cost lines |
 
 Prioritise with a strict ladder when answers are partial. **Must:** independent partitioning, deadline protection, idempotent writes, restartable execution. **Should:** autoscaling, batching where it helps, global plus per-tenant limits. **Could:** ranking low-value records, richer per-customer scheduling, manual override tooling.
 
@@ -139,7 +139,7 @@ Say the uncertainty out loud rather than hiding it:
 
 > *"At 100 million records, I would plan for about 4,630 records per second before retries. If the average prompt is smaller than expected, model throughput becomes easier; if the tail of large records is heavier, we need more headroom or more aggressive partitioning. I would size the system around the tail, not the mean."*
 
-The chapter treats cost only qualitatively. The V2 tutorial's author closes the gap with a live dollar formula, which is supplementary perspective and not chapter content. At 270 tokens a record and ~5,320 rps, the fleet sustains roughly 1.43M tokens/second. Across the window that is about 5.15B tokens for 100M records. Apply the per-million-token price for a cost per run, then divide by 100 for cost per million records. Retries re-spend the full 270 tokens each. At a 5% retry rate that is roughly 5% more spend. The 15% headroom is itself a cost line, and stragglers burn compute past the window. So the cost ceiling belongs inside the rate-limit coordinator's backoff behaviour, not in a separate finance conversation.
+The chapter treats cost only qualitatively. The V2 tutorial's author closes the gap with a live dollar formula, which is supplementary perspective and not chapter content. At 270 tokens a record and ~5,320 rps, the fleet sustains roughly 1.43M tokens/second. Across the window that is about 27B tokens for 100M records (100M × 270). Apply the per-million-token price for a cost per run, then divide by 100 for cost per million records. Retries of calls that actually ran re-spend the full 270 tokens each; a call rejected up front, such as a 429, generally costs nothing. At a 5% retry rate that is roughly 5% more spend. The 15% headroom is itself a cost line, and stragglers burn compute past the window. So the cost ceiling belongs inside the rate-limit coordinator's backoff behaviour, not in a separate finance conversation.
 
 ## 5. Draw the Architecture End to End
 
@@ -268,7 +268,7 @@ The API surface stays small.
 | Endpoint | Contract |
 |---|---|
 | `POST /v1/batch-jobs` | Authenticated; validates manifest and model reference. Idempotency key, so a client retry after a timeout does not create two jobs. Same key with a different payload is a conflict, not a merge |
-| `GET /v1/batch-jobs/{id}` | Read model: progress, partition counts, failure counts, deadline, model version, state, compact error summary. Unknown id is not-found; no access is a permission error that neither confirms nor denies existence |
+| `GET /v1/batch-jobs/{id}` | Read model: progress, partition counts, failure counts, deadline, model version, state, compact error summary. Unknown id and no access both return not-found, so a caller cannot tell whether a job it may not see exists |
 | `POST /v1/batch-jobs/{id}/pause` | Stops new leases and preserves progress. Optimistic concurrency via ETag. Already terminal is a state conflict, not a pretend success. Retried pauses are harmless |
 | `POST /v1/batch-jobs/{id}/replay-failures` | Privileged, because replay reconsumes capacity. Selector for all failed, a named subset, or after a checkpoint. Reused key returns the same replay outcome, never a second attempt |
 
@@ -307,7 +307,7 @@ Keep raw payloads out of queue metadata. Messages carry only opaque identifiers,
 
 Record model version, code version, prompt or feature schema version and deployment identity for every run. That is how the team proves which artifact produced which result when a customer asks why today's classification differs from yesterday's.
 
-The chapter names no external framework, and the V2 author treats that as a gap. Their supplementary answer: ask which framework applies before claiming compliance. With personal data, purpose limitation and data minimisation apply to snapshot and result retention. In finance or healthcare, SOC 2 or HIPAA-style evidence applies to the audit trail. They also propose a per-run "processing basis" field on `BatchJob`. The controls are necessary but not sufficient without a named framework to test them against.
+The chapter names no external framework, and the V2 author treats that as a gap. Their supplementary answer: ask which framework applies before claiming compliance. With personal data, purpose limitation and data minimisation apply to snapshot and result retention. In healthcare, HIPAA's audit-control rule applies to the audit trail; in finance, rules such as SEC 17a-4 or SOX do. SOC 2 is a voluntary audit report that customers in any industry may ask for. They also propose a per-run "processing basis" field on `BatchJob`. The controls are necessary but not sufficient without a named framework to test them against.
 
 ## 8. Decide the Failure Policy Before the Run
 
@@ -424,7 +424,7 @@ Complete the launch plan with canarying, rollback, migration, training, support 
 
 ## 13. Extend the Anchor to the Bank Document Platform
 
-Member #49 is OpenAI question-bank Q5: *"A bank processes millions of financial documents and wants to extract structured data using AI."* It is the same spine with a different payload. Records become documents, and a label becomes a schema.
+Member #49 is an OpenAI-style practice prompt, Q5: *"A bank processes millions of financial documents and wants to extract structured data using AI."* It is the same spine with a different payload. Records become documents, and a label becomes a schema.
 
 The source lists the decomposition. It runs ingestion, file validation, document classification, OCR or multimodal extraction, schema-constrained output, and confidence scoring. It continues with validation against business rules, human review, correction feedback, audit storage, and reprocessing with model versioning. It asks for discussion of batch versus online processing, idempotency, retry behaviour, data lineage, model versioning and document-format drift.
 
@@ -585,3 +585,18 @@ All paths are relative to `06_Interview_Prep/`.
 | 15 (#42) | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, Case 5; `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, playbook row for #42 |
 | 15 (#116) | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, scenario 13 and its §2 one-liner |
 | Every item marked own construction | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [OpenAI API docs: Batch API](https://developers.openai.com/api/docs/guides/batch) — batch jobs have their own semantics, so a naive retry loop can duplicate work
+- [Dean & Ghemawat, MapReduce (OSDI 2004)](https://www.cs.princeton.edu/courses/archive/fall13/cos518/papers/mapreduce.pdf) — stragglers set batch finish time; backup tasks fix it
+- [OpenAI Help Center: Troubleshooting 429 errors](https://help.openai.com/en/articles/5955604-troubleshooting-api-rate-limits-and-429-errors) — rate-limited calls are rejected up front
+- [Claude docs: Rate limits](https://platform.claude.com/docs/en/api/rate-limits) — tokens-per-minute quotas can be the real ceiling; 429 behaviour
+- [IETF draft-ietf-httpapi-idempotency-key-header-07 (expired), s2.7](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) — same key with a different payload is an error
+- [Stripe API reference: Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — same key with different parameters is rejected
+- [RFC 9110 HTTP Semantics, 403 and 404](https://www.rfc-editor.org/rfc/rfc9110.html#name-403-forbidden) — a server may return 404 to hide a forbidden resource
+- [OWASP Authorization Regression Testing Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Regression_Testing_Cheat_Sheet.html) — distinct 403/404 answers leak existence
+- [AICPA & CIMA: SOC 2](https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2) — SOC 2 is a voluntary attestation, not an industry rule
+- [45 CFR 164.312(b) Audit controls](https://www.law.cornell.edu/cfr/text/45/164.312) — HIPAA's audit-control requirement
+- [FINRA: Books and Records (SEA 17a-4, FINRA 4511)](https://www.finra.org/rules-guidance/key-topics/books-records) — finance record-keeping rules
+- [Amazon Textract pricing](https://aws.amazon.com/textract/pricing/) — document extraction is priced per page

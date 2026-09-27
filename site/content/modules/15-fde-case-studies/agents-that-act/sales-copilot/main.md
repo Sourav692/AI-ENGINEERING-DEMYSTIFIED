@@ -47,7 +47,7 @@ If these answers are missing, keep the first release read-only, restrict sources
 | Related case                          | What changes from G05                                                                                         |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | Account-research assistant question   | Broader CRM/email/usage/support/public-source integration, entity resolution, seller adoption and time saved. |
-| Slow agentic CRM assistant            | Serial tool calls and agent steps dominate; precompute, cache, parallelize reads, and bound the graph.        |
+| Slow agentic CRM assistant            | Serial tool calls and agent steps likely dominate (confirm in traces); precompute, cache, parallelize reads, and bound the graph.        |
 | Sales email model-regression incident | Claim-level release gates, online unsupported-claim monitoring, and block-mode policy enforcement dominate.   |
 
 ## 2. Requirements: Functional + Non-Functional
@@ -142,7 +142,7 @@ flowchart LR
 
 ## 4. Source authority and permission fidelity
 
-CRM has account and opportunity truth. Its sharing rules include record owner, role hierarchy, territory, special sharing, and field-level security. Calls/transcripts need participant and consent rules. Mailbox data belongs to the mailbox owner unless delegated. Pricing comes from a versioned deal-desk policy; approved outbound claims from a playbook. Support and warehouse facts can be account- or role-scoped. A structured count over another rep’s territory is a leak just as much as a forbidden document.
+CRM has account and opportunity truth. Record access starts from org-wide defaults and is widened by owner, role hierarchy, territory, and sharing rules; field-level security decides which fields show. Calls/transcripts need participant and consent rules. Mailbox data belongs to the mailbox owner unless delegated. Pricing comes from a versioned deal-desk policy; approved outbound claims from a playbook. Support and warehouse facts can be account- or role-scoped. A structured count over another rep’s territory is a leak just as much as a forbidden document.
 
 Mirror source ACLs at ingest and compile tenant/territory/role filters into retrieval. Recheck fresh source attributes, sharing, and field masks before serving or generating. A rep moved off a territory at noon must not see a 9 a.m. cached snapshot. Invalidate on role/territory change and key the snapshot by account plus permission signature. Source credentials stay in a vault by reference and never appear in model context or traces.
 
@@ -166,7 +166,7 @@ A CRM update is a proposal: exact fields previewed → policy check → human ap
 | Permission or approval service down      | Fail closed; no answer from uncertain access and no write.           |
 | Missing/stale evidence                   | Disclose gap, abstain or escalate; never fill from model memory.     |
 | Unapproved price/certification/ROI claim | Block external draft.                                                |
-| Prompt injection in transcript/email     | Treat as data; cannot unlock tools or override claim policy.         |
+| Prompt injection in transcript/email     | Untrusted data; tools and claim policy are gated outside the model. |
 | Model or vector path down                | Narrow labeled fallback or queue with progress.                      |
 
 At 10× accounts, shard snapshot jobs by territory and isolate connectors by source. If account prep takes 30–45 s, trace steps and tool latency first. Precompute on the calendar event; use deterministic routes, cache the permission-scoped snapshot, parallelize remaining read-only calls, cap steps/top-k, and reserve an agent for ambiguous work. Measure cache hit rate, p95, steps, tool time, and cost per workflow.

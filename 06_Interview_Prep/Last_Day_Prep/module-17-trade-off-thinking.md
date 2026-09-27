@@ -252,3 +252,10 @@ State a revisit condition: a changed workload, unacceptable tail latency, insuff
 ### 30-Second Answer
 
 > “I’d separate hard constraints from preferences, compare the simplest viable options, and choose based on the customer's priority. I’d explain what improves, what becomes more expensive or complex, and how we would verify the result. I’d measure successful outcomes, latency, and total task cost, preserve required controls, and revisit the choice if evidence or requirements change.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Liu et al. 2023, Lost in the Middle: How Language Models Use Long Contexts (arXiv 2307.03172)](https://arxiv.org/abs/2307.03172) — extra context adds noise
+- [Shi et al. 2023, Large Language Models Can Be Easily Distracted by Irrelevant Context (arXiv 2302.00093)](https://arxiv.org/abs/2302.00093) — extra context adds noise
+- [Anthropic Engineering, How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — multi-agent overhead
+- [Cemri et al. 2025, Why Do Multi-Agent LLM Systems Fail? (MAST, arXiv 2503.13657)](https://arxiv.org/abs/2503.13657) — multi-agent overhead

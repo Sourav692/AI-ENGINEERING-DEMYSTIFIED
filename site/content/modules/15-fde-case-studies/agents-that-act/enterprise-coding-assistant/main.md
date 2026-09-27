@@ -9,7 +9,7 @@ End to end, as intern Alex typing in a private repo:
 1. **Keystroke.** We know Alex’s identity and what the code host says they can read.
 2. **We take a tiny context** — cursor, file, imports — not the whole company.
 3. **Cache or retrieve only snippets inside that ACL.** Recheck before the model.
-4. **A small model streams a short completion** in about 300 ms.
+4. **A small model streams a short completion** in about 200 ms, inside a 300 ms total.
 5. **A gate drops** invented APIs, secrets, license clashes. Timeout → show nothing.
 6. **“Explain this function”** is a slower, larger-model path. Accepts are logged without keeping source.
 
@@ -134,7 +134,7 @@ At 10×, partition indexes by repository and region, re-index on push asynchrono
 
 ## 6. Evaluation and rollout
 
-**Product metric:** accepted and partially accepted completions, sliced by task, language, and repository. Acceptance is necessary but not sufficient: compare adopters with a matched control on time-to-merge, review rework, and defects with effect and sample size chosen in advance. **Safety gates:** zero secret/license and cross-repository leaks, hallucinated APIs blocked by validation, p95 under 300 ms at peak, first token under the source’s example **100 ms** target where achievable. Nightly regression catches model drift even without a code change.
+**Product metric:** accepted and partially accepted completions, sliced by task, language, and repository. Acceptance is necessary but not sufficient: compare adopters with a matched control on time-to-merge, review rework, and defects with effect and sample size chosen in advance. **Safety gates:** zero secret/license and cross-repository leaks, hallucinated APIs blocked by validation, p95 under 300 ms at peak, first token under the source’s example **100 ms** target where achievable. Nightly regression catches drift from a repointed model alias even without a code change.
 
 Roll out one repository with real permissions and three developers with different access → cache/local-context path → ACL-filtered retrieval and leak suite → silent suggestions → live completion for one team → expand repositories and slower tasks one at a time. Source and prompts are never training data without explicit consent.
 

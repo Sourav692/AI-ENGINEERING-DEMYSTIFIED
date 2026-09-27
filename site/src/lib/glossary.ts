@@ -93,6 +93,8 @@ export const GLOSSARY: GlossaryEntry[] = [
   { term: 'Hallucination', group: 'Models and AI',
     plain: 'The model stating something that sounds right but is not supported by any source.',
     sayIt: "I don't try to stop the model guessing — I make it answer only from evidence, and check it did." },
+  { term: 'MAST', expansion: 'Multi-Agent System failure Taxonomy', group: 'Models and AI',
+    plain: 'A 2025 study that sorted why multi-agent systems fail. Most failures were bad specs and agents misreading each other, not the model itself.' },
   { term: 'LLM-as-judge', group: 'Models and AI',
     plain: 'Using a model to grade another model\'s answers against a rubric. Cheap and fast, but you calibrate it against human grades first.' },
 
@@ -139,6 +141,8 @@ export const GLOSSARY: GlossaryEntry[] = [
     plain: 'The way one system lets another call it. For an agent, every tool is usually an API call.' },
   { term: 'SDK', expansion: 'software development kit', group: 'Agents and tools', expand: false,
     plain: 'A ready-made library for talking to a service.' },
+  { term: 'RFC', expansion: 'Request for Comments', group: 'Agents and tools', expand: false,
+    plain: 'The documents that define internet standards — RFC 9110 is the one for HTTP.' },
   { term: 'REST', group: 'Agents and tools', expand: false,
     plain: 'The most common style of web API: resources at URLs, read and changed with HTTP calls.' },
   { term: 'MCP', expansion: 'Model Context Protocol', group: 'Agents and tools',
@@ -186,6 +190,18 @@ export const GLOSSARY: GlossaryEntry[] = [
     plain: 'The US law on protecting health data.' },
   { term: 'SOC 2', group: 'Security and compliance',
     plain: 'An audit report showing a vendor handles customer data securely. Enterprise buyers ask for it before signing.' },
+  { term: 'RLS', expansion: 'row-level security', group: 'Security and compliance',
+    plain: 'The database only returns the rows this user may see. Watch who can bypass it — in Postgres, table owners and superusers do unless you force it on.' },
+  { term: 'KMS', expansion: 'key management service', group: 'Security and compliance',
+    plain: 'The service that holds and rotates encryption keys, so your app never stores them itself.' },
+  { term: 'PCI DSS', expansion: 'Payment Card Industry Data Security Standard', group: 'Security and compliance',
+    plain: 'The rules for handling card data. The one that bites voice systems: never keep the card security code — not even in a call recording.' },
+  { term: 'SOX', expansion: 'Sarbanes-Oxley Act', group: 'Security and compliance',
+    plain: 'The US law on financial-reporting controls. It is why finance teams want every change to leave an audit trail.' },
+  { term: 'SEC', expansion: 'US Securities and Exchange Commission', group: 'Security and compliance',
+    plain: 'The US markets regulator. Its rule 17a-4 says how long broker-dealers must keep records, and how.' },
+  { term: 'OWASP LLM Top 10', group: 'Security and compliance',
+    plain: 'OWASP\'s list of the biggest risks in LLM apps. LLM01 is prompt injection; the others cover things like leaking data and giving the model too much power.' },
   { term: 'Least privilege', group: 'Security and compliance',
     plain: 'Give every user, service and agent only the access it needs for this task, and nothing more.' },
   { term: 'Tenant isolation', group: 'Security and compliance',
@@ -271,6 +287,8 @@ export const GLOSSARY: GlossaryEntry[] = [
     plain: 'The chip models run on. Usually the biggest cost line.' },
   { term: 'CPU', group: 'Performance and cost', expand: false,
     plain: 'A general-purpose processor.' },
+  { term: 'DBU', expansion: 'Databricks Unit', group: 'Performance and cost',
+    plain: 'How Databricks bills: you pay for compute time, not for bytes scanned.' },
   { term: 'CDN', expansion: 'content delivery network', group: 'Performance and cost',
     plain: 'Servers around the world that cache content close to users.' },
   { term: 'SSE', expansion: 'server-sent events', group: 'Performance and cost',
@@ -331,6 +349,9 @@ export const NOT_ACRONYMS = new Set([
   'US', 'EU', 'APAC', 'EMEA', 'AMER', 'AWS', 'SAP', 'VIP', 'OS', 'IT', 'IP', 'KB', 'GB', 'MB',
   'UI', 'UX', 'URL', 'HTTP', 'HTTPS', 'ASCII', 'SHA256', 'V1', 'V2', 'Q3', 'CD', 'CI', 'SOC',
   'DM',
+  // SQL keywords and name fragments: ROW FILTER, MT-Bench, and PCI / DSS as the two
+  // halves of the 'PCI DSS' entry above.
+  'ROW', 'MT', 'PCI', 'DSS',
 ])
 
 export const glossaryAnchor = (term: string) =>

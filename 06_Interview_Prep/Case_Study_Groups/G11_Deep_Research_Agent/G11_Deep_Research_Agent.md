@@ -64,7 +64,7 @@ Every must-have then needs an owner in the architecture *(own construction)*.
 
 ## 3. Carry State That Cannot Lose a Branch
 
-State is the contract between the planner, the sub-agents and the synthesiser. Parallel branches that write one key under a last-write-wins rule lose all results but one. That is the fan-out data-loss defect, and it is silent.
+State is the contract between the planner, the sub-agents and the synthesiser. Parallel branches that write one key under a last-write-wins rule lose all results but one. LangGraph refuses this with an `InvalidUpdateError` when the key has no reducer, but a hand-rolled merge loses the data silently. That is the fan-out data-loss defect.
 
 The anchor's state carries seven things. Run and user identity. The goal. A dependency-aware plan. An evidence list with a *concatenating* merge rule. Tool errors. The draft and its verification score. Step and replan counters, and a budget dict summed across branches.
 
@@ -79,7 +79,7 @@ The anchor's state carries seven things. Run and user identity. The goal. A depe
 | Step, replan and hop counters | The termination defences read them |
 | Budget dict, summed across branches | The $0.20 ceiling is enforced per run, not per branch |
 
-The mock (#103) names the fix in one line: any key more than one node writes needs a reducer that accumulates. The same mock warns against the scalar version of the bug. Several agents writing one `summary` key means the final answer reflects only the last one to run. Accumulate findings into a list, then synthesise once at the end.
+The mock (#103) names the fix in one line: any key more than one node writes needs a reducer that accumulates. The same mock warns against the scalar version of the bug. Several agents writing one `summary` key through a hand-rolled last-write-wins merge means the final answer reflects only the last one to run. Accumulate findings into a list, then synthesise once at the end.
 
 ## 4. Draw the Architecture End to End
 
@@ -201,7 +201,7 @@ Sub-agent isolation is the single largest cost lever in this design. A parent th
 
 Context rot compounds the cost problem. Model accuracy degrades as the window fills, and unevenly, so information stuck in the middle is retrieved less reliably. A run with three well-chosen observations often beats the same run stuffed with twelve.
 
-Isolate when a subtask's intermediate steps are not needed downstream. That is the common case for research, verification and extraction. Share context only when steps must reason across each other's intermediates, which is rarer than it feels. On a real ten-step run, isolating typically cuts billed input tokens by an order of magnitude.
+Isolate when a subtask's intermediate steps are not needed downstream. That is the common case for research, verification and extraction. Share context only when steps must reason across each other's intermediates, which is rarer than it feels. On a ten-step run, isolation can shrink the parent's input tokens a lot, but sub-agents bill their own tokens, so measure the total.
 
 Isolation gives up one thing: auditability across the boundary. Store each sub-agent's full trace and link it from the parent's span. Otherwise a wrong conclusion becomes unexplainable.
 
@@ -215,15 +215,15 @@ Numbers said out loud are the senior signal. Derive them in front of the intervi
 |---|---|---|
 | Mean rate | 40K runs ÷ 1,440 minutes | ~28 runs/min *(own derivation)* |
 | Peak rate | ~28 × 3, rounded up | ≈ 100 runs/min at peak |
-| In flight (Little's Law) | 100 runs/min × 70 s p95 ÷ 60 | ~120 in-flight |
+| In flight (Little's Law) | 100 runs/min × ~70 s mean time in system ÷ 60 | ~120 in-flight |
 | Concurrency to provision | 120 ÷ 0.70 utilization target | around 170 |
-| Naive cost | 7 steps, ≈ 30K input tokens | Blows the $0.20 budget |
+| Naive cost | 7 steps, ≈ 30K input tokens plus output, all on the premium model | Blows the $0.20 budget |
 
-Little's Law says work in flight equals arrival rate times time in system. It is the one formula that turns a throughput number into a capacity number. Name it by name.
+Little's Law says work in flight equals arrival rate times mean time in system. It is the one formula that turns a throughput number into a capacity number. Name it by name.
 
-Three levers bring the naive run under $0.20. Sub-agent isolation means the parent sees hundreds of tokens, not raw pages, and it is the largest lever. Prefix caching covers the stable instructions and tool definitions. Tier routing sends extraction and summarisation to a small model and keeps the reasoning tier for the plan and verification only.
+Three levers bring the naive run under $0.20. Sub-agent isolation means the parent sees hundreds of tokens, not raw pages, so the planner's calls stay cheap — though each sub-agent still pays for the pages it reads. Prefix caching covers the stable instructions and tool definitions. Tier routing sends extraction and summarisation to a small model and keeps the reasoning tier for the plan and verification only.
 
-The binding constraint at 10x is usually provider quota, not compute. Name it first, then the arithmetic, then which lever to pull and what it costs.
+At 10x, I'd expect provider quota to bind before compute. Name it first, then the arithmetic, then which lever to pull and what it costs.
 
 ## 7. Volunteer the Trifecta Analysis Before Anyone Asks
 
@@ -301,7 +301,7 @@ Evaluate at two levels. Outcome evaluation asks whether the final answer was rig
 | Does it feel fast? | Time to first signal (under 3s); p95 total (under 90s) |
 | Is the private corpus safe? | Cross-user retrieval tests at zero; egress-firewall trigger rate |
 
-Debug a bad run from the trace keyed by run ID. Record per hop which agent ran, why it was chosen, what it saw and what it returned. The routing reasoning is the highest-value thing to log, because most bad multi-agent outputs are bad routing rather than bad agents. Find the first hop where the trajectory diverged.
+Debug a bad run from the trace keyed by run ID. Record per hop which agent ran, why it was chosen, what it saw and what it returned. The routing reasoning is the highest-value thing to log, because many bad multi-agent outputs come from how work was split and routed, not from one weak agent. Find the first hop where the trajectory diverged.
 
 ## 11. Read the Deployed Research Platform as Proof (#12)
 
@@ -314,7 +314,7 @@ It has nine layers, and one request passes through them top to bottom.
 | 1 · Entry and security | API-key check, rate limit, input guardrail, then a job on a queue | Wrong key → 401; a Redis counter per client IP, 10 requests per 60 s; Bedrock Guardrails screen raw input *before any LLM sees the text*; Redis Stream queue decouples accepted from processed |
 | 2 · Smart lookup | Three progressively looser checks before any agent runs | Semantic cache ≥ 0.85; exact long-term-memory match ≥ 0.88; related LTM 0.50–0.88 passed to the Writer as context |
 | 3 · Agent pipeline | Search → Summarize → Writer → Critic | Search finds 5 key facts using the last four turns of history; a Critic NO under `agent_max_iterations` loops back to Search |
-| 4 · LLM gateway | Every call goes through one sidecar, TensorZero | Agents name a *function*, not a model; primary OpenAI GPT-4o, fallback Groq `llama-3.1-8b-instant` |
+| 4 · LLM gateway | Every call goes through one sidecar, TensorZero (archived and unmaintained since June 2026) | Agents name a *function*, not a model; primary OpenAI GPT-4o, fallback Groq `llama-3.1-8b-instant` (as built; Groq retired that model for free and developer tiers in Aug 2026) |
 | 5 · Output, save, evaluate | Output guardrail, persist, score | Bedrock again on generated content; LLM-as-judge on relevance, completeness, hallucination and quality, in parallel and non-blocking |
 | 6 · Storage | Redis for fast and short-lived, Postgres for durable | RDS PostgreSQL 15 + pgvector; every report as a 384-dimension embedding |
 | 7 · Observability | One trace per request | LangSmith spans with eval scores attached; in-process `all-MiniLM-L6-v2` embeddings add no gateway latency or cost |
@@ -361,7 +361,7 @@ The follow-up bank, with the shape of a strong answer:
 
 | Follow-up | Shape of a strong answer |
 |---|---|
-| How does this scale 10x? | Name the *binding constraint* first (usually provider quota), then the arithmetic, then which lever you'd pull and its cost |
+| How does this scale 10x? | Name the *binding constraint* first (here I'd expect provider quota), then the arithmetic, then which lever you'd pull and its cost |
 | What breaks first? | A specific component with a specific symptom and the metric that reveals it — never "hallucinations" |
 | How do you know it works? | The oracle, sampled online measurement, the offline gate, and the offline suite's power limitation |
 | What if the model gets worse? | Version pinning, evaluation before adoption, canary with guardrails, automatic rollback, a second provider behind an adapter |
@@ -435,8 +435,8 @@ Every strong cost answer follows four verbs in order. Measure, by tracing tokens
 ## Check Yourself
 
 1. **What are the eight numbers, and which one makes an approval subsystem unnecessary here?** Throughput, latency, horizon, accuracy, cost, autonomy, data class, recovery. Autonomy: the agent is read-only.
-2. **Why must the evidence list use a concatenating merge?** Parallel branches writing one key under last-write-wins lose all results but one, silently.
-3. **Derive the concurrency number.** 40K/day peaked 3x ≈ 100 runs/min; at 70 s p95, Little's Law gives ~120 in flight; at a 70% utilization target, provision around 170.
+2. **Why must the evidence list use a concatenating merge?** Parallel branches writing one key under last-write-wins lose all results but one. LangGraph raises `InvalidUpdateError` when the key has no reducer; a hand-rolled merge loses them silently.
+3. **Derive the concurrency number.** 40K/day peaked 3x ≈ 100 runs/min; at ~70 s mean time in system, Little's Law gives ~120 in flight; at a 70% utilization target, provision around 170.
 4. **What is the single largest cost lever, and what does it give up?** Sub-agent isolation; it gives up auditability across the boundary unless sub-agent traces are stored and linked.
 5. **The agent has no email or webhook tool. Why is the trifecta still live?** The rendered answer is a channel: a Markdown image URL can carry private text out when the client fetches it. Filter rendering.
 6. **A hop cap is in place. Why add a no-progress check?** A cap only bounds the burn; the signature check catches an identical rejected retry on hop two instead of hop eight.
@@ -460,3 +460,25 @@ All paths are relative to `06_Interview_Prep/`.
 | 14 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #10 |
 | 2 (MoSCoW split), 4 (trust-zone diagrams, component table), 9 (ladder), 10 (metric table), 13 (spoken answer, lines), and every item marked own construction | Built for this page from the sources' arguments; not source material |
 | Not included | Chapter 28's "Worked Design Two", the incident response agent, belongs to group G04 and is covered in `G04_SRE_Incident_Response_Agent/G04_SRE_Incident_Response_Agent.md` |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [LangGraph docs: INVALID_CONCURRENT_GRAPH_UPDATE](https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CONCURRENT_GRAPH_UPDATE) — parallel writes to a key with no reducer raise an error; silent loss needs a hand-rolled merge
+- [Liu et al. 2023, Lost in the Middle](https://arxiv.org/abs/2307.03172) — information in the middle of a long context is used less reliably
+- [Chroma Research 2025, Context Rot](https://www.trychroma.com/research/context-rot) — accuracy degrades as input length grows
+- [Anthropic Engineering: How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — multi-agent runs use many more total tokens; isolation does not cut the bill by itself
+- [Little 1961, A Proof for the Queuing Formula L = λW](https://pubsonline.informs.org/doi/10.1287/opre.9.3.383) — Little's Law uses mean time in system
+- [Claude docs: Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) — current model tiers
+- [Claude docs: Pricing](https://platform.claude.com/docs/en/about-claude/pricing) — per-token prices behind the $0.20 run budget
+- [Claude docs: Rate limits](https://platform.claude.com/docs/en/api/rate-limits) — provider quotas that can bind at 10x
+- [Simon Willison: The lethal trifecta for AI agents (16 June 2025)](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) — private data plus untrusted content plus an outbound channel
+- [MSRC: How Microsoft defends against indirect prompt injection attacks (Jul 2025)](https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks) — Markdown image exfiltration; prompt defences reduce rates but are not boundaries
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — prompt injection has no complete prompt-level fix
+- [Cemri et al., Why Do Multi-Agent LLM Systems Fail? (arXiv 2503.13657)](https://arxiv.org/abs/2503.13657) — failures spread across design, coordination and verification, not routing alone
+- [AWS Bedrock User Guide: Use the ApplyGuardrail API](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html) — guardrails can screen input before any model call
+- [tensorzero/tensorzero on GitHub](https://github.com/tensorzero/tensorzero) — repository archived on 12 June 2026
+- [GroqDocs: Model deprecations](https://console.groq.com/docs/deprecations) — `llama-3.1-8b-instant` retired for free and developer tiers in Aug 2026
+- [OpenAI API docs: Deprecations](https://developers.openai.com/api/docs/deprecations) — GPT-4o still offered
+- [OpenAI API docs: GPT-4o model page](https://developers.openai.com/api/docs/models/gpt-4o) — GPT-4o still listed
+- [microsoft/PyRIT](https://github.com/microsoft/PyRIT) — Crescendo, Skeleton Key and XPIA attacks
+- [Reference build: `app/auth.py`](../../../05_Projects/Enterprise_Multi_Agent_AI_Research_Platform/CODE/app/auth.py) and [`app/cache.py`](../../../05_Projects/Enterprise_Multi_Agent_AI_Research_Platform/CODE/app/cache.py) — one API key, no tenant model, shared report cache

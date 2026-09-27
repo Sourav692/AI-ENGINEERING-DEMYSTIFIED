@@ -83,7 +83,7 @@ Every requirement then needs an owner in the architecture *(own construction)*.
 | Complaint to request family, unaided | Support and access gateway, tenant-scoped views, outcome tags |
 | Correlation across services and queues | Trace collector, queue serialization contract |
 | Per-hop timing | Spans emitted at every hop into the collector |
-| Structured evidence without raw content | Sensitivity classifier, salted hash |
+| Structured evidence without raw content | Sensitivity classifier, keyed hash (HMAC) |
 | Global versus tenant views | Two consumers of one store, with a permission boundary |
 | Overhead within budget | Sampling policy, attribute caps, bounded retention |
 | Audit separate from debug | Audit and redaction pipeline with its own write path |
@@ -102,7 +102,7 @@ The chapter itself gives no numbers. The V2 gap note supplies a worked version, 
 | Tail-biased retention | 100% for error and latency-outlier traces, roughly 2-5% of volume |
 | Head sampling for the rest | 5% |
 | Effect | Raw trace volume cut by roughly 90%, failure population preserved |
-| Stored size | ~200 bytes/span after redaction, 30-day retention, a few hundred GB |
+| Stored size | ~200 bytes/span after redaction, 30-day retention, about 110–155 GB (roughly 270–390 GB at a more typical ~500 bytes/span) |
 
 The conclusion is that storage is not the constraint. Classifier CPU and redaction-policy correctness are. Every span passes through the classifier before storage, so the classifier sits on the observability path's critical line.
 
@@ -138,7 +138,7 @@ The same system drawn with its trust boundaries *(own construction)*:
  OBSERVABILITY PATH
  ┌────────────────────┐   ┌──────────────────────────┐   ┌────────────────────┐
  │ Trace collector    │──▶│ Sensitivity classifier   │──▶│ Sampling policy    │
- │ correlation ID,    │   │ classify, salted HMAC,   │   │ tail-biased, error │
+ │ correlation ID,    │   │ classify, keyed HMAC,    │   │ tail-biased, error │
  │ structured spans   │   │ cap cardinality          │   │ overrides, exemplar│
  └────────────────────┘   └──────────────────────────┘   └─────────┬──────────┘
           ── TRUST BOUNDARY: nothing raw crosses this line ──       │
@@ -197,11 +197,11 @@ Four questions organise the walk-through. How does each request get a correlatio
 
 ## 6. Classify and Hash Before Storage
 
-A classifier that runs after storage protects nothing, because the raw value has already been written. So classification happens before a value can reach a trace. A salted hash then preserves correlation without retaining content.
+A classifier that runs after storage protects nothing, because the raw value has already been written. So classification happens before a value can reach a trace. A keyed hash (HMAC with a secret key) then preserves correlation without retaining content.
 
 The data model is small. `Request` carries tenant ID, prompt and an optional user ID. `ExportedTrace` carries only a bounded, structured attribute dictionary: correlation ID, tenant ID, prompt classification, query hash, spans and result status. It never carries raw prompt text by default.
 
-The hash is HMAC-SHA256 with a salt, so the same prompt always maps to the same fingerprint. That fingerprint deduplicates and correlates requests across the store. Without the salt it cannot be reversed by brute-forcing common prompts, and a missing salt raises an error rather than silently hashing unsalted.
+The hash is HMAC-SHA256 with a secret key, so the same prompt always maps to the same fingerprint. That fingerprint deduplicates and correlates requests across the store. Without the secret key, nobody can brute-force common prompts back out of the hash. If the key leaks, they can, so it lives in a vault and gets rotated. A missing key raises an error rather than silently hashing without one.
 
 Three tests turn the design into executable contracts:
 
@@ -332,11 +332,11 @@ Production GenAI systems fail economically as well as technically. Incident #88 
 | Signal | Value |
 |---|---|
 | Spend | $240 daily budget; $912 actual; $1680 projected by end of day |
-| Deltas | Cost +380%; requests +7%; input tokens +351% |
+| Deltas | Cost +280% (3.8×); requests +7%; input tokens +351% |
 | Prompt template | `exec_summary_v6`; average context 4200 → 19000 tokens |
 | Context contents | `all_notes_90d` instead of `top_20_notes_30d`; 500 table rows instead of a cap of 80; compression disabled |
 | Cache | Hit rate 4% against a 67% baseline; key v5 = `[tenant_id, query_text]`; missing date range, snapshot ID, role scope |
-| Routing | GPT-4-class because `context_tokens>12000`; 21384 tokens in, 1288 out; $2.74 per request against $0.31 before |
+| Routing | GPT-4-class because `context_tokens>12000`; 21384 tokens in, 1288 out; about 9× the per-request cost of before (the case's illustrative $2.74 against $0.31, not list prices) |
 
 **What changed.** The `exec_summary_v6` upgrade added "more supporting context" after executives asked for richer explanations. The same release changed cache-key normalization and dropped the date-range and snapshot fields. It also disabled compression while debugging a formatting issue.
 
@@ -358,15 +358,15 @@ Three prompts in the group look different and use the same instrument. Each one 
 
 **#53, latency regression.** "An enterprise customer reports that responses have become slow." First clarify which latency: time to first token, time between tokens, total completion time, or user-perceived latency. Then decompose across ten stages: client and network, authentication, middleware, retrieval, prompt construction, model prefill, token generation, tool calls, post-processing and streaming. Check input and output token counts and retrieval p95 and p99. Then check retry rates, rate-limit throttling and traffic patterns. Finish with model version, prompt changes, cache hit rates and regional routing. Incident #87 is this prompt with real numbers.
 
-The follow-up is "it only happens at peak traffic." Peak-only latency points at queueing, not a slower model. Separate queue wait from service time. Latency curves knee sharply past roughly 70–80% utilization. A rising p99 with a flat p50 usually means queueing. Add admission control and shed non-interactive work to batch *(the utilization figures come from the additions file, section D)*.
+The follow-up is "it only happens at peak traffic." Peak-only latency points at queueing, not a slower model. Separate queue wait from service time. Queueing delay climbs steeply as utilization nears 100%; for a simple queue the wait is about 4× service time at 80% and 9× at 90%. A rising p99 with a flat p50 usually means queueing. Add admission control and shed non-interactive work to batch *(the utilization point comes from the additions file, section D; the multiples are simple single-queue arithmetic)*.
 
 **#54, RAG with poor answer quality.** Separate seven failure classes: retrieval, context assembly, reasoning or synthesis, prompt or instruction, output format, evaluation, and user experience. Measure each separately. Use recall@k, precision@k and MRR or nDCG for retrieval. Use citation correctness and context sufficiency for assembly. Use answer faithfulness, answer relevance and abstention quality for generation. Use end-to-end task success for the whole. The section 9 flowchart is the first cut; these metrics are the second.
 
-The follow-up is "would you fine-tune the model?" Classify the problem first. A knowledge problem is usually retrieval or data access. A behavior problem is prompting, fine-tuning or structured output. A freshness problem is indexing and the data pipeline. A permission problem is access-control-aware retrieval. Fine-tuning fixes only the second.
+The follow-up is "would you fine-tune the model?" Classify the problem first. A knowledge problem is usually retrieval or data access. A behavior problem is prompting, fine-tuning or structured output. A freshness problem is indexing and the data pipeline. A permission problem is access-control-aware retrieval. Fine-tuning mainly helps the second; it is a poor fix for the other three.
 
 **#74, diagnose high latency in an LLM inference pipeline.** This is the layer below the application. Walk the full stack: tokenization, network, batch size, KV cache, post-processing. Two facts carry the answer *(from the additions file, section B)*. Prefill processes the whole prompt in parallel and sets time to first token, so it scales with input tokens. Decode generates one token at a time and sets tokens per second, so it scales with output tokens. A frozen UI points at prompt size, retrieval and queueing. An answer that starts fast then drags points at output length.
 
-Batch size trades throughput for per-request latency, because a larger batch waits longer to fill. The KV cache holds attention state for tokens already processed. Its memory caps how many sequences fit on a GPU at once, and a full cache forces queueing. Post-processing is usually small, but a synchronous evaluator or logger on the hot path is not. The same stack walk anchors G20 on inference serving, so prepare it once.
+Batch size trades throughput for per-request latency. With continuous batching nothing waits to fill; each decode step just gets slower as more sequences share it. The KV cache holds attention state for tokens already processed. Its memory caps how many sequences fit on a GPU at once, and a full cache forces queueing. Post-processing is usually small, but a synchronous evaluator or logger on the hot path is not. The same stack walk anchors G20 on inference serving, so prepare it once.
 
 ## 13. Roll Out in Four Phases With Named Owners
 
@@ -427,7 +427,7 @@ Repair the common weak answers on the spot. "Log everything and sort it out late
 
 > *"My design goal is to connect user-visible failures to technical causes without collecting more sensitive data than we need. I would instrument the full request path with correlation IDs, structured spans, and bounded metadata across authentication, retrieval, model calls, and tools. I would store raw prompts and customer content only through a narrow, audited escalation path, because the default should be privacy-preserving and cost-aware. For debugging, I would rely on template IDs, document references, timing, error classes, and outcome labels so support can separate auth, retrieval, model, and integration problems. I'd use a global operational view plus tenant-scoped views for authorized support, and I'd prefer selective retention for slow or anomalous traces over blind random sampling so we do not lose the one bad trace. The riskiest trade-off is observability depth versus privacy and cost, and my first production rollout gate would be proving that the system can consistently identify the root cause of real customer incidents without exposing unnecessary content or overwhelming the team."*
 
-Two gap answers are worth having ready *(V2 gap note, supplementary)*. On build versus buy: buy the span plumbing, build the redaction and classification boundary, because "what counts as sensitive for this tenant" is business logic no vendor can own. On regulation: hashed prompts make a deletion request mostly a matter of clearing quarantine and break-glass records. The retention window should follow the customer's data-processing agreement.
+Two gap answers are worth having ready *(V2 gap note, supplementary)*. On build versus buy: buy the span plumbing, build the redaction and classification boundary, because "what counts as sensitive for this tenant" is business logic no vendor can own. On regulation: hashed prompts make a deletion request smaller, not trivial. A keyed hash tied to a user is still personal data under GDPR, so delete or unlink those fingerprints too, along with quarantine and break-glass records. The retention window should follow the customer's data-processing agreement.
 
 ## 15. Answer Every Cost and Latency Pivot With a Card
 
@@ -533,7 +533,7 @@ Two facts sharpen this card *(additions file, section A1)*. Prompt caching is a 
 | Cheapest lever first | Cancel the stream and any in-flight tool calls on abandon |
 | Metric that proves it | Abandonment against first-token time and answer length; tokens generated after abandon |
 | Do not | Treat cancellation as a UX nicety only |
-| 60-second line | Measure abandonment against first-token time and answer length, and cancel the stream and in-flight tool calls on abandon. Otherwise we pay for tokens nobody read. |
+| 60-second line | Measure abandonment against first-token time and answer length, and cancel the stream and in-flight tool calls on abandon. Where the provider stops generating on cancel, that stops us paying for tokens nobody read. |
 
 Every strong answer on this page runs through four verbs in order. Measure by attributing cost and latency per stage, tenant and prompt version first. Route by matching model and path to risk. Bound steps, tokens, top-k, timeouts and budgets. Cache safely, with tenant, permission scope and version in the key.
 
@@ -546,7 +546,7 @@ Every strong answer on this page runs through four verbs in order. Measure by at
 - Requirements are stated so a test can fail them, with the support workflow as the functional core and overhead as a budget.
 - Telemetry cost is set by collection policy; the worked sizing shows storage is small and the classifier is the real constraint.
 - The architecture is tracing-first, with the observability path unable to block the request path and nothing raw crossing the trust boundary.
-- Classification and salted hashing happen before storage, and three tests pin idempotency, privacy and failure visibility.
+- Classification and keyed hashing happen before storage, and three tests pin idempotency, privacy and failure visibility.
 - Sampling is tail-biased with error overrides and exemplars, because uniform sampling drops the only bad trace.
 - Every layer has a named failure policy, and audit evidence fails closed where user answers can degrade.
 - The dashboard is built top down from the complaint, and wrong answers are triaged by comparing evidence with output.
@@ -562,7 +562,7 @@ Every strong answer on this page runs through four verbs in order. Measure by at
 1. **What are the three problems inside "slow and sometimes wrong"?** Latency (where in the pipeline), correctness (retrieval or generation), and diagnosability (can support explain it without exposing content or drowning in telemetry).
 2. **Name the four things never captured by default.** Full prompts, raw customer documents, secrets, and high-cardinality free-form labels.
 3. **Why must the sensitivity classifier run before storage?** Once a raw value is written, every system that reads the store has it; classification after storage protects nothing.
-4. **Why a salted hash rather than a plain hash?** It keeps correlation and deduplication while resisting brute-force reversal of common prompts; a missing salt must raise an error.
+4. **Why a keyed hash (HMAC) rather than a plain hash?** It keeps correlation and deduplication while resisting brute-force reversal of common prompts, as long as the secret key stays secret; a missing key must raise an error.
 5. **Walk the "sampling drops the only bad trace" drill.** Detect by comparing complaints with sampled trace volume; contain by raising fidelity for the affected slice; recover from neighbouring evidence and mark the gap; prevent with error-class overrides, exemplars and escalation hooks.
 6. **When does a failure fail closed rather than degrade?** When integrity, privacy or authorization would be compromised: a missing auth token, an unavailable audit sink, a lookup outside tenant scope.
 7. **How do you tell a retrieval fault from a model fault?** Compare retrieved evidence with the answer. Empty, stale or off-topic evidence points upstream; good evidence contradicted by the answer points at the model or prompt; a one-tenant failure points at configuration, access or integration state.
@@ -589,3 +589,19 @@ All paths are relative to `06_Interview_Prep/`.
 | 15.2–15.8 | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, §15 scenarios 1, 2, 6, 7, 10, 11, 12 (#104, #105, #109, #110, #113, #114, #115) and §4's four verbs |
 | 5 (ASCII diagram, "Fails how" column), 3 (owner table), 15 ("Do not" on §15 cards), and every item marked own construction | Built for this page from the sources' arguments; not source material |
 | Related | G20 (LLM inference serving) shares #74's stack walk |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Grafana Tempo docs: Manage trace ingestion](https://grafana.com/docs/tempo/latest/operations/manage-trace-ingestion/) — typical span size (~500 bytes) behind the storage sizing
+- [RFC 2104: HMAC, section 3 Keys](https://www.rfc-editor.org/rfc/rfc2104) — HMAC security rests on a secret key, not a salt
+- [OpenAI API docs: Deprecations](https://developers.openai.com/api/docs/deprecations) — GPT-4-class list prices used to check the $2.74 figure
+- [Ovadia et al. 2023, Fine-Tuning or Retrieval? (arXiv 2312.05934)](https://arxiv.org/abs/2312.05934) — fine-tuning is a weak way to add knowledge compared with retrieval
+- [Kwon et al. 2023, Efficient Memory Management for LLM Serving with PagedAttention](https://arxiv.org/abs/2309.06180) — continuous batching and KV-cache limits
+- [vLLM docs: Optimization and Tuning](https://docs.vllm.ai/en/latest/configuration/optimization.html) — batch size, preemption and chunked prefill trade-offs
+- [GDPR (Regulation 2016/679), Recital 26](https://eur-lex.europa.eu/eli/reg/2016/679/oj) — pseudonymised data is still personal data
+- [EDPB Guidelines 01/2025 on Pseudonymisation](https://www.edpb.europa.eu/system/files/2025-01/edpb_guidelines_202501_pseudonymisation_en.pdf) — keyed hashes as pseudonymisation, not anonymisation
+- [GDPR Article 17: Right to erasure](https://gdpr-info.eu/art-17-gdpr/) — deletion requests reach linked fingerprints
+- [Claude docs: Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — exact prefix match; timestamps, unsorted JSON, tool changes and model swaps break the cache
+- [OpenAI API docs: Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) — exact prefix match and minimum cacheable length
+- [OpenRouter help: Which providers stop billing when a stream is cancelled](https://openrouter.zendesk.com/hc/en-us/articles/51691588409883-How-do-I-cancel-a-streaming-request-and-which-providers-stop-billing-when-I-do) — cancelling a stream stops billing only on some providers
+- [vLLM docs: OpenAI-compatible server](https://docs.vllm.ai/en/stable/serving/openai_compatible_server/) — self-hosted engines abort generation on client disconnect

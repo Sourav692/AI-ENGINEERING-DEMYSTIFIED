@@ -133,19 +133,19 @@ flowchart LR
 
 | Layer | Enforced rule |
 |---|---|
-| Row | Database or session policy refuses an unscoped query; application convention alone is not enough. |
+| Row | Database or session policy refuses an unscoped query, provided the app role is not the table owner, a superuser or BYPASSRLS (or FORCE ROW LEVEL SECURITY is on); application convention alone is not enough. |
 | Object | Blob and embedding namespaces are tenant-scoped. |
 | Cache | Key includes tenant, permission signature, and version; cross-tenant hit is an incident. |
 | Queue | Envelope and dead-letter path preserve tenant scope. |
 | Log | No raw prompt, secret, or other tenant’s identifiers in shared telemetry. |
 | Vector index | Tenant scoped at ingestion and search, with a post-retrieval tenant invariant. |
-| Key | Tenant data keys limit raw-storage compromise blast radius. |
+| Key | Raw storage yields only ciphertext; a leaked tenant key opens one tenant, not all, and destroying it crypto-shreds that tenant. |
 
 Default to shared infrastructure with enforced tenant rows for the common case. A separate namespace adds a stronger boundary without a whole deployment; a dedicated cluster/region/key set is for requirements the shared tier cannot safely or economically meet. Least privilege applies to every service identity. The blast radius is measured by tenant, region, workflow, and dependency.
 
 ## 5. Fairness, regions, and failures
 
-Rate limiting caps a tenant’s own usage; fair queuing decides order under contention. Use token, concurrency, and burst quotas feeding a shared worker pool; reserve capacity for contractual tiers. Diagnose unusually high usage by API key, user, feature, time, model route, tokens, batch jobs, and agent steps. Support legitimate adoption; stop loops or abuse. Do not rely on autoscaling alone.
+Rate limiting caps a tenant’s own usage; fair queuing decides order under contention. Use token, concurrency, and burst quotas to cap each tenant, and weighted fair queuing across per-tenant queues to share the worker pool; reserve capacity for contractual tiers. Diagnose unusually high usage by API key, user, feature, time, model route, tokens, batch jobs, and agent steps. Support legitimate adoption; stop loops or abuse. Do not rely on autoscaling alone.
 
 Define policy centrally and enforce it regionally when residency requires. Data, traces, logs, backups, and derived indexes follow placement and retention. During a control-plane outage, continue only operations whose local verified policy and keys remain sufficient; block sensitive changes, queue where safe, and reconcile on recovery.
 

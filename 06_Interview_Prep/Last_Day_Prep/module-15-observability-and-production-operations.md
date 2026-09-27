@@ -73,7 +73,7 @@ Record model/provider/configuration, token usage, call count, retrieval source i
 
 > “I’d connect model and tool usage to the task outcome, not just monitor CPU and HTTP status.”
 
-Capture evidence references and decision summaries, not private model chain-of-thought. Apply minimization or redaction to sensitive fields.
+Capture evidence references and decision summaries, not private model chain-of-thought, which is often hidden and not always faithful. Apply minimization or redaction to sensitive fields.
 
 #### 5. Audit — Reconstruct Business Decisions
 
@@ -228,8 +228,13 @@ Confirm X, the workload, window, and exclusions. Track first useful output and f
 
 Start with impact, scope, and version changes. Inspect queue wait separately from processing. Follow async task IDs and retries. Parallel spans overlap; nested durations cannot be summed blindly. Sampling may mean the exact historical trace is unavailable, so preserve enough metrics and events for useful diagnosis.
 
-Minimize sensitive data in telemetry and restrict retention/access. Use evidence references and decision summaries rather than private model reasoning. Avoid request IDs as unbounded metric dimensions. After mitigation, verify recovery and add validated failure cases to regression coverage.
+Minimize sensitive data in telemetry and restrict retention/access. Use evidence references and decision summaries rather than private model reasoning, which is often hidden and not always faithful. Avoid request IDs as unbounded metric dimensions. After mitigation, verify recovery and add validated failure cases to regression coverage.
 
 ### 30-Second Answer
 
 > “I’d correlate requests and tasks across queues, retrieval, models, and tools. Metrics would show customer impact, traces would identify the critical path, and structured logs would explain specific events. AI telemetry would connect calls, tokens, and operations to outcomes, while audit would capture business decisions. Defined targets, owned alerts, and runbooks would turn that evidence into incident response and learning.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)](https://arxiv.org/abs/2505.05410) — chain-of-thought is not always faithful
+- [Prometheus - Metric and label naming](https://prometheus.io/docs/practices/naming/) — bounded metric labels

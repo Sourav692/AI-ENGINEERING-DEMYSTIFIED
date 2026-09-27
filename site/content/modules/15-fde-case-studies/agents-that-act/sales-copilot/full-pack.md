@@ -46,7 +46,7 @@ Map the people, because each notices a different failure first.
 | Admin / security | Owns CRM permissions, connector credentials, audit export | A rep seeing an account outside their territory | Permission-aware retrieval, connector registry, immutable audit | Signs off each source and each write tool |
 | Executive sponsor | Tracks adoption and time saved | A tool nobody opens before meetings | Preparation-time reduction, adoption, conversion and meeting-quality metrics | Approves rollout stages |
 
-The OpenAI question-bank version of this prompt asks for account briefs. It lists what to explore:
+The practice-set version of this prompt (a likely OpenAI-style case, not an official question) asks for account briefs. It lists what to explore:
 
 - CRM, email, product-usage, support and public-data integrations
 - entity resolution
@@ -106,7 +106,7 @@ The answer key names the sources: Salesforce or HubSpot, Gong or Zoom transcript
 
 | Data source | Format | Owner | Freshness | Permission model (added) | Risk |
 |---|---|---|---|---|---|
-| CRM (Salesforce / HubSpot) | Accounts, opportunities, contacts, activities, notes | Sales operations | Minutes; change events plus nightly reconciliation | Record-level sharing: owner, role hierarchy, territory, sharing rules, field-level security on amount and stage | A rep seeing a peer's territory; forecast fields leaking; stale stage after a close |
+| CRM (Salesforce / HubSpot) | Accounts, opportunities, contacts, activities, notes | Sales operations | Minutes; change events plus nightly reconciliation | Record access: org-wide defaults, owner, role hierarchy, territory, sharing rules; field-level security on amount and other restricted fields | A rep seeing a peer's territory; forecast fields leaking; stale stage after a close |
 | Call transcripts (Gong / Zoom) | Transcript text, participants, timestamps | Sales enablement | Hours after the call | Participant and manager access; recording consent by region | PII and customer confidences; prompt injection in what a customer said |
 | Email and calendar | Threads, invites, attendees | Individual mailbox owner | Real time | Mailbox owner only, delegated access explicit | Reading another rep's mailbox; injection in inbound mail |
 | Product docs | Pages, PDFs | Product marketing | Days | Internal, some partner-tier | Superseded features; internal roadmap leaking into customer drafts |
@@ -252,9 +252,9 @@ Precomputation is an optimisation, never a permission model. A snapshot is a mat
 
 Identity is established before any permission logic runs. Authenticate through the customer's own identity provider, validate the token's signature, expiry and audience, and map the customer's own groups into the platform's role vocabulary rather than inventing roles locally. Group mapping is configuration that can drift, so a renamed group on the customer's side must surface as an alert, not silently orphan a rep. A user from a newly connected customer is provisioned just in time from the token's claims, scoped to their company, never with more access than intended by default.
 
-CRM permissions are richer than document ACLs, and the mirror has to carry all of them. Salesforce decides visibility by record owner, role hierarchy, territory assignment, sharing rules and field-level security. The mirror translates each into an attribute on the record: `owner_id`, `territory_ids`, `role_visible_from`, and a field mask that hides forecast amount or stage from roles that cannot see them. The pre-filter compiled into retrieval carries tenant, territory and role; the post-check re-verifies the field mask and any sharing rule that changed since the index was written. A structured leak is still a leak: a count of open opportunities that includes a peer's territory is as serious as a forbidden document, and it is held to the same zero-violation gate.
+CRM permissions are richer than document ACLs, and the mirror has to carry all of them. Salesforce decides record visibility by org-wide defaults, owner, role hierarchy, sharing rules, teams and territories, and field-level security decides which fields show. The mirror translates each into an attribute on the record: `owner_id`, `territory_ids`, `role_visible_from`, and a field mask that hides forecast amount, or any other FLS-restricted field, from roles that cannot see them. The pre-filter compiled into retrieval carries tenant, territory and role; the post-check re-verifies the field mask and any sharing rule that changed since the index was written. A structured leak is still a leak: a count of open opportunities that includes a peer's territory is as serious as a forbidden document, and it is held to the same zero-violation gate.
 
-Credentials for the CRM, the call recorder and the mailbox are references to a vault, never values. They are resolved at the moment of use, never logged, never written into a trace, and scoped per connection rather than per connector type, so one customer's Salesforce credential can never reach another customer's Salesforce. Per-tenant encryption keys bound the blast radius of a storage breach to one tenant.
+Credentials for the CRM, the call recorder and the mailbox are references to a vault, never values. They are resolved at the moment of use, never logged, never written into a trace, and scoped per connection rather than per connector type, so one customer's Salesforce credential can never reach another customer's Salesforce. Per-tenant encryption keys mean one leaked key exposes one tenant, not all of them, and a tenant's data can be crypto-shredded by destroying its key.
 
 The interview lens, in one line:
 
@@ -297,7 +297,7 @@ Design the failure path with the happy path. Authorisation and approval fail clo
 | Cost or latency spike | Step caps, snapshot cache, deterministic routes; see section 13 |
 | CRM down | Serve the last snapshot, labeled; no writes |
 | Model provider down | Fail over to a secondary route; drafts queue with progress state |
-| Prompt injection in a transcript or inbound email | Retrieved content is evidence, never instructions; cannot unlock a write tool |
+| Prompt injection in a transcript or inbound email | Retrieved content is untrusted evidence; it may still sway the model, so write tools stay gated outside it and text cannot unlock them |
 | Policy engine or approval service down | Fail closed. Refuse. Never fail open on authorisation or approval |
 
 Scale is bounded by the precompute lane. At ten times the accounts, shard the snapshot job by territory. Make the connector registry config-driven, with one schedule per source, so one rate-limited source does not stall the others. The interactive path scales with the snapshot cache hit rate, not with the CRM's API limits.
@@ -316,7 +316,7 @@ An eval suite that measures grammar, tone and general groundedness will pass a m
 | Unsupported-claim rate (added, from the incident) | Zero critical failures on regulated-claim slices; online rate at baseline | Any pending-approval or internal-only claim in an external draft | Claim-level suite: security certifications, ROI numbers, customer references, with negative examples the model must refuse | Legal / enablement |
 | Latency and cost | p95 within target; cost per workflow below budget | Breach at peak | Load test plus production telemetry | Platform |
 
-The OpenAI question-bank version adds the business metrics that prove adoption: preparation-time reduction, brief accuracy, citation coverage, sales-representative adoption, conversion improvement and meeting-quality improvement. Report them beside the safety metrics, because a copilot that is safe and unused has also failed.
+The OpenAI-style practice version adds the business metrics that prove adoption: preparation-time reduction, brief accuracy, citation coverage, sales-representative adoption, conversion improvement and meeting-quality improvement. Report them beside the safety metrics, because a copilot that is safe and unused has also failed.
 
 Red-team the boundary directly:
 
@@ -384,7 +384,7 @@ The follow-ups arrive in a predictable order.
 | Follow-up | Answer |
 |---|---|
 | What if the model generates a fabricated customer fact? | By design and by test. Every fact in a brief carries a citation to a record or transcript the system fetched; the reasoning layer refuses to fill a missing field from model memory; the claim verifier blocks any outbound claim without an approved source. Test it with a golden set that includes accounts with deliberately sparse records and score groundedness per claim, not per answer. Online, monitor the unsupported-claim rate against baseline |
-| How do you stop a rep seeing accounts outside their territory? | Mirror the CRM's sharing model, owner, role hierarchy, territory and field-level security, into attributes on every record; compile territory and role into the retrieval pre-filter; re-check on fresh attributes at serve time; invalidate snapshots on any territory change; hold structured counts to the same zero-violation gate |
+| How do you stop a rep seeing accounts outside their territory? | Mirror the CRM's sharing model, org-wide defaults, owner, role hierarchy, territory and field-level security, into attributes on every record; compile territory and role into the retrieval pre-filter; re-check on fresh attributes at serve time; invalidate snapshots on any territory change; hold structured counts to the same zero-violation gate |
 | Why not let the copilot update the CRM directly? | A CRM write is an externally consequential action. Propose, preview the exact fields, approve, then write through the tool gateway with an idempotency key. After a clean pilot, low-risk fields may earn auto-approval; amounts, stages and closes never do on day one |
 | How do you keep answers fast when the CRM is slow? | Precompute the snapshot on the calendar trigger and serve from cache; route common asks deterministically; parallelise the read-only calls that remain; cap agent steps; see section 13 |
 | How would you know the eval suite is good enough? | Compare offline pass rates with online failure modes by slice. If a slice is small and critical, it gets its own gate. Add negative examples the model must refuse |
@@ -398,7 +398,7 @@ The pivot after a good design is "sales users complain account prep takes 30 to 
 | | |
 |---|---|
 | Ask | Which tools are called? Serial or parallel? How many agent steps? Which data is required synchronously? Can account snapshots be precomputed? |
-| Dominant driver | Agent steps and serial tool calls |
+| Likely driver (confirm in traces) | Agent steps and serial tool calls |
 | Weak move | Switch to a faster model without inspecting agent traces |
 | Strong move | Trace the agent, cap steps, cache account data, parallelise read-only calls, precompute account summaries, route common requests to deterministic workflows |
 | Path | user → deterministic intent route → account cache → parallel CRM/tool calls → summarization → optional agent for ambiguous next steps |
@@ -470,7 +470,7 @@ The weak answer is "the model is too creative, make the prompt stricter and ask 
 
 - The workflow is the pre-meeting hour, and its five outputs sit on three sides of a risk boundary: read-only, draft-only, approved write-back.
 - Requirements are stated so a test can fail them: four must-haves as the launch gate, a non-goals list, and a component owner for each.
-- Every source carries its own permission model, and the CRM's is the richest: owner, role hierarchy, territory, sharing rules, field-level security.
+- Every source carries its own permission model, and the CRM's is the richest: org-wide defaults, owner, role hierarchy, territory, sharing rules, field-level security.
 - One diagram splits control plane from data plane and keeps three lanes apart: precompute, ask and gated write-back.
 - The brief is built before the meeting, as the rep, cached on the rep's permission signature and re-checked at serve time.
 - Identity comes from the customer's own IdP, CRM sharing rules are mirrored into attributes, and a structured leak is held to the document leak's gate.
@@ -487,11 +487,11 @@ The weak answer is "the model is too creative, make the prompt stricter and ask 
 
 1. **Which of the five outputs may be written back without approval on day one?** None. Summary and risks are read-only, questions and drafts are the rep's to send, and every CRM update is previewed and approved through the tool gateway.
 2. **Why is a precomputed snapshot re-checked at serve time?** A snapshot is a materialised view and can outlive a permission change; a rep moved off a territory must not read the morning's snapshot in the afternoon.
-3. **What does the CRM permission mirror carry that a document ACL does not?** Owner, role hierarchy, territory assignment, sharing rules and field-level security, so forecast amount or stage can be hidden from roles that cannot see them.
+3. **What does the CRM permission mirror carry that a document ACL does not?** Org-wide defaults, owner, role hierarchy, territory assignment and sharing rules for records, plus field-level security, so forecast amount or any other restricted field can be hidden from roles that cannot see it.
 4. **Why prefer fixed CRM operations over generating queries from natural language?** A generated query can invent fields or touch every row; a reviewed set of operations bounds what can happen and is the same allowlist the tool gateway enforces.
 5. **Where may an outbound claim come from, and what happens otherwise?** Only from the approved-claims playbook; the claim verifier blocks the draft, it does not warn.
 6. **What hid the regression in the incident?** A 96.7 percent aggregate pass rate over 120 cases, with only six regulated-claim cases passing at 83.3 percent, and a policy evaluator switched to warn-only.
-7. **What is the dominant driver when account prep takes 30 to 45 seconds, and the fix?** Agent steps and serial tool calls; trace first, cap steps, cache and precompute the account, parallelise read-only calls, route common asks deterministically, and replace the open loop with a bounded execution graph.
+7. **What is the likely driver when account prep takes 30 to 45 seconds, and the fix?** Usually agent steps and serial tool calls; trace first to confirm, cap steps, cache and precompute the account, parallelise read-only calls, route common asks deterministically, and replace the open loop with a bounded execution graph.
 8. **What is the answer to "what if the model fabricates a customer fact"?** Citations per claim to fetched records, refusal to fill missing fields from model memory, a blocking claim verifier, per-claim groundedness scoring on a sparse-record golden set, and an online unsupported-claim monitor.
 
 ## References
@@ -506,3 +506,14 @@ All paths are relative to `06_Interview_Prep/`.
 | 13 | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, §16 case 3 (and case 6 for the G16 sibling), §4 and §5; `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, row 40 |
 | 10, 14 | `FDE/Complete GEN AI FDE Interview System — Core + GenAI/05_PRODUCTION_DEBUGGING_OBSERVABILITY_AND_OPTIMIZATION/04_PRODUCTION_INCIDENT_LOGS/07_eval_regression.md` |
 | Added for this pack | The permission model column in section 3, all of section 6, the router table and fixed-operations argument in section 7, the unsupported-claim row in section 10, and the trade-offs table in section 11. None of these are in the purchased key |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [OpenAI Applied Engineer problem-decomposition practice questions (repo)](https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/OpenAI_Applied/Sample_Questions/OpenAI%20Applied_Engineer_Problem_Decomposition_Questions.md) — the prompts are practice cases, not official OpenAI questions
+- [Control Who Sees What (Salesforce Help)](https://help.salesforce.com/s/articleView?id=platform.security_data_access.htm&type=5) — record access starts from org-wide defaults; FLS controls fields
+- [Field-Level Security (Salesforce Help)](https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=en_US&type=5) — hiding fields such as amount by profile or permission set
+- [AWS KMS cryptography essentials (envelope encryption)](https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html) — what per-tenant data keys do and do not protect
+- [Stripe API reference: Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — idempotency keys stop a retried write from running twice
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — treating content as data lowers but does not stop injection
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — gate write tools outside the model
+- [G05 Deep Dive, latency pivot](/modules/15-fde-case-studies/agents-that-act/sales-copilot#deep-dive) — agent steps and serial tool calls are the likely driver, to confirm in traces

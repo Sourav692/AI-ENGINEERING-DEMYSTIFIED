@@ -16,7 +16,7 @@ Each carrier action needs an idempotency key tied to the specific shipment and r
 
 ## 3. Residency and stakeholder surface
 
-One versioned control plane distributes prompts, model routes, policy definitions and UI logic, but US, EU and APAC data planes hold their own event stores, model inputs and audit logs. EU data never leaves EU. Application sessions must enforce region access too; isolated storage alone does not prevent a cross-region query. Cross-region reporting can use approved aggregate metrics rather than raw shipment records.
+One versioned control plane distributes prompts, model routes, policy definitions and UI logic, but US, EU and APAC data planes hold their own event stores, model inputs and audit logs. EU data never leaves EU, because the customer requires it; GDPR alone would allow transfers with safeguards. Application sessions must enforce region access too; isolated storage alone does not prevent a cross-region query. Cross-region reporting can use approved aggregate metrics rather than raw shipment records.
 
 In the #66 rerouting variant, SAP is authoritative shipment state and a possible write target; weather is a predictive signal stamped with freshness; 500 warehouse managers are distributed approvers. Regional system differences belong in adapters. A walking skeleton should take one SAP extract and one weather feed to one regional manager, even with a mocked agent, before broad integration work. If weather disappears, scan-driven detection still works and the draft states the missing signal.
 

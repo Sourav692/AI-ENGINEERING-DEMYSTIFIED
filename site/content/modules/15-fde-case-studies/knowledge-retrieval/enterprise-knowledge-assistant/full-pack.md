@@ -12,7 +12,7 @@ The hard part of this system is not finding the right passage. It is that a Tier
 | #6 Whiteboard script, Enterprise RAG with Access Control         | Sections 5 to 9 and 12: the sixty-minute delivery                          |
 | #7 Whiteboard script, the same on Databricks                     | Section 13                                                                 |
 | #27 Internal Knowledge Assistant for Enterprise Support          | The support-agent persona in sections 1 and 11                             |
-| #45 and #57 OpenAI question-bank entries                         | The two follow-ups in section 12                                           |
+| #45 and #57 OpenAI-style practice prompts                        | The two follow-ups in section 12                                           |
 | #63 Meridian Assist running case                                 | Section 14                                                                 |
 | #38 Legal RAG under strict cost limits and #70 sub-100 ms search | Section 15                                                                 |
 | #72 reported prompt, LLM-powered enterprise search               | Section 12, follow-up table                                                |
@@ -85,7 +85,7 @@ A requirement that cannot fail a test is a preference. "Make it fast" is a prefe
 
 | Constraint   | Testable form                                                                                                                                                                                         |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Latency      | p95, never "fast enough". 3–8 s normal; under 3 s if chat-grade; longer work is async. Slice identity → ACL → retrieval → rerank → generate; each stage times out and degrades, never fails open |
+| Latency      | p95, never "fast enough". In this design, target p95 of 3–8 s; under 3 s if it must feel like chat; longer work goes async. Slice identity → ACL → retrieval → rerank → generate; each stage times out and degrades, never fails open |
 | Availability | Connector, index or model down: partial coverage, labeled staleness, or refuse — never a silent guess                                                                                                |
 | Cost         | Embedding, index and tokens estimated separately. Cost per answer. Cache stable docs; prune retrieval; small models for classification; expensive reasoning only where risk justifies it              |
 | Security     | SSO via the IdP; ABAC over source ACLs; filter before the model; revocations fan out to indexes and caches; secrets never in prompts; no training on customer data unless the contract allows it      |
@@ -128,7 +128,7 @@ Rough check: 100 QPS × 3 s generate ≈ 300 in-flight generations. That is a se
 
 ## 4. Map Every Source With Its Permission Model
 
-The connector's real job is translating each source system's permission model into one internal model. Getting that translation wrong is the number one cause of enterprise RAG leaks, so map the permission model per source before choosing an embedding model.
+The connector's real job is translating each source system's permission model into one internal model. Getting that translation wrong is one of the most common ways enterprise RAG leaks data, so map the permission model per source before choosing an embedding model.
 
 | Data source                         | Format                           | Owner                      | Freshness                                            | Permission model                                                         | Risk                                                                                            |
 | ----------------------------------- | -------------------------------- | -------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
@@ -294,7 +294,7 @@ One request, before the boxes: Tier-3 asks about the March incident → resolve 
     after:                                  [helpdoc]             [helpdoc]
             ^^ their top-6 became a top-2, crowded out by material they'll never see
 
-    ✗ Wrong. Also leaks through result counts.
+    ✗ Wrong. Can also leak through result counts, if shown.
 
 (b) PARTITIONED INDEXES: one index per tenant/group
     ✓ Strongest isolation, simple.  ✗ Expensive, awkward with overlapping groups.
@@ -304,7 +304,7 @@ One request, before the boxes: Tier-3 asks about the March incident → resolve 
     ✓ Unauthorised chunks never scored, never ranked, never returned.
 ```
 
-Use (b) and (c) together: partition by tenant and pre-filter within it. That is defence in depth, because if the metadata filter is ever wrong the blast radius stops at the tenant boundary. Post-filtering is wrong twice over: it crowds a restricted user's top-k out with material they will never see, and it leaks through result counts.
+Use (b) and (c) together: partition by tenant and pre-filter within it. That is defence in depth, because if the metadata filter is ever wrong the blast radius stops at the tenant boundary. Post-filtering is wrong twice over: it crowds a restricted user's top-k out with material they will never see, and it can leak through result counts if those are shown.
 
 Model the policy as attributes on both sides, not as roles. "EU engineers on the vuln-response team may read restricted advisories, but only after the embargo lifts" is one rule in ABAC and a combinatorial explosion of roles in RBAC.
 
@@ -349,7 +349,7 @@ The strongest single point in the round is that enforcement has two layers, and 
           + obligations (redaction is a transform, not a filter)
 ```
 
-Payoffs: IdP removal is enforced on the next query, no reindex. Layer 2 denying what layer 1 should have caught means the index is stale or the filter is broken — alert. The filter language is weaker than the policy: Chroma cannot hold a list, so each group is `grp__engineering: true` and `$or` fakes overlap.
+Payoffs: IdP removal is enforced on the next query after it syncs, no reindex. Layer 2 denying what layer 1 should have caught means the index is stale or the filter is broken — alert. The filter language is weaker than the policy: Chroma before 1.5 could not hold a list (1.5+ adds array metadata with `$contains`), so each group is `grp__engineering: true` and `$or` fakes overlap.
 
 Caches are a latency trick, invalidated on permission change, never a permission model. Query-time ACL is the control. Precompute only where permissions are stable. A stale materialized view outlives a revocation.
 
@@ -385,18 +385,18 @@ Fuse with Reciprocal Rank Fusion, because a 0.82 cosine and a 14.3 BM25 score ar
 
 Where the interviewer wants a weight instead of a fusion, write `S_hybrid = α·S_vector + (1−α)·S_keyword` and say that α is a tuning parameter, not a constant. Exact titles, team names, error codes and ticket numbers push weight to keyword; conceptual questions push it to semantic. Expect the follow-up on how α is tuned, and answer "against a representative query set segmented by query type", never a number from memory.
 
-The other techniques each earn their cost in a specific situation, and reranking is the biggest single win.
+The other techniques each earn their cost in a specific situation, and reranking is often one of the biggest single wins.
 
 | Technique                       | Fixes                                         | Cost                         |
 | ------------------------------- | --------------------------------------------- | ---------------------------- |
 | Multi-Query (+RRF = RAG-Fusion) | user's wording ≠ corpus wording              | N× retrieval, 1 LLM call    |
 | HyDE                            | questions and answers are written differently | 1 LLM call + latency         |
 | Decomposition                   | multi-hop questions no single chunk answers   | 1 LLM call, only when needed |
-| Reranking                       | recall-optimised retrieval is imprecise       | the biggest single win       |
+| Reranking                       | recall-optimised retrieval is imprecise       | often the biggest win        |
 
-HyDE embeds a fake answer as the search probe and never shows it. Over-retrieve 20–50, rerank to 5. A bi-encoder cannot compare question and document; a cross-encoder sees both.
+HyDE embeds a fake answer as the search probe and never shows it. Over-retrieve about 20, rerank to 6 (this design's numbers; tune on your eval set). A bi-encoder cannot compare question and document; a cross-encoder sees both.
 
-Rerank **after** ACL enforcement, so a restricted user's top-5 is the best of their pool. Rerank-then-filter hands them an empty context. Keep the candidate set tight. Widen context only for a synthesis task.
+Rerank **after** ACL enforcement, so a restricted user's top-6 is the best of their pool. Rerank-then-filter hands them an empty context. Keep the candidate set tight. Widen context only for a synthesis task.
 
 ## 9. Degrade on Everything Except Authorisation
 
@@ -511,7 +511,7 @@ The lines that carry the round:
 1. *"Access control decides the shape of the retrieval path, not the other way round."*
 2. *"The filter makes retrieval cheap; the post-check makes it correct."*
 3. *"The LLM is never the enforcement point. Unauthorised text never enters the context."*
-4. *"Rerank after enforcement, so their top-5 is the best of their pool."*
+4. *"Rerank after enforcement, so their top-6 is the best of their pool."*
 5. *"Dense finds what means the same; lexical finds what says the same. Enterprise needs both."*
 6. *"A retrieval regression is a bug. A leak is an incident. Only one of them blocks the release."*
 7. *"Fail closed on authorisation. Degrade on everything else."*
@@ -525,8 +525,8 @@ The follow-ups arrive in a predictable order, and each has a prepared answer.
 | Access today, gone tomorrow? | Pre-filter is a snapshot. Post-check re-resolves live, so revocation hits the next query. Short permission cache, versioned identity, IdP change events. If signals lag, state the max stale window |
 | Confident but wrong? | Citation check against the retrieval set, groundedness on a silent labeled set, abstain on weak evidence, trace which stage failed. Confidence follows evidence, not tone |
 | Re-index after a chunking change? | Versioned migration: old and new side by side, new index version, offline eval, small traffic slice, leak tests again, rollback kept |
-| LLM-powered enterprise search (reported OpenAI prompt) | This design. Open with section 1. Spend the time on permission layers and the leak gate |
-| Unified search across SharePoint, Slack, Drive, Confluence, Salesforce, databases | Federated search inherits permissions and cannot rank across sources or hit latency. An index ranks across sources and must carry the ACL translation. Then this design |
+| LLM-powered enterprise search (OpenAI-style practice prompt) | This design. Open with section 1. Spend the time on permission layers and the leak gate |
+| Unified search across SharePoint, Slack, Drive, Confluence, Salesforce, databases | Federated search inherits permissions but struggles to rank across sources and is only as fast as the slowest source. An index ranks across sources and must carry the ACL translation. Then this design |
 
 | Weak line | Replace with |
 | --------- | ------------ |
@@ -558,15 +558,15 @@ The design is the same on the Lakehouse; what changes is the deep dive, and it o
 ```
    ✗  "UC governs the table, so the index is governed too"
 
-      governed Delta table ──sync──> Vector Search ──query──> every row, to everyone
+      governed Delta table ──sync──> AI Search ──query──> every row, to everyone
          (row filter)                (row filter LOST)
 ```
 
-Two facts, not one. First, Databricks Vector Search does not enforce Unity Catalog row filters or column masks. The docs say so:
+Two facts, not one. First, Databricks AI Search (formerly Vector Search) does not enforce Unity Catalog row filters or column masks. The docs say so:
 
 > *"Row and column level permissions are not supported. However, you can implement your own application level ACLs using the filter API."*
 
-The index is a derived copy. The sync pipeline reads with its own identity and writes into a serving system with no concept of the caller. So there is no query-time principal for `is_account_group_member()` to evaluate. Second, and not on the limitations page, the index cannot even be created on a governed table:
+The index is a derived copy. The sync pipeline reads with its own identity and writes into a serving system with no concept of the caller. So there is no query-time principal for `is_account_group_member()` to evaluate. Second, and the docs now say this too, the index cannot even be created on a governed table:
 
 ```
 BadRequest: Table main.meridian_rag.chunks cannot have both
@@ -579,7 +579,7 @@ So the naive design is not just insecure, it does not build. The platform forces
    kb.chunks              UNGOVERNED base table
       |                   SELECT granted ONLY to the sync service principal
       |
-      +--------------->   VECTOR SEARCH INDEX   (Delta Sync reads this)
+      +--------------->   AI SEARCH INDEX       (Delta Sync reads this)
       |                   layer 1 - ACL applied by the query filter
       |
       +--------------->   kb.chunks_secure      GOVERNED dynamic view
@@ -589,17 +589,17 @@ So the naive design is not just insecure, it does not build. The platform forces
 
 Because the base table carries no policy, granting anyone `SELECT` on it bypasses the whole access model. Locking it to the pipeline identity stops being hygiene and becomes load-bearing. Write it down and audit it. One smaller gotcha costs an afternoon. `CREATE OR REPLACE TABLE` does not detach an attached row filter, so a half-finished run leaves the table un-indexable until the filter or the schema is dropped. That is why the setup is idempotent.
 
-The two layers map directly. Layer 1 is the Vector Search filter compiled from the caller's groups and passed on every query as the service principal, so unauthorised vectors are never scored. Layer 2 re-reads the returned chunk IDs from the governed view on behalf of the user, and Unity Catalog applies the row filter and the column mask.
+The two layers map directly. Layer 1 is the AI Search filter compiled from the caller's groups and passed on every query as the service principal, so unauthorised vectors are never scored. Layer 2 re-reads the returned chunk IDs from the governed view on behalf of the user (OBO is Public Preview in 2026), and the view's row predicate and PII mask are evaluated as that user.
 
 ```
-  ① VECTOR SEARCH FILTER          — runs as the service principal
+  ① AI SEARCH FILTER              — runs as the service principal
      compiled from the caller's groups, passed on every single query
      → unauthorised vectors are never scored
      → an OPTIMISATION and a first line of defence
                     │  chunk_ids + ranking
                     v
   ② RE-READ FROM THE GOVERNED VIEW, AS THE USER   — on-behalf-of-user
-     → Unity Catalog applies the row filter and the column mask
+     → the view's row predicate and PII mask run as the user
      → THIS is the authoritative decision
 ``` Layer 2 is not application code. It is the same engine that governs every dashboard in the company. The text that reaches the model is what came back from layer 2, never what the index returned. In the platform-agnostic build that post-check was Python that had to be proven correct with tests. Here that code is deleted and the platform enforces it. That is the argument for building on Databricks rather than beside it.
 
@@ -632,9 +632,9 @@ SELECT chunk_id, doc_id,
 FROM kb.chunks c WHERE EXISTS ( ...the seven rules... );
 ```
 
-Seven rules in one object govern every reader of it, the agent, a notebook, a dashboard and a SQL query, not only callers who go through the application. PII is a Unity Catalog column mask keyed on `is_account_group_member('pii_readers')`, and not `ai_mask`, which is an AI transform rather than an access-control primitive. Live revocation is free, because `is_account_group_member()` reads SCIM-synced account groups and a removal in Okta takes effect on the next query with no reindex.
+Seven rules in one object govern every reader of it, the agent, a notebook, a dashboard and a SQL query, not only callers who go through the application. PII is masked by the view's `CASE` keyed on `is_account_group_member('pii_readers')`, and not `ai_mask`, which is an AI transform rather than an access-control primitive. Live revocation is free, because `is_account_group_member()` reads SCIM-synced account groups, so a removal in Okta takes effect on the first query after the SCIM push reaches Databricks, with no reindex.
 
-Encoding the ACL for the index filter is the gotcha to volunteer. Vector Search filters work on scalar columns with no array-containment operator, so `allowed_groups ARRAY<STRING>` cannot be filtered directly. The default encoding is one boolean column per group; the alternative fans out one row per chunk and group, which multiplies vectors, the expensive thing.
+Encoding the ACL for the index filter is the gotcha to volunteer. AI Search filters work on scalar columns, struct fields and map values, with no array-containment operator, so `allowed_groups ARRAY<STRING>` cannot be filtered directly. The default encoding is one boolean column per group; the alternative fans out one row per chunk and group, which multiplies vectors, the expensive thing.
 
 ```
 A. One BOOLEAN column per group  ← default (bounded group set)
@@ -662,21 +662,23 @@ So the clause and its value array are built from the same list, so they cannot d
 | cost     | higher     | ~7× lower                 |
 | filters  | dictionary | SQL string                 |
 
-300 to 500 ms of retrieval is invisible next to a 2-second generation, and a SQL-string access predicate is reviewable by a security person, which is worth real money. Hybrid search and reranking are one parameter each, which deletes the hand-rolled BM25 subsystem and its worst limitation, the per-request lexical index over the authorised pool.
+300 to 500 ms of retrieval is a small slice next to 2 to 3 seconds of generation, and a SQL-string access predicate is reviewable by a security person, which is worth real money. Hybrid search and reranking are one parameter each, which deletes the hand-rolled BM25 subsystem and its worst limitation, the per-request lexical index over the authorised pool.
 
 ```python
+# pip install databricks-ai-search  (replaces the deprecated databricks-vectorsearch)
+from databricks.ai_search.reranker import DatabricksReranker
+
 index.similarity_search(
     query_text=q,
     query_type="HYBRID",              # dense + BM25, managed
     filters=acl_filter,               # ← layer 1, on every call
-    reranker={"model": "databricks_reranker",
-              "parameters": {"columns_to_rerank": ["title", "content"]}},
+    reranker=DatabricksReranker(columns_to_rerank=["title", "content"]),
     num_results=20)
 ```
 
 Multi-Query, HyDE, decomposition and the RRF across generated queries stay in agent code, because they are orchestration patterns rather than retrieval infrastructure. Two more lines belong on the board. Never gate a release on an LLM judge; on Databricks the leak test is a SQL assertion that tests the enforcement point rather than the application. And layer 1 overshooting is by design, since embargo and need-to-know cannot be pushed into the index. So the gate measures what reaches the model, not what the index proposed. Measuring the wrong layer gave six false leaks the first time.
 
-Be precise about what was actually run, because "I designed this" and "I ran this" sound different to an interviewer. Everything below ran against a live workspace with a Unity Catalog metastore, a serverless SQL warehouse and an existing Vector Search endpoint, with all test objects dropped afterwards.
+Be precise about what was actually run, because "I designed this" and "I ran this" sound different to an interviewer. Everything below ran against a live workspace with a Unity Catalog metastore, a serverless SQL warehouse and an existing AI Search endpoint, with all test objects dropped afterwards.
 
 - The whole notebook end to end in about 12 minutes, building the index and passing its own leak gate.
 - The seven-rule policy enforced: Tier-1 saw 2 of 8 rows; the contract, post-mortem, pricing policy and advisory all returned `count(*) = 0`.
@@ -725,7 +727,7 @@ The interviewer's pivot after a good design is "now it has to run under a strict
 | Metrics that prove it | Recall@k, citation correctness, cost per request, retrieval latency, model latency, human escalation rate                                                                                                                                                                                   |
 | Recommendation        | Pilot with a limited document set, define the high-risk categories, instrument cost and latency from day one                                                                                                                                                                                |
 
-**100 ms pivot** ("naive RAG is 1.5 s"): generation cannot be on the hot path. Slice the 1.5 s, then remove stages. Cache query embeddings and retrieval on tenant + permission signature + index version. Semantic cache returns a previously verified, permission-checked answer. Pre-filter inside search. Skip rerank on cache hits and high-confidence single-source matches. Stream the first token; precompute the head of the query distribution off-path. 100 ms is a search product with a cached-answer layer, not chat. Metrics: first byte, cache hit rate by tenant, leak count stays 0 — a cache is the easiest place to leak across permissions.
+**100 ms pivot** ("naive RAG is 1.5 s"): generation cannot be on the hot path. Slice the 1.5 s, then remove stages. Cache query embeddings and retrieval on tenant + permission signature + index version. Semantic cache returns a previously verified, permission-checked answer. Pre-filter inside search. Skip rerank on cache hits and high-confidence single-source matches. Stream the first token; precompute the head of the query distribution off-path. 100 ms is a search product with a cached-answer layer, not chat. Metrics: first byte, cache hit rate by tenant, leak count stays 0 — a cache is one of the easiest places to leak across permissions.
 
 **Sixty-second budget line:** citations and escalation for legal quality, top-k and routing for budget, no heavy rerank on every query for the 8 s target. Pilot a limited corpus with cost instrumented from day one. Order: measure → route → bound → cache safely (tenant, permission, version in the key).
 
@@ -754,7 +756,7 @@ Incidents and production scenarios on this system are not new designs; they are 
 - One end-to-end diagram splits control plane from data plane, and the trust boundary sits at ENFORCE: text the user cannot see exists only to its left.
 - Ingestion normalises permissions into one attribute model and refuses anything it cannot normalise.
 - Enforcement runs before the model sees anything, in two layers: a compiled pre-filter that makes retrieval cheap and an authoritative post-check that makes it correct.
-- Retrieval is hybrid, fused by rank, and reranked after enforcement so a restricted user's top-5 is the best of their own pool.
+- Retrieval is hybrid, fused by rank, and reranked after enforcement so a restricted user's top-6 is the best of their own pool.
 - Authorisation fails closed and everything else degrades visibly, with the missed deletion as the rehearsed failure.
 - The release gate is a leak count of zero, not a score, and every run is a replayable trace.
 - Rollout starts with one corpus, three personas and the leak test standing, then widens source by source.
@@ -766,10 +768,10 @@ Incidents and production scenarios on this system are not new designs; they are 
 
 ## Check Yourself
 
-1. **Why is post-filtering wrong even when it never returns an unauthorised document?** It crowds a restricted user's top-k out with material they will never see, so their top-6 becomes a top-2, and it leaks through result counts.
+1. **Why is post-filtering wrong even when it never returns an unauthorised document?** It crowds a restricted user's top-k out with material they will never see, so their top-6 becomes a top-2, and it can leak through result counts if those are shown.
 2. **What does layer 2 decide that layer 1 cannot express?** Embargo, which needs "now"; need-to-know, which is list semantics the index cannot hold; live revocation, because the index may be stale; and obligations such as redaction, which are transforms rather than filters.
 3. **A connector misses a deletion. Which check passes, and why is that the problem?** The ACL check passes because the permission data is still valid; the failure is freshness, so the answer is a staleness threshold, revalidation against the system of record and a reconciliation job that replays the deletion.
-4. **Why does reranking run after enforcement rather than before?** So a restricted user's top-5 is the best of their authorised pool; reranking first would rank documents they cannot see and hand them an empty context.
+4. **Why does reranking run after enforcement rather than before?** So a restricted user's top-6 is the best of their authorised pool; reranking first would rank documents they cannot see and hand them an empty context.
 5. **Why is the leak rate a gate rather than a metric?** A retrieval regression is a bug to fix next sprint; a leak is an incident, so one exposure blocks the release instead of lowering a score.
 6. **What do the four scale numbers force?** 100k employees force ACL cardinality, not concurrency. 50M chunks force refresh, not the first embed. 20 QPS hides an untuned sync path; 100 QPS makes rerank and generate a serving problem.
 7. **What breaks first at 10× and what replaces it?** BM25 rebuilt per request over the authorised pool; a lexical store with native document-level security such as OpenSearch DLS, or a cached per-group shard.
@@ -794,3 +796,28 @@ All paths are relative to `06_Interview_Prep/`.
 | 15                                                                               | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, §16 case 1, §4 and §5                                                                                                                          |
 | 16                                                                               | `FDE/Complete GEN AI FDE Interview System — Core + GenAI/05_PRODUCTION_DEBUGGING_OBSERVABILITY_AND_OPTIMIZATION/04_PRODUCTION_INCIDENT_LOGS/` (02, 09, 10); `CRAM_SHEET_S15_S16.md` §15 scenarios 3, 8, 9, 14 |
 | Not included                                                                     | The V1 long tutorial, the Meridian 15–20 minute deep-dive script, and the site mirror under`site/content/`, which repeat the above in other forms                                                                |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [OWASP Top 10 for LLM Apps 2025 – LLM08 Vector and Embedding Weaknesses](https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/) — permission-mapping and cache leaks are known RAG risks
+- [Pinecone: The Missing WHERE Clause in Vector Search](https://www.pinecone.io/learn/vector-search-filtering/) — post-filtering shrinks the usable top-k
+- [Qdrant: Pre-Filtering vs Post-Filtering](https://qdrant.tech/blog/pre-filtering-vs-post-filtering/) — post-filtering can return fewer than k results
+- [Chroma Docs – Metadata Filtering](https://docs.trychroma.com/docs/querying-collections/metadata-filtering) — array metadata and `$contains` in Chroma 1.5+
+- [Cormack, Clarke & Buettcher 2009, Reciprocal Rank Fusion (SIGIR)](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf) — RRF formula and k = 60
+- [Anthropic, Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval) — reranking gain versus contextual embeddings
+- [OpenSearch document-level security](https://docs.opensearch.org/latest/security/access-control/document-level-security/) — OpenSearch DLS as a lexical store with native doc security
+- [Microsoft 365 Copilot federated connectors overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/federated-connectors-overview) — federated search limits on ranking and latency
+- [Databricks AI Search (formerly Vector Search)](https://docs.databricks.com/aws/en/vector-search/vector-search) — product rename, no row/column-level permissions, capacity
+- [Azure Databricks platform release notes](https://learn.microsoft.com/en-us/azure/databricks/release-notes/product/) — June 2026 rename of Vector Search to AI Search
+- [Databricks: Row filters and column masks](https://docs.databricks.com/aws/en/data-governance/unity-catalog/filters-and-masks/) — no AI Search index on a governed table; masks are access control
+- [Databricks: CREATE TABLE USING](https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-syntax-ddl-create-table-using) — row filters are kept on CREATE OR REPLACE
+- [Databricks: Agent authentication](https://docs.databricks.com/aws/en/generative-ai/agent-framework/agent-authentication) — on-behalf-of-user auth is Public Preview, admin-enabled
+- [Databricks: is_account_group_member function](https://docs.databricks.com/aws/en/sql/language-manual/functions/is_account_group_member) — account-group checks at query time
+- [Databricks: Configure SCIM provisioning for Okta](https://docs.databricks.com/aws/en/admin/users-groups/scim/okta) — group removals arrive via SCIM push
+- [Microsoft Entra: How application provisioning works](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/how-provisioning-works) — Entra provisioning runs on sync cycles
+- [Databricks: ai_mask function](https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_mask) — ai_mask is a generative transform, not access control
+- [Query an AI Search index (Azure Databricks)](https://learn.microsoft.com/en-us/azure/databricks/ai-search/query-ai-search) — filter syntax, positional OR, SQL-string filters, hybrid and reranker
+- [Databricks AI Search performance guide](https://docs.databricks.com/aws/en/ai-search/best-practices) — Standard vs Storage-Optimized latency, capacity and cost
+- [Databricks blog: Announcing Storage-Optimized Endpoints](https://www.databricks.com/blog/announcing-storage-optimized-endpoints-vector-search) — up to 7× lower cost
+- [databricks-ai-search on PyPI](https://pypi.org/project/databricks-ai-search/) — `DatabricksReranker` object and the SDK package rename
+- [Artificial Analysis LLM leaderboard (TTFT)](https://artificialanalysis.ai/leaderboards/models) — fastest APIs ~0.4 s to first token, so 100 ms rules out live generation

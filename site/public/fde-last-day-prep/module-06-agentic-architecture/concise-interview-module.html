@@ -290,7 +290,7 @@ Within budget? → Authorized? → Making progress?
 </blockquote>
 <pre><code class="language-text">Request → Route → Tool A → Observation → Tool B → Result
 </code></pre>
-<p>Record decision summaries, evidence, and operations; private model chain-of-thought is not required for evaluation or audit.</p>
+<p>In my design, evaluation and audit rely on decision summaries, evidence and tool calls, not the model&#39;s private chain-of-thought, which is often hidden and not always faithful.</p>
 <h4 id="9-evaluate-outcome-and-efficiency-a-finished-loop-is-not-success">9. Evaluate Outcome and Efficiency — A Finished Loop Is Not Success<a class="anchor" href="#9-evaluate-outcome-and-efficiency-a-finished-loop-is-not-success" aria-label="Link to 9. Evaluate Outcome and Efficiency — A Finished Loop Is Not Success">#</a></h4>
 <p>Check routing, tool selection, arguments, policy compliance, recovery, task success, latency, and cost. Include ambiguous, failing, and malicious-input cases.</p>
 <blockquote>
@@ -464,6 +464,17 @@ Model Gateway = Application → Model control
 <li>Two agents follow different tool paths and both resolve the task correctly. What should evaluation compare, and which constraints must still hold?</li>
 </ol>
 <hr>
+
+<h2 id="sources-checked-27-sep-2026">Sources (checked 27 Sep 2026)<a class="anchor" href="#sources-checked-27-sep-2026" aria-label="Link to Sources (checked 27 Sep 2026)">#</a></h2>
+<ul>
+<li><a href="https://temporal.io/blog/idempotency-and-durable-execution" target="_blank" rel="noopener">Temporal blog - Idempotency and durable execution</a> — checkpoints don&#39;t stop duplicate side effects</li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/interrupts" target="_blank" rel="noopener">LangGraph docs - Interrupts</a> — checkpoints don&#39;t stop duplicate side effects</li>
+<li><a href="https://www.anthropic.com/engineering/multi-agent-research-system" target="_blank" rel="noopener">Anthropic Engineering, How we built our multi-agent research system</a> — multi-agent overhead</li>
+<li><a href="https://arxiv.org/abs/2503.13657" target="_blank" rel="noopener">Cemri et al. 2025, Why Do Multi-Agent LLM Systems Fail? (MAST, arXiv 2503.13657)</a> — multi-agent overhead</li>
+<li><a href="https://arxiv.org/abs/2505.05410" target="_blank" rel="noopener">Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)</a> — chain-of-thought is not always faithful</li>
+<li><a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/" target="_blank" rel="noopener">OWASP GenAI LLM01:2025 Prompt Injection</a> — untrusted retrieved and tool input</li>
+<li><a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/" target="_blank" rel="noopener">OWASP GenAI LLM06:2025 Excessive Agency</a> — untrusted retrieved and tool input</li>
+</ul>
 
     <div class="source-note">Generated from module-06-agentic-architecture.md</div>
   </main>

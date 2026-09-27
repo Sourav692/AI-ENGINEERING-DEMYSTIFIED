@@ -47,8 +47,8 @@ The easiest way to frame requirements in an interview is:
 | **Latency** | Proposed p95 TTFT ≤500 ms, TPOT ≤50 ms at 1,000 rps. Load-test for real. |
 | **Reliability** | 99.9% explicit completion or failure; no lost or misdelivered request. |
 | **Fairness** | Tenant fairness; bounded queue; goodput within SLO. |
-| **Headroom** | ≤70% measured replica capacity. |
-| **Sizing (illustrative)** | 1,000 in / 250 out tokens; replica 20K in tok/s prefill, 2.5K out tok/s decode ⇒ 0.15 replica-s/request. 1,000 rps at 70% ≈ **214 replicas**. ~7 s/request ⇒ ~7,000 in flight; 64 seq/replica ⇒ ~110 slot replicas — compute is tighter. |
+| **Headroom** | ≤70% measured replica capacity; queueing delay climbs steeply past roughly 70–80% (rule of thumb). |
+| **Sizing (illustrative)** | 1,000 in / 250 out tokens; replica 20K in tok/s prefill (assumed, H100-class), 2.5K out tok/s decode ⇒ 0.15 replica-s/request. 1,000 rps at 70% ≈ **214 replicas**. ~7 s/request ⇒ ~7,000 in flight; 64 seq/replica ⇒ ~110 slot replicas — compute is tighter. |
 
 ### Interview shortcut
 
@@ -94,7 +94,7 @@ flowchart TB
 
 **KV memory is capacity:** the source's illustrative 32-layer, eight-KV-head, 128-dimension fp16 model uses about **128KiB of KV per token**. A 1,250-token sequence uses ~160MB; an 8,000-token sequence uses ~1GB. Paged allocation reduces reservation waste and fragmentation. The router must use free KV, not round-robin or only running-request count. Prefix affinity saves prefill only while the preferred replica has headroom.
 
-**Failover:** liveness alone misses a hung GPU. Add readiness and a one-token deep probe. A failed replica loses its KV. Before any token streamed, retry elsewhere. After streaming, rebuilding state from prompt plus emitted text is exact only under greedy decoding; sampling can diverge, so an explicit partial error may be the honest product choice. Cap retries and retain spare zone capacity to avoid a retry storm while replacement GPUs warm.
+**Failover:** liveness alone misses a hung GPU. Add readiness and a one-token deep probe. A failed replica loses its KV. Before any token streamed, retry elsewhere. After streaming, rebuilding state from prompt plus emitted text very likely matches under greedy decoding, but batch size and GPU kernels can still shift the floating-point results; sampling can diverge, so an explicit partial error may be the honest product choice. Cap retries and retain spare zone capacity to avoid a retry storm while replacement GPUs warm.
 
 **Cost:** measure goodput per GPU-hour, batch occupancy, KV use, queue wait and cost per million output tokens. Cap output and cancel abandoned streams before buying more GPUs. Move non-interactive work to a batch tier and use prefix caching only on identical prefixes.
 

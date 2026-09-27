@@ -190,3 +190,28 @@ The behavioural answers and some case studies were written from real client enga
 
 - Git history still holds the originals. Rewriting it would need a force-push to a public repo.
 - The sibling repo `Agent_Evaluation_Demystified` still tracks the raw stories. It is private.
+
+## Fact check, round 1 (CONTENT-17/18/19, 27 Sep 2026)
+
+**Scope.** The 20 grouped case studies, the 18 Last-Day reviews and the trigger sheet. Six agents extracted 363 checkable claims. The full list is `.website_plan/09-content-architecture-editorial-quality/claims-round1.csv`.
+
+**How.** All 220 high- and medium-priority claims were checked against primary sources: official docs, standards, papers and changelogs. The verdicts, with a source for each, are in `verdicts-round1.json`:
+
+| Verdict | Count |
+| --- | --- |
+| confirmed | 92 |
+| overstated | 63 |
+| own-construction | 24 |
+| incorrect | 20 |
+| outdated | 10 |
+| measured | 5 |
+| scenario-assumption | 4 |
+| unverifiable | 2 |
+
+**What changed.** 128 corrections were applied to the sources, and to both the markdown and the hand-built HTML for Last-Day pages. Every correction is in the spoken style. The claim labels (CONTENT-17) are applied in the wording itself ("in this design…", "the case assumes…"), not as badges, which keeps the voice spoken.
+
+**Where the sources are.** Each full pack ends its References section with "Fact-check sources (checked 27 Sep 2026)". Last-Day modules end with "Sources (checked 27 Sep 2026)".
+
+**What the reader sees.** The grouped case-study families and the reviews now carry `lastReviewed: 2026-09-27`. Pages show "Key facts checked against official sources on 27 Sep 2026".
+
+**Still to do.** Round 2 scope, out-of-scope findings and dates to recheck are in `fact-check-followups.md`.

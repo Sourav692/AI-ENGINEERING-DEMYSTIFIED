@@ -11,8 +11,8 @@ The three personas in this group look like three products: a prior-authorization
 | #30 Healthcare Prior Authorization Assistant (anchor) | Sections 1 to 10: the design, the PHI boundary, the payer-rule versioning, the spoken answer; the vendor PDF's personas, workflow, red-team list and rollout phases |
 | #29 Financial Compliance Document Reviewer | The rule-citation and risk-classification variant in sections 3 and 7; the red-team mock in section 12 |
 | #31 Legal Contract Review Copilot | The clause-versus-playbook variant and fallback language in sections 3 and 7 |
-| #47 OpenAI Q3 Claims-Processing Assistant | The lower-risk-first ordering in section 10 and its follow-up in section 11 |
-| #56 OpenAI Q12 Deploying AI in a Highly Regulated Industry | The governance checklist in section 8 and its follow-up in section 11 |
+| #47 OpenAI-style Q3 Claims-Processing Assistant (practice case) | The lower-risk-first ordering in section 10 and its follow-up in section 11 |
+| #56 OpenAI-style Q12 Deploying AI in a Highly Regulated Industry (practice case) | The governance checklist in section 8 and its follow-up in section 11 |
 | #89 Incident: correct answer, misleading citation | Section 14 |
 | #92 Incident: PDF parser drops critical tables | Sections 6 and 14 |
 | Self-drill for #30, cost per document | Section 13 |
@@ -110,13 +110,13 @@ The spine is the same in every persona. The interviewer will pick one. Learn the
 | Sources | EHR via FHIR, payer portals, document store, claims system, IdP, audit logs | DMS, policy repository, regulatory rule library, GRC platform, case management, IdP | CLM, contract repository, clause library, playbook, DMS, e-signature, IdP |
 | Persona-specific red-team | PHI leakage, invented necessity, stale payer rule, wrong patient, "just submit it anyway" | Missed violation, outdated regulation, hallucinated rule, over-automation of legal judgement | Unauthorised legal advice, privilege leakage, wrong jurisdiction, hallucinated clause, risky fallback accepted without a lawyer |
 
-The claims-processing prompt from the OpenAI bank is the same spine again. Its discussion list is classification, OCR and structured extraction, policy lookup, missing-information detection, fraud or anomaly signals, human review thresholds, explainability, regulatory constraints, PII protection, evaluation against human decisions, and gradual rollout by claim type. Its one instruction is to avoid promising full automation. Start with extraction, triage, summarisation and missing-information detection before any adjudication.
+The claims-processing prompt from the OpenAI-style practice set is the same spine again. Its discussion list is classification, OCR and structured extraction, policy lookup, missing-information detection, fraud or anomaly signals, human review thresholds, explainability, regulatory constraints, PII protection, evaluation against human decisions, and gradual rollout by claim type. Its one instruction is to avoid promising full automation. Start with extraction, triage, summarisation and missing-information detection before any adjudication.
 
 Map each source with its permission model before choosing an embedding model. The connector's job is translating that model into one internal representation.
 
 | Data source | Format | Owner | Freshness | Permission model | Risk |
 |---|---|---|---|---|---|
-| EHR via FHIR | Structured codes, notes, labs, imaging reports | Clinical informatics | Minutes; event-driven | Patient-level and role-based; break-the-glass audited | Wrong patient; PHI over-exposure; "rule out" read as confirmed |
+| EHR via FHIR | Structured codes, notes, labs, imaging reports | Clinical informatics | Minutes if the EHR supports FHIR Subscriptions; otherwise polled | Patient-level and role-based; break-the-glass audited | Wrong patient; PHI over-exposure; "rule out" read as confirmed |
 | Payer policy portals and PDFs | Semi-structured PDFs, portal pages | Payer relations | Days to weeks; versioned by effective date | Public or contract-restricted | Outdated rule version; tables dropped by the parser; injection in an uploaded PDF |
 | Regulatory rule library and GRC | Structured obligations, policy documents | Compliance | Weeks; versioned | Business-unit and jurisdiction | Superseded obligation; wrong jurisdiction |
 | Advisor communications | Email, chat, drafts | Surveillance | Real time; immutable ingestion | Supervisory and legal hold | Injection inside reviewed messages; PII and financial data |
@@ -228,11 +228,11 @@ The schema is where the copilot stops being a chatbot. It becomes a workflow. St
 
 For prior authorization the fields are payer, plan, procedure, diagnosis codes, date of service, prior therapies, labs, imaging and the clinical facts that map to each payer requirement. For compliance they are document type, jurisdiction, business unit, the obligation that applies, and the evidence span that meets or breaks it. For contracts they are clause type, the normalised clause text, the counterparty, the jurisdiction and the confidentiality level. Every record in the answer keys is a row in one of those schemas. The EvidenceLink, Finding and RiskFinding records are the join between an extracted field and the rule it was compared against, with a confidence.
 
-Two rules follow. Extraction runs on the cheap model and on every page. It is a classification task with a checkable answer. A low-confidence field is flagged as missing rather than filled. A confident wrong field poisons every step after it. The vendor case's step-therapy test names the failure. A payer rule requires step therapy and the EHR has no record of it. The right output is a gap, not an invented history.
+Two rules follow. In this design, extraction runs on the cheap model and on every page, because it is a narrow, schema-bound task whose output can be checked. A low-confidence field is flagged as missing rather than filled. A confident wrong field poisons every step after it. The vendor case's step-therapy test names the failure. A payer rule requires step therapy and the EHR has no record of it. The right output is a gap, not an invented history.
 
 ## 6. Refuse to Index What the Parser Dropped
 
-A model cannot reason over data that never reached the index. That is the whole section. Table-heavy policy documents are where that happens silently. A generic PDF loader flattens a table into disconnected fragments. The header row and the data rows land in different chunks with no schema linking them. The parser incident in section 14 is exactly this. 17 tables detected, 9 extracted, pages 31 to 33 missing. An escalation-threshold matrix that was never indexed.
+A model cannot reason over data that never reached the index. That is the whole section. Table-heavy policy documents are where that happens silently. A plain text-extraction PDF loader usually flattens a table into disconnected fragments. The header row and the data rows land in different chunks with no schema linking them. The parser incident in section 14 is exactly this. 17 tables detected, 9 extracted, pages 31 to 33 missing. An escalation-threshold matrix that was never indexed.
 
 The chunking reference gives the rule. For PDFs, validate extraction order before trusting chunk boundaries. Keep page-number metadata as the only anchor back to the source. Extract tables separately with a table-mode parser rather than as prose. For tables, chunk by row or row group and never split a row. Use zero overlap, because rows are independent records. Then gate ingestion on what the parser reports: `extraction_coverage`, `table_count_detected`, `table_count_extracted` and `layout_confidence`. Fail a high-risk policy document when table coverage falls below the agreed threshold instead of logging a warning. Classify documents as policy-with-tables when they are. The incident's gate only warned because the document had been labelled plain policy text.
 
@@ -250,7 +250,7 @@ Playbook comparison in the contract persona is the same mechanism pointed at a r
 
 PHI, privileged material and financial data change where content may travel. Not only who may read it. Minimise what enters the prompt to the fields the task needs. Redact unnecessary PHI from logs. Store policy and evidence IDs rather than raw content with every generated claim. Keep patient-level and matter-level access restrictions in retrieval, never in the prompt. Break-the-glass access, where it exists, is audited with a reason. No training on customer data unless the contract allows it. No vendor system sees raw content that the data classification forbids.
 
-The regulated-industry prompt from the OpenAI bank is a checklist for this section. Each item already has a home in the design:
+The regulated-industry prompt from the OpenAI-style practice set is a checklist for this section. Each item already has a home in the design:
 
 - data classification and sensitive-data handling
 - encryption
@@ -281,12 +281,12 @@ Design the failure path with the happy path. One rule organises the table. The h
 | Evidence missing, conflicting, or a note says "rule out" | Gap flagged, no language invented, case escalated to the clinician or analyst |
 | Citation span does not match the claim | Response rejected; low citation-accuracy answers routed to human review |
 | Wrong patient or matter in scope | Closed: patient-level restriction in retrieval, never in the prompt |
-| Retrieved document carries embedded instructions | Treated as data, never as instructions; suspicious chunks flagged; red-team test in the gate |
+| Retrieved document carries embedded instructions | Treated as untrusted data (this lowers but does not stop injection), so it can never trigger an action or widen access; suspicious chunks flagged; red-team test in the gate |
 | LLM, vector store or a source system down | Partial packet with gaps labelled, or refusal; overnight batch queued; never a silent guess |
 | User asks to "just submit it anyway" | Refused; autonomous submission is disabled by design |
 | Approval workflow unavailable | Fail closed. Nothing leaves. |
 
-Say what breaks first at scale. Bulk surveillance is a batch problem, so tier the screening. Rules and small classifiers run on everything. The LLM runs only on borderline cases. Low-risk traffic is sampled. Interactive drill-down keeps its own p95 under 10 s by precomputing embeddings and policy matches and prioritising high-risk queues. Strong-model cost is bounded because the flagged tier is a small fraction of pages. That fraction is the metric to watch.
+Say what breaks first at scale. Bulk surveillance is a batch problem, so tier the screening. Rules and small classifiers run on everything. The LLM runs only on borderline cases. Low-risk traffic is sampled. Interactive drill-down keeps its own p95 under 10 s by precomputing embeddings and policy matches and prioritising high-risk queues. Strong-model cost stays bounded only if the flagged tier stays a small fraction of pages, which is an assumption to check. That fraction is the metric to watch.
 
 ## 10. Gate the Release on Extraction, Citation and Escalation
 
@@ -335,7 +335,7 @@ Week one is not the whole diagram. It is one document type and one policy source
 | Week 6-8 | Draft-only workflow actions behind human approval; one high-volume low-risk category first, such as imaging authorization or one business unit |
 | After | Outcome measurement: approval rate, denial reasons, preparation time, override rate. Expand payers, categories or document types only while eval metrics, incident rate, latency and cost hold; keep the rollback plan |
 
-The OpenAI claims prompt gives the ordering rule for what to automate. Extraction, triage, summarisation and missing-information detection come first. Adjudication comes only after evaluation and governance. That is the risk tiers, applied over time.
+The OpenAI-style claims practice prompt gives the ordering rule for what to automate. Extraction, triage, summarisation and missing-information detection come first. Adjudication comes only after evaluation and governance. That is the risk tiers, applied over time.
 
 ## 12. Survive the Red-Team Round
 
@@ -351,7 +351,7 @@ The interviewer pushes on five objections in order. Each has a prepared shape.
 | 18 seconds per answer | Set the budget: batch overnight for bulk, p95 under 10 s for drill-down; decompose by stage; parallelise, cache embeddings, cut top-k before rerank, stream, small model for low risk. Do not remove citation verification; make it asynchronous for low-risk explanatory answers only |
 | Too expensive at scale | Cost per true issue found, not per request. Tiered screening: rules and small classifiers for bulk, the LLM only for borderline cases. Never downgrade the model globally; route by risk |
 
-The mock's five follow-ups are the ones to have ready. A retrieved document with malicious instructions is data, never instructions. The red-team suite plants such instructions in documents, tickets, emails and logs. A correct answer that cites the wrong source is the incident in section 14. One customer seeing another's data is a tenant predicate on every retrieval, which G07 owns. Cost after launch is the tiered screening above. What is human-approved versus automated is the risk tiers in section 8.
+The mock's five follow-ups are the ones to have ready. A retrieved document with malicious instructions is untrusted data: it can still sway the model, so it can never trigger an action or widen access. The red-team suite plants such instructions in documents, tickets, emails and logs. A correct answer that cites the wrong source is the incident in section 14. One customer seeing another's data is a tenant predicate on every retrieval, which G07 owns. Cost after launch is the tiered screening above. What is human-approved versus automated is the risk tiers in section 8.
 
 The scoring rubric rewards the same things in every dimension. Quantified business value and failure cost. An explained data flow with auth, eval gates and rollback. Threat-modelled misuse, adversarial tests and launch gates. A phased launch with incident response, and executive-ready honesty about limits. The debrief line is to give concrete numbers: the p95 target, the acceptable false-positive rate, the minimum citation accuracy, the launch-blocking security threshold, and the expected ROI.
 
@@ -461,9 +461,9 @@ The follow-ups arrive in a predictable order.
 
 | Follow-up | Answer |
 |---|---|
-| How would you prove the system is safe enough for production? (OpenAI Q3) | Evaluation against human decisions on historical cases; the four-dimension gate in section 10 with a red-team suite that blocks on any violation; shadow mode before any user sees a draft; rollout by claim type starting with extraction and triage |
-| The business wants to skip the governance review for the MVP. What do you do? (OpenAI Q12) | Narrow the scope, use synthetic or masked data, start read-only or assistive, define explicit approval gates, and get security and legal review before production exposure. Speed comes from a smaller slice, not a skipped gate |
-| What if the retrieved document contains malicious instructions? | It is data, never instructions; the system prompt separates task from content; suspicious chunks are flagged; the red-team suite plants instructions in documents, emails and logs |
+| How would you prove the system is safe enough for production? (OpenAI-style Q3) | Evaluation against human decisions on historical cases; the four-dimension gate in section 10 with a red-team suite that blocks on any violation; shadow mode before any user sees a draft; rollout by claim type starting with extraction and triage |
+| The business wants to skip the governance review for the MVP. What do you do? (OpenAI-style Q12) | Narrow the scope, use synthetic or masked data, start read-only or assistive, define explicit approval gates, and get security and legal review before production exposure. Speed comes from a smaller slice, not a skipped gate |
+| What if the retrieved document contains malicious instructions? | Treat it as untrusted data: the system prompt keeps task apart from content, which lowers the risk but does not stop it, so retrieved text can never trigger an action or widen access; suspicious chunks are flagged; the red-team suite plants instructions in documents, emails and logs |
 | What if the answer is correct but cites the wrong source? | Section 14: span-level verification fails closed, citation accuracy is its own eval, the citation is the span used |
 | What if one customer sees another customer's data? | Tenant predicate on every retrieval and cache key, G07's design; patient-level and matter-level scope in retrieval, never in the prompt |
 | What should be human-approved versus automated? | Extraction, triage, summarisation and gap detection automated; any draft that leaves the system, any decision language and any external submission approved by the named human |
@@ -497,7 +497,7 @@ Repair the common weak answers on the spot. "The answer is correct, so the citat
 2. **What did the citation incident's release gate check, and what did it miss?** It checked answer groundedness, which scored 0.91, and never evaluated citation span accuracy separately, which scored 0.38.
 3. **Why does increasing top-k not fix the parser incident?** The threshold matrix on pages 31 to 33 was never chunked or indexed; retrieval cannot return content that is absent from the index.
 4. **What should the ingestion gate have done with 52.9% table coverage on a trading policy?** Failed the job, because the document is a high-risk policy with tables; it only warned because the document was classified as plain policy text.
-5. **Where does the strong model run, and why?** Only on the flagged risk tier after cheap extraction on every page, because extraction is a checkable classification task and judgement is the expensive step.
+5. **Where does the strong model run, and why?** Only on the flagged risk tier after cheap extraction on every page, because extraction is a narrow, schema-bound task whose output can be checked, and judgement is the expensive step.
 6. **A payer rule requires step therapy and the EHR shows none. What is the right output?** A flagged gap routed to the clinician, never an invented treatment history.
 7. **How is "which version of the rule" decided?** By payer, plan, procedure, diagnosis and date of service against a versioned rule store with effective and expiry dates; a mismatch is counted and shown.
 8. **What is the answer to "add a disclaimer and let users decide"?** A disclaimer does not prevent leakage, stale data, wrong citations, unsafe actions or over-trust; the system constrains what the model sees and does before generation.
@@ -514,9 +514,19 @@ All paths are relative to `06_Interview_Prep/`. Purchased material lives under `
 | 3, 7 (compliance variant) | `…/04_CASE_STUDY_WORKSHEET/03_financial_compliance_reviewer.md` and its answer key |
 | 3, 7 (contract variant) | `…/04_CASE_STUDY_WORKSHEET/05_legal_contract_copilot.md` and its answer key |
 | 12, 15 (objections, follow-ups, rubric) | `FDE/Complete…/07_MOCK_INTERVIEWS_AND_SCORECARDS/02_SHORT_PRACTICE_MOCK/03_financial_red_team_mock.md` and `03_FULL_MOCK_INTERVIEWS/03_financial_red_team_full_mock.md` |
-| 3, 10, 11, 15 (OpenAI Q3) and 8, 15 (OpenAI Q12) | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md`, questions 3 and 12 |
+| 3, 10, 11, 15 (OpenAI-style Q3) and 8, 15 (OpenAI-style Q12) | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md`, questions 3 and 12 |
 | 14 | `FDE/Complete…/05_PRODUCTION_DEBUGGING_OBSERVABILITY_AND_OPTIMIZATION/04_PRODUCTION_INCIDENT_LOGS/05_bad_citations.md` and `08_ingestion_parser_failure.md` |
 | 6 | `Study_Guides/chunking/chunking-reference-by-doc-type.md`, sections 3.4, 3.6 and 7 |
 | 13 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill for #30 |
 | This page's own construction | The end-to-end diagrams and component table in section 4, the persona table in section 3, the constraints and traceability tables in section 2, the failure table in section 9, the extraction-schema argument in section 5, the three-sentence close and the follow-up answers not attributed above |
 | Not included | The docx answer keys and the canonical combined docx, which repeat the markdown keys; the site mirror under `site/content/` |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [OpenAI Applied Engineer problem-decomposition practice questions (repo)](../../OpenAI_Applied/Sample_Questions/OpenAI%20Applied_Engineer_Problem_Decomposition_Questions.md) — the claims and regulated-industry prompts are practice cases, not official OpenAI questions
+- [HL7 FHIR R5 Subscriptions framework](https://hl7.org/fhir/R5/subscriptions.html) — event-driven FHIR needs Subscriptions; otherwise you poll
+- [FINRA Books and Records (SEA 17a-4, FINRA 4511)](https://www.finra.org/rules-guidance/key-topics/books-records) — retention of advisor communications; WORM or audit-trail storage
+- [FINRA Rule 3110: Supervision](https://www.finra.org/rules-guidance/rulebooks/finra-rules/3110) — supervisory review of correspondence
+- [Unstructured partitioning (infer_table_structure)](https://docs.unstructured.io/open-source/core-functionality/partitioning) — layout-aware parsers keep table structure that plain loaders flatten
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — no fool-proof prevention; limit what the model can do
+- [MSRC: How Microsoft defends against indirect prompt injection attacks (Jul 2025)](https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks) — separating task from content lowers but does not remove the risk

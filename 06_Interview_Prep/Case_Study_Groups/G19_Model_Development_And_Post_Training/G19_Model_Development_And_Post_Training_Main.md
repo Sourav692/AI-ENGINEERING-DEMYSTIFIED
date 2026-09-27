@@ -49,7 +49,7 @@ The easiest way to frame requirements in an interview is:
 | **Integrity** | No hidden benchmark leakage; no unmeasured general-skill regression. |
 | **Safety** | No safety “win” from blanket refusal. |
 | **On-device variant** | Fit memory; meet latency/battery on the real phone. |
-| **FLOPs (illustrative)** | 7B × 50M SFT tokens ≈ 2.1×10¹⁸ FLOPs (`6ND`). 50K prompts × 8 rollouts × 1K ≈ 400M gen tokens ≈ 5.6×10¹⁸ gen + 1.68×10¹⁹ update. Sampled post-training and eval dominate. ~2 GPU-hour SFT is an assumed-throughput sketch, not a guarantee. |
+| **FLOPs (illustrative)** | 7B × 50M SFT tokens ≈ 2.1×10¹⁸ FLOPs (`6ND`). 50K prompts × 8 rollouts × 1K ≈ 400M gen tokens ≈ 5.6×10¹⁸ gen + 1.68×10¹⁹ update. With these assumed workloads, sampled post-training (~10× SFT) and eval dominate. ~2 GPU-hour SFT is an assumed-throughput sketch, not a guarantee. |
 
 ### Interview shortcut
 

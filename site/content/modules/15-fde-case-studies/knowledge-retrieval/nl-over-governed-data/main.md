@@ -24,7 +24,7 @@ This is the anchor for the related executive-dashboard and retail-forecast expla
 | NL-to-SQL analytics assistant    | Governed metric → permitted schema → validated read-only query | General business questions and SQL safety                                                                                      |
 | Executive Dashboard Copilot      | Same metric registry and query evidence                          | KPI variance narrative, dashboard freshness, analyst escalation                                                                |
 | Retail Demand Forecast Explainer | Same governed evidence and result checks                         | Deterministic driver statistics from sales, promotions, inventory, weather, and events; human review of planning actions       |
-| Insurer governed data assistant  | Governed metric views and auditable asset resolution             | Supervisor routes to Genie, a narrow SQL/RAG worker, deterministic analysis, or visualization; later specialized domain agents |
+| Insurer governed data assistant  | Governed metric views and auditable asset resolution             | Supervisor routes to Genie (now Genie One), a narrow SQL/RAG worker, deterministic analysis, or visualization; later specialized domain agents |
 
 ## 1. Questions to ask the interviewer
 
@@ -122,7 +122,7 @@ flowchart LR
 - **Step 3.** Retrieve only the allowed schema, join path, lineage, and freshness facts needed for the selected metric.
 - **Step 4.** Generate dialect-specific SQL from that narrow context. The model proposes a query; it does not approve one.
 - **Step 5.** Parse the SQL into an AST, enforce table/column/join and read-only rules, recheck entitlements, and estimate scan cost. Reject or narrow anything unsafe or over budget.
-- **Step 6.** Execute through a bounded read-only gateway under warehouse-native row and column security, with timeout and row limits.
+- **Step 6.** Execute through a bounded read-only gateway, running the query as the user (on-behalf-of) so warehouse-native row and column security applies to them, with timeout and row limits.
 - **Step 7.** Summarize the structured result and verify every number against the table. On mismatch, return the table alone and alert reviewers.
 - **Step 8.** Return the definition, SQL, lineage, freshness caveats, and answer; record the versions, decision, and bytes scanned for replay.
 
@@ -154,7 +154,7 @@ For mixed questions, route each subtask to its right source: semantic search fin
 
 Keep metric resolution, authorization, validation, and execution synchronous because they determine the one answer. Crawl catalogs, refresh caches, and replay evaluations asynchronously, partitioned by tenant or warehouse so background jobs do not stampede query traffic. Cache only with tenant, permission signature, metric/schema version, and freshness in mind.
 
-Measure first-try semantic correctness, SQL retry rate, bytes scanned per answer, token spend, and p95 by stage. The source flags **>20% above the seven-day bytes-scanned baseline** as a cost warning. The cheapest levers are narrower metric context, approved templates, dry-run cost checks, bounded windows, and safe caching. Repeatedly asking a stronger model to repair invalid SQL raises both bills and can still answer the wrong question.
+Measure first-try semantic correctness, SQL retry rate, warehouse compute per answer (bytes scanned on BigQuery, DBU or credit time on Databricks and Snowflake), token spend, and p95 by stage. The source flags **>20% above the seven-day baseline** as a cost warning. The cheapest levers are narrower metric context, approved templates, dry-run cost checks, bounded windows, and safe caching. Repeatedly asking a stronger model to repair invalid SQL raises both bills and can still answer the wrong question.
 
 ## 7. Evaluation and rollout
 
@@ -164,7 +164,7 @@ Roll out in order: ten governed metrics with owners → golden replay on every c
 
 ## 8. Interview answer to rehearse
 
-> “I would first ask who owns the metric definitions, because valid SQL against the wrong meaning of revenue is the worst failure here. I would resolve each question to a versioned governed metric, clarify ambiguity, retrieve only permitted schema, and let the LLM propose SQL from that small context. An AST policy and cost gate rechecks entitlements before a read-only warehouse gateway runs it under native row and column controls. The answer includes the definition, SQL, lineage, and freshness; any prose is cross-checked against the table. I would prove ten metrics with golden cases and analyst shadowing before executives rely on it. At scale I would trim schema context, use reviewed routes, bound scans, and measure semantic correctness and cost per answer.”
+> “I would first ask who owns the metric definitions, because valid SQL against the wrong meaning of revenue is the worst failure here. I would resolve each question to a versioned governed metric, clarify ambiguity, retrieve only permitted schema, and let the LLM propose SQL from that small context. An AST policy and cost gate rechecks entitlements before a read-only warehouse gateway runs it as the user, under native row and column controls. The answer includes the definition, SQL, lineage, and freshness; any prose is cross-checked against the table. I would prove ten metrics with golden cases and analyst shadowing before executives rely on it. At scale I would trim schema context, use reviewed routes, bound scans, and measure semantic correctness and cost per answer.”
 
 **Memory line:** “The semantic layer defines the answer; the LLM translates and explains it.”
 

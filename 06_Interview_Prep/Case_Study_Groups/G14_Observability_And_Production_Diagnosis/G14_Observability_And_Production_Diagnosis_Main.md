@@ -63,7 +63,7 @@ The easiest way to frame requirements in an interview is:
 | **Privacy** | No full prompts, raw documents, secrets, or unbounded free-form labels by default; redact before storage. |
 | **Isolation** | Tenant isolation; bounded retention. |
 | **Audit** | Protected-action evidence has a stricter failure policy than ordinary traces. |
-| **Volume (illustrative)** | 500 rps × ~6 spans ≈ 3,000 raw spans/s. Keep all errors/outliers (~2–5%) plus ~5% of normal traffic. ~200 B/redacted span × 30 days ⇒ hundreds of GB. Classifier/export capacity matters more than disk. |
+| **Volume (illustrative)** | 500 rps × ~6 spans ≈ 3,000 raw spans/s. Keep all errors/outliers (~2–5%) plus ~5% of normal traffic. ~200 B/redacted span × 30 days ⇒ ~110–155 GB (~270–390 GB at a more typical ~500 B/span). Classifier/export capacity matters more than disk. |
 
 ### Interview shortcut
 
@@ -80,7 +80,7 @@ flowchart TB
   U[User request] --> A[Auth + tenant + correlation ID]
   A --> R[Retrieval] --> M[LLM / model call] --> T[Tool use] --> P[Post-process] --> O[Response + outcome]
   A & R & M & T & P & O -. structured spans .-> B[Bounded async collector]
-  B --> C[Sensitivity classifier: redact / salted fingerprint / attribute caps]
+  B --> C[Sensitivity classifier: redact / keyed HMAC fingerprint / attribute caps]
   C --> S[Error and slow-trace biased sampling]
   S --> D[(Retention-bounded trace store)]
   D --> G[Global aggregate dashboard]
@@ -93,7 +93,7 @@ flowchart TB
 - Give each authorized request a correlation ID and tenant scope; propagate both across services, queues and integrations.
 - Trace retrieval, model/LLM, tool and post-processing timings with structured version, error and outcome metadata while the request continues to the user.
 - Export spans asynchronously through a bounded buffer. If export fails, serve the user and alert on the diagnostic gap.
-- Classify and redact sensitive fields before storage; use a salted HMAC fingerprint where correlation is needed, and cap attribute cardinality.
+- Classify and redact sensitive fields before storage; use an HMAC fingerprint with a secret key where correlation is needed, and cap attribute cardinality.
 - Preferentially keep error and slow traces, with exemplars and incident overrides so rare failures remain diagnosable.
 - Store only bounded, retention-limited traces; send platform-wide aggregates to the global dashboard and enforce tenant/role access for support views.
 - Write support access events to a separate, durable audit path so trace sampling cannot erase who viewed evidence.

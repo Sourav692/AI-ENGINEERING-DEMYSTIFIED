@@ -313,3 +313,11 @@ Retrieve refund policy and read live order data, then produce an evidence-based 
 ### 30-Second Answer
 
 > “I’d first separate reference knowledge from live transactional data. For RAG, I’d build a maintained ingestion path with useful chunks, metadata, permissions, and versions. At query time I’d retrieve authorized evidence, rerank if useful, select context, and require supported claims. I’d evaluate retrieval separately from generation and trace failures from the source to the final answer.”
+
+## Sources (checked 27 Sep 2026)
+
+- [OWASP GenAI LLM07:2025 System Prompt Leakage](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) — access control before model context
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — access control before model context; untrusted retrieved and tool input
+- [Liu et al. 2023, Lost in the Middle: How Language Models Use Long Contexts (arXiv 2307.03172)](https://arxiv.org/abs/2307.03172) — extra context adds noise
+- [Shi et al. 2023, Large Language Models Can Be Easily Distracted by Irrelevant Context (arXiv 2302.00093)](https://arxiv.org/abs/2302.00093) — extra context adds noise
+- [OWASP GenAI LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — untrusted retrieved and tool input

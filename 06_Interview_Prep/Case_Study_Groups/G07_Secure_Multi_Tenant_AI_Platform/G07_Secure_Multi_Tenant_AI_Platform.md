@@ -252,7 +252,7 @@ The MVP is one policy service, one gateway, one tenant-aware application tier, o
 
 ## 5. Derive Tenant Context Once and Make It Immutable
 
-Tenant context comes from verified identity, never from the request body. A header, claim, session or signed token can be authenticated and logged. A JSON field can be spoofed, replayed or forwarded across tenants by accident. That one choice governs everything downstream, because row filters, object ownership, cache keys, queue partitions, log redaction and vector-index lookup must all consume the same verified context.
+Tenant context comes from verified identity, never from the request body. A signed token, verified claim or server-side session can be authenticated and logged. A header or JSON field the client sets can be spoofed, replayed or forwarded across tenants by accident, unless a trusted gateway sets it. That one choice governs everything downstream, because row filters, object ownership, cache keys, queue partitions, log redaction and vector-index lookup must all consume the same verified context.
 
 The dependency order is strict, and each step has a reason. Identity must come first. Context must become immutable early. Policy must run before expensive work. Region is a control-plane decision, not a late optimization. Audit happens after the action but close to it.
 
@@ -304,7 +304,7 @@ sequenceDiagram
 
 If the missing-predicate case is not obvious from the diagram, the design is still too hand-wavy. That is the diagnostic test for the diagram itself. The strongest signal in the round is not the drawing but the narration of how identity, data, state and failure move through it.
 
-Production identity has three problems in front of the policy engine, and none of them is authorization. Token validation checks the signature against the IdP's published keys, the expiry, and that the token was issued for this application, before any permission logic runs. Group mapping is owned by the customer. Their Okta or Azure AD groups are the source of truth, mapped into the platform's role vocabulary. That mapping is configuration that drifts silently when a group is renamed. Just-in-time provisioning creates the first local record from the token's claims, scoped to the customer and never with more access than intended by default.
+Production identity has three problems in front of the policy engine, and none of them is authorization. Token validation checks the signature against the IdP's published keys, the expiry, and that the token was issued for this application, before any permission logic runs. Group mapping is owned by the customer. Their Okta or Microsoft Entra ID (formerly Azure AD) groups are the source of truth, mapped into the platform's role vocabulary. That mapping is configuration that drifts silently when a group is renamed. Just-in-time provisioning creates the first local record from the token's claims, scoped to the customer and never with more access than intended by default.
 
 ## 6. Enforce Isolation at Seven Layers That Do Not Trust Each Other
 
@@ -320,7 +320,7 @@ One row label is one defence layer. It is easy to omit in application code, ad h
 | Vector index | Tenant scoping applied at ingestion and at query time, because semantic search otherwise surfaces neighbouring content |
 | Key | Tenant-scoped encryption keys with envelope encryption, so one compromise does not span the fleet |
 
-The tenant predicate is the mechanism this group owns. The rule is that the store itself refuses to return a row unless the request is already scoped to one tenant. Row-level security bound to the session, or physical partitioning, does that. Isolation then never depends on every engineer remembering `WHERE tenant_id = …`. A future API that forgets the clause returns nothing rather than another company's data. The same predicate is compiled into the vector-search filter and into the cache key, keyed on tenant, permission signature and version. The two-layer pattern that makes a pre-filter cheap and a post-check authoritative is G01's section 6, and it applies here unchanged. The tenant predicate is layer 1 in the search. The post-retrieval invariant `request.tenant_id == chunk.doc_tenant_id` is the layer 2 check, and section 14's incident shows it being skipped.
+The tenant predicate is the mechanism this group owns. The rule is that the store itself refuses to return a row unless the request is already scoped to one tenant. Row-level security bound to the session does that, as long as the app connects as a role that is not the table owner, a superuser or BYPASSRLS, or the table uses FORCE ROW LEVEL SECURITY. Partitioning helps only if each tenant's partition sits behind its own credentials. Isolation then never depends on every engineer remembering `WHERE tenant_id = …`. A future API that forgets the clause returns nothing rather than another company's data. The same predicate is compiled into the vector-search filter and into the cache key, keyed on tenant, permission signature and version. The two-layer pattern that makes a pre-filter cheap and a post-check authoritative is G01's section 6, and it applies here unchanged. The tenant predicate is layer 1 in the search. The post-retrieval invariant `request.tenant_id == chunk.doc_tenant_id` is the layer 2 check, and section 14's incident shows it being skipped.
 
 Pick a tenancy level and justify it, because the interviewer will ask how strongly tenants are isolated.
 
@@ -328,9 +328,9 @@ Pick a tenancy level and justify it, because the interviewer will ask how strong
 |---|---|---|
 | Shared infra + tenant id on every row | One database, one set of tables. Every row tagged; every read and write includes the tag | The default: cheapest, fastest to ship |
 | Separate schema / namespace per tenant | Same cluster; one tenant's tables are not another's | Stronger isolation without an extra deployment |
-| Dedicated deployment per tenant | Separate cluster, region and encryption keys | Banks, healthcare, anyone who cannot share a box |
+| Dedicated deployment per tenant | Separate cluster, region and encryption keys | Customers whose contracts or risk policy rule out sharing, often in banking and healthcare |
 
-Start at level 1 and make the default honest with two follow-ups. The database enforces the tenant rather than the application. And there is a named escalation path for regulated customers, from a tagged row to their own keys, region or deployment. Per-tenant keys answer the question *"what happens if someone gets raw read access to the storage layer?"* With per-tenant data-encryption keys wrapped by a master key, they get one tenant's ciphertext. Only that tenant's key would decrypt it. With one platform-wide key the same breach exposes every customer at once.
+Start at level 1 and make the default honest with two follow-ups. The database enforces the tenant rather than the application. And there is a named escalation path for regulated customers, from a tagged row to their own keys, region or deployment. Per-tenant keys answer the question *"what happens if someone gets raw read access to the storage layer?"* With per-tenant data keys wrapped by a master key, storage access alone gives them only ciphertext. A leaked tenant key opens one tenant, not the fleet, and destroying that key crypto-shreds the tenant's data. With one platform-wide key, a single leaked key exposes every customer at once. The master key still guards everyone, so it lives in the KMS and never leaves it.
 
 Two more principles belong on the board. Least privilege: each service sees only the tenant scope it needs, only for the operation it performs. Blast radius as the design unit: by tenant, by region, by workflow, by dependency. And negative isolation tests matter more than positive ones, because the platform should actively prove the wrong tenant cannot read, infer, cache, dequeue or search another tenant's data.
 
@@ -340,7 +340,7 @@ Two more principles belong on the board. Least privilege: each service sees only
 
 Apply quota and budget before inference, storage growth or batch fan-out, never after. A budget checked after the call is a bill, not a control, and budgets here are contractual. The quota service enforces concurrency, token and burst limits per tenant or tier. The usage ledger attributes every request to a tenant. Quota alerts fire before the limit rather than at it.
 
-Rate limiting and fairness are different problems, and a real platform needs both. A rate limit answers whether this request may proceed at all, a ceiling on one tenant's own allotment. A fair queue answers in what order requests are served under load. A large tenant's burst then cannot make a small, well-behaved tenant wait longer for its turn, even though the small tenant never exceeded any limit. The mechanism is weighted fair queuing, or a token bucket per tenant feeding a shared worker pool, so throughput is shared proportionally under contention rather than first-come-first-served.
+Rate limiting and fairness are different problems, and a real platform needs both. A rate limit answers whether this request may proceed at all, a ceiling on one tenant's own allotment. A fair queue answers in what order requests are served under load. A large tenant's burst then cannot make a small, well-behaved tenant wait longer for its turn, even though the small tenant never exceeded any limit. The mechanism is weighted fair queuing across per-tenant queues feeding a shared worker pool, so throughput is shared proportionally under contention rather than first-come-first-served; a token bucket per tenant caps each tenant's rate on top.
 
 Contain a noisy neighbour in two steps. First the per-tenant quotas, rate limits, concurrency caps and workload classification. Then isolate the expensive parts: admission control before inference, queue partitioning, reserved capacity for premium tenants, circuit breakers past the envelope. Noise caused by a bug gets fast detection and a kill switch. Legitimate burst demand gets fairness, not punishment.
 
@@ -367,7 +367,7 @@ Memorise the pattern, not the table. Security defects fail closed. Capacity pres
 | Shared queue leaks payload metadata | Fail closed, quarantine the queue, and rotate credentials if needed | Message metadata can reveal customer identity or workflow state |
 | One tenant exhausts model quota | Degrade for that tenant, not the whole platform | Shared capacity should protect neighbours and preserve fairness |
 | Regional control plane outage | Queue, reroute, or degrade depending on dependency criticality | Control-plane loss should not take down data-plane operations if local enforcement still works |
-| Vector index surfaces a neighbour | Fail closed on the post-retrieval tenant invariant; block the response | Scoping applied at query time but not at ingestion is the classic cause |
+| Vector index surfaces a neighbour | Fail closed on the post-retrieval tenant invariant; block the response | Usually a tenant filter missing or wrong at query time (as in section 14), or chunks ingested without a tenant tag |
 | Misrouted regional traffic | Reject at the scheduler; alert; audit the route | A route sending protected data to an unauthorised region is a residency breach |
 
 Each of the first five has a rehearsed drill in the tutorial, and they share a shape: detect, refuse and log, contain, recover, prevent. For the missing predicate, detection is code review plus automated tests plus runtime alerts on any query reaching a repository without tenant scope; it never depends on a customer ticket. Refusal is a security error, never a silently substituted default tenant, with identity, trace, operation and the missing-scope fact logged. Containment blocks the release in pre-production. In production it disables the feature path, rotates credentials and freezes logs and traces. In-flight retries keep failing closed rather than retrying into a different scope. Recovery re-runs affected requests through the corrected path and confirms idempotency keys and replay logs cannot bypass the fixed check. Prevention is a negative test that fails if any unscoped repository method is reachable, plus static query-shape lint, so the unscoped path is hard to call rather than merely undesirable.
@@ -664,7 +664,7 @@ Acme uses an enterprise support copilot over customer contracts, escalation poli
 ## Check Yourself
 
 1. **Why is tenant_id on every row insufficient?** It is one defence layer that covers nothing in caches, blob stores, indexes, background jobs, analytics or admin tooling, and it fails the first time a developer omits the predicate. Enforcement has to exist independently in several layers.
-2. **Where does tenant context come from, and why not the request body?** From verified identity, because a header, claim or signed token can be authenticated and logged, while a JSON field can be spoofed, replayed or forwarded across tenants.
+2. **Where does tenant context come from, and why not the request body?** From verified identity, because a signed token, verified claim or server-side session can be authenticated and logged, while a client-set header or JSON field can be spoofed, replayed or forwarded across tenants.
 3. **What is the fail-closed rule for a missing predicate?** Reject with a security error and never substitute a default tenant; log identity, trace, operation and the missing-scope fact; keep in-flight retries failing closed.
 4. **A cache key omits the tenant id and the database is still protected. What kind of incident is it?** A security incident, because a shared cache can replay another tenant's object; disable the path, invalidate, rebuild from scoped reads, and add a negative test asserting a cross-tenant lookup is a miss.
 5. **What is the difference between a rate limit and a fair queue?** A rate limit is a ceiling on one tenant's own allotment; a fair queue decides the order of service under load so a large tenant's burst cannot delay a small tenant who never exceeded any limit.
@@ -687,3 +687,17 @@ All paths are relative to `06_Interview_Prep/`.
 | 13 | `Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_S15_S16.md`, §16 case 4 and §15 scenario 5; `CASE_STUDY_INDEX.xlsx`, Drill Add-ons row 41 |
 | 14 | `FDE/Complete GEN AI FDE Interview System — Core + GenAI/05_PRODUCTION_DEBUGGING_OBSERVABILITY_AND_OPTIMIZATION/04_PRODUCTION_INCIDENT_LOGS/01_cross_tenant_retrieval.md` |
 | Not included | The V1 long tutorial, the V2 section 5 request-handling code walkthrough and API contract surface, the V2 drill diagrams for queue, quota and control-plane outage (rendered as prose in section 9), and the site mirror under `site/content/` |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html) — trust only verified tokens, claims or sessions, never client-set fields
+- [New name for Azure Active Directory (Microsoft Learn)](https://learn.microsoft.com/en-us/entra/fundamentals/new-name) — Azure AD is now Microsoft Entra ID
+- [PostgreSQL docs: Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) — owners, superusers and BYPASSRLS roles skip RLS unless FORCE ROW LEVEL SECURITY is set
+- [HHS: Guidance on HIPAA & Cloud Computing](https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html) — HIPAA does not require single-tenant hosting
+- [OCC Bulletin 2023-17: Interagency Guidance on Third-Party Relationships](https://www.occ.gov/news-issuances/bulletins/2023/bulletin-2023-17.html) — bank rules are risk-based, not a single-tenant mandate
+- [AWS KMS cryptography essentials (envelope encryption)](https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html) — what per-tenant data keys wrapped by a master key protect
+- [Demers, Keshav, Shenker 1989: Analysis and Simulation of a Fair Queueing Algorithm](https://dl.acm.org/doi/10.1145/75247.75248) — fair queuing shares a saturated resource proportionally
+- [RFC 2697: A Single Rate Three Color Marker](https://www.rfc-editor.org/rfc/rfc2697) — a token bucket meters rate; it does not schedule fairly
+- [ICO: Right to erasure](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/individual-rights/right-to-erasure/) — backups can be kept "beyond use" until overwritten on schedule
+- [GDPR Article 17: Right to erasure](https://gdpr-info.eu/art-17-gdpr/) — the erasure duty itself
+- [OWASP GenAI LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/) — cross-tenant leaks from missing vector access controls

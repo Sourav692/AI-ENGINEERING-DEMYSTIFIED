@@ -284,3 +284,11 @@ Central model usage tracking helps, but complete attribution also includes tools
 ### 30-Second Answer
 
 > “I’d break cost down by workload, model usage, retrieval, tools, retries, and outcomes. With an agreed quality floor, I’d route to sufficient models, reduce irrelevant context and unnecessary calls, cache eligible work, and bound agent execution. I’d consider batching for background tasks and validate the result using cost per successful task, including relevant review and rework.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Claude docs - Pricing](https://platform.claude.com/docs/en/about-claude/pricing) — pricing units differ
+- [AWS Bedrock User Guide - Use the ApplyGuardrail API](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html) — pricing units differ
+- [Claude docs - Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) — provider prompt caching billing; batch discounts
+- [OpenAI API docs - Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) — provider prompt caching billing
+- [OpenAI API docs - Batch API](https://developers.openai.com/api/docs/guides/batch) — batch discounts

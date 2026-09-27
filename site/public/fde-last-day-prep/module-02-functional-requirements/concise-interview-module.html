@@ -315,7 +315,7 @@ Refund status unknown → Reconcile before another write
 
 Resolved? Reopened? Human override? → Outcome feedback
 </code></pre>
-<p>Capture decision summaries and supporting evidence, not private model reasoning. Keep records within the customer&#39;s privacy and retention rules.</p>
+<p>Capture decision summaries and supporting evidence, not private model reasoning, which is often hidden and not always faithful. Keep records within the customer&#39;s privacy and retention rules.</p>
 <h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
 <p>Write the capability first. Then justify the design that supports it.</p>
 <table>
@@ -515,6 +515,13 @@ Across the flow: permissions + safe failure + audit + outcomes
 <li>A response gets a thumbs-up, but the ticket reopens the next day. What should feedback capture, and how does that differ from audit?</li>
 </ol>
 <hr>
+
+<h2 id="sources-checked-27-sep-2026">Sources (checked 27 Sep 2026)<a class="anchor" href="#sources-checked-27-sep-2026" aria-label="Link to Sources (checked 27 Sep 2026)">#</a></h2>
+<ul>
+<li><a href="https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/" target="_blank" rel="noopener">OWASP GenAI LLM07:2025 System Prompt Leakage</a> — access control before model context</li>
+<li><a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/" target="_blank" rel="noopener">OWASP GenAI LLM06:2025 Excessive Agency</a> — access control before model context</li>
+<li><a href="https://arxiv.org/abs/2505.05410" target="_blank" rel="noopener">Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)</a> — chain-of-thought is not always faithful</li>
+</ul>
 
     <div class="source-note">Generated from module-02-functional-requirements.md</div>
   </main>

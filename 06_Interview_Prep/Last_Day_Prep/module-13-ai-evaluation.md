@@ -72,7 +72,7 @@ Check routing, tool selection, argument validity, access/policy compliance, obse
 Request → Tool request → Arguments → Result → Final state
 ```
 
-Evaluate recorded operations and decision summaries, not private model chain-of-thought. Allow different valid paths when the task permits them.
+Evaluate recorded operations and decision summaries, not private model chain-of-thought, which is often hidden and not always faithful. Allow different valid paths when the task permits them.
 
 > “The response and the enterprise state must agree about what actually happened.”
 
@@ -217,10 +217,15 @@ Offline comparison → Release gate → Online outcomes
 
 Define success and unacceptable behavior with the customer first. Include missing-answer, denied-access, tool-failure, and uncertain-action cases. Use the same benchmark for candidate comparisons; report task/risk segments, not only averages. Inspect variable outcomes when conclusions depend on small differences.
 
-Capture observable tools, results, state transitions, decision summaries, and evidence. Private model reasoning is not required. Different trajectories can be valid; evaluate constraints and outcomes rather than forcing one exact sequence.
+Capture observable tools, results, state transitions, decision summaries, and evidence. I don't rely on private model reasoning: it is often hidden and not always faithful. Different trajectories can be valid; evaluate constraints and outcomes rather than forcing one exact sequence.
 
 Model-assisted judging needs a clear rubric, versioning, and calibration against expert judgments. A model's confidence and a thumbs-up are not sufficient proof. Add production failures and overrides to future regression cases while maintaining a held-out assessment boundary.
 
 ### 30-Second Answer
 
 > “I’d define task success and build representative normal, edge, and failure cases. I’d evaluate retrieval and claim support separately, verify agent tools and final system state, and use deterministic checks where possible with calibrated semantic rubrics where needed. I’d compare quality, safety, latency, and cost offline, then monitor real outcomes and regressions in production.”
+
+## Sources (checked 27 Sep 2026)
+
+- [Chen et al. 2025, Reasoning Models Don't Always Say What They Think (arXiv 2505.05410)](https://arxiv.org/abs/2505.05410) — chain-of-thought is not always faithful
+- [Zheng et al. 2023, Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (arXiv 2306.05685)](https://arxiv.org/abs/2306.05685) — LLM-judge bias, calibration

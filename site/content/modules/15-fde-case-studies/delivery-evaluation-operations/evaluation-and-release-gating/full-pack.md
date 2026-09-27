@@ -10,8 +10,8 @@ An evaluation platform is not a dashboard of scores. It is a controlled decision
 |---|---|
 | #20 LLM Evaluation and Release-Gating Platform (anchor, book ch 9) | Sections 1 to 8 and 11 to 13: framing, requirements, sizing, architecture, decision logic, graders, failure handling, rollout, delivery |
 | #91 Incident: model regression missed by a weak evaluation suite (sales copilot) | Section 9: the incident walked through end to end |
-| #52 OpenAI Q8, The Model Got Worse After an Upgrade | Section 10: the gate applied retroactively |
-| #55 OpenAI Q11, Build an Evaluation Strategy for an AI Application | Section 10: the gate built from nothing |
+| #52 OpenAI-style practice prompt Q8, The Model Got Worse After an Upgrade | Section 10: the gate applied retroactively |
+| #55 OpenAI-style practice prompt Q11, Build an Evaluation Strategy for an AI Application | Section 10: the gate built from nothing |
 | #120 Costs are fine but the eval bill tripled | Section 14 |
 | Self-drill on #20, Drill Add-ons tab | Section 14 |
 
@@ -70,7 +70,7 @@ The first version deliberately excludes six things. Automated fine-tuning or pro
 
 | Constraint | Stated so it can be tested |
 |---|---|
-| Latency | The gate finishes inside the release window. p95 run duration beyond about 20 minutes turns a gate into a blocker |
+| Latency | The gate finishes inside the release window. A p95 run duration past about 20 minutes (the target I'd set) turns a gate into a blocker |
 | Availability | Peak matters more than average. Thirty teams releasing in the same business hour can overwhelm a daily-average design |
 | Reproducibility | Same dataset, prompt version, model version, tool config and grader version recreate the same evaluation context |
 | Lineage | Every result traces back to its inputs and version history |
@@ -115,7 +115,7 @@ Average load answers "can we survive the day?" Peak load answers "can we survive
 | Current | 600 | 3,000,000 | Queue depth, worker pool, storage writes |
 | 10x growth | 6,000 | 30,000,000 | Throughput, cost, sharding, retention |
 
-At current scale the limit is evaluator concurrency. At 10x, storage, retention and human-review routing dominate.
+In this design, evaluator concurrency is the limit at current scale. At 10x, I expect storage, retention and human-review routing to dominate.
 
 Cache immutable inputs, never the behaviour being measured. Test definitions, baseline outputs, corpus snapshots, rubric and prompt templates and precomputed embeddings are safe to cache when versioned. A cached stochastic judgement would hide exactly the variance the gate is meant to measure.
 
@@ -216,7 +216,7 @@ Four records carry the whole design. Their lifecycles are what make a decision r
 
 Ownership is split on purpose. The evaluation program owns `EvalCase`, the control plane owns `EvalRun`, and the execution path writes `EvalResult` for reviewers and auditors to read. That split keeps the gate from silently rewriting evidence after the fact. The decision record and the redacted score summary also outlive the raw trace. A shorter trace-retention policy therefore never destroys auditability.
 
-The API surface stays at four endpoints: `POST /v1/eval-runs`, `GET /v1/eval-runs/{id}`, `POST /v1/reviews` and `POST /v1/release-decisions`. Three ideas do most of the reliability work at that boundary. An idempotency key on every retryable write returns the original `run_123` on a retry instead of creating `run_124`. Explicit contract versions keep a run created under policy `v7` from being read under `v8` semantics. An ETag on reviews and decisions means two actors finalising the same run cannot both win; the second gets a `409 Conflict` and must re-read. An override is always a new superseding record, never an invisible overwrite.
+The API surface stays at four endpoints: `POST /v1/eval-runs`, `GET /v1/eval-runs/{id}`, `POST /v1/reviews` and `POST /v1/release-decisions`. Three ideas do most of the reliability work at that boundary. An idempotency key on every retryable write returns the original `run_123` on a retry instead of creating `run_124`. Explicit contract versions keep a run created under policy `v7` from being read under `v8` semantics. An ETag on reviews and decisions means two actors finalising the same run cannot both win; the second gets a `412 Precondition Failed` and must re-read. An override is always a new superseding record, never an invisible overwrite.
 
 ## 6. Decide on Four Dimensions and Fail Closed
 
@@ -333,7 +333,7 @@ Map it back onto the anchor *(own construction)*. The anchor's gate would have c
 
 ## 10. Answer the Two Neighbouring Prompts With the Same Gate
 
-Both question-bank prompts are the anchor seen from a different moment. #52 is the gate applied after the fact. #55 is the gate built from nothing.
+Both OpenAI-style practice prompts are the anchor seen from a different moment. #52 is the gate applied after the fact. #55 is the gate built from nothing.
 
 **#52, the model got worse after an upgrade.** A customer says quality declined after switching to a newer model. Treat it as the release decision that never happened, and run it retroactively. The source's diagnostic plan has eleven steps. Collect before-and-after production examples. Replay a fixed evaluation set. Segment by task, language, customer and input size. Compare structured-output compliance. Check prompt compatibility and retrieval changes. Compare latency and token usage. Run human evaluation, and calibrate any LLM-as-judge first. Roll back or pin the model version. A/B test future upgrades.
 
@@ -527,3 +527,11 @@ All paths are relative to `06_Interview_Prep/`.
 | 14 | `Study_Guides/Cost_Latency_Optimization/ADDITIONS_BEYOND_PLAYBOOK.md`, section E (#120); `Study_Guides/Cost_Latency_Optimization/CORE_8_DRIVERS_MEMORIZE.md`, driver 8; `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #20 |
 | 13 (regulation and fairness rows), 14 (human-review cost) | The V2 tutorial's "My Perspective on the Gaps", which the tutorial itself marks as not from the original chapter |
 | 4 (ASCII diagram, failure column), 9 (mapping onto the anchor), 10 (mapping tables), and every item marked own construction | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [RFC 9110 HTTP Semantics: 13.1.1 If-Match and 15.5.13 412](https://www.rfc-editor.org/rfc/rfc9110.html#name-if-match) — a failed If-Match returns 412 Precondition Failed, not 409
+- [Zheng et al. 2023, Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685) — LLM judges show verbosity bias
+- [AICPA & CIMA: SOC 2](https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2) — SOC 2 control mapping
+- [GDPR Article 17: Right to erasure](https://gdpr-info.eu/art-17-gdpr/) — deletion rights that trace retention must respect
+- [V2 chapter 9 tutorial, "My Perspective on the Gaps"](https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/FDE/FDE_System_Design_Interview_20_Scenarios/Version_2/chapter-9-llm-evaluation-and-release-gating-platform-tutorial_v2.md) — the gap note calling human review the most expensive unit cost
