@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 4 — Core Architecture Building Blocks.">
+  <title>Module 4 — Core Architecture Building Blocks — Concise Interview Module</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
+      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
+      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
+      --code-bg: #111827; --code-text: #e8eef8;
+      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
+        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
+        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
+        --code-bg: #080d17; --code-text: #e8eef8;
+        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
+    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
+    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
+    p { margin: .75rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .25rem; }
+    strong { color: var(--text); }
+    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    blockquote {
+      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
+      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+    }
+    blockquote p { margin: 0; }
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      background: var(--code-bg); color: var(--code-text);
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
+      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre code { padding: 0; background: transparent; font: inherit; }
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
+    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); }
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .switch {
+      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      pre { font-size: .79rem; }
+    }
+  
+    .layout { display: grid; grid-template-columns: 250px minmax(0, 880px); gap: 30px; width: min(1200px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow: auto; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+    nav h2 { margin: 0 0 10px; padding: 0; border: 0; color: var(--muted); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 3px; }
+    nav a { display: block; padding: 6px 8px; border-radius: 6px; color: var(--muted); font-size: .84rem; line-height: 1.35; text-decoration: none; }
+    nav a:hover { color: var(--accent); background: var(--accent-soft); }
+    main { min-width: 0; padding: clamp(26px, 5vw, 58px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+    @media (max-width: 900px) { .layout { display: block; width: min(100% - 20px, 880px); margin: 10px auto; } nav { position: static; max-height: none; margin-bottom: 10px; } main { border-radius: 12px; } }
+    @media print { @page { size: A4; margin: 14mm; } :root { color-scheme: light; } body { background: #fff; color: #111; font-size: 10pt; } .layout { display: block; width: 100%; margin: 0; } nav, .switch, .anchor, .source-note { display: none; } main { padding: 0; border: 0; box-shadow: none; } pre, blockquote, table { break-inside: avoid; } }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><div class="eyebrow">Concise Interview Module</div><a class="switch" href="one-page-memory-card.html">Open memory card →</a></div>
+    <h1 id="module-4-core-architecture-building-blocks">Module 4 — Core Architecture Building Blocks<a class="anchor" href="#module-4-core-architecture-building-blocks" aria-label="Link to Module 4 — Core Architecture Building Blocks">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you explain what each component owns and why it is needed?</li>
+<li>Can you separate request control, routing, workflow control, and model access?</li>
+<li>Can you choose a small architecture that meets the requirements?</li>
+<li>Can you identify the state and failure behavior behind your boxes?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<p><strong>Every box needs a requirement-based reason.</strong></p>
+<pre><code class="language-text">Customer requirement
+        ↓
+Responsibility we need
+        ↓
+Component / pattern
+        ↓
+Trade-off + failure behavior
+</code></pre>
+<p>Recall seven responsibilities:</p>
+<pre><code class="language-text">API Gateway   → Control entry to application
+Router        → Choose capability
+Orchestrator  → Coordinate workflow
+State Store   → Preserve progress/context
+Model Gateway → Control access to models
+Cache         → Reuse eligible results
+Queue / Events→ Decouple work or notify consumers
+</code></pre>
+<p>These are logical responsibilities. A small implementation can combine some in one service.</p>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-api-gateway-user-application-control">1. API Gateway — User → Application Control<a class="anchor" href="#1-api-gateway-user-application-control" aria-label="Link to 1. API Gateway — User → Application Control">#</a></h4>
+<p>Own application-entry authentication, request validation, tenant context, and user/tenant rate limits or quotas. Coordinate with authorization services; downstream data and tools still enforce their own access checks.</p>
+<blockquote>
+<p>“We need a controlled application boundary for user identity, tenant context, and request limits.”</p>
+</blockquote>
+<pre><code class="language-text">User → API Gateway → Application
+</code></pre>
+<p><strong>API Gateway = User → Application control.</strong> It does not own model-provider selection.</p>
+<h4 id="2-model-gateway-application-model-control">2. Model Gateway — Application → Model Control<a class="anchor" href="#2-model-gateway-application-model-control" aria-label="Link to 2. Model Gateway — Application → Model Control">#</a></h4>
+<p>Centralize model routing, provider abstraction, compatible fallback, bounded retries, provider limits, and token/cost tracking when those needs justify it.</p>
+<blockquote>
+<p>“Because we need provider fallback and consistent model-call controls, I’d introduce a Model Gateway.”</p>
+</blockquote>
+<pre><code class="language-text">Application → Model Gateway → Model A / B
+</code></pre>
+<p><strong>Model Gateway = Application → Model control.</strong> Fallback must preserve required capabilities, data restrictions, and acceptable quality.</p>
+<h4 id="3-router-choose-the-capability">3. Router — Choose the Capability<a class="anchor" href="#3-router-choose-the-capability" aria-label="Link to 3. Router — Choose the Capability">#</a></h4>
+<p>Select retrieval, live tools, a workflow, or human handling. Use rules or classifiers where sufficient.</p>
+<blockquote>
+<p>“The router decides what handles the request; it does not manage the whole workflow.”</p>
+</blockquote>
+<pre><code class="language-text">            ┌→ Knowledge answer
+Request ────┼→ Order lookup
+            └→ Refund workflow
+</code></pre>
+<p>Capability routing differs from choosing which model provider processes a model call.</p>
+<h4 id="4-orchestrator-coordinate-the-work">4. Orchestrator — Coordinate the Work<a class="anchor" href="#4-orchestrator-coordinate-the-work" aria-label="Link to 4. Orchestrator — Coordinate the Work">#</a></h4>
+<p>Manage steps, branches, tool calls, timeouts, retries, checkpoints, and approval transitions. It may execute a fixed workflow or host a bounded agent loop.</p>
+<blockquote>
+<p>“We need coordination because the refund task combines data lookup, policy checks, approval, and execution.”</p>
+</blockquote>
+<pre><code class="language-text">Read order → Check policy → Approval needed?
+                               ↓
+                        Wait / execute / stop
+</code></pre>
+<p>The orchestrator coordinates; policy authorizes; the executor performs the business write.</p>
+<h4 id="5-state-store-preserve-context-and-progress">5. State Store — Preserve Context and Progress<a class="anchor" href="#5-state-store-preserve-context-and-progress" aria-label="Link to 5. State Store — Preserve Context and Progress">#</a></h4>
+<p>Store relevant session, workflow, approval, and completed-operation state. Durable state allows restart or delayed approval without relying on process memory.</p>
+<blockquote>
+<p>“If approval takes hours or a worker crashes, we must recover the workflow from stored state.”</p>
+</blockquote>
+<pre><code class="language-text">Workflow → Checkpoint → Worker restart → Resume
+</code></pre>
+<p>A checkpoint alone does not prevent duplicate side effects. Record action identifiers and reconcile uncertain external results.</p>
+<h4 id="6-cache-reuse-safe-results">6. Cache — Reuse Safe Results<a class="anchor" href="#6-cache-reuse-safe-results" aria-label="Link to 6. Cache — Reuse Safe Results">#</a></h4>
+<p>Cache eligible response, retrieval, or tool results. Choose keys, lifetime, invalidation, and tenant/permission scope to meet freshness and access requirements.</p>
+<blockquote>
+<p>“I’d cache repeated policy lookups only when the cache preserves freshness and access boundaries.”</p>
+</blockquote>
+<pre><code class="language-text">Request → Valid scoped cache hit? → Reuse
+                         No      → Compute / fetch
+</code></pre>
+<p>Current transactional data needs an explicit freshness rule. Similar-looking requests are not automatically safe to share through a semantic cache.</p>
+<h4 id="7-queue-event-bus-decouple-work-and-communication">7. Queue / Event Bus — Decouple Work and Communication<a class="anchor" href="#7-queue-event-bus-decouple-work-and-communication" aria-label="Link to 7. Queue / Event Bus — Decouple Work and Communication">#</a></h4>
+<p>A work queue lets workers process tasks separately from the immediate request. An event bus distributes notifications about events to interested consumers.</p>
+<blockquote>
+<p>“This task can outlast the interactive response, so I’d accept it as a job and return a task identifier.”</p>
+</blockquote>
+<pre><code class="language-text">Work queue: Submit job → Queue → Worker → Result
+
+Event bus:  Refund completed → Audit consumer
+                           → Notification consumer
+</code></pre>
+<p>These are patterns, not necessarily separate products. Queues buffer bursts but do not create processing capacity; queue depth and wait time still need limits.</p>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Component / pattern</th>
+<th>Why</th>
+<th>Main trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>User/tenant request controls</td>
+<td>API Gateway</td>
+<td>Enforce application entry rules</td>
+<td>Extra boundary and operational dependency</td>
+</tr>
+<tr>
+<td>Multiple model providers and fallback</td>
+<td>Model Gateway</td>
+<td>Standardize model calls</td>
+<td>Capability differences and retry overhead</td>
+</tr>
+<tr>
+<td>Different request categories</td>
+<td>Router</td>
+<td>Choose the correct path</td>
+<td>Misrouting and classification cost</td>
+</tr>
+<tr>
+<td>Multi-step task with branches</td>
+<td>Orchestrator</td>
+<td>Coordinate transitions</td>
+<td>Workflow complexity</td>
+</tr>
+<tr>
+<td>Resume after crash or approval</td>
+<td>Durable state store</td>
+<td>Preserve task progress</td>
+<td>Consistency and retention management</td>
+</tr>
+<tr>
+<td>Repeat work within freshness limits</td>
+<td>Cache</td>
+<td>Reduce repeated cost/latency</td>
+<td>Stale or improperly shared data</td>
+</tr>
+<tr>
+<td>Long tasks or burst absorption</td>
+<td>Queue + workers</td>
+<td>Decouple execution</td>
+<td>Queue delay and duplicate delivery</td>
+</tr>
+<tr>
+<td>Multiple reactions to a business event</td>
+<td>Event distribution</td>
+<td>Decouple consumers</td>
+<td>Delivery and ordering management</td>
+</tr>
+</tbody></table>
+<h4 id="support-example-add-only-what-is-needed">Support Example — Add Only What Is Needed<a class="anchor" href="#support-example-add-only-what-is-needed" aria-label="Link to Support Example — Add Only What Is Needed">#</a></h4>
+<pre><code class="language-text">User → API Gateway → Router
+                       ├→ Policy retrieval → Answer
+                       ├→ Live order tool  → Answer
+                       └→ Refund workflow
+                              ↓
+                        Policy / approval
+                              ↓
+                           Executor
+
+Supporting responsibilities:
+State store  ← Context, progress, pending approval
+Model Gateway← Model calls when centralized controls are needed
+Audit        ← Evidence, decisions, action results
+</code></pre>
+<p>A cache or queue is added only if repetition, freshness, task duration, or traffic requirements justify it.</p>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><strong>API vs Model Gateway:</strong> user-to-application control vs application-to-model control. Neither replaces tool-level authorization.</li>
+<li><strong>Router vs orchestrator:</strong> choose the path vs coordinate steps along the path.</li>
+<li><strong>State store vs cache:</strong> authoritative progress must be durable; cached results are reusable data that can expire or be recomputed.</li>
+<li><strong>Queue vs event bus:</strong> distribute work to processors vs distribute event notifications. Redelivery may occur; consumers must handle duplicates where relevant.</li>
+<li><strong>Logical box vs separate service:</strong> a responsibility can live inside the application. Do not add a network service without a reason.</li>
+</ol>
+<pre><code class="language-text">“Which path?”      → Router
+“What step next?”  → Orchestrator
+“Where did we stop?”→ State store
+</code></pre>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+<th>Discuss…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“User quotas and tenant identity”</td>
+<td>API Gateway</td>
+<td>Application entry controls</td>
+</tr>
+<tr>
+<td>“Three model providers”</td>
+<td>Model Gateway</td>
+<td>Routing, compatible fallback, limits</td>
+</tr>
+<tr>
+<td>“Policy, order, refund requests”</td>
+<td>Router</td>
+<td>Capability selection</td>
+</tr>
+<tr>
+<td>“Approval then action”</td>
+<td>Orchestrator</td>
+<td>Branches, state, safe transitions</td>
+</tr>
+<tr>
+<td>“Resume tomorrow”</td>
+<td>State store</td>
+<td>Durable progress and approval state</td>
+</tr>
+<tr>
+<td>“Same policy asked repeatedly”</td>
+<td>Cache</td>
+<td>Freshness and permission scope</td>
+</tr>
+<tr>
+<td>“Ten-minute task”</td>
+<td>Queue</td>
+<td>Job identifier, progress, results</td>
+</tr>
+<tr>
+<td>“Notify billing and support”</td>
+<td>Events</td>
+<td>Independent consumers and delivery handling</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“This box exists because the customer needs ___. Without it, ___ would fail.”</p>
+</blockquote>
+<blockquote>
+<p>“The API Gateway controls users entering the application; the Model Gateway controls the application&#39;s model calls.”</p>
+</blockquote>
+<blockquote>
+<p>“Routing selects a capability; orchestration controls the steps and state of the task.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d keep these as logical responsibilities first and split services only when scale, ownership, or isolation requires it.”</p>
+</blockquote>
+<blockquote>
+<p>“A queue absorbs bursts, but I still need capacity limits and a maximum acceptable wait.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>Explain API Gateway vs Model Gateway in 30 seconds using their boundaries and responsibilities.</li>
+<li>A support task reads orders, checks policy, waits for approval, and issues a refund. Which responsibilities need coordination and durable state?</li>
+<li>A customer has three providers and wants fallback. What checks must hold before another model is used?</li>
+<li>A research task takes ten minutes. What changes in request handling, state, and result delivery?</li>
+<li>The interviewer asks, “Why is this box here?” Justify a cache, router, and queue using distinct requirements and trade-offs.</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-04-core-architecture-building-blocks.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

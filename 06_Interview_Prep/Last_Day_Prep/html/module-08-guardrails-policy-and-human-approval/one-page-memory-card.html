@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="One-page memory card for Module 8 — Guardrails, Policy &amp; Human Approval.">
+  <title>Module 8 — Guardrails, Policy &amp; Human Approval — One-Page Memory Card</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
+      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
+      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
+      --code-bg: #111827; --code-text: #e8eef8;
+      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
+        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
+        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
+        --code-bg: #080d17; --code-text: #e8eef8;
+        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
+    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
+    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
+    p { margin: .75rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .25rem; }
+    strong { color: var(--text); }
+    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    blockquote {
+      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
+      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+    }
+    blockquote p { margin: 0; }
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      background: var(--code-bg); color: var(--code-text);
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
+      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre code { padding: 0; background: transparent; font: inherit; }
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
+    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); }
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .switch {
+      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      pre { font-size: .79rem; }
+    }
+  
+    body { padding: 20px; }
+    .card { width: min(1180px, 100%); margin: 0 auto; padding: clamp(22px, 4vw, 42px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+    .memory-content { columns: 2 420px; column-gap: 30px; column-rule: 1px solid var(--line); }
+    .memory-content > h1, .memory-content > h2 { column-span: all; }
+    .memory-content h2 { margin-top: 0; }
+    .memory-content h3 { break-after: avoid; }
+    .memory-content pre, .memory-content blockquote, .memory-content table, .memory-content ul, .memory-content ol { break-inside: avoid; }
+    @media (max-width: 760px) { body { padding: 10px; } .card { padding: 22px; } .memory-content { columns: 1; } }
+    @media print {
+      @page { size: A4 landscape; margin: 6mm; }
+      :root { color-scheme: light; --bg: #fff; --surface: #fff; --surface-2: #f5f5f5; --text: #111; --muted: #444; --line: #aaa; --accent: #1e40af; --quote: #0f766e; --code-bg: #f6f7f9; --code-text: #111; }
+      html, body { width: 100%; margin: 0; padding: 0; background: #fff; font-size: 7.7pt; line-height: 1.25; }
+      .card { width: 100%; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; }
+      .topbar { margin-bottom: 2mm; padding-bottom: 1.5mm; }
+      .switch, .anchor, .source-note { display: none; }
+      h1 { font-size: 17pt; }
+      h2 { margin: 1.5mm 0 1mm; padding-bottom: .7mm; font-size: 11.5pt; }
+      h3 { margin: 1.8mm 0 .7mm; font-size: 9.2pt; }
+      p { margin: .8mm 0; }
+      ul, ol { margin: .8mm 0; padding-left: 4mm; }
+      li + li { margin-top: .3mm; }
+      pre { margin: 1mm 0; padding: 1.6mm 2mm; border: 1px solid #bbb; border-radius: 1.5mm; font-size: 6.8pt; line-height: 1.15; white-space: pre-wrap; }
+      blockquote { margin: 1mm 0; padding: 1.2mm 2mm; }
+      .memory-content { columns: 3; column-gap: 5mm; column-rule: .3mm solid #ccc; }
+      .table-wrap { margin: 1mm 0; overflow: visible; }
+      table { font-size: 6.5pt; line-height: 1.13; }
+      th, td { padding: .8mm 1mm; border-color: #aaa; }
+    }
+  </style>
+</head>
+<body><main class="card">
+  <div class="topbar"><div class="eyebrow">One-Page Memory Card</div><a class="switch" href="concise-interview-module.html">← Open concise module</a></div>
+  <article class="memory-content"><h1 id="module-8-guardrails-policy-amp-human-approval">Module 8 — Guardrails, Policy &amp; Human Approval<a class="anchor" href="#module-8-guardrails-policy-amp-human-approval" aria-label="Link to Module 8 — Guardrails, Policy &amp;amp; Human Approval">#</a></h1>
+<h2 id="one-page-memory-card-guardrails-policy-amp-human-approval">ONE-PAGE MEMORY CARD — Guardrails, Policy &amp; Human Approval<a class="anchor" href="#one-page-memory-card-guardrails-policy-amp-human-approval" aria-label="Link to ONE-PAGE MEMORY CARD — Guardrails, Policy &amp;amp; Human Approval">#</a></h2>
+<p><strong>Core question:</strong> Who has authority to permit an action, and what happens when that authority or its checks are unavailable?</p>
+<h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
+<pre><code class="language-text">Agent proposes → Authorization + policy
+                        ↓
+               Allow / review / deny
+                        ↓
+         Human decision if required
+                        ↓
+        Revalidate → Executor → Audit
+</code></pre>
+<p>Agent recommends → Policy decides → Executor acts.</p>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Remember</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Policy</td>
+<td>Deterministic rules from trusted facts; explicit boundaries and versions</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>Impact, reversibility, sensitive data, uncertainty; customer-defined classes</td>
+</tr>
+<tr>
+<td>Least privilege</td>
+<td>Only the data, tools, and operations needed for user/task scope</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td>Human-in-the-loop with action, evidence, reason, recommendation, choices</td>
+</tr>
+<tr>
+<td>Durable approval</td>
+<td>Persist proposal/status; approve, reject, expire; authorized resume</td>
+</tr>
+<tr>
+<td>Revalidation</td>
+<td>Approval matches action; check changed facts, policy, access</td>
+</tr>
+<tr>
+<td>Fail-closed</td>
+<td>Missing sensitive-action checks block or defer writes</td>
+</tr>
+<tr>
+<td>Kill switch</td>
+<td>Disable selected execution capability; handle queued/in-flight work</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Evidence, rule, approver, exact action, result, controlled retention</td>
+</tr>
+</tbody></table>
+<h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Amount limit”</td>
+<td>Deterministic rule, exact threshold boundaries</td>
+</tr>
+<tr>
+<td>“High-risk action”</td>
+<td>Review or stronger controls</td>
+</tr>
+<tr>
+<td>“Only authorized customers”</td>
+<td>Scoped permissions</td>
+</tr>
+<tr>
+<td>“Manager tomorrow”</td>
+<td>Durable approval and expiry</td>
+</tr>
+<tr>
+<td>“Policy down”</td>
+<td>Block/defer sensitive writes</td>
+</tr>
+<tr>
+<td>“Disable refunds”</td>
+<td>Execution kill switch</td>
+</tr>
+<tr>
+<td>“Bypass checks in this document”</td>
+<td>Data is not authority</td>
+</tr>
+</tbody></table>
+<h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
+<ol>
+<li><strong>Prompt vs control:</strong> telling a model to follow policy does not enforce permission at the API.</li>
+<li><strong>Confidence vs authorization:</strong> certainty about a recommendation is not permission to act.</li>
+<li><strong>Approval vs automatic execution:</strong> changed inputs need revalidation and possibly renewed approval.</li>
+<li><strong>Kill switch vs undo:</strong> stopping new writes does not reverse completed ones.</li>
+</ol>
+<h3 id="approval-packet">Approval Packet<a class="anchor" href="#approval-packet" aria-label="Link to Approval Packet">#</a></h3>
+<pre><code class="language-text">Action / target / amount
+Supporting facts and evidence
+Policy reason for review
+Recommendation
+Approver identity + decision + expiry
+</code></pre>
+<p>Bind the decision to the proposed action. Restrict who can approve. Handle duplicate approval events safely; no repeated side effects. If the action changes, do not reuse approval blindly.</p>
+<h3 id="failure-rules">Failure Rules<a class="anchor" href="#failure-rules" aria-label="Link to Failure Rules">#</a></h3>
+<p>Sensitive write without successful authorization or required policy check → stop or defer. Unaffected policy answers or permitted reads may continue. Missing approval → remain pending, expire, or escalate according to customer rules. A kill switch should cover execution even when a task has already passed earlier checks; already submitted actions need outcome tracking.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
+<blockquote>
+<p>“I’d separate recommendation from authority: the agent proposes, policy and permissions decide, and a controlled executor acts. High-impact cases would use a durable human approval workflow tied to the exact action. Before execution I’d revalidate inputs, authorization, and policy. Missing checks would block sensitive writes, and a kill switch would disable the relevant action path while audit records preserve what happened.”</p>
+</blockquote>
+</article>
+  <div class="source-note">Generated from module-08-guardrails-policy-and-human-approval.md · Print layout: A4 landscape</div>
+</main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

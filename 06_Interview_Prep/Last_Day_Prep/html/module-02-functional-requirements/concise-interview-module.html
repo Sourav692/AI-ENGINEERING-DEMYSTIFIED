@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 2 — Functional Requirements.">
+  <title>Module 2 — Functional Requirements — Concise Interview Module</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
+      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
+      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
+      --code-bg: #111827; --code-text: #e8eef8;
+      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
+        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
+        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
+        --code-bg: #080d17; --code-text: #e8eef8;
+        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
+    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
+    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
+    p { margin: .75rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .25rem; }
+    strong { color: var(--text); }
+    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    blockquote {
+      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
+      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+    }
+    blockquote p { margin: 0; }
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      background: var(--code-bg); color: var(--code-text);
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
+      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre code { padding: 0; background: transparent; font: inherit; }
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
+    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); }
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .switch {
+      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      pre { font-size: .79rem; }
+    }
+  
+    .layout { display: grid; grid-template-columns: 250px minmax(0, 880px); gap: 30px; width: min(1200px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow: auto; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+    nav h2 { margin: 0 0 10px; padding: 0; border: 0; color: var(--muted); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 3px; }
+    nav a { display: block; padding: 6px 8px; border-radius: 6px; color: var(--muted); font-size: .84rem; line-height: 1.35; text-decoration: none; }
+    nav a:hover { color: var(--accent); background: var(--accent-soft); }
+    main { min-width: 0; padding: clamp(26px, 5vw, 58px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+    @media (max-width: 900px) { .layout { display: block; width: min(100% - 20px, 880px); margin: 10px auto; } nav { position: static; max-height: none; margin-bottom: 10px; } main { border-radius: 12px; } }
+    @media print { @page { size: A4; margin: 14mm; } :root { color-scheme: light; } body { background: #fff; color: #111; font-size: 10pt; } .layout { display: block; width: 100%; margin: 0; } nav, .switch, .anchor, .source-note { display: none; } main { padding: 0; border: 0; box-shadow: none; } pre, blockquote, table { break-inside: avoid; } }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><div class="eyebrow">Concise Interview Module</div><a class="switch" href="one-page-memory-card.html">Open memory card →</a></div>
+    <h1 id="module-2-functional-requirements">Module 2 — Functional Requirements<a class="anchor" href="#module-2-functional-requirements" aria-label="Link to Module 2 — Functional Requirements">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you turn discovery answers into clear system capabilities?</li>
+<li>Can you separate knowledge retrieval, live data access, recommendations, and actions?</li>
+<li>Can you include permissions, human approval, failures, and traceability?</li>
+<li>Can you justify components through requirements instead of naming tools first?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<p><strong>Functional requirements (FRs) answer: “What must the system DO?”</strong></p>
+<pre><code class="language-text">Discovery → Customer needs → Functional requirements
+                                      ↓
+                             Architecture decisions
+</code></pre>
+<p>Remember twelve reusable requirements in three groups:</p>
+<pre><code class="language-text">UNDERSTAND → CONTEXT → RETRIEVE → PERMISSIONS
+                          ↓
+              ROUTE → REASON → TOOL → ACT
+                          ↓
+             HITL → FAILURE → AUDIT → FEEDBACK
+</code></pre>
+<p>This is a coverage checklist, not a mandatory execution pipeline. Permissions apply throughout; routing may happen before retrieval; many requests never need an action or approval.</p>
+<p>Select the requirements the customer needs. Keep the labels consistent:</p>
+<pre><code class="language-text">FR1 Understand   FR5 Route     FR9  HITL
+FR2 Context      FR6 Reason    FR10 Failure
+FR3 Retrieve     FR7 Tool      FR11 Audit
+FR4 Permissions  FR8 Act       FR12 Feedback
+</code></pre>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-fr1-understand-accept-the-request-and-identify-the-need">1. FR1 Understand — Accept the Request and Identify the Need<a class="anchor" href="#1-fr1-understand-accept-the-request-and-identify-the-need" aria-label="Link to 1. FR1 Understand — Accept the Request and Identify the Need">#</a></h4>
+<p>Support the required inputs and identify what the user wants. Clarify ambiguity before using tools or acting.</p>
+<blockquote>
+<p>“The system must accept support requests and identify whether the user needs policy information, order status, or a refund.”</p>
+</blockquote>
+<pre><code class="language-text">“Where is order #123?” → Intent: order_status
+“Cancel it”           → Resolve “it” or clarify
+</code></pre>
+<p>Mention text, voice, documents, or events only when required.</p>
+<h4 id="2-fr2-context-keep-relevant-conversation-and-workflow-state">2. FR2 Context — Keep Relevant Conversation and Workflow State<a class="anchor" href="#2-fr2-context-keep-relevant-conversation-and-workflow-state" aria-label="Link to 2. FR2 Context — Keep Relevant Conversation and Workflow State">#</a></h4>
+<p>Maintain what is needed to continue the task: the order being discussed, prior decisions, or pending approval. Avoid blindly sending the entire conversation to the model.</p>
+<blockquote>
+<p>“The system must retain relevant context across turns and preserve workflow state when work is paused.”</p>
+</blockquote>
+<pre><code class="language-text">“Where is order #123?”
+        ↓
+“Can I cancel it?” → “it” = order #123
+
+Refund approval pending → Resume after decision
+</code></pre>
+<p>Conversation context supports follow-up questions. Workflow state tracks progress and pending work.</p>
+<h4 id="3-fr3-retrieve-fr4-permissions-use-authorized-knowledge">3. FR3 Retrieve + FR4 Permissions — Use Authorized Knowledge<a class="anchor" href="#3-fr3-retrieve-fr4-permissions-use-authorized-knowledge" aria-label="Link to 3. FR3 Retrieve + FR4 Permissions — Use Authorized Knowledge">#</a></h4>
+<p>Retrieve relevant information from approved enterprise sources, within the current user&#39;s access scope. Retrieval-augmented generation (RAG) uses retrieved knowledge to support an answer.</p>
+<blockquote>
+<p>“The system must retrieve the relevant refund policy and only expose information the user is authorized to access.”</p>
+</blockquote>
+<pre><code class="language-text">User identity + permission scope
+                ↓
+      Search authorized knowledge
+                ↓
+         Relevant evidence
+                ↓
+          Grounded answer
+</code></pre>
+<p>Permissions also apply to tools and actions. A prompt asking the model to hide restricted data is not access enforcement.</p>
+<h4 id="4-fr5-route-choose-the-right-capability">4. FR5 Route — Choose the Right Capability<a class="anchor" href="#4-fr5-route-choose-the-right-capability" aria-label="Link to 4. FR5 Route — Choose the Right Capability">#</a></h4>
+<p>Route requests to knowledge retrieval, a live tool, a workflow, or a human. The requirement does not imply separate agents for every request type.</p>
+<blockquote>
+<p>“The system must route each request to the capability that can handle it.”</p>
+</blockquote>
+<pre><code class="language-text">              ┌→ Policy question → Retrieval
+Request → Route├→ Order status   → Live tool
+              └→ Refund         → Decision + action workflow
+</code></pre>
+<p>Routing can use rules or a classifier where sufficient; use model reasoning when the task requires it.</p>
+<h4 id="5-fr6-reason-produce-an-answer-or-recommendation">5. FR6 Reason — Produce an Answer or Recommendation<a class="anchor" href="#5-fr6-reason-produce-an-answer-or-recommendation" aria-label="Link to 5. FR6 Reason — Produce an Answer or Recommendation">#</a></h4>
+<p>Use available evidence to answer, determine eligibility, or propose a next step. State missing information rather than inventing it.</p>
+<blockquote>
+<p>“The system must assess refund eligibility from policy and order data, and explain its recommendation.”</p>
+</blockquote>
+<pre><code class="language-text">Policy + order facts → Eligibility recommendation
+                                  ↓
+                         Not yet a refund
+</code></pre>
+<p>The model&#39;s recommendation does not replace authoritative business-policy checks.</p>
+<h4 id="6-fr7-tool-access-live-systems">6. FR7 Tool — Access Live Systems<a class="anchor" href="#6-fr7-tool-access-live-systems" aria-label="Link to 6. FR7 Tool — Access Live Systems">#</a></h4>
+<p>Read current state through approved APIs or tools. Validate inputs and enforce access for the requested operation.</p>
+<blockquote>
+<p>“The system must fetch the current status of the user&#39;s order from the order system.”</p>
+</blockquote>
+<pre><code class="language-text">“Where is order #123?”
+           ↓
+Authorized get_order_status(123)
+           ↓
+Current result → Response
+</code></pre>
+<p>Maintained policy knowledge and current transactional state need different access paths.</p>
+<h4 id="7-fr8-act-fr9-hitl-execute-permitted-actions">7. FR8 Act + FR9 HITL — Execute Permitted Actions<a class="anchor" href="#7-fr8-act-fr9-hitl-execute-permitted-actions" aria-label="Link to 7. FR8 Act + FR9 HITL — Execute Permitted Actions">#</a></h4>
+<p>Execute approved changes through controlled tools. Human-in-the-loop (HITL) adds review or approval when customer policy or risk requires it.</p>
+<blockquote>
+<p>“The system must issue permitted refunds and request manager approval for cases covered by the approval policy.”</p>
+</blockquote>
+<pre><code class="language-text">Agent recommends → Policy checks
+                         ↓
+                ┌────────┴────────┐
+             Allowed          Approval needed
+                ↓                 ↓
+             Executor       Human decision
+                ↑                 ↓
+                └── Execute only if approved
+</code></pre>
+<p>Give the reviewer the request, evidence, recommendation, and policy reason. Approval does not remove permission checks or safe execution requirements.</p>
+<h4 id="8-fr10-failure-define-uncertainty-and-failure-behavior">8. FR10 Failure — Define Uncertainty and Failure Behavior<a class="anchor" href="#8-fr10-failure-define-uncertainty-and-failure-behavior" aria-label="Link to 8. FR10 Failure — Define Uncertainty and Failure Behavior">#</a></h4>
+<p>Define what the user or operator experiences when the system cannot complete the task safely.</p>
+<blockquote>
+<p>“The system must ask for clarification, return a supported partial result, or escalate when evidence or dependencies are insufficient.”</p>
+</blockquote>
+<pre><code class="language-text">Missing information → Clarify
+No supporting policy → Explain limitation / escalate
+Order API fails      → Safe retry / fallback / escalate
+Refund status unknown → Reconcile before another write
+</code></pre>
+<p>Do not report a refund as completed without confirmation. Retries must not create duplicate side effects; detailed retry and idempotency design comes later.</p>
+<h4 id="9-fr11-audit-fr12-feedback-record-what-happened-and-whether-it-worked">9. FR11 Audit + FR12 Feedback — Record What Happened and Whether It Worked<a class="anchor" href="#9-fr11-audit-fr12-feedback-record-what-happened-and-whether-it-worked" aria-label="Link to 9. FR11 Audit + FR12 Feedback — Record What Happened and Whether It Worked">#</a></h4>
+<p>Record the evidence, important decisions, tool operations, approvals, and final result. Capture feedback and actual outcomes for evaluation.</p>
+<blockquote>
+<p>“The system must make refund decisions traceable and capture whether the support case was successfully resolved.”</p>
+</blockquote>
+<pre><code class="language-text">Request → Evidence → Policy / approval → Action result
+                                            ↓
+                                       Audit record
+
+Resolved? Reopened? Human override? → Outcome feedback
+</code></pre>
+<p>Capture decision summaries and supporting evidence, not private model reasoning. Keep records within the customer&#39;s privacy and retention rules.</p>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<p>Write the capability first. Then justify the design that supports it.</p>
+<table>
+<thead>
+<tr>
+<th>Customer need / requirement</th>
+<th>Component or pattern</th>
+<th>Why it follows</th>
+<th>Main trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Continue a conversation or paused task</td>
+<td>Context/state store</td>
+<td>Preserve relevant task information</td>
+<td>Retention and state complexity</td>
+</tr>
+<tr>
+<td>Answer from company policy</td>
+<td>RAG retrieval path</td>
+<td>Supply approved evidence</td>
+<td>Freshness and retrieval quality</td>
+</tr>
+<tr>
+<td>Respect different access rights</td>
+<td>Authorization + permission-aware retrieval/tools</td>
+<td>Enforce access at each boundary</td>
+<td>Integration effort</td>
+</tr>
+<tr>
+<td>Handle different request types</td>
+<td>Router or workflow branching</td>
+<td>Select the required capability</td>
+<td>Misrouting and routing overhead</td>
+</tr>
+<tr>
+<td>Read current order status</td>
+<td>Controlled order API/tool</td>
+<td>Query current source-of-truth data</td>
+<td>Dependency latency and failure</td>
+</tr>
+<tr>
+<td>Issue refunds under approval rules</td>
+<td>Policy + executor + approval workflow</td>
+<td>Separate proposal from permitted execution</td>
+<td>Approval delay and durable state</td>
+</tr>
+<tr>
+<td>Explain why a refund occurred</td>
+<td>Audit records</td>
+<td>Link evidence, approval, and action</td>
+<td>Storage and privacy constraints</td>
+</tr>
+<tr>
+<td>Learn whether cases were resolved</td>
+<td>Outcome/feedback capture</td>
+<td>Evaluate task success</td>
+<td>Feedback can be incomplete or biased</td>
+</tr>
+</tbody></table>
+<p><strong>Gateway terminology, when those components become relevant:</strong></p>
+<pre><code class="language-text">API Gateway   = User → Application control
+Model Gateway = Application → Model control
+</code></pre>
+<p>User/tenant request controls belong at the API Gateway boundary. Model-provider routing and fallback belong at the Model Gateway boundary. Neither gateway replaces permission checks in retrieval or downstream tools.</p>
+<h4 id="example-customer-support">Example — Customer Support<a class="anchor" href="#example-customer-support" aria-label="Link to Example — Customer Support">#</a></h4>
+<p>Customer asks for policy answers, order status, and eligible refunds.</p>
+<pre><code class="language-text">Request → Understand + context → Route
+                                  ↓
+                    ┌─────────────┼────────────┐
+                 Policy         Order        Refund
+                    ↓             ↓            ↓
+                Retrieve       Live tool   Policy + order data
+                    ↓             ↓            ↓
+                  Answer        Answer    Recommend + policy check
+                                               ↓
+                                        Act / approval
+
+Across the flow: permissions + safe failure + audit + outcomes
+</code></pre>
+<p>Start with 6–8 grouped requirements in the interview, rather than reciting all twelve labels:</p>
+<ol>
+<li>Understand requests and maintain relevant context.</li>
+<li>Answer policy questions using authorized enterprise knowledge.</li>
+<li>Read current order information through permitted tools.</li>
+<li>Route requests and produce grounded answers or recommendations.</li>
+<li>Execute allowed refunds with policy checks and approval where required.</li>
+<li>Clarify or escalate when evidence, tools, or approvals are unavailable.</li>
+<li>Record evidence, decisions, approvals, and action results.</li>
+<li>Capture resolution outcomes and feedback.</li>
+</ol>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><p><strong>FR vs NFR:</strong> “Fetch order status” is a capability. “Fetch it within an agreed latency target” adds a performance constraint. Security can include both permission-enforcement behavior and broader constraints.</p>
+</li>
+<li><p><strong>RAG vs tool:</strong> “What is the refund policy?” → retrieve knowledge. “Has my refund completed?” → query live state.</p>
+</li>
+<li><p><strong>Reason vs act:</strong> “Customer appears eligible” is a recommendation. Calling the payment API causes the business change.</p>
+<pre><code class="language-text">Agent recommends → Policy decides → Executor acts
+</code></pre>
+</li>
+<li><p><strong>Route vs multi-agent:</strong> multiple request types require routing; they do not automatically require multiple agents.</p>
+</li>
+<li><p><strong>Observability vs audit:</strong> “Why was it slow?” concerns system behavior. “Why was this refund issued?” needs the evidence, policy, approval, and action record. A good answer also does not prove successful task completion.</p>
+</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>If the interviewer says…</th>
+<th>Think…</th>
+<th>Then discuss…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Follow-up questions”</td>
+<td>FR2 Context</td>
+<td>Relevant conversation state</td>
+</tr>
+<tr>
+<td>“Company policies”</td>
+<td>FR3 Retrieve</td>
+<td>Approved sources and evidence</td>
+</tr>
+<tr>
+<td>“Different users see different data”</td>
+<td>FR4 Permissions</td>
+<td>Access-aware retrieval and tools</td>
+</tr>
+<tr>
+<td>“Several request types”</td>
+<td>FR5 Route</td>
+<td>Capability selection; agents only if justified</td>
+</tr>
+<tr>
+<td>“Recommend the next step”</td>
+<td>FR6 Reason</td>
+<td>Evidence and decision proposal</td>
+</tr>
+<tr>
+<td>“Current order status”</td>
+<td>FR7 Tool</td>
+<td>Authorized live API access</td>
+</tr>
+<tr>
+<td>“Issue a refund”</td>
+<td>FR8 Act</td>
+<td>Policy, controlled execution, confirmation</td>
+</tr>
+<tr>
+<td>“Manager must approve”</td>
+<td>FR9 HITL</td>
+<td>Approval context and resumable workflow</td>
+</tr>
+<tr>
+<td>“AI lacks evidence / API fails”</td>
+<td>FR10 Failure</td>
+<td>Clarification, safe fallback, escalation</td>
+</tr>
+<tr>
+<td>“Why did it do this?”</td>
+<td>FR11 Audit</td>
+<td>Evidence, decision, approval, action result</td>
+</tr>
+<tr>
+<td>“Did it actually work?”</td>
+<td>FR12 Feedback</td>
+<td>Resolution, reopen, override, user feedback</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“Based on discovery, I’ll summarize what the system must do before choosing the architecture.”</p>
+</blockquote>
+<blockquote>
+<p>“I’ll separate policy knowledge from live order data because they need different access paths.”</p>
+</blockquote>
+<blockquote>
+<p>“The requirement is to route work to the right capability; multiple agents are a later design choice.”</p>
+</blockquote>
+<blockquote>
+<p>“I’ll separate the recommendation, policy decision, and actual execution.”</p>
+</blockquote>
+<blockquote>
+<p>“Alongside the happy path, I’ll define what happens when evidence, tools, or approval are unavailable.”</p>
+</blockquote>
+<blockquote>
+<p>“I’ll measure whether the task completed, not just whether the response sounded helpful.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>Define 6–8 functional requirements for a support system that answers policies, checks orders, and issues eligible refunds. Which require retrieval, tools, or actions?</li>
+<li>A user says, “Can I cancel it?” after asking about an order. What requirements handle context, ambiguity, and authorization?</li>
+<li>The customer changes the scope from recommending refunds to executing them. Which requirements become necessary or more explicit?</li>
+<li>Manager approval may take hours, and the payment API can time out. What behavior must the system support while waiting and when action status is unknown?</li>
+<li>A response gets a thumbs-up, but the ticket reopens the next day. What should feedback capture, and how does that differ from audit?</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-02-functional-requirements.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

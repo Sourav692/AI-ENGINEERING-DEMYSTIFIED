@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 1 — FDE Problem Decomposition.">
+  <title>Module 1 — FDE Problem Decomposition — Concise Interview Module</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
+      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
+      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
+      --code-bg: #111827; --code-text: #e8eef8;
+      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
+        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
+        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
+        --code-bg: #080d17; --code-text: #e8eef8;
+        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
+    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
+    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
+    p { margin: .75rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .25rem; }
+    strong { color: var(--text); }
+    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    blockquote {
+      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
+      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+    }
+    blockquote p { margin: 0; }
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      background: var(--code-bg); color: var(--code-text);
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
+      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre code { padding: 0; background: transparent; font: inherit; }
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
+    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); }
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .switch {
+      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      pre { font-size: .79rem; }
+    }
+  
+    .layout { display: grid; grid-template-columns: 250px minmax(0, 880px); gap: 30px; width: min(1200px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow: auto; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+    nav h2 { margin: 0 0 10px; padding: 0; border: 0; color: var(--muted); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 3px; }
+    nav a { display: block; padding: 6px 8px; border-radius: 6px; color: var(--muted); font-size: .84rem; line-height: 1.35; text-decoration: none; }
+    nav a:hover { color: var(--accent); background: var(--accent-soft); }
+    main { min-width: 0; padding: clamp(26px, 5vw, 58px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+    @media (max-width: 900px) { .layout { display: block; width: min(100% - 20px, 880px); margin: 10px auto; } nav { position: static; max-height: none; margin-bottom: 10px; } main { border-radius: 12px; } }
+    @media print { @page { size: A4; margin: 14mm; } :root { color-scheme: light; } body { background: #fff; color: #111; font-size: 10pt; } .layout { display: block; width: 100%; margin: 0; } nav, .switch, .anchor, .source-note { display: none; } main { padding: 0; border: 0; box-shadow: none; } pre, blockquote, table { break-inside: avoid; } }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts-ten-questions-to-memorize">3. Essential Concepts — Ten Questions to Memorize</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><div class="eyebrow">Concise Interview Module</div><a class="switch" href="one-page-memory-card.html">Open memory card →</a></div>
+    <h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you turn a vague customer request into a clear engineering problem?</li>
+<li>Can you find the business outcome and current bottleneck before choosing technology?</li>
+<li>Can you connect customer answers to requirements, risks, and design decisions?</li>
+<li>Can you lead a natural conversation, then summarize what you learned?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<p>Remember six buckets. They cover the ten discovery questions below.</p>
+<pre><code class="language-text">WHY?          Business problem + success
+   ↓
+TODAY?        Current workflow + pain
+   ↓
+WHO / HOW MUCH?  Users + scale
+   ↓
+WHAT?         Data + integrations
+   ↓
+HOW FAR?      Answer → Recommend → Act
+   ↓
+BOUNDARIES?   Failure + security + latency + cost
+   ↓
+Functional + non-functional requirements
+   ↓
+Architecture
+</code></pre>
+<p>Use this as a coverage checklist. The customer&#39;s answer decides the next question.</p>
+<h3 id="3-essential-concepts-ten-questions-to-memorize">3. Essential Concepts — Ten Questions to Memorize<a class="anchor" href="#3-essential-concepts-ten-questions-to-memorize" aria-label="Link to 3. Essential Concepts — Ten Questions to Memorize">#</a></h3>
+<h4 id="1-business-why-does-the-customer-need-this">1. Business — Why does the customer need this?<a class="anchor" href="#1-business-why-does-the-customer-need-this" aria-label="Link to 1. Business — Why does the customer need this?">#</a></h4>
+<p>“We need an AI agent” tells you their proposed solution. Find the problem it should solve.</p>
+<blockquote>
+<p>“What problem are we solving, and what business outcome matters most?”</p>
+</blockquote>
+<pre><code class="language-text">“We need an agent”
+        ↓ Why?
+“Agents spend too long on repetitive tickets”
+        ↓
+Goal: reduce manual work without hurting service
+</code></pre>
+<h4 id="2-current-workflow-where-does-the-work-get-stuck">2. Current Workflow — Where does the work get stuck?<a class="anchor" href="#2-current-workflow-where-does-the-work-get-stuck" aria-label="Link to 2. Current Workflow — Where does the work get stuck?">#</a></h4>
+<p>Understand the human steps, existing systems, and bottleneck. This tells you what to automate or assist.</p>
+<blockquote>
+<p>“Can you walk me through how this works today and where the biggest pain points are?”</p>
+</blockquote>
+<pre><code class="language-text">Ticket → Read → Search policy → Check order
+       → Decide resolution → Sometimes refund
+</code></pre>
+<p>Follow up: “Which step takes the most time or causes the most mistakes?”</p>
+<h4 id="3-users-and-scale-who-uses-it-and-how-much-work-arrives">3. Users and Scale — Who uses it, and how much work arrives?<a class="anchor" href="#3-users-and-scale-who-uses-it-and-how-much-work-arrives" aria-label="Link to 3. Users and Scale — Who uses it, and how much work arrives?">#</a></h4>
+<p>Identify customers, employees, managers, and administrators. Ask about normal traffic, peaks, concurrent work, and growth; user count alone does not describe load.</p>
+<blockquote>
+<p>“Who will use it, and what volume, peak concurrency, and growth should we design for?”</p>
+</blockquote>
+<pre><code class="language-text">Support agent → Assistance
+Customer      → Self-service
+Manager       → Approval
+
+Users ≠ requests/second ≠ concurrent workflows
+</code></pre>
+<h4 id="4-data-what-information-is-needed-and-how-fresh">4. Data — What information is needed, and how fresh?<a class="anchor" href="#4-data-what-information-is-needed-and-how-fresh" aria-label="Link to 4. Data — What information is needed, and how fresh?">#</a></h4>
+<p>Find the sources, formats, freshness needs, and access permissions. Separate reference knowledge from live system state.</p>
+<blockquote>
+<p>“What data does the system need, where does it live, and how fresh must it be?”</p>
+</blockquote>
+<pre><code class="language-text">Refund policy         → Approved knowledge → RAG
+Current refund status → System of record   → API/tool
+</code></pre>
+<p>RAG means retrieval-augmented generation: retrieve relevant knowledge to support the model&#39;s answer.</p>
+<h4 id="5-autonomy-what-is-the-ai-allowed-to-do">5. Autonomy — What is the AI allowed to do?<a class="anchor" href="#5-autonomy-what-is-the-ai-allowed-to-do" aria-label="Link to 5. Autonomy — What is the AI allowed to do?">#</a></h4>
+<p>Answering, recommending, and executing create different requirements. Clarify permitted actions and approval rules before designing an agent.</p>
+<blockquote>
+<p>“Should AI only answer or recommend, or can it take actions? Which actions need human approval?”</p>
+</blockquote>
+<pre><code class="language-text">Answer → Recommend → Act
+                     ↓
+       Permissions + policy + safe execution
+                     ↓
+          Human approval where required
+</code></pre>
+<p>Human-in-the-loop (HITL) means a human participates in the decision or approval workflow. Risk depends on the actual action and customer policy.</p>
+<h4 id="6-success-what-measurable-result-matters">6. Success — What measurable result matters?<a class="anchor" href="#6-success-what-measurable-result-matters" aria-label="Link to 6. Success — What measurable result matters?">#</a></h4>
+<p>Agree on a baseline and target across business outcome, AI quality, system performance, and cost. Confirm the customer&#39;s numbers; examples are not universal targets.</p>
+<blockquote>
+<p>“How will we measure success, and what must stay within acceptable limits?”</p>
+</blockquote>
+<pre><code class="language-text">Business: manual workload / resolution time
+AI:       correctness / groundedness / task success
+System:   latency / availability / errors
+Cost:     cost per successfully resolved case
+</code></pre>
+<p>Reducing human-handled tickets is useful only if resolution quality and customer satisfaction remain acceptable.</p>
+<h4 id="7-failure-what-should-happen-when-it-cannot-complete-safely">7. Failure — What should happen when it cannot complete safely?<a class="anchor" href="#7-failure-what-should-happen-when-it-cannot-complete-safely" aria-label="Link to 7. Failure — What should happen when it cannot complete safely?">#</a></h4>
+<p>Ask about missing evidence, ambiguous requests, dependency failure, and unavailable approvers. Define a safe fallback rather than letting the model guess.</p>
+<blockquote>
+<p>“What should happen if the AI lacks evidence, a tool fails, or an action cannot be approved?”</p>
+</blockquote>
+<pre><code class="language-text">Ambiguous request → Ask clarification
+Missing evidence  → Explain limitation / escalate
+Tool failure      → Safe retry / fallback / escalate
+Risky action      → Stop or request approval
+</code></pre>
+<p>A timeout after an action does not prove the action failed. Check its status before retrying; duplicate refunds must be prevented.</p>
+<h4 id="8-security-what-boundaries-must-the-system-respect">8. Security — What boundaries must the system respect?<a class="anchor" href="#8-security-what-boundaries-must-the-system-respect" aria-label="Link to 8. Security — What boundaries must the system respect?">#</a></h4>
+<p>Clarify access control, tenant isolation, personally identifiable information (PII), retention, approved providers, and data residency where relevant.</p>
+<blockquote>
+<p>“Who can access which data and actions, and are there restrictions on where data and models can run?”</p>
+</blockquote>
+<pre><code class="language-text">Identity → Permission scope → Authorized retrieval
+                           → Authorized tools
+</code></pre>
+<p>Enforce access before restricted information enters the model&#39;s context. A prompt is not an access-control boundary.</p>
+<h4 id="9-integrations-which-systems-must-it-read-or-change">9. Integrations — Which systems must it read or change?<a class="anchor" href="#9-integrations-which-systems-must-it-read-or-change" aria-label="Link to 9. Integrations — Which systems must it read or change?">#</a></h4>
+<p>Check whether APIs exist, which operations are read-only or write-capable, and whether dependencies are slow, unreliable, or asynchronous.</p>
+<blockquote>
+<p>“Which existing systems must this integrate with, and how reliable are their APIs?”</p>
+</blockquote>
+<pre><code class="language-text">Read order status → Read tool
+Issue refund      → Controlled write tool
+                   + policy + audit
+</code></pre>
+<p>Enterprise integration may be the hardest part even when the AI reasoning is simple.</p>
+<h4 id="10-operating-envelope-how-well-must-it-work">10. Operating Envelope — How well must it work?<a class="anchor" href="#10-operating-envelope-how-well-must-it-work" aria-label="Link to 10. Operating Envelope — How well must it work?">#</a></h4>
+<p>Non-functional requirements (NFRs) describe how well the system must work. Clarify latency, availability, throughput, and cost by workload.</p>
+<blockquote>
+<p>“What latency, availability, and cost limits matter, and do different workloads need different targets?”</p>
+</blockquote>
+<pre><code class="language-text">Interactive support → Short response target
+Long research task  → Longer completion may be acceptable
+                      + progress / async delivery
+</code></pre>
+<p>Agree on service-level objectives (SLOs), such as a percentile latency target, after understanding the user experience.</p>
+<h4 id="how-to-ask-these-naturally">How to Ask These Naturally<a class="anchor" href="#how-to-ask-these-naturally" aria-label="Link to How to Ask These Naturally">#</a></h4>
+<pre><code class="language-text">You:      What outcome matters most?
+Customer: Less time on repetitive support tickets.
+   ↓
+You:      What does an agent do with one of those tickets?
+Customer: Search policy, then check the order system.
+   ↓
+You:      So we need policy knowledge and live order data.
+          Are we assisting the agent or taking actions too?
+Customer: Eventually refunds, with manager approval.
+   ↓
+You:      Which refunds need approval, and what should
+          happen when approval or the order API is unavailable?
+</code></pre>
+<p>Then cover remaining gaps in scale, success, security, and operating limits. Summarize your understanding and let the customer correct it.</p>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<p>These are possible design consequences of discovery. Confirm the requirement before adding the component.</p>
+<table>
+<thead>
+<tr>
+<th>Customer need / requirement</th>
+<th>Component or pattern</th>
+<th>Why it follows</th>
+<th>Main trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Answer from approved policies</td>
+<td>RAG</td>
+<td>Ground answers in maintained knowledge</td>
+<td>Freshness and retrieval quality</td>
+</tr>
+<tr>
+<td>Check current order state</td>
+<td>Order API/tool</td>
+<td>Query the system of record</td>
+<td>Dependency latency and failure</td>
+</tr>
+<tr>
+<td>Different users have different access</td>
+<td>Authorization + permission-aware retrieval/tools</td>
+<td>Enforce access at the data and action boundaries</td>
+<td>More integration work</td>
+</tr>
+<tr>
+<td>Enforce user/tenant request limits</td>
+<td>API Gateway</td>
+<td>Control traffic entering the application</td>
+<td>Limits may reject valid bursts</td>
+</tr>
+<tr>
+<td>Use multiple model providers with fallback</td>
+<td>Model Gateway</td>
+<td>Control application calls to models</td>
+<td>Fallback may change quality or behavior</td>
+</tr>
+<tr>
+<td>Execute refunds with approval rules</td>
+<td>Policy + executor + HITL where required</td>
+<td>Separate recommendation from permitted execution</td>
+<td>Approval adds delay</td>
+</tr>
+<tr>
+<td>Long work or traffic bursts</td>
+<td>Queue + durable workflow state, if needed</td>
+<td>Process accepted work outside the immediate response</td>
+<td>Queue wait and more state to manage</td>
+</tr>
+</tbody></table>
+<pre><code class="language-text">API Gateway   = User → Application control
+Model Gateway = Application → Model control
+</code></pre>
+<p><strong>Transition into Module 2:</strong></p>
+<blockquote>
+<p>“Based on discovery, I’ll summarize what the system must do and how well it must do it before choosing components.”</p>
+</blockquote>
+<pre><code class="language-text">Problem / outcome: __________________________
+Users / current pain: _______________________
+Must do: answer ___, read ___, act ___
+Data / integrations: ________________________
+Allowed actions / approval: _________________
+Failure behavior: ___________________________
+Scale / latency / availability / cost: _______
+Security boundaries: ________________________
+Success baseline / target: __________________
+Open questions / assumptions: _______________
+</code></pre>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><p><strong>Business problem vs solution:</strong> “Build an agent” does not explain the pain. Ask why and what changes if it works.</p>
+</li>
+<li><p><strong>RAG vs live tool:</strong> policy knowledge can come from retrieval; current refund status should come from the live system. Indexed data is only acceptable when its freshness meets the requirement.</p>
+</li>
+<li><p><strong>Recommend vs act:</strong> “Eligible for a refund” is a proposal. Issuing the refund is a side effect that needs explicit controls.</p>
+<pre><code class="language-text">Agent recommends → Policy decides → Executor acts
+</code></pre>
+</li>
+<li><p><strong>Success vs constraint:</strong> “Reduce resolution time” is an outcome; “meet an agreed latency target” constrains the solution. Capture both.</p>
+</li>
+<li><p><strong>Coverage checklist vs fixed script:</strong> follow the customer&#39;s answers, then check for missing buckets. State unresolved assumptions instead of inventing traffic, targets, or approval rules.</p>
+</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>If the interviewer says…</th>
+<th>Think…</th>
+<th>Then discuss…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“We want an AI agent”</td>
+<td>Problem vs proposed solution</td>
+<td>Business pain, outcome, current workflow</td>
+</tr>
+<tr>
+<td>“Agents spend time searching policies”</td>
+<td>Knowledge retrieval</td>
+<td>Sources, freshness, permissions</td>
+</tr>
+<tr>
+<td>“Where is my order right now?”</td>
+<td>Live data</td>
+<td>System of record, API availability</td>
+</tr>
+<tr>
+<td>“It should issue refunds”</td>
+<td>Action and risk</td>
+<td>Allowed writes, policy, approval, duplicate prevention</td>
+</tr>
+<tr>
+<td>“Managers must approve”</td>
+<td>HITL</td>
+<td>Approval rules, context, wait/failure behavior</td>
+</tr>
+<tr>
+<td>“100K users”</td>
+<td>Workload discovery</td>
+<td>Active users, request rate, peaks, concurrency</td>
+</tr>
+<tr>
+<td>“Different companies use it”</td>
+<td>Tenant boundaries</td>
+<td>Data isolation, permissions, fair resource use</td>
+</tr>
+<tr>
+<td>“It should be fast and cheap”</td>
+<td>Measurable NFRs</td>
+<td>Workload-specific latency and cost targets</td>
+</tr>
+<tr>
+<td>“What if the API is down?”</td>
+<td>Safe failure</td>
+<td>Fallback, safe retries, escalation</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“Before choosing components, I’d understand the business outcome and how the work happens today.”</p>
+</blockquote>
+<blockquote>
+<p>“Is the answer in maintained reference material, or does it depend on current system state?”</p>
+</blockquote>
+<blockquote>
+<p>“Are we assisting a human, recommending an action, or executing it? That changes the controls we need.”</p>
+</blockquote>
+<blockquote>
+<p>“When you say 100K users, what peak request volume and concurrent work should we expect?”</p>
+</blockquote>
+<blockquote>
+<p>“Let me summarize the requirements and open questions so we can confirm I’m solving the right problem.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>A customer says, “Build an AI support agent.” What are your first five questions, and how would each answer guide the next?</li>
+<li>Agents search policies, check order status, and sometimes issue refunds. Separate the data needs and autonomy decisions before naming components.</li>
+<li>The customer asks for a multi-agent architecture. What would you ask to determine whether the workflow requires it?</li>
+<li>The goal is 30% fewer manually handled tickets. What baseline, quality checks, and operating constraints would you clarify?</li>
+<li>Refunds need manager approval, and the order API sometimes times out. What failure and integration requirements would you capture before drawing the architecture?</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-01-fde-problem-decomposition.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

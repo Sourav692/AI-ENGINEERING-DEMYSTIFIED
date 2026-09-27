@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="One-page memory card for Module 2 — Functional Requirements.">
+  <title>Module 2 — Functional Requirements — One-Page Memory Card</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
+      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
+      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
+      --code-bg: #111827; --code-text: #e8eef8;
+      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
+        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
+        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
+        --code-bg: #080d17; --code-text: #e8eef8;
+        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
+    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
+    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
+    p { margin: .75rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .25rem; }
+    strong { color: var(--text); }
+    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    blockquote {
+      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
+      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+    }
+    blockquote p { margin: 0; }
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      background: var(--code-bg); color: var(--code-text);
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
+      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre code { padding: 0; background: transparent; font: inherit; }
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
+    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); }
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .switch {
+      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      pre { font-size: .79rem; }
+    }
+  
+    body { padding: 20px; }
+    .card { width: min(1180px, 100%); margin: 0 auto; padding: clamp(22px, 4vw, 42px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+    .memory-content { columns: 2 420px; column-gap: 30px; column-rule: 1px solid var(--line); }
+    .memory-content > h1, .memory-content > h2 { column-span: all; }
+    .memory-content h2 { margin-top: 0; }
+    .memory-content h3 { break-after: avoid; }
+    .memory-content pre, .memory-content blockquote, .memory-content table, .memory-content ul, .memory-content ol { break-inside: avoid; }
+    @media (max-width: 760px) { body { padding: 10px; } .card { padding: 22px; } .memory-content { columns: 1; } }
+    @media print {
+      @page { size: A4 landscape; margin: 6mm; }
+      :root { color-scheme: light; --bg: #fff; --surface: #fff; --surface-2: #f5f5f5; --text: #111; --muted: #444; --line: #aaa; --accent: #1e40af; --quote: #0f766e; --code-bg: #f6f7f9; --code-text: #111; }
+      html, body { width: 100%; margin: 0; padding: 0; background: #fff; font-size: 7.7pt; line-height: 1.25; }
+      .card { width: 100%; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; }
+      .topbar { margin-bottom: 2mm; padding-bottom: 1.5mm; }
+      .switch, .anchor, .source-note { display: none; }
+      h1 { font-size: 17pt; }
+      h2 { margin: 1.5mm 0 1mm; padding-bottom: .7mm; font-size: 11.5pt; }
+      h3 { margin: 1.8mm 0 .7mm; font-size: 9.2pt; }
+      p { margin: .8mm 0; }
+      ul, ol { margin: .8mm 0; padding-left: 4mm; }
+      li + li { margin-top: .3mm; }
+      pre { margin: 1mm 0; padding: 1.6mm 2mm; border: 1px solid #bbb; border-radius: 1.5mm; font-size: 6.8pt; line-height: 1.15; white-space: pre-wrap; }
+      blockquote { margin: 1mm 0; padding: 1.2mm 2mm; }
+      .memory-content { columns: 3; column-gap: 5mm; column-rule: .3mm solid #ccc; }
+      .table-wrap { margin: 1mm 0; overflow: visible; }
+      table { font-size: 6.5pt; line-height: 1.13; }
+      th, td { padding: .8mm 1mm; border-color: #aaa; }
+    }
+  </style>
+</head>
+<body><main class="card">
+  <div class="topbar"><div class="eyebrow">One-Page Memory Card</div><a class="switch" href="concise-interview-module.html">← Open concise module</a></div>
+  <article class="memory-content"><h1 id="module-2-functional-requirements">Module 2 — Functional Requirements<a class="anchor" href="#module-2-functional-requirements" aria-label="Link to Module 2 — Functional Requirements">#</a></h1>
+<h2 id="one-page-memory-card-functional-requirements">ONE-PAGE MEMORY CARD — Functional Requirements<a class="anchor" href="#one-page-memory-card-functional-requirements" aria-label="Link to ONE-PAGE MEMORY CARD — Functional Requirements">#</a></h2>
+<p><strong>Core question:</strong> What must the system DO, based on the customer needs discovered in Module 1?</p>
+<h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
+<pre><code class="language-text">Discovery → Needs → FRs → Architecture
+
+UNDERSTAND → CONTEXT → RETRIEVE → PERMISSIONS
+                         ↓
+             ROUTE → REASON → TOOL → ACT
+                         ↓
+            HITL → FAILURE → AUDIT → FEEDBACK
+</code></pre>
+<p>This is a coverage checklist, not a fixed pipeline. Select what applies. Permissions and safe failure run across the flow.</p>
+<h3 id="twelve-reusable-frs">Twelve Reusable FRs<a class="anchor" href="#twelve-reusable-frs" aria-label="Link to Twelve Reusable FRs">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>Recall question</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Understand</td>
+<td>What inputs and intents must we handle?</td>
+</tr>
+<tr>
+<td>2. Context</td>
+<td>What conversation or workflow state must continue?</td>
+</tr>
+<tr>
+<td>3. Retrieve</td>
+<td>What approved knowledge supports the answer?</td>
+</tr>
+<tr>
+<td>4. Permissions</td>
+<td>What data and actions may this user access?</td>
+</tr>
+<tr>
+<td>5. Route</td>
+<td>Which capability should handle the request?</td>
+</tr>
+<tr>
+<td>6. Reason</td>
+<td>What answer or recommendation must we produce?</td>
+</tr>
+<tr>
+<td>7. Tool</td>
+<td>What current system data must we read?</td>
+</tr>
+<tr>
+<td>8. Act</td>
+<td>What permitted business changes can we execute?</td>
+</tr>
+<tr>
+<td>9. HITL</td>
+<td>When must a human review or approve?</td>
+</tr>
+<tr>
+<td>10. Failure</td>
+<td>What happens with ambiguity, missing evidence, or failure?</td>
+</tr>
+<tr>
+<td>11. Audit</td>
+<td>Can we reconstruct evidence, decisions, approvals, and results?</td>
+</tr>
+<tr>
+<td>12. Feedback</td>
+<td>Was the task resolved, reopened, or overridden?</td>
+</tr>
+</tbody></table>
+<p>RAG = retrieval-augmented generation. HITL = human-in-the-loop.</p>
+<h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Follow-up question”</td>
+<td>Context</td>
+</tr>
+<tr>
+<td>“Policy documents / restricted access”</td>
+<td>Retrieve + permissions</td>
+</tr>
+<tr>
+<td>“Different request types”</td>
+<td>Route</td>
+</tr>
+<tr>
+<td>“Current order state”</td>
+<td>Live tool/API</td>
+</tr>
+<tr>
+<td>“Recommend / issue refund”</td>
+<td>Reason / act</td>
+</tr>
+<tr>
+<td>“Manager approval”</td>
+<td>HITL + workflow state</td>
+</tr>
+<tr>
+<td>“No evidence / API unavailable”</td>
+<td>Failure behavior</td>
+</tr>
+<tr>
+<td>“Why did it refund? / Did it resolve?”</td>
+<td>Audit / outcome feedback</td>
+</tr>
+</tbody></table>
+<h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
+<ol>
+<li><strong>FR vs NFR:</strong> capability vs how well it must work. “Read order status” vs an agreed latency target.</li>
+<li><strong>RAG vs live tool:</strong> maintained policy knowledge vs current transactional state.</li>
+<li><strong>Recommend vs act:</strong> agent recommends → policy decides → executor acts. Human approval applies where required.</li>
+<li><strong>Audit vs observability:</strong> business decision/action trace vs system behavior. Response quality is also not proof of task success.</li>
+</ol>
+<h3 id="requirement-component">Requirement → Component<a class="anchor" href="#requirement-component" aria-label="Link to Requirement → Component">#</a></h3>
+<pre><code class="language-text">Relevant context   → Context/state store
+Approved knowledge → RAG
+Live data          → Controlled API/tool
+Permitted action   → Policy + executor
+Approval           → Human workflow + state
+Traceability       → Audit records
+
+API Gateway   = User → Application control
+Model Gateway = Application → Model control
+</code></pre>
+<p>Do not force every component into the design. Routing does not automatically mean multiple agents.</p>
+<h3 id="30-second-requirements-summary">30-Second Requirements Summary<a class="anchor" href="#30-second-requirements-summary" aria-label="Link to 30-Second Requirements Summary">#</a></h3>
+<blockquote>
+<p>“For this support use case, the system must understand requests and retain relevant context, retrieve authorized policy knowledge, and access live order data. It should route requests, produce grounded answers or recommendations, and execute allowed refunds with policy checks and approval where required. It must clarify or escalate failures, record important decisions and actions, and capture resolution outcomes. I’ll select the requirements that apply, then define the non-functional targets.”</p>
+</blockquote>
+<p>For action failures, never claim completion without confirmation. Unknown status requires reconciliation; retries must prevent duplicate side effects.</p>
+</article>
+  <div class="source-note">Generated from module-02-functional-requirements.md · Print layout: A4 landscape</div>
+</main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

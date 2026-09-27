@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 6 — Agentic Architecture.">
+  <title>Module 6 — Agentic Architecture — Concise Interview Module</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
+      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
+      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
+      --code-bg: #111827; --code-text: #e8eef8;
+      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
+        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
+        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
+        --code-bg: #080d17; --code-text: #e8eef8;
+        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
+    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
+    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
+    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
+    p { margin: .75rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .25rem; }
+    strong { color: var(--text); }
+    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    blockquote {
+      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
+      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+    }
+    blockquote p { margin: 0; }
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      background: var(--code-bg); color: var(--code-text);
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
+      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    pre code { padding: 0; background: transparent; font: inherit; }
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
+    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); }
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .switch {
+      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      pre { font-size: .79rem; }
+    }
+  
+    .layout { display: grid; grid-template-columns: 250px minmax(0, 880px); gap: 30px; width: min(1200px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow: auto; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+    nav h2 { margin: 0 0 10px; padding: 0; border: 0; color: var(--muted); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; }
+    nav ul { margin: 0; padding: 0; list-style: none; }
+    nav li + li { margin-top: 3px; }
+    nav a { display: block; padding: 6px 8px; border-radius: 6px; color: var(--muted); font-size: .84rem; line-height: 1.35; text-decoration: none; }
+    nav a:hover { color: var(--accent); background: var(--accent-soft); }
+    main { min-width: 0; padding: clamp(26px, 5vw, 58px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+    @media (max-width: 900px) { .layout { display: block; width: min(100% - 20px, 880px); margin: 10px auto; } nav { position: static; max-height: none; margin-bottom: 10px; } main { border-radius: 12px; } }
+    @media print { @page { size: A4; margin: 14mm; } :root { color-scheme: light; } body { background: #fff; color: #111; font-size: 10pt; } .layout { display: block; width: 100%; margin: 0; } nav, .switch, .anchor, .source-note { display: none; } main { padding: 0; border: 0; box-shadow: none; } pre, blockquote, table { break-inside: avoid; } }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><div class="eyebrow">Concise Interview Module</div><a class="switch" href="one-page-memory-card.html">Open memory card →</a></div>
+    <h1 id="module-6-agentic-architecture">Module 6 — Agentic Architecture<a class="anchor" href="#module-6-agentic-architecture" aria-label="Link to Module 6 — Agentic Architecture">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you justify an agent instead of a fixed workflow?</li>
+<li>Can you justify multiple agents rather than assuming more is better?</li>
+<li>Can you control tool access, execution budgets, and business actions?</li>
+<li>Can you recover long tasks and evaluate the path as well as the outcome?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<p><strong>Use an agent when choosing the next step requires flexible reasoning from observations.</strong></p>
+<pre><code class="language-text">Customer task
+     ↓
+Known steps and branches? → Workflow / code
+     ↓ Flexible step selection needed
+Bounded agent
+     ↓ Clear benefit from specialization or parallel work?
+Consider multiple agents; measure the extra overhead
+</code></pre>
+<p>A workflow and agent can coexist: a fixed workflow can contain a bounded reasoning step.</p>
+<pre><code class="language-text">Task → Select next step → Controlled tool → Observe
+               ↑                            ↓
+               └──────── Continue? ─────────┘
+                              ↓
+                    Answer / stop / escalate
+</code></pre>
+<p>Business actions still follow: <strong>Agent recommends → Policy decides → Executor acts.</strong></p>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-workflow-vs-agent-match-flexibility-to-the-task">1. Workflow vs Agent — Match Flexibility to the Task<a class="anchor" href="#1-workflow-vs-agent-match-flexibility-to-the-task" aria-label="Link to 1. Workflow vs Agent — Match Flexibility to the Task">#</a></h4>
+<p>A workflow follows defined steps and branches. An agent can choose steps or tools based on the task and results. Added flexibility brings more variability and evaluation needs.</p>
+<blockquote>
+<p>“Which part needs flexible reasoning, and which part can follow known rules?”</p>
+</blockquote>
+<pre><code class="language-text">Known refund rules → Fixed policy workflow
+Investigate an unfamiliar issue → Bounded agent may help
+</code></pre>
+<p>The presence of a model call does not automatically make a workflow an agent.</p>
+<h4 id="2-single-vs-multi-agent-require-a-concrete-benefit">2. Single vs Multi-Agent — Require a Concrete Benefit<a class="anchor" href="#2-single-vs-multi-agent-require-a-concrete-benefit" aria-label="Link to 2. Single vs Multi-Agent — Require a Concrete Benefit">#</a></h4>
+<p>Start with the simplest design that meets the requirement. Consider multiple agents when distinct expertise, scoped permissions, or independent subtasks provide a measurable benefit.</p>
+<blockquote>
+<p>“Do these capabilities need separate reasoning contexts, or can one workflow route to tools?”</p>
+</blockquote>
+<pre><code class="language-text">Policy + order + refund capabilities
+                 ↓
+Not automatically three agents
+
+Independent specialist tasks
+                 ↓
+Possible parallel work → Integrate and verify results
+</code></pre>
+<p>More agents add calls, coordination, handoff errors, state, and evaluation overhead. Parallel work helps only when dependencies allow it.</p>
+<h4 id="3-routing-assign-work-to-the-right-capability">3. Routing — Assign Work to the Right Capability<a class="anchor" href="#3-routing-assign-work-to-the-right-capability" aria-label="Link to 3. Routing — Assign Work to the Right Capability">#</a></h4>
+<p>Use explicit rules, classifiers, or reasoning according to the ambiguity. Pass only the task context and access scope the recipient needs.</p>
+<blockquote>
+<p>“I’d define the routing contract and clarify what happens if classification is ambiguous.”</p>
+</blockquote>
+<pre><code class="language-text">Request → Route → Retrieval / tool / workflow / agent / human
+</code></pre>
+<p>Routing to a capability differs from model-provider routing at the Model Gateway.</p>
+<h4 id="4-tool-calling-make-model-requests-controlled-operations">4. Tool Calling — Make Model Requests Controlled Operations<a class="anchor" href="#4-tool-calling-make-model-requests-controlled-operations" aria-label="Link to 4. Tool Calling — Make Model Requests Controlled Operations">#</a></h4>
+<p>Expose approved tools with clear inputs and outputs. Validate arguments, authorize operations, apply timeouts, and return usable results or errors.</p>
+<blockquote>
+<p>“The model can request a tool operation; the application validates whether that operation may execute.”</p>
+</blockquote>
+<pre><code class="language-text">Model requests tool
+       ↓
+Validate + authorize
+       ↓
+Execute → Observe result → Decide next step
+</code></pre>
+<p>Read tools and write tools need different controls. Tool output and retrieved content are data, not permission to override system rules.</p>
+<h4 id="5-execution-bounds-stop-loops-and-budget-runaway">5. Execution Bounds — Stop Loops and Budget Runaway<a class="anchor" href="#5-execution-bounds-stop-loops-and-budget-runaway" aria-label="Link to 5. Execution Bounds — Stop Loops and Budget Runaway">#</a></h4>
+<p>Bound steps, tool calls, tokens, retries, elapsed time, and cost. Define completion and no-progress stopping conditions.</p>
+<blockquote>
+<p>“If the task stops making progress or reaches its budget, I’d stop safely and return the status or escalate.”</p>
+</blockquote>
+<pre><code class="language-text">Before next step:
+Within budget? → Authorized? → Making progress?
+       No             No               No
+       └──────────── Stop / escalate ───┘
+</code></pre>
+<p>Limits should match the workload. A retry budget must not reset endlessly inside a tool loop.</p>
+<h4 id="6-state-and-durable-execution-recover-progress">6. State and Durable Execution — Recover Progress<a class="anchor" href="#6-state-and-durable-execution-recover-progress" aria-label="Link to 6. State and Durable Execution — Recover Progress">#</a></h4>
+<p>Store task identifiers, relevant context, completed steps, tool results, pending approvals, and action status when recovery is needed.</p>
+<blockquote>
+<p>“For a long task, I’d persist checkpoints and resume from known state rather than repeat everything after a crash.”</p>
+</blockquote>
+<pre><code class="language-text">Complete step → Save progress → Crash
+                                  ↓
+                          Load state → Resume
+</code></pre>
+<p>Durable execution does not mean external actions happen exactly once automatically. Use idempotency and status reconciliation where writes can be repeated or become uncertain.</p>
+<h4 id="7-approval-and-execution-separate-reasoning-from-authority">7. Approval and Execution — Separate Reasoning From Authority<a class="anchor" href="#7-approval-and-execution-separate-reasoning-from-authority" aria-label="Link to 7. Approval and Execution — Separate Reasoning From Authority">#</a></h4>
+<p>Use deterministic policy and permission checks for business actions. Persist approval state if humans may respond later.</p>
+<blockquote>
+<p>“The agent proposes the refund; policy and approval determine whether the executor can perform it.”</p>
+</blockquote>
+<pre><code class="language-text">Propose → Policy / access check → Approval if required
+                                      ↓
+                             Controlled executor
+</code></pre>
+<p>Approval must be tied to the proposed action and relevant inputs. If the action changes, revalidate the approval and policy.</p>
+<h4 id="8-agent-trajectory-inspect-the-path-not-private-reasoning">8. Agent Trajectory — Inspect the Path, Not Private Reasoning<a class="anchor" href="#8-agent-trajectory-inspect-the-path-not-private-reasoning" aria-label="Link to 8. Agent Trajectory — Inspect the Path, Not Private Reasoning">#</a></h4>
+<p>The trajectory is the observable sequence of steps, tool requests/results, state transitions, and completion or escalation.</p>
+<blockquote>
+<p>“I’d inspect whether it chose the right tools, used valid arguments, stayed within bounds, and completed the task.”</p>
+</blockquote>
+<pre><code class="language-text">Request → Route → Tool A → Observation → Tool B → Result
+</code></pre>
+<p>Record decision summaries, evidence, and operations; private model chain-of-thought is not required for evaluation or audit.</p>
+<h4 id="9-evaluate-outcome-and-efficiency-a-finished-loop-is-not-success">9. Evaluate Outcome and Efficiency — A Finished Loop Is Not Success<a class="anchor" href="#9-evaluate-outcome-and-efficiency-a-finished-loop-is-not-success" aria-label="Link to 9. Evaluate Outcome and Efficiency — A Finished Loop Is Not Success">#</a></h4>
+<p>Check routing, tool selection, arguments, policy compliance, recovery, task success, latency, and cost. Include ambiguous, failing, and malicious-input cases.</p>
+<blockquote>
+<p>“I’d compare the agent against a simpler workflow on task success and operating cost before adding more agents.”</p>
+</blockquote>
+<pre><code class="language-text">Correct outcome + permitted path + bounded cost/time
+                         ↓
+                  Useful agent behavior
+</code></pre>
+<p>Different valid paths can exist. Evaluate required constraints and outcomes rather than demanding one exact tool sequence for every task.</p>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Component / pattern</th>
+<th>Why</th>
+<th>Main trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Known business sequence</td>
+<td>Deterministic workflow</td>
+<td>Predictable steps and rules</td>
+<td>Less flexibility</td>
+</tr>
+<tr>
+<td>Dynamic investigation</td>
+<td>Bounded agent loop</td>
+<td>Select next steps from observations</td>
+<td>Variable paths and cost</td>
+</tr>
+<tr>
+<td>Multiple capabilities</td>
+<td>Router + clear interfaces</td>
+<td>Assign work appropriately</td>
+<td>Routing errors</td>
+</tr>
+<tr>
+<td>Independent specialist work</td>
+<td>Multiple agents if justified</td>
+<td>Separate contexts or parallel subtasks</td>
+<td>Coordination and integration</td>
+</tr>
+<tr>
+<td>Live enterprise access</td>
+<td>Controlled tool layer</td>
+<td>Validate and authorize operations</td>
+<td>Integration effort</td>
+</tr>
+<tr>
+<td>Prevent runaway execution</td>
+<td>Shared budget + stop rules</td>
+<td>Bound resource use and loops</td>
+<td>Some tasks need escalation</td>
+</tr>
+<tr>
+<td>Resume long tasks</td>
+<td>Durable state + checkpoints</td>
+<td>Preserve progress</td>
+<td>State consistency</td>
+</tr>
+<tr>
+<td>Execute sensitive writes</td>
+<td>Policy + approval + executor</td>
+<td>Keep authority outside free-form reasoning</td>
+<td>Delay and approval workflow</td>
+</tr>
+</tbody></table>
+<h4 id="support-example">Support Example<a class="anchor" href="#support-example" aria-label="Link to Support Example">#</a></h4>
+<pre><code class="language-text">User: “Investigate this order issue.”
+                 ↓
+        Route + relevant context
+                 ↓
+      Bounded agent reads live order
+                 ↓
+      Retrieves applicable policy
+                 ↓
+      Enough evidence? ── No → Clarify / escalate
+            Yes
+             ↓
+      Recommend resolution
+             ↓
+      Policy / approval → Executor if allowed
+</code></pre>
+<p>If the task is always “check status, apply known rule, update ticket,” a fixed workflow may be sufficient. Preserve permissions, state, failure behavior, audit, and outcome capture in either design.</p>
+<pre><code class="language-text">API Gateway   = User → Application control
+Model Gateway = Application → Model control
+</code></pre>
+<p>Neither gateway grants unrestricted agent access to enterprise tools.</p>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><strong>Agent vs workflow:</strong> flexible step selection vs defined sequence; a model can be used inside either.</li>
+<li><strong>Capability vs separate agent:</strong> policy lookup and order lookup can be tools in one workflow, not separate agents.</li>
+<li><strong>Recommendation vs authorization:</strong> reasoning proposes; policy, permissions, and approval control execution.</li>
+<li><strong>Checkpoint vs safe replay:</strong> saved state helps recovery but does not alone prevent duplicate external writes.</li>
+<li><strong>Trajectory vs success:</strong> a plausible path can still fail the task. Measure outcome, permitted operations, and efficiency; do not require private model reasoning.</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+<th>Discuss…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Same steps every time”</td>
+<td>Workflow</td>
+<td>Fixed branches and rules</td>
+</tr>
+<tr>
+<td>“Steps depend on what we discover”</td>
+<td>Agent</td>
+<td>Observation-driven selection</td>
+</tr>
+<tr>
+<td>“Separate agent for every feature”</td>
+<td>Architecture justification</td>
+<td>Benefit vs coordination overhead</td>
+</tr>
+<tr>
+<td>“Twenty tool calls for a simple task”</td>
+<td>Bounds / no progress</td>
+<td>Budgets, repeated calls, stop behavior</td>
+</tr>
+<tr>
+<td>“Crash after step eight”</td>
+<td>Durability</td>
+<td>Checkpoints and uncertain actions</td>
+</tr>
+<tr>
+<td>“Approval takes hours”</td>
+<td>Durable approval workflow</td>
+<td>Persist, resume, revalidate</td>
+</tr>
+<tr>
+<td>“Why did it choose that tool?”</td>
+<td>Trajectory evaluation</td>
+<td>Tool request, inputs, evidence, result</td>
+</tr>
+<tr>
+<td>“Looks helpful but fails tasks”</td>
+<td>Outcome evaluation</td>
+<td>Task success and constraint adherence</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“I’d first identify which decisions need flexible reasoning and keep deterministic business rules in code or policy.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d add multiple agents only for a clear benefit that outweighs coordination and model-call overhead.”</p>
+</blockquote>
+<blockquote>
+<p>“Each tool request must pass validation and authorization before execution.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d bound the whole task by steps, time, tools, retries, tokens, and cost, with explicit stop behavior.”</p>
+</blockquote>
+<blockquote>
+<p>“Recovery must preserve progress and reconcile external side effects, not blindly replay writes.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>A refund task follows fixed eligibility rules. Where would a workflow suffice, and where might reasoning help?</li>
+<li>A customer proposes separate policy, order, refund, and escalation agents. What evidence would justify that design?</li>
+<li>An agent makes 25 tool calls without resolving a simple case. What controls and diagnostic signals would you add?</li>
+<li>A workflow crashes after sending a refund request but before saving the result. How do you resume safely?</li>
+<li>Two agents follow different tool paths and both resolve the task correctly. What should evaluation compare, and which constraints must still hold?</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-06-agentic-architecture.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>
