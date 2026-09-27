@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 1 — FDE Problem Decomposition.">
-  <title>Module 1 — FDE Problem Decomposition — One-Page Memory Card</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="One-page memory card for Module 16 — Security &amp; Enterprise Multi-Tenancy.">
+  <title>Module 16 — Security &amp; Enterprise Multi-Tenancy — One-Page Memory Card</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -152,128 +151,121 @@
   </style>
 </head>
 <body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·01</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
-<h2 id="one-page-memory-card-fde-problem-decomposition">ONE-PAGE MEMORY CARD — FDE Problem Decomposition<a class="anchor" href="#one-page-memory-card-fde-problem-decomposition" aria-label="Link to ONE-PAGE MEMORY CARD — FDE Problem Decomposition">#</a></h2>
-<p><strong>Core question:</strong> How do I turn a vague customer request into clear requirements?</p>
+  <div class="topbar"><span class="doc-id">MOD·16</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-16-security-amp-enterprise-multi-tenancy">Module 16 — Security &amp; Enterprise Multi-Tenancy<a class="anchor" href="#module-16-security-amp-enterprise-multi-tenancy" aria-label="Link to Module 16 — Security &amp;amp; Enterprise Multi-Tenancy">#</a></h1>
+<h2 id="one-page-memory-card-security-amp-enterprise-multi-tenancy">ONE-PAGE MEMORY CARD — Security &amp; Enterprise Multi-Tenancy<a class="anchor" href="#one-page-memory-card-security-amp-enterprise-multi-tenancy" aria-label="Link to ONE-PAGE MEMORY CARD — Security &amp;amp; Enterprise Multi-Tenancy">#</a></h2>
+<p><strong>Core question:</strong> Who may access which data and operations, and how do those boundaries survive every stage of the task?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
-<pre><code class="language-text">WHY → TODAY → WHO / HOW MUCH → WHAT
-                                 ↓
-                  HOW FAR → BOUNDARIES
-                                 ↓
-                    Requirements → Architecture
+<pre><code class="language-text">IDENTITY → TRUSTED TENANT → AUTHORIZATION
+                               ↓
+           DATA / TOOL PERMISSIONS → POLICY
+                               ↓
+                 APPROVAL → EXECUTE → AUDIT
 </code></pre>
-<p>WHY includes the business problem and measurable success. WHAT includes data and integrations. BOUNDARIES includes failure, security, latency, availability, and cost.</p>
-<h3 id="ten-questions">Ten Questions<a class="anchor" href="#ten-questions" aria-label="Link to Ten Questions">#</a></h3>
+<p>Agent recommends → Policy decides → Executor acts.</p>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>Ask</th>
+<th>Concept</th>
+<th>Remember</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. Business</td>
-<td>What problem are we solving, and what outcome matters?</td>
+<td>Authentication</td>
+<td>Verify user/service identity; establish trusted tenant membership</td>
 </tr>
 <tr>
-<td>2. Today</td>
-<td>How does it work today, and where is the biggest pain?</td>
+<td>Authorization</td>
+<td>Check role, resource, operation, ownership, tenant</td>
 </tr>
 <tr>
-<td>3. Users + scale</td>
-<td>Who uses it? What volume, peaks, concurrency, and growth?</td>
+<td>RBAC</td>
+<td>Role-based access control; resource-level scope may need extra checks</td>
 </tr>
 <tr>
-<td>4. Data</td>
-<td>What data, where, how fresh, and who can access it?</td>
+<td>RAG permissions</td>
+<td>Enforce before model context; update source access/deletion changes</td>
 </tr>
 <tr>
-<td>5. Autonomy</td>
-<td>Answer, recommend, or act? Which actions need approval?</td>
+<td>Least privilege</td>
+<td>Specific necessary read/write operations, scoped credentials</td>
 </tr>
 <tr>
-<td>6. Success</td>
-<td>What baseline and business, AI, system, and cost targets?</td>
+<td>Tenant isolation</td>
+<td>Documents, indexes, cache, state, queues, tools, logs, audit/results</td>
 </tr>
 <tr>
-<td>7. Failure</td>
-<td>What if evidence is missing, a tool fails, or approval is unavailable?</td>
+<td>Secrets</td>
+<td>Trusted runtime storage/use; never unrestricted prompt or telemetry content</td>
 </tr>
 <tr>
-<td>8. Security</td>
-<td>What access, tenant, privacy, and residency boundaries?</td>
+<td>Sensitive data</td>
+<td>Necessary collection, approved providers, retention/access for every copy</td>
 </tr>
 <tr>
-<td>9. Integration</td>
-<td>Which APIs/systems? Read or write? Reliable or slow?</td>
+<td>Residency</td>
+<td>Application, models, retrieval, tools, logs, backups, failover</td>
 </tr>
 <tr>
-<td>10. NFRs</td>
-<td>What latency, availability, throughput, and cost limits by workload?</td>
+<td>Defense in depth</td>
+<td>Validation + authorization + policy + execution controls + audit</td>
 </tr>
 </tbody></table>
-<p>Use answers to guide the next question. Then check what you missed.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
-<th>Think / clarify…</th>
+<th>Think…</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“Need an agent”</td>
-<td>Actual business problem and current bottleneck</td>
+<td>“Different employee access”</td>
+<td>Resource authorization and scoped retrieval</td>
 </tr>
 <tr>
-<td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td>“Filter secrets after answer”</td>
+<td>Unauthorized context already exposed</td>
 </tr>
 <tr>
-<td>“Current order status”</td>
-<td>Live API/tool; system of record</td>
+<td>“Agent needs production access”</td>
+<td>Specific tools and least privilege</td>
 </tr>
 <tr>
-<td>“Issue refunds”</td>
-<td>Allowed actions, policy, approval, safe execution</td>
+<td>“Shared tenants”</td>
+<td>Scope every data/execution surface</td>
 </tr>
 <tr>
-<td>“100K users”</td>
-<td>Peak workload and concurrency, not just user count</td>
+<td>“Noisy neighbor”</td>
+<td>Resource fairness, separate from data isolation</td>
 </tr>
 <tr>
-<td>“Fast and cheap”</td>
-<td>Measurable latency and cost envelope</td>
+<td>“Stay in-region”</td>
+<td>End-to-end dependency and fallback boundary</td>
 </tr>
 <tr>
-<td>“API unavailable”</td>
-<td>Safe fallback, retry conditions, escalation</td>
+<td>“Document says ignore policy”</td>
+<td>External text is data, not authority</td>
 </tr>
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>Agent request ≠ business problem.</strong> Ask why the customer wants it.</li>
-<li><strong>Reference knowledge ≠ live state.</strong> Policy → RAG; current refund status → API/tool.</li>
-<li><strong>Recommend ≠ execute.</strong> Agent recommends → Policy decides → Executor acts.</li>
-<li><strong>Outcome ≠ operating limit.</strong> Reduce manual work while meeting quality, security, latency, and cost constraints.</li>
+<li><strong>Authentication vs authorization:</strong> who you are vs what you may access or do.</li>
+<li><strong>Authorization vs business policy:</strong> resource permission vs whether this action meets the rule.</li>
+<li><strong>Isolation vs fairness:</strong> no cross-tenant data exposure vs no shared-capacity monopolization.</li>
+<li><strong>Regional app vs residency:</strong> external model, logging, backup, or failover can still cross the boundary.</li>
 </ol>
-<h3 id="requirement-component-reminders">Requirement → Component Reminders<a class="anchor" href="#requirement-component-reminders" aria-label="Link to Requirement → Component Reminders">#</a></h3>
-<pre><code class="language-text">User / tenant request control → API Gateway
-Application / model control  → Model Gateway
-Approved knowledge           → RAG
-Current system state         → API/tool
-Controlled business action   → Policy + executor
-Approval required            → HITL
-</code></pre>
-<p>These are design consequences to confirm, not boxes to add automatically.</p>
-<h3 id="handoff-to-requirements">Handoff to Requirements<a class="anchor" href="#handoff-to-requirements" aria-label="Link to Handoff to Requirements">#</a></h3>
-<p>State the business outcome, users, required capabilities, data/integrations, allowed actions, approval rules, safe failure behavior, workload, operating limits, security boundaries, success targets, and open assumptions.</p>
-<p>Do not invent numbers. Confirm a baseline and target. A timeout after a write needs status checking and duplicate prevention before a retry.</p>
-<h3 id="30-second-opening">30-Second Opening<a class="anchor" href="#30-second-opening" aria-label="Link to 30-Second Opening">#</a></h3>
+<h3 id="enforcement-rules">Enforcement Rules<a class="anchor" href="#enforcement-rules" aria-label="Link to Enforcement Rules">#</a></h3>
+<p>Derive tenant scope from trusted identity, not caller/model claims alone. Authorize the specific resource and operation. Do not retrieve restricted evidence and rely on a prompt to hide it. Keep permissions and cache scope current when access changes.</p>
+<p>Use scoped tool credentials outside model context. Approval must refer to the action, and execution still rechecks access and business policy. Carry trusted scope through background workers and result retrieval. Review logs, audit, backups, and caches as additional sensitive-data copies.</p>
+<p>API Gateway = User → Application control.
+Model Gateway = Application → Model control.
+Neither replaces resource checks in retrieval or enterprise tools. Provider selection and fallback must respect the customer&#39;s data restrictions.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
 <blockquote>
-<p>“I’d first clarify the business outcome and current workflow, then users and scale, data and integrations, and whether AI should answer, recommend, or act. I’d agree on measurable success and boundaries around security, failures, latency, availability, and cost. Then I’d summarize the requirements before choosing components. What problem matters most, and how is it handled today?”</p>
+<p>“I’d establish verified identity and tenant scope, then enforce resource-level access in retrieval, state, and tools. The agent would receive only necessary operations, while credentials remain in trusted execution. I’d isolate tenant data across caches, jobs, logs, and results, check business policy and approval for writes, and trace sensitive data and residency through providers, telemetry, backups, and failover.”</p>
 </blockquote>
 </article>
-  <div class="source-note">Generated from module-01-fde-problem-decomposition.md · Print layout: A4 landscape</div>
+  <div class="source-note">Generated from module-16-security-and-enterprise-multi-tenancy.md · Print layout: A4 landscape</div>
 </main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

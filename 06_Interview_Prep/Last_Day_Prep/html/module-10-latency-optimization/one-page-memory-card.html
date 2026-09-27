@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 1 — FDE Problem Decomposition.">
-  <title>Module 1 — FDE Problem Decomposition — One-Page Memory Card</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="One-page memory card for Module 10 — Latency Optimization.">
+  <title>Module 10 — Latency Optimization — One-Page Memory Card</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -152,128 +151,120 @@
   </style>
 </head>
 <body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·01</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
-<h2 id="one-page-memory-card-fde-problem-decomposition">ONE-PAGE MEMORY CARD — FDE Problem Decomposition<a class="anchor" href="#one-page-memory-card-fde-problem-decomposition" aria-label="Link to ONE-PAGE MEMORY CARD — FDE Problem Decomposition">#</a></h2>
-<p><strong>Core question:</strong> How do I turn a vague customer request into clear requirements?</p>
+  <div class="topbar"><span class="doc-id">MOD·10</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-10-latency-optimization">Module 10 — Latency Optimization<a class="anchor" href="#module-10-latency-optimization" aria-label="Link to Module 10 — Latency Optimization">#</a></h1>
+<h2 id="one-page-memory-card-latency-optimization">ONE-PAGE MEMORY CARD — Latency Optimization<a class="anchor" href="#one-page-memory-card-latency-optimization" aria-label="Link to ONE-PAGE MEMORY CARD — Latency Optimization">#</a></h2>
+<p><strong>Core question:</strong> Where does the user wait, and what change improves that experience without breaking quality or safe execution?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
-<pre><code class="language-text">WHY → TODAY → WHO / HOW MUCH → WHAT
-                                 ↓
-                  HOW FAR → BOUNDARIES
-                                 ↓
-                    Requirements → Architecture
+<pre><code class="language-text">MEASURE → SLO → CRITICAL PATH
+                    ↓
+STREAM / PARALLELIZE / REDUCE HOPS
+                    ↓
+RETRIEVAL / TOOLS / QUEUE / ASYNC
+                    ↓
+         Recheck quality and cost
 </code></pre>
-<p>WHY includes the business problem and measurable success. WHAT includes data and integrations. BOUNDARIES includes failure, security, latency, availability, and cost.</p>
-<h3 id="ten-questions">Ten Questions<a class="anchor" href="#ten-questions" aria-label="Link to Ten Questions">#</a></h3>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>Ask</th>
+<th>Concept</th>
+<th>Remember</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. Business</td>
-<td>What problem are we solving, and what outcome matters?</td>
+<td>P50/P95/P99</td>
+<td>Median and slower-tail experiences; segment by workload/tenant</td>
 </tr>
 <tr>
-<td>2. Today</td>
-<td>How does it work today, and where is the biggest pain?</td>
+<td>SLO</td>
+<td>Service-level objective: defined metric, target, workload, window</td>
 </tr>
 <tr>
-<td>3. Users + scale</td>
-<td>Who uses it? What volume, peaks, concurrency, and growth?</td>
+<td>TTFT</td>
+<td>Time to first token; distinguish first useful output and final completion</td>
 </tr>
 <tr>
-<td>4. Data</td>
-<td>What data, where, how fresh, and who can access it?</td>
+<td>Tracing</td>
+<td>Queue, network, retrieval, models, tool spans, repeated calls</td>
 </tr>
 <tr>
-<td>5. Autonomy</td>
-<td>Answer, recommend, or act? Which actions need approval?</td>
+<td>Streaming</td>
+<td>Earlier partial output; not necessarily less total computation</td>
 </tr>
 <tr>
-<td>6. Success</td>
-<td>What baseline and business, AI, system, and cost targets?</td>
+<td>Parallelism</td>
+<td>Overlap independent work; slowest necessary branch dominates</td>
 </tr>
 <tr>
-<td>7. Failure</td>
-<td>What if evidence is missing, a tool fails, or approval is unavailable?</td>
+<td>Hops</td>
+<td>Remove/replace unnecessary sequential model calls</td>
 </tr>
 <tr>
-<td>8. Security</td>
-<td>What access, tenant, privacy, and residency boundaries?</td>
+<td>Retrieval/tools</td>
+<td>Tune measured work with quality, freshness, access, deadlines intact</td>
 </tr>
 <tr>
-<td>9. Integration</td>
-<td>Which APIs/systems? Read or write? Reliable or slow?</td>
+<td>Queue</td>
+<td>Wait time differs from processing; protect with capacity controls</td>
 </tr>
 <tr>
-<td>10. NFRs</td>
-<td>What latency, availability, throughput, and cost limits by workload?</td>
+<td>Async</td>
+<td>Task ID, durable state, progress/status, result delivery</td>
 </tr>
 </tbody></table>
-<p>Use answers to guide the next question. Then check what you missed.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
-<th>Think / clarify…</th>
+<th>Think…</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“Need an agent”</td>
-<td>Actual business problem and current bottleneck</td>
+<td>“Bad P99”</td>
+<td>Tail traces and workload segments</td>
 </tr>
 <tr>
-<td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td>“Independent APIs called one by one”</td>
+<td>Parallel reads</td>
 </tr>
 <tr>
-<td>“Current order status”</td>
-<td>Live API/tool; system of record</td>
+<td>“Model 2s, total 12s”</td>
+<td>Other critical-path stages</td>
 </tr>
 <tr>
-<td>“Issue refunds”</td>
-<td>Allowed actions, policy, approval, safe execution</td>
+<td>“Long wait before output”</td>
+<td>First useful output / streaming</td>
 </tr>
 <tr>
-<td>“100K users”</td>
-<td>Peak workload and concurrency, not just user count</td>
+<td>“Many agent hops”</td>
+<td>Reasoning-call necessity</td>
 </tr>
 <tr>
-<td>“Fast and cheap”</td>
-<td>Measurable latency and cost envelope</td>
+<td>“Slow at peak”</td>
+<td>Queue wait and capacity saturation</td>
 </tr>
 <tr>
-<td>“API unavailable”</td>
-<td>Safe fallback, retry conditions, escalation</td>
+<td>“Minutes of work”</td>
+<td>Async completion expectations</td>
 </tr>
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>Agent request ≠ business problem.</strong> Ask why the customer wants it.</li>
-<li><strong>Reference knowledge ≠ live state.</strong> Policy → RAG; current refund status → API/tool.</li>
-<li><strong>Recommend ≠ execute.</strong> Agent recommends → Policy decides → Executor acts.</li>
-<li><strong>Outcome ≠ operating limit.</strong> Reduce manual work while meeting quality, security, latency, and cost constraints.</li>
+<li><strong>Average vs tail:</strong> fast typical requests do not guarantee acceptable slow requests.</li>
+<li><strong>TTFT vs completion:</strong> output beginning is not a finished answer or action.</li>
+<li><strong>Streaming vs speed:</strong> partial delivery can improve perception without shortening execution.</li>
+<li><strong>Async vs less work:</strong> the client stops blocking while the task continues.</li>
 </ol>
-<h3 id="requirement-component-reminders">Requirement → Component Reminders<a class="anchor" href="#requirement-component-reminders" aria-label="Link to Requirement → Component Reminders">#</a></h3>
-<pre><code class="language-text">User / tenant request control → API Gateway
-Application / model control  → Model Gateway
-Approved knowledge           → RAG
-Current system state         → API/tool
-Controlled business action   → Policy + executor
-Approval required            → HITL
-</code></pre>
-<p>These are design consequences to confirm, not boxes to add automatically.</p>
-<h3 id="handoff-to-requirements">Handoff to Requirements<a class="anchor" href="#handoff-to-requirements" aria-label="Link to Handoff to Requirements">#</a></h3>
-<p>State the business outcome, users, required capabilities, data/integrations, allowed actions, approval rules, safe failure behavior, workload, operating limits, security boundaries, success targets, and open assumptions.</p>
-<p>Do not invent numbers. Confirm a baseline and target. A timeout after a write needs status checking and duplicate prevention before a retry.</p>
-<h3 id="30-second-opening">30-Second Opening<a class="anchor" href="#30-second-opening" aria-label="Link to 30-Second Opening">#</a></h3>
+<h3 id="critical-path-rules">Critical-Path Rules<a class="anchor" href="#critical-path-rules" aria-label="Link to Critical-Path Rules">#</a></h3>
+<p>Sequential stages add. Parallel branches overlap; do not sum all branch times as elapsed latency. Avoid double-counting nested spans. Inspect slow requests, not only aggregate dashboards.</p>
+<p>Preserve ordering where results depend on one another. Parallel calls increase concurrent load. Do not reorder business writes merely to save time, remove required policy checks, or stream unconfirmed action success.</p>
+<p>Optimize retrieval candidate counts and reranking against evidence quality. Cache only when permissions and freshness hold. For tool write timeouts, reconcile status before retry. For queues, use bounded waiting and clear overload behavior; more workers help only if the bottleneck can scale.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
 <blockquote>
-<p>“I’d first clarify the business outcome and current workflow, then users and scale, data and integrations, and whether AI should answer, recommend, or act. I’d agree on measurable success and boundaries around security, failures, latency, availability, and cost. Then I’d summarize the requirements before choosing components. What problem matters most, and how is it handled today?”</p>
+<p>“I’d define workload-specific first-output and completion targets, inspect P95/P99 traces, and find the critical path. I’d then stream safe output, parallelize independent work, reduce unnecessary model hops, and optimize measured retrieval, tool, or queue delays. For genuinely long tasks, I’d use asynchronous delivery. I’d verify quality, action safety, and cost after each change.”</p>
 </blockquote>
 </article>
-  <div class="source-note">Generated from module-01-fde-problem-decomposition.md · Print layout: A4 landscape</div>
+  <div class="source-note">Generated from module-10-latency-optimization.md · Print layout: A4 landscape</div>
 </main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

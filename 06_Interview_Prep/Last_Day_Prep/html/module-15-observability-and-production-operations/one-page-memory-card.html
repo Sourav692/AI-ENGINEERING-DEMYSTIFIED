@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 1 — FDE Problem Decomposition.">
-  <title>Module 1 — FDE Problem Decomposition — One-Page Memory Card</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="One-page memory card for Module 15 — Observability &amp; Production Operations.">
+  <title>Module 15 — Observability &amp; Production Operations — One-Page Memory Card</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -152,128 +151,113 @@
   </style>
 </head>
 <body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·01</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
-<h2 id="one-page-memory-card-fde-problem-decomposition">ONE-PAGE MEMORY CARD — FDE Problem Decomposition<a class="anchor" href="#one-page-memory-card-fde-problem-decomposition" aria-label="Link to ONE-PAGE MEMORY CARD — FDE Problem Decomposition">#</a></h2>
-<p><strong>Core question:</strong> How do I turn a vague customer request into clear requirements?</p>
+  <div class="topbar"><span class="doc-id">MOD·15</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-15-observability-amp-production-operations">Module 15 — Observability &amp; Production Operations<a class="anchor" href="#module-15-observability-amp-production-operations" aria-label="Link to Module 15 — Observability &amp;amp; Production Operations">#</a></h1>
+<h2 id="one-page-memory-card-observability-amp-production-operations">ONE-PAGE MEMORY CARD — Observability &amp; Production Operations<a class="anchor" href="#one-page-memory-card-observability-amp-production-operations" aria-label="Link to ONE-PAGE MEMORY CARD — Observability &amp;amp; Production Operations">#</a></h2>
+<p><strong>Core question:</strong> Can we explain the system&#39;s behavior and act on customer-impacting problems?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
-<pre><code class="language-text">WHY → TODAY → WHO / HOW MUCH → WHAT
-                                 ↓
-                  HOW FAR → BOUNDARIES
-                                 ↓
-                    Requirements → Architecture
+<pre><code class="language-text">INSTRUMENT → CORRELATE → MEASURE → DETECT
+                                      ↓
+                    DIAGNOSE → MITIGATE → VERIFY → LEARN
 </code></pre>
-<p>WHY includes the business problem and measurable success. WHAT includes data and integrations. BOUNDARIES includes failure, security, latency, availability, and cost.</p>
-<h3 id="ten-questions">Ten Questions<a class="anchor" href="#ten-questions" aria-label="Link to Ten Questions">#</a></h3>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>Ask</th>
+<th>Evidence</th>
+<th>Role</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. Business</td>
-<td>What problem are we solving, and what outcome matters?</td>
+<td>Logs</td>
+<td>Structured events: timestamp, task/request ID, stage, version, status/error</td>
 </tr>
 <tr>
-<td>2. Today</td>
-<td>How does it work today, and where is the biggest pain?</td>
+<td>Metrics</td>
+<td>Task rates, latency percentiles, errors, queue age, active work, cost/outcomes</td>
 </tr>
 <tr>
-<td>3. Users + scale</td>
-<td>Who uses it? What volume, peaks, concurrency, and growth?</td>
+<td>Traces</td>
+<td>Correlated spans across queue, router, agent, retrieval, models, tools</td>
 </tr>
 <tr>
-<td>4. Data</td>
-<td>What data, where, how fresh, and who can access it?</td>
+<td>AI telemetry</td>
+<td>Model/config, tokens, calls, steps, retries, evidence IDs, controlled tool records</td>
 </tr>
 <tr>
-<td>5. Autonomy</td>
-<td>Answer, recommend, or act? Which actions need approval?</td>
+<td>Audit</td>
+<td>Identity, evidence, policy, approval, exact action, confirmed result</td>
 </tr>
 <tr>
-<td>6. Success</td>
-<td>What baseline and business, AI, system, and cost targets?</td>
+<td>Targets</td>
+<td>Defined SLI, SLO, window, eligible workload; customer SLA if applicable</td>
 </tr>
 <tr>
-<td>7. Failure</td>
-<td>What if evidence is missing, a tool fails, or approval is unavailable?</td>
+<td>Operations</td>
+<td>Actionable alerts, owner, runbook, mitigation, recovery verification</td>
 </tr>
 <tr>
-<td>8. Security</td>
-<td>What access, tenant, privacy, and residency boundaries?</td>
-</tr>
-<tr>
-<td>9. Integration</td>
-<td>Which APIs/systems? Read or write? Reliable or slow?</td>
-</tr>
-<tr>
-<td>10. NFRs</td>
-<td>What latency, availability, throughput, and cost limits by workload?</td>
+<td>Learning</td>
+<td>Delayed outcomes, overrides, reopened cases, release-linked regressions</td>
 </tr>
 </tbody></table>
-<p>Use answers to guide the next question. Then check what you missed.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
-<th>Think / clarify…</th>
+<th>Think…</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“Need an agent”</td>
-<td>Actual business problem and current bottleneck</td>
+<td>“One slow task”</td>
+<td>Trace and critical path</td>
 </tr>
 <tr>
-<td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td>“Broad slowdown”</td>
+<td>Metrics and saturation by segment</td>
 </tr>
 <tr>
-<td>“Current order status”</td>
-<td>Live API/tool; system of record</td>
+<td>“What error occurred?”</td>
+<td>Structured event logs</td>
 </tr>
 <tr>
-<td>“Issue refunds”</td>
-<td>Allowed actions, policy, approval, safe execution</td>
+<td>“More model spending”</td>
+<td>Tokens, calls, retries, model/workload mix</td>
 </tr>
 <tr>
-<td>“100K users”</td>
-<td>Peak workload and concurrency, not just user count</td>
+<td>“Why issue this refund?”</td>
+<td>Business audit</td>
 </tr>
 <tr>
-<td>“Fast and cheap”</td>
-<td>Measurable latency and cost envelope</td>
+<td>“Met target / promise?”</td>
+<td>SLI vs SLO vs SLA</td>
 </tr>
 <tr>
-<td>“API unavailable”</td>
-<td>Safe fallback, retry conditions, escalation</td>
+<td>“Nobody responds”</td>
+<td>Owned alert/runbook</td>
 </tr>
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>Agent request ≠ business problem.</strong> Ask why the customer wants it.</li>
-<li><strong>Reference knowledge ≠ live state.</strong> Policy → RAG; current refund status → API/tool.</li>
-<li><strong>Recommend ≠ execute.</strong> Agent recommends → Policy decides → Executor acts.</li>
-<li><strong>Outcome ≠ operating limit.</strong> Reduce manual work while meeting quality, security, latency, and cost constraints.</li>
+<li><strong>Logs/metrics/traces:</strong> events / trends / correlated execution path.</li>
+<li><strong>Observability/audit:</strong> system behavior / business decision and action.</li>
+<li><strong>SLI/SLO/SLA:</strong> measured indicator / target / agreed service commitment.</li>
+<li><strong>HTTP success/task success:</strong> returning a response does not prove an action completed.</li>
 </ol>
-<h3 id="requirement-component-reminders">Requirement → Component Reminders<a class="anchor" href="#requirement-component-reminders" aria-label="Link to Requirement → Component Reminders">#</a></h3>
-<pre><code class="language-text">User / tenant request control → API Gateway
-Application / model control  → Model Gateway
-Approved knowledge           → RAG
-Current system state         → API/tool
-Controlled business action   → Policy + executor
-Approval required            → HITL
+<h3 id="target-example">Target Example<a class="anchor" href="#target-example" aria-label="Link to Target Example">#</a></h3>
+<pre><code class="language-text">SLI: Observed share of eligible tasks completed within X
+SLO: Agreed target share for a defined window
+SLA: Customer service commitment and agreed consequences
 </code></pre>
-<p>These are design consequences to confirm, not boxes to add automatically.</p>
-<h3 id="handoff-to-requirements">Handoff to Requirements<a class="anchor" href="#handoff-to-requirements" aria-label="Link to Handoff to Requirements">#</a></h3>
-<p>State the business outcome, users, required capabilities, data/integrations, allowed actions, approval rules, safe failure behavior, workload, operating limits, security boundaries, success targets, and open assumptions.</p>
-<p>Do not invent numbers. Confirm a baseline and target. A timeout after a write needs status checking and duplicate prevention before a retry.</p>
-<h3 id="30-second-opening">30-Second Opening<a class="anchor" href="#30-second-opening" aria-label="Link to 30-Second Opening">#</a></h3>
+<p>Confirm X, the workload, window, and exclusions. Track first useful output and final completion separately when appropriate. Infrastructure health alone does not measure answer quality or business success.</p>
+<h3 id="diagnostic-rules">Diagnostic Rules<a class="anchor" href="#diagnostic-rules" aria-label="Link to Diagnostic Rules">#</a></h3>
+<p>Start with impact, scope, and version changes. Inspect queue wait separately from processing. Follow async task IDs and retries. Parallel spans overlap; nested durations cannot be summed blindly. Sampling may mean the exact historical trace is unavailable, so preserve enough metrics and events for useful diagnosis.</p>
+<p>Minimize sensitive data in telemetry and restrict retention/access. Use evidence references and decision summaries rather than private model reasoning. Avoid request IDs as unbounded metric dimensions. After mitigation, verify recovery and add validated failure cases to regression coverage.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
 <blockquote>
-<p>“I’d first clarify the business outcome and current workflow, then users and scale, data and integrations, and whether AI should answer, recommend, or act. I’d agree on measurable success and boundaries around security, failures, latency, availability, and cost. Then I’d summarize the requirements before choosing components. What problem matters most, and how is it handled today?”</p>
+<p>“I’d correlate requests and tasks across queues, retrieval, models, and tools. Metrics would show customer impact, traces would identify the critical path, and structured logs would explain specific events. AI telemetry would connect calls, tokens, and operations to outcomes, while audit would capture business decisions. Defined targets, owned alerts, and runbooks would turn that evidence into incident response and learning.”</p>
 </blockquote>
 </article>
-  <div class="source-note">Generated from module-01-fde-problem-decomposition.md · Print layout: A4 landscape</div>
+  <div class="source-note">Generated from module-15-observability-and-production-operations.md · Print layout: A4 landscape</div>
 </main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 1 — FDE Problem Decomposition.">
-  <title>Module 1 — FDE Problem Decomposition — One-Page Memory Card</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="One-page memory card for Module 17 — Trade-Off Thinking.">
+  <title>Module 17 — Trade-Off Thinking — One-Page Memory Card</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -152,128 +151,122 @@
   </style>
 </head>
 <body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·01</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
-<h2 id="one-page-memory-card-fde-problem-decomposition">ONE-PAGE MEMORY CARD — FDE Problem Decomposition<a class="anchor" href="#one-page-memory-card-fde-problem-decomposition" aria-label="Link to ONE-PAGE MEMORY CARD — FDE Problem Decomposition">#</a></h2>
-<p><strong>Core question:</strong> How do I turn a vague customer request into clear requirements?</p>
+  <div class="topbar"><span class="doc-id">MOD·17</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-17-trade-off-thinking">Module 17 — Trade-Off Thinking<a class="anchor" href="#module-17-trade-off-thinking" aria-label="Link to Module 17 — Trade-Off Thinking">#</a></h1>
+<h2 id="one-page-memory-card-trade-off-thinking">ONE-PAGE MEMORY CARD — Trade-Off Thinking<a class="anchor" href="#one-page-memory-card-trade-off-thinking" aria-label="Link to ONE-PAGE MEMORY CARD — Trade-Off Thinking">#</a></h2>
+<p><strong>Core question:</strong> Why this choice, what does it cost, and what evidence would change the decision?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
-<pre><code class="language-text">WHY → TODAY → WHO / HOW MUCH → WHAT
-                                 ↓
-                  HOW FAR → BOUNDARIES
-                                 ↓
-                    Requirements → Architecture
+<pre><code class="language-text">REQUIREMENT → OPTIONS → BENEFIT / COST
+                              ↓
+                 CHOICE → VERIFY → REVISIT
 </code></pre>
-<p>WHY includes the business problem and measurable success. WHAT includes data and integrations. BOUNDARIES includes failure, security, latency, availability, and cost.</p>
-<h3 id="ten-questions">Ten Questions<a class="anchor" href="#ten-questions" aria-label="Link to Ten Questions">#</a></h3>
+<blockquote>
+<p>“I’m choosing X because of requirement Y. The trade-off is Z. I’d verify it using W.”</p>
+</blockquote>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>Ask</th>
+<th>Choice</th>
+<th>Potential benefit</th>
+<th>Trade-off to check</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. Business</td>
-<td>What problem are we solving, and what outcome matters?</td>
+<td>Smaller sufficient model</td>
+<td>Lower cost, possibly lower latency</td>
+<td>Quality by task/risk segment; fallback and rework</td>
 </tr>
 <tr>
-<td>2. Today</td>
-<td>How does it work today, and where is the biggest pain?</td>
+<td>More retrieval</td>
+<td>Better evidence coverage</td>
+<td>Noise, processing, context cost</td>
 </tr>
 <tr>
-<td>3. Users + scale</td>
-<td>Who uses it? What volume, peaks, concurrency, and growth?</td>
+<td>Reranking / critic</td>
+<td>Better selection or error detection</td>
+<td>Extra calls, latency, measured value</td>
 </tr>
 <tr>
-<td>4. Data</td>
-<td>What data, where, how fresh, and who can access it?</td>
+<td>More agents</td>
+<td>Specialization or independent work</td>
+<td>Handoffs, coordination, failure paths</td>
 </tr>
 <tr>
-<td>5. Autonomy</td>
-<td>Answer, recommend, or act? Which actions need approval?</td>
+<td>Cache</td>
+<td>Less repeated work</td>
+<td>Freshness, access scope, invalidation</td>
 </tr>
 <tr>
-<td>6. Success</td>
-<td>What baseline and business, AI, system, and cost targets?</td>
+<td>More autonomy</td>
+<td>Less human work and waiting</td>
+<td>Policy, safe writes, recovery, impact</td>
 </tr>
 <tr>
-<td>7. Failure</td>
-<td>What if evidence is missing, a tool fails, or approval is unavailable?</td>
+<td>Human approval</td>
+<td>Contextual review</td>
+<td>Delay, reviewer workload, durable state</td>
 </tr>
 <tr>
-<td>8. Security</td>
-<td>What access, tenant, privacy, and residency boundaries?</td>
+<td>Async</td>
+<td>Less client blocking for long work</td>
+<td>Status/result UX; task duration unchanged</td>
 </tr>
 <tr>
-<td>9. Integration</td>
-<td>Which APIs/systems? Read or write? Reliable or slow?</td>
-</tr>
-<tr>
-<td>10. NFRs</td>
-<td>What latency, availability, throughput, and cost limits by workload?</td>
+<td>Dedicated resources</td>
+<td>Stronger isolation in some designs</td>
+<td>Cost and operational effort</td>
 </tr>
 </tbody></table>
-<p>Use answers to guide the next question. Then check what you missed.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
-<th>Think / clarify…</th>
+<th>Think…</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“Need an agent”</td>
-<td>Actual business problem and current bottleneck</td>
+<td>“Extra quality at extra cost”</td>
+<td>Marginal task-success gain</td>
 </tr>
 <tr>
-<td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td>“Maximum recall, fastest answer”</td>
+<td>Evidence vs critical-path budget</td>
 </tr>
 <tr>
-<td>“Current order status”</td>
-<td>Live API/tool; system of record</td>
+<td>“Cache live data”</td>
+<td>Required freshness and authorization</td>
 </tr>
 <tr>
-<td>“Issue refunds”</td>
-<td>Allowed actions, policy, approval, safe execution</td>
+<td>“Many agents”</td>
+<td>Justified benefit vs simpler baseline</td>
 </tr>
 <tr>
-<td>“100K users”</td>
-<td>Peak workload and concurrency, not just user count</td>
+<td>“Remove checks”</td>
+<td>Non-negotiable boundaries</td>
 </tr>
 <tr>
-<td>“Fast and cheap”</td>
-<td>Measurable latency and cost envelope</td>
-</tr>
-<tr>
-<td>“API unavailable”</td>
-<td>Safe fallback, retry conditions, escalation</td>
+<td>“Why this design?”</td>
+<td>Requirement → choice → trade-off → verification</td>
 </tr>
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>Agent request ≠ business problem.</strong> Ask why the customer wants it.</li>
-<li><strong>Reference knowledge ≠ live state.</strong> Policy → RAG; current refund status → API/tool.</li>
-<li><strong>Recommend ≠ execute.</strong> Agent recommends → Policy decides → Executor acts.</li>
-<li><strong>Outcome ≠ operating limit.</strong> Reduce manual work while meeting quality, security, latency, and cost constraints.</li>
+<li><strong>Expected vs measured:</strong> quality/cost/latency effects are hypotheses until tested.</li>
+<li><strong>Cheaper call vs cheaper outcome:</strong> include failures, retries, escalation, and rework.</li>
+<li><strong>Async vs faster task:</strong> early acknowledgement does not shorten execution automatically.</li>
+<li><strong>Preference vs hard constraint:</strong> permission, customer policy, residency, and correct side effects cannot be silently dropped.</li>
 </ol>
-<h3 id="requirement-component-reminders">Requirement → Component Reminders<a class="anchor" href="#requirement-component-reminders" aria-label="Link to Requirement → Component Reminders">#</a></h3>
-<pre><code class="language-text">User / tenant request control → API Gateway
-Application / model control  → Model Gateway
-Approved knowledge           → RAG
-Current system state         → API/tool
-Controlled business action   → Policy + executor
-Approval required            → HITL
-</code></pre>
-<p>These are design consequences to confirm, not boxes to add automatically.</p>
-<h3 id="handoff-to-requirements">Handoff to Requirements<a class="anchor" href="#handoff-to-requirements" aria-label="Link to Handoff to Requirements">#</a></h3>
-<p>State the business outcome, users, required capabilities, data/integrations, allowed actions, approval rules, safe failure behavior, workload, operating limits, security boundaries, success targets, and open assumptions.</p>
-<p>Do not invent numbers. Confirm a baseline and target. A timeout after a write needs status checking and duplicate prevention before a retry.</p>
-<h3 id="30-second-opening">30-Second Opening<a class="anchor" href="#30-second-opening" aria-label="Link to 30-Second Opening">#</a></h3>
+<h3 id="decision-rules">Decision Rules<a class="anchor" href="#decision-rules" aria-label="Link to Decision Rules">#</a></h3>
+<p>Start from the customer&#39;s priority and minimum acceptable quality. Compare a simple baseline with the proposed alternative on representative tasks and important risk segments. Discuss changes to latency, cost per successful task, evidence quality, failure behavior, and operational complexity.</p>
+<p>More context or more agents can hurt performance; better selection or fewer redundant calls can improve several dimensions together. The quality–cost–latency triangle is a reminder to inspect interactions, not proof that every benefit requires a loss.</p>
+<p>Keep action authority outside free-form reasoning: agent recommends → policy decides → executor acts. Approval remains where required. Caching must preserve access and freshness. Shared resources need both data isolation and capacity fairness.</p>
+<p>State a revisit condition: a changed workload, unacceptable tail latency, insufficient task success, rising review burden, or stronger tenant requirements. Architecture choices should follow the evidence and current requirements.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
 <blockquote>
-<p>“I’d first clarify the business outcome and current workflow, then users and scale, data and integrations, and whether AI should answer, recommend, or act. I’d agree on measurable success and boundaries around security, failures, latency, availability, and cost. Then I’d summarize the requirements before choosing components. What problem matters most, and how is it handled today?”</p>
+<p>“I’d separate hard constraints from preferences, compare the simplest viable options, and choose based on the customer&#39;s priority. I’d explain what improves, what becomes more expensive or complex, and how we would verify the result. I’d measure successful outcomes, latency, and total task cost, preserve required controls, and revisit the choice if evidence or requirements change.”</p>
 </blockquote>
 </article>
-  <div class="source-note">Generated from module-01-fde-problem-decomposition.md · Print layout: A4 landscape</div>
+  <div class="source-note">Generated from module-17-trade-off-thinking.md · Print layout: A4 landscape</div>
 </main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

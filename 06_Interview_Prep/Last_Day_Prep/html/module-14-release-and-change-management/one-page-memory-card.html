@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 1 — FDE Problem Decomposition.">
-  <title>Module 1 — FDE Problem Decomposition — One-Page Memory Card</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="One-page memory card for Module 14 — Release &amp; Change Management.">
+  <title>Module 14 — Release &amp; Change Management — One-Page Memory Card</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -152,128 +151,110 @@
   </style>
 </head>
 <body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·01</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
-<h2 id="one-page-memory-card-fde-problem-decomposition">ONE-PAGE MEMORY CARD — FDE Problem Decomposition<a class="anchor" href="#one-page-memory-card-fde-problem-decomposition" aria-label="Link to ONE-PAGE MEMORY CARD — FDE Problem Decomposition">#</a></h2>
-<p><strong>Core question:</strong> How do I turn a vague customer request into clear requirements?</p>
+  <div class="topbar"><span class="doc-id">MOD·14</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-14-release-amp-change-management">Module 14 — Release &amp; Change Management<a class="anchor" href="#module-14-release-amp-change-management" aria-label="Link to Module 14 — Release &amp;amp; Change Management">#</a></h1>
+<h2 id="one-page-memory-card-release-amp-change-management">ONE-PAGE MEMORY CARD — Release &amp; Change Management<a class="anchor" href="#one-page-memory-card-release-amp-change-management" aria-label="Link to ONE-PAGE MEMORY CARD — Release &amp;amp; Change Management">#</a></h2>
+<p><strong>Core question:</strong> How do we expose a candidate gradually, detect regressions, and retain control over behavior and actions?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
-<pre><code class="language-text">WHY → TODAY → WHO / HOW MUCH → WHAT
-                                 ↓
-                  HOW FAR → BOUNDARIES
-                                 ↓
-                    Requirements → Architecture
+<pre><code class="language-text">VERSION → EVALUATE → GATE
+                       ↓
+          SHADOW and/or CANARY
+                       ↓
+           MONITOR → EXPAND / STOP / ROLLBACK
 </code></pre>
-<p>WHY includes the business problem and measurable success. WHAT includes data and integrations. BOUNDARIES includes failure, security, latency, availability, and cost.</p>
-<h3 id="ten-questions">Ten Questions<a class="anchor" href="#ten-questions" aria-label="Link to Ten Questions">#</a></h3>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>Ask</th>
+<th>Concept</th>
+<th>Remember</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. Business</td>
-<td>What problem are we solving, and what outcome matters?</td>
+<td>Versioning</td>
+<td>Prompt, model/config, tools/schema, routing, retrieval, policy, eval artifacts</td>
 </tr>
 <tr>
-<td>2. Today</td>
-<td>How does it work today, and where is the biggest pain?</td>
+<td>Compatibility</td>
+<td>Active workflow state and pending approval/action semantics</td>
 </tr>
 <tr>
-<td>3. Users + scale</td>
-<td>Who uses it? What volume, peaks, concurrency, and growth?</td>
+<td>Offline gate</td>
+<td>Held-out coverage, task success, policy, quality, latency, cost</td>
 </tr>
 <tr>
-<td>4. Data</td>
-<td>What data, where, how fresh, and who can access it?</td>
+<td>Shadow</td>
+<td>Current serves users; candidate evaluated without production writes</td>
 </tr>
 <tr>
-<td>5. Autonomy</td>
-<td>Answer, recommend, or act? Which actions need approval?</td>
+<td>Canary</td>
+<td>Limited real cohort with baseline comparison and defined stop rules</td>
 </tr>
 <tr>
-<td>6. Success</td>
-<td>What baseline and business, AI, system, and cost targets?</td>
+<td>Flags</td>
+<td>Scope by tenant/cohort/capability; cover workers and execution too</td>
 </tr>
 <tr>
-<td>7. Failure</td>
-<td>What if evidence is missing, a tool fails, or approval is unavailable?</td>
+<td>Rollback</td>
+<td>Known compatible baseline; handle active tasks explicitly</td>
 </tr>
 <tr>
-<td>8. Security</td>
-<td>What access, tenant, privacy, and residency boundaries?</td>
+<td>Kill switch</td>
+<td>Stop affected capability at trusted execution boundary</td>
 </tr>
 <tr>
-<td>9. Integration</td>
-<td>Which APIs/systems? Read or write? Reliable or slow?</td>
-</tr>
-<tr>
-<td>10. NFRs</td>
-<td>What latency, availability, throughput, and cost limits by workload?</td>
+<td>Monitoring</td>
+<td>Versions, segments, delayed outcomes, failures, escalations, cost/latency</td>
 </tr>
 </tbody></table>
-<p>Use answers to guide the next question. Then check what you missed.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
-<th>Think / clarify…</th>
+<th>Think…</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“Need an agent”</td>
-<td>Actual business problem and current bottleneck</td>
+<td>“Twenty better examples”</td>
+<td>Broader held-out evidence and gates</td>
 </tr>
 <tr>
-<td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td>“Compare invisibly”</td>
+<td>Shadow with isolated/sandboxed writes</td>
 </tr>
 <tr>
-<td>“Current order status”</td>
-<td>Live API/tool; system of record</td>
+<td>“Two pilot tenants”</td>
+<td>Scoped flag/canary</td>
 </tr>
 <tr>
-<td>“Issue refunds”</td>
-<td>Allowed actions, policy, approval, safe execution</td>
+<td>“Regression after rollout”</td>
+<td>Stop expansion, compare versions, rollback</td>
 </tr>
 <tr>
-<td>“100K users”</td>
-<td>Peak workload and concurrency, not just user count</td>
+<td>“Unsafe action”</td>
+<td>Disable execution with kill switch</td>
 </tr>
 <tr>
-<td>“Fast and cheap”</td>
-<td>Measurable latency and cost envelope</td>
-</tr>
-<tr>
-<td>“API unavailable”</td>
-<td>Safe fallback, retry conditions, escalation</td>
+<td>“Long tasks from old version”</td>
+<td>State/behavior compatibility</td>
 </tr>
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>Agent request ≠ business problem.</strong> Ask why the customer wants it.</li>
-<li><strong>Reference knowledge ≠ live state.</strong> Policy → RAG; current refund status → API/tool.</li>
-<li><strong>Recommend ≠ execute.</strong> Agent recommends → Policy decides → Executor acts.</li>
-<li><strong>Outcome ≠ operating limit.</strong> Reduce manual work while meeting quality, security, latency, and cost constraints.</li>
+<li><strong>Shadow vs canary:</strong> evaluation-only vs real candidate exposure.</li>
+<li><strong>Deployment vs release:</strong> code present vs behavior enabled.</li>
+<li><strong>Rollback vs undo:</strong> software routing changes do not reverse payments.</li>
+<li><strong>Feature flag vs boundary enforcement:</strong> UI flags alone cannot stop a worker&#39;s write.</li>
 </ol>
-<h3 id="requirement-component-reminders">Requirement → Component Reminders<a class="anchor" href="#requirement-component-reminders" aria-label="Link to Requirement → Component Reminders">#</a></h3>
-<pre><code class="language-text">User / tenant request control → API Gateway
-Application / model control  → Model Gateway
-Approved knowledge           → RAG
-Current system state         → API/tool
-Controlled business action   → Policy + executor
-Approval required            → HITL
-</code></pre>
-<p>These are design consequences to confirm, not boxes to add automatically.</p>
-<h3 id="handoff-to-requirements">Handoff to Requirements<a class="anchor" href="#handoff-to-requirements" aria-label="Link to Handoff to Requirements">#</a></h3>
-<p>State the business outcome, users, required capabilities, data/integrations, allowed actions, approval rules, safe failure behavior, workload, operating limits, security boundaries, success targets, and open assumptions.</p>
-<p>Do not invent numbers. Confirm a baseline and target. A timeout after a write needs status checking and duplicate prevention before a retry.</p>
-<h3 id="30-second-opening">30-Second Opening<a class="anchor" href="#30-second-opening" aria-label="Link to 30-Second Opening">#</a></h3>
+<h3 id="rollout-rules">Rollout Rules<a class="anchor" href="#rollout-rules" aria-label="Link to Rollout Rules">#</a></h3>
+<p>Define cohort, metrics, observation window, stop/expand criteria, and owner before exposure. Monitor critical segments, not only averages. Candidate shadow execution must not duplicate business actions; it can still add model/tool load and data exposure. Keep budgets and access restrictions in place.</p>
+<p>Prefer stable cohort assignment when conversations or workflows need continuity. A small cohort cannot prove all rare cases safe; combine offline coverage with production evidence. Keep versions attached to tasks so pending approvals do not change meaning unexpectedly.</p>
+<p>On regression, stop expansion, disable dangerous execution where needed, and restore a compatible baseline for new work. Reconcile already submitted actions and decide how active tasks resume. Feed discovered failures into regression cases.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
 <blockquote>
-<p>“I’d first clarify the business outcome and current workflow, then users and scale, data and integrations, and whether AI should answer, recommend, or act. I’d agree on measurable success and boundaries around security, failures, latency, availability, and cost. Then I’d summarize the requirements before choosing components. What problem matters most, and how is it handled today?”</p>
+<p>“I’d version all behavior-changing artifacts, evaluate against the baseline, and apply agreed quality, policy, latency, and cost gates. I’d use shadow where comparison must avoid real actions and canary for controlled live exposure. Flags would scope the rollout, versioned telemetry would guide expansion, and tested rollback and execution switches would control regressions and in-flight work.”</p>
 </blockquote>
 </article>
-  <div class="source-note">Generated from module-01-fde-problem-decomposition.md · Print layout: A4 landscape</div>
+  <div class="source-note">Generated from module-14-release-and-change-management.md · Print layout: A4 landscape</div>
 </main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

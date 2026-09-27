@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 13 — AI Evaluation.">
+  <title>Module 13 — AI Evaluation — Concise Interview Module</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f5f5; --surface: #ffffff; --surface-2: #fafafa;
+      --text: #111827; --text-2: rgba(0,0,0,.65); --border: #f0f0f0; --border-strong: #d9d9d9;
+      --primary: #1677ff; --primary-soft: #e6f4ff; --primary-border: #91caff;
+      --secondary: #8b5cf6; --secondary-soft: #f5f0ff;
+      --success: #16a34a; --success-soft: #f0fdf4;
+      --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591;
+      --danger: #dc2626;
+      --code-bg: #1f1f1f; --code-text: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px rgba(0,0,0,.02);
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000; --surface: #141414; --surface-2: #1f1f1f;
+        --text: rgba(255,255,255,.88); --text-2: rgba(255,255,255,.55); --border: #303030; --border-strong: #424242;
+        --primary: #1668dc; --primary-soft: #111a2c; --primary-border: #15325b;
+        --secondary: #9f7aea; --secondary-soft: #1f1430;
+        --success: #49aa19; --success-soft: #162312;
+        --warning: #d89614; --warning-soft: #2b2111; --warning-border: #594214;
+        --danger: #dc4446;
+        --code-bg: #000000; --code-text: #e5e7eb;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 14px/1.5714286 var(--sans); -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); }
+    h1, h2, h3, h4 { line-height: 1.25; font-weight: 600; color: var(--text); scroll-margin-top: 24px; }
+    h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    h2 {
+      font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: .6rem;
+      border-bottom: 1px solid var(--border-strong); font-weight: 700;
+    }
+    h3 {
+      font-size: 1.25rem; margin: 2rem 0 .75rem; padding-left: .65rem;
+      border-left: 3px solid var(--primary); font-weight: 600;
+    }
+    h4 { font-size: 1rem; margin: 1.5rem 0 .5rem; font-weight: 600; }
+    p { margin: .75rem 0; max-width: 72ch; color: var(--text); }
+    ul, ol { padding-left: 1.35rem; max-width: 72ch; }
+    li + li { margin-top: .3rem; }
+    strong { color: var(--text); font-weight: 600; }
+    hr { height: 1px; border: 0; background: var(--border); margin: 2.4rem 0; }
+
+    blockquote {
+      position: relative; margin: 1rem 0; padding: .8rem 1rem .8rem 2.5rem;
+      border: 1px solid var(--primary-border); border-radius: 8px; background: var(--primary-soft);
+    }
+    blockquote::before {
+      content: "i"; position: absolute; left: .85rem; top: .8rem; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--primary); color: var(--surface);
+      font: 700 11px/16px Georgia, serif; text-align: center; font-style: italic;
+    }
+    blockquote p { margin: 0; max-width: none; color: var(--text); }
+
+    /* Gotchas / Important Distinctions: warning-toned alert */
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li {
+      background: var(--warning-soft); border: 1px solid var(--warning-border);
+      border-radius: 8px; padding: .7rem .9rem; margin-bottom: .55rem; list-style: none;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol { padding-left: 0; }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li::before {
+      content: "⚠ "; color: var(--warning); font-weight: 700;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li pre { margin-top: .6rem; }
+
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 14px 18px; border-radius: 8px;
+      background: var(--code-bg); color: var(--code-text);
+      font: 13px/1.6 var(--mono); white-space: pre;
+    }
+    code {
+      padding: .1em .4em; border-radius: 4px; background: var(--surface-2);
+      border: 1px solid var(--border); font: .87em var(--mono); color: var(--text);
+    }
+    pre code { padding: 0; background: transparent; border: 0; font: inherit; color: inherit; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { padding: 11px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th {
+      background: var(--surface-2); color: var(--text); font-weight: 600; font-size: .8rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface-2); }
+
+    .anchor { margin-left: .5em; text-decoration: none; opacity: 0; font-weight: 500; color: var(--text-2); }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+
+    .topbar {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+      margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--border-strong);
+    }
+    .doc-id {
+      font-family: var(--mono); font-size: .72rem; font-weight: 600; letter-spacing: .02em;
+      color: var(--primary); background: var(--primary-soft); border: 1px solid var(--primary-border);
+      padding: 2px 9px; border-radius: 4px; white-space: nowrap;
+    }
+    .eyebrow { color: var(--text-2); font-size: .82rem; font-weight: 500; }
+    .switch {
+      flex: 0 0 auto; padding: 6px 15px; border: 1px solid var(--primary); border-radius: 6px;
+      background: var(--primary); text-decoration: none; font-size: .84rem; font-weight: 600;
+      color: #fff; white-space: nowrap; transition: background .15s ease, border-color .15s ease;
+    }
+    .switch:hover { background: #0958d9; border-color: #0958d9; }
+    .source-note { margin-top: 2.2rem; padding-top: .9rem; border-top: 1px solid var(--border); color: var(--text-2); font-size: .78rem; font-family: var(--mono); }
+
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 860px); gap: 24px; width: min(1180px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav {
+      position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow: auto;
+      padding: 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    nav h2 {
+      margin: 0 16px 8px; padding: 0 0 8px; border-bottom: 1px solid var(--border);
+      color: var(--text-2); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    nav ul { margin: 0; padding: 0 8px; list-style: none; }
+    nav li + li { margin-top: 2px; }
+    nav a {
+      display: block; padding: 7px 10px; border-radius: 6px;
+      color: var(--text-2); font-size: .85rem; line-height: 1.4; text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+    nav a:hover { color: var(--primary); background: var(--primary-soft); }
+
+    main { min-width: 0; padding: clamp(24px, 4vw, 44px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); }
+
+    @media (max-width: 900px) {
+      .layout { display: block; width: min(100% - 20px, 860px); margin: 12px auto; }
+      nav { position: static; max-height: none; margin-bottom: 14px; }
+    }
+    @media (max-width: 640px) {
+      .topbar { grid-template-columns: 1fr; align-items: flex-start; }
+      pre { font-size: .78rem; }
+    }
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      :root { color-scheme: light; }
+      body { background: #fff; color: #111; font-size: 10pt; }
+      .layout { display: block; width: 100%; margin: 0; }
+      nav, .switch, .anchor, .source-note, .doc-id { display: none; }
+      main { padding: 0; border: 0; box-shadow: none; }
+      pre, blockquote, table { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><span class="doc-id">MOD·13</span><div class="eyebrow">Concise Interview Module — FDE Discovery Protocol</div><a class="switch" href="one-page-memory-card.html">Memory card →</a></div>
+    <h1 id="module-13-ai-evaluation">Module 13 — AI Evaluation<a class="anchor" href="#module-13-ai-evaluation" aria-label="Link to Module 13 — AI Evaluation">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you turn “good AI” into measurable criteria?</li>
+<li>Can you evaluate retrieval, generation, agent operations, and task outcome separately?</li>
+<li>Can you use deterministic checks and semantic review appropriately?</li>
+<li>Can you connect offline tests to real production outcomes?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<pre><code class="language-text">Customer outcome → Representative cases → Explicit rubric
+                                               ↓
+                  Component checks + end-to-end evaluation
+                                               ↓
+                      Release decision + production feedback
+</code></pre>
+<p><strong>Good answer ≠ successful task.</strong></p>
+<pre><code class="language-text">RAG:   Find evidence → Use it correctly
+Agent: Choose permitted operations → Complete actual task
+Both:  Quality + safety + latency + cost
+</code></pre>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-define-success-start-from-the-task">1. Define Success — Start From the Task<a class="anchor" href="#1-define-success-start-from-the-task" aria-label="Link to 1. Define Success — Start From the Task">#</a></h4>
+<p>Agree on correct completion, unacceptable outcomes, and operating limits. A refund task succeeds only when the correct permitted refund is confirmed, not when the model says “done.”</p>
+<blockquote>
+<p>“What must be true in the system of record for us to count this task as successful?”</p>
+</blockquote>
+<h4 id="2-representative-dataset-cover-real-work-and-hard-cases">2. Representative Dataset — Cover Real Work and Hard Cases<a class="anchor" href="#2-representative-dataset-cover-real-work-and-hard-cases" aria-label="Link to 2. Representative Dataset — Cover Real Work and Hard Cases">#</a></h4>
+<p>Include normal requests, ambiguous inputs, missing evidence, restricted data, tool failures, long workflows, and harmful instruction attempts. Separate development examples from held-out assessment.</p>
+<pre><code class="language-text">Real task mix + edge/failure cases + critical segments
+                         ↓
+                Versioned evaluation set
+</code></pre>
+<blockquote>
+<p>“I’d report results by task and risk segment, not only one overall score.”</p>
+</blockquote>
+<h4 id="3-retrieval-evaluation-did-we-find-the-evidence">3. Retrieval Evaluation — Did We Find the Evidence?<a class="anchor" href="#3-retrieval-evaluation-did-we-find-the-evidence" aria-label="Link to 3. Retrieval Evaluation — Did We Find the Evidence?">#</a></h4>
+<p>Check relevance and recall against labeled evidence, with a defined retrieval cutoff. Inspect whether relevant content survives into final context.</p>
+<pre><code class="language-text">Correct evidence absent → Retrieval/data problem
+Correct evidence present → Inspect generation next
+</code></pre>
+<blockquote>
+<p>“I’d separate candidate retrieval from context selection so we know where evidence was lost.”</p>
+</blockquote>
+<h4 id="4-answer-evaluation-correct-supported-and-useful">4. Answer Evaluation — Correct, Supported, and Useful?<a class="anchor" href="#4-answer-evaluation-correct-supported-and-useful" aria-label="Link to 4. Answer Evaluation — Correct, Supported, and Useful?">#</a></h4>
+<p>Evaluate correctness, groundedness, relevance, citations, and appropriate limitation statements. Groundedness means claims are supported by evidence; stale evidence can still make an answer wrong.</p>
+<blockquote>
+<p>“I’d check claim support and case correctness rather than reward the presence of a citation.”</p>
+</blockquote>
+<h4 id="5-agent-evaluation-inspect-operations-and-outcomes">5. Agent Evaluation — Inspect Operations and Outcomes<a class="anchor" href="#5-agent-evaluation-inspect-operations-and-outcomes" aria-label="Link to 5. Agent Evaluation — Inspect Operations and Outcomes">#</a></h4>
+<p>Check routing, tool selection, argument validity, access/policy compliance, observable trajectory, and actual completion.</p>
+<pre><code class="language-text">Request → Tool request → Arguments → Result → Final state
+</code></pre>
+<p>Evaluate recorded operations and decision summaries, not private model chain-of-thought. Allow different valid paths when the task permits them.</p>
+<blockquote>
+<p>“The response and the enterprise state must agree about what actually happened.”</p>
+</blockquote>
+<h4 id="6-deterministic-checks-test-explicit-conditions">6. Deterministic Checks — Test Explicit Conditions<a class="anchor" href="#6-deterministic-checks-test-explicit-conditions" aria-label="Link to 6. Deterministic Checks — Test Explicit Conditions">#</a></h4>
+<p>Use code or trusted assertions for schemas, required fields, known tool permissions, policy boundaries, duplicate effects, latency limits, and confirmed final state.</p>
+<pre><code class="language-text">Valid tool arguments? Authorized action?
+Correct order updated? No duplicate refund?
+</code></pre>
+<blockquote>
+<p>“I’d use deterministic checks wherever the requirement has an unambiguous test.”</p>
+</blockquote>
+<h4 id="7-semantic-evaluation-use-clear-rubrics">7. Semantic Evaluation — Use Clear Rubrics<a class="anchor" href="#7-semantic-evaluation-use-clear-rubrics" aria-label="Link to 7. Semantic Evaluation — Use Clear Rubrics">#</a></h4>
+<p>Human or model-assisted judges can assess relevance, completeness, explanation quality, and claim support. Calibrate against expert labels and inspect disagreements.</p>
+<blockquote>
+<p>“A judge score is evidence from a rubric, not an unquestionable ground truth.”</p>
+</blockquote>
+<p>Keep judged content separate from judge instructions. Track judge/rubric versions and limitations; do not rely on the same model&#39;s self-confidence as proof.</p>
+<h4 id="8-offline-vs-online-test-before-and-observe-after-release">8. Offline vs Online — Test Before and Observe After Release<a class="anchor" href="#8-offline-vs-online-test-before-and-observe-after-release" aria-label="Link to 8. Offline vs Online — Test Before and Observe After Release">#</a></h4>
+<p>Offline evaluation supports repeatable candidate comparisons. Online evaluation uses production traces, outcomes, overrides, and user feedback to detect real behavior and drift.</p>
+<pre><code class="language-text">Offline cases → Candidate comparison → Release gate
+Production → Outcomes / traces → New cases / regression checks
+</code></pre>
+<p>User ratings are useful but biased and incomplete. Reopened tickets or incorrect downstream state can contradict a positive rating.</p>
+<h4 id="9-compare-and-diagnose-quality-within-operating-limits">9. Compare and Diagnose — Quality Within Operating Limits<a class="anchor" href="#9-compare-and-diagnose-quality-within-operating-limits" aria-label="Link to 9. Compare and Diagnose — Quality Within Operating Limits">#</a></h4>
+<p>Compare candidates on the same task set with quality, policy, latency, and cost criteria. Repeat or quantify uncertainty for variable behavior where needed.</p>
+<blockquote>
+<p>“I’d locate the failing stage and critical segment before claiming an overall improvement.”</p>
+</blockquote>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Evaluation pattern</th>
+<th>Why</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Verify enterprise knowledge answers</td>
+<td>Evidence labels + claim rubric</td>
+<td>Separate retrieval and generation</td>
+<td>Labeling effort</td>
+</tr>
+<tr>
+<td>Confirm business actions</td>
+<td>Tool/state assertions</td>
+<td>Check real completion</td>
+<td>Test-system integration</td>
+</tr>
+<tr>
+<td>Detect policy violations</td>
+<td>Boundary and permission cases</td>
+<td>Check critical constraints</td>
+<td>Maintaining realistic cases</td>
+</tr>
+<tr>
+<td>Assess open-ended quality</td>
+<td>Calibrated human/model rubric</td>
+<td>Score semantic properties</td>
+<td>Judge variability</td>
+</tr>
+<tr>
+<td>Compare candidates</td>
+<td>Versioned held-out benchmark</td>
+<td>Repeatable comparison</td>
+<td>Coverage limits</td>
+</tr>
+<tr>
+<td>Catch production regressions</td>
+<td>Outcome/traces + feedback</td>
+<td>Observe actual workload</td>
+<td>Delayed/noisy labels</td>
+</tr>
+</tbody></table>
+<p><strong>Support example:</strong> evaluate policy retrieval and answer support, order tool arguments, refund approval, confirmed payment state, duplicate prevention, and resolution/reopen outcomes. Report latency and cost alongside task success.</p>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><strong>Retrieval vs generation:</strong> missing evidence and mishandled evidence need different fixes.</li>
+<li><strong>Groundedness vs correctness:</strong> evidence support does not establish freshness or applicability.</li>
+<li><strong>Deterministic vs semantic:</strong> explicit assertions vs rubric-based judgment.</li>
+<li><strong>Offline vs online:</strong> controlled comparisons vs actual production behavior; neither replaces the other.</li>
+<li><strong>Response quality vs completion:</strong> polished language cannot prove a cancelled order or issued refund.</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+<th>Evaluate…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Wrong policy retrieved”</td>
+<td>Retrieval</td>
+<td>Relevant evidence at cutoff</td>
+</tr>
+<tr>
+<td>“Right policy, unsupported claim”</td>
+<td>Generation</td>
+<td>Claim support and rubric</td>
+</tr>
+<tr>
+<td>“Says cancelled, order active”</td>
+<td>Task success</td>
+<td>Confirmed downstream state</td>
+</tr>
+<tr>
+<td>“Wrong tool arguments”</td>
+<td>Deterministic checks</td>
+<td>Schema and task-specific values</td>
+</tr>
+<tr>
+<td>“New prompt better on 20 cases”</td>
+<td>Coverage/uncertainty</td>
+<td>Held-out segments and failures</td>
+</tr>
+<tr>
+<td>“Ratings high, tickets reopen”</td>
+<td>Online outcomes</td>
+<td>Resolution and delayed feedback</td>
+</tr>
+<tr>
+<td>“Judge approves everything”</td>
+<td>Calibration</td>
+<td>Expert disagreements and rubric</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“I’d evaluate retrieval, generation, and final task completion separately.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d use code for explicit assertions and calibrated rubrics for semantic quality.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d report critical segments and failure cases instead of hiding them in an average.”</p>
+</blockquote>
+<blockquote>
+<p>“Offline evaluation informs release; online outcomes show whether it works in practice.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>Design evaluation for policy answers and an action-taking refund workflow.</li>
+<li>Which assertions can be deterministic, and which need semantic judgment?</li>
+<li>A model cites the wrong policy but sounds correct. How do retrieval and answer checks catch it?</li>
+<li>The response says an order was cancelled, but it remains active. What evidence proves failure?</li>
+<li>A candidate improves overall scores but fails more high-risk cases. How do you make the release decision?</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-13-ai-evaluation.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

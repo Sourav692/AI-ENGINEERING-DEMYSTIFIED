@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 1 — FDE Problem Decomposition.">
-  <title>Module 1 — FDE Problem Decomposition — One-Page Memory Card</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="One-page memory card for Module 12 — Reliability &amp; Failure Handling.">
+  <title>Module 12 — Reliability &amp; Failure Handling — One-Page Memory Card</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -152,128 +151,129 @@
   </style>
 </head>
 <body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·01</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-1-fde-problem-decomposition">Module 1 — FDE Problem Decomposition<a class="anchor" href="#module-1-fde-problem-decomposition" aria-label="Link to Module 1 — FDE Problem Decomposition">#</a></h1>
-<h2 id="one-page-memory-card-fde-problem-decomposition">ONE-PAGE MEMORY CARD — FDE Problem Decomposition<a class="anchor" href="#one-page-memory-card-fde-problem-decomposition" aria-label="Link to ONE-PAGE MEMORY CARD — FDE Problem Decomposition">#</a></h2>
-<p><strong>Core question:</strong> How do I turn a vague customer request into clear requirements?</p>
+  <div class="topbar"><span class="doc-id">MOD·12</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-12-reliability-amp-failure-handling">Module 12 — Reliability &amp; Failure Handling<a class="anchor" href="#module-12-reliability-amp-failure-handling" aria-label="Link to Module 12 — Reliability &amp;amp; Failure Handling">#</a></h1>
+<h2 id="one-page-memory-card-reliability-amp-failure-handling">ONE-PAGE MEMORY CARD — Reliability &amp; Failure Handling<a class="anchor" href="#one-page-memory-card-reliability-amp-failure-handling" aria-label="Link to ONE-PAGE MEMORY CARD — Reliability &amp;amp; Failure Handling">#</a></h2>
+<p><strong>Core question:</strong> What happens when a dependency fails, and how do we recover without making the business result worse?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
-<pre><code class="language-text">WHY → TODAY → WHO / HOW MUCH → WHAT
-                                 ↓
-                  HOW FAR → BOUNDARIES
-                                 ↓
-                    Requirements → Architecture
+<pre><code class="language-text">CLASSIFY → TIMEOUT → SAFE RETRY?
+                         ↓
+FALLBACK / DEGRADE → RECOVER → ESCALATE
+                         ↓
+                Record actual outcome
 </code></pre>
-<p>WHY includes the business problem and measurable success. WHAT includes data and integrations. BOUNDARIES includes failure, security, latency, availability, and cost.</p>
-<h3 id="ten-questions">Ten Questions<a class="anchor" href="#ten-questions" aria-label="Link to Ten Questions">#</a></h3>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>#</th>
-<th>Ask</th>
+<th>Control</th>
+<th>Remember</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. Business</td>
-<td>What problem are we solving, and what outcome matters?</td>
+<td>Timeout</td>
+<td>Bound waiting within total task deadline; write outcome may be unknown</td>
 </tr>
 <tr>
-<td>2. Today</td>
-<td>How does it work today, and where is the biggest pain?</td>
+<td>Retry</td>
+<td>Transient and safe errors only; shared attempt/time budget</td>
 </tr>
 <tr>
-<td>3. Users + scale</td>
-<td>Who uses it? What volume, peaks, concurrency, and growth?</td>
+<td>Backoff/jitter</td>
+<td>Space attempts and randomize timing to avoid storms</td>
 </tr>
 <tr>
-<td>4. Data</td>
-<td>What data, where, how fresh, and who can access it?</td>
+<td>Circuit breaker</td>
+<td>Stop normal calls after repeated failure; probe recovery</td>
 </tr>
 <tr>
-<td>5. Autonomy</td>
-<td>Answer, recommend, or act? Which actions need approval?</td>
+<td>Idempotency</td>
+<td>Stable identifier for one logical action across retries</td>
 </tr>
 <tr>
-<td>6. Success</td>
-<td>What baseline and business, AI, system, and cost targets?</td>
+<td>Reconciliation</td>
+<td>Establish whether uncertain external writes completed</td>
 </tr>
 <tr>
-<td>7. Failure</td>
-<td>What if evidence is missing, a tool fails, or approval is unavailable?</td>
+<td>Fallback</td>
+<td>Compatible capability, quality, permissions, data boundaries</td>
 </tr>
 <tr>
-<td>8. Security</td>
-<td>What access, tenant, privacy, and residency boundaries?</td>
+<td>Degradation</td>
+<td>Keep safe independent features; do not fabricate success</td>
 </tr>
 <tr>
-<td>9. Integration</td>
-<td>Which APIs/systems? Read or write? Reliable or slow?</td>
+<td>Checkpoint</td>
+<td>Durable context/progress/approval/action state</td>
 </tr>
 <tr>
-<td>10. NFRs</td>
-<td>What latency, availability, throughput, and cost limits by workload?</td>
+<td>DLQ</td>
+<td>Dead-letter queue for failed messages with owner and recovery plan</td>
+</tr>
+<tr>
+<td>Blast radius</td>
+<td>Limit affected dependencies, capabilities, and tenants</td>
 </tr>
 </tbody></table>
-<p>Use answers to guide the next question. Then check what you missed.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
-<th>Think / clarify…</th>
+<th>Think…</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“Need an agent”</td>
-<td>Actual business problem and current bottleneck</td>
+<td>“Model down”</td>
+<td>Compatible fallback or clear unavailable state</td>
 </tr>
 <tr>
-<td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td>“Transient error”</td>
+<td>Bounded backoff and jitter</td>
 </tr>
 <tr>
-<td>“Current order status”</td>
-<td>Live API/tool; system of record</td>
+<td>“Outage gets worse”</td>
+<td>Retry amplification / breaker</td>
 </tr>
 <tr>
-<td>“Issue refunds”</td>
-<td>Allowed actions, policy, approval, safe execution</td>
+<td>“Write timed out”</td>
+<td>Unknown outcome / reconciliation</td>
 </tr>
 <tr>
-<td>“100K users”</td>
-<td>Peak workload and concurrency, not just user count</td>
+<td>“Crash midway”</td>
+<td>Resume durable progress</td>
 </tr>
 <tr>
-<td>“Fast and cheap”</td>
-<td>Measurable latency and cost envelope</td>
+<td>“Always-failing message”</td>
+<td>DLQ and controlled recovery</td>
 </tr>
 <tr>
-<td>“API unavailable”</td>
-<td>Safe fallback, retry conditions, escalation</td>
+<td>“Whole system fails”</td>
+<td>Reduce blast radius</td>
 </tr>
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>Agent request ≠ business problem.</strong> Ask why the customer wants it.</li>
-<li><strong>Reference knowledge ≠ live state.</strong> Policy → RAG; current refund status → API/tool.</li>
-<li><strong>Recommend ≠ execute.</strong> Agent recommends → Policy decides → Executor acts.</li>
-<li><strong>Outcome ≠ operating limit.</strong> Reduce manual work while meeting quality, security, latency, and cost constraints.</li>
+<li><strong>Timeout vs remote failure:</strong> the caller may have missed a successful result.</li>
+<li><strong>Retry vs safe repetition:</strong> retries need idempotency or operation-specific recovery for writes.</li>
+<li><strong>Checkpoint vs exactly-once:</strong> durable progress is not proof an external effect happened once.</li>
+<li><strong>DLQ vs success:</strong> isolation of failed work is only a recovery step.</li>
 </ol>
-<h3 id="requirement-component-reminders">Requirement → Component Reminders<a class="anchor" href="#requirement-component-reminders" aria-label="Link to Requirement → Component Reminders">#</a></h3>
-<pre><code class="language-text">User / tenant request control → API Gateway
-Application / model control  → Model Gateway
-Approved knowledge           → RAG
-Current system state         → API/tool
-Controlled business action   → Policy + executor
-Approval required            → HITL
+<h3 id="failure-rules">Failure Rules<a class="anchor" href="#failure-rules" aria-label="Link to Failure Rules">#</a></h3>
+<pre><code class="language-text">Invalid input / denied access → Correct or stop
+Transient read error         → Retry within budget
+Unknown write                → Query status / reconcile
+Missing required policy      → Block sensitive execution
+Repeated dependency failure  → Breaker + defined fallback/defer
 </code></pre>
-<p>These are design consequences to confirm, not boxes to add automatically.</p>
-<h3 id="handoff-to-requirements">Handoff to Requirements<a class="anchor" href="#handoff-to-requirements" aria-label="Link to Handoff to Requirements">#</a></h3>
-<p>State the business outcome, users, required capabilities, data/integrations, allowed actions, approval rules, safe failure behavior, workload, operating limits, security boundaries, success targets, and open assumptions.</p>
-<p>Do not invent numbers. Confirm a baseline and target. A timeout after a write needs status checking and duplicate prevention before a retry.</p>
-<h3 id="30-second-opening">30-Second Opening<a class="anchor" href="#30-second-opening" aria-label="Link to 30-Second Opening">#</a></h3>
+<p>Do not multiply retries at tool, orchestration, and provider layers. Preserve logical action identifiers during replay. A fallback must respect model capability and customer data restrictions. A degraded answer must explain its limitation; pending actions must retain accurate status.</p>
+<p>API Gateway = User → Application control.
+Model Gateway = Application → Model control.
+Model recovery does not replace enterprise-tool recovery or business-action reconciliation.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
 <blockquote>
-<p>“I’d first clarify the business outcome and current workflow, then users and scale, data and integrations, and whether AI should answer, recommend, or act. I’d agree on measurable success and boundaries around security, failures, latency, availability, and cost. Then I’d summarize the requirements before choosing components. What problem matters most, and how is it handled today?”</p>
+<p>“I’d classify each failure, bound waiting and retries, and protect failing dependencies with backoff, jitter, and circuit breakers. I’d use compatible fallbacks or preserve safe partial functionality. For long tasks, I’d resume durable progress; for uncertain writes, I’d reconcile status and preserve idempotency. Failed background work would have an owned recovery path, and users would see the actual outcome.”</p>
 </blockquote>
 </article>
-  <div class="source-note">Generated from module-01-fde-problem-decomposition.md · Print layout: A4 landscape</div>
+  <div class="source-note">Generated from module-12-reliability-and-failure-handling.md · Print layout: A4 landscape</div>
 </main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>
