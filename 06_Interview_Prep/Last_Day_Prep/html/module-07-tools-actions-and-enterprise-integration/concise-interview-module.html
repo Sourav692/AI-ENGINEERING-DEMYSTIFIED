@@ -4,94 +4,167 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Concise interview guide for Module 7 — Tools, Actions &amp; Enterprise Integration.">
   <title>Module 7 — Tools, Actions &amp; Enterprise Integration — Concise Interview Module</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #eef2f7; --surface: #ffffff; --surface-2: #f5f7fb;
-      --text: #172033; --muted: #5d687d; --line: #d9e0ea;
-      --accent: #3157d5; --accent-soft: #e9eeff; --quote: #087f76;
-      --code-bg: #111827; --code-text: #e8eef8;
-      --shadow: 0 16px 40px rgba(29, 41, 57, .09);
+      --bg: #f5f5f5; --surface: #ffffff; --surface-2: #fafafa;
+      --text: #111827; --text-2: rgba(0,0,0,.65); --border: #f0f0f0; --border-strong: #d9d9d9;
+      --primary: #1677ff; --primary-soft: #e6f4ff; --primary-border: #91caff;
+      --secondary: #8b5cf6; --secondary-soft: #f5f0ff;
+      --success: #16a34a; --success-soft: #f0fdf4;
+      --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591;
+      --danger: #dc2626;
+      --code-bg: #1f1f1f; --code-text: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px rgba(0,0,0,.02);
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0a1020; --surface: #111827; --surface-2: #182235;
-        --text: #e8eef8; --muted: #a8b3c7; --line: #2b3951;
-        --accent: #8aa7ff; --accent-soft: #1c2e59; --quote: #62dfd0;
-        --code-bg: #080d17; --code-text: #e8eef8;
-        --shadow: 0 16px 40px rgba(0, 0, 0, .32);
+        --bg: #000000; --surface: #141414; --surface-2: #1f1f1f;
+        --text: rgba(255,255,255,.88); --text-2: rgba(255,255,255,.55); --border: #303030; --border-strong: #424242;
+        --primary: #1668dc; --primary-soft: #111a2c; --primary-border: #15325b;
+        --secondary: #9f7aea; --secondary-soft: #1f1430;
+        --success: #49aa19; --success-soft: #162312;
+        --warning: #d89614; --warning-soft: #2b2111; --warning-border: #594214;
+        --danger: #dc4446;
+        --code-bg: #000000; --code-text: #e5e7eb;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
       }
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0; background: var(--bg); color: var(--text);
-      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 14px/1.5714286 var(--sans); -webkit-font-smoothing: antialiased;
     }
-    a { color: var(--accent); }
-    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 20px; }
-    h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); margin: 0; }
-    h2 { font-size: 1.55rem; margin: 2.4rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
-    h3 { font-size: 1.22rem; margin: 2rem 0 .65rem; }
-    h4 { font-size: 1.04rem; margin: 1.4rem 0 .45rem; }
-    p { margin: .75rem 0; }
-    ul, ol { padding-left: 1.35rem; }
-    li + li { margin-top: .25rem; }
-    strong { color: var(--text); }
-    hr { height: 1px; border: 0; background: var(--line); margin: 2.2rem 0; }
+    a { color: var(--primary); }
+    h1, h2, h3, h4 { line-height: 1.25; font-weight: 600; color: var(--text); scroll-margin-top: 24px; }
+    h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    h2 {
+      font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: .6rem;
+      border-bottom: 1px solid var(--border-strong); font-weight: 700;
+    }
+    h3 {
+      font-size: 1.25rem; margin: 2rem 0 .75rem; padding-left: .65rem;
+      border-left: 3px solid var(--primary); font-weight: 600;
+    }
+    h4 { font-size: 1rem; margin: 1.5rem 0 .5rem; font-weight: 600; }
+    p { margin: .75rem 0; max-width: 72ch; color: var(--text); }
+    ul, ol { padding-left: 1.35rem; max-width: 72ch; }
+    li + li { margin-top: .3rem; }
+    strong { color: var(--text); font-weight: 600; }
+    hr { height: 1px; border: 0; background: var(--border); margin: 2.4rem 0; }
+
     blockquote {
-      margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid var(--quote);
-      border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--quote) 8%, var(--surface));
+      position: relative; margin: 1rem 0; padding: .8rem 1rem .8rem 2.5rem;
+      border: 1px solid var(--primary-border); border-radius: 8px; background: var(--primary-soft);
     }
-    blockquote p { margin: 0; }
+    blockquote::before {
+      content: "i"; position: absolute; left: .85rem; top: .8rem; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--primary); color: var(--surface);
+      font: 700 11px/16px Georgia, serif; text-align: center; font-style: italic;
+    }
+    blockquote p { margin: 0; max-width: none; color: var(--text); }
+
+    /* Gotchas / Important Distinctions: warning-toned alert */
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li {
+      background: var(--warning-soft); border: 1px solid var(--warning-border);
+      border-radius: 8px; padding: .7rem .9rem; margin-bottom: .55rem; list-style: none;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol { padding-left: 0; }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li::before {
+      content: "⚠ "; color: var(--warning); font-weight: 700;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li pre { margin-top: .6rem; }
+
     pre {
-      max-width: 100%; overflow-x: auto; padding: 16px 18px; border-radius: 9px;
+      max-width: 100%; overflow-x: auto; padding: 14px 18px; border-radius: 8px;
       background: var(--code-bg); color: var(--code-text);
-      font: .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      white-space: pre;
+      font: 13px/1.6 var(--mono); white-space: pre;
     }
     code {
-      padding: .12em .3em; border-radius: 4px; background: var(--surface-2);
-      font: .9em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: .1em .4em; border-radius: 4px; background: var(--surface-2);
+      border: 1px solid var(--border); font: .87em var(--mono); color: var(--text);
     }
-    pre code { padding: 0; background: transparent; font: inherit; }
-    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; }
-    table { width: 100%; border-collapse: collapse; font-size: .91rem; }
-    th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
-    th { background: var(--surface-2); }
-    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
-    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; }
+    pre code { padding: 0; background: transparent; border: 0; font: inherit; color: inherit; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { padding: 11px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th {
+      background: var(--surface-2); color: var(--text); font-weight: 600; font-size: .8rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface-2); }
+
+    .anchor { margin-left: .5em; text-decoration: none; opacity: 0; font-weight: 500; color: var(--text-2); }
     h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+
     .topbar {
-      display: flex; align-items: center; justify-content: space-between; gap: 14px;
-      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+      margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--border-strong);
     }
-    .eyebrow { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .doc-id {
+      font-family: var(--mono); font-size: .72rem; font-weight: 600; letter-spacing: .02em;
+      color: var(--primary); background: var(--primary-soft); border: 1px solid var(--primary-border);
+      padding: 2px 9px; border-radius: 4px; white-space: nowrap;
+    }
+    .eyebrow { color: var(--text-2); font-size: .82rem; font-weight: 500; }
     .switch {
-      flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px;
-      background: var(--surface-2); text-decoration: none; font-size: .82rem; font-weight: 700;
+      flex: 0 0 auto; padding: 6px 15px; border: 1px solid var(--primary); border-radius: 6px;
+      background: var(--primary); text-decoration: none; font-size: .84rem; font-weight: 600;
+      color: #fff; white-space: nowrap; transition: background .15s ease, border-color .15s ease;
     }
-    .source-note { margin-top: 2rem; color: var(--muted); font-size: .78rem; }
-    @media (max-width: 720px) {
-      .topbar { align-items: flex-start; flex-direction: column; }
-      pre { font-size: .79rem; }
+    .switch:hover { background: #0958d9; border-color: #0958d9; }
+    .source-note { margin-top: 2.2rem; padding-top: .9rem; border-top: 1px solid var(--border); color: var(--text-2); font-size: .78rem; font-family: var(--mono); }
+
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 860px); gap: 24px; width: min(1180px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav {
+      position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow: auto;
+      padding: 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: var(--shadow);
     }
-  
-    .layout { display: grid; grid-template-columns: 250px minmax(0, 880px); gap: 30px; width: min(1200px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
-    nav { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow: auto; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
-    nav h2 { margin: 0 0 10px; padding: 0; border: 0; color: var(--muted); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; }
-    nav ul { margin: 0; padding: 0; list-style: none; }
-    nav li + li { margin-top: 3px; }
-    nav a { display: block; padding: 6px 8px; border-radius: 6px; color: var(--muted); font-size: .84rem; line-height: 1.35; text-decoration: none; }
-    nav a:hover { color: var(--accent); background: var(--accent-soft); }
-    main { min-width: 0; padding: clamp(26px, 5vw, 58px); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
-    @media (max-width: 900px) { .layout { display: block; width: min(100% - 20px, 880px); margin: 10px auto; } nav { position: static; max-height: none; margin-bottom: 10px; } main { border-radius: 12px; } }
-    @media print { @page { size: A4; margin: 14mm; } :root { color-scheme: light; } body { background: #fff; color: #111; font-size: 10pt; } .layout { display: block; width: 100%; margin: 0; } nav, .switch, .anchor, .source-note { display: none; } main { padding: 0; border: 0; box-shadow: none; } pre, blockquote, table { break-inside: avoid; } }
+    nav h2 {
+      margin: 0 16px 8px; padding: 0 0 8px; border-bottom: 1px solid var(--border);
+      color: var(--text-2); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    nav ul { margin: 0; padding: 0 8px; list-style: none; }
+    nav li + li { margin-top: 2px; }
+    nav a {
+      display: block; padding: 7px 10px; border-radius: 6px;
+      color: var(--text-2); font-size: .85rem; line-height: 1.4; text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+    nav a:hover { color: var(--primary); background: var(--primary-soft); }
+
+    main { min-width: 0; padding: clamp(24px, 4vw, 44px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); }
+
+    @media (max-width: 900px) {
+      .layout { display: block; width: min(100% - 20px, 860px); margin: 12px auto; }
+      nav { position: static; max-height: none; margin-bottom: 14px; }
+    }
+    @media (max-width: 640px) {
+      .topbar { grid-template-columns: 1fr; align-items: flex-start; }
+      pre { font-size: .78rem; }
+    }
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      :root { color-scheme: light; }
+      body { background: #fff; color: #111; font-size: 10pt; }
+      .layout { display: block; width: 100%; margin: 0; }
+      nav, .switch, .anchor, .source-note, .doc-id { display: none; }
+      main { padding: 0; border: 0; box-shadow: none; }
+      pre, blockquote, table { break-inside: avoid; }
+    }
   </style>
 </head>
 <body><div class="layout">
   <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
-  <main><div class="topbar"><div class="eyebrow">Concise Interview Module</div><a class="switch" href="one-page-memory-card.html">Open memory card →</a></div>
+  <main><div class="topbar"><span class="doc-id">MOD·07</span><div class="eyebrow">Concise Interview Module — FDE Discovery Protocol</div><a class="switch" href="one-page-memory-card.html">Memory card →</a></div>
     <h1 id="module-7-tools-actions-amp-enterprise-integration">Module 7 — Tools, Actions &amp; Enterprise Integration<a class="anchor" href="#module-7-tools-actions-amp-enterprise-integration" aria-label="Link to Module 7 — Tools, Actions &amp;amp; Enterprise Integration">#</a></h1>
 <h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
 <h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
