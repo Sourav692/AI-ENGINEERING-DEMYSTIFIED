@@ -256,7 +256,7 @@ Four decisions matter more than the diagram, and the first is the whole risk mod
 
 A proposal has a fixed shape: the exact command, the blast radius, the evidence, the runbook it follows, the change-freeze status, and a simulation or dry-run result where the platform allows one. A proposal without a blast radius is not a proposal. Route it to the service owner and the incident commander, record the decision and the decision time, and let it expire when the incident window closes.
 
-Give every tool a typed result with five states, because a string return cannot tell the agent what happened. `SUCCESS` carries the data. `EMPTY` means the query ran and nothing matched. `UNAVAILABLE` means the source is down. `DENIED` means the caller may not. `INVALID` means the arguments were wrong and says what to fix. Mixing up `EMPTY` and `UNAVAILABLE` causes retry storms during a real outage, which is exactly when this agent runs. Mixing up `DENIED` and `INVALID` teaches the agent to work around policy instead of respecting it.
+Give every tool a typed result with five states, because a string return cannot tell the agent what happened. `SUCCESS` carries the data. `EMPTY` means the query ran and nothing matched. `UNAVAILABLE` means the source is down. `DENIED` means the caller may not. `INVALID` means the arguments were wrong and says what to fix. Mixing up `EMPTY` and `UNAVAILABLE` can cause retry storms during a real outage, which is exactly when this agent runs. Mixing up `DENIED` and `INVALID` teaches the agent to work around policy instead of respecting it.
 
 ```mermaid
 flowchart LR
@@ -293,7 +293,7 @@ Hold credentials to match. Read tools run with scoped read-only credentials. Wri
 
 ## 7. Say the Latency Arithmetic Aloud
 
-Thirty seconds is a ceiling, not a target. A first useful summary must land inside it while 400 alerts arrive, because a responder who has already started typing a manual query stops reading the agent. Say the budget in slices and where each second goes.
+Thirty seconds is a ceiling, not a target. A first useful summary must land inside it while 400 alerts arrive, because I'd expect a responder who has already started typing a manual query to stop reading the agent. Say the budget in slices and where each second goes.
 
 Dedupe and correlation are rules, so they cost under a second. Context building reads a cached service catalog, deploy metadata and flag history in parallel, another second or two. Telemetry queries fan out in parallel with bounded lookback windows and a per-query timeout, budgeted at five to ten seconds for the slowest source, with `UNAVAILABLE` returned rather than waited for. Pre-aggregation runs on the query results as they arrive. In my budget, hypothesis synthesis on the strong model is the largest slice, ten to fifteen seconds, streamed so the first ranked cause appears before the last. Citation and evidence verification runs inline for anything that will become a proposal, and asynchronously for explanatory text.
 
@@ -322,7 +322,7 @@ Then say what breaks first at 10×. The binding constraint is provider quota and
 
 ## 9. Gate the Release on Hypothesis Precision
 
-The falsifying metric is hypothesis precision, confirmed in post-incident review. Below a threshold, responders stop reading the output, and an ignored incident tool is worse than none because it still consumes attention during the incident. Measure that first and gate on it.
+The falsifying metric is hypothesis precision, confirmed in post-incident review. Below a threshold, I'd expect responders to stop reading the output, and I'd argue an ignored incident tool is worse than none because it still consumes attention during the incident. Measure that first and gate on it.
 
 | Metric                                      | What it proves                                      | Strong threshold                                             | Dataset / method                  | Owner               |
 | ------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------ | --------------------------------- | ------------------- |

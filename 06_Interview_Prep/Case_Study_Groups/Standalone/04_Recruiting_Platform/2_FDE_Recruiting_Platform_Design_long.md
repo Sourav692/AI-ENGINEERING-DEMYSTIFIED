@@ -14,6 +14,8 @@ The interview question: design an AI-powered recruiting platform that helps recr
 
 Recruiters need to upload a job description, receive resumes in bulk, get candidates ranked by fit, generate interview questions and scorecards, schedule interviews, and receive a hiring recommendation — while remaining in control of the final decision. That last clause is the whole design constraint: this is an AI-assisted workflow, not an autonomous hiring system.
 
+The clarifying questions, with the answers this case assumes. In the room, confirm each one with the interviewer.
+
 > Is the platform for enterprise hiring or staffing agencies — the multi-tenant and volume assumptions differ either way. Should matching happen in real time or batch mode — batch for bulk resume ingestion, near-real-time for recruiter search. Should recruiters be able to override AI recommendations — yes, always, which makes human-in-the-loop a first-class requirement rather than an afterthought. Are hiring decisions fully automated or human-assisted — human-assisted, which shapes every downstream design choice around explainability. Are there compliance requirements like GDPR or EEOC — yes, which makes fairness monitoring and audit logging non-negotiable.
 
 **✅ Functional** — what the platform must do:
@@ -113,7 +115,7 @@ Structured extraction is the seam between "documents" and "data": everything bef
 
 The ranking engine combines several signals rather than relying on a single similarity number — semantic similarity score, required skills match, experience level, domain expertise, location, certifications, availability, and historical hiring success where applicable. Weighting the signals explicitly, rather than letting one opaque model score decide everything, is what makes a ranking explainable to a recruiter and defensible in an audit.
 
-An illustrative weighting: **semantic similarity ~30%** · **skills match ~25%** · **experience level ~20%** · **domain expertise ~15%** · **other signals (location, certifications, availability) ~10%** — a recruiter can see why a candidate ranked where they did, not just that they did.
+An illustrative weighting, my starting point rather than a standard: **semantic similarity ~30%** · **skills match ~25%** · **experience level ~20%** · **domain expertise ~15%** · **other signals (location, certifications, availability) ~10%** — a recruiter can see why a candidate ranked where they did, not just that they did.
 
 ---
 

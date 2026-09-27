@@ -21,12 +21,12 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Sample privacy-safe production failures back into future test suites so the test set evolves with the product.
 
 ## Strong non-functional requirements
-- Latency: the gate must finish inside the release window; p95 run duration beyond about 20 minutes turns a gate into a blocker.
+- Latency: the gate must finish inside the release window; I'd treat a p95 run duration beyond about 20 minutes as the point where a gate turns into a blocker.
 - Availability: peak matters more than average, because 30 teams releasing in the same business hour can overwhelm a daily-average design.
 - Security: the sandboxed runner is hostile-adjacent, enforcing timeouts, egress limits, secrets scoping, and per-run concurrency caps.
 - Compliance: tenant and data isolation so one application's traces, labels, and evaluations never leak into another workspace.
 - Reliability: fail closed on release decisions when evidence is missing; never approve on an incomplete or unvalidated run.
-- Cost: at roughly 3,000,000 test-case executions a day, tier the suites — if every release costs a fortune, teams route around the gate.
+- Cost: at the roughly 3,000,000 test-case executions a day this case assumes, tier the suites — if every release costs a fortune, teams route around the gate.
 
 ## Architecture explanation
 - Separate the control plane, which decides what to evaluate, from the data plane, which executes it, so policy stays deterministic when runners are slow or failing.
@@ -74,6 +74,8 @@ flowchart LR
 - After pilot: widen only while coverage, escape rate, and flaky-case rate hold; a suite that stops discriminating is retired from gating.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Release regression escape rate | Harmful changes are actually caught before production | Under 5% rolling 30-day; zero severe in critical apps | Release outcomes against incident tickets |

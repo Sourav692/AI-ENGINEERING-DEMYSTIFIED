@@ -21,8 +21,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Forecast completion continuously and invoke a pre-agreed contingency mode when the deadline is at risk.
 
 ## Strong non-functional requirements
-- Latency: `RPS = (N_records / T_window) × (1 + h)` — 100M records in a 6-hour window is about 4,630 records/sec, or 5,320 with 15% headroom.
-- Availability: size against the tail of large or slow records, not the mean, because the last 5% of a batch is the hardest.
+- Latency: `RPS = (N_records / T_window) × (1 + h)` — assuming a 6-hour window, 100M records is about 4,630 records/sec, or 5,320 with the 15% headroom I'd add.
+- Availability: size against the tail of large or slow records, not the mean, because the last 5% of a batch is usually the hardest.
 - Security: inputs, prompts, and outputs protected per the customer's access and retention rules across every hop.
 - Compliance: an auditable record of which snapshot, model version, and partition produced every classification.
 - Reliability: no missing or duplicate logical results, with bounded replay from durable checkpoints after any crash.
@@ -76,6 +76,8 @@ flowchart LR
 - After pilot: define deadline contingency modes with named owners before the job is ever late, not after the first miss.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Completion forecast vs. deadline | The run will actually land before 6 a.m. | Never crosses the deadline without a contingency activated | Progress rate against remaining work |
@@ -107,4 +109,4 @@ I would restate the goal as a replayable, cost-controlled batch delivered by dea
 | Communication | Quotes throughput | Clear but generic | Leads with the 4 a.m. decision, names owners, closes with the go/no-go gate |
 
 ## Final 2-minute spoken answer
-I would not start with the model. The prompt sounds like a throughput problem — classify 100 million records every night before 6 a.m. — but the room splits three ways immediately: the business owner wants classifications by morning, the platform lead wants the warehouse intact, and the on-call engineer wants to rerun safely when something fails. That disagreement is the real problem, so I would restate the target as completing a replayable, cost-controlled batch by deadline with clear recovery decisions when behind schedule. The first question I need answered is whether partial results have value, because that one answer determines retry strategy, checkpointing cadence, and how much money to spend on the last ten percent. On sizing, 100 million records across a six-hour window is about 4,630 records per second, and with fifteen percent headroom for retries and stragglers, roughly 5,320 — and I would size from the tail of large records, not the mean. Architecturally, a planner freezes an immutable snapshot, a manifest splits it into partitions balanced for processing cost rather than row count, a durable queue hands out leases, and a rate-limit coordinator holds backpressure so tightening quota slows leases instead of triggering a retry storm. Checkpoints make recovery bounded and the sink upserts on the record key so replay cannot duplicate. The failure I would rehearse out loud is being 45% complete at 4 a.m., and the answer is that the contingency mode — narrow scope, cheaper model, or partial output with explicit status — was agreed with a named owner before launch.
+I would not start with the model. The prompt sounds like a throughput problem — classify 100 million records every night before 6 a.m. — but the room splits three ways immediately: the business owner wants classifications by morning, the platform lead wants the warehouse intact, and the on-call engineer wants to rerun safely when something fails. That disagreement is the real problem, so I would restate the target as completing a replayable, cost-controlled batch by deadline with clear recovery decisions when behind schedule. The first question I need answered is whether partial results have value, because that one answer determines retry strategy, checkpointing cadence, and how much money to spend on the last ten percent. On sizing, if we assume a six-hour window, 100 million records is about 4,630 records per second, and with the fifteen percent headroom I'd add for retries and stragglers, roughly 5,320 — and I would size from the tail of large records, not the mean. Architecturally, a planner freezes an immutable snapshot, a manifest splits it into partitions balanced for processing cost rather than row count, a durable queue hands out leases, and a rate-limit coordinator holds backpressure so tightening quota slows leases instead of triggering a retry storm. Checkpoints make recovery bounded and the sink upserts on the record key so replay cannot duplicate. The failure I would rehearse out loud is being 45% complete at 4 a.m., and the answer is that the contingency mode — narrow scope, cheaper model, or partial output with explicit status — was agreed with a named owner before launch.

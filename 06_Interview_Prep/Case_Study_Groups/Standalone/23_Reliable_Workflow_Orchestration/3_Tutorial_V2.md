@@ -299,7 +299,7 @@
 - These already imply the system is a durable state machine with a large inactive population and a smaller, constantly moving subset.
 - Daily-to-per-second conversion: 100,000,000 activities/day ÷ 86,400 seconds/day ≈ **1,157 activities/second on average**.
 - Average is useful but not what you provision for — office-hours concentration, morning reminder batching, or a dependency outage causing delayed retries to resume together can push true peak several times higher.
-- Practical framing to state out loud:
+- Practical framing to state out loud. The multipliers below are planning choices I'd defend for this case, not industry standards:
   - Average dispatch rate: about 1.2k activities/sec
   - Peak dispatch rate: 3x–10x average depending on customer usage patterns
   - Headroom: at least 2x above the observed peak for a new system, more if retries or regional failover are in scope
@@ -319,7 +319,7 @@
 ### Estimating Event-History Storage
 
 - Back-of-envelope method: active workflows × events retained per workflow × bytes per event — not a magic number.
-- Working assumptions:
+- Working assumptions (the 10 million comes from the scenario; the per-workflow numbers are mine):
   - 10 million active workflows
   - 40 events retained per workflow on average
   - 1 KB per event record, illustrative
@@ -349,7 +349,7 @@
 | Base case | 10M | 100M | ~1.2k | Durable history, moderate partitioning, warm worker pool |
 | 10x growth | 100M | 1B | ~11.6k | Stronger sharding, stricter queue isolation, heavier compaction/tiering |
 
-- At 10x growth the bottleneck is unlikely to be application-server CPU — more likely storage fan-out, queue hot spots, replay latency, or operational cost.
+- At 10x growth I wouldn't expect application-server CPU to be the bottleneck — I'd expect storage fan-out, queue hot spots, replay latency, or operational cost to bind first.
 - If the design cannot absorb that growth without a full rewrite, say so and choose a more partition-friendly layout from the start.
 
 ### Latency Budgets and Workflow SLOs
@@ -380,7 +380,7 @@
   - Low cap → faster recovery for user-facing work, but can overload a flaky dependency.
   - High cap → protects the dependency, but delays customer-visible progress.
 
-> 🎯 **Interview Pointer:** "Retry vs. compensation" is one of the most common conceptual traps interviewers set — always state explicitly that backoff never substitutes for a business-level reversal (e.g., a refund) when a completed side effect must be undone.
+> 🎯 **Interview Pointer:** "Retry vs. compensation" is a common conceptual trap interviewers set — always state explicitly that backoff never substitutes for a business-level reversal (e.g., a refund) when a completed side effect must be undone.
 
 ### Which Estimate Should Drive the Architecture
 
@@ -587,7 +587,7 @@ flowchart TD
 - The payment may have succeeded before the worker died, so the system must never equate "worker lost" with "business action lost."
 - The durable history store and completion receipt are what prevent a double charge on retry — the scheduler either reissues the step safely or escalates to compensation based on what history says already happened.
 
-> 🎯 **Interview Pointer:** This exact drill — worker crash after payment succeeds, before the receipt is recorded — is the single most likely follow-up question in this chapter's interview. Memorize the resolution: durable history + completion receipt decide "redeliver" vs. "compensate," never worker memory.
+> 🎯 **Interview Pointer:** This exact drill — worker crash after payment succeeds, before the receipt is recorded — is the follow-up I'd most expect in this chapter's interview. Memorize the resolution: durable history + completion receipt decide "redeliver" vs. "compensate," never worker memory.
 
 ### End-to-End Flow, Step by Step
 
@@ -667,7 +667,7 @@ flowchart TD
     - Idempotency: caller-supplied idempotency key so a retry does not create two workflow instances.
     - Request: workflow type, business payload, caller context, optional correlation metadata.
     - Response: workflow instance id, initial state, stable status reference.
-    - Errors: `400` invalid shape, `401/403` auth failure, `409` reused idempotency key with conflicting payload, `422` semantically invalid workflow inputs.
+    - Errors: `400` invalid shape, `401/403` auth failure, `409` the same idempotency key is still being processed, `422` the key was reused with a different payload or the workflow inputs are semantically invalid (the IETF Idempotency-Key draft uses 409 and 422 this way).
   - `POST /v1/workflows/{id}/signals` — submits human or system input.
     - Authentication: caller must be authorized to signal that workflow or tenant.
     - Idempotency: signal id plus payload hash or caller key to suppress duplicate approval clicks or repeated system callbacks.
@@ -780,7 +780,7 @@ flowchart TD
 ### Tests That Make the Design Believable
 
 - A contract test proves duplicate workflow starts do not create duplicate instances: send the same `POST /v1/workflows/{type}` request twice with the same idempotency key, assert the second response returns the original instance id rather than creating a new one.
-- A failure-injection test targets the critical drill: worker crashes after payment succeeds. Simulate a crash after `charge(...)` returns but before CRM update completes. On restart, the workflow should read its history, see payment already happened, skip the duplicate charge, and resume from the next unfinished step. If CRM had already succeeded before the crash, the repair path should reconcile without re-running payment.
+- A failure-injection test targets the critical drill: something breaks after payment succeeds. Let `charge(...)` succeed, then make the CRM update fail for good. The workflow should compensate with a refund, and replaying it from history should see the payment already happened and never charge again. A true crash-and-resume test (kill the worker between the two steps) follows the same shape: replay reads history, skips the charge, and carries on from the next unfinished step.
 
 ```python
 import pytest
@@ -806,12 +806,13 @@ async def test_start_workflow_is_idempotent(client):
 @pytest.mark.asyncio
 async def test_worker_crash_after_payment_does_not_double_charge(orchestrator, fake_activities):
     order = Order(id="o-123", amount_cents=5000, customer_email="a@example.com")
-    approval = lambda order_id, timeout_days: True
+    async def approval(order_id, timeout_days):
+        return True
 
-    async def crash_after_charge(*args, **kwargs):
+    async def charge_succeeds(*args, **kwargs):
         return PaymentReceipt(idempotency_key="pay:o-123", external_ref="payref-1", status="captured")
 
-    fake_activities.charge.side_effect = crash_after_charge
+    fake_activities.charge.side_effect = charge_succeeds
     fake_activities.update_crm.side_effect = PermanentError("crm unavailable")
 
     with pytest.raises(PermanentError):
@@ -823,7 +824,7 @@ async def test_worker_crash_after_payment_does_not_double_charge(orchestrator, f
     assert fake_activities.refund.await_count == 1
 ```
 
-- These tests do two useful things: prove the API contract is actually idempotent (not merely described that way), and demonstrate the failure drill that matters most in this chapter — a worker crash after payment succeeds should not create a double charge on resume.
+- These tests do two useful things: prove the API contract is actually idempotent (not merely described that way), and demonstrate the failure drill that matters most in this chapter — a failure after payment succeeds should end in a refund, not a double charge on replay.
 
 ### Why This Answer Sounds Credible in an Interview
 
@@ -1213,7 +1214,7 @@ flowchart LR
   - Declarative definitions are easier to inspect/validate and understandable by non-engineers — downside: can become too constrained for real enterprise branching.
   - Balanced position: expose a declarative model for common structure, but allow code for business-specific logic where necessary.
 
-> 🎯 **Interview Pointer:** "Orchestration vs. choreography" is the single trade-off most likely to be pressure-tested with a direct challenge ("why not just choreograph everything through events?") — have the one-line verdict ready: choreography reduces coupling but loses "where is this workflow now?", which is disqualifying once the customer needs visible state and supportable recovery.
+> 🎯 **Interview Pointer:** "Orchestration vs. choreography" is the trade-off I'd most expect to be pressure-tested with a direct challenge ("why not just choreograph everything through events?") — have the one-line verdict ready: choreography reduces coupling but loses "where is this workflow now?", which is disqualifying once the customer needs visible state and supportable recovery.
 
 ### Follow-up Drills and Strong Answers
 
@@ -1293,8 +1294,8 @@ This tutorial was self-reviewed against the fixed 20-item decomposition rubric a
 *The following is supplementary perspective from this reformatting pass — not sourced from the original chapter. It is offered as one way to address each gap live in an interview, grounded in this chapter's own architecture.*
 
 **Item 7 — Unit economics / cost-driver breakdown (Partial).**
-- I'd build a rough cost-per-workflow number directly from components this chapter already named: `HistoryEvent` storage (Section 5) at the base-case ~400GB raw (Section 3) costs a few dollars per month before replication — cheap relative to the "manual repair count" line already in the scorecard (Section 7).
-- The real cost driver in this system is very likely operator time, not infrastructure: `cost per workflow ≈ infra marginal cost + (manual repair rate × loaded operator cost per incident)`.
+- I'd build a rough cost-per-workflow number directly from components this chapter already named: `HistoryEvent` storage (Section 5) at the base-case ~400GB raw (Section 3) is, by my rough estimate, a small monthly storage bill before replication — cheap relative to the "manual repair count" line already in the scorecard (Section 7).
+- I'd expect the real cost driver in this system to be operator time, not infrastructure: `cost per workflow ≈ infra marginal cost + (manual repair rate × loaded operator cost per incident)`.
 - That formula ties directly to the compensation-rate and manual-repair-count SLIs the chapter already tracks, so I would present it as "we already have the inputs to compute this, we just haven't multiplied them yet" rather than inventing a new metric.
 
 **Item 10 — Build vs. buy / vendor and model-selection trade-offs (Absent).**

@@ -370,7 +370,7 @@ The sixty-second line: extraction is cheap, judgement is expensive. Route pages 
 
 ## 14. Debug the Incidents on This Design
 
-Both incidents are questions about where the design would have caught the failure. Answer each as detect, contain, root cause, prevent. Read the telemetry aloud. The numbers are the argument.
+Both scenario incidents are questions about where the design would have caught the failure. Answer each as detect, contain, root cause, prevent. Read the telemetry aloud. The numbers are the argument.
 
 ### Correct answer, misleading citation (#89)
 

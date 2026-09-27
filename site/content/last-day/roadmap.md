@@ -1231,7 +1231,7 @@ At this stage:
 
 ---
 
-## 🔥 [divadsanders.medium.com/5-claude-skills-that-fix-claudes-ugly-ui-ai-web-design-ec9cd27bf5fe](https://divadsanders.medium.com/5-claude-skills-that-fix-claudes-ugly-ui-ai-web-design-ec9cd27bf5fe)
+## 🔥 Trigger → Concept Cheat Sheet
 
 The objective is not to memorize definitions.
 

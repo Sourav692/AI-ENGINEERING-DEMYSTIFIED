@@ -59,7 +59,7 @@ The easiest way to frame requirements in an interview is:
 | **Bounds** | Cap tool calls and retries. |
 | **Audit** | Citations are auditable. |
 | **Autonomy** | Read-only; no external actions. |
-| **Scale (illustrative)** | 40,000 runs/day ≈ 28/min; 3× peak ≈ 100/min; ~70 s mean time in system ⇒ ~120 in flight (~170 slots at 70% util.). Naive seven-step plans can send ~30k input tokens plus output on the premium model. |
+| **Scale (illustrative)** | 40,000 runs/day ≈ 28/min; 3× peak ≈ 84/min, rounded up to 100; ~70 s mean time in system ⇒ ~120 in flight (~170 slots at 70% util.). Naive seven-step plans can send ~30k input tokens plus output on the premium model. |
 
 ### Interview shortcut
 

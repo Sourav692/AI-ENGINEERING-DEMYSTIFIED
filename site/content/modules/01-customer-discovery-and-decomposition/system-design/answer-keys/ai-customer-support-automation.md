@@ -21,8 +21,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Record every retrieval, decision, tool call, and human override so any outcome is attributable afterward.
 
 ## Strong non-functional requirements
-- Latency: tier it by risk — p95 under 3s for routine, under 8s for ambiguous, under 15s for a safe high-risk handoff bundle.
-- Availability: at 2M tickets a month and 100 QPS peak, routing, retrieval, and escalation must accept work independently.
+- Latency: tier it by risk; the targets I'd set are p95 under 3s for routine, under 8s for ambiguous, and under 15s for a safe high-risk handoff bundle.
+- Availability: at the scale this case assumes — 2M tickets a month and 100 QPS peak — routing, retrieval, and escalation must accept work independently.
 - Security: untrusted customer text belongs in a message channel, never a control channel; tools are scoped per workflow.
 - Compliance: an immutable trail of actor, model version, tool invoked, fields validated, policy version, and any human override.
 - Reliability: degrade into a safe handoff rather than force an answer when a dependency times out or context is incomplete.
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand by intent only where safe automation rate holds; roll back a single drifting intent rather than the whole system.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Safe automation rate | Automated cases resolve without correction or harm | Stable per intent; drop triggers rollback | Ticketing system plus QA review labels |

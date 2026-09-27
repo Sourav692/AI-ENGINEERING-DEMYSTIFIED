@@ -133,7 +133,7 @@ Derive the number live rather than reciting it. With 100,000,000 records and a w
 
 The 10x row is not tomorrow's expectation. It tests whether the design is fragile or absurdly overbuilt. Keep headroom and growth apart: headroom covers noise inside one batch, while growth covers next quarter's larger batch. State average, peak, growth and headroom rather than one point estimate.
 
-Tokens turn the record rate into a factory. At 250 input plus 20 output tokens, each record costs 270 tokens before retries. That token figure, not the record count, usually drives partitioning and component choice.
+Tokens turn the record rate into a factory. At 250 input plus 20 output tokens, each record costs 270 tokens before retries. I'd let that token figure, not the record count, drive partitioning and component choice.
 
 Say the uncertainty out loud rather than hiding it:
 

@@ -69,7 +69,7 @@ The constraint that dominates the rest is the customs rule. It is not a threshol
 
 ## 3. Size by Event Throughput, Not by Users
 
-This system is not scale-constrained by users. It is constrained by event throughput and correctness. Forty concurrent agents are a single-server load. Two hundred events a second, bursting during a regional storm, is the real sizing problem.
+This system is not scale-constrained by users. It is constrained by event throughput and correctness. I'd treat forty concurrent agents as a single-server load. Two hundred events a second, bursting during a regional storm, is the real sizing problem.
 
 The arithmetic below is own construction from the source's figures. Say it aloud, because it decides where the model sits.
 
@@ -282,7 +282,7 @@ Require **explainability at the point of approval**. The draft shown to an ops a
 
 ## 10. Evaluate It Before Anyone Asks
 
-The #66 prompt ends "how do you build it, and **how do you evaluate it**?" The source bank names hand-waved evaluation as the second failure mode of the round. Most candidates fumble "how do you know your AI system is actually working well?" Tie every design choice back to how it would be evaluated, and raise the plan unprompted.
+The #66 prompt ends "how do you build it, and **how do you evaluate it**?" The source bank names hand-waved evaluation as the second failure mode of the round, and says most candidates fumble "how do you know your AI system is actually working well?" Tie every design choice back to how it would be evaluated, and raise the plan unprompted.
 
 The plan below is own construction, built on the anchor's components. Each layer of the design gets one question and one instrument.
 

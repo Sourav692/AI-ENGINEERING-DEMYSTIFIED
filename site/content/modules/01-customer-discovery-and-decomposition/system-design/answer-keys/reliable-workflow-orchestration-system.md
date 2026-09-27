@@ -22,7 +22,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Strong non-functional requirements
 - Latency: budget per step, not per workflow; a process that legitimately waits seven days still needs bounded automatic steps.
-- Availability: at 10 million active workflows and 100 million activities a day, roughly 1,200 activities per second, the queue and history store dominate.
+- Availability: at the scale this case assumes — 10 million active workflows and 100 million activities a day, roughly 1,200 activities per second — I'd expect the queue and history store to dominate.
 - Security: authenticate and authorize at start and at every signal, since a resume or repair is as privileged as the original request.
 - Compliance: an append-only history reconstructing who approved what, when, and under which definition version.
 - Reliability: exactly once at the business-effect level, not at the message level — retries are safe only behind idempotency keys and receipts.
@@ -74,6 +74,8 @@ flowchart LR
 - After pilot: onboard a second workflow only once stuck-workflow age, duplicate effects, and manual repair count stay inside tolerance.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Duplicate effect count | Exactly once holds at the business-effect level | Zero repeated charges or emails | Idempotency logs and downstream reconciliation |

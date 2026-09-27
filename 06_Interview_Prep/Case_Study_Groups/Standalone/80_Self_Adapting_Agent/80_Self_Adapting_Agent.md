@@ -31,7 +31,7 @@ The Cracking book names four places an agent's improvement can live: context, me
 | 4. Prompt optimisation *(own construction)* | Instructions and examples searched against a scored dev set | A rewritten planner prompt that raises tool-choice accuracy | Hours to a day | Revert the prompt version |
 | 5. Parameters | Model weights | A tuned small router for the top task types | Days to weeks | Redeploy the old model |
 
-The book's rule is to work down this table, not up. Most teams that reach for fine-tuning have not yet fixed their tool schemas, retrieval or example selection. Fine-tuning then bakes those defects into weights that take weeks to change.
+The book's rule is to work down this table, not up. In the book's view, most teams that reach for fine-tuning have not yet fixed their tool schemas, retrieval or example selection. Fine-tuning then bakes those defects into weights that take weeks to change.
 
 Ask these questions before committing *(own construction)*.
 
@@ -93,7 +93,7 @@ Arithmetic decides which rungs are even affordable *(own construction; every inp
 
 Two lessons fall out of the table. First, rare task types cannot be promoted quickly. At 30 requests a day, the shadow minimum alone takes a week, and that sets the honest time to competence. Second, candidate volume drives learning cost, not training. Fifty candidates a week breaks a 10% learning budget almost five times over. So the extractor must deduplicate and pre-filter before anything reaches the paid evaluation.
 
-The sample-size arithmetic sets what the gate can even detect. The validation chapter gives it as n ≈ 15.7 × p(1−p) / δ² per arm. At a baseline of 0.8, 200 cases detect only differences of about 12 points. A 5-point gain needs about 1,000 cases per arm. So the 200-attempt shadow proves "not much worse", not "5 points better". Say that aloud; it is a rare and strong signal.
+The sample-size arithmetic sets what the gate can even detect. The validation chapter gives it as n ≈ 15.7 × p(1−p) / δ² per arm. At a baseline of 0.8, 200 cases detect only differences of about 11 points. A 5-point gain needs about 1,000 cases per arm. So the 200-attempt shadow proves "not much worse", not "5 points better". Say that aloud; it is a rare and strong signal.
 
 ## 4. Draw the Architecture as Two Loops With One Gate
 
@@ -215,7 +215,7 @@ The cheapest adaptation changes nothing that outlives the request. Rung 1 covers
 
 One cost follows. Examples sit above the user's turn, so swapping them per request breaks the prompt prefix cache. Where traffic clusters, cache one example set per cluster rather than choosing per request.
 
-**Reflexion.** A failed attempt becomes a written lesson placed in context for the next attempt. The model itself does not change. It works only with three conditions: an external failure signal, a lesson specific enough to change behaviour, and a hard cap on attempts. "Expected ISO 8601 UTC, I sent local time" is a lesson. "Be more careful" is not. A model grading its own attempt without an external signal produces confidently wrong lessons. Those lessons then contaminate every retry after them.
+**Reflexion.** A failed attempt becomes a written lesson placed in context for the next attempt. The model itself does not change. It works only with three conditions: an external failure signal, a lesson specific enough to change behaviour, and a hard cap on attempts. "Expected ISO 8601 UTC, I sent local time" is a lesson. "Be more careful" is not. A model grading its own attempt without an external signal tends to produce confidently wrong lessons. Those lessons then contaminate every retry after them.
 
 The repo's Reflexion notebook implements the pattern as actor, evaluator and self-reflection roles. For #80, one design rule sits on top: the evaluator must be external. A validator, a test or an API response counts. The same model's opinion does not.
 
@@ -263,11 +263,11 @@ If training does happen, the flywheel gates decide whether the data is honest. D
 
 ## 11. Gate Every Self-Modification Like a Human Pull Request
 
-A self-modifying system without a release gate is an unreviewed deploy pipeline with a model holding the merge button. The gate is where #80 is won or lost. It is also the evaluation question this interview panel scores hardest.
+A self-modifying system without a release gate is an unreviewed deploy pipeline with a model holding the merge button. The gate is where #80 is won or lost. It is also where I'd expect the panel to probe hardest, since the question bank treats evaluation as the round's deliberate differentiator.
 
 Apply the validation chapter's CI gate to every learned artefact, whichever rung it came from. Safety assertions gate absolutely: any failure blocks. Quality gates against the baseline with a paired significance test, per stratum, not just on the mean. Cost is reported, and a ceiling breach blocks. A gain that triples spend must be a visible decision.
 
-The per-stratum rule has a worked failure behind it. A retrieval change lifted aggregate accuracy from 79% to 81%. One tenant's segment fell from 82% to 67% inside that average, because that tenant was only about 4% of the eval set. The fix was a floor: no release may drop any stratum by more than 3 points. For #80, the strata are task types. A new skill for a new task must not quietly damage an old one.
+The per-stratum rule has a worked failure behind it, from the validation chapter. A retrieval change lifted aggregate accuracy from 79% to 81%. One tenant's segment fell from 82% to 67% inside that average, because that tenant was only about 4% of the eval set. The fix was a floor: no release may drop any stratum by more than 3 points. For #80, the strata are task types. A new skill for a new task must not quietly damage an old one.
 
 | Worry | Gate check |
 |---|---|
@@ -275,7 +275,7 @@ The per-stratum rule has a worked failure behind it. A retrieval change lifted a
 | Did it break any other task type? | Per-stratum regression floor across all live task types |
 | Is it safe? | Trajectory assertions: no new tools, no permission widening, approvals still requested |
 | Does it survive real traffic? | Shadow of at least 200 attempts with success at or above baseline |
-| Is the improvement real or noise? | Sample-size check; a 200-case suite cannot see gains below about 12 points |
+| Is the improvement real or noise? | Sample-size check; a 200-case suite cannot see gains below about 11 points |
 | What did it cost? | Tokens and latency per run versus baseline, reported on the gate result |
 | Can it be undone? | Registry holds the previous version; rollback is a status change |
 
@@ -320,7 +320,7 @@ The pattern audit applies to this page's own design. Every mechanism added needs
 
 ## 14. Deliver It in Sixty Minutes
 
-Spend the hour on the ladder and the gate, because the decomposition round scores evaluation hardest. The question bank's framework has six steps: clarify the mission, stakeholders and metrics, map inputs, decompose and sequence by risk, walking-skeleton MVP, then adapt live. The plan below follows it *(own construction)*.
+Spend the hour on the ladder and the gate, because the question bank flags evaluation as what sets strong candidates apart. The question bank's framework has six steps: clarify the mission, stakeholders and metrics, map inputs, decompose and sequence by risk, walking-skeleton MVP, then adapt live. The plan below follows it *(own construction)*.
 
 | Minutes | Move | What to say |
 |---|---|---|

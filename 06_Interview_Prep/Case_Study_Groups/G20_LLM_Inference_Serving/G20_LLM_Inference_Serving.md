@@ -21,7 +21,7 @@ These prompts look like AI questions and are graded as distributed-systems quest
 
 ## 1. Ask What Kind of Request Before Sizing Anything
 
-The request shape sets the design, and "100,000 requests per second" means nothing until the tokens per request are known. A 20-token completion and a 2,000-token essay differ in GPU work by two orders of magnitude.
+The request shape sets the design, and "100,000 requests per second" means nothing until the tokens per request are known. A 20-token completion and a 2,000-token essay differ in decode work by two orders of magnitude.
 
 Ask five questions first, and state an assumption for each one the interviewer declines *(own construction)*.
 

@@ -145,7 +145,7 @@ eval suites are.**
 flowchart TD
     A["At baseline p=0.8, detecting a<br/>5-point gain needs ~1,000 cases/arm"]
     B["Detecting a 2-point gain needs<br/>~6,000 cases/arm"]
-    C["A 200-case suite can't reliably detect<br/>anything smaller than ~12 points"]
+    C["A 200-case suite can't reliably detect<br/>anything smaller than ~11 points"]
     A --> B --> C
 ```
 
@@ -200,5 +200,5 @@ sequenceDiagram
 | Trajectory evaluation | Assert properties of the path, not a single reference path; safety assertions come before success assertions |
 | Judge rubric design | Decompose into criteria, anchor with examples, require quoted evidence before a score |
 | Judge validation | Never self-judge; report Cohen's kappa (≥0.60) and position bias with every judge-derived number |
-| Sample size arithmetic | A 200-case suite can't detect gains smaller than ~12 points — suspect leakage/noise before celebrating |
+| Sample size arithmetic | A 200-case suite can't detect gains smaller than ~11 points — suspect leakage/noise before celebrating |
 | CI release gate | Safety gates absolutely, quality gates per stratum with significance, cost is visible — never silent |

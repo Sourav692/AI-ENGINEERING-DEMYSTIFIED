@@ -69,7 +69,7 @@ The easiest way to frame requirements in an interview is:
 
 | Requirement | Example target / constraint |
 |---|---|
-| **Latency** | Interactive answers around 3–8 s; pre-meeting brief built ahead of time; long work async. |
+| **Latency** | In this design, interactive answers around 3–8 s; pre-meeting brief built ahead of time; long work async. |
 | **Availability** | During selling hours, serve a permitted last snapshot with a staleness label when safe, or refuse. |
 | **Security** | SSO, CRM record/field permissions, tenant/region constraints, scoped secrets; no customer-data training without contract permission. |
 | **Correctness** | Unsupported external claims blocked; missing citations or uncertain access fail closed. |

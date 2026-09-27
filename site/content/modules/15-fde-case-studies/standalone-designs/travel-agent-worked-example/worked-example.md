@@ -6,9 +6,9 @@
 
 ## Why this matters
 
-The framework and principles are abstract until you watch them correct a real diagram. This document does exactly that: it takes a published reference architecture for an agentic travel assistant, shows five structural mistakes a careful reviewer found in it, and rebuilds it. Learning to *spot* those mistakes is more valuable than memorising the corrected diagram, because the same five errors appear in most first-draft multi-agent designs — including ones you will draw under time pressure.
+The framework and principles are abstract until you watch them correct a real diagram. This document does exactly that: it takes a published reference architecture for an agentic travel assistant, shows five structural mistakes a careful reviewer found in it, and rebuilds it. Learning to *spot* those mistakes is more valuable than memorising the corrected diagram, because, in my experience, the same five errors show up in a lot of first-draft multi-agent designs — including ones you will draw under time pressure.
 
-The system: an agentic AI travel assistant serving customers across AMER, EMEA and APJ, with specialised agents for search, booking, pricing, recommendation and policy.
+The system, as the reference sets it up: an agentic AI travel assistant serving customers across AMER, EMEA and APJ, with specialised agents for search, booking, pricing, recommendation and policy.
 
 ## The original, and what was wrong with it
 

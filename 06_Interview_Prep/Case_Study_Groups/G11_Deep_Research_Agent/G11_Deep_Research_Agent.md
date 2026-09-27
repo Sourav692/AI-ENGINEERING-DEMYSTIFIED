@@ -25,7 +25,7 @@ Make three opening moves, every time. Restate the problem in one sentence. Ask f
 
 The prompt: design a read-only, citation-grounded research agent for ~100K daily users. It searches the public web and the user's own documents, then writes an answer in which every claim is cited.
 
-Close requirements by restating the whole system as one sentence and asking "is that the system?". It costs 20 seconds. Interviewers consistently mark it as a strong signal, because it is what a technical lead does at the start of a real project.
+Close requirements by restating the whole system as one sentence and asking "is that the system?". It costs 20 seconds. I'd expect an interviewer to mark it as a strong signal, because it is what a technical lead does at the start of a real project.
 
 > *"A read-only research agent for about a hundred thousand daily users, forty thousand runs a day, under ninety seconds at p95 and twenty cents a run, where success means every claim is cited to a source a reviewer would accept. Is that the system?"*
 
@@ -214,7 +214,7 @@ Numbers said out loud are the senior signal. Derive them in front of the intervi
 | Step | Arithmetic | Result |
 |---|---|---|
 | Mean rate | 40K runs ÷ 1,440 minutes | ~28 runs/min *(own derivation)* |
-| Peak rate | ~28 × 3, rounded up | ≈ 100 runs/min at peak |
+| Peak rate | ~28 × 3 ≈ 84, rounded up for headroom | ≈ 100 runs/min at peak |
 | In flight (Little's Law) | 100 runs/min × ~70 s mean time in system ÷ 60 | ~120 in-flight |
 | Concurrency to provision | 120 ÷ 0.70 utilization target | around 170 |
 | Naive cost | 7 steps, ≈ 30K input tokens plus output, all on the premium model | Blows the $0.20 budget |

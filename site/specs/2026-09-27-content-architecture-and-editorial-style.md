@@ -166,7 +166,7 @@ work in the source text.
 
 - CONTENT-13, the privacy scrub (done later on 2026-09-27; see "Privacy" below).
 - CONTENT-15, the story bank.
-- CONTENT-17, applying the claim labels in the source text.
+- CONTENT-17, applying the claim labels in the source text (done later on 2026-09-27; see "Claim labels, round 2" below).
 - CONTENT-18/19, the primary-source fact check and review dates.
 
 ## Privacy (CONTENT-13, done 2026-09-27)
@@ -215,3 +215,20 @@ The behavioural answers and some case studies were written from real client enga
 **What the reader sees.** The grouped case-study families and the reviews now carry `lastReviewed: 2026-09-27`. Pages show "Key facts checked against official sources on 27 Sep 2026".
 
 **Still to do.** Round 2 scope, out-of-scope findings and dates to recheck are in `fact-check-followups.md`.
+
+## Claim labels, round 2 (CONTENT-17, done 27 Sep 2026)
+
+**Scope.** Everything round 1 left: the 22 practice answer keys, the 13 standalone cases (published tabs only, not the archived V1 tutorials), the Roadmap and the Rapid Revision Guide, and the 143 low-priority round-1 claims.
+
+**How the labels read.** Same rule as round 1: in the wording, never as badges.
+
+- Scenario numbers read as given: "at the scale this case assumes, 2M tickets a month".
+- Design choices read as the speaker's: "in this design, I'd target 3–8 seconds", "I'd expect the index to break first".
+- Every practice evaluation table opens with one line: "These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them."
+- Engagement numbers carry where they came from: "in that build…", "in the reference project…".
+- Overclaims were softened ("always" to "usually", "most common" to "a common").
+
+**One owner, one copy.** Four standalone `2_Answer_Key.md` files are byte-identical to Version_3 practice keys. The practice key is the owner, and the standalone file is re-copied from it. Rapid Revision lines were aligned with the module that owns each fact.
+
+**Not researched.** Unsourced external facts went to `.website_plan/09-content-architecture-editorial-quality/claims-round2-queue.csv` (44 rows). The 15 that were in-page arithmetic or clear errors were fixed in the same pass. The 29 open rows feed CONTENT-18.
+

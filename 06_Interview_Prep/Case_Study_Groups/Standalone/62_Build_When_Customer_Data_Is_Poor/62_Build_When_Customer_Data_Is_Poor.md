@@ -64,7 +64,7 @@ The bank's reusable opening fits this case well. Clarify the outcome, user, work
 | Biased or unrepresentative | History covers some segments, not others | Record counts by segment and period against current traffic | Any claim of accuracy outside the covered segments | Stratified sampling; explicit out-of-scope segments |
 | Access-restricted | Data exists, but the project cannot use it | Sources with access granted versus requested | Everything downstream of that source | Escalate by day 3; design around the gap |
 
-Two rows deserve emphasis, because they fool teams most often.
+Two rows deserve emphasis, because in my experience they fool teams most often.
 
 **Inconsistent labels are worse than missing labels.** A missing label is visibly missing. An inconsistent one looks like ground truth, gets trained on, and then scores the model's copied errors as correct. The Cracking book's routing case is the canonical example. A fine-tune reported 94% accuracy against an 81% prompted baseline, then reached only ~78% in production. One of three compounding causes was that labels came from a previous version of the same system's routing decisions. The model learned the old system's errors, and evaluation marked them right. After deduplication, a split by time and a human-adjudicated relabel, the honest number came out near 83%. Production matched it within two points.
 
@@ -82,7 +82,7 @@ A readiness assessment turns "poor" into a number the customer can argue with. I
 | 4 | Test joins across systems; check freshness; count records by segment and period | Join rate, staleness, coverage by segment |
 | 5 | Score the card; write the decision memo | Build, narrow, or not yet |
 
-Day 3 is the most important day. Relabelling by two SMEs measures label consistency directly, instead of asking someone whether the labels are good. Use Cohen's kappa rather than raw agreement: agreement corrected for what two random labellers would achieve by chance. The Cracking book explains why. Raw agreement overstates quality when one label dominates, because always guessing the majority class looks accurate. Its floor for a judge is κ ≥ 0.60, and the same floor works for a pair of humans.
+Day 3 is the most important day. Relabelling by two SMEs measures label consistency directly, instead of asking someone whether the labels are good. Use Cohen's kappa rather than raw agreement: agreement corrected for what two random labellers would achieve by chance. The Cracking book explains why. Raw agreement overstates quality when one label dominates, because always guessing the majority class looks accurate. Its floor for a judge is κ ≥ 0.60, and I'd use the same floor for a pair of humans.
 
 The scorecard scores only the dimensions the target decision depends on *(own construction)*:
 
@@ -261,7 +261,7 @@ An evaluation set cannot wait for clean labels, because clean labels are what th
 
 The source material gives three ways to seed it. The RAG study guide suggests mining support tickets or an existing FAQ for real questions with known answers. Its alternative is to "ask 3-4 of their power users for 10 questions each". The question bank's evaluation case lists sampling production traffic, expert labelling, weak supervision and synthetic examples used carefully. It adds measuring grader agreement and human review of difficult cases. For claims, the seed is the 100 claims already relabelled in week 1, adjudicated where the two adjusters disagreed.
 
-Size the set honestly. The Cracking book's arithmetic is `n ≈ 15.7 × p(1−p) / δ²` per arm, to detect a difference δ near a success rate p. At p = 0.8, a 5-point gain needs ~1,000 cases per arm. A 200-case suite cannot reliably detect anything smaller than ~12 points. A 100-claim seed set therefore gates only large changes. Say so, and detect smaller changes through paired evaluation on the same cases, or through production metrics.
+Size the set honestly. The Cracking book's arithmetic is `n ≈ 15.7 × p(1−p) / δ²` per arm, to detect a difference δ near a success rate p. At p = 0.8, a 5-point gain needs ~1,000 cases per arm. A 200-case suite cannot reliably detect anything smaller than ~11 points. A 100-claim seed set therefore gates only large changes. Say so, and detect smaller changes through paired evaluation on the same cases, or through production metrics.
 
 Stratify the set and report per stratum. The book's list is intent, tenant size, data recency and difficulty. For claims it becomes ERP source, product line, attachment type and period. Aggregate accuracy hides a collapse on scanned claims from the acquired ERP, which is exactly where the data is worst.
 
@@ -356,7 +356,7 @@ The pivot is "what does all this review and relabelling cost, and how do you sto
 
 The four verbs from the cost playbook apply in order. Measure cost per correctly processed claim, including reviewer minutes. Route easy fields to a cheap extractor and uncertain ones to people. Bound the review queue with per-field thresholds tuned from measured precision. Cache safely by content hash, so a re-sync never re-extracts an unchanged scan.
 
-Review cost falls on its own as labels accumulate. Thresholds can then be set from measured precision rather than caution. That is the economic argument for building the label store in phase 1 rather than later.
+I'd expect review cost to fall on its own as labels accumulate. Thresholds can then be set from measured precision rather than caution. That is the economic argument for building the label store in phase 1 rather than later.
 
 ---
 
@@ -388,7 +388,7 @@ Review cost falls on its own as labels accumulate. Thresholds can then be set fr
 6. **In the warranty example, why are outcomes usable as labels but failure codes are not?** Adjusters agree on outcomes at κ = 0.81 and on codes at only κ = 0.52.
 7. **Where do quality gates sit, and what do they do with a bad record?** At ingestion, before extraction; they quarantine it with a reason and never default a value.
 8. **What makes a review correction usable as a label?** It is made in the tool, on the field, with the original kept, the reviewer and time recorded, and disagreements adjudicated.
-9. **What can a 200-case eval set detect at p = 0.8?** Nothing reliably smaller than about 12 points; a 5-point gain needs about 1,000 cases per arm.
+9. **What can a 200-case eval set detect at p = 0.8?** Nothing reliably smaller than about 11 points; a 5-point gain needs about 1,000 cases per arm.
 10. **Why split the eval set by time rather than at random?** Random splits put near-identical records on both sides and inflate every number.
 11. **How should the customer hear that their data is poor?** As measurements with a plan, with phase 0 framed as value they can use without AI.
 12. **What must be true before the system shows live drafts?** Adjuster agreement in shadow mode clears the phase-3 bar, and minutes per claim are measurably down.

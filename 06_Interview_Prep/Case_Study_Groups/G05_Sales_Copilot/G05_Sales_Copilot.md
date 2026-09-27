@@ -80,7 +80,7 @@ The non-functional requirements are the operating constraints, stated so a test 
 
 | Constraint | Stated so it can be tested |
 |---|---|
-| Latency | Interactive answers in 3 to 8 seconds for normal questions. Longer workflows go asynchronous with progress state. The pre-meeting brief is precomputed, so the interactive ask reads a snapshot rather than fanning out to the CRM |
+| Latency | In this design, interactive answers in 3 to 8 seconds for normal questions. Longer workflows go asynchronous with progress state. The pre-meeting brief is precomputed, so the interactive ask reads a snapshot rather than fanning out to the CRM |
 | Availability | Business-critical selling hours. Graceful degradation if the LLM, the vector store or the CRM is down: serve the last snapshot with a staleness label, or refuse |
 | Cost | Token budgets, caching of stable documents, retrieval pruning, small models for classification, expensive reasoning only where the risk justifies it. Reported as cost per workflow |
 | Security and privacy | SSO, RBAC and ABAC, source-level ACLs, encryption in transit and at rest, secrets management, no training on customer data unless the contract allows it |
@@ -102,7 +102,7 @@ Every must-have needs an owner in the architecture.
 
 ## 3. Map Every Source With Its Permission Model
 
-The answer key names the sources: Salesforce or HubSpot, Gong or Zoom transcripts, email and calendar, product docs, pricing and discount policy, customer support history, and the data warehouse. What it does not say is how each one is permissioned, and that is the part the interviewer probes. The permission model per source below is added for this pack.
+The answer key names the sources: Salesforce or HubSpot, Gong or Zoom transcripts, email and calendar, product docs, pricing and discount policy, customer support history, and the data warehouse. What it does not say is how each one is permissioned, and that is the part the interviewer probes. The permission model per source below is added for this pack. The freshness column is my working assumption for a typical setup, not a vendor figure.
 
 | Data source | Format | Owner | Freshness | Permission model (added) | Risk |
 |---|---|---|---|---|---|
@@ -250,7 +250,7 @@ Precomputation is an optimisation, never a permission model. A snapshot is a mat
 
 *This section is added for this pack. The purchased key says "apply user, role, tenant, region and sensitivity permissions before retrieval" and stops there. The material below draws on Handbook Module 06 docs 1 and 5.*
 
-Identity is established before any permission logic runs. Authenticate through the customer's own identity provider, validate the token's signature, expiry and audience, and map the customer's own groups into the platform's role vocabulary rather than inventing roles locally. Group mapping is configuration that can drift, so a renamed group on the customer's side must surface as an alert, not silently orphan a rep. A user from a newly connected customer is provisioned just in time from the token's claims, scoped to their company, never with more access than intended by default.
+Identity is established before any permission logic runs. Authenticate through the customer's own identity provider, validate the token's signature, issuer, expiry and audience, and map the customer's own groups into the platform's role vocabulary rather than inventing roles locally. Group mapping is configuration that can drift, so a renamed group on the customer's side must surface as an alert, not silently orphan a rep. A user from a newly connected customer is provisioned just in time from the token's claims, scoped to their company, never with more access than intended by default.
 
 CRM permissions are richer than document ACLs, and the mirror has to carry all of them. Salesforce decides record visibility by org-wide defaults, owner, role hierarchy, sharing rules, teams and territories, and field-level security decides which fields show. The mirror translates each into an attribute on the record: `owner_id`, `territory_ids`, `role_visible_from`, and a field mask that hides forecast amount, or any other FLS-restricted field, from roles that cannot see them. The pre-filter compiled into retrieval carries tenant, territory and role; the post-check re-verifies the field mask and any sharing rule that changed since the index was written. A structured leak is still a leak: a count of open opportunities that includes a peer's territory is as serious as a forbidden document, and it is held to the same zero-violation gate.
 
@@ -304,7 +304,7 @@ Scale is bounded by the precompute lane. At ten times the accounts, shard the sn
 
 ## 10. Gate the Release on Claims, Not Fluency
 
-An eval suite that measures grammar, tone and general groundedness will pass a model that writes beautifully and invents a security certification. The incident in section 14 is exactly that: a 96.7 percent pass rate on 120 cases hid an 83.3 percent pass rate on the six regulated-claim cases that mattered. The gate therefore has slices, and the critical slices pass independently or the release does not ship.
+An eval suite that measures grammar, tone and general groundedness will pass a model that writes beautifully and invents a security certification. The scenario incident in section 14 is exactly that: a 96.7 percent pass rate on 120 cases hid an 83.3 percent pass rate on the six regulated-claim cases that mattered. The gate therefore has slices, and the critical slices pass independently or the release does not ship.
 
 | Metric | Good threshold | Bad threshold | Test dataset | Owner |
 |---|---:|---:|---|---|

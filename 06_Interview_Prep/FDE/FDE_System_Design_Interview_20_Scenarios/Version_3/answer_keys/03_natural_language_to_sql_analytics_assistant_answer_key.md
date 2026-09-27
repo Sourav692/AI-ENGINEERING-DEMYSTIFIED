@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand domain by domain, each with a named metric owner who approves definitions and owns semantic-layer changes.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Semantic correctness | The answer matches the governed business definition | Consistently matches analyst review on scope | Golden question/SQL/result cases |

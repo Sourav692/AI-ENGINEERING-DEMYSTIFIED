@@ -354,7 +354,7 @@ We can use:
 3. Top routing candidates have very similar confidence.
 4. No existing skill passes a minimum confidence threshold.
 
-Example:
+Example, with an illustrative threshold I'd tune on real routing data:
 
 ```text
 Known skill confidence = 0.43
@@ -490,7 +490,7 @@ Monitoring signal
 Human approval
 ```
 
-Also keep a retry limit.
+Also keep a retry limit. Two is the cap I'd pick for this design, not a standard.
 
 ```text
 Max retries = 2
@@ -649,7 +649,7 @@ If we keep testing many prompt versions on the same dataset, eventually one may 
 
 Also evaluate by task type.
 
-Example:
+An illustrative example, with made-up numbers:
 
 ```text
 Overall:
@@ -985,7 +985,7 @@ Do not use a single easily gamed metric.
 
 # 22. Scaling Considerations
 
-Assume:
+Assume these whiteboard numbers, which I'd state aloud as my own:
 
 ```text
 20,000 requests/day
@@ -1089,7 +1089,7 @@ This keeps user latency predictable.
 
 # 24. Cost Optimization
 
-Big learning cost usually comes from:
+In this design, I'd expect most of the learning cost to come from:
 
 ```text
 Number of candidates

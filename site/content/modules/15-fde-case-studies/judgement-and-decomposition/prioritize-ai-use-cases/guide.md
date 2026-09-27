@@ -44,7 +44,7 @@ A ranking is only useful if it changes a decision. So the first question is whic
 | Who is the sponsor, and who owns each use case's outcome? | Whether a use case with no business owner is scored at all; the source's rule is to refuse work with no measurable metric and no SME |
 | What budget and horizon: one team for a quarter, or a programme for two years? | How many items fit in wave 1, and whether platform enablers can be funded ahead of their first user |
 | Does "prioritise" mean pick one pilot, or fund a portfolio? | One pilot optimises for learning and credibility; a portfolio also optimises for reuse and balance |
-| What is the risk appetite, and which regulator watches? | Where the risk gate sits; an insurer cannot let a model make an adverse decision on a customer unreviewed |
+| What is the risk appetite, and which regulator watches? | Where the risk gate sits; an insurer will rarely be allowed to let a model make an adverse decision on a customer unreviewed |
 | What has already been tried, and why did it stall? | Whether the real blocker is data access, adoption or trust, which moves the weights |
 | Build, buy or both? | Commodity use cases, such as a coding assistant, leave the build list entirely |
 
@@ -81,7 +81,7 @@ A weighted sum lets a high score on one dimension buy back a fatal score on anot
 | Permissible decision | The model would take an adverse action on a customer with no human review | Reshaped into decision support, or rejected |
 | Right tool | A deterministic rule, an existing statistical model or a purchase would do it better | Routed to rules, the existing model team, or procurement |
 
-The gates and their wording are *(own construction)*, built from Handbook Module 10's intake refusal and its "no SME is a contractual prerequisite" rule. The fourth gate is the one candidates forget. The cost cram sheet lists "low-value workflows" as a cause of runaway bills. Not every item on an AI list needs a language model.
+The gates and their wording are *(own construction)*, built from Handbook Module 10's intake refusal and its "no SME is a contractual prerequisite" rule. In my experience, the fourth gate is the one candidates forget. The cost cram sheet lists "low-value workflows" as a cause of runaway bills. Not every item on an AI list needs a language model.
 
 ## 5. Score Seven Dimensions With Stated Weights
 
@@ -97,7 +97,7 @@ The source's ten criteria collapse into seven scored dimensions without losing a
 | Time to value (T) | 10% | Measurable result inside one quarter | Over a year before anyone sees an effect |
 | Platform reuse (P) | 10% | Builds a component four other cards need | A dead end that shares nothing |
 
-The weights are a stated opinion, not a truth. Say them aloud so the interviewer can argue with them. Value gets the largest share because the sponsor funds outcomes. Data and risk tie for second because they are the two dimensions that most often stop a project that scored well. Evaluability earns its own line because the decomposition prep page names it as a winning habit: tie every design choice back to how it would be evaluated.
+The weights are a stated opinion, not a truth. Say them aloud so the interviewer can argue with them. Value gets the largest share because the sponsor funds outcomes. Data and risk tie for second because, in my judgement, they are the two dimensions that most often stop a project that scored well. Evaluability earns its own line because the decomposition prep page names it as a winning habit: tie every design choice back to how it would be evaluated.
 
 ## 6. Estimate Value From Volume, Not From Enthusiasm
 
@@ -115,7 +115,7 @@ A single ranked column looks rigorous and hides five known failures. Name them b
 
 **Compensation.** A 5 on value can buy back a 1 on risk. The gates in section 4 handle the fatal cases. A floor handles the rest: no item enters "do now" with any dimension below 3.
 
-**Dependencies.** Platform components score badly on value by themselves, because nobody uses an ingestion service directly. Yet the top items cannot ship without them. Ranking enablers alongside use cases always starves them, so they get their own bucket and are funded with the use cases that need them.
+**Dependencies.** Platform components score badly on value by themselves, because nobody uses an ingestion service directly. Yet the top items cannot ship without them. Ranking enablers alongside use cases tends to starve them, so they get their own bucket and are funded with the use cases that need them.
 
 **Double counting.** Feasibility, data readiness and time to value are correlated. An item that is hard to build is usually also slow. Summing all three quietly triples the weight of difficulty. Keep them, but check whether the ranking changes when one is dropped.
 
@@ -170,7 +170,7 @@ Read the table for what the sum hides, not only for its order.
 
 **The highest-value items are all Later.** Fraud triage (#3), autonomous settlement (#29) and the voice bot (#30) score 4 or 5 on value. Each fails on data, risk or evaluability. That is Question 16's follow-up in table form, and section 12 answers it.
 
-**The ranking survives reweighting where it matters.** Under a value-heavy, a risk-heavy and a speed-heavy weighting, #7, #1 and #6 stay in the top five every time. #12 drops out only when speed dominates, because extraction from submission packs takes a quarter to prove. #13 swaps with #2 under the value-heavy weighting. So say it as "#7, #1 and #6 are decided; #12 and #13 depend on whether the sponsor values speed or value more."
+**The ranking survives reweighting where it matters.** When I rerun it under a value-heavy, a risk-heavy and a speed-heavy weighting, #7, #1 and #6 stay in the top five every time. #12 drops out only when speed dominates, because extraction from submission packs takes a quarter to prove. #13 swaps with #2 under the value-heavy weighting. So say it as "#7, #1 and #6 are decided; #12 and #13 depend on whether the sponsor values speed or value more."
 
 ## 9. Fund the Platform the Top Items Share
 
@@ -338,7 +338,7 @@ The source's reusable opening fits almost unchanged. Clarify the business outcom
 
 **The two-minute spoken answer** *(own construction)*:
 
-> *"I wouldn't pick from the list directly — the most impressive demo is usually the one with the most hidden production cost. First, I'd turn each of the thirty ideas into the same card: user, workflow step, outcome metric with a baseline, volume, data and owner, how we'd evaluate it, risk, and kill criteria. Anything that can't fill the card isn't ready. Second, gates before scores: no measurable outcome, no owner, an unreviewed adverse decision on a customer, or a problem that rules or a purchase solve better — those leave the list. Third, score what's left on value adjusted for adoption, feasibility, data readiness, evaluability, risk, time to value and platform reuse, with weights I'd state and let you argue with. I'd estimate value from volume times saving times unit cost times adoption, not from the slide. Fourth, I'd distrust the sum: floor any dimension below three, fund shared enablers separately because they always lose on value alone, and rerun the ranking under different weights to see what's actually decided. For an insurer, that gives a first wave like call wrap-up summaries and claims intake summaries: high volume, low risk, clean eval — and they build the gateway, eval harness and ingestion that make the next ten items cheap. Every item gets kill criteria before the pilot, and the register is re-scored quarterly with real data."*
+> *"I wouldn't pick from the list directly — the most impressive demo is usually the one with the most hidden production cost. First, I'd turn each of the thirty ideas into the same card: user, workflow step, outcome metric with a baseline, volume, data and owner, how we'd evaluate it, risk, and kill criteria. Anything that can't fill the card isn't ready. Second, gates before scores: no measurable outcome, no owner, an unreviewed adverse decision on a customer, or a problem that rules or a purchase solve better — those leave the list. Third, score what's left on value adjusted for adoption, feasibility, data readiness, evaluability, risk, time to value and platform reuse, with weights I'd state and let you argue with. I'd estimate value from volume times saving times unit cost times adoption, not from the slide. Fourth, I'd distrust the sum: floor any dimension below three, fund shared enablers separately because they usually lose on value alone, and rerun the ranking under different weights to see what's actually decided. For an insurer, that gives a first wave like call wrap-up summaries and claims intake summaries: high volume, low risk, clean eval — and they build the gateway, eval harness and ingestion that make the next ten items cheap. Every item gets kill criteria before the pilot, and the register is re-scored quarterly with real data."*
 
 **Likely follow-ups** *(own construction, except the first, which is Question 16's)*:
 
@@ -358,7 +358,7 @@ The pivot is "how much will the programme cost, and how do you stop the cost per
 
 | | |
 |---|---|
-| Dominant driver | Engineering and SME time per use case, then pilots that never close; model tokens are a minor line at this stage |
+| Dominant driver | Engineering and SME time per use case, then pilots that never close; I'd expect model tokens to be a minor line at this stage |
 | Cheapest lever first | Shared enablers funded once; a cap on pilots in flight; kill criteria that release people on schedule |
 | Metric that proves it | Cost per use case to production, falling wave on wave; accelerator reuse rate; cost per successful outcome per live use case |
 | Do not | Fund thirty pilots in parallel, or let every team build its own ingestion, prompts and eval |
@@ -378,7 +378,7 @@ The four verbs from the cost playbook still apply, one level up. Measure cost pe
 - Estimate value as volume × saving × unit cost × adoption, and keep the dollar figure visible next to the band.
 - Stress-test the sum for compensation, dependencies, double counting, false precision and monoculture; only items that survive reweighting are decided.
 - In the insurer example, #7, #1 and #6 stay in the top five under every weighting, while the highest-value items all land in Later.
-- Fund the shared platform with wave 1, because enablers always lose when ranked on value alone.
+- Fund the shared platform with wave 1, because enablers usually lose when ranked on value alone.
 - Sequence waves by what each one proves, starting with a high-volume, low-risk use case that builds the platform.
 - Write kill criteria on the card before the pilot, and re-score the register quarterly with real data.
 - Turn the executive's pet project into the roadmap's destination, reached through decision support, shadow mode and measured gates.

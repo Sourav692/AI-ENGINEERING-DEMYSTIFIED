@@ -237,7 +237,7 @@ flowchart TD
 - That assumption influences artifact packaging, dependency management, model deployment, observability, and rollback.
 - If the customer later relaxes it, you can simplify; if you assume the opposite and are wrong, the entire architecture collapses.
 
-> 🎯 **Interview Pointer:** When an interviewer says "assume whatever you need," anchor on the no-runtime-internet-access assumption before anything else — it's the one assumption interviewers most often test that you protected correctly.
+> 🎯 **Interview Pointer:** When an interviewer says "assume whatever you need," anchor on the no-runtime-internet-access assumption before anything else — it's the assumption I'd expect an interviewer to check first that you protected correctly.
 
 ### Why This Is a Strong FDE Signal
 - A hiring team wants someone who can discover the constraints that matter, prioritize requirements under ambiguity, and keep the solution shippable — customer empathy, engineering judgment, and delivery discipline.
@@ -249,7 +249,7 @@ flowchart TD
 ### Anchor the Load Envelope to Customer Reality
 - A common first-pass mistake: sketching an on-prem document-analysis service, assuming a few dozen active users, and concluding one model replica plus a queue is enough — plausible at average load, but fails the moment the customer asks for a deadline, a peak day, or a backlog catch-up window.
 - In an air-gapped environment, elasticity is limited or nonexistent, so the capacity plan has to be correct up front.
-- Anchor to the customer's operating reality: 1,000 users, 20 QPS at peak, 50 million pages in the corpus, and a fixed GPU pool.
+- Anchor to the customer's operating reality. The case gives us 1,000 users, 20 QPS at peak, 50 million pages in the corpus, and a fixed GPU pool.
   - These numbers shape the architecture: batch vs. online interactive extraction vs. a split design with asynchronous indexing and a smaller interactive layer.
   - They determine whether the failure mode is "slow response" or "missed mission deadline."
 - State average load, peak load, growth, and headroom separately:
@@ -271,7 +271,7 @@ flowchart TD
   - Memory must cover model weights, KV cache or equivalent state, framework overhead, and batch buffers.
   - Throughput is usually tokens per second per replica under the chosen model, quantization, and batch size.
   - A candidate who only talks GPU count without throughput misses the bottleneck; one who only talks memory without throughput misses the placement constraint.
-- Concrete interview-scale memory estimate:
+- Concrete interview-scale memory estimate (my own illustrative numbers, not measured on real hardware):
   - Quantized model weights: 12 GB.
   - Serving stack runtime/framework overhead: 2 GB.
   - KV cache and transient activations at target context length: 6 GB.
@@ -306,7 +306,7 @@ flowchart TD
 ```
 
 ### Worked Example: 1,000 Users, 20 QPS
-- 1,000 users generate a 20 QPS peak during a surge window; average request requires 2,000 tokens of model work (retrieval augmentation + output generation); one replica sustains 120 tokens/sec at the desired batch shape; 70% utilization target:
+- The case gives us 1,000 users generating a 20 QPS peak during a surge window. The rest are my own assumptions: an average request needs 2,000 tokens of model work (retrieval augmentation + output generation), one replica sustains 120 tokens/sec at the desired batch shape, and I'd set a 70% utilization target:
 
 $$
 Replicas = \left\lceil \frac{20 \times 2000}{120 \times 0.70} \right\rceil = \left\lceil \frac{40000}{84} \right\rceil = 477
@@ -327,7 +327,7 @@ $$
 | Scenario | QPS | Avg tokens/request | Effective token demand | Replica implication | Design pressure |
 |---|---|---|---|---|---|
 | Baseline illustrative case | 20 | 2,000 | 40,000 tokens/sec demand before headroom | 477 replicas by the toy formula, which signals the request mix is unrealistic for the fixed GPU pool | Pushes you toward batch/offline processing, narrower per-request work, or a much smaller model fraction |
-| 10x growth case | 200 | 2,000 | 400,000 tokens/sec demand before headroom | Roughly 4,770 replicas under the same toy assumptions | Confirms the same architecture would fail hard; you would need workload partitioning, precomputation, or a different serving strategy |
+| 10x growth case | 200 | 2,000 | 400,000 tokens/sec demand before headroom | Roughly 4,760 replicas under the same toy assumptions | Confirms the same architecture would fail hard; you would need workload partitioning, precomputation, or a different serving strategy |
 
 - The exact numbers matter less than the direction: a 10x load increase is not a linear "buy more of the same" problem in an air-gapped environment, because the fixed GPU pool, storage, and operational process do not scale elastically.
 
@@ -337,7 +337,7 @@ $$
 - Longer documents? Token count and context length become the bottleneck.
 - More stringent SLOs? Headroom must rise and the fixed GPU pool gets tight.
 - Communicate uncertainty cleanly: *"These are illustrative estimates. I would size the initial deployment against the 20 QPS peak, then add a growth factor and a rollback margin. If the customer's real request mix is more batch-heavy, the interactive pool shrinks; if the average request is longer, we need either more replicas or a narrower per-request contract."*
-- Token demand per request usually has the most leverage over component selection and partitioning:
+- I'd expect token demand per request to have the most leverage over component selection and partitioning:
   - Light requests → a single general-purpose inference tier plus retrieval may be enough.
   - Heavy requests → design often splits into a cheap preprocessor, a retrieval/rules layer, and a smaller number of expensive inference workers.
   - In an air-gapped environment, every extra replica consumes scarce offline capacity and every extra dependency increases update and audit burden.
@@ -1375,7 +1375,7 @@ No further review passes were run — the single pass found no additional closea
 - In a live interview I'd say the honest thing: I don't have the customer's GPU procurement cost or analyst fully-loaded cost, so I'd sketch the formula shape (cost = fixed hardware amortization + operational/audit overhead, divided by throughput) and ask the interviewer for one real number to anchor it, rather than fabricate a cost-per-document figure.
 
 **Item 10 — Build-vs-buy/vendor and model-selection trade-offs.**
-- Given this chapter's own component list (Section 4's nine components), I'd explicitly split buy-vs-build by component rather than treating the whole system as one build decision: the offline registry/package mirror, local identity provider integration, and telemetry stack are exactly the kind of commodity infrastructure I'd buy or adopt from an existing accredited vendor product where one exists on the approved products list, because building a bespoke air-gapped package mirror burns months re-solving a problem the customer's own accreditation program has likely already blessed a vendor for.
+- Given this chapter's own component list (Section 4's nine components), I'd explicitly split buy-vs-build by component rather than treating the whole system as one build decision: the offline registry/package mirror, local identity provider integration, and telemetry stack are exactly the kind of commodity infrastructure I'd buy or adopt from an existing accredited vendor product where one exists on the approved products list, because I'd expect building a bespoke air-gapped package mirror to burn months re-solving a problem the customer's own accreditation program has likely already blessed a vendor for.
 - Conversely, I'd build in-house exactly the pieces that are unique to this program's mission: the document pipeline's redaction/extraction logic, the release-manifest schema, and the verify_bundle integrity gate from Section 5 — because no vendor can be accountable for domain-specific redaction correctness or for a manifest schema tailored to this customer's audit policy.
 - General heuristic to say out loud: buy anything that is a solved, security-commoditized problem where vendors already carry FedRAMP/DoD-style accreditation (identity brokers, package mirrors, base OS images); build only the boundary logic and mission-specific pipeline that is unique to the customer's workflow and that the chapter's own MVP list (Section 2) already marks as must-have.
 

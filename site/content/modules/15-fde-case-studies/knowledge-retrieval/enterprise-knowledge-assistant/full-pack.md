@@ -416,7 +416,7 @@ Design the failure path with the happy path, because a design that only describe
 
 **Missed deletion (the failure to rehearse):** user authenticates, stale chunk is still indexed, ACL passes (permissions are still valid — this is freshness, not access), reranker promotes it, generator is about to answer from a deleted policy. Fix: staleness label, suppress once confirmed, re-read the system of record, reconciliation job replays the delete. The trace shows a prior answer used a now-deleted document.
 
-**What breaks at 10×:** per-request BM25 over the authorised pool. Replace with a lexical store that has native document security (OpenSearch DLS) or a cached per-group shard. Content-hash cache so only changed text is re-embedded. ACL sync is separate from re-embedding. LLM calls dominate latency: cache embeddings and retrieval, semantic-cache answers, parallelise fan-out, stream tokens.
+**What breaks at 10×:** per-request BM25 over the authorised pool. Replace with a lexical store that has native document security (OpenSearch DLS) or a cached per-group shard. Content-hash cache so only changed text is re-embedded. ACL sync is separate from re-embedding. LLM calls usually dominate latency: cache embeddings and retrieval, semantic-cache answers, parallelise fan-out, stream tokens.
 
 ## 10. Gate the Release on a Leak Count, Not a Score
 
@@ -544,7 +544,7 @@ Ask them something at the end:
 - What do the first two weeks of an engagement look like?
 - How is agent quality evaluated once the customer owns the system?
 
-With a laptop, the persona-by-document visibility matrix is the single most persuasive artefact. It is 22 documents by 9 personas, every cell decided by a named policy rule. One principal sees nothing at all despite holding every group and the highest clearance.
+With a laptop, the persona-by-document visibility matrix is the single most persuasive artefact. In the reference project it is 22 documents by 9 personas, every cell decided by a named policy rule. One principal sees nothing at all despite holding every group and the highest clearance.
 
 ```bash
 python scripts/demo_access_control.py --matrix   # visibility matrix, no LLM cost, ~2 seconds
@@ -676,7 +676,7 @@ index.similarity_search(
     num_results=20)
 ```
 
-Multi-Query, HyDE, decomposition and the RRF across generated queries stay in agent code, because they are orchestration patterns rather than retrieval infrastructure. Two more lines belong on the board. Never gate a release on an LLM judge; on Databricks the leak test is a SQL assertion that tests the enforcement point rather than the application. And layer 1 overshooting is by design, since embargo and need-to-know cannot be pushed into the index. So the gate measures what reaches the model, not what the index proposed. Measuring the wrong layer gave six false leaks the first time.
+Multi-Query, HyDE, decomposition and the RRF across generated queries stay in agent code, because they are orchestration patterns rather than retrieval infrastructure. Two more lines belong on the board. Never gate a release on an LLM judge; on Databricks the leak test is a SQL assertion that tests the enforcement point rather than the application. And layer 1 overshooting is by design, since embargo and need-to-know cannot be pushed into the index. So the gate measures what reaches the model, not what the index proposed. When this was built, measuring the wrong layer gave six false leaks on the first run.
 
 Be precise about what was actually run, because "I designed this" and "I ran this" sound different to an interviewer. Everything below ran against a live workspace with a Unity Catalog metastore, a serverless SQL warehouse and an existing AI Search endpoint, with all test objects dropped afterwards.
 
@@ -708,7 +708,7 @@ The trust beat tells three mistakes, because that is more informative than a sto
 
 The platform beat is the Databricks finding, generalised. A search index built from governed data does not inherit the data's governance, because it is a copy. A revocation in the source does not reach the index downstream, so the check has to happen again, live, at query time. That is true of any architecture where a vector index sits next to but separate from operational data.
 
-Deploy the limitations beat before being asked. The test set is 22 documents. At that size almost every retrieval strategy scores well, so the differences between the six strategies benchmarked are mostly noise. Dense retrieval would be the right production choice for a corpus this small. What the size does not weaken is the zero-leak guarantee and the testing discipline behind it. For a real customer the corpus would be larger and tiered. The storage-isolation strategy would be designed for tenant growth up front, and the scale caveat instrumented from day one.
+Deploy the limitations beat before being asked. The test set in that build is 22 documents. At that size almost every retrieval strategy scores well, so the differences between the six strategies benchmarked are mostly noise. Dense retrieval would be the right production choice for a corpus this small. What the size does not weaken is the zero-leak guarantee and the testing discipline behind it. For a real customer the corpus would be larger and tiered. The storage-isolation strategy would be designed for tenant growth up front, and the scale caveat instrumented from day one.
 
 Close on whichever thread the conversation ended on. On trust: an FDE's job is turning a technical guarantee into something a customer's security team can sign off on. On platforms: never assume a guarantee travels between systems until it has been verified on their specific platform. On limitations: better to say exactly where the edges of what has been proven are than to let them be found later.
 

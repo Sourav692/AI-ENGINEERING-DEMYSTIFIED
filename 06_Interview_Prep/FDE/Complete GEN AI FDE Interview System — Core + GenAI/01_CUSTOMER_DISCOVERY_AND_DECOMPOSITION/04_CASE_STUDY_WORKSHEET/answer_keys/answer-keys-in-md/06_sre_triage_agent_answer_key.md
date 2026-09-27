@@ -21,7 +21,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Provide admin controls for source inclusion, document freshness, policy rules, blocked actions, and audit export.
 
 ## Strong non-functional requirements
-- Latency: interactive answers should target 3-8 seconds for normal questions; longer workflows should be asynchronous with progress state.
+- Latency: in this design, I'd target 3-8 seconds for normal interactive questions; longer workflows should be asynchronous with progress state.
 - Availability: design for business-critical support hours with graceful degradation if LLM, vector DB, or source system is down.
 - Security: SSO, RBAC/ABAC, source-level ACLs, encryption in transit and at rest, secrets management, and no training on customer data unless contractually allowed.
 - Compliance: immutable audit logs for queries, retrieved evidence, model version, policy decisions, approvals, and final output.
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand sources and users only if eval metrics, incident rate, latency, and cost stay within thresholds; maintain rollback plan.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Groundedness | Answer claims are supported by retrieved evidence | >= 90% supported claims | Golden Q&A + SME review |

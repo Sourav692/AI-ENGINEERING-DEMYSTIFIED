@@ -26,7 +26,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Security: no cross-user disclosure; effective permissions filter candidates before content reaches the model; revocations fan out to every index and cache.
 - Compliance: immutable audit of source event IDs, index and ACL version stamps, request IDs, and the exact citation set shown.
 - Reliability: fail closed on permission checks, deletion sync, and citation validation; degrade on retrieval quality; queue background reindexing.
-- Cost: estimate embedding, index, and token cost independently; at 50 million chunks the refresh pipeline outgrows the initial embedding job.
+- Cost: estimate embedding, index, and token cost independently; at the 50 million chunks this case assumes, I'd expect the refresh pipeline to outgrow the initial embedding job.
 
 ## Architecture explanation
 - Split control plane (policy, config, credentials, connector scheduling, evaluation rules) from data plane (live questions, evidence fetch, permission enforcement, responses).
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: widen only while leakage stays at zero and groundedness, freshness, latency, and cost hold; rehearse the reconciliation drill.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Permission leakage count | No user saw content or a citation they could not open | Zero; any case triggers rollback review | ACL red-team suite across roles and stale groups |
@@ -70,7 +72,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 | Citation precision and recall | Cited passages support the answer, and the right sources were used | Above agreed bar; no unexplained 5-point decline | Human/SME review of a sampled set |
 | Freshness lag | Updates and deletions reach retrieval inside the agreed window | Within the freshness SLO per content class | Connector telemetry versus index timestamps |
 | Retrieval recall | Relevant documents reach the candidate set at all | Measured per query type, used to tune α | Representative query set segmented by type |
-| p95 latency and cost per answer | The system meets its interaction budget affordably | p95 within target at 100 QPS peak | Load test plus production telemetry |
+| p95 latency and cost per answer | The system meets its interaction budget affordably | p95 within target at the assumed 100 QPS peak | Load test plus production telemetry |
 
 ## Weak answer
 I would connect the enterprise sources to a vector database and have an LLM answer from the top results. This is weak because it ignores the permission boundary, treats retrieval quality as the hard problem, and has no story for deletions, citation verification, evaluation, or diagnosing a bad answer.

@@ -22,7 +22,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Strong non-functional requirements
 - Latency: partition the budget — saving feels interactive, validation preview tolerates delay, full deployment may be slower if reliable.
-- Availability: at roughly 1,000 configuration versions a day with a 3x peak, validation and deployment must not share a synchronous path.
+- Availability: at the scale this case assumes — roughly 1,000 configuration versions a day with a 3x peak — validation and deployment must not share a synchronous path.
 - Security: arbitrary code is off by default; adapters and secrets are scoped per tenant; validation rules are themselves checked for denial-of-service risk.
 - Compliance: a durable trail of who published what, what changed, which approval gate was crossed, and which version went live.
 - Reliability: configuration isolation, so one tenant's settings or test changes cannot alter another tenant's runtime behavior.
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand only if configuration is demonstrably reducing custom work rather than creating hidden rework.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Fork count | The platform stayed one product rather than ten | Zero irremovable customer-specific branches | Architecture review and repo analysis |

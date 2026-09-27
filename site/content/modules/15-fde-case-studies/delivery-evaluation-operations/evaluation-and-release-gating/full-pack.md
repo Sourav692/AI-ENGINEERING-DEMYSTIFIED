@@ -99,7 +99,7 @@ Every requirement then needs an owner in the architecture. If a requirement has 
 
 The whiteboard version is a queue, a pool of workers, a results database and a dashboard. It works at average load and fails when the release train tightens. Sizing is what turns it into a design.
 
-The headline workload is not "30 apps". It is 30 applications × 20 candidate releases a day = 600 candidate evaluations a day. With 5,000 test cases each, that is 3,000,000 test-case executions a day. Each case needs 2–3 model or grader calls at minimum and 3–5 more realistically. So the platform makes roughly 6,000,000–15,000,000 model or evaluator calls a day.
+The headline workload is not "30 apps". It is 30 applications × 20 candidate releases a day = 600 candidate evaluations a day. With 5,000 test cases each, that is 3,000,000 test-case executions a day. I'd assume each case needs 2–3 model or grader calls at minimum and 3–5 more realistically. So the platform makes roughly 6,000,000–15,000,000 model or evaluator calls a day.
 
 | Window | Calls/sec needed | Approx. workers at 2.5 calls/sec each | Practical implication |
 |---|---|---|---|
@@ -295,7 +295,7 @@ The suite itself goes stale. The benchmark stops distinguishing candidates, or i
 
 ## 9. Walk Through the Regression the Suite Missed
 
-Incident #91 is section 8 failing in production. It proves an aggregate pass rate can hide a critical slice.
+Scenario incident #91 is section 8 failing in production. It proves an aggregate pass rate can hide a critical slice.
 
 A sales copilot drafts account-specific outreach emails from CRM notes, product documentation and approved messaging. The model route was upgraded to improve fluency and personalisation. After the upgrade, emails sounded polished but included unsupported claims. Reps saw drafts claiming "SOC 2 Type II renewal completed in June 2026" and "average 34% support cost reduction." The SOC 2 claim was not yet approved for external use. The ROI claim came only from an internal pilot.
 

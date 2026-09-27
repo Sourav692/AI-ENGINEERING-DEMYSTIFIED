@@ -20,7 +20,7 @@ The repo holds the three prompts, the six-step framework and the Tier 2 probes. 
 
 The decomposition round is 45 to 60 minutes on a vague enterprise problem. The source describes the task as breaking it "into users, data, workflows, constraints, and a prioritized V1 — out loud, collaboratively." There is no correct answer. The interviewer watches how the path gets chosen when none is given.
 
-Two failure modes eliminate most candidates, and both are in the source. The first is jumping to architecture before clarifying scope. One OpenAI FDE candidate reported being stopped mid-design and asked, "What questions would you ask the customer before designing anything?" The second is hand-waving evaluation. "How do you know your AI system is actually working well?" is used as a deliberate differentiator.
+Two failure modes eliminate many candidates, and both are in the source. The first is jumping to architecture before clarifying scope. One OpenAI FDE candidate reported being stopped mid-design and asked, "What questions would you ask the customer before designing anything?" The second is hand-waving evaluation. "How do you know your AI system is actually working well?" is used as a deliberate differentiator.
 
 The scoring rewards narration. A polished answer delivered in silence scores worse than messy, well-narrated thinking. The source's pattern note settles the rest: every prompt is business goal first, data second, model last. None of these three prompts asks which model to use.
 
@@ -59,7 +59,7 @@ The "owner" column carries more weight than it looks. A quality problem without 
 
 ## 4. Sequence Workstreams by Risk, Not by Interest
 
-The source asks for workstreams "sequenced by risk" with the ordering justified. The usual three are data ingestion and quality, the model layer, and the operator-facing surface. The interesting one is almost never the riskiest.
+The source asks for workstreams "sequenced by risk" with the ordering justified. The usual three are data ingestion and quality, the model layer, and the operator-facing surface. In my experience, the interesting one is rarely the riskiest.
 
 Sequence by asking which unknown, if it turns out badly, kills the project *(own construction)*. That unknown goes first, because every later workstream inherits its answer. In all three cases the answer is the data, not the model.
 
@@ -101,7 +101,7 @@ The north-star metric is 90th-percentile time to scene for priority-one calls, r
 | Traffic sensors | Speed and volume per road segment | Transport department | Seconds to minutes | Travel-time estimates by time of day | Sensor gaps in outer districts, the very places equity is judged |
 | Ambulance GPS | Position pings per unit | EMS fleet | Every few seconds | Actual routes, actual travel times, unit availability | Dropped pings in tunnels; units left "available" when they are not |
 
-The quality risks shape the plan. Traffic sensors are thinnest where the equity constraint bites hardest. So the GPS feed, which records real travel, is the stronger ground truth for travel time.
+The quality risks shape the plan. In this scenario, traffic sensors are thinnest where the equity constraint bites hardest. So the GPS feed, which records real travel, is the stronger ground truth for travel time.
 
 ### 5.4 Sequence by risk
 
@@ -217,7 +217,7 @@ The north-star metric is fraud losses caught per investigator hour. Guardrails s
 | Legacy system B | Rows, a second schema | Team B | Hourly batch | Its alerts and outcomes | Unlabelled cases mean "not investigated," not "not fraud" |
 | Legacy system C | Nightly files | Team C | Daily | Its alerts and outcomes | Customer identifiers differ from A and B |
 | Investigator case notes | Free text | All three teams | On case close | Why a case was confirmed or cleared | Inconsistent wording; the richest signal, the least structured |
-| Chargebacks and customer disputes | Events | Card operations | Days to weeks | Late but independent ground truth | Arrives long after the transaction |
+| Chargebacks and customer disputes | Events | Card operations | Weeks to months (card dispute windows often run to about 120 days) | Late but independent ground truth | Arrives long after the transaction |
 
 The prompt's hardest constraint is in this table. "None of the data is labeled consistently" has two layers. The definitions differ between systems, and missing labels mean different things in each. A model trained on the union of the three would learn three definitions of fraud at once.
 
@@ -287,7 +287,7 @@ flowchart LR
 
 Hold out a relabelled sample that no training run ever sees. Compare the shadow model with the legacy rules on that holdout, at a fixed false-positive rate. A higher catch rate at the same customer friction is the claim to prove.
 
-Score chargebacks separately, as a late but independent check. They arrive weeks after the transaction, so they validate rather than train. Measure the note summariser against investigator judgement on a sample, never as a label source.
+Score chargebacks separately, as a late but independent check. They arrive weeks or months after the transaction, so they validate rather than train. Measure the note summariser against investigator judgement on a sample, never as a label source.
 
 ### 6.8 Name the failure modes
 
@@ -321,7 +321,7 @@ The source says this case tests safety-first decomposition. The first safety que
 | What alerts already exist? | Pharmacy checks at order time | Avoid duplicating them, and avoid adding noise |
 | Who governs clinical decision support? | A pharmacy and therapeutics committee | It approves thresholds and rules |
 
-Alert fatigue is the constraint that hides behind "safety-first." A system that fires constantly gets ignored, and an ignored alert is worse than none. So precision is a safety property here, not a nice-to-have.
+Alert fatigue is the constraint that hides behind "safety-first." A system that fires constantly gets ignored, and I'd argue an ignored alert is worse than none. So precision is a safety property here, not a nice-to-have.
 
 ### 7.2 Name stakeholders and metrics
 
@@ -348,7 +348,7 @@ The gap between the first two rows is the finding. The data shows ordered and di
 | 3 | Retrospective rules, validated by pharmacists | Proves precision before anything reaches a ward |
 | 4 | Advisory alerts on one ward, in shadow first | Adoption and alert fatigue are tested on real shifts |
 
-The nurse schedule enters at step two, not as a target. The question is whether errors rise with patient load or at handover. The answer should drive staffing and handover decisions. It should never become a score for individual nurses. A tool seen as surveillance stops getting honest incident reports.
+The nurse schedule enters at step two, not as a target. The question is whether errors rise with patient load or at handover. The answer should drive staffing and handover decisions. It should never become a score for individual nurses. A tool seen as surveillance tends to lose honest incident reports.
 
 ### 7.5 Build the first slice
 
@@ -506,7 +506,7 @@ The four verbs still generate the answer. Measure human-review minutes and model
 7. **In #68, why is "unlabelled" not "legitimate"?** Unlabelled cases were never investigated, so treating them as negatives teaches the model that uninvestigated fraud is fine.
 8. **In #68, what is the honest 90-day deliverable?** A single investigator queue plus a validated shadow model on one fraud type, not a production model deciding transactions.
 9. **In #69, why is precision a safety property?** Low precision causes alert fatigue, and ignored alerts include the real ones.
-10. **In #69, why must nurse schedules never rank nurses?** Surveillance stops honest incident reporting, which the error measurement depends on.
+10. **In #69, why must nurse schedules never rank nurses?** Surveillance discourages honest incident reporting, which the error measurement depends on.
 11. **Across all three, what role does a language model play?** A bounded assisting role on free text, behind a human, never the core decision.
 12. **What is the 60-second cost answer?** These systems cost people, not tokens. Sample human review, reuse the reviewed set for evaluation, and keep language models on notes in batch.
 

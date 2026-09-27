@@ -135,7 +135,7 @@ Scale in tenfold steps, because each step breaks something different. A plan tha
 | 1,000 → 10,000 | Provider 429s at peak; the bill becomes visible; queueing inflates p95; retrieval exposes documents across departments | 429 rate; invoice; p95 rising while p50 stays flat; a permissions complaint | Gateway with rate limits, retry, breaker and fallback; permission-filtered retrieval; routing and caching; budgets per department |
 | 10,000 → 100,000 | Department bursts starve each other; provider capacity; multi-region and residency; eval cost; incident blast radius; adoption stalls | One department's p95 degrades during another's peak; eval bill spikes; week-4 retention flat | Weighted fair queue; capacity commitment and a warm fallback; sampled online eval; on-call and runbooks; cohort rollout with change management |
 
-Read the table left to right in the interview. The prototype's weaknesses show up in a fixed order: identity first, capacity second, fairness and organisation last. The fix for each step is cheap before that step and expensive during it.
+Read the table left to right in the interview. I'd expect the prototype's weaknesses to show up in roughly this order: identity first, capacity second, fairness and organisation last. The fix for each step is cheap before that step and expensive during it.
 
 ## 6. Draw the Architecture End to End
 
@@ -283,7 +283,7 @@ Never launch to 100,000 people on one day. Roll out by cohort, so each tenfold s
 |---|---|---|
 | Shadow | *"The new version runs alongside the live one on real traffic; both outputs are logged; compared offline"* | Eval gate passed; zero isolation failures in shadow |
 | Canary | A small slice of real users sees it; *"the same metrics are watched live"* | p95, error rate and cost per request within limits for 48 hours |
-| Cohort waves | 1% → 10% → 50% → 100%, one department wave at a time | Each wave: support tickets per 1,000 users, week-1 retention, no open severity-1 incidents |
+| Cohort waves | In this design, 1% → 10% → 50% → 100%, one department wave at a time | Each wave: support tickets per 1,000 users, week-1 retention, no open severity-1 incidents |
 | Promote | Repoint the live pointer | Executive sponsor signs on the success metrics |
 
 Split cohorts per user, never per request. The Handbook's reason: one person's experience must not flicker between versions mid-conversation. Hold the safety gate identical across arms.
@@ -419,7 +419,7 @@ Every strong cost answer follows four verbs in order. Measure tokens and cost pe
 - Name what demos hide: traffic shape, tail latency, usage expansion and governance cost, plus drifting prompts and one-person support.
 - State constraints as tests: requests a second, p95 first token, zero forbidden citations, fairness between departments, budget.
 - Size from licensed users to requests, tokens per minute and dollars; adoption is a cost variable.
-- Scale in tenfold steps, because identity breaks first, capacity second, fairness and organisation last.
+- Scale in tenfold steps, because I'd expect identity to break first, capacity second, fairness and organisation last.
 - Draw admit, assemble, answer, learn, with boundaries at the gateway, retrieval and the control plane.
 - Put one gateway in front of every call for identity, per-user limits, a fair queue, metering, routing and safe caching.
 - Chain retry, breaker, a warm fallback and degradation, and never promise more uptime than the provider gives.

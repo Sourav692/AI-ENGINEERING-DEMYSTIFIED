@@ -8,6 +8,9 @@ Round 1 covered the 20 grouped case studies and the 18 Last-Day reviews plus the
 - Sources were added to each group's full pack and to the Last-Day modules.
 
 ## Round 2 scope (not yet checked)
+
+CONTENT-17 labels are applied to all of this (27 Sep 2026). What's left is the CONTENT-18 source check. Start with the 29 open rows in `claims-round2-queue.csv`.
+
 - The 143 low-priority claims in `claims-round1.csv`.
 - The 13 standalone cases (`Case_Study_Groups/Standalone/`).
 - The 22 practice worksheets and model answers.
@@ -15,7 +18,7 @@ Round 1 covered the 20 grouped case studies and the 18 Last-Day reviews plus the
 - The behavioural model answers (factual claims only).
 
 ## Found outside round 1's files — fix in round 2
-- `Standalone/25_Configurable_Platform_Customer_Workflows/3_Tutorial_V2.md:507`: check whether the "409 Conflict" use there is an ETag/If-Match case (that should be 412) or a genuine conflict.
+- ~~`Standalone/25…/3_Tutorial_V2.md:507` 409 vs 412~~ — checked: the version travels in the body, not `If-Match`, so 409 stands. The idempotency-key-reuse code (409 vs the IETF draft's 422) is queued as Q016.
 - `Handbook/04_Enterprise_RAG/06_Output_Guardrails.md:24` and both copies of `nodes.py`: "most common over-refusal" should say "a common" (C158).
 - The study guide quoted by G18 says the first token arrives "in milliseconds"; it should be "well under a second" (C149).
 - `05_Projects/Realtime_Voice_AI_Agent_with_RAG/Docs/PROJECT_REPORT.md:60` says Deepgram Nova-2. The code actually runs Nova-3 (Pipecat's default), and Deepgram now recommends Flux (C077).
@@ -30,3 +33,11 @@ Round 1 covered the 20 grouped case studies and the 18 Last-Day reviews plus the
 - Zendesk API tokens: no new tokens from 27 Oct 2026, all switched off 30 Apr 2027 (G12).
 - Groq `llama-3.1-8b-instant` was shut down for free and developer tiers on 16 Aug 2026 (G11).
 - Databricks renames of mid-2026: Vector Search → AI Search, Genie → Genie One, Genie Spaces → Genie Agents, AI Gateway → Unity Gateway. Expect more doc and name churn.
+
+## Found during CONTENT-17 (27 Sep 2026) — not fixed
+- `FDE/FDE_System_Design_Interview_20_Scenarios/Version_1` and `Version_2` chapter 15 still say "salted hash … HMAC-SHA256". The published V3 key now says "keyed hash with a secret key".
+- The 10 Discovery answer keys share one "Availability: design for business-critical support hours" line, which doesn't fit every case (retail demand, executive dashboard).
+- Standalone 23 Coverage Notes: item 17 (regulatory) is still "Partial" though the note says the second pass closed it; cost is called "one of six scorecard SLIs" but it's one of the six Section 3 SLIs.
+- Standalone 61: the rollout table's column header credits Handbook Module 08 doc 1, which doesn't contain the cohort-wave numbers (the cell now says "In this design").
+- Several standalone tutorials and practice keys still use American spelling (normalize, behavior). Deliberately left to keep the label diffs small.
+

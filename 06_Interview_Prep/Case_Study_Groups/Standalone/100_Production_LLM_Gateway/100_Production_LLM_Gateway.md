@@ -29,7 +29,7 @@ Ask five questions before drawing, and state an assumption for each one the inte
 | Question | Why it matters | Assumption for this page |
 |---|---|---|
 | How many conversations a day, and how many turns each? | Sets the spend the $500 must cover | 10,000 users a day, borrowed from the playbook's support-chatbot case; 3 turns each |
-| Is 3 s the time to first token or to the full answer? | An agent turn with tool steps cannot finish in 3 s | First streamed token for agent turns; full answer for one-call turns |
+| Is 3 s the time to first token or to the full answer? | An agent turn with several tool steps usually cannot finish in 3 s | First streamed token for agent turns; full answer for one-call turns |
 | One tenant or many? | Decides whether budgets, caches and residency are per tenant | One customer, several regions |
 | Can data leave the customer's network or region? | The source's named gap; changes which providers are legal | Unknown; section 11 answers both ways |
 | What must never happen? | Sets which checks fail closed | PII leaks to a customer or a provider it should not reach |
@@ -226,7 +226,7 @@ The rule-based layer is regex, length caps, schema checks and a banned-phrase li
 
 Run both directions, because each direction sees something the other cannot. The source's sharpest line: "The model can leak something the user themselves said two turns ago — if you only guard the input, you never catch that." The same PII detector therefore runs twice. On input, it masks before anything is forwarded. On output, it catches the model repeating what it saw earlier in the conversation.
 
-Keep moderation separate from guardrails. Moderation checks a fixed, general harm taxonomy and only fires on severe content, so "you are very poor ha ha" passes it cleanly. A guardrail enforces this product's policy, such as "stay on topic for support" or "never reveal the system prompt." Ship both; neither substitutes for the other.
+Keep moderation separate from guardrails. Moderation checks a fixed, general harm taxonomy and, in the source notebook, flags only severe content, so "you are very poor ha ha" passes it cleanly. A guardrail enforces this product's policy, such as "stay on topic for support" or "never reveal the system prompt." Ship both; neither substitutes for the other.
 
 Log every block with a reason. A blocked customer needs a safe reply, and an engineer needs to know which rule fired. The reason log is also the evidence a security reviewer asks for.
 
@@ -246,7 +246,7 @@ Watch the hit rate as a health signal. The playbook's incident note says a sudde
 
 ## 7. Route by Complexity and Meter Before the Call
 
-"The single biggest cost lever in a production LLM system is not sending every query to the most expensive model." Section 3 showed why: complex turns are 21% of traffic and 96% of spend.
+The study guide puts it bluntly: "The single biggest cost lever in a production LLM system is not sending every query to the most expensive model." Section 3 showed why: complex turns are 21% of traffic and 96% of spend.
 
 The router is a small model returning a structured label, simple or complex. Structured output means the label cannot come back as free text. Pick the threshold from a labeled sample of real traffic, and measure the cost saved against the error rate of misrouting. A simple question sent to the large model wastes money. A complex one sent to the small model wastes the customer's time. Say which error the product tolerates.
 
@@ -277,7 +277,7 @@ Degrade differently on the two faces. The source's rule is "Degrade gracefully i
 
 ## 9. Fit Failover Inside the Three-Second Budget
 
-A latency budget is a sum, and the source gives the terms verbatim. Rule-based guardrail ~1ms. Cache check ~5-10ms. Router classification ~200-400ms on a small model. Main call ~1-2s. Output validation ~1ms, "or +300-500ms if the LLM-as-guardrail output check also fires."
+A latency budget is a sum, and the source gives the terms verbatim. They are whiteboard estimates, not measurements. Rule-based guardrail ~1ms. Cache check ~5-10ms. Router classification ~200-400ms on a small model. Main call ~1-2s. Output validation ~1ms, "or +300-500ms if the LLM-as-guardrail output check also fires."
 
 | Path | Sum | Verdict |
 |---|---|---|
@@ -289,7 +289,7 @@ The source names the fix: the LLM input guard "is the one addition that risks th
 
 Three more collisions sit inside the prompt *(own construction)*.
 
-**The agent path cannot finish in 3 s.** Five sequential calls at ~1-2s each take 5 to 10 seconds. Complex turns are 21% of traffic, so p95 falls inside them, and a p95 on full answers fails by construction. This is why section 1 asked what the 3 s measures. Hold the agent path to first streamed token under 3 s. Parallelize read-only tool calls, and route common intents to a one-call path. The playbook's rule applies: "I would not use an agent where a workflow engine or router is enough."
+**The agent path cannot finish in 3 s.** Five sequential calls at ~1-2s each take 5 to 10 seconds. In my sizing, complex turns are 21% of traffic, so p95 falls inside them, and a p95 on full answers fails by construction. This is why section 1 asked what the 3 s measures. Hold the agent path to first streamed token under 3 s. Parallelize read-only tool calls, and route common intents to a one-call path. The playbook's rule applies: "I would not use an agent where a workflow engine or router is enough."
 
 **Retries do not fit inside the budget during an outage.** The notebook's backoff waits 0.3s, then 0.6s, then 1.2s: 2.1 s of waiting before the fourth attempt, on top of each attempt's own timeout. On the interactive path, give each request a deadline, not an attempt count. Allow one retry only if the deadline leaves room, then fail over. After the breaker trips, requests skip provider A entirely, so failover adds almost nothing. The customers who pay for the outage are the few before the trip; the breaker threshold bounds how many.
 
@@ -409,7 +409,7 @@ The playbook's own case says the same: "reduce cost **by workflow**, not across 
 
 ## Check Yourself
 
-1. **Why must the gateway sit under the agent's model calls, not just in front of the customer's message?** An agent turn is 5–20 sub-requests. Metering, retry and failover that see only the first call miss the rest.
+1. **Why must the gateway sit under the agent's model calls, not just in front of the customer's message?** The cost playbook puts one agent turn at 5–20 sub-requests. Metering, retry and failover that see only the first call miss the rest.
 2. **Price the day aloud.** 14,700 simple turns × $0.00045 ≈ $6.61; 6,300 complex turns × $0.0375 ≈ $236.25; router and guards ≈ $2.40. About $245, with complex turns 96% of it.
 3. **What does the naive design cost?** All 30,000 turns on the large-model agent path with no cache: $1,125, 2.25 times the budget.
 4. **Why does the input guard run before the cache?** So an injected prompt is never cached, and the cache key is the PII-masked text.

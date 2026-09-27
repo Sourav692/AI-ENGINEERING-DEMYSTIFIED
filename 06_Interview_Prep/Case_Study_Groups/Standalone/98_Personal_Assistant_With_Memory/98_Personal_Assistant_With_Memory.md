@@ -264,7 +264,7 @@ Cap episodic memory per user, because nothing else will. Every completed task is
 
 The digest keeps the gist of older activity at a fixed size. "Booked four trips to Lisbon this year" survives even after the four booking episodes are pruned *(own construction)*. The pruner runs as a background job on the write path, so pruning never costs a reply any latency.
 
-Session memory needs the same discipline in a different form. A TTL marks entries for expiry, and sliding expiry extends the session on activity. The study guide's gotcha is that expiry is enforced by a sweep, not checked on every read. An expired entry can still be returned until the sweeper runs. Schedule the sweeper, or check the entry's age if a few seconds of staleness matter.
+Session memory needs the same discipline in a different form. A TTL marks entries for expiry, and sliding expiry extends the session on activity. The study guide's gotcha is that, in the LangGraph store its notebooks use, expiry is enforced by a sweep, not checked on every read. An expired entry can still be returned until the sweeper runs. Schedule the sweeper, or check the entry's age if a few seconds of staleness matter.
 
 ## 9. Search With an Index, Not a Scan
 
@@ -420,7 +420,7 @@ The follow-ups, including the study guide's "skeptical staff engineer" prompts:
 | Justify shipping a scan instead of building the index first | Only for a pilot with a handful of facts per user; the index must land before tenure grows, and the latency metric tells when |
 | A preference from a month ago contradicts what they just said | Overwrite with the new value, keep the old one a version back with its date, and mention the change if it matters to the task |
 | Customer wants it to remember everything forever | Ask for retention and compliance requirements first; unbounded episodic memory is a cost and governance problem, not a free feature |
-| Users report seeing each other's preferences | Audit namespace derivation; the cause is almost always a `user_id` from the wrong place |
+| Users report seeing each other's preferences | Audit namespace derivation; the usual cause is a `user_id` from the wrong place |
 | Demo worked with 5 facts, pilot user has 500 | That is the scan becoming visible; add the index and the episode cap |
 | Why not just use a million-token context window? | The context window is working memory; it is wiped each conversation, costs tokens every turn and slows the first token |
 | How would the assistant learn procedures, not just facts? | Workflow memory: abstract repeated successful task sequences into templates, retrieved by structural similarity; it pays off only on repetition |
@@ -454,7 +454,7 @@ Every strong cost answer follows four verbs in order. Measure tokens per prompt 
 - Key facts by what they are, append events, keep one prior version, and never persist transient details as facts.
 - Cap episodes at 100 and fold older ones into a digest; sweep expired sessions on a schedule.
 - Fetch facts by key and search episodes through an index filtered by user.
-- Reads fit in about 115 ms in parallel; every write leaves the critical path.
+- In my budget, reads fit in about 115 ms in parallel; every write leaves the critical path.
 - `user_id` comes from auth on every request, and governance follows from the namespaces.
 - Measure recall of planted facts and false memories, not fluency.
 - Volunteer the failure modes: random keys, unbounded episodes, scans, model-supplied identity, memory poisoning.
@@ -466,7 +466,7 @@ Every strong cost answer follows four verbs in order. Measure tokens per prompt 
 
 1. **What four promises hide in "remembers you"?** Hold the conversation, keep preferences, recall past tasks, and keep users apart.
 2. **Why does the 100-episode cap matter for latency, not just storage?** It bounds the index each user's search runs over, which keeps the vector query fast as tenure grows.
-3. **Why is summarising every ~15 turns a cost decision?** Each fold is an extra model call; at 30 turns a day it adds about 7% more calls.
+3. **Why is summarising every ~15 turns a cost decision?** Each fold is an extra model call; at the assumed 30 turns a day it adds about 7% more calls.
 4. **What key does each scope use?** `thread_id` for the conversation, `session_id` with a TTL for the session, `(semantic, user_id)` plus a stable key for facts, `(episodic, user_id)` plus a fresh key for tasks.
 5. **Why does trimming the prompt not shrink the database?** Trimming filters what the model sees; only an explicit removal or a retention policy deletes stored history.
 6. **"Call me Sam" is said twice. One row or two?** One, if the key is `preferred_name`; two, if each write gets a random key.

@@ -21,8 +21,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Provide a tested kill switch that halts autonomous execution paths without a deploy.
 
 ## Strong non-functional requirements
-- Latency: budget model-planning time separately from tool time; p95 completion under about 15 seconds for low-risk tasks.
-- Availability: at 50,000 users and 20 QPS peak, 10 actions per task means roughly 200 tool actions per second — reads parallelize, writes do not.
+- Latency: budget model-planning time separately from tool time; I'd target p95 completion under about 15 seconds for low-risk tasks.
+- Availability: at the scale this case assumes — 50,000 users, 20 QPS peak, 10 actions per task — that is roughly 200 tool actions per second; reads parallelise, writes do not.
 - Security: short-lived, narrowly scoped credentials minted per workflow; the model never holds a reusable API key or admin token.
 - Compliance: a tamper-evident ledger recording intent, policy decision, approval, and outcome for every action.
 - Reliability: fail closed for writes when the credential broker or policy engine is unavailable; degrade only the lowest-risk reads.
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand autonomy only where unsafe-action count stays at zero and duplicate effects never appear.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Unsafe action count | The control boundary actually held | Zero in any sensitive workflow | Audit review, incident tickets, rule checks |

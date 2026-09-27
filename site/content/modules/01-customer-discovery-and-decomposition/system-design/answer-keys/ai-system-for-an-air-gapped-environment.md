@@ -22,7 +22,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Strong non-functional requirements
 - Latency: budget end to end across upload, preprocessing, retrieval, inference, validation, and rendering; if inference dominates, shrink the model or context.
-- Availability: elasticity is limited or absent, so capacity must be right up front — size against the 20 QPS peak, not the average.
+- Availability: elasticity is limited or absent, so capacity must be right up front — size against the 20 QPS peak this case assumes, not the average.
 - Security: pin and attest every dependency, verify signatures against offline trust roots, and separate privileged administration from normal user workflow.
 - Compliance: append-only audit answering who did what, to which artifact hash, and when, retained to local policy.
 - Reliability: fail closed on incomplete or corrupted bundles and keep the current release running rather than improvising.
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand nodes only while install success, signature verification, and capacity saturation hold, keeping release age monitored.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Offline install success rate | A bundle installs cleanly with no outside reach | Consistently clean on representative staging | Repeated installs on production-matched nodes |

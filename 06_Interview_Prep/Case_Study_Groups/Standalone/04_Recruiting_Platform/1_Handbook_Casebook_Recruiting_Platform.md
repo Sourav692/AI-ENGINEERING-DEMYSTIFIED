@@ -12,6 +12,8 @@ Design an AI-powered recruiting platform that screens resumes, matches candidate
 
 Recruiters upload a job description, receive resumes in bulk, get candidates ranked by fit, generate questions and scorecards, schedule interviews, receive a recommendation — **while remaining in control of the final decision.** That last clause is the whole design constraint: an AI-*assisted* workflow, not an autonomous hiring system.
 
+The answers below are the ones this case assumes. In the room, confirm each one with the interviewer.
+
 | Question                                     | Answer                                                        | What it decides                                     |
 | -------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------- |
 | Enterprise hiring or staffing agencies?      | Differs                                                       | Multi-tenancy and volume assumptions                |
@@ -74,7 +76,7 @@ flowchart TD
 
 The ranking engine combines several signals rather than one similarity number: semantic similarity, required-skills match, experience level, domain expertise, location, certifications, availability, historical hiring success where applicable. **Weighting the signals explicitly, rather than letting one opaque score decide, is what makes a ranking explainable to a recruiter and defensible in an audit.**
 
-An illustrative weighting: semantic similarity ~30% · skills match ~25% · experience ~20% · domain expertise ~15% · other signals ~10%. A recruiter can see *why* a candidate ranked where they did, not just that they did.
+An illustrative weighting, my starting point rather than a standard: semantic similarity ~30% · skills match ~25% · experience ~20% · domain expertise ~15% · other signals ~10%. A recruiter can see *why* a candidate ranked where they did, not just that they did.
 
 The AI judge follows the same principle: standardised scoring with rationale — and **it does not make the final decision.** The evaluation pipeline combines similarity, completeness, judge scores, interview feedback, recruiter and hiring-manager input, with **confidence thresholds that make manual review mandatory** below a bar. Module 04's rule — never gate a consequential decision on an LLM judge alone — applied to people's careers.
 

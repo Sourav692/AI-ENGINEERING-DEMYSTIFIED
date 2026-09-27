@@ -91,7 +91,7 @@
 ## 0. The 60-Second Version
 
 - **Prompt:** 40,000 employees, "build us our own ChatGPT," internal data, enterprise controls.
-- **Real driver:** an egress report shows 6,400 staff already pasting company data into consumer AI tools.
+- **Real driver:** the case gives us an egress report showing 6,400 staff already pasting company data into consumer AI tools.
 - **Business result, not feature:** move AI usage from ungoverned consumer tools into a governed platform — without losing what made the consumer tools attractive.
 - **Unique constraint:** you have a free, zero-friction competitor your users already have on their phones.
 - **Two bars, always in tension:** governance (nothing leaves except under our agreement) and adoption (TTFT close to the free tool).
@@ -139,7 +139,7 @@
 5. **Identity and residency** — SSO only? Regional deployment? Works-council constraints on usage telemetry?
 6. **Build vs. buy** — what specifically rules out licensing a vendor's enterprise tier?
 
-> 🎯 **Interview Pointer:** Question 6 (build vs. buy) is the one most candidates skip entirely. Asking it unprompted, before the interviewer raises it, is one of the strongest discovery signals in this scenario.
+> 🎯 **Interview Pointer:** Question 6 (build vs. buy) is the one I'd expect many candidates to skip. Asking it unprompted, before the interviewer raises it, is one of the strongest discovery signals you can send in this scenario.
 
 ### Assumption ledger (state aloud, don't bury)
 
@@ -150,7 +150,7 @@
 
 ### Testable outcome
 
-- **Target:** reduce measured consumer-AI egress 80% in two quarters while reaching 50% weekly active use.
+- **Target I'd propose:** reduce measured consumer-AI egress 80% in two quarters while reaching 50% weekly active use.
 - **Why it works:** you cannot hit it by locking down, and you cannot hit it by shipping ungoverned. Both halves must be true.
 - **Rare gift:** the baseline is already in the proxy logs — most AI projects argue about whether they worked.
 
@@ -249,14 +249,14 @@ flowchart TD
 
 ### Load shape
 
-- Enterprise chat is **not smooth**: hard 8:30–10:00 spike, lunch dip, smaller afternoon peak, near-zero overnight.
+- I'd expect enterprise chat to be **not smooth**: hard 8:30–10:00 spike, lunch dip, smaller afternoon peak, near-zero overnight.
 - Working assumptions: 40,000 employees, 12,000 DAU, 8 conversations/user/day, 6 turns each.
-- **576,000 turns/day.** Over a 10-hour day that's 16/sec; with a 2.5× morning peak, **~40 turns/sec**.
+- **576,000 turns/day.** Over a 10-hour day that's 16/sec; with an assumed 2.5× morning peak, **~40 turns/sec**.
 - Four buckets: average, peak, growth (adoption is the *goal* — headroom isn't speculative), skew (power users and scripts).
 
 ### The number that actually sizes the system
 
-- REST at 40 req/sec × 50 ms = ~2 requests in flight. **Chat at 40 turns/sec × 20-second streams = 800 concurrent connections.**
+- REST at 40 req/sec × 50 ms = ~2 requests in flight. **Chat at 40 turns/sec × an assumed 20-second stream = 800 concurrent connections.**
 - $\text{concurrent streams} = \text{arrival rate} \times \text{hold time} = 40 \times 20 = 800$ — Little's Law, not request rate.
 - **This sizes** the relay tier, load-balancer connection limits, provider concurrency quota, and deployment strategy.
 - Long-lived streams are hostile to request-count autoscaling, naive round-robin, and any proxy with a 60-second idle timeout.
@@ -267,7 +267,7 @@ flowchart TD
 ### The cost trap: quadratic history
 
 - Naive full-history resend over $n$ turns: $\text{input tokens} \approx t \cdot \frac{n(n+1)}{2}$.
-- A 40-turn conversation costs ~47× the first turn, while the earliest turns' value has decayed to nothing.
+- By turn 40, one turn resends ~40× the first turn's tokens, and the whole conversation has sent ~820 turns' worth of input. Meanwhile the earliest turns' value has decayed to nothing.
 - **Sliding window with pinned head** — always keep system prompt + assistant definition, keep last $k$ turns verbatim.
 - **Rolling summarization** — compact older turns; history cost becomes roughly constant.
 - **Prompt caching** — lay out system prompt, assistant instructions and retrieved docs as a stable cacheable prefix.
@@ -284,18 +284,18 @@ flowchart TD
 
 ### SLOs
 
-- **TTFT is the adoption SLO**, not total latency. Text by 700 ms feels fast even if the answer takes 25 s; a 4-second spinner feels broken.
-- **Targets:** p95 TTFT < 1.0 s, p99 < 2.0 s.
-- **Turn completion rate** — a stream dying at 80% is a failed turn; counting it as HTTP 200 is the classic instrumentation mistake here.
-- **Quality:** thumbs-down rate, regeneration rate (strongest implicit signal), citation click-through, sampled groundedness.
+- **TTFT is the adoption SLO**, not total latency. My rule of thumb: text by 700 ms feels fast even if the answer takes 25 s; a 4-second spinner feels broken.
+- **Targets I'd set for this case:** p95 TTFT < 1.0 s, p99 < 2.0 s.
+- **Turn completion rate** — a stream dying at 80% is a failed turn; counting it as HTTP 200 is a common instrumentation mistake here.
+- **Quality:** thumbs-down rate, regeneration rate (a strong implicit signal), citation click-through, sampled groundedness.
 - **Permission-filter correctness:** a hard gate at zero, not a quality metric.
 - **Cost:** per active user per month, per turn, cached-prefix hit rate.
 - **By task class, not globally:** drafting needs TTFT; policy lookup needs total time, because you can't act on a partial answer.
 
 ### Capacity, worked backward
 
-- Peak throughput ≈ 40 turns/sec × 2,400 tokens = 96,000 tokens/sec ≈ **5.8M tokens/minute**.
-- **The binding constraint is usually the provider's TPM/RPM quota — a contract, not a cluster.**
+- Peak throughput ≈ 40 turns/sec × an assumed 2,400 tokens per turn = 96,000 tokens/sec ≈ **5.8M tokens/minute**.
+- **At this scale, I'd expect the binding constraint to be the provider's TPM/RPM quota — a contract, not a cluster.**
 - If the quota is below it: higher tier, multiple deployments/regions, or route cheap traffic to a smaller model at peak.
 - Headroom for: adoption growth, retry storms (which spike exactly when capacity is tight), failover concentration, deploy-time drain, and the all-hands demo effect.
 
@@ -307,13 +307,16 @@ $$ C_{\text{user}} = \frac{C_{\text{fixed}}}{N} + C_{\text{tokens}} + C_{\text{r
 - $C_{tokens}$ — dominant term; compaction and prompt caching attack it directly.
 - $C_{retrieval}$ — largely fixed per corpus, not per user.
 - $C_{storage}$ — driven by retention class; 7-year retention is a legal decision with an engineering invoice.
-- **Say it out loud:** "$22/user/month vs. a $30 vendor seat means the build case rests on the capability that forced us to build, not on cost."
+- **Say it out loud:** "Our estimated $22/user/month vs. a ~$30 vendor seat means the build case rests on the capability that forced us to build, not on cost."
 
 ### Sensitivity
+
+These are my working assumptions scaled up, not measured figures.
 
 | Assumption | Now | Full adoption |
 |---|---|---|
 | Daily active | 12,000 | 32,000 |
+| Turns per user/day | 48 | ~144 (assumed: heavier use, about 3×) |
 | Turns/day | 576,000 | ~4,600,000 |
 | Peak turns/sec | 40 | ~320 |
 | Concurrent streams | ~800 | ~6,400 |
@@ -329,8 +332,8 @@ $$ C_{\text{user}} = \frac{C_{\text{fixed}}}{N} + C_{\text{tokens}} + C_{\text{r
 - **Failover** — secondary provider; only counts if you've tested the fallback's output quality, not discovered it live.
 - **Degrade** — smaller model with a visible label. A labeled lesser answer beats an error.
 - **Shed** — pause background work to preserve interactive capacity.
-- **Preserve** — never lose the user's typed message. Cheapest reliability win; most commonly omitted.
-- **Differentiated targets:** conversation store RPO ≈ 0 (it's their work product); retrieval index RPO in hours (stale degrades quality, doesn't lose data).
+- **Preserve** — never lose the user's typed message. Cheapest reliability win; often omitted.
+- **Differentiated targets I'd set:** conversation store RPO ≈ 0 (it's their work product); retrieval index RPO in hours (stale degrades quality, doesn't lose data).
 
 ---
 
@@ -618,7 +621,7 @@ async def handle_turn(principal, req, conversations, policy, quota,
 
 ### The lines that carry the design
 
-- **`authorize(...)` first, per turn** — candidates routinely authorize at session start and never again.
+- **`authorize(...)` first, per turn** — candidates often authorize at session start and never again.
 - **`assembler.build(principal, …)`** — the single most important line; permissions derive from the asking human.
 - **`quota.admit(…, ctx.input_tokens)`** after assembly — retrieval-heavy turns are exactly the expensive ones.
 - **`router.choose(classification=…)`** — classification outranks cost.
@@ -649,7 +652,7 @@ async def handle_turn(principal, req, conversations, policy, quota,
 
 ### The unusual threat model
 
-- **Most of your adversaries are your own employees, and almost none are malicious.**
+- **In this setting, most of your adversaries are your own employees, and almost none are malicious.**
 - Dominant risk: a well-meaning person pasting the wrong thing, or an assistant quietly over-sharing.
 - **The three review questions to have answers ready for:**
   - GC: "Employee summarizes the pending acquisition — where does that text go, who reads it later, can you delete it?"
@@ -679,7 +682,7 @@ async def handle_turn(principal, req, conversations, policy, quota,
 | Stale ACL after revocation | One doc, many users | Permission-drift job vs. live ACLs | Query-time resolution, short cache TTL, fail closed | Purge cache; audit which conversations cited it |
 | Over-scoped assistant shared widely | Potentially everyone | Publish review; scope-intersection assertion | Intersection with viewer; review for company-wide | Unpublish; audit identifies who saw what |
 | Prompt injection via document | One conversation, or many | Tool-call anomalies; injection canaries in eval set | Untrusted content carries no authority | Quarantine doc; re-scan corpus |
-| Silent system-prompt truncation | Every long conversation, invisibly | Assert head present post-assembly | Pin head; truncate the middle | Fix assembler — usually weeks old before noticed |
+| Silent system-prompt truncation | Every long conversation, invisibly | Assert head present post-assembly | Pin head; truncate the middle | Fix assembler — often weeks old before noticed |
 | Runaway scripted account | Department budget | Token-rate anomaly | Per-user quota, concurrency cap, circuit break | Revoke token; attribute usage |
 | Audit pipeline down | Compliance posture | Audit write error rate | Fail the turn rather than proceed unrecorded | Backfill impossible by design |
 | Conversation store loss | Employee work product | Replication lag, backup verification | Near-zero RPO; tested restores | Restore; communicate scope honestly |
@@ -702,7 +705,7 @@ flowchart TD
 - **Add:** publish review for company-wide visibility, a per-viewer indicator of reachable sources, alert on new-assistant usage spikes.
 - **The interview point:** this is an **authorization design flaw, not a bug** — the happy path hides it, because the author testing their own assistant sees an intersection equal to their own access.
 
-> 🎯 **Interview Pointer:** This walkthrough is the single most distinctive failure mode of this scenario — lead with it in Section 6 rather than a generic "prompt injection" answer, since it's the one interviewers use to separate candidates who understand delegated authorization from those who don't.
+> 🎯 **Interview Pointer:** This walkthrough is the single most distinctive failure mode of this scenario — lead with it in Section 6 rather than a generic "prompt injection" answer, since it's the one I'd expect interviewers to use to separate candidates who understand delegated authorization from those who don't.
 
 ### Walkthrough — instructions hidden in an uploaded document
 
@@ -800,7 +803,7 @@ async def test_assistant_scope_is_a_ceiling_not_a_grant(assistant_registry, ask)
     assert answer.effective_scopes == set()          # intersection is empty, by design
 ```
 
-- **Almost everyone writes the first test. Tests two and three separate a real design from a plausible one.**
+- **Most candidates write the first test. Tests two and three separate a real design from a plausible one.**
 
 ### Three artifacts required before GA
 
@@ -818,6 +821,8 @@ async def test_assistant_scope_is_a_ceiling_not_a_grant(assistant_registry, ask)
 - **The delivery plan exists to convert enthusiasm into sequenced risk.**
 
 ### Four phases — gates are measurements, not dates
+
+The cohort sizes, week ranges and gate thresholds below are my plan for this case, not a standard rollout.
 
 | Phase | Who | Adds | Gate |
 |---|---|---|---|
@@ -848,7 +853,7 @@ flowchart LR
 | Weekly active / eligible | Product | **Adoption is the safety outcome** — low adoption means the risk persists |
 | p95 / p99 TTFT | Platform | The adoption bar, versus the free alternative |
 | Turn completion rate | Platform | Streams dying at 80% are failures HTTP status codes hide |
-| Regeneration rate | Product | Strongest implicit quality signal — users regenerate when the answer was wrong |
+| Regeneration rate | Product | A strong implicit quality signal — users regenerate when the answer was wrong |
 | Thumbs-down + free text | Product | Explicit signal, and the seed corpus for the eval set |
 | Citation click-through | Product | Whether grounding is *trusted*, not just present |
 | Permission-boundary violations | Governance | Target zero; any nonzero is an incident, never a trend line |
@@ -861,6 +866,8 @@ flowchart LR
 - **The pairing that matters:** optimize block rate alone and you build a system so cautious employees route around it — reproducing the original risk behind a beautiful dashboard.
 
 ### Three audiences, same telemetry
+
+The numbers in these three lines are illustrative, to show the shape — not results from a real rollout.
 
 - **Board:** "Egress down 78% QoQ; 61% weekly active; zero permission-boundary incidents."
 - **Department head:** "14,000 turns last month, mostly drafting and policy lookup; top unmet need was expense policy — that's the next corpus."
@@ -885,11 +892,13 @@ flowchart LR
 | DLP over-blocks and frustrates users | M | H | False-positive rate as first-class metric; fast appeal path | Security + product |
 | **Works-council / privacy objection to usage telemetry** | M | H | Aggregate-by-default analytics; consult before Phase 2, not after | Legal + HR |
 
-- **That last row is the one candidates never include** — and it has genuinely delayed real deployments of this product in European subsidiaries.
+- **That last row is the one candidates rarely include** — and works-council consultation can genuinely delay a rollout like this in European subsidiaries.
 
 ### Business impact statement
 
-> "Moved AI usage from ungoverned consumer tools into a platform where every prompt is classified, every retrieval respects existing permissions, and every turn is auditable — cutting measured consumer-AI egress ~78% in two quarters at 61% weekly active use. Employees self-report ~3 hours/week saved, which we treat as directional, not precise. ~$20/active user/month against a $30 vendor seat, with the difference justified by two connectors nobody sells."
+An example of the shape — the numbers are illustrative, not from a real rollout:
+
+> "Moved AI usage from ungoverned consumer tools into a platform where every prompt is classified, every retrieval respects existing permissions, and every turn is auditable — cutting measured consumer-AI egress ~78% in two quarters at 61% weekly active use. Employees self-report ~3 hours/week saved, which we treat as directional, not precise. ~$22/active user/month against a $30 vendor seat, with the difference justified by two connectors nobody sells."
 
 - **Structure:** risk reduction first → adoption → **honest qualifier on the soft number** → cost comparison naming *why* building was right.
 - Interviewers notice candidates who inflate self-reported time savings into hard ROI.
@@ -944,10 +953,10 @@ flowchart LR
 
 ### Five trade-offs, balanced
 
-- **Buy vs. build** — *most candidates skip this; raising it first is a strong signal.* Buy = mature product in weeks, vendor carries model ops and much compliance. Build = connectors nobody sells, deployment nobody offers, control of the data path. **Honest answer: hybrid — buy the model, build orchestration, connectors, governance.** Disqualifying: building reflexively because it's interesting.
+- **Buy vs. build** — *many candidates skip this; raising it first is a strong signal.* Buy = mature product in weeks, vendor carries model ops and much compliance. Build = connectors nobody sells, deployment nobody offers, control of the data path. **Honest answer: hybrid — buy the model, build orchestration, connectors, governance.** Disqualifying: building reflexively because it's interesting.
 - **Vendor API vs. self-hosted** — API = best quality per unit effort, no GPU fleet, but external data path and per-token cost that scales with success. Self-host = hard boundary, fixed cost at volume, air-gap capable, but lower quality ceiling and an upgrade burden teams underestimate. **Start with API behind an abstraction; self-host only the data classes that require it.**
 - **Full history vs. compaction** — full = simple, perfect fidelity, quadratic cost, eventually overflows context *silently and badly*. Compaction = roughly constant cost, unbounded conversations, occasional lost detail. **Ship the sliding window day one; add summarization when telemetry says so; always pin the head.**
-- **Always-on vs. tool-invoked retrieval** — always-on = reliable grounding, but "rewrite this paragraph" doesn't need a corpus search. Tool-invoked = cheaper and faster, but a decision that can be wrong both ways and a surface for injection. **Middle path: cheap intent classifier, plus a constrained retrieval tool whose results are still permission-filtered.** Anchor it: 400 ms retrieval is a third of your TTFT budget.
+- **Always-on vs. tool-invoked retrieval** — always-on = reliable grounding, but "rewrite this paragraph" doesn't need a corpus search. Tool-invoked = cheaper and faster, but a decision that can be wrong both ways and a surface for injection. **Middle path: cheap intent classifier, plus a constrained retrieval tool whose results are still permission-filtered.** Anchor it: 400 ms of retrieval eats about 40% of a 1-second TTFT budget.
 - **Strict DLP vs. adoption** — every false positive teaches employees the sanctioned tool is unreliable, and a few of those reproduce the original risk at full severity. **Asymmetric answer: block hard on narrow unambiguous categories, warn-and-log on fuzzy ones, track false-positive rate with an owner.** Say: *"security controls that drive users to unsanctioned tools are net-negative security."*
 
 ### Five follow-ups, compressed
@@ -998,7 +1007,7 @@ flowchart LR
 
 ### Practice plan
 
-- **Solo:** answer aloud in 10 min, then cut every sentence that doesn't change a design decision. Most find half was product description.
+- **Solo:** answer aloud in 10 min, then cut every sentence that doesn't change a design decision. Many people find about half was product description.
 - **Pair:** partner interrupts on "secure," "scalable," "RAG," "guardrails" and demands the mechanism and where it runs. Then have them play GC *and* frustrated employee in one session.
 - **Implementation:** write the permission-intersection test against a toy corpus with three groups and two assistants, including the shared-conversation case. ~40 lines; teaches more than rereading the chapter.
 

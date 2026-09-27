@@ -41,7 +41,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Data model / integration assumptions
 - Request(tenant_id, prompt, user_id); ExportedTrace(correlation_id, tenant_id, prompt_class, query_hash, spans, result_status) — bounded structured attributes only, never raw prompts.
 - Assume classification happens before attachment, tagging content sensitive or non-sensitive before it can ever reach a trace.
-- Assume a salted HMAC-SHA256 hash preserves correlation and deduplication across requests without storing any original content.
+- Assume a keyed hash (HMAC-SHA256 with a secret key) preserves correlation and deduplication across requests without storing any original content.
 - Assume telemetry attributes are schema-validated at ingestion, with unknown high-cardinality fields rejected or collapsed into a bounded bucket.
 - Assume queue serialization contracts explicitly carry trace context, idempotency key, and tenant scope, or traces will silently break at async handoffs.
 
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: widen instrumentation only while telemetry overhead and trace coverage both stay inside budget.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Trace coverage | The bad request is actually represented in telemetry | High enough that complaints map to traces | Complaint intake compared with sampled traces |

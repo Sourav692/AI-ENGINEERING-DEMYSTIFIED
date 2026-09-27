@@ -14,7 +14,7 @@ Keep web and private-doc credentials separate. Append branch evidence; never las
 
 ## Numbers and limits
 
-40K runs/day ≈ 28/min; 3× peak ≈ 100/min. Roughly 120 concurrent at a 70s mean run time, ~170 slots at 70% utilization. p95 <90s, first signal <3s, about $0.20/run. Hard hop, tool, time and budget caps.
+40K runs/day ≈ 28/min; 3× peak ≈ 84/min, rounded up to 100. Roughly 120 concurrent at a 70s mean run time, ~170 slots at 70% utilization. p95 <90s, first signal <3s, about $0.20/run. Hard hop, tool, time and budget caps.
 
 ## Fail safely
 

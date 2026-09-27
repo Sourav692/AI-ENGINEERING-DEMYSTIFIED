@@ -307,7 +307,7 @@ The trade-off has a revisit condition. A strategic customer may be accepted desp
 
 The library holds connectors, prompt templates, an eval harness, guardrail policies and dashboard templates. By name: `zendesk_connector`, `confluence_connector`, `salesforce_connector`, `support_triage_prompt`, `groundedness_prompt`, `golden_set_harness` ("recall@k / MRR / groundedness / leak-rate harness"), `pii_redaction_policy`, `destructive_action_gate`, `eval_baseline_dashboard`, `cost_attribution_dashboard`.
 
-On Northwind the rate is 83%: 5 of 6 assets came straight from the library, and one guardrail policy was custom. A rising custom-build count is the early signal that two weeks is about to slip. Tracked across engagements, the ratio says whether the framework works or is quietly turning bespoke again.
+In the Northwind demo run the rate is 83%: 5 of 6 assets came straight from the library, and one guardrail policy was custom. A rising custom-build count is the early signal that two weeks is about to slip. Tracked across engagements, the ratio says whether the framework works or is quietly turning bespoke again.
 
 Be honest about what the library is not. The entries are named assets, not the connector code or the eval harness. The real harness exists one project over, in the RAG platform, and wiring the Evaluate stage to call it is on the punch list. The gate mechanism is real; the number behind one piece of evidence is not yet.
 

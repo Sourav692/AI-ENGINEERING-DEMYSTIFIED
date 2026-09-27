@@ -93,7 +93,7 @@
 - A practical business outcome metric: the rate at which a new customer variation can be introduced without a fork, a hotfix, or a support escalation — not a vanity count of configurable fields.
 - Job-to-be-done framing: the customer isn't buying "a workflow engine" — they're hiring the platform to remove the need for custom forks while still letting each tenant express its business process. This pushes the architecture toward a stable core plus controlled extension points, not a codebase that mutates per account.
 
-> 🎯 **Interview Pointer:** The single highest-leverage line to memorize is the outcome statement itself — "preserve a stable product core while allowing safe, versioned, supportable customization." Interviewers listen for this exact triad (safe / versioned / supportable) because it maps directly to the architecture decisions in later sections.
+> 🎯 **Interview Pointer:** The single highest-leverage line to memorize is the outcome statement itself — "preserve a stable product core while allowing safe, versioned, supportable customization." I'd expect interviewers to listen for this triad (safe / versioned / supportable) because it maps directly to the architecture decisions in later sections.
 
 ### Stakeholder Map
 
@@ -193,7 +193,7 @@ flowchart TD
   Q6 --> DESIGN["Concrete design pressures:<br/>core abstraction, UX/auth model,<br/>adapter interface, versioning,<br/>trust boundary, tooling investment"]
 ```
 
-> 🎯 **Interview Pointer:** Question 5 (custom-code security boundary) is the one interviewers most often probe further — be ready to state immediately that the safest default is "declarative core, arbitrary code outside the trust boundary," and connect it forward to the sandbox component in Section 4 and the security controls in Section 6.
+> 🎯 **Interview Pointer:** Question 5 (custom-code security boundary) is the one I'd expect interviewers to probe further — be ready to state immediately that the safest default is "declarative core, arbitrary code outside the trust boundary," and connect it forward to the sandbox component in Section 4 and the security controls in Section 6.
 
 ### Must-Have Functional Requirements
 
@@ -265,7 +265,7 @@ flowchart TD
 ### The Four-Step Capacity Envelope
 
 - Estimate in the order that changes architecture:
-  1. **Version intake and validation throughput.** Schema checks, policy checks, dependency checks, simulation/dry-run — 2–10 seconds of CPU-bound work or a few network calls means synchronous user feedback must be separated from asynchronous deeper checks. Immediate SLO: "did the edit save and return a clear result quickly?" Deeper guarantee: "did validation complete and promote/reject the version before the deployment window closes?"
+  1. **Version intake and validation throughput.** Schema checks, policy checks, dependency checks, simulation/dry-run — if these add up to (my rough guess) 2–10 seconds of CPU-bound work or a few network calls, synchronous user feedback must be separated from asynchronous deeper checks. Immediate SLO: "did the edit save and return a clear result quickly?" Deeper guarantee: "did validation complete and promote/reject the version before the deployment window closes?"
   2. **Deployment throughput.** Even if only a fraction of the 1,000 versions/day are promoted, deployments fan out across tenants, regions, or integrations — a single promoted template update might touch dozens of workflow instances or enqueue downstream sync jobs. Deployment capacity is driven by fan-out, not just the count of human edits.
   3. **Limits for expressive power.** Hard limits on rules, custom fields, and plugin execution shape runtime cost early — e.g., a moderate field count per form, a bounded number of rule clauses per transition, short plugin execution windows with memory/network restrictions. These limits prevent one customer's customization from consuming everyone else's shared service budget.
   4. **State growth and retention.** Configuration history grows more slowly than event history but still matters — the question isn't just "how many records?" but "what must be retained for audit, rollback, and support, and for how long?" Keep the version graph compact, store deltas where useful, make rollback metadata first-class.
@@ -301,11 +301,13 @@ $$ Leverage=\frac{Customers\ served\ by\ shared\ capability}{Engineering\ effort
 
 ### Sensitivity Table Across Growth Scenarios
 
+These volumes and peak factors are illustrative numbers I'd pick for this case, not industry figures — defend them, don't quote them.
+
 | Scenario | Daily config versions | Peak factor | Operational implication |
 |---|---|---|---|
-| Baseline | 1,000 | 3x | Single shared validator may be enough if work is mostly asynchronous |
+| Baseline | 1,000 | ~6x (the 2-hour window above) | Single shared validator may be enough if work is mostly asynchronous |
 | Moderate growth | 10,000 | 3x–5x | Queue separation, worker pools, stricter limits on plugin time |
-| Aggressive growth | 10x baseline | 5x+ | Stronger tenant isolation, sharded queues, explicit per-tenant quotas |
+| Aggressive growth | 100,000 (100x baseline) | 5x+ | Stronger tenant isolation, sharded queues, explicit per-tenant quotas |
 
 - 10x growth does not just increase cost — it can force a different partitioning strategy. The same is true for custom fields/rules: highly branched forms with many calculated fields may need compile-time validation, partial evaluation, or cached execution plans; common plugin execution may need sandboxing or an adapter boundary instead of direct in-process execution.
 
@@ -841,7 +843,7 @@ flowchart TD
 
 ### Interview-Sized Production Sketch
 
-- Intentionally small — not the whole platform, just the publish-path invariant that rejects unknown adapters before config activation. A real companion repository would need tested dependencies, richer schema validation, structured logging, and integration with an actual persistence layer.
+- Intentionally small — not the whole platform, just the publish-path invariant that rejects unknown adapters before config activation. The caps in it (50 fields, 10 approvals, 20 integrations, a 168-hour SLA) are placeholders I picked, not platform standards. A real companion repository would need tested dependencies, richer schema validation, structured logging, and integration with an actual persistence layer.
 
 ```typescript
 export type WorkflowConfig = {
@@ -1010,7 +1012,7 @@ flowchart LR
 
 ### Dashboard in the Language of the User
 
-- Start with the customer story, then drill into the machinery. Example: "Customer onboarding completed in under two days, with zero manual config edits, one validation retry, and no post-launch incident." Beneath that: schema validation failures, adapter errors, approval-loop blocks, publish latency, and rollout status by tenant.
+- Start with the customer story, then drill into the machinery. Example (illustrative numbers): "Customer onboarding completed in under two days, with zero manual config edits, one validation retry, and no post-launch incident." Beneath that: schema validation failures, adapter errors, approval-loop blocks, publish latency, and rollout status by tenant.
 - Answers "what do we watch after launch?" — not just CPU, logs, or queue depth, but the relationship between customer-facing success and internal failure modes.
 
 ### Ownership Before Launch
@@ -1141,7 +1143,7 @@ flowchart LR
 - **Pair mock:** have a partner interrupt with the risky follow-up: "What becomes core product?" or "When is a one-off fork acceptable?" Practice answering without becoming defensive.
 - **Implementation exercise:** design a versioned configuration validator that rejects cycles in approval routing and requires safe publish-time checks before a workflow can go live.
 - **Equation guidance:** no new equation is introduced in this section — quantitative considerations are handled in prose, and deeper capacity math is deferred to Section 3 so the interview walkthrough stays focused on trade-offs, not derivations.
-- Job-market advantage: this is the exact style of conversation forward-deployed teams use when moving from a customer problem to a safe productized solution.
+- Job-market advantage: this is close to the style of conversation forward-deployed teams use when moving from a customer problem to a safe productized solution.
 
 ## Coverage Notes
 
@@ -1193,7 +1195,7 @@ Given the strength of first-pass coverage (only items 7, 10, 17, and 18 fall sho
 
 **Item 17 — Regulatory / governance depth.**
 - Given the tenant-isolation architecture already in Section 4 (control plane vs. data plane, tenant-ID partitioning, per-tenant adapter scoping), the natural extension is data residency: if customers span jurisdictions, the configuration registry and workflow audit store may need region-pinned storage, and the `TenantConfig`/`ConfigDeployment` records in Section 5 would need a region field so the deployment ledger can prove where a tenant's data and execution actually lived.
-- I would also connect this to the audit control already named in Section 6 ("audit configuration publishers and versions") — that same durable trail is most of what a SOC 2 or industry-specific audit regime (e.g., SOX change-control, HIPAA if the workflow touches health data) would ask for, so the gap is smaller than it looks; it mainly needs an explicit retention-period-per-regulation statement layered on top of the existing retention discussion in Section 5.
+- I would also connect this to the audit control already named in Section 6 ("audit configuration publishers and versions") — that same durable trail covers a good share of what a SOC 2 or industry-specific audit regime (e.g., SOX change-control, HIPAA if the workflow touches health data) would ask for, so the gap is smaller than it looks; it mainly needs an explicit retention-period-per-regulation statement layered on top of the existing retention discussion in Section 5.
 - I'd raise this proactively in an interview by naming one regulatory driver relevant to the customer vertical implied by the prompt (e.g., financial-services approval workflows implying SOX-style segregation of duties) and mapping it onto the existing approval-role and audit-trail mechanics rather than introducing new infrastructure.
 
 **Item 18 — Responsible-AI / risk framing beyond the obvious failure mode.**

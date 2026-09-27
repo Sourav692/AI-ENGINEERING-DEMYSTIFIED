@@ -21,12 +21,12 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Record an append-only audit of every turn, including administrative reads of employee conversations.
 
 ## Strong non-functional requirements
-- Latency: time-to-first-token is the adoption SLO — p95 under 1.0s and p99 under 2.0s, because a four-second spinner feels broken.
-- Availability: about 576,000 turns a day, 40 turns per second at a 2.5x morning peak, and roughly 800 concurrent streams.
+- Latency: time-to-first-token is the adoption SLO; I'd set p95 under 1.0s and p99 under 2.0s, because a four-second spinner feels broken.
+- Availability: the load this case assumes is about 576,000 turns a day, 40 turns per second at a 2.5x morning peak, and roughly 800 concurrent streams.
 - Security: every isolation layer fails closed, because failing open in this system means leaking.
 - Compliance: retention is a named policy class with legal hold, and audit completeness must be 100% of turns served.
 - Reliability: never lose the user's typed message; degrade to a smaller labeled model rather than returning an error page.
-- Cost: conversation history grows quadratically, so pin the head, summarize the middle, and lay out a cacheable stable prefix from day one.
+- Cost: resending the full history makes each turn's input grow linearly and the conversation's total grow quadratically, so pin the head, summarize the middle, and lay out a cacheable stable prefix from day one.
 
 ## Architecture explanation
 - The coherence rule comes before any box: identity is established at the session, re-evaluated per turn, and nothing enters the context window without passing policy and being audited.
@@ -63,6 +63,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - After pilot: expand corpora only while egress falls, weekly active rises, and audit completeness stays at 100%.
 
 ## Evaluation plan
+These are thresholds I'd set for this case, not industry standards. Defend them, don't quote them.
+
 | Metric | What it proves | Strong threshold | Dataset / method |
 |---|---|---|---|
 | Consumer-AI egress volume | The risk the project was funded to remove is actually shrinking | Down about 80% over two quarters | Network proxy logs against the pre-launch baseline |
@@ -94,4 +96,4 @@ I would frame the goal as moving AI usage out of ungoverned consumer tools into 
 | Communication | Technical only | Clear but generic | Tells the board, department, and on-call stories from the same telemetry |
 
 ## Final 2-minute spoken answer
-I would not start with the model. The ask is "build us our own ChatGPT" for 40,000 employees, but the real driver is in the egress report: 6,400 staff are already pasting company data into consumer AI tools. So the business result is moving AI usage out of ungoverned tools into a governed platform without losing what made the consumer tools attractive. That gives two bars that stay in tension — nothing leaves our boundary except under an agreement we control, and time-to-first-token stays close to what they get free on their phones. It also gives an unusually good success metric, because the baseline is already instrumented: reduce measured consumer-AI egress by 80% in two quarters while reaching 50% weekly active use. You cannot hit that by locking down and you cannot hit it by shipping ungoverned. Architecturally, the coherence rule comes before any diagram: identity is established at the session, re-evaluated per turn, and nothing enters the context window without passing policy and being recorded in audit. The context assembler is the design center, where permissions, cost, safety and quality intersect, and permissions always derive from the asking human — so a published assistant's effective scope is its own scope intersected with the viewer's, which is what stops one privileged author laundering access to everyone. Retrieval resolves ACLs at query time and drops a chunk if the resolver is unavailable. Every layer fails closed, because failing open here means leaking. I would ship general chat first, then grounding, then attachments, then assistants — one new risk class per phase.
+I would not start with the model. The ask is "build us our own ChatGPT" for 40,000 employees, but the real driver is in the egress report: 6,400 staff are already pasting company data into consumer AI tools. So the business result is moving AI usage out of ungoverned tools into a governed platform without losing what made the consumer tools attractive. That gives two bars that stay in tension — nothing leaves our boundary except under an agreement we control, and time-to-first-token stays close to what they get free on their phones. It also gives an unusually good success metric, because the baseline is already instrumented. The target I'd propose is to reduce measured consumer-AI egress by 80% in two quarters while reaching 50% weekly active use. You cannot hit that by locking down and you cannot hit it by shipping ungoverned. Architecturally, the coherence rule comes before any diagram: identity is established at the session, re-evaluated per turn, and nothing enters the context window without passing policy and being recorded in audit. The context assembler is the design center, where permissions, cost, safety and quality intersect, and permissions always derive from the asking human — so a published assistant's effective scope is its own scope intersected with the viewer's, which is what stops one privileged author laundering access to everyone. Retrieval resolves ACLs at query time and drops a chunk if the resolver is unavailable. Every layer fails closed, because failing open here means leaking. I would ship general chat first, then grounding, then attachments, then assistants — one new risk class per phase.

@@ -40,7 +40,7 @@ Observability + Security
 Trade-offs
 ```
 
-	### Opening line
+### Opening line
 
 > "Before jumping into architecture, I'd first understand the business outcome and current workflow, then clarify users and scale, data and integrations, how much autonomy the AI should have, success criteria, and production constraints."
 
@@ -172,7 +172,7 @@ Don't invent numbers.
 
 Ask the customer and turn requirements into measurable SLOs.
 
-Example:
+Example (the 5 seconds is a placeholder — confirm the real number with the customer):
 
 ```text
 Bad:
@@ -470,7 +470,7 @@ Must NOT
 Refund twice
 ```
 
-Use an idempotency key.
+Use an idempotency key that the execution path actually honours.
 
 ---
 
@@ -488,7 +488,7 @@ Executor acts
 
 Do not use the LLM as the final authority for deterministic business rules.
 
-Example:
+Example (illustrative thresholds — the customer sets the real ones, including the middle band):
 
 ```text
 Refund < $100
@@ -671,7 +671,7 @@ Cost
 Successful Tasks
 ```
 
-> **Cost per successful task**
+> **Cost per successful task** — the one I'd lead with, because it counts retries and failed attempts.
 
 ---
 
@@ -808,7 +808,7 @@ Successful Task
 
 # 15. Release — Rapid Version
 
-Never:
+Avoid:
 
 ```text
 New Prompt
