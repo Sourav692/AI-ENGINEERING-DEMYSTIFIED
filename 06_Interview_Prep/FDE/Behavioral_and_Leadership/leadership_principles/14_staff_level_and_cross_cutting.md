@@ -12,7 +12,7 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. Conflict with a colleague or another team
 
@@ -53,7 +53,7 @@
 
 > "Tell me about working across cultures, regions, or time zones."
 
-**Anchor:** AIA (Hong Kong HQ, multi-market APAC), Bajaj (India), Barclays (APAC/EMEA/AMER).
+**Anchor:** a large Asian life insurer (headquartered in Asia, multi-market APAC), a large Indian consumer lender, a global tier-1 bank (APAC/EMEA/AMER).
 
 **Partly grounded** - the spine is real, the marked details are not. Supply them below.
 
@@ -64,14 +64,14 @@
 
 **You must supply, before this answer is usable:**
 
-- Barclays — the ~700M-events/day migration spanned APAC, EMEA, and AMER teams:
+- the bank — the migration of hundreds of millions of events a day spanned APAC, EMEA, and AMER teams:
 - one concrete example:
 
 ## 4. Delivering with unclear requirements
 
 > "Tell me about a time you had to deliver with unclear or incomplete requirements."
 
-**Anchor:** AIA brief + the confidence-gated clarification pattern.
+**Anchor:** the insurer's brief + the confidence-gated clarification pattern.
 
 - Situation:
 - Task:
@@ -82,7 +82,7 @@
 
 > "Tell me about a time you had to ramp up quickly on an unfamiliar domain."
 
-**Anchor:** insurance (AIA) and lending ops (Bajaj).
+**Anchor:** insurance (the insurer) and lending ops (the lender).
 
 - Situation:
 - Task:
@@ -93,7 +93,7 @@
 
 > "How has your impact extended beyond a single project or team?"
 
-**Anchor:** reusable patterns carried AIA → Bajaj → reference builds.
+**Anchor:** reusable patterns carried the insurer → the lender → reference builds.
 
 - Situation:
 - Task:
@@ -125,7 +125,7 @@
 
 > "Tell me about something innovative you built — a time you thought bigger than the obvious solution."
 
-**Anchor:** Deep Agent / Synaptic Command, Code Agent, graph-based RCA.
+**Anchor:** the deep-agent version, a code-lookup agent, graph-based RCA.
 
 - Situation:
 - Task:
@@ -147,7 +147,7 @@
 
 > "How do you handle a customer whose request is technically the wrong thing to build?"
 
-**Anchor:** Bajaj autonomy + AIA open-ended search.
+**Anchor:** the lender's autonomy + the insurer's open-ended search.
 
 Write the mechanism first, then one proof.
 
@@ -174,7 +174,7 @@ Write the mechanism first, then one proof.
 
 > "What's the achievement you're proudest of, and what would you do differently?"
 
-**Anchor:** AIA.
+**Anchor:** the insurer.
 
 - Situation:
 - Task:

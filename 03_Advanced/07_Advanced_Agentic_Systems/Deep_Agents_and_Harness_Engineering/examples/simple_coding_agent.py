@@ -114,10 +114,10 @@ def _query_genie(space_id: str, question: str) -> dict:
 
 
 def ask_customer_analytics(question: str) -> dict:
-    """Ask a natural language question about AIA customer data.
+    """Ask a natural language question about Acme Life customer data.
 
     Covers customer segmentation, retention, demographics, and claim frequency.
-    Data source: aia_multi_agent_catalog.silver.customer_360
+    Data source: acme_life_multi_agent_catalog.silver.customer_360
 
     Args:
         question: Natural language question about customers.
@@ -126,10 +126,10 @@ def ask_customer_analytics(question: str) -> dict:
 
 
 def ask_distribution_channels(question: str) -> dict:
-    """Ask a natural language question about AIA agent performance and distribution channels.
+    """Ask a natural language question about Acme Life agent performance and distribution channels.
 
     Covers agent sales, premium volumes, channel comparisons, and top performers.
-    Data source: aia_multi_agent_catalog.gold.agent_performance
+    Data source: acme_life_multi_agent_catalog.gold.agent_performance
 
     Args:
         question: Natural language question about agents or distribution channels.
@@ -138,10 +138,10 @@ def ask_distribution_channels(question: str) -> dict:
 
 
 def ask_policy_underwriting(question: str) -> dict:
-    """Ask a natural language question about AIA policies and underwriting.
+    """Ask a natural language question about Acme Life policies and underwriting.
 
     Covers premium volumes, policy counts, renewal rates, product mix, and underwriting metrics.
-    Data sources: aia_multi_agent_catalog.gold.policy_performance, silver.enriched_policies
+    Data sources: acme_life_multi_agent_catalog.gold.policy_performance, silver.enriched_policies
 
     Args:
         question: Natural language question about policies or underwriting.
@@ -150,10 +150,10 @@ def ask_policy_underwriting(question: str) -> dict:
 
 
 def ask_claims_analytics(question: str) -> dict:
-    """Ask a natural language question about AIA insurance claims.
+    """Ask a natural language question about Acme Life insurance claims.
 
     Covers claim counts, amounts, processing times, fraud scores, and regional breakdowns.
-    Data sources: aia_multi_agent_catalog.gold.claims_summary, gold.fraud_analysis, silver.enriched_claims
+    Data sources: acme_life_multi_agent_catalog.gold.claims_summary, gold.fraud_analysis, silver.enriched_claims
 
     Args:
         question: Natural language question about claims or fraud.
@@ -195,46 +195,46 @@ research_agent = {
     "tools": [internet_search],
 }
 
-aia_customer_agent = {
-    "name": "aia-customer-analytics",
+acme_life_customer_agent = {
+    "name": "insurer-customer-analytics",
     "description": (
-        "Queries AIA customer data — segmentation, retention, demographics, claim frequency. "
+        "Queries Acme Life customer data — segmentation, retention, demographics, claim frequency. "
         "Use when the user asks about customers or customer segments."
     ),
-    "system_prompt": "Follow the aia-customer-analytics skill instructions.",
+    "system_prompt": "Follow the insurer-customer-analytics skill instructions.",
     "skills": ["/skills/"],
     "tools": [ask_customer_analytics],
 }
 
-aia_distribution_agent = {
-    "name": "aia-distribution-channels",
+acme_life_distribution_agent = {
+    "name": "insurer-distribution-channels",
     "description": (
-        "Queries AIA agent performance and distribution channel data. "
+        "Queries Acme Life agent performance and distribution channel data. "
         "Use when the user asks about agents, sales channels, or distribution performance."
     ),
-    "system_prompt": "Follow the aia-distribution-channels skill instructions.",
+    "system_prompt": "Follow the insurer-distribution-channels skill instructions.",
     "skills": ["/skills/"],
     "tools": [ask_distribution_channels],
 }
 
-aia_policy_agent = {
-    "name": "aia-policy-underwriting",
+acme_life_policy_agent = {
+    "name": "insurer-policy-underwriting",
     "description": (
-        "Queries AIA policy and underwriting data — premiums, policy counts, renewals, product mix. "
+        "Queries Acme Life policy and underwriting data — premiums, policy counts, renewals, product mix. "
         "Use when the user asks about policies, premiums, or underwriting."
     ),
-    "system_prompt": "Follow the aia-policy-underwriting skill instructions.",
+    "system_prompt": "Follow the insurer-policy-underwriting skill instructions.",
     "skills": ["/skills/"],
     "tools": [ask_policy_underwriting],
 }
 
-aia_claims_agent = {
-    "name": "aia-claims-analytics",
+acme_life_claims_agent = {
+    "name": "insurer-claims-analytics",
     "description": (
-        "Queries AIA claims data — claim counts, amounts, processing times, fraud scores. "
+        "Queries Acme Life claims data — claim counts, amounts, processing times, fraud scores. "
         "Use when the user asks about claims, fraud, or claim processing."
     ),
-    "system_prompt": "Follow the aia-claims-analytics skill instructions.",
+    "system_prompt": "Follow the insurer-claims-analytics skill instructions.",
     "skills": ["/skills/"],
     "tools": [ask_claims_analytics],
 }
@@ -243,10 +243,10 @@ subagents = [
     senior_developer,
     code_reviewer,
     research_agent,
-    aia_customer_agent,
-    aia_distribution_agent,
-    aia_policy_agent,
-    aia_claims_agent,
+    acme_life_customer_agent,
+    acme_life_distribution_agent,
+    acme_life_policy_agent,
+    acme_life_claims_agent,
 ]
 
 # ============ Backend factory ============

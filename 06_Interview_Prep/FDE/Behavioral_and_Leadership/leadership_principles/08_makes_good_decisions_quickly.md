@@ -12,13 +12,13 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. A fast decision with incomplete information
 
 > "Walk me through a decision you made quickly with incomplete information. How did you assess the risk?"
 
-**Anchor:** AIA live pivot from single agent to Supervisor.
+**Anchor:** the live pivot from single agent to Supervisor at a large Asian life insurer.
 
 - Situation:
 - Task:
@@ -29,7 +29,7 @@
 
 > "Tell me about a decision that was irreversible or high-stakes, and how your process differed from a routine one."
 
-**Anchor:** Bajaj production writes vs. Meridian retrieval-strategy choice.
+**Anchor:** production writes at a large Indian consumer lender vs. Meridian retrieval-strategy choice.
 
 - Situation:
 - Task:
@@ -40,7 +40,7 @@
 
 > "Tell me about a decision you got wrong. How did you find out, and what did you do?"
 
-**Anchor:** AIA single-agent v1 (and the retrieval preference).
+**Anchor:** the insurer's single-agent v1 (and the retrieval preference).
 
 - Situation:
 - Task:
@@ -51,7 +51,7 @@
 
 > "How do you decide when to stop analysing and act?"
 
-**Anchor:** AIA pivot vs Bajaj 182-ticket analysis.
+**Anchor:** the insurer's pivot vs the lender's analysis of a couple of hundred historical tickets.
 
 Write the mechanism first, then one proof.
 

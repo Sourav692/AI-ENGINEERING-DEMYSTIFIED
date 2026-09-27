@@ -24,7 +24,7 @@ This is the anchor for the related executive-dashboard and retail-forecast expla
 | NL-to-SQL analytics assistant    | Governed metric → permitted schema → validated read-only query | General business questions and SQL safety                                                                                      |
 | Executive Dashboard Copilot      | Same metric registry and query evidence                          | KPI variance narrative, dashboard freshness, analyst escalation                                                                |
 | Retail Demand Forecast Explainer | Same governed evidence and result checks                         | Deterministic driver statistics from sales, promotions, inventory, weather, and events; human review of planning actions       |
-| AIA governed data assistant      | Governed metric views and auditable asset resolution             | Supervisor routes to Genie, a narrow SQL/RAG worker, deterministic analysis, or visualization; later specialized domain agents |
+| Insurer governed data assistant  | Governed metric views and auditable asset resolution             | Supervisor routes to Genie, a narrow SQL/RAG worker, deterministic analysis, or visualization; later specialized domain agents |
 
 ## 1. Questions to ask the interviewer
 
@@ -126,14 +126,14 @@ flowchart LR
 - **Step 7.** Summarize the structured result and verify every number against the table. On mismatch, return the table alone and alert reviewers.
 - **Step 8.** Return the definition, SQL, lineage, freshness caveats, and answer; record the versions, decision, and bytes scanned for replay.
 
-**Agent role:** the default design is a governed LLM query workflow. A supervisor/agent is useful only when one question needs multiple approved specialists, as in the AIA variant. It routes among Genie, a restricted SQL/RAG worker, deterministic analysis, and visualization; neither that agent nor its LLMs may define metrics or bypass the query gate.
+**Agent role:** the default design is a governed LLM query workflow. A supervisor/agent is useful only when one question needs multiple approved specialists, as in the insurer variant. It routes among Genie, a restricted SQL/RAG worker, deterministic analysis, and visualization; neither that agent nor its LLMs may define metrics or bypass the query gate.
 
 ## 4. Three decisions to defend
 
 | Decision                                        | Default and reason                                                                                                                                    | Failure to avoid                                           |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | Semantic layer before schema                    | Resolve a named, versioned business metric before searching physical tables                                                                           | Valid SQL using the wrong grain, exclusions, or definition |
-| Clarify before query                            | Show supported meanings; a numeric confidence gate can trigger clarification (the AIA supervisor used**<60%** for its own intent clarification) | A plausible answer to an unstated business interpretation  |
+| Clarify before query                            | Show supported meanings; a numeric confidence gate can trigger clarification (the insurer supervisor used**<60%** for its own intent clarification) | A plausible answer to an unstated business interpretation  |
 | Fixed operations or managed SQL before open SQL | Use reviewed operations or curated Genie-like views for common questions; allow hand-generated SQL only in a narrower approved path                   | Invented columns, excessive scans, and permission drift    |
 
 For mixed questions, route each subtask to its right source: semantic search finds related prose, structured queries compute counts and sums, direct lookup resolves IDs. A retail “why” answer computes drivers deterministically and lets the LLM narrate them; correlation is not proof of causation.
@@ -168,4 +168,4 @@ Roll out in order: ten governed metrics with owners → golden replay on every c
 
 **Memory line:** “The semantic layer defines the answer; the LLM translates and explains it.”
 
-For parser mechanics, the AIA two-pivot agent story, the incident drills, and the detailed evaluation signals, use the [Deep Dive](/modules/15-fde-case-studies/knowledge-retrieval/nl-over-governed-data#deep-dive). For a final-minute pass, use the [Cheat Sheet](/modules/15-fde-case-studies/knowledge-retrieval/nl-over-governed-data#cheat-sheet).
+For parser mechanics, the insurer two-pivot agent story, the incident drills, and the detailed evaluation signals, use the [Deep Dive](/modules/15-fde-case-studies/knowledge-retrieval/nl-over-governed-data#deep-dive). For a final-minute pass, use the [Cheat Sheet](/modules/15-fde-case-studies/knowledge-retrieval/nl-over-governed-data#cheat-sheet).

@@ -396,7 +396,7 @@ Not notebooks — Python scripts + a `deepagents`-based multi-agent system:
 | `examples/simple_coding_agent.py` | Default agent run — `FilesystemBackend`, no code execution |
 | `examples/long_term_memory_agent.py` | Adds cross-thread persistent memory (JSON, upgradeable to PostgreSQL) |
 | `skills/senior-developer/`, `code-reviewer/`, `research-agent/`, `memory-manager/` | Core orchestration agents |
-| `skills/aia-customer-analytics/`, `aia-distribution-channels/`, `aia-policy-underwriting/`, `aia-claims-analytics/` | Databricks Genie analytics agents |
+| `skills/insurer-customer-analytics/`, `insurer-distribution-channels/`, `insurer-policy-underwriting/`, `insurer-claims-analytics/` | Databricks Genie analytics agents |
 | `app/` | Standalone deployable version (FastAPI + frontend, Docker) |
 | `docs/` | Architecture diagram, memory-types writeup |
 
@@ -585,7 +585,7 @@ Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` 
 | `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Coverage/gap analysis + sample questions. Its Databricks eval tutorial and evaluation question banks went to `Agent_Evaluation_Demystified`. |
 | `Study_Guides/` | `tutorials/` | Per-phase `*_INTERVIEW_TUTORIAL.md` study guides (01/03/04/07/08/12), the Cost & Latency playbook cram sheets + drill deck, chunking and retrieval-strategy notes, drill hub. |
 
-**Known duplicate not yet resolved:** `Handbook/11_Telling_The_Story/stories/` and `FDE/Star_Stories/` hold byte-identical STAR story files (9 of them), and the same set also exists in `Agent_Evaluation_Demystified/Star_Stories/`.
+**Client stories are private (2026-09-27):** the raw client engagement stories that used to sit in `FDE/Star_Stories/` and `Handbook/11_Telling_The_Story/stories/` were moved to the gitignored `06_Interview_Prep/_private/` and the tracked material was anonymised. Only the Meridian Assist reference-build stories remain in `Handbook/11_Telling_The_Story/stories/`.
 
 ## Known Discrepancies
 

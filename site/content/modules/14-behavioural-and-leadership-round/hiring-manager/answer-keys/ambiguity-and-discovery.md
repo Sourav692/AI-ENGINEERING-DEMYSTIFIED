@@ -21,7 +21,7 @@ Drafted from documented engagements. Three of the four are ready to deliver; the
 
 - **Situation.** "We need governance" is one of the vaguest asks in enterprise data.
 - **Action.** Week one wasn't design, it was inventory — mapping what data existed, who was touching it, and where PII actually lived versus where they believed it lived. The gap between those two was the real finding.
-- **Result.** That inventory became the scoping document. It enabled a zero-downtime rollout rather than a big-bang cutover, and adoption revenue moved 35% in two months.
+- **Result.** That inventory became the scoping document. It enabled a zero-downtime rollout rather than a big-bang cutover, and adoption grew after rollout, though I can't attribute it cleanly.
 
 **Say out loud.** Week one was spent reducing uncertainty, not producing artifacts.
 

@@ -64,7 +64,7 @@ export default function ThreadSidebar({
         </div>
         <div className={styles.brandText}>
           <span className={styles.brandName}>Deep Agent</span>
-          <span className={styles.brandTag}>synaptic command</span>
+          <span className={styles.brandTag}>insurance analytics</span>
         </div>
       </div>
 

@@ -2,15 +2,15 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 5 of 5 · **Time** ~30 min
 > **Prerequisites:** docs 1–3 of this module; Module 03 doc 2 (memory); Module 04 doc 2 (governance)
-> **Source material:** `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md`
+> **Source material:** the owner's own engagement notes, kept privately outside the repo. The customer is described generically as a large Asian life insurer.
 
 ## Why this matters
 
-This is a production multi-agent system in a regulated industry — a governed data assistant for Asia's largest publicly listed life insurer, built on Databricks in an 8–9 week advisory-plus-build engagement — told as an *architecture evolution* rather than a finished diagram. It went through two real pivots, each for a different reason, and the reasoning behind every major tool choice is on record. That makes it the best available illustration of doc 1's judgement actually being exercised: the default was tried, it failed measurably, and each escalation was justified by a specific failure. (The full narrative versions of this engagement live in Module 11.)
+This is a production multi-agent system in a regulated industry — a governed data assistant for a large Asian life insurer, built in about two months on a short build engagement — told as an *architecture evolution* rather than a finished diagram. It went through two real pivots, each for a different reason, and the reasoning behind every major tool choice is on record. That makes it the best available illustration of doc 1's judgement actually being exercised: the default was tried, it failed measurably, and each escalation was justified by a specific failure. (The full narrative versions of this engagement live in Module 11.)
 
 ## The problem
 
-Actuaries, claims managers and regional analysts needed answers over governed enterprise data, but every question — however routine — went through a BI/analyst queue. An ad-hoc question took 2–10 business days. A new dashboard took roughly four weeks.
+Actuaries, claims managers and regional analysts needed answers over governed enterprise data, but every question — however routine — went through a BI/analyst queue. An ad-hoc question took days. A new dashboard took weeks.
 
 ## Three stages
 
@@ -80,21 +80,21 @@ classify_intent → clarify_or_disambiguate → resolve_assets_with_context_inde
 | **Genie** | BI specialist | Genie Space API (managed text-to-SQL) | A managed service over a hand-rolled text-to-SQL chain — less flexible, but far lower prompt- and SQL-injection surface, and non-engineers can curate the underlying tables directly |
 | **Multi-Tool** | Generalist | LLM-generated SQL + Vector Search RAG over policy docs | The *one* place hand-generated SQL was allowed — for ad-hoc questions outside Genie's curated scope — under deliberately narrower governance |
 | **Data Analysis** | Statistical | Z-score anomaly detection, trend statistics | Kept **deterministic** — thresholds are computed, not "reasoned about", so the model cannot invent a plausible but wrong number |
-| **Visualization** | Dashboard creator | Lakeview REST API | Publishes real, clickable dashboards rather than a static chart image — closing the loop on the original four-week dashboard pain |
+| **Visualization** | Dashboard creator | Lakeview REST API | Publishes real, clickable dashboards rather than a static chart image — closing the loop on the original weeks-long dashboard pain |
 
 The Genie-vs-Multi-Tool split is Module 06's "fixed operations over NL-to-query" decision, made per specialist: the safe path is the default; the open path exists, scoped and governed, for what the safe path cannot cover.
 
 ### Governance underneath
 
-- **Seven governed metric views**, not raw fact tables. If the agent and a human analyst compute "claims by region" differently — different date logic, different exclusions — trust in the whole system collapses. A metric view makes the KPI definition one versioned artefact every consumer shares.
-- **Short-term memory** in a Delta table keyed by `thread_id`, checkpointed at each key node, 30-day retention — chosen over in-memory because conversations had to survive a serving-endpoint restart and be auditable afterwards. Module 03's checkpointer, with a governance reason.
+- **A handful of governed metric views**, not raw fact tables. If the agent and a human analyst compute "claims by region" differently — different date logic, different exclusions — trust in the whole system collapses. A metric view makes the KPI definition one versioned artefact every consumer shares.
+- **Short-term memory** in a Delta table keyed by `thread_id`, checkpointed at each key node, short retention — chosen over in-memory because conversations had to survive a serving-endpoint restart and be auditable afterwards. Module 03's checkpointer, with a governance reason.
 - **Prompt management** — base + overlay prompts in a Delta table with a five-minute cache, so behaviour can be tuned in production without a redeploy, at the cost of a short propagation delay. Module 08's prompt versioning, in practice.
 - **MLflow Tracing** on every node with proper span types, so a wrong answer traces to the exact node and tool call — non-negotiable for an insurer's audit.
 - **AI Gateway** — rate limiting, PII filtering and guardrails in front of the serving endpoint — required before this could be exposed as an internal chat app at all.
 
 ### The regional constraint that shaped the build
 
-Databricks' own managed Multi-Agent Supervisor was not GA in the customer's Azure region at build time. Rather than block on a beta feature's regional rollout, the supervisor was hand-built in LangGraph on GA primitives only (Agent Framework, Model Serving, Genie, Vector Search, Metric Views, MLflow Tracing). **Trade-off:** more code to own and maintain versus a managed service, in exchange for a production path that did not depend on a timeline nobody on the engagement controlled. That is an FDE decision — Module 10's territory — and it is worth recognising as one.
+The managed multi-agent feature wasn't an option for this customer at the time, so the supervisor was hand-built in LangGraph on standard platform pieces only (Agent Framework, Model Serving, Genie, Vector Search, Metric Views, MLflow Tracing). **Trade-off:** more code to own and maintain versus a managed service, in exchange for a production path that did not depend on a timeline nobody on the engagement controlled. That is an FDE decision — Module 10's territory — and it is worth recognising as one.
 
 ## Stage 2 → 3: the second pivot
 
@@ -112,7 +112,7 @@ The architecture evolved into a **deep agent** pattern — an orchestrator deleg
 | Layer | Choice |
 |---|---|
 | Orchestration | LangGraph `StateGraph`, Databricks Agent Framework |
-| Governance | Unity Catalog (bronze/silver/gold/ai_ops), seven governed metric views |
+| Governance | Unity Catalog (bronze/silver/gold/ai_ops), a handful of governed metric views |
 | Retrieval | Databricks Vector Search (Context Index + policy-doc RAG), Genie Spaces |
 | Dashboards | Lakeview REST API |
 | Serving | Model Serving, AI Gateway |
@@ -122,10 +122,10 @@ The architecture evolved into a **deep agent** pattern — an orchestrator deleg
 
 ## Results, stated honestly
 
-- Time-to-insight: 2–10 business days → minutes.
+- Time-to-insight: days → minutes.
 - Dashboard delivery: ~4 weeks → governed self-serve.
-- ~35% year-to-date growth in platform consumption after rollout — **a correlational signal, not a controlled experiment**, and worth saying exactly that.
-- MVP in 8–9 weeks.
+- Adoption grew after rollout — **a correlational signal, not a controlled experiment**, and worth saying exactly that.
+- MVP in about two months.
 
 **If rebuilt today:** instrument resolution-time and accuracy metrics from day one rather than relying on tracing alone for post-hoc debugging, and invest earlier in the offline evaluation dataset — both flagged as phase-2 priorities at the time, both things to pull forward.
 
@@ -137,8 +137,8 @@ The architecture evolved into a **deep agent** pattern — an orchestrator deleg
 | The same trigger can recur one level up | Stage 2 → 3 |
 | Handoff = a resolved, trusted package | Centralised asset resolution at the supervisor |
 | Specialists scoped by governance, not just by topic | Genie (managed) vs Multi-Tool (open, narrower governance) vs Analysis (deterministic) |
-| Durable state is a governance property | Delta checkpoints, 30-day retention, auditable |
-| Say what the numbers do and do not prove | The 35% is correlational |
+| Durable state is a governance property | Delta checkpoints, short retention, auditable |
+| Say what the numbers do and do not prove | The adoption signal is correlational |
 
 ## Checkpoint
 
@@ -147,6 +147,6 @@ The architecture evolved into a **deep agent** pattern — an orchestrator deleg
 - Why was asset resolution centralised at the supervisor? What is the cost and what does it buy?
 - For each of the four specialists, name the trade-off it embodies.
 - What triggered the second pivot, and what did the deep-agent shape cost?
-- Why does the results section call the 35% "correlational"?
+- Why does the results section call the adoption signal "correlational"?
 
 **Next →** [Module 08 · AgentOps and Platform](../08_AgentOps_And_Platform/README.md)

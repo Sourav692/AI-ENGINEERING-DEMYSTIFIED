@@ -178,7 +178,7 @@ Owns: interview preparation. Created by collapsing four top-level phases plus `t
 | `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Eval tutorial + question banks went to `Agent_Evaluation_Demystified`. |
 | `Study_Guides/` | `tutorials/` | Per-phase interview study guides, Cost & Latency cram sheets + drill deck, chunking/retrieval notes. Ambiguous placement: the per-phase guides could arguably sit beside the phases they summarise. |
 
-Open duplicate: `Handbook/11_Telling_The_Story/stories/` and `FDE/Star_Stories/` are byte-identical (9 files), also present in `Agent_Evaluation_Demystified/Star_Stories/`.
+Client engagement stories are private: they live in the gitignored `06_Interview_Prep/_private/` (moved 2026-09-27) — never re-add them to a tracked folder. Only the Meridian Assist reference-build stories remain in `Handbook/11_Telling_The_Story/stories/`.
 
 ## `archive/`, `docs/`, root scaffolding
 

@@ -163,3 +163,8 @@ cell_*.txt
 !06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/**/
 !06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/**/*.md
 sarathi.md
+
+# Private interview-prep material: real client engagement stories and the unredacted
+# originals of files that were anonymised for the public repo/site (2026-09-27).
+# Kept locally, never committed.
+06_Interview_Prep/_private/

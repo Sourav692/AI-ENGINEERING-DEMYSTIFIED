@@ -1,4 +1,4 @@
-# Deep Agent — Synaptic Command
+# Insurance Analytics Deep Agent
 
 A multi-agent orchestrator with long-term memory, built on LangGraph and deployed as a Databricks App. The system routes user requests to specialized subagents, each with domain-specific skills and tools, while maintaining persistent memory across conversations.
 
@@ -7,7 +7,7 @@ A multi-agent orchestrator with long-term memory, built on LangGraph and deploye
 ```
                         ┌─────────────────────┐
                         │     React Frontend   │
-                        │  (Synaptic Command)  │
+                        │ (Insurance Analytics)│
                         └──────────┬──────────┘
                                    │ SSE streaming
                         ┌──────────▼──────────┐
@@ -55,7 +55,7 @@ Plans, writes, and delivers complete Python projects. Follows a structured workf
 | `write_project_file` | Write files to Databricks Unity Catalog Volume |
 | `list_project_files` | List files in a project folder |
 
-**Output**: Project files persisted at `/Volumes/aia_multi_agent_catalog/default/agent_projects/{project-slug}/`
+**Output**: Project files persisted at `/Volumes/acme_life_multi_agent_catalog/default/agent_projects/{project-slug}/`
 
 ### Code Reviewer
 
@@ -81,7 +81,7 @@ Manages long-term memory — saving, recalling, and organizing information acros
 | `recall_memories` | Search memories by query and/or category |
 | `forget_memory` | Delete a specific memory by content match |
 
-### AIA Customer Analytics
+### Acme Life Customer Analytics
 
 Queries customer segmentation, retention, demographics, and claim frequency data via Databricks Genie.
 
@@ -89,9 +89,9 @@ Queries customer segmentation, retention, demographics, and claim frequency data
 |---|---|
 | `ask_customer_analytics` | Natural language query against `customer_360` table |
 
-**Data source**: `aia_multi_agent_catalog.silver.customer_360`
+**Data source**: `acme_life_multi_agent_catalog.silver.customer_360`
 
-### AIA Distribution Channels
+### Acme Life Distribution Channels
 
 Queries agent performance, sales channels, premium volumes, and top performers via Databricks Genie.
 
@@ -99,9 +99,9 @@ Queries agent performance, sales channels, premium volumes, and top performers v
 |---|---|
 | `ask_distribution_channels` | Natural language query against `agent_performance` table |
 
-**Data source**: `aia_multi_agent_catalog.gold.agent_performance`
+**Data source**: `acme_life_multi_agent_catalog.gold.agent_performance`
 
-### AIA Policy & Underwriting
+### Acme Life Policy & Underwriting
 
 Queries policy volumes, renewal rates, product mix, and underwriting metrics via Databricks Genie.
 
@@ -109,9 +109,9 @@ Queries policy volumes, renewal rates, product mix, and underwriting metrics via
 |---|---|
 | `ask_policy_underwriting` | Natural language query against policy tables |
 
-**Data sources**: `aia_multi_agent_catalog.gold.policy_performance`, `aia_multi_agent_catalog.silver.enriched_policies`
+**Data sources**: `acme_life_multi_agent_catalog.gold.policy_performance`, `acme_life_multi_agent_catalog.silver.enriched_policies`
 
-### AIA Claims Analytics
+### Acme Life Claims Analytics
 
 Queries claim counts, amounts, processing times, fraud scores, and regional breakdowns via Databricks Genie.
 
@@ -119,7 +119,7 @@ Queries claim counts, amounts, processing times, fraud scores, and regional brea
 |---|---|
 | `ask_claims_analytics` | Natural language query against claims/fraud tables |
 
-**Data sources**: `aia_multi_agent_catalog.gold.claims_summary`, `aia_multi_agent_catalog.gold.fraud_analysis`, `aia_multi_agent_catalog.silver.enriched_claims`
+**Data sources**: `acme_life_multi_agent_catalog.gold.claims_summary`, `acme_life_multi_agent_catalog.gold.fraud_analysis`, `acme_life_multi_agent_catalog.silver.enriched_claims`
 
 ---
 
@@ -138,7 +138,7 @@ The LangGraph checkpointer maintains the full message history for each thread. W
 ### 2. Long-Term Memory (Cross-Conversation)
 
 **Scope**: All conversations, all threads, persists indefinitely
-**Backend**: Delta table in Unity Catalog — `aia_multi_agent_catalog.default.agent_memories`
+**Backend**: Delta table in Unity Catalog — `acme_life_multi_agent_catalog.default.agent_memories`
 **Operations**: Save, recall (search), forget (delete)
 
 | Column | Type | Purpose |
@@ -162,13 +162,13 @@ The Memory Panel in the frontend provides a read-only view of all stored memorie
 ### 3. Project Artifact Storage (Persistent Files)
 
 **Scope**: Project files created by the Senior Developer agent
-**Backend**: Unity Catalog Volume — `/Volumes/aia_multi_agent_catalog/default/agent_projects/`
+**Backend**: Unity Catalog Volume — `/Volumes/acme_life_multi_agent_catalog/default/agent_projects/`
 **Access**: Databricks SDK `files.upload()` API (not FUSE mount, which is unavailable in Databricks Apps containers)
 
 When the developer agent builds a project, files are written to a UC Volume using the SDK API. This ensures project artifacts survive app redeployments and are accessible from notebooks, jobs, and other Databricks workloads.
 
 ```
-/Volumes/aia_multi_agent_catalog/default/agent_projects/
+/Volumes/acme_life_multi_agent_catalog/default/agent_projects/
   ├── csv-parser-cli/
   │   ├── .project
   │   ├── main.py
@@ -197,7 +197,7 @@ Each Genie space wraps curated gold/silver Delta tables and translates natural l
 
 ---
 
-## Frontend — Synaptic Command UI
+## Frontend — Insurance Analytics Deep Agent UI
 
 A React single-page application with a neural-inspired dark theme:
 

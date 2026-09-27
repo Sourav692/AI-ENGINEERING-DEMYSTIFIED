@@ -113,7 +113,7 @@ were deliberately not renumbered, which is why there is no `11_` under `03_Advan
 ## 06_Interview_Prep/Handbook
 
 Handbook is structured as a full curriculum — every numbered chapter file within each module is a
-theory chapter (133 files total; excluded only `project/data/corpus/*.md` synthetic ticket/policy
+theory chapter (125 files total; excluded only `project/data/corpus/*.md` synthetic ticket/policy
 data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/validation READMEs).
 
 | Path | Type | Topics Covered |
@@ -132,8 +132,8 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `09_AI_System_Design_Casebook/whiteboard_scripts/*.md` | md | Whiteboard-style scripts for enterprise RAG w/ access control, RAG on Databricks, agent platform for non-technical users, scoping-to-deployed-agent |
 | `10_FDE_Delivery_Operating_Model/01–07_*.md` + README | md | FDE delivery model: day-in-the-life, six-stage delivery process, scoping-to-production in 2 weeks, gates/risks/metrics, cross-team collaboration |
 | `11_Telling_The_Story/01–02_*.md` + README | md | Deep-dive vs conversational technical-story formats, proof vs cheat-sheet honesty |
-| `11_Telling_The_Story/stories/*.md` (9 files) | md | Technical narrative write-ups of enterprise RAG and multi-agent builds |
-| `11_Telling_The_Story/stories/STAR_Stories_Client_Engagements.html, STAR_Stories_Technical_Build_Projects.html` | html | STAR-format technical story narratives |
+| `11_Telling_The_Story/stories/*.md` (2 files) | md | Technical narrative write-ups of the Meridian Assist enterprise RAG build (client-engagement stories are kept privately) |
+| `11_Telling_The_Story/stories/STAR_Stories_Technical_Build_Projects.html` | html | STAR-format technical story narratives |
 | `99_Appendices/A_Glossary.md` | md | Glossary of AI-engineering/agent terminology |
 | `99_Appendices/C_Interview_QA_Log.md` | md | Logged interview Q&A covering handbook concepts |
 | `04_Enterprise_RAG/project/README.md` | md | Meridian Assist: enterprise RAG with attribute-based access control — architecture explanation |
@@ -159,17 +159,6 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `Delivery Framework from Scoping to Delivery/docs/04-system-design-coverage-map.md` | md | Mapping of system-design concepts covered by the project |
 | `Delivery Framework from Scoping to Delivery/docs/05-security-gate-depth-and-tenant-scale.md` | md | Security gates and multi-tenant scaling concepts |
 | `Senior_FDE_Day_to_Day.md` | md | Senior Forward Deployed Engineer role/responsibilities |
-| `Star_Stories/AIA_Group/AIA_Enterprise_RAG_Conversational_Guide.md` | md | Enterprise RAG project narrative (conversational format) |
-| `Star_Stories/AIA_Group/AIA_Enterprise_RAG_DeepDive_15-20min.md` | md | Enterprise RAG project deep-dive narrative |
-| `Star_Stories/AIA_Group/AIA_Enterprise_RAG_Governance_FDE_Script.md` | md | Enterprise RAG governance concepts, FDE-oriented script |
-| `Star_Stories/AIA_Group/AIA_MultiAgent_Architecture_Mermaid.md` | md | Multi-agent system architecture (diagrammed) |
-| `Star_Stories/AIA_Group/AIA_MultiAgent_Conversational_Guide.md` | md | Multi-agent system narrative (conversational format) |
-| `Star_Stories/AIA_Group/AIA_MultiAgent_DeepDive_15-20min.md` | md | Multi-agent system deep-dive narrative |
-| `Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md` | md | Technical implementation flow for the AIA projects |
-| `Star_Stories/Bajaj_RapidLR/Bajaj_RapidLR_Technical_Implementation_Flow.md` | md | Technical implementation flow for the Bajaj RapidLR project |
-| `Star_Stories/Meridian_Assist_Enterprise_RAG/Enterprise_RAG_Conversational_Guide.md` | md | Enterprise RAG narrative (conversational format) |
-| `Star_Stories/Meridian_Assist_Enterprise_RAG/Enterprise_RAG_DeepDive_15-20min.md` | md | Enterprise RAG deep-dive narrative |
-| `Star_Stories/STAR Stories — Technical Build Projects.html, star_stories.html` | html | STAR-format technical build project narratives |
 | `System_Design and Delivery/1. System Design Overview.md` (+html) | md/html | System design overview |
 | `System_Design and Delivery/2. System Design Components.md` (+html) | md/html | System design components |
 | `System_Design and Delivery/3. System Design Principles.md` (+html) | md/html | System design principles |

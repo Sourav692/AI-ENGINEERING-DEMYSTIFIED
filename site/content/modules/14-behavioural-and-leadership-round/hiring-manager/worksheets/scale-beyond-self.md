@@ -13,7 +13,7 @@ All four are drafted in the key. What they mostly lack is numbers — three of t
 - Action — what you generalised, and what you taught:
 - Result — reuse count, or effort saved on the next engagement:
 
-**The number.** If the UNIQ 3–6 month / $50K–$100K saving applies here, write it:
+**The number.** If an internal accelerator saved time or money here, write it:
 
 -
 

@@ -235,6 +235,63 @@ def check_purchased_material() -> None:
     notes.append(f"purchased-material  {len(tracked)} FDE files tracked, 0 binaries expected")
 
 
+# --------------------------------------------------------------------------
+# 6. Client names stay out of the public repo. Interview stories were written
+#    from real engagements; on 2026-09-27 the raw stories moved to the gitignored
+#    06_Interview_Prep/_private/ and every tracked copy was anonymised. This keeps
+#    a name from creeping back. The names are stored as truncated SHA-256 hashes
+#    so the check itself does not publish them. To add one:
+#      python3 -c "import hashlib;print(hashlib.sha256(b'name').hexdigest()[:16])"
+# --------------------------------------------------------------------------
+PRIVATE_TERM_HASHES = {
+    "4c0a5662800fe143",
+    "1244b3bff02ad090",
+    "71f566aba763fb76",
+    "1c06dac3445835d5",
+    "448d652ce23d269a",
+    "0833a440e485344d",
+}
+# Files where a match is a different, public use of the same word (a vehicle maker
+# in a Wikipedia dataset; a public card product in fictional shop data).
+PRIVATE_TERM_ALLOW = {
+    "02_Core/04_Retrieval_and_RAG/shared_data/wikidata_rag_demo.jsonl",
+    "05_Projects/ShopUNow_Agentic_RAG_Capstone/data/billing_payments_data.json",
+    "05_Projects/ShopUNow_Agentic_RAG_Capstone/sample_data.py",
+}
+TEXT_SUFFIXES = (
+    ".md", ".py", ".ts", ".tsx", ".js", ".mjs", ".json", ".jsonl", ".html", ".css",
+    ".ipynb", ".txt", ".yaml", ".yml", ".toml", ".excalidraw", ".csv", ".sql",
+)
+
+
+def check_private_terms() -> None:
+    import hashlib
+
+    try:
+        tracked = subprocess.run(
+            ["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True
+        ).stdout.splitlines()
+    except Exception:  # noqa: BLE001
+        return
+    scanned = 0
+    for rel in tracked:
+        if rel in PRIVATE_TERM_ALLOW or not rel.lower().endswith(TEXT_SUFFIXES):
+            continue
+        path = ROOT / rel
+        try:
+            if path.stat().st_size > 3_000_000:
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore").lower()
+        except OSError:
+            continue
+        scanned += 1
+        for token in set(re.findall(r"[a-z0-9]+", text)):
+            if 3 <= len(token) <= 12 and hashlib.sha256(token.encode()).hexdigest()[:16] in PRIVATE_TERM_HASHES:
+                fail("private-terms", f"{rel}: contains a client name listed in PRIVATE_TERM_HASHES")
+                break
+    notes.append(f"private-terms       {scanned} tracked text files scanned for client names")
+
+
 def main() -> int:
     nbs = live_notebooks()
     check_notebooks_valid(nbs)
@@ -243,6 +300,7 @@ def main() -> int:
     check_doc_paths()
     check_path_anchors()
     check_purchased_material()
+    check_private_terms()
 
     for n in notes:
         print(f"  ok    {n}")

@@ -162,7 +162,7 @@ graph.add_edge("replan", "plan")   # replanning re-enters the planner with progr
 app = graph.compile()
 
 result = app.invoke({
-    "goal": "Migrate the Barclays Netezza ETL job to a Databricks Delta pipeline",
+    "goal": "Migrate the bank's legacy warehouse ETL job to a Delta pipeline",
     "results": [],
     "replans": 0
 })

@@ -1,6 +1,6 @@
-# A Day in the Life — Senior Forward Deployed Engineer (Databricks)
+# A Day in the Life — Senior Forward Deployed Engineer
 
-### Purpose: interview-ready articulation of how the role actually splits across technical build, customer-facing delivery, and team/leadership work — grounded in the AIA Group engagement pattern, generalizable to any FDE conversation.
+### Purpose: interview-ready articulation of how the role actually splits across technical build, customer-facing delivery, and team/leadership work — grounded in an engagement with a large Asian life insurer, generalizable to any FDE conversation.
 
 > **How to use this doc:** not a script to read verbatim — a reference to pull specific lines from when asked "walk me through a typical day/week" or "how do you split your time." Pick the 3-4 lines that fit the question actually asked.
 
@@ -35,7 +35,7 @@
 
 ## Mid-morning — deep technical work (technical-heavy)
 
-*"This is where I do the work only I should be doing — the architecture decision with real trade-offs, the piece of the pipeline that's genuinely hard, or reviewing a design before code gets written rather than after. On the AIA engagement, this looked like designing the two-layer access-control pattern — a fast metadata pre-filter at the vector-search layer, and a live re-verification against Unity Catalog right before generation — because getting that boundary wrong doesn't fail loud, it fails silent."*
+*"This is where I do the work only I should be doing — the architecture decision with real trade-offs, the piece of the pipeline that's genuinely hard, or reviewing a design before code gets written rather than after. On the insurer engagement, this looked like designing the two-layer access-control pattern — a fast metadata pre-filter at the vector-search layer, and a live re-verification against Unity Catalog right before generation — because getting that boundary wrong doesn't fail loud, it fails silent."*
 
 **Pointers this demonstrates:**
 - Chooses to protect deep-work time for the highest-blast-radius decisions, not routine tickets — delegates the rest deliberately.
@@ -68,7 +68,7 @@
 
 ## Late afternoon / evening — testing, honesty, and closing the loop
 
-*"Before I call anything done, I want to know how it fails, not just that it works. On AIA, my own testing harness caught three real issues before the customer ever would have — including a case where I initially thought the system had leaked access, and it turned out my own test data was stale. Reporting that transparently, including the false alarm, mattered more to the trust I built with that customer than a clean track record would have."*
+*"Before I call anything done, I want to know how it fails, not just that it works. On my own reference build, my eval harness caught three real issues before any customer would have — including a case where it flagged a leak. I stopped and traced it, and it was a false alarm in the harness: my own test data was stale. Owning that openly, false alarm included, builds more trust than a clean track record would."*
 
 **Pointers this demonstrates:**
 - Treats rigorous self-testing as a leadership behavior — modeling the standard for the team, not just personal diligence.

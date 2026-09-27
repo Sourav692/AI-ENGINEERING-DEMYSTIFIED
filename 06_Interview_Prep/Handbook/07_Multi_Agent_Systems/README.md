@@ -25,7 +25,7 @@ Multi-agent is the most over-reached-for architecture in AI system design. This 
 You are ready for Module 08 when you can:
 
 - State the definition of multi-agent and say why Module 04's graph is not one.
-- Name the two triggers and describe them firing in the AIA Stage 1 failure.
+- Name the two triggers and describe them firing in the Stage 1 failure at a large Asian life insurer.
 - Write the handoff package and explain why permission scope is carried.
 - List the three failure-isolation mechanisms and their handbook analogues.
 - Walk the nine layers of the research platform and say which two enterprise properties it lacks.

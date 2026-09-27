@@ -12,13 +12,13 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. The hardest professional challenge you've faced
 
 > "Tell me about the hardest professional challenge you've faced. How did it change your team or relationships?"
 
-**Anchor:** AIA live architecture failure.
+**Anchor:** the live architecture failure at a large Asian life insurer.
 
 - Situation:
 - Task:
@@ -33,7 +33,7 @@
 
 > "Describe a time adversity actually strengthened trust within your team rather than eroding it."
 
-**Anchor:** the transparent pivot + the reported false alarm.
+**Anchor:** the transparent pivot + the false alarm on your own reference build.
 
 - Situation:
 - Task:
@@ -48,7 +48,7 @@
 
 > "Tell me about a time a project was going badly and you had to decide whether to push through or change course."
 
-**Anchor:** AIA pivot logic.
+**Anchor:** the insurer's pivot logic.
 
 - Situation:
 - Task:

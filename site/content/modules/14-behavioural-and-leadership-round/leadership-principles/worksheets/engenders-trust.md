@@ -12,13 +12,13 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. Admitting a mistake to your team
 
 > "Tell me about a time you admitted a mistake or weakness to your team. How did they respond?"
 
-**Anchor:** the false-alarm leak + the failed first architecture.
+**Anchor:** the false-alarm leak on your own reference build + the failed first architecture.
 
 - Situation:
 - Task:
@@ -33,7 +33,7 @@
 
 > "Describe how you've built trust with a team that had reason to be skeptical of new leadership."
 
-**Anchor:** entering AIA as the external FDE.
+**Anchor:** entering a large Asian life insurer as the external FDE.
 
 **Partly grounded** - the spine is real, the marked details are not. Supply them below.
 
@@ -51,7 +51,7 @@
 
 > "Give an example of when you sought out or acted on feedback that disconfirmed your own belief."
 
-**Anchor:** the retrieval benchmark + the 182-ticket analysis.
+**Anchor:** the retrieval benchmark + the analysis of a couple of hundred historical tickets.
 
 - Situation:
 - Task:
@@ -62,7 +62,7 @@
 
 > "How do you build trust with a customer's security or compliance team?"
 
-**Anchor:** AIA / Meridian.
+**Anchor:** the insurer / Meridian.
 
 Write the mechanism first, then one proof.
 
@@ -78,7 +78,7 @@ Write the mechanism first, then one proof.
 
 > "Tell me about a time you pushed back on a senior leader or customer executive."
 
-**Anchor:** AIA scope / Beta feature.
+**Anchor:** the insurer's scope / the managed feature that wasn't an option.
 
 **Partly grounded** - the spine is real, the marked details are not. Supply them below.
 

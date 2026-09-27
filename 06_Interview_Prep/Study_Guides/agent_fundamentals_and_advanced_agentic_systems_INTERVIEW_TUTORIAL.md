@@ -377,8 +377,8 @@ agent = create_deep_agent(
 )                                  # long-term memory lives in a JSON file / Delta table, not here
 ```
 
-**In your notebooks**: `DEEP_AGENT_OVERVIEW.md` documents a real deployed system ("Synaptic
-Command") — one orchestrator on `databricks-claude-opus-4-6`, 8 subagents, 3 memory layers
+**In your notebooks**: `DEEP_AGENT_OVERVIEW.md` models a multi-agent analytics assistant for an insurer
+("Insurance Analytics Deep Agent") — one orchestrator on `databricks-claude-opus-4-6`, 8 subagents, 3 memory layers
 (conversation / long-term Delta table / project artifact Unity Catalog volume), streamed to a
 React frontend over SSE. `MEMORY_TYPES.md` is the clearest single artifact in the repo for the
 "how many kinds of memory does an agent actually need" interview question.

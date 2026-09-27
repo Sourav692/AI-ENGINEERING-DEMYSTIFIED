@@ -330,7 +330,7 @@ export const NOT_ACRONYMS = new Set([
   // Regions, well-known names and products, units, versions
   'US', 'EU', 'APAC', 'EMEA', 'AMER', 'AWS', 'SAP', 'VIP', 'OS', 'IT', 'IP', 'KB', 'GB', 'MB',
   'UI', 'UX', 'URL', 'HTTP', 'HTTPS', 'ASCII', 'SHA256', 'V1', 'V2', 'Q3', 'CD', 'CI', 'SOC',
-  'AIA', 'DM',
+  'DM',
 ])
 
 export const glossaryAnchor = (term: string) =>

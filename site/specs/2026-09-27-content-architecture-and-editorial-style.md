@@ -164,7 +164,29 @@ work in the source text.
 
 ## Deferred to the editorial session
 
-- CONTENT-13, the privacy scrub. Note that "AIA", a customer's name, appears across roughly 28 behavioural and case pages.
+- CONTENT-13, the privacy scrub (done later on 2026-09-27; see "Privacy" below).
 - CONTENT-15, the story bank.
 - CONTENT-17, applying the claim labels in the source text.
 - CONTENT-18/19, the primary-source fact check and review dates.
+
+## Privacy (CONTENT-13, done 2026-09-27)
+
+The behavioural answers and some case studies were written from real client engagements.
+
+**What changed**
+
+- Raw client stories moved to the gitignored `06_Interview_Prep/_private/`. Unredacted originals of every file edited in the scrub are kept there too, under `originals/`. Nothing in `_private/` is ever committed.
+- Tracked copies were anonymised, which also cleans the website:
+  - Clients became "a large Asian life insurer", "a large Indian consumer lender" and "a global tier-1 bank".
+  - Identifying details were generalised: superlatives, cloud and region, exact durations, ticket counts and schema names.
+  - Commercial figures, product-availability claims, internal codenames and employer coaching notes were removed.
+  - The employer is now "the platform vendor I worked for".
+- The "leak false alarm" story is anchored to the Meridian Assist reference build, where it actually happened.
+- The Deep Agents demo now uses a fictional insurer, "Acme Life", with `insurer-*` skills.
+
+**Guard.** `scripts/check_repo_invariants.py` (the private-terms check, run on every commit) fails if a client name reappears in any tracked text file. The names are stored as truncated SHA-256 hashes, so the check does not publish them.
+
+**Not done, on purpose**
+
+- Git history still holds the originals. Rewriting it would need a force-push to a public repo.
+- The sibling repo `Agent_Evaluation_Demystified` still tracks the raw stories. It is private.

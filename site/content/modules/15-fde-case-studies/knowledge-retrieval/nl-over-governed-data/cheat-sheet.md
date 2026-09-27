@@ -26,7 +26,7 @@ Who owns the first ten metrics? Semantic layer exists? Warehouse and dialect? Na
 
 ## Case numbers, with context
 
-**MVP:** ten governed metrics, golden question/SQL/result cases, analyst shadowing. **Copilot example:** 3–8 s interactive. **AIA example:** clarify intent below 60%; seven metric views; eight-node supervisor; 16-asset index. **Cost signal:** bytes scanned per answer >20% above seven-day baseline. These are source examples to confirm with the customer.
+**MVP:** ten governed metrics, golden question/SQL/result cases, analyst shadowing. **Copilot example:** 3–8 s interactive. **Asian life insurer example:** clarify intent below 60%; a handful of governed metric views; eight-node supervisor; 16-asset index. **Cost signal:** bytes scanned per answer >20% above seven-day baseline. These are source examples to confirm with the customer.
 
 ## Failures and routes
 

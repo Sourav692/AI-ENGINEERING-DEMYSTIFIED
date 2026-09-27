@@ -64,7 +64,7 @@ Start here if you're trying to decide *which* pattern applies — these compare 
 
 | Topic | Doc | Home |
 |---|---|---|
-| What a deep agent is, and the harness around it | [Deep Agent — Synaptic Command](../../03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/docs/DEEP_AGENT_OVERVIEW.md) | Phase 7 |
+| What a deep agent is, and the harness around it | [Deep Agent — Insurance Analytics Deep Agent](../../03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/docs/DEEP_AGENT_OVERVIEW.md) | Phase 7 |
 | Self-test questions | [Test Questions for Deep Agent](../../03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/docs/Questions.md) | Phase 7 |
 
 ## Frameworks

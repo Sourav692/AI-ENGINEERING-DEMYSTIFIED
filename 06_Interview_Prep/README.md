@@ -46,7 +46,6 @@ Prose, not notebooks. It re-covers topics the curriculum owns, from a system-des
 - `FDE_System_Design_Interview_20_Scenarios/`
 - `Cracking_Agentic_AI_System_Design_Interviews/`
 - `Behavioral_and_Leadership/`
-- `Star_Stories/`
 - `Senior_FDE_Day_to_Day.md`
 
 ### `AI_Engineer/` — AI Engineer role prep

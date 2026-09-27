@@ -5,10 +5,10 @@ const AGENTS = [
   { id: "code-reviewer", label: "Reviewer", icon: "\u2691", desc: "Reviews code for bugs, style issues, and best practices" },
   { id: "research-agent", label: "Research", icon: "\u2609", desc: "Conducts in-depth web research on any topic" },
   { id: "memory-manager", label: "Memory", icon: "\u2B22", desc: "Saves, recalls, and organizes long-term memory" },
-  { id: "aia-customer-analytics", label: "Customer", icon: "\u2606", desc: "Queries customer segmentation, retention, and demographics" },
-  { id: "aia-distribution-channels", label: "Channels", icon: "\u2B21", desc: "Queries agent performance and distribution channel data" },
-  { id: "aia-policy-underwriting", label: "Policy", icon: "\u25C7", desc: "Queries policy volumes, renewals, and underwriting metrics" },
-  { id: "aia-claims-analytics", label: "Claims", icon: "\u25CE", desc: "Queries claim counts, fraud scores, and regional data" },
+  { id: "insurer-customer-analytics", label: "Customer", icon: "\u2606", desc: "Queries customer segmentation, retention, and demographics" },
+  { id: "insurer-distribution-channels", label: "Channels", icon: "\u2B21", desc: "Queries agent performance and distribution channel data" },
+  { id: "insurer-policy-underwriting", label: "Policy", icon: "\u25C7", desc: "Queries policy volumes, renewals, and underwriting metrics" },
+  { id: "insurer-claims-analytics", label: "Claims", icon: "\u25CE", desc: "Queries claim counts, fraud scores, and regional data" },
 ];
 
 interface Props {

@@ -25,10 +25,10 @@ Orchestrator (Claude Opus via Databricks)
 ├── research-agent         Conducts web research via Tavily
 │
 └── Analytics Agents (Databricks Genie)
-    ├── aia-customer-analytics       Customer segmentation, retention, demographics
-    ├── aia-distribution-channels    Agent performance, sales channels
-    ├── aia-policy-underwriting      Premiums, renewals, product mix
-    └── aia-claims-analytics         Claims, fraud scores, processing times
+    ├── insurer-customer-analytics       Customer segmentation, retention, demographics
+    ├── insurer-distribution-channels    Agent performance, sales channels
+    ├── insurer-policy-underwriting      Premiums, renewals, product mix
+    └── insurer-claims-analytics         Claims, fraud scores, processing times
 ```
 
 ## Long-Term Memory
@@ -73,8 +73,8 @@ python examples/simple_coding_agent.py
 | `skills/senior-developer/` | Project planning, code generation, delivery workflow |
 | `skills/code-reviewer/` | Bug detection, style review, best practices |
 | `skills/research-agent/` | Web research, fact-checking, source synthesis |
-| `skills/aia-customer-analytics/` | Customer data queries via Genie |
-| `skills/aia-distribution-channels/` | Agent performance queries via Genie |
-| `skills/aia-policy-underwriting/` | Policy metrics queries via Genie |
-| `skills/aia-claims-analytics/` | Claims and fraud queries via Genie |
+| `skills/insurer-customer-analytics/` | Customer data queries via Genie |
+| `skills/insurer-distribution-channels/` | Agent performance queries via Genie |
+| `skills/insurer-policy-underwriting/` | Policy metrics queries via Genie |
+| `skills/insurer-claims-analytics/` | Claims and fraud queries via Genie |
 | `skills/memory-manager/` | Long-term memory save, recall, and organization |

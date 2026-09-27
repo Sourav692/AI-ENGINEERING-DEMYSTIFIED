@@ -12,7 +12,7 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. Addressing underperformance directly
 
@@ -65,7 +65,7 @@ Write the mechanism first, then one proof.
 
 > "How do you hold a customer accountable for their side of an engagement?"
 
-**Anchor:** AIA access matrix / compliance dependency.
+**Anchor:** the access matrix / compliance dependency at a large Asian life insurer.
 
 **Partly grounded** - the spine is real, the marked details are not. Supply them below.
 

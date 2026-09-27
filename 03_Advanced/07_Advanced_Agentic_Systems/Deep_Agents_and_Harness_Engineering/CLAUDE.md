@@ -31,8 +31,8 @@ Orchestrator (Claude Opus via Databricks)
 ├── senior-developer       Plans, writes, and delivers complete Python projects
 ├── code-reviewer          Reviews code for bugs, style, and best practices
 ├── research-agent         Web research via Tavily
-└── Analytics agents (Databricks Genie): aia-customer-analytics, aia-distribution-channels,
-    aia-policy-underwriting, aia-claims-analytics
+└── Analytics agents (Databricks Genie): insurer-customer-analytics, insurer-distribution-channels,
+    insurer-policy-underwriting, insurer-claims-analytics
 ```
 
 Each agent's behavior is defined by a `SKILL.md` under `skills/<agent-name>/`.

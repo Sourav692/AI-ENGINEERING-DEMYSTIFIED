@@ -25,7 +25,7 @@ FRONTEND_BUILD_DIR = os.path.join(APP_DIR, "frontend", "build")
 DATABRICKS_HOST = os.environ.get("DATABRICKS_HOST", "")
 DATABRICKS_TOKEN = os.environ.get("DATABRICKS_TOKEN", "")
 VOLUME_BASE = os.environ.get(
-    "VOLUME_BASE", "/Volumes/aia_multi_agent_catalog/default/agent_projects"
+    "VOLUME_BASE", "/Volumes/acme_life_multi_agent_catalog/default/agent_projects"
 )
 
 

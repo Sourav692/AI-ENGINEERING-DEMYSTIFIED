@@ -4,9 +4,9 @@ Spoken answers - 2 grounded, 2 partly grounded. Deliver them in your own cadence
 
 ## 1. Simplifying a technical message for a broad audience
 
-**GROUNDED — AIA / Meridian two-layer access control**
+**GROUNDED — a large Asian life insurer / Meridian two-layer access control**
 
-*"At AIA I needed compliance, legal, security, and a business sponsor — none of them engineers — to sign off on how the retrieval agent enforced access over policy and claims documents with health disclosures. The real mechanism is a metadata pre-filter compiled into the Vector Search query plus a live re-check against Unity Catalog grants right before generation.*
+*"At the insurer I needed compliance, legal, security, and a business sponsor — none of them engineers — to sign off on how the retrieval agent enforced access over policy and claims documents with health disclosures. The real mechanism is a metadata pre-filter compiled into the Vector Search query plus a live re-check against Unity Catalog grants right before generation.*
 
 *I didn't say any of that first. I said: there are two checkpoints. A fast one at the door that gets you into the right neighborhood of documents for your role and market. And a slower, careful one right before you're handed anything — because your permissions might have changed in between: a case reassignment, a revoked grant, a consent window closing. Most systems only build the first one and hope. I assumed it would go stale and built for that.*
 
@@ -22,21 +22,21 @@ Spoken answers - 2 grounded, 2 partly grounded. Deliver them in your own cadence
 
 ## 3. Communicating technical risk to an executive
 
-**GROUNDED — AIA Beta feature + Bajaj blast radius**
+**GROUNDED — insurer managed-feature gap + lender blast radius**
 
 *"I translate the risk into what it costs them and who controls it — never into the technology.*
 
-*At AIA, the managed Multi-Agent Supervisor wasn't GA in their region. I didn't say 'Agent Bricks isn't GA in SEA.' I said: 'The core of your production system would depend on a Beta feature whose rollout date in your region neither you nor I control. If it slips, your launch slips. I'd rather own more code than hand your timeline to a roadmap.' The sponsor could weigh that.*
+*At the insurer, the managed multi-agent feature wasn't an option for this customer at the time, so I hand-built the supervisor. I didn't explain that in product terms. I said: 'The core of your production system would depend on a feature whose timing neither you nor I control. If it slips, your launch slips. I'd rather own more code than hand your timeline to a roadmap.' The sponsor could weigh that.*
 
-*At Bajaj, the question was whether the agent could change production master tables on its own. I put it as: 'A wrong write here misroutes real loan leads at a regulated lender, and you can't un-send those. The trade is slower ticket resolution for zero unreviewed changes. I recommend the slower path.' They chose it in one conversation.*
+*At a large Indian consumer lender, the question was whether the agent could change production config tables on its own. I put it as: 'A wrong write here misroutes real loan leads at a regulated lender, and you can't un-send those. The trade is slower ticket resolution for zero unreviewed changes. I recommend the slower path.' They chose it in one conversation.*
 
 *The pattern: name the failure in their terms, name who controls it, name the trade, make a recommendation. Executives don't need the mechanism — they need to know what they're deciding."*
 
 ## 4. Influencing people without authority
 
-**PARTLY GROUNDED — AIA data / BI team and compliance.** `[FILL: names/roles]`
+**PARTLY GROUNDED — insurer data / BI team and compliance.** `[FILL: names/roles]`
 
-*"At AIA I had no authority over the customer's data team or their compliance function — and I needed both. The data team owned the tables my agents would query; compliance owned whether the system could touch documents with health disclosures at all.*
+*"At the insurer I had no authority over the customer's data team or their compliance function — and I needed both. The data team owned the tables my agents would query; compliance owned whether the system could touch documents with health disclosures at all.*
 
 *With the data team, influence came from doing the work with them rather than around them: I built the bronze, silver, and gold metric views inside their Unity Catalog, and endorsed assets — the ones they'd reviewed — were prioritised in the Context Index routing. Their governance decisions were literally what the agents obeyed, so they had a stake in the system working.*
 

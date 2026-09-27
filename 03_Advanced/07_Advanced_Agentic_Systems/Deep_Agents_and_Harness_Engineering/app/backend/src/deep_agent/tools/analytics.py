@@ -1,4 +1,4 @@
-"""Databricks Genie analytics tools — natural-language Q&A over AIA data."""
+"""Databricks Genie analytics tools — natural-language Q&A over Acme Life data."""
 
 import logging
 
@@ -39,7 +39,7 @@ def _query_genie(space_id: str, question: str) -> dict:
 
 
 def ask_customer_analytics(question: str) -> dict:
-    """Ask a natural language question about AIA customer data.
+    """Ask a natural language question about Acme Life customer data.
     Covers customer segmentation, retention, demographics, and claim frequency.
     Args:
         question: Natural language question about customers.
@@ -48,7 +48,7 @@ def ask_customer_analytics(question: str) -> dict:
 
 
 def ask_distribution_channels(question: str) -> dict:
-    """Ask a natural language question about AIA agent performance and distribution channels.
+    """Ask a natural language question about Acme Life agent performance and distribution channels.
     Covers agent sales, premium volumes, channel comparisons, and top performers.
     Args:
         question: Natural language question about agents or distribution channels.
@@ -57,7 +57,7 @@ def ask_distribution_channels(question: str) -> dict:
 
 
 def ask_policy_underwriting(question: str) -> dict:
-    """Ask a natural language question about AIA policies and underwriting.
+    """Ask a natural language question about Acme Life policies and underwriting.
     Covers premium volumes, policy counts, renewal rates, product mix, and underwriting metrics.
     Args:
         question: Natural language question about policies or underwriting.
@@ -66,7 +66,7 @@ def ask_policy_underwriting(question: str) -> dict:
 
 
 def ask_claims_analytics(question: str) -> dict:
-    """Ask a natural language question about AIA insurance claims.
+    """Ask a natural language question about Acme Life insurance claims.
     Covers claim counts, amounts, processing times, fraud scores, and regional breakdowns.
     Args:
         question: Natural language question about claims or fraud.

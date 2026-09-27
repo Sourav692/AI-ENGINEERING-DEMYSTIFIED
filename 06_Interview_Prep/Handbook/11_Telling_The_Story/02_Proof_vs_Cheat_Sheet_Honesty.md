@@ -36,7 +36,7 @@ Every project's results section has a paragraph that begins *"read these numbers
 
 > *"This is one engagement, run once. `time_to_first_value_days = 1` and `eval_score = 0.83` are demo-scripted values, not measurements. The point being proven is that the pipeline enforces its own gates, not that these numbers are typical."*
 
-> *"~35% growth in platform consumption following rollout — a correlational signal, not a controlled experiment, and worth saying exactly that if pressed."*
+> *"Adoption grew after rollout — a correlational signal, not a controlled experiment, and worth saying exactly that if pressed."*
 
 The pattern: state the number, state what it does *not* prove, state what it *does* prove. Do this before anyone asks. Module 06 doc 3's statistical rigour is the technical basis; this is the communication habit built on it.
 

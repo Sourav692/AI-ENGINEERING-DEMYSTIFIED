@@ -11,7 +11,7 @@ The hard part of this system is not generating SQL. It is that a syntactically p
 | #17 Natural-Language-to-SQL Analytics Assistant (anchor) | Sections 1 to 12: the design, requirements, validation, failure drills, evaluation, rollout and delivery |
 | #36 Executive Dashboard Copilot | The executive persona and variance explanation in sections 1 and 8; its escalate-to-analyst rule |
 | #34 Retail Demand Forecast Explanation Assistant | The planner persona, driver attribution and the correlation-versus-causation risk in section 8 |
-| #13 From Supervisor to Deep Agent (AIA governed data assistant) | The seven metric views, the Genie-versus-Multi-Tool split, the clarify-below-60% gate, and section 13's story |
+| #13 From Supervisor to Deep Agent (governed data assistant at a large Asian life insurer) | The governed metric views, the Genie-versus-Multi-Tool split, the clarify-below-60% gate, and section 13's story |
 | Self-drill for #17 | Section 14, the cost pivot |
 
 ---
@@ -212,7 +212,7 @@ Three boundaries are worth pointing at while the diagram is up. The sync/async b
 
 The semantic layer is the product, and the model is a translator into it. "Revenue last week" must anchor on the governed definition of revenue before the system starts searching for tables. A model cannot infer a business definition that the business has not written down. The registry is consulted first, before any physical table, and raw schema access is an escape hatch for approved exploratory workflows, never the default.
 
-The AIA engagement in section 13 makes the same choice concrete: seven governed metric views, not raw fact tables. If the agent and a human analyst compute "claims by region" differently, with different date logic or different exclusions, trust in the whole system collapses. A metric view makes the KPI definition one versioned artefact every consumer shares, and the semantic-layer version of that sentence is the strongest line in this section.
+The insurer engagement in section 13 makes the same choice concrete: a handful of governed metric views, not raw fact tables. If the agent and a human analyst compute "claims by region" differently, with different date logic or different exclusions, trust in the whole system collapses. A metric view makes the KPI definition one versioned artefact every consumer shares, and the semantic-layer version of that sentence is the strongest line in this section.
 
 Put a router in front of retrieval, because a real deployment mixes structured and semantic questions freely. Semantic search answers "which things are like this", never "how many", "which is most recent" or "sum this field".
 
@@ -223,7 +223,7 @@ Put a router in front of retrieval, because a real deployment mixes structured a
 | "What's the status of ticket #4821?" | Direct lookup by ID | Treating an ID as ordinary text is wasteful and imprecise |
 | "Summarise the pattern across all high-priority billing tickets this quarter" | **Both**: filter first, then summarise the filtered set | A filter cannot summarise prose; search cannot reliably scope to "this quarter's high-priority billing tickets" |
 
-The structured path itself is a choice between two mechanisms. Generate a query from natural language and run it against a small, fixed, well-documented view. That is fast, but the model can invent fields, so the query must be validated or its result sanity-checked before it is trusted. Or call a small set of fixed, well-defined operations. That is safer, because the surface of what can happen is a reviewed set of operations rather than an open-ended language. Fixed operations are usually the better default in an enterprise. The AIA design made that decision per specialist. A managed text-to-SQL service over curated tables is the safe default. One deliberately narrower place allows hand-generated SQL for ad-hoc questions outside the curated scope.
+The structured path itself is a choice between two mechanisms. Generate a query from natural language and run it against a small, fixed, well-documented view. That is fast, but the model can invent fields, so the query must be validated or its result sanity-checked before it is trusted. Or call a small set of fixed, well-defined operations. That is safer, because the surface of what can happen is a reviewed set of operations rather than an open-ended language. Fixed operations are usually the better default in an enterprise. The insurer design made that decision per specialist. A managed text-to-SQL service over curated tables is the safe default. One deliberately narrower place allows hand-generated SQL for ad-hoc questions outside the curated scope.
 
 Two rehearsed answers live here. When asked how to handle revenue with three definitions, name the ambiguity and ask a clarifying question. Show the supported definitions. Default only where the business has an approved canonical meaning for that context. If users ask it often, put it in the semantic layer with explicit aliases. And when the interviewer pushes on the riskiest assumption, that the model can infer the right business meaning from the prompt:
 
@@ -233,7 +233,7 @@ Two rehearsed answers live here. When asked how to handle revenue with three def
 
 If a question could map to multiple governed metrics or grain levels, the system stops and asks. A valid SQL query that answers the wrong business question is still a failure, and a clarifying question costs one round trip where a guess costs an executive decision. The gate has three modes, agreed with the customer in discovery: ask a clarifying question, refuse, or escalate to an analyst.
 
-Give the gate a number. The AIA supervisor classifies each question into `simple_kpi`, `deep_analysis`, `document_lookup`, `visualization` or `conversational` with a confidence score, and its clarify node fires only below 60%. "Show me the numbers" gets a clarifying question, not a guess. A threshold makes the behaviour testable and tunable; "the model will ask when unsure" does not.
+Give the gate a number. The insurer supervisor classifies each question into `simple_kpi`, `deep_analysis`, `document_lookup`, `visualization` or `conversational` with a confidence score, and its clarify node fires only below 60%. "Show me the numbers" gets a clarifying question, not a guess. A threshold makes the behaviour testable and tunable; "the model will ask when unsure" does not.
 
 Ambiguity is also a freshness signal. When the catalog is stale beyond a threshold, the retriever refreshes through the async queue before allowing generation, falls back to a narrower supported question set, or asks. If freshness is uncertain, do not pretend precision. And the failure policy for a business-definition conflict is human intervention, because a wrong answer is worse than a slower answer.
 
@@ -310,7 +310,7 @@ flowchart TD
 
 The two copilot personas extend the summary into an explanation, and the same rule holds: every driver named must trace to a query. The executive copilot explains variance against the governed definition, cites the metric definition it used, and escalates uncertain answers to analysts. The retail explainer attributes a forecast variance to drivers from sales history, promotions, weather, inventory and events, then recommends planning actions that a human reviews before any order changes. Its red-team list names the risks precisely: confusing correlation with causation, hallucinated drivers, stale promotions data, recommendations biased against stores or regions, and over-ordering because an explanation sounded confident.
 
-Keep the statistics deterministic. The AIA design's analysis agent computes Z-score anomalies and trend statistics rather than reasoning about them, so the model cannot invent a plausible but wrong number. The explanation layer then narrates computed drivers; it never produces them. Show confidence, missing evidence and the escalation reason whenever the drivers are weak, and route board-level narratives through an analyst before they leave the system.
+Keep the statistics deterministic. The insurer design's analysis agent computes Z-score anomalies and trend statistics rather than reasoning about them, so the model cannot invent a plausible but wrong number. The explanation layer then narrates computed drivers; it never produces them. Show confidence, missing evidence and the escalation reason whenever the drivers are weak, and route board-level narratives through an analyst before they leave the system.
 
 ## 9. Fail Closed on Policy, Degrade on Everything Else
 
@@ -517,11 +517,11 @@ Score a dry run on six dimensions: estimation, architecture, depth (ambiguity, c
 
 ## 13. Tell It as Something Built
 
-For "tell me about a project you led end to end", the same system exists as a production engagement. It is a governed data assistant for Asia's largest publicly listed life insurer, built on Databricks in an 8 to 9 week advisory-plus-build engagement. Tell it as an architecture evolution with two real pivots. Lead with one sentence and then stop talking.
+For "tell me about a project you led end to end", the same system exists as a production engagement. It is a governed data assistant for a large Asian life insurer, built in about two months on a short build engagement. Tell it as an architecture evolution with two real pivots. Lead with one sentence and then stop talking.
 
-> *"At AIA, Asia's largest listed life insurer, I built a multi-agent system to replace a 2-to-10-day BI queue with natural-language, self-serve answers, and my first design broke down live in testing, which is actually the more interesting part of the story."*
+> *"At a large Asian life insurer, I built a multi-agent system to replace a BI queue that took days with natural-language, self-serve answers, and my first design broke down live in testing, which is actually the more interesting part of the story."*
 
-The problem beat: actuaries, claims managers and regional analysts needed answers over governed data, but every question went through a BI queue. An ad-hoc question took 2 to 10 business days; a new dashboard took about four weeks.
+The problem beat: actuaries, claims managers and regional analysts needed answers over governed data, but every question went through a BI queue. An ad-hoc question took days; a new dashboard took weeks.
 
 ```mermaid
 flowchart LR
@@ -558,12 +558,12 @@ Intent is classified with a confidence score. Clarification fires only below 60%
 | **Genie** | BI specialist | Genie Space API (managed text-to-SQL) | A managed service over a hand-rolled text-to-SQL chain: less flexible, but far lower prompt- and SQL-injection surface, and non-engineers can curate the underlying tables directly |
 | **Multi-Tool** | Generalist | LLM-generated SQL + Vector Search RAG over policy docs | The *one* place hand-generated SQL was allowed, for ad-hoc questions outside Genie's curated scope, under deliberately narrower governance |
 | **Data Analysis** | Statistical | Z-score anomaly detection, trend statistics | Kept **deterministic**: thresholds are computed, not "reasoned about", so the model cannot invent a plausible but wrong number |
-| **Visualization** | Dashboard creator | Lakeview REST API | Publishes real, clickable dashboards rather than a static chart image, closing the loop on the four-week dashboard pain |
+| **Visualization** | Dashboard creator | Lakeview REST API | Publishes real, clickable dashboards rather than a static chart image, closing the loop on the weeks-long dashboard pain |
 
 The governance beat sits underneath, in five pieces:
 
-- seven governed metric views instead of raw fact tables
-- short-term memory in a Delta table keyed by thread, 30-day retention, so conversations survive a restart and stay auditable
+- a handful of governed metric views instead of raw fact tables
+- short-term memory in a Delta table keyed by thread, short retention, so conversations survive a restart and stay auditable
 - base-plus-overlay prompts in a governed table with a five-minute cache, so behaviour is tunable without a redeploy
 - MLflow tracing on every node, so a wrong answer traces to the exact node and tool call
 - an AI Gateway doing rate limiting, PII filtering and guardrails in front of the endpoint, because the raw endpoint is never exposed
@@ -576,9 +576,9 @@ The governance beat sits underneath, in five pieces:
 
 The second-pivot beat is the same failure one level up. As domains grew, the supervisor's own tool list re-approached the original bloat. So the fix was applied again, as a deep-agent pattern. An orchestrator delegates to fully self-contained sub-agents, one per analytics domain: customer, distribution channels, policy and underwriting, claims. Each has its own prompt, small toolset, context window and Genie Space. A memory-manager sub-agent owns long-term memory in a categorised table of preference, fact, decision, project and feedback. The cost was more infrastructure surface. The gain was a ceiling on tool-selection degradation that does not reappear as the system grows.
 
-The platform-reality beat: the managed Multi-Agent Supervisor was not GA in the customer's Azure region. So the supervisor was hand-built on GA primitives only, rather than blocking on a beta feature's regional rollout. More code to own, in exchange for a production path nobody outside the engagement controlled.
+The platform-reality beat: the managed multi-agent feature wasn't an option for this customer at the time, so I hand-built the supervisor. More code to own, in exchange for a production path nobody outside the engagement controlled.
 
-State the results honestly. Time-to-insight went from 2 to 10 business days to minutes. Dashboard delivery went from about four weeks to governed self-serve. Platform consumption grew about 35% year to date after rollout, which is a correlational signal, not a controlled experiment, and worth saying exactly that before being asked. MVP in 8 to 9 weeks. If rebuilt today: instrument resolution-time and accuracy metrics from day one rather than relying on tracing for post-hoc debugging, and invest earlier in the offline evaluation dataset.
+State the results honestly. Time-to-insight went from days to minutes. Dashboard delivery went from weeks to governed self-serve. Adoption grew after rollout, though I can't attribute it cleanly, and it's worth saying exactly that before being asked. MVP in about two months. If rebuilt today: instrument resolution-time and accuracy metrics from day one rather than relying on tracing for post-hoc debugging, and invest earlier in the offline evaluation dataset.
 
 Close on whichever thread the conversation ended on. On the pivots: the same failure showed up twice at two scales, and both times the fix was the same instinct, specialise and keep each unit's context small. On governance: the part that matters most at an insurer is something provably safe to hand to a regulated business user. On results: better to say exactly what can and cannot be claimed than to let a number go unquestioned.
 
@@ -619,14 +619,14 @@ Add the warehouse side in the same breath. Bytes scanned per answer is the cost 
 
 1. **Why is a wrong-definition answer more dangerous than a failed query?** The SQL ran, the chart rendered and the number looks plausible, so the executive has no way to know it is wrong and acts on it.
 2. **What is consulted before any physical table, and why?** The semantic metric registry, because "revenue" must anchor on the governed definition before the system searches for tables the model thinks look relevant.
-3. **What number makes "ask when unsure" testable?** A confidence threshold on intent classification; the AIA supervisor clarifies below 60%.
+3. **What number makes "ask when unsure" testable?** A confidence threshold on intent classification; the insurer supervisor clarifies below 60%.
 4. **Why parse SQL instead of regex-filtering it?** Regex cannot understand aliases, nested selects, CTEs, comments or obfuscation; a parser inspects statements, tables, columns, joins, functions, limits and aggregate semantics.
 5. **Where is row-level security enforced, and what is re-checked at execution?** In the warehouse, natively, on a read-only identity; entitlement and policy are re-checked at the moment of execution so a user who lost access between planning and execution is refused.
 6. **How is a summary that contradicts its table handled?** The summary is generated from the structured result and cross-checked; a mismatch returns the table alone and alerts the review queue.
 7. **State the fail-open versus fail-closed pattern by category.** Authorization closed; connectivity degrade or queue; ambiguity human; suspicious scan closed and alert.
 8. **What is the release gate, and what is it not?** Semantic correctness against the governed definition judged by analyst review; not execution success on the golden set, which only proves the SQL ran.
 9. **Name the four rollout phases and the exit of the third.** Ten governed metrics, golden cases, shadow analysts, domain-by-domain expansion; the assistant advances from shadowing when it consistently matches analyst-reviewed answers and escalation works.
-10. **Why did the AIA monolith fail, and why did the same fix apply twice?** Context bloat and tool confusion from 20-plus tool schemas in one prompt; the supervisor's own tool list later re-approached the same bloat, so specialisation was applied again at the next level.
+10. **Why did the insurer monolith fail, and why did the same fix apply twice?** Context bloat and tool confusion from 20-plus tool schemas in one prompt; the supervisor's own tool list later re-approached the same bloat, so specialisation was applied again at the next level.
 11. **What is the sixty-second cost answer?** The semantic layer and validation remove retries and the schema from every prompt, so the fix is not a stronger model retrying until the SQL runs.
 
 ## References
@@ -640,7 +640,7 @@ All paths are relative to `06_Interview_Prep/`.
 | 1, 3, 8, 10 (executive persona) | `FDE/Complete GEN AI FDE Interview System — Core + GenAI/01_CUSTOMER_DISCOVERY_AND_DECOMPOSITION/04_CASE_STUDY_WORKSHEET/answer_keys/answer-keys-in-md/10_executive_dashboard_copilot_answer_key.md` |
 | 1, 3, 8, 10 (retail persona) | same folder, `08_retail_demand_explainer_answer_key.md` |
 | 5, 6, 8, 13 | `Handbook/07_Multi_Agent_Systems/05_Case_Study_Supervisor_To_Deep_Agent.md` |
-| 13 (story beats) | `FDE/Star_Stories/AIA_Group/AIA_MultiAgent_Conversational_Guide.md` |
+| 13 (story beats) | The owner's own story notes, kept privately outside the repo |
 | 5 (router, fixed operations) | `Handbook/06_Cross_Cutting_Concerns/05_Structured_Data_Routers_Connectors.md` |
 | 14 | `CASE_STUDY_INDEX.xlsx`, Drill Add-ons tab, self-drill row for #17 |
-| Not included | The V2 tutorial's section 5 working code, API contracts and contract tests beyond the hidden-column sketch; the V1 long tutorial; the purchased worksheets' blank templates; the AIA 15–20 minute deep-dive script, which repeats section 13 in fixed order |
+| Not included | The V2 tutorial's section 5 working code, API contracts and contract tests beyond the hidden-column sketch; the V1 long tutorial; the purchased worksheets' blank templates; the insurer 15–20 minute deep-dive script, which repeats section 13 in fixed order |

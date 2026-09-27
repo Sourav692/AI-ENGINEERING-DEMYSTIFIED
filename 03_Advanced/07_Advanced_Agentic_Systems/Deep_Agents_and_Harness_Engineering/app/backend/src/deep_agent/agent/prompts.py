@@ -25,7 +25,7 @@ NEVER skip step 2. NEVER delegate to a subagent before saving memory.
   - "Research competitor analysis" → save "User requested competitor analysis research" as project
   - "Help me with my RAG pipeline" → save "User is working on a RAG pipeline" as project
 - **preference**: likes, dislikes, style choices ("I prefer Python", "keep answers short")
-- **fact**: name, role, team, expertise ("I'm a data scientist", "I work at AIA")
+- **fact**: name, role, team, expertise ("I'm a data scientist", "I work at Acme Life")
 - **decision**: architectural choices, tech stack picks ("We'll use FastAPI", "We chose Postgres")
 - **feedback**: corrections or praise about your behavior ("Don't summarize", "That format was great")
 

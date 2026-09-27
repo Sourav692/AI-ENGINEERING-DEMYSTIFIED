@@ -217,10 +217,10 @@ Orchestrator (Claude Opus via Databricks)
 ├── code-reviewer          Reviews code for bugs, style, and best practices
 ├── research-agent         Web research via Tavily
 └── Analytics agents (Databricks Genie)
-    ├── aia-customer-analytics       Customer segmentation, retention, demographics
-    ├── aia-distribution-channels    Agent performance, sales channels
-    ├── aia-policy-underwriting      Premiums, renewals, product mix
-    └── aia-claims-analytics         Claims, fraud scores, processing times
+    ├── insurer-customer-analytics       Customer segmentation, retention, demographics
+    ├── insurer-distribution-channels    Agent performance, sales channels
+    ├── insurer-policy-underwriting      Premiums, renewals, product mix
+    └── insurer-claims-analytics         Claims, fraud scores, processing times
 ```
 
 Three code-execution backends: `FilesystemBackend` (safe default), `LocalShellBackend` (local dev), `LangSmithSandbox` (cloud, production) — plus a JSON-backed long-term memory variant.

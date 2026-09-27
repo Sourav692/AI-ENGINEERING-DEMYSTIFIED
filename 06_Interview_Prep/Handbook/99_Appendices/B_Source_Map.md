@@ -93,11 +93,11 @@ All sources under `05_Projects/Enterprise_Agentic_Workflow_Automation_Platform/`
 
 | Handbook doc | Treatment | Source |
 |---|---|---|
-| `01_When_Multi_Agent_Is_Justified.md` | R | `Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §1; `Enterprise Agentic Workflow Automation Platform/docs/05-…-gaps.md` §5; `System_Design and Delivery/6. Customer Support AI Assistant Design.md` §5; `Star_Stories/AIA_Technical_Implementation_Flow.md` §3 |
+| `01_When_Multi_Agent_Is_Justified.md` | R | `Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §1; `Enterprise Agentic Workflow Automation Platform/docs/05-…-gaps.md` §5; `System_Design and Delivery/6. Customer Support AI Assistant Design.md` §5; the owner's private engagement notes (not in the repo) |
 | `02_Reference_Architecture_Handoffs.md` | R | `Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` §2–3 |
 | `03_Failure_Isolation_And_Evaluation.md` | R | same, §4–5 |
 | `04_Case_Study_Research_Platform.md` | R | `Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md`; `CODE/README.md` |
-| `05_Case_Study_Supervisor_To_Deep_Agent.md` | R | `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md` |
+| `05_Case_Study_Supervisor_To_Deep_Agent.md` | R | the owner's private engagement notes (not in the repo) |
 | `diagrams/` | P | `Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/*.mmd`, `architecture.html`, `platform-architecture.html`, `PNG DIAAGRAM.png` (renamed `platform-architecture.png`) |
 | `reference_code/` | P | `Enteprise Multi-Agent AI Research Platform/CODE/` |
 
@@ -148,11 +148,10 @@ Not carried over: the `.html` twins of the markdown design docs in `System_Desig
 
 | Handbook doc | Treatment | Source |
 |---|---|---|
-| `01_Deep_Dive_And_Conversational_Formats.md` | N | synthesised from the nine narratives in `06_Interview_Prep/FDE/Star_Stories/` (now grouped by engagement) |
+| `01_Deep_Dive_And_Conversational_Formats.md` | N | synthesised from the owner's story narratives (client stories now kept privately, out of the repo) |
 | `02_Proof_vs_Cheat_Sheet_Honesty.md` | N | synthesised from the three coverage maps and the three project READMEs |
-| `stories/*.md` (9 files) | C | `06_Interview_Prep/FDE/Star_Stories/{AIA_Group,Bajaj_RapidLR,Meridian_Assist_Enterprise_RAG}/`, same filenames. Grouped by engagement 2026-09-19 — the top level no longer holds loose `.md` |
-| `stories/STAR_Stories_Client_Engagements.html` | C | `Star_Stories/star_stories.html` |
-| `stories/STAR_Stories_Technical_Build_Projects.html` | C | `Star_Stories/STAR Stories — Technical Build Projects.html` |
+| `stories/*.md` (9 files) | C | the owner's private story notes (client stories are kept out of the repo; the Meridian reference-build stories remain in `stories/`). Grouped by engagement 2026-09-19 — the top level no longer holds loose `.md` |
+| `stories/STAR_Stories_Technical_Build_Projects.html` | C | the owner's private story notes (kept outside the repo) |
 
 ## Appendices
 

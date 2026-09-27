@@ -12,13 +12,13 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. Holding the team to a higher bar
 
 > "Give an example of when you held your team to a higher bar than they initially expected. How did you communicate that standard?"
 
-**Anchor:** zero-leak release gate (Meridian / AIA).
+**Anchor:** zero-leak release gate (Meridian / a large Asian life insurer).
 
 - Situation:
 - Task:
@@ -40,7 +40,7 @@
 
 > "How do you define 'done' for an AI system?"
 
-**Anchor:** Meridian / AIA / Agent Platform.
+**Anchor:** Meridian / the insurer / Agent Platform.
 
 Write the mechanism first, then one proof.
 
@@ -56,7 +56,7 @@ Write the mechanism first, then one proof.
 
 > "Tell me about a time you shipped something you knew wasn't perfect. How did you handle it?"
 
-**Anchor:** Agent Platform in-process state + Bajaj triage.
+**Anchor:** Agent Platform in-process state + triage at a large Indian consumer lender.
 
 - Situation:
 - Task:

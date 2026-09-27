@@ -198,10 +198,10 @@ agent = create_deep_agent(..., memory=["/AGENTS.md"])
 | `code-reviewer` | Bug detection, style review |
 | `research-agent` | Web research, source synthesis |
 | `memory-manager` | Long-term memory operations |
-| `aia-customer-analytics` | Customer data queries |
-| `aia-distribution-channels` | Agent performance queries |
-| `aia-policy-underwriting` | Policy metrics queries |
-| `aia-claims-analytics` | Claims and fraud queries |
+| `insurer-customer-analytics` | Customer data queries |
+| `insurer-distribution-channels` | Agent performance queries |
+| `insurer-policy-underwriting` | Policy metrics queries |
+| `insurer-claims-analytics` | Claims and fraud queries |
 
 ---
 

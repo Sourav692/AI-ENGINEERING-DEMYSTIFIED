@@ -39,11 +39,11 @@ A curated set of prompts to exercise each subagent, skill, and multi-agent deleg
 
 ---
 
-## 3. AIA Genie Spaces (Single Domain)
+## 3. Acme Life Genie Spaces (Single Domain)
 
 ### Customer Analytics
 
-**Subagent:** `aia-customer-analytics` | **Tool:** `ask_customer_analytics`
+**Subagent:** `insurer-customer-analytics` | **Tool:** `ask_customer_analytics`
 
 - "Which customer segments have the highest claim frequency?"
 - "How many customers are there by region?"
@@ -51,7 +51,7 @@ A curated set of prompts to exercise each subagent, skill, and multi-agent deleg
 
 ### Distribution Channels
 
-**Subagent:** `aia-distribution-channels` | **Tool:** `ask_distribution_channels`
+**Subagent:** `insurer-distribution-channels` | **Tool:** `ask_distribution_channels`
 
 - "Who are the top agents by premium sold?"
 - "How do distribution channels compare in policy count?"
@@ -59,7 +59,7 @@ A curated set of prompts to exercise each subagent, skill, and multi-agent deleg
 
 ### Policy Underwriting
 
-**Subagent:** `aia-policy-underwriting` | **Tool:** `ask_policy_underwriting`
+**Subagent:** `insurer-policy-underwriting` | **Tool:** `ask_policy_underwriting`
 
 - "What is the total premium by distribution channel?"
 - "What are the renewal rates by product type?"
@@ -67,7 +67,7 @@ A curated set of prompts to exercise each subagent, skill, and multi-agent deleg
 
 ### Claims Analytics
 
-**Subagent:** `aia-claims-analytics` | **Tool:** `ask_claims_analytics`
+**Subagent:** `insurer-claims-analytics` | **Tool:** `ask_claims_analytics`
 
 - "Which regions have the highest fraud scores?"
 - "What is the total number of claims by region?"
@@ -75,27 +75,27 @@ A curated set of prompts to exercise each subagent, skill, and multi-agent deleg
 
 ---
 
-## 4. Cross-Domain AIA Analytics (Multiple Genie Subagents)
+## 4. Cross-Domain Acme Life Analytics (Multiple Genie Subagents)
 
-These questions require the main agent to delegate to 2-4 AIA subagents and synthesize the results.
+These questions require the main agent to delegate to 2-4 Acme Life subagents and synthesize the results.
 
-- "Which customer segments have the highest fraud scores, and how does that correlate with their distribution channel?" → `aia-customer-analytics` + `aia-claims-analytics` + `aia-distribution-channels`
+- "Which customer segments have the highest fraud scores, and how does that correlate with their distribution channel?" → `insurer-customer-analytics` + `insurer-claims-analytics` + `insurer-distribution-channels`
 
-- "Compare the top 5 agents by premium sold with the claim amounts in their regions. Are high-selling agents also in high-claim regions?" → `aia-distribution-channels` + `aia-claims-analytics`
+- "Compare the top 5 agents by premium sold with the claim amounts in their regions. Are high-selling agents also in high-claim regions?" → `insurer-distribution-channels` + `insurer-claims-analytics`
 
-- "What is the renewal rate by customer segment, and which segments file the most claims?" → `aia-policy-underwriting` + `aia-customer-analytics` + `aia-claims-analytics`
+- "What is the renewal rate by customer segment, and which segments file the most claims?" → `insurer-policy-underwriting` + `insurer-customer-analytics` + `insurer-claims-analytics`
 
-- "Give me a full business health dashboard: total customers, active policies, total premiums, claim volume, and top performing agents." → All 4 AIA subagents
+- "Give me a full business health dashboard: total customers, active policies, total premiums, claim volume, and top performing agents." → All 4 Acme Life subagents
 
 ---
 
-## 5. Research + AIA Analytics (Genie + Tavily)
+## 5. Research + Acme Life Analytics (Genie + Tavily)
 
 These questions combine internal data analysis with external web research.
 
-- "How do AIA's fraud scores compare to industry benchmarks? First check our fraud data, then research insurance industry average fraud rates." → `aia-claims-analytics` + `research-agent`
+- "How do Acme Life's fraud scores compare to industry benchmarks? First check our fraud data, then research insurance industry average fraud rates." → `insurer-claims-analytics` + `research-agent`
 
-- "What are the best practices for improving policy renewal rates? First show me our current renewal rates by product, then research industry strategies." → `aia-policy-underwriting` + `research-agent`
+- "What are the best practices for improving policy renewal rates? First show me our current renewal rates by product, then research industry strategies." → `insurer-policy-underwriting` + `research-agent`
 
 ---
 
@@ -103,9 +103,9 @@ These questions combine internal data analysis with external web research.
 
 These questions pull data from Genie spaces and then build code artifacts from the results.
 
-- "Pull the customer segment distribution and claim frequency from our data, then build a Python script that generates a matplotlib dashboard visualizing those metrics." → `aia-customer-analytics` + `aia-claims-analytics` + `senior-developer` + `code-reviewer`
+- "Pull the customer segment distribution and claim frequency from our data, then build a Python script that generates a matplotlib dashboard visualizing those metrics." → `insurer-customer-analytics` + `insurer-claims-analytics` + `senior-developer` + `code-reviewer`
 
-- "Get fraud scores by region from our claims data, then write a Python anomaly detection script that flags regions with scores above 2 standard deviations." → `aia-claims-analytics` + `senior-developer` + `code-reviewer`
+- "Get fraud scores by region from our claims data, then write a Python anomaly detection script that flags regions with scores above 2 standard deviations." → `insurer-claims-analytics` + `senior-developer` + `code-reviewer`
 
 ---
 
@@ -149,7 +149,7 @@ These combine long-term memory with other capabilities:
 
 - "Recall what you know about my project, then research best practices for the tech stack we chose." → `memory-manager` + `research-agent`
 
-- "Remember that the Bangkok region is our focus area. Now show me claims data for that region." → `memory-manager` + `aia-claims-analytics`
+- "Remember that the Bangkok region is our focus area. Now show me claims data for that region." → `memory-manager` + `insurer-claims-analytics`
 
 ### Multi-Turn Memory Scenario
 
@@ -165,9 +165,9 @@ These combine long-term memory with other capabilities:
 
 ## 9. Ultimate Multi-Skill (All Subagents)
 
-> "~~Build me an executive summary report: pull total customers by segment, total premiums by channel, top 10 agents, and fraud hotspots from our data. Then research how AIA compares to competitors in the Thai insurance market. Finally, write a Python script that generates this as a formatted PDF report."~~
+> "~~Build me an executive summary report: pull total customers by segment, total premiums by channel, top 10 agents, and fraud hotspots from our data. Then research how Acme Life compares to competitors in the Thai insurance market. Finally, write a Python script that generates this as a formatted PDF report."~~
 
 *> *\
 > Build me a fraud risk report: pull our top customer segments by size, top 5 agents by premium volume, and the regions with highest fraud activity from our data. Then research current insurance fraud detection best*
 
-→ All 4 AIA + `research-agent` + `senior-developer` + `code-reviewer`
+→ All 4 Acme Life + `research-agent` + `senior-developer` + `code-reviewer`

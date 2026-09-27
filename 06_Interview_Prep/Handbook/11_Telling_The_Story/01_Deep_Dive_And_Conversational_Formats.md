@@ -2,7 +2,7 @@
 
 > **Level** 🔴 Telling the Story · **Module** 11 · **Doc** 1 of 2 · **Time** ~35 min, then practice
 > **Prerequisites:** Module 10 doc 2 (the six-stage delivery story); a project of your own
-> **Source material:** synthesised from the nine narratives in `06_Interview_Prep/FDE/Star_Stories/` (now grouped by engagement) — their shared structure, timing budgets, coaching notes and appendices
+> **Source material:** synthesised from nine of the author's own story narratives (kept privately, outside the repo) — their shared structure, timing budgets, coaching notes and appendices
 
 ## Why this matters
 
@@ -27,7 +27,7 @@ A speakable script with embedded coaching notes. You read it aloud a few times, 
 | **7 · Close → the role** | 0:45 | Why this project, for this role, in one breath |
 | Q&A buffer | 5:00 | |
 
-For an FDE audience, the AIA narratives add an eighth segment between the hook and STAR: **requirements gathering and scoping** — the discovery conversations *before* a line of code — because that is the part of the job the FDE interviewer is actually hiring for.
+For an FDE audience, the insurer narratives add an eighth segment between the hook and STAR: **requirements gathering and scoping** — the discovery conversations *before* a line of code — because that is the part of the job the FDE interviewer is actually hiring for.
 
 ### The two-pass Action
 
@@ -96,14 +96,14 @@ Prepare one per likely ending thread — security/trust, platform/deployment, li
 
 ## Format 3 — The technical implementation flow
 
-For a technical audience that wants the *evolution*, not the pitch. The structure the AIA and Bajaj flows share:
+For a technical audience that wants the *evolution*, not the pitch. The structure the insurer and lender flows share:
 
 1. **The story in brief** — the business problem in a paragraph; what you led; the time box.
 2. **Architecture evolution in stages** — a diagram of each stage and the pivot between them. *Why three stages, not one design up front?* Because the first design failed in real testing, and the second pivot happened for a different reason than the first. That shows iterative judgement, not a plan that worked first time.
 3. **Why each pivot happened** — the specific failure (context bloat, tool confusion), and why the fix was architectural rather than a better model.
 4. **Why each tool, specifically** — evaluated against what, and the concrete reasons it won. A table of *requirement → why this fit*.
 5. **The components and the trade-off each embodies** — for every specialist or service, one row: role, tools, and the trade-off it represents.
-6. **The constraint that shaped the build** — the regional beta, the legacy API, the compliance rule — and what you traded to work around it.
+6. **The constraint that shaped the build** — the managed feature you couldn't use, the legacy API, the compliance rule — and what you traded to work around it.
 7. **Full stack** — a table.
 8. **Results, stated honestly, and what you would verify next** — *"a correlational signal, not a controlled experiment — worth saying exactly that if pressed."*
 

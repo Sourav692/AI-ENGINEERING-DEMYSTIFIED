@@ -2,7 +2,7 @@
 
 > **Level** 🟠 Scale, Security, Operations · **Module** 07 · **Doc** 1 of 5 · **Time** ~25 min
 > **Prerequisites:** Module 01 doc 3, Module 02 doc 4 (the travel-agent fixes), Module 05
-> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/09-multi-agent-orchestration.md` §1; `Enterprise Agentic Workflow Automation Platform/docs/05-security-tenancy-and-observability-gaps.md` §5; `06_Interview_Prep/FDE/System_Design and Delivery/6. Customer Support AI Assistant Design.md` §5; `06_Interview_Prep/FDE/Star_Stories/AIA_Group/AIA_Technical_Implementation_Flow.md` §3
+> **Source material:** `05_Projects/Enterprise_RAG_Platform/docs/09-multi-agent-orchestration.md` §1; `Enterprise Agentic Workflow Automation Platform/docs/05-security-tenancy-and-observability-gaps.md` §5; `06_Interview_Prep/FDE/System_Design and Delivery/6. Customer Support AI Assistant Design.md` §5
 
 ## Why this matters
 
@@ -40,10 +40,10 @@ So even inside a multi-agent system, route simple requests straight to a tool or
 
 ## The evidence: a monolithic agent that failed
 
-The AIA engagement in the fifth document of this module started with the default — one agent — and it broke. Not on paper; in real testing. The single agent carried the full system prompt, **20+ tool schemas**, and the entire conversation history, and it degraded on exactly the two axes above:
+The engagement with a large Asian life insurer in the fifth document of this module started with the default — one agent — and it broke. Not on paper; in real testing. The single agent carried the full system prompt, **20+ tool schemas**, and the entire conversation history, and it degraded on exactly the two axes above:
 
 - **Context bloat** — every tool's schema and description sat in context on every turn, degrading the model's ability to reason about the actual question.
-- **Tool confusion** — with that many tools competing for selection, the agent picked the wrong one often enough that accuracy became unusable for a production advisory engagement.
+- **Tool confusion** — with that many tools competing for selection, the agent picked the wrong one often enough that accuracy became unusable for a production engagement.
 
 The fix was not a bigger model or better prompting. It was architectural: split *decide what to do* from *do it*. And later, when the supervisor's own tool list grew back toward the same problem, the same principle was applied again one level up.
 
@@ -82,7 +82,7 @@ That is what the two triggers look like when they actually fire. The default was
 - Give the four-row table distinguishing single-agent multi-step from true multi-agent, from memory.
 - Name the two triggers and say what each looks like when it fires.
 - Why is Module 04's eight-node graph *not* multi-agent?
-- Describe the AIA stage-1 failure and why it justified the escalation.
+- Describe the insurer stage-1 failure and why it justified the escalation.
 - What does "not every request needs a planner" imply for routing inside a multi-agent system?
 
 **Next →** [Reference Architecture and Handoffs](02_Reference_Architecture_Handoffs.md)

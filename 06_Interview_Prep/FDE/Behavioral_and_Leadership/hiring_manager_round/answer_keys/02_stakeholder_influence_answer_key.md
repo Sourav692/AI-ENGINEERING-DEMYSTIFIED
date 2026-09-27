@@ -25,11 +25,11 @@ All four drafted. This is the strongest section in the set — nothing here is m
 
 ## 3. Technical buyer versus economic buyer
 
-**Anchor:** the insurer. Strongest story in this section — it has a commercial number attached, which most engineers can't produce.
+**Anchor:** the insurer. Strongest story in this section — it ties the work to a commercial result, which most engineers can't do.
 
 - **Situation.** Platform teams wanted capability and control; the budget holder was measuring demonstrable consumption and ROI.
 - **Action.** Didn't pick a side — found the overlap. Governance was what the platform team needed to feel safe expanding, and expansion was what the economic buyer was measuring.
-- **Result.** 35% adoption revenue growth in two months — proof both sides got what they wanted.
+- **Result.** Adoption grew after rollout — proof both sides got what they wanted. I can't attribute the growth cleanly, and I say so.
 
 ## 4. Building trust with a skeptical chief architect in 30 days
 
@@ -38,4 +38,4 @@ Method question.
 - Concede their expertise on their own estate before proposing anything. They know things about their systems you won't learn in a month.
 - Ship something small and real in the first two weeks. The 40+ scripts contributed to global codebases is the right kind of evidence — you gave before you asked.
 - Be the person who names the risk they were privately worried about. Skeptical architects are usually skeptical because they've watched a vendor gloss over something.
-- Don't oversell the platform. Naming what Databricks isn't good for buys more credibility than anything you claim it is good for.
+- Don't oversell the platform. Naming what the platform isn't good for buys more credibility than anything you claim it is good for.

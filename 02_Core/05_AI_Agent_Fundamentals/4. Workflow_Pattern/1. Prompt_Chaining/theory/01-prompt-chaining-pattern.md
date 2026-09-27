@@ -101,7 +101,7 @@ graph.add_edge("polish", END)
 app = graph.compile()
 
 result = app.invoke({
-    "raw_notes": "Talked about Q3 migration timeline, Barclays go-live slipping two weeks, need sign-off from compliance."
+    "raw_notes": "Talked about Q3 migration timeline, the bank's go-live slipping two weeks, need sign-off from compliance."
 })
 print(result["final"])
 ```

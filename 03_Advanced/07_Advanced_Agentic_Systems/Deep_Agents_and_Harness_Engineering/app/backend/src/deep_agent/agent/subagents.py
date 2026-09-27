@@ -53,34 +53,34 @@ research_agent = {
     "tools": [internet_search],
 }
 
-aia_customer_agent = {
-    "name": "aia-customer-analytics",
-    "description": "Queries AIA customer data — segmentation, retention, demographics, claim frequency.",
-    "system_prompt": "Follow the aia-customer-analytics skill instructions.",
+acme_life_customer_agent = {
+    "name": "insurer-customer-analytics",
+    "description": "Queries Acme Life customer data — segmentation, retention, demographics, claim frequency.",
+    "system_prompt": "Follow the insurer-customer-analytics skill instructions.",
     "skills": _SKILLS,
     "tools": [ask_customer_analytics],
 }
 
-aia_distribution_agent = {
-    "name": "aia-distribution-channels",
-    "description": "Queries AIA agent performance and distribution channel data.",
-    "system_prompt": "Follow the aia-distribution-channels skill instructions.",
+acme_life_distribution_agent = {
+    "name": "insurer-distribution-channels",
+    "description": "Queries Acme Life agent performance and distribution channel data.",
+    "system_prompt": "Follow the insurer-distribution-channels skill instructions.",
     "skills": _SKILLS,
     "tools": [ask_distribution_channels],
 }
 
-aia_policy_agent = {
-    "name": "aia-policy-underwriting",
-    "description": "Queries AIA policy and underwriting data — premiums, policy counts, renewals.",
-    "system_prompt": "Follow the aia-policy-underwriting skill instructions.",
+acme_life_policy_agent = {
+    "name": "insurer-policy-underwriting",
+    "description": "Queries Acme Life policy and underwriting data — premiums, policy counts, renewals.",
+    "system_prompt": "Follow the insurer-policy-underwriting skill instructions.",
     "skills": _SKILLS,
     "tools": [ask_policy_underwriting],
 }
 
-aia_claims_agent = {
-    "name": "aia-claims-analytics",
-    "description": "Queries AIA claims data — claim counts, amounts, fraud scores.",
-    "system_prompt": "Follow the aia-claims-analytics skill instructions.",
+acme_life_claims_agent = {
+    "name": "insurer-claims-analytics",
+    "description": "Queries Acme Life claims data — claim counts, amounts, fraud scores.",
+    "system_prompt": "Follow the insurer-claims-analytics skill instructions.",
     "skills": _SKILLS,
     "tools": [ask_claims_analytics],
 }
@@ -91,8 +91,8 @@ SUBAGENTS = [
     senior_developer,
     code_reviewer,
     research_agent,
-    aia_customer_agent,
-    aia_distribution_agent,
-    aia_policy_agent,
-    aia_claims_agent,
+    acme_life_customer_agent,
+    acme_life_distribution_agent,
+    acme_life_policy_agent,
+    acme_life_claims_agent,
 ]

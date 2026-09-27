@@ -12,13 +12,13 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. A team spread too thin
 
 > "Describe a situation where your team was spread too thin across priorities. How did you refocus them?"
 
-**Anchor:** AIA scope narrowing.
+**Anchor:** scope narrowing at a large Asian life insurer.
 
 **Partly grounded** - the spine is real, the marked details are not. Supply them below.
 
@@ -35,7 +35,7 @@
 
 > "Tell me about a time you said no to a project or feature because it distracted from the most important outcome."
 
-**Anchor:** declining the fancy retrieval strategy (Meridian) + open-ended search (AIA).
+**Anchor:** declining the fancy retrieval strategy (Meridian) + open-ended search (the insurer).
 
 - Situation:
 - Task:
@@ -46,7 +46,7 @@
 
 > "How do you measure success on a customer engagement?"
 
-**Anchor:** AIA success bar + honest attribution + Bajaj lesson.
+**Anchor:** the insurer's success bar + honest attribution + the lesson from a large Indian consumer lender.
 
 Write the mechanism first, then one proof.
 

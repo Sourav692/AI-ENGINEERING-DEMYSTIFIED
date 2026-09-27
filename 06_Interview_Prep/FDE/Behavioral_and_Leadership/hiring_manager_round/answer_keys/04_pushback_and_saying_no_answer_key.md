@@ -25,7 +25,7 @@ Three drafted, one NEEDS INPUT.
 
 **Anchor:** your field-to-product feedback loop.
 
-- **Action.** [A specific case where a customer requirement wasn't served by the product as shipped and you either built around it or carried it back to engineering. Overwatch and UNIQ both started as gaps between what the product did and what the field needed.]
+- **Action.** [A specific case where a customer requirement wasn't served by the product as shipped and you either built around it or carried it back to engineering. Overwatch and an internal accelerator both started as gaps between what the product did and what the field needed.]
 - **Result.** [Whether it shipped, or whether the workaround became reusable IP.]
 
 **Why this question exists.** They're checking you'll advocate for the customer internally, not just represent the company externally. FDE roles fail when the engineer becomes a pure sales extension.

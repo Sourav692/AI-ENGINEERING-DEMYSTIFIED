@@ -12,7 +12,7 @@
 | PARTLY GROUNDED | The spine is real, but a detail is marked `[FILL: ...]` and must come from you. Never say the placeholder out loud. |
 | NEEDS YOUR INPUT | The repo has nothing here. You get the shape of a strong answer; the story has to be yours. |
 
-**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 35% attribution caveat, the 22-document caveat, "no client-confirmed metric at Bajaj". Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
+**Honesty rule.** Your strongest recurring signal is stating limits plainly - the 22-document caveat, and never claiming a metric you can't prove. Keep that voice. If you are asked a people-management question and you have never formally managed, say "I've led as a senior IC guiding the engagement team, not as a line manager - here's the closest real example," then give it.
 
 ## 1. Something you had to learn from scratch
 
@@ -27,13 +27,13 @@
 
 **You must supply, before this answer is usable:**
 
-- Barclays, ~700M events/day:
+- a global tier-1 bank, hundreds of millions of events a day:
 
 ## 2. Feedback that changed how you lead
 
 > "Tell me about feedback you received that changed how you lead."
 
-**Anchor:** "bring compliance into the first round of discovery" is listed in your AIA material as a lesson; frame it as feedback only if it actually came from a stakeholder.
+**Anchor:** "bring compliance into the first round of discovery" is listed in your material on a large Asian life insurer as a lesson; frame it as feedback only if it actually came from a stakeholder.
 
 **Partly grounded** - the spine is real, the marked details are not. Supply them below.
 

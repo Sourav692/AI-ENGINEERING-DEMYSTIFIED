@@ -1333,7 +1333,7 @@ graph LR
 1. Lead with the core insight ("Production auth is a verification problem...")
 2. Draw the diagram to explain the architecture
 3. Use the interview answer template as your script
-4. Link to real project experience (AIA, Bajaj) when relevant
+4. Link to real project experience (a large Asian life insurer, a large Indian consumer lender) when relevant
 
 ---
 

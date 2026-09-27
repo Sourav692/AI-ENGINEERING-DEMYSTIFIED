@@ -36,7 +36,7 @@ Two story questions and two method questions. The method ones are where candidat
 
 > "The technical buyer and the economic buyer wanted different things."
 
-**Anchor:** the insurer. This is the strongest story in the section — it has a commercial number attached, which most engineers cannot produce.
+**Anchor:** the insurer. This is the strongest story in the section — it ties the work to a commercial result, which most engineers cannot do.
 
 - What the platform team wanted:
 - What the budget holder was measuring:
