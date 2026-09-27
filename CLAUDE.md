@@ -208,6 +208,7 @@ python examples/simple_coding_agent.py
 - `GROQ_API_KEY` — Groq models (used on Windows)
 - `GOOGLE_API_KEY` — LangExtract Streamlit apps
 - `TAVILY_API_KEY` — web search notebooks
+- `GENIE_SPACE_CUSTOMER_ANALYTICS`, `GENIE_SPACE_DISTRIBUTION_CHANNELS`, `GENIE_SPACE_POLICY_UNDERWRITING`, `GENIE_SPACE_CLAIMS_ANALYTICS` — Genie space IDs for the Deep Agents analytics demo (workspace-specific, never hard-coded; a missing one makes that tool return an error instead of crashing the run)
 - Databricks credentials — used on macOS (default provider)
 
 ## Architecture

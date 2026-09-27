@@ -3,12 +3,17 @@
 import logging
 
 from deep_agent.clients import get_workspace_client
-from deep_agent.config import GENIE_SPACES
+from deep_agent.config import GENIE_SPACES, genie_space_id
 
 logger = logging.getLogger("deep-agent")
 
 
-def _query_genie(space_id: str, question: str) -> dict:
+def _query_genie(domain: str, question: str) -> dict:
+    space_id = genie_space_id(domain)
+    if not space_id:
+        # Same contract as a failed query: the agent gets an error it can explain,
+        # instead of the whole run dying on a missing setting.
+        return {"error": f"Genie space for '{domain}' is not configured — set {GENIE_SPACES[domain]}."}
     # Tool exceptions kill the parent agent's stream. Catch here so a single
     # bad Genie space (trashed, permissions, transient API error) doesn't
     # crash the whole multi-step run — the agent gets an error string back
@@ -44,7 +49,7 @@ def ask_customer_analytics(question: str) -> dict:
     Args:
         question: Natural language question about customers.
     """
-    return _query_genie(GENIE_SPACES["customer_analytics"], question)
+    return _query_genie("customer_analytics", question)
 
 
 def ask_distribution_channels(question: str) -> dict:
@@ -53,7 +58,7 @@ def ask_distribution_channels(question: str) -> dict:
     Args:
         question: Natural language question about agents or distribution channels.
     """
-    return _query_genie(GENIE_SPACES["distribution_channels"], question)
+    return _query_genie("distribution_channels", question)
 
 
 def ask_policy_underwriting(question: str) -> dict:
@@ -62,7 +67,7 @@ def ask_policy_underwriting(question: str) -> dict:
     Args:
         question: Natural language question about policies or underwriting.
     """
-    return _query_genie(GENIE_SPACES["policy_underwriting"], question)
+    return _query_genie("policy_underwriting", question)
 
 
 def ask_claims_analytics(question: str) -> dict:
@@ -71,4 +76,4 @@ def ask_claims_analytics(question: str) -> dict:
     Args:
         question: Natural language question about claims or fraud.
     """
-    return _query_genie(GENIE_SPACES["claims_analytics"], question)
+    return _query_genie("claims_analytics", question)

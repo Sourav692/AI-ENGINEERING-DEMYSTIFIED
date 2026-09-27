@@ -215,16 +215,20 @@ def internet_search(
 # ============ Databricks Genie tools ============
 databricks_client = WorkspaceClient()
 
-GENIE_SPACES = {
-    "customer_analytics": "01f1272d4de1188cac8feeb7e71bdb69",
-    "distribution_channels": "01f1272d4d271203ad122e9280470248",
-    "policy_underwriting": "01f1272d4c6b1fb49223785ab841befd",
-    "claims_analytics": "01f1272d4ba6144ba75d868762f1925d",
+# Genie space IDs are workspace-specific: set these in the project-root .env.
+GENIE_SPACE_ENV = {
+    "customer_analytics": "GENIE_SPACE_CUSTOMER_ANALYTICS",
+    "distribution_channels": "GENIE_SPACE_DISTRIBUTION_CHANNELS",
+    "policy_underwriting": "GENIE_SPACE_POLICY_UNDERWRITING",
+    "claims_analytics": "GENIE_SPACE_CLAIMS_ANALYTICS",
 }
 
 
-def _query_genie(space_id: str, question: str) -> dict:
+def _query_genie(domain: str, question: str) -> dict:
     """Query a Databricks Genie space and return structured results."""
+    space_id = os.environ.get(GENIE_SPACE_ENV[domain], "").strip()
+    if not space_id:
+        return {"error": f"Genie space for '{domain}' is not configured — set {GENIE_SPACE_ENV[domain]} in .env."}
     resp = databricks_client.genie.start_conversation_and_wait(
         space_id=space_id,
         content=question,
@@ -255,7 +259,7 @@ def ask_customer_analytics(question: str) -> dict:
     Args:
         question: Natural language question about customers.
     """
-    return _query_genie(GENIE_SPACES["customer_analytics"], question)
+    return _query_genie("customer_analytics", question)
 
 
 def ask_distribution_channels(question: str) -> dict:
@@ -267,7 +271,7 @@ def ask_distribution_channels(question: str) -> dict:
     Args:
         question: Natural language question about agents or distribution channels.
     """
-    return _query_genie(GENIE_SPACES["distribution_channels"], question)
+    return _query_genie("distribution_channels", question)
 
 
 def ask_policy_underwriting(question: str) -> dict:
@@ -279,7 +283,7 @@ def ask_policy_underwriting(question: str) -> dict:
     Args:
         question: Natural language question about policies or underwriting.
     """
-    return _query_genie(GENIE_SPACES["policy_underwriting"], question)
+    return _query_genie("policy_underwriting", question)
 
 
 def ask_claims_analytics(question: str) -> dict:
@@ -291,7 +295,7 @@ def ask_claims_analytics(question: str) -> dict:
     Args:
         question: Natural language question about claims or fraud.
     """
-    return _query_genie(GENIE_SPACES["claims_analytics"], question)
+    return _query_genie("claims_analytics", question)
 
 
 # ============ Subagents ============

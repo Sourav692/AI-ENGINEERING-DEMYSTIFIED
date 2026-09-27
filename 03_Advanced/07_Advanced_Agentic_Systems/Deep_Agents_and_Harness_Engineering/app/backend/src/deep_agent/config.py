@@ -45,9 +45,22 @@ MODEL_TEMPERATURE = float(os.environ.get("MODEL_TEMPERATURE", "0.1"))
 TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY", "")
 USE_SANDBOX = os.environ.get("USE_SANDBOX", "false").lower() == "true"
 
+# Genie space IDs are workspace-specific, so they come from the environment, never
+# from source: set them in the project-root .env for local runs, and attach the four
+# spaces as app resources for a deployed app (see app/app.yaml). Keyed by domain; the
+# value is the environment variable that holds that domain's space ID.
 GENIE_SPACES = {
-    "customer_analytics": "01f1272d4de1188cac8feeb7e71bdb69",
-    "distribution_channels": "01f1272d4d271203ad122e9280470248",
-    "policy_underwriting": "01f1272d4c6b1fb49223785ab841befd",
-    "claims_analytics": "01f1272d4ba6144ba75d868762f1925d",
+    "customer_analytics": "GENIE_SPACE_CUSTOMER_ANALYTICS",
+    "distribution_channels": "GENIE_SPACE_DISTRIBUTION_CHANNELS",
+    "policy_underwriting": "GENIE_SPACE_POLICY_UNDERWRITING",
+    "claims_analytics": "GENIE_SPACE_CLAIMS_ANALYTICS",
 }
+
+
+def genie_space_id(domain: str) -> str:
+    """The configured Genie space ID for a domain, or "" if it is not set.
+
+    Read at call time rather than import time, so a .env loaded after this module is
+    imported still takes effect.
+    """
+    return os.environ.get(GENIE_SPACES[domain], "").strip()

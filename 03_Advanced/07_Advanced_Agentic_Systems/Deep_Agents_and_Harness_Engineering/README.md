@@ -63,6 +63,8 @@ python examples/simple_coding_agent.py
 python examples/long_term_memory_agent.py
 
 # With code execution: add USE_SANDBOX=true to .env
+# Analytics agents: set GENIE_SPACE_CUSTOMER_ANALYTICS, GENIE_SPACE_DISTRIBUTION_CHANNELS,
+# GENIE_SPACE_POLICY_UNDERWRITING and GENIE_SPACE_CLAIMS_ANALYTICS in .env (your workspace's space IDs)
 python examples/simple_coding_agent.py
 ```
 

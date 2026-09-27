@@ -22,6 +22,17 @@ env:
     value: deep-agent-memory
   - name: LAKEBASE_DATABASE
     value: databricks_postgres
+  # Genie space IDs are workspace-specific and never committed. Attach the four
+  # Genie spaces to the app as resources (App → Edit → Resources → Genie space,
+  # permission CAN_RUN) using exactly these resource keys; valueFrom injects each ID.
+  - name: GENIE_SPACE_CUSTOMER_ANALYTICS
+    valueFrom: genie-customer-analytics
+  - name: GENIE_SPACE_DISTRIBUTION_CHANNELS
+    valueFrom: genie-distribution-channels
+  - name: GENIE_SPACE_POLICY_UNDERWRITING
+    valueFrom: genie-policy-underwriting
+  - name: GENIE_SPACE_CLAIMS_ANALYTICS
+    valueFrom: genie-claims-analytics
 
 resources:
   - name: lakebase-memory

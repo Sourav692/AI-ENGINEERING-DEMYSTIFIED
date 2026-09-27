@@ -184,14 +184,14 @@ When the developer agent builds a project, files are written to a UC Volume usin
 
 ## Data Layer — Databricks Genie Spaces
 
-Four Genie spaces provide natural-language SQL interfaces to structured insurance data in Unity Catalog:
+Four Genie spaces provide natural-language SQL interfaces to structured insurance data in Unity Catalog. Their IDs are workspace-specific, so each comes from an environment variable — set them in the project-root `.env` locally, or attach the spaces as app resources when deployed:
 
-| Genie Space | Space ID | Domain |
+| Genie Space | Space ID (environment variable) | Domain |
 |---|---|---|
-| Customer Analytics | `01f1272d4de1188cac8feeb7e71bdb69` | Segmentation, retention, demographics |
-| Distribution Channels | `01f1272d4d271203ad122e9280470248` | Agent performance, sales channels |
-| Policy & Underwriting | `01f1272d4c6b1fb49223785ab841befd` | Premiums, renewals, product mix |
-| Claims Analytics | `01f1272d4ba6144ba75d868762f1925d` | Claims, fraud, processing times |
+| Customer Analytics | `GENIE_SPACE_CUSTOMER_ANALYTICS` | Segmentation, retention, demographics |
+| Distribution Channels | `GENIE_SPACE_DISTRIBUTION_CHANNELS` | Agent performance, sales channels |
+| Policy & Underwriting | `GENIE_SPACE_POLICY_UNDERWRITING` | Premiums, renewals, product mix |
+| Claims Analytics | `GENIE_SPACE_CLAIMS_ANALYTICS` | Claims, fraud, processing times |
 
 Each Genie space wraps curated gold/silver Delta tables and translates natural language questions into SQL, returning structured results with descriptions and suggested follow-up questions.
 
