@@ -16,7 +16,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Support the core workflow: classify intent and risk, retrieve grounded policy and account context, draft a response, gate it on policy, then auto-resolve, request approval, or escalate.
 - Classify and route every request by intent and risk before any retrieval or drafting begins.
 - Retrieve grounded customer and policy context from CRM, order, and policy sources before drafting.
-- Execute tools such as refunds, address changes, and subscription actions only through a controlled, authorized layer.
+- Execute tools such as refunds, address changes, and subscription actions only through a controlled, authorised layer.
 - Hand off to a human with full conversation and action history whenever automation hesitates.
 - Record every retrieval, decision, tool call, and human override so any outcome is attributable afterward.
 
@@ -30,11 +30,11 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Architecture explanation
 - This is a routed decision pipeline, not a chatbot; every component narrows what the next one is allowed to do.
-- The omnichannel gateway normalizes chat, email, web, and voice transcripts into one conversation envelope and owns no business state.
+- The omnichannel gateway normalises chat, email, web, and voice transcripts into one conversation envelope and owns no business state.
 - Identity verification runs synchronously whenever the request could expose account data or trigger an action, and assigns an assurance level.
 - The intent and risk router classifies the issue and tags it informational, account-sensitive, money-moving, legal-sensitive, or safety-sensitive.
 - Knowledge retrieval pulls approved policy articles, account facts, and prior cases; the response generator drafts a reply or proposed tool call as a recommendation only.
-- The tool policy gateway applies deterministic checks — is assurance sufficient, is this action allowed, does the refund exceed threshold — and is the hard authorization boundary.
+- The tool policy gateway applies deterministic checks — is assurance sufficient, is this action allowed, does the refund exceed threshold — and is the hard authorisation boundary.
 - The confidence calibrator then decides among auto-resolve, request approval, or escalate to the human-agent queue with reason codes.
 - The quality evaluation store records solved, reopened, and corrected outcomes; the customer's CRM and billing systems remain the systems of record, never this layer.
 
@@ -55,7 +55,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Rollout plan
 - Week 0-1: fix the scope fence — no open-ended negotiation, no autonomous legal handling, no unsupervised refunds or cancellations.
-- Week 1-2: launch as agent-assist only; the model drafts and summarizes, a human sends every final response.
+- Week 1-2: launch as agent-assist only; the model drafts and summarises, a human sends every final response.
 - Week 2-3: prove retrieval quality, escalation logic, and handoff completeness against real traffic before automating anything.
 - Week 3-4: automate a narrow set of low-risk, reversible intents such as order status and subscription FAQ.
 - Week 5: enable action tools one class at a time, each with its own gate, starting with ticket tagging and order lookup.
@@ -96,4 +96,4 @@ I would design this as a routed decision pipeline rather than a chatbot, because
 | Communication | Describes the model | Clear but generic | Leads with the harm case, names the failure policy, closes with the first gate |
 
 ## Final 2-minute spoken answer
-I would not start with the model. The ask sounds like "automate routine support," but the product is not a chatbot that answers everything — it is a routed service that must decide when to act, when to ask for approval, and when to stop. Take a customer saying they were charged twice and need it fixed today. The naive design sends that to a model and resolves the ticket. The real design starts earlier: verify who the user is, determine whether the request touches money, decide whether it is safe to act on the account, and preserve enough context for a human to take over. So the pipeline is a gateway that normalizes the channel, identity verification that assigns an assurance level, a router that tags intent and risk, retrieval that grounds the draft in approved policy, and then a deterministic tool policy gateway that decides whether any action may execute. That gateway, not the model, is the authorization boundary — model output is one input to a controlled workflow, never truth. Latency is tiered by risk, and if billing times out or the policy check fails, the system degrades into a safe handoff carrying the conversation, the attempted actions, and the reason. I would launch agent-assist only, then automate narrow reversible intents, then add one tool class at a time, each with its own gate and kill switch. Success is lower handling cost with no increase in incorrect or harmful resolutions.
+I would not start with the model. The ask sounds like "automate routine support," but the product is not a chatbot that answers everything — it is a routed service that must decide when to act, when to ask for approval, and when to stop. Take a customer saying they were charged twice and need it fixed today. The naive design sends that to a model and resolves the ticket. The real design starts earlier: verify who the user is, determine whether the request touches money, decide whether it is safe to act on the account, and preserve enough context for a human to take over. So the pipeline is a gateway that normalises the channel, identity verification that assigns an assurance level, a router that tags intent and risk, retrieval that grounds the draft in approved policy, and then a deterministic tool policy gateway that decides whether any action may execute. That gateway, not the model, is the authorisation boundary — model output is one input to a controlled workflow, never truth. Latency is tiered by risk, and if billing times out or the policy check fails, the system degrades into a safe handoff carrying the conversation, the attempted actions, and the reason. I would launch agent-assist only, then automate narrow reversible intents, then add one tool class at a time, each with its own gate and kill switch. Success is lower handling cost with no increase in incorrect or harmful resolutions.

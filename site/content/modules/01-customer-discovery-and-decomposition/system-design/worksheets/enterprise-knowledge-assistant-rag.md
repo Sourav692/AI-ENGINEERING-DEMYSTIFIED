@@ -37,7 +37,7 @@ Design a GenAI FDE solution for an **Enterprise Knowledge Assistant with RAG**. 
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Ingestion and ACL:
 - Permission-filtered retrieval:
 - Reranking and budget:
@@ -49,7 +49,7 @@ Use one of the rendered diagrams as a base, then customize:
 | Metric | Good threshold | Bad threshold | Test dataset | Owner |
 |---|---:|---:|---|---|
 | Permission leakage | 0 | > 0 | ACL red-team suite | Security |
-| Grounded answer rate | >= baseline | > 5 pts below | Silent-mode labeled set | ML/eval |
+| Grounded answer rate | >= baseline | > 5 pts below | Silent-mode labelled set | ML/eval |
 | Citation precision | >= agreed bar | > 5 pts decline | SME-reviewed sample | Evaluation |
 | Freshness lag | Within SLO | Exceeds SLO | Connector vs. index stamps | Ingestion |
 
@@ -72,7 +72,7 @@ Use one of the rendered diagrams as a base, then customize:
 ## 10. Weak vs strong answer
 **Weak:** "I'd embed the documents in a vector DB and let an LLM answer."
 
-**Strong:** "I'd name permission fidelity as the load-bearing constraint, normalize source ACLs at ingestion, filter by effective permissions before generation, verify citations, abstain on weak evidence, and gate rollout on a leakage suite."
+**Strong:** "I'd name permission fidelity as the load-bearing constraint, normalise source ACLs at ingestion, filter by effective permissions before generation, verify citations, abstain on weak evidence, and gate rollout on a leakage suite."
 
 ## 11. Candidate scorecard
 | Area | 1 | 3 | 5 | Score |

@@ -127,9 +127,9 @@ Unchanged from the original reference — the reordering above just makes the "c
 | Scalability       | Horizontal scaling, auto-scaling, load balancing.                                                  |
 | Reliability       | Multi-region deployment, retries, failover.                                                        |
 | Availability      | Active-active regional architecture.                                                               |
-| Performance       | Semantic caching before fan-out, Redis, CDN, optimized vector search.                              |
+| Performance       | Semantic caching before fan-out, Redis, CDN, optimised vector search.                              |
 | Security          | OAuth, JWT, encryption, RBAC, secrets management.                                                  |
-| Cost optimization | Cache-first strategy that actually gates spawn, smaller models for simple tasks, regional routing. |
+| Cost optimisation | Cache-first strategy that actually gates spawn, smaller models for simple tasks, regional routing. |
 | Observability     | Metrics, logs, distributed tracing per agent, dashboards, alerts.                                  |
 | Maintainability   | Microservices, modular agents that own their own tools, CI/CD, infrastructure as code.             |
 
@@ -139,7 +139,7 @@ Unchanged from the original reference — the reordering above just makes the "c
 
 The distinctions an interviewer is listening for.
 
-**Shared retrieval service vs. per-agent RAG** — A shared Vector DB layer centralizes data-residency and guardrail enforcement but couples every agent to one service. Per-agent retrieval matches how LangGraph/CrewAI-style frameworks wire tools, at the cost of duplicated embedding infra if ungoverned. Either is defensible — treating RAG as a peer of the agents instead of infrastructure or a tool is the actual mistake.
+**Shared retrieval service vs. per-agent RAG** — A shared Vector DB layer centralises data-residency and guardrail enforcement but couples every agent to one service. Per-agent retrieval matches how LangGraph/CrewAI-style frameworks wire tools, at the cost of duplicated embedding infra if ungoverned. Either is defensible — treating RAG as a peer of the agents instead of infrastructure or a tool is the actual mistake.
 
 **Single agent vs. multi-agent** — Multi-agent adds coordination and synthesis overhead; it earns its keep when sub-tasks need different tools, different guardrails, or independent scaling — as Booking and Policy clearly do here.
 
@@ -164,7 +164,7 @@ Same analogy as the original reference, extended to cover the cache gate and the
 | Flight information binders each desk keeps                             | Vector databases, consulted by whichever desk needs them          |
 | Ground crew, catering, fuel trucks                                     | External APIs (flights, hotels, maps, payments)                   |
 | Dispatch officer compiling one departure report from every crew`new` | Synthesizer Agent                                                 |
-| CCTV & operations center                                               | Monitoring, logging & observability                               |
+| CCTV & operations centre                                               | Monitoring, logging & observability                               |
 
 ---
 

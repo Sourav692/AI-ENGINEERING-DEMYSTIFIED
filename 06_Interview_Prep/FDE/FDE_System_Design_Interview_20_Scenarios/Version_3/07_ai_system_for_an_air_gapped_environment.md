@@ -37,7 +37,7 @@ Design a GenAI FDE solution for an **Air-Gapped Environment**: AI capability ins
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Build and signing:
 - Transfer inspection:
 - Offline registry:

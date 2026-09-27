@@ -21,7 +21,7 @@ Do these passages actually answer the question? Three verdicts, not two:
 | `partial` | Generate, with a coverage note telling the model to answer what it can and state plainly what it could not determine |
 | `insufficient` | Refuse |
 
-The middle verdict is the important one. Refusing a two-part question because one part is unanswerable is the most common over-refusal in enterprise RAG — and here, *which* part you can answer depends on your role. A Tier-1 agent asking "why did they lose data and do they get credits?" may see the ticket but not the contract; the right answer is the first half plus "credits are an account-manager conversation", not a refusal.
+The middle verdict is the important one. Refusing a two-part question because one part is unanswerable is a common over-refusal in enterprise RAG — and here, *which* part you can answer depends on your role. A Tier-1 agent asking "why did they lose data and do they get credits?" may see the ticket but not the contract; the right answer is the first half plus "credits are an account-manager conversation", not a refusal.
 
 Two fast paths skip the LLM: no context at all, or a best rerank score below `min_rerank_score`, are `insufficient` without a call. If the grader itself fails, the pipeline trusts the reranker score and proceeds rather than failing the request.
 

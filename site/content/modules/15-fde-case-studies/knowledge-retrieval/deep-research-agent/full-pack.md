@@ -305,7 +305,7 @@ Debug a bad run from the trace keyed by run ID. Record per hop which agent ran, 
 
 ## 11. Read the Deployed Research Platform as Proof (#12)
 
-The Research Platform is the same product running on AWS. Given a topic, it researches, writes a full report, safety-checks it, caches it and remembers it. Read it once as evidence that each whiteboard box is a real component.
+The Research Platform is my own build of the same product, running on AWS. Given a topic, it researches, writes a full report, safety-checks it, caches it and remembers it. Read it once as evidence that each whiteboard box is a real component.
 
 It has nine layers, and one request passes through them top to bottom.
 

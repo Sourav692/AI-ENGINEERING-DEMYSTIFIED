@@ -231,7 +231,7 @@ flowchart TB
 
 - The `Request` data model carries tenant ID, prompt, and optional user ID; the `ExportedTrace` model carries only a bounded, structured attribute dictionary — never raw prompt text by default.
 - Prompt classification (`classify_sensitive_input`) tags content as `"sensitive"` or `"non_sensitive"` before it is ever attached to a trace.
-- A stable, salted hash (`_stable_hash`, using HMAC-SHA256) preserves correlation across requests without storing raw content — lets you deduplicate and correlate without ever exposing the underlying prompt.
+- A stable keyed hash (`_stable_hash`, HMAC-SHA256 with a secret key) preserves correlation across requests without storing raw content — lets you deduplicate and correlate without ever exposing the underlying prompt.
 - `capture_trace` builds the exported trace directly from a handler's request context, attaching tenant ID, prompt classification, a stable query hash, and result status — never the raw prompt itself.
 - Tests are written as executable contracts:
   - Idempotency of trace posting.
@@ -334,10 +334,10 @@ class ExportedTrace:
         return json.dumps(self.attributes, sort_keys=True)
 
 
-def _stable_hash(value: str, salt: str) -> str:
-    if not salt:
-        raise TelemetryError("Missing telemetry salt")
-    digest = hmac.new(salt.encode("utf-8"), value.encode("utf-8"), hashlib.sha256)
+def _stable_hash(value: str, key: str) -> str:
+    if not key:
+        raise TelemetryError("Missing telemetry hash key")
+    digest = hmac.new(key.encode("utf-8"), value.encode("utf-8"), hashlib.sha256)
     return digest.hexdigest()
 
 
@@ -354,7 +354,7 @@ def answer(request: Request) -> Dict[str, Any]:
 
 
 def capture_trace(handler: Callable[[], Dict[str, Any]]) -> ExportedTrace:
-    salt = os.environ.get("TELEMETRY_HASH_SALT", "")
+    hash_key = os.environ.get("TELEMETRY_HASH_KEY", "")
     request = getattr(handler, "_request", None)
     if request is None:
         raise TelemetryError("Handler must carry request context in this sketch")
@@ -365,7 +365,7 @@ def capture_trace(handler: Callable[[], Dict[str, Any]]) -> ExportedTrace:
         attributes={
             "tenant_id": request.tenant_id,
             "prompt.classification": prompt_class,
-            "query.hash": _stable_hash(request.prompt, salt),
+            "query.hash": _stable_hash(request.prompt, hash_key),
             "result.status": "ok",
         }
     )
@@ -387,7 +387,7 @@ def test_telemetry_redacts_sensitive_attributes() -> None:
         return answer(req)
 
     _handler._request = req  # type: ignore[attr-defined]
-    os.environ["TELEMETRY_HASH_SALT"] = "unit-test-salt"
+    os.environ["TELEMETRY_HASH_KEY"] = "unit-test-key"
 
     exported = capture_trace(_handler)
     assert "person@example.com" not in exported.to_json()
@@ -400,7 +400,7 @@ if __name__ == "__main__":
     print("ok")
 ```
 
-> 🎯 **Interview Pointer:** Be ready to narrate this code cold: `classify_sensitive_input` tags before storage, `_stable_hash` uses HMAC-SHA256 with a required salt (raises if missing), and the test asserts the raw email string is absent from `to_json()`. This is the concrete artifact that proves "redact by default" isn't just a slogan.
+> 🎯 **Interview Pointer:** Be ready to narrate this code cold: `classify_sensitive_input` tags before storage, `_stable_hash` uses HMAC-SHA256 with a required secret key (raises if missing), and the test asserts the raw email string is absent from `to_json()`. This is the concrete artifact that proves "redact by default" isn't just a slogan.
 
 ### Hardening Notes
 

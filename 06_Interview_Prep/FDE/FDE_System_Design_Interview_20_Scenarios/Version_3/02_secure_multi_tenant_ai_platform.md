@@ -37,7 +37,7 @@ Design a GenAI FDE solution for a **Secure Multi-Tenant AI Platform**: one appli
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Identity and tenant context:
 - Policy and region:
 - Quota and admission:
@@ -57,7 +57,7 @@ Use one of the rendered diagrams as a base, then customize:
 - Missing tenant predicate on a query
 - Cache key omits tenant id
 - Shared queue leaks payload metadata
-- Vector index surfaces a neighbor
+- Vector index surfaces a neighbour
 - One tenant exhausts shared quota
 - Regional outage or misrouted traffic
 

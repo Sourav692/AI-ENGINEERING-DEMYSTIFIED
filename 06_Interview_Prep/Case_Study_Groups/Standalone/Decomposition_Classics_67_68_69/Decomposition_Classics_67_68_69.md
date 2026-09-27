@@ -9,7 +9,7 @@ These three prompts are not system-design questions with a hidden right architec
 | Case | Prompt (verbatim from the source) | What it tests, per the source |
 |---|---|---|
 | #67 | "A major city wants to reduce 911 emergency response times. They have call data, traffic sensor data, and ambulance GPS data. You have 60 minutes. Go." | Mission clarification (response time vs. cost vs. equity of coverage), input mapping, sequencing by risk |
-| #68 | "A regional bank wants to unify fraud detection across three legacy systems acquired through M&A. None of the data is labeled consistently. How do you scope the first 90 days?" | Data quality realism, phased scoping, regulatory constraints |
+| #68 | "A regional bank wants to unify fraud detection across three legacy systems acquired through M&A. None of the data is labelled consistently. How do you scope the first 90 days?" | Data quality realism, phased scoping, regulatory constraints |
 | #69 | "A hospital network wants to reduce medication errors in post-surgery care. They have patient records, pharmacy dispensing logs, and nurse assignment schedules. Where do you start?" | High-stakes HITL design, safety-first decomposition |
 
 The repo holds the three prompts, the six-step framework and the Tier 2 probes. It holds no worked answer for any of the three. Every case section is therefore *(own construction)*, built from the framework's arguments. Every number in those sections is an assumption to state aloud, not a sourced fact. Domain facts are general knowledge and are marked where they appear.
@@ -18,7 +18,7 @@ The repo holds the three prompts, the six-step framework and the Tier 2 probes. 
 
 ## 1. Recognise What the Round Is Scoring
 
-The decomposition round is 45 to 60 minutes on a vague enterprise problem. The source describes the task as breaking it "into users, data, workflows, constraints, and a prioritized V1 — out loud, collaboratively." There is no correct answer. The interviewer watches how the path gets chosen when none is given.
+The decomposition round is 45 to 60 minutes on a vague enterprise problem. The source describes the task as breaking it "into users, data, workflows, constraints, and a prioritised V1 — out loud, collaboratively." There is no correct answer. The interviewer watches how the path gets chosen when none is given.
 
 Two failure modes eliminate many candidates, and both are in the source. The first is jumping to architecture before clarifying scope. One OpenAI FDE candidate reported being stopped mid-design and asked, "What questions would you ask the customer before designing anything?" The second is hand-waving evaluation. "How do you know your AI system is actually working well?" is used as a deliberate differentiator.
 
@@ -32,7 +32,7 @@ The source's framework has six steps. The timings below are *(own construction)*
 
 | Minutes | Step (source) | Output to leave on the board |
 |---|---|---|
-| 0–5 | **Clarify the mission.** "Are we optimizing for response time, cost, accuracy, or equity of coverage? Who's the primary user?" | One sentence naming the objective, and the objectives it trades against |
+| 0–5 | **Clarify the mission.** "Are we optimising for response time, cost, accuracy, or equity of coverage? Who's the primary user?" | One sentence naming the objective, and the objectives it trades against |
 | 5–10 | **Stakeholders and success metrics.** "Who calls this a success, and which number moves?" | A named owner per metric, and one north-star number |
 | 10–20 | **Map the inputs.** "What data exists, what shape, who owns it, how fresh?" | The input-map table from section 3 |
 | 20–30 | **Decompose into workstreams, sequence by risk.** Data ingestion and quality, the agent or model layer, the operator-facing surface | Three to five workstreams, ordered, with the ordering justified |
@@ -219,7 +219,7 @@ The north-star metric is fraud losses caught per investigator hour. Guardrails s
 | Investigator case notes | Free text | All three teams | On case close | Why a case was confirmed or cleared | Inconsistent wording; the richest signal, the least structured |
 | Chargebacks and customer disputes | Events | Card operations | Weeks to months (card dispute windows often run to about 120 days) | Late but independent ground truth | Arrives long after the transaction |
 
-The prompt's hardest constraint is in this table. "None of the data is labeled consistently" has two layers. The definitions differ between systems, and missing labels mean different things in each. A model trained on the union of the three would learn three definitions of fraud at once.
+The prompt's hardest constraint is in this table. "None of the data is labelled consistently" has two layers. The definitions differ between systems, and missing labels mean different things in each. A model trained on the union of the three would learn three definitions of fraud at once.
 
 ### 6.4 Plan the ninety days
 

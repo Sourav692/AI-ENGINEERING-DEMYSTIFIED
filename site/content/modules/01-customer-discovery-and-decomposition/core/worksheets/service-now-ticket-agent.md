@@ -36,7 +36,7 @@ Design a GenAI FDE solution for **ServiceNow Ticket Automation Agent**. The cust
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Ingestion:
 - Retrieval:
 - Agent/tool use:

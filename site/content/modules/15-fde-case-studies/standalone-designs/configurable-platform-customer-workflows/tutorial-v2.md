@@ -87,27 +87,27 @@
 - The FDE's first job is not to sketch services — it is to turn ambiguity into a measurable outcome: build a configurable workflow platform that lets ten customers vary fields, approvals, branding, and integrations while keeping the shared product core stable, versioned, and supportable.
 - Core reframe: separate the requested feature ("configuration") from the business result (serving customer-specific workflows without fragmenting the product into ten incompatible forks). This distinction is often the difference between sounding like an implementer and sounding like an FDE.
 - The primary outcome should be testable:
-  - "Safe" — changes do not bypass authorization or create unreviewed runtime behavior.
+  - "Safe" — changes do not bypass authorisation or create unreviewed runtime behaviour.
   - "Versioned" — each customer can know which workflow definition is active and what changed.
-  - "Supportable" — support and release teams can diagnose issues, roll back a bad configuration, and reason about behavior across tenants.
+  - "Supportable" — support and release teams can diagnose issues, roll back a bad configuration, and reason about behaviour across tenants.
 - A practical business outcome metric: the rate at which a new customer variation can be introduced without a fork, a hotfix, or a support escalation — not a vanity count of configurable fields.
 - Job-to-be-done framing: the customer isn't buying "a workflow engine" — they're hiring the platform to remove the need for custom forks while still letting each tenant express its business process. This pushes the architecture toward a stable core plus controlled extension points, not a codebase that mutates per account.
 
-> 🎯 **Interview Pointer:** The single highest-leverage line to memorize is the outcome statement itself — "preserve a stable product core while allowing safe, versioned, supportable customization." I'd expect interviewers to listen for this triad (safe / versioned / supportable) because it maps directly to the architecture decisions in later sections.
+> 🎯 **Interview Pointer:** The single highest-leverage line to memorise is the outcome statement itself — "preserve a stable product core while allowing safe, versioned, supportable customisation." I'd expect interviewers to listen for this triad (safe / versioned / supportable) because it maps directly to the architecture decisions in later sections.
 
 ### Stakeholder Map
 
 - The same request means different things to different stakeholders:
-  - Customer administrators — care about who can change a workflow, what they can customize, and how quickly they can roll it out.
+  - Customer administrators — care about who can change a workflow, what they can customise, and how quickly they can roll it out.
   - FDE teams — care about getting a real customer use case live without turning the platform into one-off custom code.
   - Core platform engineers — care about a durable model for workflow definitions, validation, permissions, and runtime execution.
   - Support and release teams — care about observability, rollback, incident response, and the ability to answer "what changed?"
-- Missing any stakeholder group risks over-optimizing for flexibility or under-designing for operability (miss support → unoperable flexibility; miss platform engineers → an ungeneralizable customer-specific layer).
+- Missing any stakeholder group risks over-optimising for flexibility or under-designing for operability (miss support → unoperable flexibility; miss platform engineers → an ungeneralisable customer-specific layer).
 - Concrete stakeholder map, one line each:
   - End user — the customer employee who submits the workflow, approves it, or receives the final action.
   - Operator — the support or release team member who watches health, rolls back a bad config, and responds to incidents.
   - Security owner — accountable for permissions, auditability, and least privilege across tenants.
-  - Executive sponsor — the business leader who wants one platform rollout instead of repeated forks and long customization projects.
+  - Executive sponsor — the business leader who wants one platform rollout instead of repeated forks and long customisation projects.
 
 ```mermaid
 flowchart TD
@@ -160,8 +160,8 @@ flowchart TD
 ### Weak vs. Strong Answers
 
 - Weak, feature-first restatement: "We should build a flexible workflow system with forms, approvals, themes, and API hooks."
-- Corrected, outcome-first restatement: "We need one shared workflow platform that lets each customer customize fields, approvals, branding, and integrations without forcing separate codebases, while keeping the core stable enough for versioning, support, and safe rollout." The second version exposes the real trade-off: flexibility versus fragmentation.
-- A concise opening answer: "Here's how I'd frame it. We have one workflow product, but ten customers need different fields, approval chains, branding, and system integrations. My goal is to preserve a stable shared core while allowing safe, versioned, supportable customization, so we do not end up with ten forks. I'd start by identifying which stakeholders own configuration, which variations are truly required, what failure modes are unacceptable, and how success will be measured for the first rollout. Then I'd design the architecture around controlled extension points, validation, and rollback rather than bespoke code paths."
+- Corrected, outcome-first restatement: "We need one shared workflow platform that lets each customer customise fields, approvals, branding, and integrations without forcing separate codebases, while keeping the core stable enough for versioning, support, and safe rollout." The second version exposes the real trade-off: flexibility versus fragmentation.
+- A concise opening answer: "Here's how I'd frame it. We have one workflow product, but ten customers need different fields, approval chains, branding, and system integrations. My goal is to preserve a stable shared core while allowing safe, versioned, supportable customisation, so we do not end up with ten forks. I'd start by identifying which stakeholders own configuration, which variations are truly required, what failure modes are unacceptable, and how success will be measured for the first rollout. Then I'd design the architecture around controlled extension points, validation, and rollback rather than bespoke code paths."
 - Why it works: it names the business problem, names the stakeholders, and makes clear architecture comes only after the workflow owner, risk owner, and success metric are defined — translate customer language into a bounded technical problem, then choose the system design.
 
 ## 2. Clarifying Questions, Requirements, and Constraints
@@ -175,13 +175,13 @@ flowchart TD
 ### The Six-Question Interview Tree
 
 - A concise interview question tree keeps you from wandering into feature brainstorming:
-  1. **Which differences recur across customers?** Separates a shared product pattern from one-off exceptions (recurring approval-chain differences → platform capability; one seasonal override → exception path). Answer determines whether the core abstraction centers on workflow steps, policy rules, form schemas, or integration orchestration.
-  2. **Who authors configuration?** An architecture question, not staffing: internal engineers tolerate more expressive power; customer admins/support need guardrails (validation, previews, narrower primitives, safer defaults). Changes UX, validation model, and authorization model.
+  1. **Which differences recur across customers?** Separates a shared product pattern from one-off exceptions (recurring approval-chain differences → platform capability; one seasonal override → exception path). Answer determines whether the core abstraction centres on workflow steps, policy rules, form schemas, or integration orchestration.
+  2. **Who authors configuration?** An architecture question, not staffing: internal engineers tolerate more expressive power; customer admins/support need guardrails (validation, previews, narrower primitives, safer defaults). Changes UX, validation model, and authorisation model.
   3. **What extension and integration needs are non-negotiable?** Outbound notifications, webhook callbacks, CRM sync, ticket creation, document generation, or auth hooks — determines the adapter interface, sync vs. async, and whether failures block a transition or degrade gracefully.
   4. **What upgrade guarantees do customers expect?** If configs must survive core releases: versioning, migration tooling, backward-compatible schema evolution, rollback paths are required. Otherwise there is no stable product core, just a perpetual services project.
   5. **Where is the custom-code security boundary?** Whether custom code runs inside the trusted core, in a sandbox, or only through approved integration points — determines tenancy isolation and supply-chain scrutiny. Safest default: keep the core declarative and arbitrary code outside the main trust boundary.
-  6. **What is the time-to-configure target?** Hours → self-service, validated, low-friction tooling; a week → more manual review is tolerable. Changes whether you optimize for admin UX, template reuse, automated testing, or partner onboarding.
-- These questions turn "support customization" into specific design pressures.
+  6. **What is the time-to-configure target?** Hours → self-service, validated, low-friction tooling; a week → more manual review is tolerable. Changes whether you optimise for admin UX, template reuse, automated testing, or partner onboarding.
+- These questions turn "support customisation" into specific design pressures.
 
 ```mermaid
 flowchart TD
@@ -203,15 +203,15 @@ flowchart TD
 - Versioned configuration and validation so changes can be reviewed, tested, and rolled back.
 - Controlled extension points for the few places where declarative configuration is not enough.
 - Migration and rollback tooling so version changes do not strand customers on incompatible configs.
-- The stable engine is the center of gravity: one release train, one operational model, one support surface. Declarative schemas/rules keep most variation out of code. The adapter interface prevents every integration from becoming a special case. Versioning/validation make customization supportable instead of fragile. Extension points must be narrow and explicit, not a blank check for arbitrary customer logic.
+- The stable engine is the centre of gravity: one release train, one operational model, one support surface. Declarative schemas/rules keep most variation out of code. The adapter interface prevents every integration from becoming a special case. Versioning/validation make customisation supportable instead of fragile. Extension points must be narrow and explicit, not a blank check for arbitrary customer logic.
 
 ### Measurable Non-Functional Requirements
 
 - One core release train — the platform ships as one product, not ten customer branches.
-- Configuration isolation — one customer's settings, data, and test changes cannot bleed into another customer's runtime behavior.
+- Configuration isolation — one customer's settings, data, and test changes cannot bleed into another customer's runtime behaviour.
 - Backward-compatible upgrades — old configurations continue to work until a planned migration path is executed.
-- Observable customer-specific behavior — when a workflow misbehaves, operators can see which config version, and which rule or adapter, was involved.
-- These are constraints on system shape, not soft aspirations: no observability → cannot support it; no backward compatibility → configuration becomes a liability; weak isolation → customization becomes a multi-tenant incident factory.
+- Observable customer-specific behaviour — when a workflow misbehaves, operators can see which config version, and which rule or adapter, was involved.
+- These are constraints on system shape, not soft aspirations: no observability → cannot support it; no backward compatibility → configuration becomes a liability; weak isolation → customisation becomes a multi-tenant incident factory.
 
 ### MVP Non-Goals / Scope Fence
 
@@ -219,9 +219,9 @@ flowchart TD
   - Arbitrary customer-written code inside the workflow engine.
   - Unlimited branching of the UI for each customer's branding request.
   - A general-purpose rules language that can express every possible business process.
-  - Deeply bespoke integration behavior that bypasses the adapter contract.
+  - Deeply bespoke integration behaviour that bypasses the adapter contract.
   - Automatic migration of every legacy configuration shape without operator review.
-- These exclusions preserve the product core; the MVP proves ten customers can share one platform with safe variation, not that every conceivable workflow can be modeled on day one.
+- These exclusions preserve the product core; the MVP proves ten customers can share one platform with safe variation, not that every conceivable workflow can be modelled on day one.
 
 ### Requirement-to-Component Traceability
 
@@ -236,15 +236,15 @@ flowchart TD
 | Controlled extension points | Sandbox or plugin boundary |
 | Migration and rollback tooling | Deployment and ops tooling |
 | One core release train | Shared platform build and release process |
-| Configuration isolation | Tenant-aware data and authorization layer |
+| Configuration isolation | Tenant-aware data and authorisation layer |
 | Backward-compatible upgrades | Schema evolution and compatibility checks |
-| Observable customer-specific behavior | Audit logs, metrics, tracing, config-version tags |
+| Observable customer-specific behaviour | Audit logs, metrics, tracing, config-version tags |
 
 ### Handling Partial Answers
 
 - If the interviewer answers only some questions, do not freeze — choose reasonable assumptions and protect the highest-risk constraint.
-- Example: if customers are similar but who-authors-configuration is unspecified, assume a mixed model — customer admins edit safe declarative fields, internal ops approve schema changes and extensions. This protects the most fragile boundary: safe customization vs. unsafe code.
-- The job-market signal being tested: customer discovery under ambiguity, prioritization under incomplete information, and the discipline to preserve delivery by narrowing scope instead of widening it.
+- Example: if customers are similar but who-authors-configuration is unspecified, assume a mixed model — customer admins edit safe declarative fields, internal ops approve schema changes and extensions. This protects the most fragile boundary: safe customisation vs. unsafe code.
+- The job-market signal being tested: customer discovery under ambiguity, prioritisation under incomplete information, and the discipline to preserve delivery by narrowing scope instead of widening it.
 
 ### The Strong Candidate Move
 
@@ -267,7 +267,7 @@ flowchart TD
 - Estimate in the order that changes architecture:
   1. **Version intake and validation throughput.** Schema checks, policy checks, dependency checks, simulation/dry-run — if these add up to (my rough guess) 2–10 seconds of CPU-bound work or a few network calls, synchronous user feedback must be separated from asynchronous deeper checks. Immediate SLO: "did the edit save and return a clear result quickly?" Deeper guarantee: "did validation complete and promote/reject the version before the deployment window closes?"
   2. **Deployment throughput.** Even if only a fraction of the 1,000 versions/day are promoted, deployments fan out across tenants, regions, or integrations — a single promoted template update might touch dozens of workflow instances or enqueue downstream sync jobs. Deployment capacity is driven by fan-out, not just the count of human edits.
-  3. **Limits for expressive power.** Hard limits on rules, custom fields, and plugin execution shape runtime cost early — e.g., a moderate field count per form, a bounded number of rule clauses per transition, short plugin execution windows with memory/network restrictions. These limits prevent one customer's customization from consuming everyone else's shared service budget.
+  3. **Limits for expressive power.** Hard limits on rules, custom fields, and plugin execution shape runtime cost early — e.g., a moderate field count per form, a bounded number of rule clauses per transition, short plugin execution windows with memory/network restrictions. These limits prevent one customer's customisation from consuming everyone else's shared service budget.
   4. **State growth and retention.** Configuration history grows more slowly than event history but still matters — the question isn't just "how many records?" but "what must be retained for audit, rollback, and support, and for how long?" Keep the version graph compact, store deltas where useful, make rollback metadata first-class.
 
 ### SLOs Tied to Customer Pain
@@ -311,7 +311,7 @@ These volumes and peak factors are illustrative numbers I'd pick for this case, 
 
 - 10x growth does not just increase cost — it can force a different partitioning strategy. The same is true for custom fields/rules: highly branched forms with many calculated fields may need compile-time validation, partial evaluation, or cached execution plans; common plugin execution may need sandboxing or an adapter boundary instead of direct in-process execution.
 
-> 🎯 **Interview Pointer:** Be ready to explain *why* 10x growth forces a partitioning change rather than just "more servers" — the answer is tenant noisy-neighbor risk crossing a threshold where a shared validator/queue can no longer contain one bad tenant's blast radius. This is the kind of qualitative reasoning interviewers reward over spreadsheet precision.
+> 🎯 **Interview Pointer:** Be ready to explain *why* 10x growth forces a partitioning change rather than just "more servers" — the answer is tenant noisy-neighbour risk crossing a threshold where a shared validator/queue can no longer contain one bad tenant's blast radius. This is the kind of qualitative reasoning interviewers reward over spreadsheet precision.
 
 ### Average vs. Peak: Headroom as a Product Feature
 
@@ -328,7 +328,7 @@ These volumes and peak factors are illustrative numbers I'd pick for this case, 
 ### Control Plane vs. Data Plane
 
 - The cleanest way to explain this system: walk one tenant request all the way through, then replay it when a dependency is unhealthy.
-- Hidden constraint: one customer's custom approval logic may be dangerous if it can alter shared runtime behavior.
+- Hidden constraint: one customer's custom approval logic may be dangerous if it can alter shared runtime behaviour.
 - The design splits into a **control plane** (authors, validates, versions, and promotes configuration) and a **data plane** (executes live workflow instances) — this separation keeps risky change management out of the hot path.
   - Control plane owns: config editing, schema checks, tenant contract tests, release promotion.
   - Data plane owns: workflow execution, UI rendering at runtime, connector calls, audit events.
@@ -436,7 +436,7 @@ sequenceDiagram
   3. **Run tenant contract tests** — replays representative scenarios: form submission, approval routing, edge-case inputs, integration stubs.
   4. **Publish an immutable version** — the registry stores the exact artifact, version tag, schema version, author, and release metadata; system of record for what was approved.
   5. **Roll out behind a tenant flag** — exposed to a single tenant, then a cohort, then broader traffic if stable.
-  6. **Observe behavior** — validation failures, step latency, adapter error rates, approval-loop detection, user completion metrics.
+  6. **Observe behaviour** — validation failures, step latency, adapter error rates, approval-loop detection, user completion metrics.
   7. **Promote or rollback** — if the release meets the acceptance gate it becomes active; otherwise the flag moves back or the tenant is pinned to the prior immutable version.
 - Key nuance: "publish" does not mean "activate everywhere" — that separation is what keeps a bad config from becoming a broad outage.
 - Synchronous vs. asynchronous: validation and contract testing are synchronous gates (must block promotion); migration, bulk replay, and some integration recovery are better asynchronous (should not hold the user's request open). The runtime itself often mixes both — quick step decisions synchronously, external side effects asynchronously when a dependency is slow or unreliable.
@@ -464,8 +464,8 @@ flowchart TD
 
 ### MVP vs. Later Evolution
 
-- MVP: keep it brutally simple — versioned registry, validator, runtime, feature flags, tenant test harness, small adapter SDK, and only the smallest sandbox needed for approved extensions. Favor immutable config versions and clear rollback over a more exotic live-edit system.
-- Later: cross-tenant config templates, richer migration automation, a broader plugin marketplace, deeper observability into tenant behavior — only after the core release path is stable and supportable.
+- MVP: keep it brutally simple — versioned registry, validator, runtime, feature flags, tenant test harness, small adapter SDK, and only the smallest sandbox needed for approved extensions. Favour immutable config versions and clear rollback over a more exotic live-edit system.
+- Later: cross-tenant config templates, richer migration automation, a broader plugin marketplace, deeper observability into tenant behaviour — only after the core release path is stable and supportable.
 
 ### 90-Second Interview Summary
 
@@ -478,7 +478,7 @@ flowchart TD
 - The fastest way to make this design credible: stop speaking in abstractions and pin the hardest parts to concrete state, contracts, and a small amount of code — what is durable, what is mutable, what is versioned, what is deployed, and what happens when the same request arrives twice.
 - **`WorkflowTemplate(id, engine_version, schema)`** — the reusable blueprint, owned by product/platform.
   - `id` is the primary key; `engine_version` tells the runtime which evaluator/renderer understands the template; `schema` describes allowed shape of fields, approvals, integrations.
-  - Lifecycle: `draft` → `published`; only a new template version can change behavior — the published artifact is immutable.
+  - Lifecycle: `draft` → `published`; only a new template version can change behaviour — the published artifact is immutable.
   - Retention: keep published templates for the life of the product/contract window so old tenant configs can still resolve against the exact template they validated against; garbage-collect drafts after a safe inactivity period.
 - **`TenantConfig(tenant_id, template_id, version, values)`** — the customer-specific overlay.
   - Primary key effectively `(tenant_id, version)`; `values` holds only tenant-specific parameters allowed by the template schema.
@@ -500,7 +500,7 @@ flowchart TD
 ### Four API Contracts
 
 - The interview-sized implementation shows one constrained declarative workflow contract and a write path that refuses unsafe input before it reaches the registry — the goal is to prove the platform can accept bounded configuration, validate it, and publish it immutably.
-- `POST /v1/configurations/validate` — accepts a draft tenant config, returns validation errors and a normalized preview, never publishes state.
+- `POST /v1/configurations/validate` — accepts a draft tenant config, returns validation errors and a normalised preview, never publishes state.
   - Auth: tenant-scoped bearer token/session bound to the caller's tenant; authz only allows validating configs for tenants the caller can administer.
   - Body: `template_id`, `version`, `values`, optionally `idempotency_key` (for replayable validation traces; endpoint can also be safely retried without write effects).
   - Responses: `200 OK` successful preview; `400 Bad Request` structural issues; `403 Forbidden` tenant mismatch/missing rights; `422 Unprocessable Entity` schema/policy violations.
@@ -517,7 +517,7 @@ flowchart TD
   - Body: names the target deployment or prior good version; includes an idempotency key (rollback is a write op that may be retried under failure).
   - Success returns the new deployment record, never overwrites the prior one.
   - Errors: `404 Not Found` deployment ID doesn't exist; `409 Conflict` current live state has moved on in a way that makes rollback unsafe; `422 Unprocessable Entity` target version no longer compatible with current template/adapter contract.
-- All four endpoints: require tenant-aware authentication and authorization, reject cross-tenant writes, require an idempotency key on create-style operations, and return the same result for repeated requests with the same key and body. A changed body under a reused key is a conflict, never a silent update.
+- All four endpoints: require tenant-aware authentication and authorisation, reject cross-tenant writes, require an idempotency key on create-style operations, and return the same result for repeated requests with the same key and body. A changed body under a reused key is a conflict, never a silent update.
 
 ### Idempotent Deployment Creation Walkthrough
 
@@ -677,10 +677,10 @@ function publish(configId: string, raw: unknown, allowedAdapters: Set<string>, r
   - `JsonValue`/`JsonLogic` make approval conditions explicit without opening the door to arbitrary code.
   - `ValidationError` gives the API a stable error vocabulary.
   - `validateWorkflowConfig` is typed boundary validation — rejects malformed payloads before business logic sees them.
-  - `validatePolicy` separates structural correctness from authorization/workflow rules.
+  - `validatePolicy` separates structural correctness from authorisation/workflow rules.
   - `validateAdapterMappings` checks the integration surface against an allowlist rather than trusting the config author.
   - `Registry.putImmutable` models versioned writes instead of overwrite semantics.
-  - `publish` composes checks in the only order that makes sense: parse → validate → authorize-by-policy → persist.
+  - `publish` composes checks in the only order that makes sense: parse → validate → authorise-by-policy → persist.
 
 ```mermaid
 flowchart TD
@@ -697,14 +697,14 @@ flowchart TD
   style FAIL3 fill:#a63d40,stroke:#5c1f22,color:#fff
 ```
 
-> 🎯 **Interview Pointer:** Memorize the four-stage composition order — parse → validate → authorize-by-policy → persist — as a reusable pattern. Interviewers often ask "why this order?" The answer: cheap structural checks fail fast before expensive policy/adapter checks run, and nothing is persisted until every prior stage has passed (fail closed).
+> 🎯 **Interview Pointer:** Memorise the four-stage composition order — parse → validate → authorise-by-policy → persist — as a reusable pattern. Interviewers often ask "why this order?" The answer: cheap structural checks fail fast before expensive policy/adapter checks run, and nothing is persisted until every prior stage has passed (fail closed).
 
 ### What the Whiteboard Version Omits on Purpose
 
 - A real service would add:
   - **Optimistic concurrency** — the write boundary should carry an expected template/config version so two operators cannot race and overwrite each other's change unnoticed.
   - **Idempotency** — a retry after a timeout should not create a second deployment or version.
-  - **Bounded, safe retries** — limited to safe failure classes; never replay a rejected validation/authorization failure as though it were transient.
+  - **Bounded, safe retries** — limited to safe failure classes; never replay a rejected validation/authorisation failure as though it were transient.
   - **Observability** — tag every validation, deployment, adapter test, and rollback with tenant ID, config version, request ID, and idempotency key so support can trace exactly what happened without reading application logs line by line.
 
 ### Contract and Failure-Injection Tests
@@ -766,21 +766,21 @@ describe("publish", () => {
 
 ### The Red-Team Question
 
-- A security-and-ops review is where this design either becomes shippable or collapses into "works in the demo." Start by assuming the worst plausible version of the customer request: highly flexible workflow customization, but the platform must still preserve a stable core, keep secrets compartmentalized, and survive bad config without turning one customer's mistake into everyone's outage.
+- A security-and-ops review is where this design either becomes shippable or collapses into "works in the demo." Start by assuming the worst plausible version of the customer request: highly flexible workflow customisation, but the platform must still preserve a stable core, keep secrets compartmentalised, and survive bad config without turning one customer's mistake into everyone's outage.
 - The right red-team move: "What happens if a published config creates an infinite approval loop?" This tests whether the platform can contain impact, preserve evidence, and keep operating for other tenants — not just whether the logic is correct.
 - Concrete answer: the config pipeline rejects obvious cycles before activation; if a cycle is discovered after publish (hidden state or a race), the engine halts that workflow version, marks the offending revision inactive, keeps the prior known-good version available, and records the publisher, timestamp, tenant, and rule graph snapshot for audit and replay. Goal: make loops boring, bounded, and attributable — not pretend they can't happen.
 
 ### Four Security Controls
 
-- **Disallow arbitrary code by default.** Most customization should be declarative: fields, validation rules, routing, approvals, adapter bindings. Arbitrary code is the escape hatch, not the default path — if supported later, it should run through a heavily constrained sandbox or a separate approval-gated extension mechanism.
+- **Disallow arbitrary code by default.** Most customisation should be declarative: fields, validation rules, routing, approvals, adapter bindings. Arbitrary code is the escape hatch, not the default path — if supported later, it should run through a heavily constrained sandbox or a separate approval-gated extension mechanism.
 - **Scope adapters and secrets per tenant.** Isolate each integration so one tenant cannot read another's credentials, tokens, or request payloads. Least privilege applies twice: in the runtime that executes actions, and in the control plane that publishes configuration — a support engineer who can inspect a tenant's config should not automatically be able to invoke its external systems.
 - **Validate rules for denial-of-service risk.** "Flexible validation" can become a resource-exhaustion bug — deeply nested conditions, unbounded regexes, giant lookup tables, recursive approval paths can create pathological CPU/memory usage. The publish path enforces shape limits, depth limits, size caps, and cycle detection before a config becomes active.
-- **Audit configuration publishers and versions.** Every change needs a durable trail: who published it, what changed, which review/approval gate was crossed, which version superseded which. This is not compliance theater — it lets ops answer "which revision introduced the failure?" and security answer "was this an authorized change?"
+- **Audit configuration publishers and versions.** Every change needs a durable trail: who published it, what changed, which review/approval gate was crossed, which version superseded which. This is not compliance theater — it lets ops answer "which revision introduced the failure?" and security answer "was this an authorised change?"
 - Tie each control to a failure mode in interview language: code execution, secret exposure, resource abuse, and change attribution.
 
 ### Failure-Policy Decision Table
 
-| Event | Default behavior | Why |
+| Event | Default behaviour | Why |
 |---|---|---|
 | Validation cannot prove a workflow is safe to activate | **Fail closed** | Better to block a risky publish than activate an unsafe tenant revision |
 | External adapter times out during execution | **Retry with limits, then queue or dead-letter** | Transient outages should not immediately fail customer work |
@@ -797,13 +797,13 @@ describe("publish", () => {
 - **Region blast radius:** if multi-region, a bad deployment or dependency issue should be contained to the smallest feasible region slice.
 - **Workflow blast radius:** only the affected workflow definition/version should be frozen, not the whole tenant (unless the tenant's control plane is compromised).
 - **Dependency blast radius:** if a single adapter fails, isolate that adapter and keep unrelated adapters healthy.
-- Defense in depth: validation is one layer, runtime sandboxing another, rate limiting another, and observability is the last layer confirming the first three are still working.
+- Defence in depth: validation is one layer, runtime sandboxing another, rate limiting another, and observability is the last layer confirming the first three are still working.
 
 ### Failure Drill: Infinite Approval Loop
 
 - Scenario: a tenant publishes a workflow where step A routes to manager approval, manager approval routes to compliance approval, and compliance approval routes back to manager approval under a condition that is always true.
 - A strong candidate response has four parts:
-  1. **Detection** — the publish pipeline statically detects the cycle if possible; if the loop emerges only at runtime, the engine recognizes repeated state transitions and a max-hop/max-revisit guard triggers.
+  1. **Detection** — the publish pipeline statically detects the cycle if possible; if the loop emerges only at runtime, the engine recognises repeated state transitions and a max-hop/max-revisit guard triggers.
   2. **Containment** — freeze the workflow version, halt only the affected execution group, prevent new starts on that revision.
   3. **Recovery** — resume from the last known-good version, or queue affected requests for operator review if the workflow already emitted side effects.
   4. **Prevention** — add stronger graph validation, test cases for cyclic approvals, and a publish-time policy that rejects configs whose approval graph cannot be topologically ordered.
@@ -942,11 +942,11 @@ describe("publish", () => {
 });
 ```
 
-- The point of the test is not that the code is complete — the invariant is explicit: a tenant cannot activate a config with an adapter the platform does not recognize, and the publish path fails closed before runtime.
+- The point of the test is not that the code is complete — the invariant is explicit: a tenant cannot activate a config with an adapter the platform does not recognise, and the publish path fails closed before runtime.
 
 ### What to Say in the Interview
 
-- Make the judgment visible: arbitrary code is denied by default; tenant secrets and adapters are isolated; risky rules are validated before activation; all publishes are audited; every external dependency or irreversible action gets a named failure policy. Connect that to supportability: the platform can degrade, queue, or block with evidence instead of guessing.
+- Make the judgement visible: arbitrary code is denied by default; tenant secrets and adapters are isolated; risky rules are validated before activation; all publishes are audited; every external dependency or irreversible action gets a named failure policy. Connect that to supportability: the platform can degrade, queue, or block with evidence instead of guessing.
 - Job-market signal: teams hiring for this role want someone who can own safe rollout, support, and incident response, not just the happy path — someone who protects the product core while still making customer-specific workflows feel flexible.
 - Takeaway: every external dependency and irreversible action needs an explicit failure and recovery policy, stated by tenant, region, workflow, and dependency, with a publish-time invariant that keeps unsafe config out of production.
 
@@ -1017,7 +1017,7 @@ flowchart LR
 
 ### Ownership Before Launch
 
-- **Product owner:** decides which recurring workflow becomes the first platformized path.
+- **Product owner:** decides which recurring workflow becomes the first platformised path.
 - **Platform owner:** maintains the shared core, config schema, and publish service.
 - **FDE:** translates the customer workflow into supported configuration, validates assumptions, coordinates rollout.
 - **Support lead:** owns customer communication, triage, and escalation during pilot.
@@ -1027,7 +1027,7 @@ flowchart LR
 ### Go/No-Go and Rollback Triggers
 
 - Go/no-go gate: the config is allowed to publish only if validation passes, dependency adapters are healthy, the rollback plan is rehearsed, and the customer champion confirms the workflow still matches the business process.
-- Rollback trigger: repeated validation failures, unexpected integration errors, a growing incident rate in the first tenant cohort, or any sign that a new config pattern is producing unstable approval behavior.
+- Rollback trigger: repeated validation failures, unexpected integration errors, a growing incident rate in the first tenant cohort, or any sign that a new config pattern is producing unstable approval behaviour.
 - If the workflow is stateful, migration and rollback must be written down separately — moving state is not the same as reverting code.
 - Launch package documentation: a short admin guide, a support runbook, a rollback checklist, and a change log stating exactly what is configurable, what is fixed, and what requires engineering review.
 
@@ -1037,7 +1037,7 @@ flowchart LR
 - **Adapter** for integrations that differ by customer but share a common interface: CRM, ticketing, email, identity, document systems.
 - **Shared service** for capabilities reused across tenants that need uniform policy: validation, audit logging, workflow execution, publish orchestration.
 - **Core product** for primitives that define the stable business model and should not be renegotiated for every tenant.
-- When tempted to add "just one exception," ask whether it changes the core product, belongs in an adapter, or should be modeled as config — protects the platform from drifting into unmaintainable per-customer branching.
+- When tempted to add "just one exception," ask whether it changes the core product, belongs in an adapter, or should be modelled as config — protects the platform from drifting into unmaintainable per-customer branching.
 
 ```mermaid
 flowchart TD
@@ -1060,25 +1060,25 @@ flowchart TD
 | Unsupported fork pressure | Product manager | Refusal criteria for bespoke code and a review board for exceptions | Requests that cannot be represented in configuration |
 
 - This risk register is part of the operating model, not an appendix.
-- Job-market signal: forward-deployed teams need someone who can carry the work from prototype to adoption, then turn customer feedback into a reusable product pattern. The platform is finished when customers adopt it, the workflow improves, and the operating team can support it without heroics — that is the point "customizable" becomes "supportable."
+- Job-market signal: forward-deployed teams need someone who can carry the work from prototype to adoption, then turn customer feedback into a reusable product pattern. The platform is finished when customers adopt it, the workflow improves, and the operating team can support it without heroics — that is the point "customisable" becomes "supportable."
 
 ## 8. Interview Walkthrough, Trade-Offs, and Practice
 
 ### Minute-Zero Opening
 
-- Answer from the customer's outcome, not the technology: "We need one platform that can serve ten customers with similar workflows but different fields, approvals, branding, and integrations, without creating ten forks. I'd start by clarifying which parts must remain product core, which parts can vary safely by configuration, and which extensions need hard isolation. My bias is to preserve a stable core and move variation into versioned, testable configuration unless a requirement is truly unique or risky to generalize."
-- This opening states the outcome, shows architectural judgment, and invites correction. If the interviewer changes the premise (e.g., a regulated approval step or proprietary connector), adapt rather than defend the first instinct.
+- Answer from the customer's outcome, not the technology: "We need one platform that can serve ten customers with similar workflows but different fields, approvals, branding, and integrations, without creating ten forks. I'd start by clarifying which parts must remain product core, which parts can vary safely by configuration, and which extensions need hard isolation. My bias is to preserve a stable core and move variation into versioned, testable configuration unless a requirement is truly unique or risky to generalise."
+- This opening states the outcome, shows architectural judgement, and invites correction. If the interviewer changes the premise (e.g., a regulated approval step or proprietary connector), adapt rather than defend the first instinct.
 
 ### The 50-Minute Pacing Plan
 
 - Use time in proportion to risk, not diagram size — a polished answer spends the most time where failure would hurt the business, not the one with the most boxes.
 - **Minutes 0–9 (Outcome & discovery):** anchor the outcome (min 0); name the primary customer outcome (min 1); ask which part changes most often (min 2); identify the hidden constraint (min 3); define what must remain stable (min 4); state non-negotiables — identity, workflow semantics, auditability, rollback, support boundaries (min 5); state assumptions on tenant count/frequency (min 6); state assumptions on config authorship/approval (min 7); state assumptions on failure tolerance/incident response (min 8); invite the interviewer to redirect (min 9).
-- **Minutes 10–14 (Success & scale):** define success criteria in customer/operating-model terms (min 10); state SLO/supportability implications (min 11); frame "safe customization" (min 12); estimate system shape — tenants, workflows, connectors, admin edits (min 13); keep numeric estimates illustrative (min 14).
-- **Minutes 15–24 (Architecture):** propose main architecture (min 15); config authoring and guardrails (min 16); validation and publish gates (min 17); immutable versioning and rollout (min 18); workflow execution layer (min 19); connectors and integration boundaries (min 20); audit logging and observability (min 21); tenant-scoped identity/authorization (min 22); how workflow state is read/updated (min 23); control flow vs. data flow (min 24).
+- **Minutes 10–14 (Success & scale):** define success criteria in customer/operating-model terms (min 10); state SLO/supportability implications (min 11); frame "safe customisation" (min 12); estimate system shape — tenants, workflows, connectors, admin edits (min 13); keep numeric estimates illustrative (min 14).
+- **Minutes 15–24 (Architecture):** propose main architecture (min 15); config authoring and guardrails (min 16); validation and publish gates (min 17); immutable versioning and rollout (min 18); workflow execution layer (min 19); connectors and integration boundaries (min 20); audit logging and observability (min 21); tenant-scoped identity/authorisation (min 22); how workflow state is read/updated (min 23); control flow vs. data flow (min 24).
 - **Minutes 25–29 (Config lifecycle):** who edits config (min 25); how config is reviewed (min 26); how config is promoted (min 27); how rollback works (min 28); how support reproduces an issue from a pinned version (min 29).
 - **Minutes 30–38 (Happy path, failure path, loop drill):** happy path config-change → publish (min 30); publish → execution (min 31); execution → audit record (min 32); failure path for invalid config (min 33); failure path for permission drift (min 34); failure path for connector failure (min 35); failure path for rollback after a bad publish (min 36); the infinite approval loop drill (min 37); how cycle detection/publish-time validation prevents the loop from reaching production (min 38).
 - **Minutes 39–46 (Trade-offs & follow-ups):** configuration vs. code (min 39); generic engine vs. domain product (min 40); plugin flexibility vs. security (min 41); backward compatibility vs. simplification (min 42); what becomes core product (min 43); how configurations are versioned (min 44); when a one-off fork is acceptable (min 45); how extensions are sandboxed (min 46).
-- **Minutes 47–49 (Close):** summarize delivery, rollout gating, observability, support playbooks (min 47); deliver the 90-second executive summary (min 48); state the first production rollout gate and pause for questions (min 49).
+- **Minutes 47–49 (Close):** summarise delivery, rollout gating, observability, support playbooks (min 47); deliver the 90-second executive summary (min 48); state the first production rollout gate and pause for questions (min 49).
 
 ```mermaid
 flowchart LR
@@ -1092,21 +1092,21 @@ flowchart LR
 
 ### Four Trade-Off Pairs
 
-- **Configuration versus code.** Configuration wins when customers differ in fields, labels, approvals, routing, or connector selection — those changes remain visible, versioned, and supportable. Code wins when variation changes semantics, requires a new invariant, or would turn the configuration language into an unreadable programming system. Repair for weak answers: stop saying "everything should be configurable" — instead, "make common variations declarative; when logic becomes custom business behavior, graduate it to code with review and isolation."
-- **Generic engine versus domain product.** A generic engine serves many tenants but risks becoming too abstract if it tries to model every business process. A domain product is narrower but easier to use/support. Strongest answer: define a stable core around workflow primitives the company can support repeatedly, then expose a constrained domain model around those primitives — optimize for the workflow family the company wants to own, not an endlessly extensible platform.
+- **Configuration versus code.** Configuration wins when customers differ in fields, labels, approvals, routing, or connector selection — those changes remain visible, versioned, and supportable. Code wins when variation changes semantics, requires a new invariant, or would turn the configuration language into an unreadable programming system. Repair for weak answers: stop saying "everything should be configurable" — instead, "make common variations declarative; when logic becomes custom business behaviour, graduate it to code with review and isolation."
+- **Generic engine versus domain product.** A generic engine serves many tenants but risks becoming too abstract if it tries to model every business process. A domain product is narrower but easier to use/support. Strongest answer: define a stable core around workflow primitives the company can support repeatedly, then expose a constrained domain model around those primitives — optimise for the workflow family the company wants to own, not an endlessly extensible platform.
 - **Plugin flexibility versus security.** Plugins reduce time-to-customer by letting teams integrate special systems without rebuilding the core, but enlarge the attack surface. Safe answer: sandbox extensions, restrict permissions, pin interfaces, treat plugins as governed artifacts with review, versioning, and observability. Broad data access or arbitrary execution is no longer a "simple plugin" — it's a trusted service boundary.
 - **Backward compatibility versus simplification.** Backward compatibility protects existing tenants and avoids breaking active workflows; simplification keeps the platform understandable and maintainable. Good answer: both matter — propose an explicit deprecation policy (versioned schemas, migration windows, compatibility tests, a small number of supported generations). Repair for weak answers: avoid "we'll support everything forever" — that turns support into archaeology.
 
 ### Expected Follow-Up Questions
 
-- **What becomes core product?** The stable execution model, identity/authorization primitives, workflow state transitions, audit logging, validation, and admin tooling. Customer-specific labels, field definitions, approval routing, and connector parameters belong in versioned configuration. Anything that alters execution semantics, requires bespoke storage behavior, or undermines safe rollback should be promoted only after it proves reusable across customers.
+- **What becomes core product?** The stable execution model, identity/authorisation primitives, workflow state transitions, audit logging, validation, and admin tooling. Customer-specific labels, field definitions, approval routing, and connector parameters belong in versioned configuration. Anything that alters execution semantics, requires bespoke storage behaviour, or undermines safe rollback should be promoted only after it proves reusable across customers.
 - **How do you version configurations?** Immutable published versions, human-readable diffs, schema validation at save time, compatibility checks at publish time. Store configuration as a declarative document with explicit tenant scope, version number, authorship, and rollout status. Never let production workflows depend on an unpinned draft. Versioning is also for audit, support, and reproduction of customer incidents — not just rollback.
 - **When is a one-off fork acceptable?** Only when the requirement is genuinely non-reusable, business value justifies the support cost, and the divergence can be isolated so it doesn't infect the core — a narrow exception, not a habit. A fork is acceptable if the alternative would distort the core product into something less reliable or less secure for everyone else.
 - **How do you sandbox extensions?** Limit execution context, network access, data access, and side effects. Enforce least privilege, explicit interfaces, resource controls, timeout boundaries, reviewable deployment artifacts. If the extension touches customer data, make the access model explicit and auditable. Sandboxing also includes interface design, dependency review, and deployment governance — not just runtime isolation.
 
 ### Weak Answers and Their Repairs
 
-- **Weak:** "We'll make everything configurable." → **Repair:** distinguish declarative customization from business logic.
+- **Weak:** "We'll make everything configurable." → **Repair:** distinguish declarative customisation from business logic.
 - **Weak:** "We'll build a flexible plugin system." → **Repair:** define trust boundaries, permissions, and review gates.
 - **Weak:** "We can always add a fork later." → **Repair:** explain the support, testing, and upgrade burden of forks.
 - **Weak:** "Backward compatibility is always good." → **Repair:** describe version retirement and compatibility budgets.
@@ -1135,7 +1135,7 @@ flowchart LR
 
 ### 90-Second Architecture Summary
 
-- "We solve this by keeping a small, stable workflow core and moving tenant variation into versioned configuration for fields, approvals, branding, and connector settings. Each customer edits config through guarded admin tools; config is validated, stored immutably, and published only if it passes schema, policy, and cycle checks. The execution layer reads the published version, runs workflow state transitions, and emits audit events so support can reproduce any tenant's behavior. Extensions go through a controlled plugin boundary with least privilege and explicit contracts. The biggest trade-off is configuration versus code: I want as much reuse as possible, but I would not force custom business semantics into config if that would weaken security or make the system unmaintainable. My first production rollout gate would be a single tenant cohort with rollback, audit, and adapter contract tests proven in staging before broad rollout."
+- "We solve this by keeping a small, stable workflow core and moving tenant variation into versioned configuration for fields, approvals, branding, and connector settings. Each customer edits config through guarded admin tools; config is validated, stored immutably, and published only if it passes schema, policy, and cycle checks. The execution layer reads the published version, runs workflow state transitions, and emits audit events so support can reproduce any tenant's behaviour. Extensions go through a controlled plugin boundary with least privilege and explicit contracts. The biggest trade-off is configuration versus code: I want as much reuse as possible, but I would not force custom business semantics into config if that would weaken security or make the system unmaintainable. My first production rollout gate would be a single tenant cohort with rollback, audit, and adapter contract tests proven in staging before broad rollout."
 
 ### Practice Plan
 
@@ -1143,7 +1143,7 @@ flowchart LR
 - **Pair mock:** have a partner interrupt with the risky follow-up: "What becomes core product?" or "When is a one-off fork acceptable?" Practice answering without becoming defensive.
 - **Implementation exercise:** design a versioned configuration validator that rejects cycles in approval routing and requires safe publish-time checks before a workflow can go live.
 - **Equation guidance:** no new equation is introduced in this section — quantitative considerations are handled in prose, and deeper capacity math is deferred to Section 3 so the interview walkthrough stays focused on trade-offs, not derivations.
-- Job-market advantage: this is close to the style of conversation forward-deployed teams use when moving from a customer problem to a safe productized solution.
+- Job-market advantage: this is close to the style of conversation forward-deployed teams use when moving from a customer problem to a safe productised solution.
 
 ## Coverage Notes
 
@@ -1153,7 +1153,7 @@ Self-review against the 20-item decomposition rubric (single pass — the source
 - **Item 1 (Feature → business-outcome reframing):** Fully covered — Section 1 restates the prompt as a business outcome, not technology.
 - **Item 2 (Stakeholder / persona mapping):** Fully covered — Section 1 names 8 stakeholder groups.
 - **Item 3 (Clarifying questions that change the architecture):** Fully covered — Section 2's 6-question tree.
-- **Item 4 (Requirements split + prioritization):** Fully covered — Section 2 must-have functional vs. measurable NFRs.
+- **Item 4 (Requirements split + prioritisation):** Fully covered — Section 2 must-have functional vs. measurable NFRs.
 - **Item 5 (Explicit non-goals / scope fence):** Fully covered — Section 2's 5-item MVP exclusion list.
 
 **Phase 2 — Estimation & Architecture**
@@ -1185,8 +1185,8 @@ Given the strength of first-pass coverage (only items 7, 10, 17, and 18 fall sho
 
 **Item 7 — Unit economics / cost-driver breakdown.**
 - I would build the cost model directly off the four-step capacity envelope in Section 3: cost per validated version (CPU/network cost of schema + policy + dependency + dry-run checks), cost per deployment (driven by fan-out across tenant instances and downstream sync jobs, not raw edit count), cost per plugin-execution-second in the sandbox, and storage cost for the append-only `ConfigDeployment` ledger and version graph.
-- The interesting driver to name out loud is that validation cost scales with tenant behavior, not platform design — a tenant with deeply branched forms or many rule clauses can push validation cost up without any change on the platform side, which is exactly why Section 3's expressive-power limits (max fields, max rule clauses, bounded plugin windows) are also a cost control, not just a safety control.
-- I would present it as a per-tenant unit-cost line so a single noisy tenant's cost is visible rather than smeared into an aggregate platform number — that visibility is what lets you have the "should this tenant's customization live in config vs. an adapter" conversation with real numbers instead of leverage as an abstraction.
+- The interesting driver to name out loud is that validation cost scales with tenant behaviour, not platform design — a tenant with deeply branched forms or many rule clauses can push validation cost up without any change on the platform side, which is exactly why Section 3's expressive-power limits (max fields, max rule clauses, bounded plugin windows) are also a cost control, not just a safety control.
+- I would present it as a per-tenant unit-cost line so a single noisy tenant's cost is visible rather than smeared into an aggregate platform number — that visibility is what lets you have the "should this tenant's customisation live in config vs. an adapter" conversation with real numbers instead of leverage as an abstraction.
 
 **Item 10 — Build vs. buy / vendor and model-selection trade-offs.**
 - The most concrete build-vs-buy decision hiding in this chapter is the workflow/rules engine itself: build the declarative engine described in Section 4-5, or buy a BPM/workflow-orchestration platform (e.g., a commercial rules engine or workflow-as-a-service product) and wrap it with the same control-plane/data-plane split.

@@ -210,7 +210,7 @@ Read the components in request order *(own construction)*.
 | 07 | Spend ledger and pacer | Charges every call's real tokens to the day; tightens routing as spend climbs | Closed at 100%: no new paid calls; cache and handoff only |
 | 08 | Provider adapter A | Retry with backoff inside a per-provider breaker | Degrades: breaker trip sends traffic to B at once |
 | 09 | Provider adapter B | Same pattern, portable prompts and tool schemas | Degrades: both down reaches the degradation responder |
-| 10 | Degradation responder | Labeled answer from cached context, or a human handoff | Never throws: this is the floor |
+| 10 | Degradation responder | Labelled answer from cached context, or a human handoff | Never throws: this is the floor |
 | 11 | Rule-based output validator | Re-runs PII detection, checks banned phrases | Closed: block with a logged reason |
 | 12 | LLM output check | Semantic policy check on risky replies | Degrades: off for low-risk replies to save latency |
 | 13 | Telemetry | JSON logs, metrics, one trace per request, cost and model tags | Degrades: async, sampled; never on the hot path |
@@ -238,7 +238,7 @@ Accept that the defence is probabilistic. No single layer gets injection to zero
 
 A cache hit is the only free request, and a wrong cache hit is a data leak. The playbook files caching under security for that reason: enterprise caching must be "tenant-aware, permission-aware, version-aware and freshness-aware."
 
-Start with exact match on the normalized, PII-masked query. It is free and deterministic. Add a semantic cache only if traffic shows paraphrase-heavy repeats. The source's gotcha is a class named `SemanticCache` that only hashes the text, so "What is Python?" and "Tell me about Python" are two misses. A real semantic cache needs an embedding lookup with a tuned threshold. A poor threshold "returns stale or mismatched answers."
+Start with exact match on the normalised, PII-masked query. It is free and deterministic. Add a semantic cache only if traffic shows paraphrase-heavy repeats. The source's gotcha is a class named `SemanticCache` that only hashes the text, so "What is Python?" and "Tell me about Python" are two misses. A real semantic cache needs an embedding lookup with a tuned threshold. A poor threshold "returns stale or mismatched answers."
 
 Decide what may be cached before tuning the hit rate. In a support product, FAQ answers are cacheable; answers built from live account data are not. The response key must include tenant, user permission, document version and prompt version. A new prompt version therefore invalidates old answers on purpose. Stale answers after a knowledge update are worse than a miss.
 
@@ -248,7 +248,7 @@ Watch the hit rate as a health signal. The playbook's incident note says a sudde
 
 The study guide puts it bluntly: "The single biggest cost lever in a production LLM system is not sending every query to the most expensive model." Section 3 showed why: complex turns are 21% of traffic and 96% of spend.
 
-The router is a small model returning a structured label, simple or complex. Structured output means the label cannot come back as free text. Pick the threshold from a labeled sample of real traffic, and measure the cost saved against the error rate of misrouting. A simple question sent to the large model wastes money. A complex one sent to the small model wastes the customer's time. Say which error the product tolerates.
+The router is a small model returning a structured label, simple or complex. Structured output means the label cannot come back as free text. Pick the threshold from a labelled sample of real traffic, and measure the cost saved against the error rate of misrouting. A simple question sent to the large model wastes money. A complex one sent to the small model wastes the customer's time. Say which error the product tolerates.
 
 Meter every call before it is made. The source's rule: "The cap has to fire before the API call, not after — checking cost post-hoc only tells you what you already spent." Two controls do different jobs *(the pacer is own construction)*.
 
@@ -257,7 +257,7 @@ Meter every call before it is made. The source's rule: "The cap has to fire befo
 | Per-request token cap | One oversized prompt or runaway context | Reject explicitly before the call, never truncate silently |
 | Daily ledger and pacer | Many ordinary requests adding up | At 80% spent, raise the router threshold; at 95%, small model only plus human handoff for complex turns; at 100%, cache and handoff only |
 
-Count with a real tokenizer. The source notebooks estimate tokens as `len(text.split()) * 1.3` in one place and `* 4 // 3` in another. That is fine for trend lines and wrong for a budget. Charge the ledger with the provider's reported usage after each call, and use a real tokenizer for the pre-call check.
+Count with a real tokeniser. The source notebooks estimate tokens as `len(text.split()) * 1.3` in one place and `* 4 // 3` in another. That is fine for trend lines and wrong for a budget. Charge the ledger with the provider's reported usage after each call, and use a real tokeniser for the pre-call check.
 
 The pacer answers the question a hard cap alone cannot: what happens at 4 p.m. when the day's money is gone. Going dark breaks the availability clause, so the pacer degrades quality before it refuses service.
 
@@ -265,15 +265,15 @@ The pacer answers the question a hard cap alone cannot: what happens at 4 p.m. w
 
 "Retries handle one bad call; a circuit breaker handles a bad *dependency* — you want both, with the breaker wrapping the retried call." The source's full chain is retry, then breaker, then fallback, then graceful degradation. Each link covers a failure the previous one cannot.
 
-**Retry** handles a momentary blip: a rate limit, a dropped connection. It must back off exponentially with jitter. A fixed interval synchronizes every client's retry "into the same instant, which is the thundering-herd problem." The source bounds it at 3-4 attempts.
+**Retry** handles a momentary blip: a rate limit, a dropped connection. It must back off exponentially with jitter. A fixed interval synchronises every client's retry "into the same instant, which is the thundering-herd problem." The source bounds it at 3-4 attempts.
 
 **The breaker** remembers that a provider failed a moment ago, so no request pays to rediscover it. The source notebook uses `failure_threshold=3, cooldown_seconds=5.0`. It has three states. Closed passes calls through. Open rejects instantly without calling the provider. Half-open lets one probe through after the cooldown. A breaker without the half-open probe "has no path back to healthy." If it flaps under load, count failures over a sliding window rather than consecutively, and require more than one good probe before closing.
 
 **Fallback** switches to a second provider when the breaker trips or retries run out. Tag every response with its `source`. "Logging which model actually answered is what lets you track cost and quality drift when traffic silently shifts to the backup." Keep prompts and tool schemas portable, because a fallback model with a different tool-calling format breaks the agent silently. Keep the fallback warm *(own construction)*. Send a small share of live traffic to it every day, such as 1% *(assumption)*, so its quality and its quota are proven before the outage. Confirm its rate limit covers full load. The additions file warns to "separate provider 429s from your own gateway limits."
 
-**Degradation** is the floor. When both providers are down, return a labeled answer seeded with cached context, never a stack trace. For a support product the best degraded answer is often a handoff: "your ticket is logged and a person will reply" *(own construction)*.
+**Degradation** is the floor. When both providers are down, return a labelled answer seeded with cached context, never a stack trace. For a support product the best degraded answer is often a handoff: "your ticket is logged and a person will reply" *(own construction)*.
 
-Degrade differently on the two faces. The source's rule is "Degrade gracefully in front of a human, fail loudly in front of a machine." The edge face shows the customer a labeled, useful reply. The model face returns a *typed error* to the agent, not a degraded string. An agent that acts on degraded text as if it were real can book against a stale price or issue a wrong refund.
+Degrade differently on the two faces. The source's rule is "Degrade gracefully in front of a human, fail loudly in front of a machine." The edge face shows the customer a labelled, useful reply. The model face returns a *typed error* to the agent, not a degraded string. An agent that acts on degraded text as if it were real can book against a stale price or issue a wrong refund.
 
 ## 9. Fit Failover Inside the Three-Second Budget
 
@@ -289,7 +289,7 @@ The source names the fix: the LLM input guard "is the one addition that risks th
 
 Three more collisions sit inside the prompt *(own construction)*.
 
-**The agent path cannot finish in 3 s.** Five sequential calls at ~1-2s each take 5 to 10 seconds. In my sizing, complex turns are 21% of traffic, so p95 falls inside them, and a p95 on full answers fails by construction. This is why section 1 asked what the 3 s measures. Hold the agent path to first streamed token under 3 s. Parallelize read-only tool calls, and route common intents to a one-call path. The playbook's rule applies: "I would not use an agent where a workflow engine or router is enough."
+**The agent path cannot finish in 3 s.** Five sequential calls at ~1-2s each take 5 to 10 seconds. In my sizing, complex turns are 21% of traffic, so p95 falls inside them, and a p95 on full answers fails by construction. This is why section 1 asked what the 3 s measures. Hold the agent path to first streamed token under 3 s. Parallelise read-only tool calls, and route common intents to a one-call path. The playbook's rule applies: "I would not use an agent where a workflow engine or router is enough."
 
 **Retries do not fit inside the budget during an outage.** The notebook's backoff waits 0.3s, then 0.6s, then 1.2s: 2.1 s of waiting before the fourth attempt, on top of each attempt's own timeout. On the interactive path, give each request a deadline, not an attempt count. Allow one retry only if the deadline leaves room, then fail over. After the breaker trips, requests skip provider A entirely, so failover adds almost nothing. The customers who pay for the outage are the few before the trip; the breaker threshold bounds how many.
 
@@ -371,7 +371,7 @@ The hour belongs to the four constraints, because those are the words in the pro
 
 The two-minute summary to rehearse:
 
-> *"I'd build the gateway with two faces. The edge face screens the customer's input with free regex and PII masking first. It pays for an LLM guard only on what survives, and it validates the agent's output before it reaches the customer. The model face sits under every call the agent makes. It meters each one against a per-request cap and a daily ledger, routes simple turns to a small model, and wraps each provider in retry inside a circuit breaker. It fails over to a warm second provider and degrades to a labeled answer or a human handoff. Priced out, the day costs about $245 against $500, and 96% of that is the complex agent path, so that is where I'd watch. The latency sum fits 3 s on the common path. The agent path needs a first-token SLO, and retries need a deadline, not an attempt count. Every request carries its cost, its model and its guard decisions in one trace. If data can't leave the region, the fallback chain has to stay inside the region too."*
+> *"I'd build the gateway with two faces. The edge face screens the customer's input with free regex and PII masking first. It pays for an LLM guard only on what survives, and it validates the agent's output before it reaches the customer. The model face sits under every call the agent makes. It meters each one against a per-request cap and a daily ledger, routes simple turns to a small model, and wraps each provider in retry inside a circuit breaker. It fails over to a warm second provider and degrades to a labelled answer or a human handoff. Priced out, the day costs about $245 against $500, and 96% of that is the complex agent path, so that is where I'd watch. The latency sum fits 3 s on the common path. The agent path needs a first-token SLO, and retries need a deadline, not an attempt count. Every request carries its cost, its model and its guard decisions in one trace. If data can't leave the region, the fallback chain has to stay inside the region too."*
 
 ## 15. Answer the Cost Pivot in Ten Minutes
 
@@ -380,7 +380,7 @@ The pivot after a good design is "the bill is over budget." No playbook drill co
 | | |
 |---|---|
 | Dominant driver | The large-model agent path: 21% of turns and 96% of spend, then retries during incidents |
-| Cheapest lever first | Tighten the router threshold on labeled traffic; send common intents to a one-call deterministic path; cap agent steps; cache safe FAQ answers; trim the system prompt and history |
+| Cheapest lever first | Tighten the router threshold on labelled traffic; send common intents to a one-call deterministic path; cap agent steps; cache safe FAQ answers; trim the system prompt and history |
 | Metric that proves it | Cost per resolved conversation; spend by route; complex-turn share; cache hit rate; resolution rate by route |
 | Do not | Downgrade every request to the small model, or cache account-specific answers to raise the hit rate |
 | 60-second line | Almost all the money is the complex agent path, so route fewer turns there, cap its steps, and send common intents down a one-call path. Cache only answers the key proves are safe. Prove it with cost per resolved conversation, not cost per request. |
@@ -413,7 +413,7 @@ The playbook's own case says the same: "reduce cost **by workflow**, not across 
 2. **Price the day aloud.** 14,700 simple turns × $0.00045 ≈ $6.61; 6,300 complex turns × $0.0375 ≈ $236.25; router and guards ≈ $2.40. About $245, with complex turns 96% of it.
 3. **What does the naive design cost?** All 30,000 turns on the large-model agent path with no cache: $1,125, 2.25 times the budget.
 4. **Why does the input guard run before the cache?** So an injected prompt is never cached, and the cache key is the PII-masked text.
-5. **Why is a class named `SemanticCache` in the source not semantic?** It hashes normalized text for an exact match. Paraphrases miss.
+5. **Why is a class named `SemanticCache` in the source not semantic?** It hashes normalised text for an exact match. Paraphrases miss.
 6. **What is the difference between a per-request cap and the pacer?** The cap rejects one oversized request before the call. The pacer watches the day's total and degrades routing before the money runs out.
 7. **Order the resilience chain and say what each link handles.** Retry for a blip, breaker for a bad provider, fallback for an outage, degradation as the floor.
 8. **Why does the model face return a typed error rather than a degraded string?** An agent that acts on degraded text as if it were real can take a wrong action. Degrade for humans, fail loudly for machines.

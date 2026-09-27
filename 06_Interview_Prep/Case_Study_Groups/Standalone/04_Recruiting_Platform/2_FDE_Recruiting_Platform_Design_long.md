@@ -29,7 +29,7 @@ The clarifying questions, with the answers this case assumes. In the room, confi
 - Generate interview scorecards
 - Recommend hiring decisions
 - Schedule interviews
-- Summarize interviewer feedback
+- Summarise interviewer feedback
 - Recruiter chatbot
 - Learn from previous hiring decisions
 
@@ -50,7 +50,7 @@ The clarifying questions, with the answers this case assumes. In the room, confi
 
 **Two parallel intake paths, converging into one ranked pipeline.**
 
-Resumes and job descriptions enter through parallel upload paths — each parsed by a specialized parser — before converging into a single structured extraction service. From there, one pipeline builds candidate profiles, generates embeddings, and ranks candidates by similarity, before fanning out again into interview question generation and AI-judged scoring, converging into an evaluation pipeline that a human recruiter reviews before scheduling and candidate communication.
+Resumes and job descriptions enter through parallel upload paths — each parsed by a specialised parser — before converging into a single structured extraction service. From there, one pipeline builds candidate profiles, generates embeddings, and ranks candidates by similarity, before fanning out again into interview question generation and AI-judged scoring, converging into an evaluation pipeline that a human recruiter reviews before scheduling and candidate communication.
 
 ```
 Recruiter Portal
@@ -102,7 +102,7 @@ Structured extraction is the seam between "documents" and "data": everything bef
 4. **🔢 Generate embeddings** — Embeddings are generated for the job description, candidate profile, skills, projects, experience, and certifications — capturing semantic meaning rather than exact keywords.
 5. **🔎 Similarity search** — The system retrieves candidates semantically similar to the JD. Searching "LLM Engineer" may retrieve candidates mentioning Generative AI, RAG, Prompt Engineering, or Agentic AI — even if "LLM Engineer" isn't explicitly listed.
 6. **🏅 Candidate ranking** — The ranking engine weighs multiple signals and produces an explainable ranked list instead of a simple pass/fail decision.
-7. **❓ Generate interview questions** — The LLM generates role-specific questions based on JD requirements, candidate experience, missing skills, and previous projects — coding, system design, behavioral, or domain-specific.
+7. **❓ Generate interview questions** — The LLM generates role-specific questions based on JD requirements, candidate experience, missing skills, and previous projects — coding, system design, behavioural, or domain-specific.
 8. **⚖️ AI judge evaluation** — After interviews or coding assessments, the AI judge evaluates technical correctness, communication clarity, problem-solving approach, and alignment with job requirements — producing structured feedback and preliminary scores.
 9. **🧑‍💼 Human recruiter review** — A recruiter or hiring manager reviews the ranking, AI-generated scores, interview summaries, and recommendations, then makes the final hiring decision — ensuring accountability and reducing bias.
 10. **📅 Interview scheduling** — Once shortlisted, the platform checks interviewer availability, finds suitable time slots, sends calendar invites, notifies candidates, and updates the ATS automatically.
@@ -156,7 +156,7 @@ An illustrative weighting, my starting point rather than a standard: **semantic 
 
 **📝 Prompt management** — Different prompt templates for resume extraction, candidate summaries, question generation, evaluation, and recommendations. Versioning allows continuous improvement while ensuring consistency.
 
-**⚖️ AI Judge** — Evaluates coding assignments, technical/behavioral interviews, and communication skills. It provides standardized scoring and rationale but does not make the final hiring decision.
+**⚖️ AI Judge** — Evaluates coding assignments, technical/behavioural interviews, and communication skills. It provides standardised scoring and rationale but does not make the final hiring decision.
 
 **🧮 Evaluation pipeline** — Combines similarity score, resume completeness, AI Judge scores, interview feedback, recruiter feedback, and hiring-manager input. Confidence thresholds determine when manual review is mandatory.
 
@@ -246,11 +246,11 @@ AI ranking and scores never bypass a human — a recruiter approves or overrides
 - Continuously evaluate precision and recall using historical hiring outcomes.
 - Fine-tune prompts and retrieval strategies based on recruiter feedback.
 
-**🧑‍💼 How would you personalize recommendations for different recruiters?**
+**🧑‍💼 How would you personalise recommendations for different recruiters?**
 
 - Learn recruiter preferences from previous hiring decisions.
-- Prioritize candidates similar to previously successful hires while monitoring for bias.
-- Customize interview question difficulty based on role seniority.
+- Prioritise candidates similar to previously successful hires while monitoring for bias.
+- Customise interview question difficulty based on role seniority.
 - Adapt ranking based on team-specific skills and project needs.
 - Allow recruiters to configure weighting factors such as skills, location, or experience.
 

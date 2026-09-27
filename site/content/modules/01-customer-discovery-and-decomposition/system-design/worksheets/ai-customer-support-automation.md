@@ -1,7 +1,7 @@
 # AI Customer-Support Automation - Case Study Worksheet
 
 ## 1. Interview prompt
-Design a GenAI FDE solution for **AI Customer-Support Automation**: automate routine requests, escalate risky ones to a human with full context. The danger is an unauthorized action or a confidently wrong answer.
+Design a GenAI FDE solution for **AI Customer-Support Automation**: automate routine requests, escalate risky ones to a human with full context. The danger is an unauthorised action or a confidently wrong answer.
 
 ## 2. Clarify the customer problem
 - Which channels are in scope, and at what volume and peak?
@@ -37,7 +37,7 @@ Design a GenAI FDE solution for **AI Customer-Support Automation**: automate rou
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Identity verification:
 - Intent and risk routing:
 - Grounded retrieval:

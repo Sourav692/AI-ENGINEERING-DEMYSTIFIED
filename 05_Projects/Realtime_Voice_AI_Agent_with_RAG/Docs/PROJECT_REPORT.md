@@ -57,7 +57,7 @@ Technical documentation for industrial equipment (e.g., hydraulic pumps, compres
 - **Motor**: Async MongoDB driver
 
 ### AI Services
-- **Deepgram Nova-2**: Real-time Speech-to-Text
+- **Deepgram Nova-3**: Real-time Speech-to-Text (Pipecat's default model; `bot.py` doesn't pin one)
 - **Groq (Llama 3 70B)**: LLM for natural language understanding and function calling
 - **ElevenLabs Turbo v2.5**: Text-to-Speech with low latency
 - **Google Gemini**: Text embedding generation (768 dimensions)

@@ -245,7 +245,7 @@ def grade(state: RAGState) -> Dict[str, Any]:
     missing = result.get("missing") or "The available material does not cover this."
 
     # "partial" still answers. Refusing a multi-part question because one part is
-    # unanswerable is the most common over-refusal in enterprise RAG, and it is
+    # unanswerable is a common over-refusal in enterprise RAG, and it is
     # especially wrong here: which part a user can answer depends on their role,
     # so a role-appropriate partial answer is the correct product behaviour.
     if verdict == "insufficient":

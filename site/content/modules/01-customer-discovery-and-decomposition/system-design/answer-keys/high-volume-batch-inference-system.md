@@ -31,7 +31,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Architecture explanation
 - The job planner accepts the nightly run, freezes the input snapshot, and writes the batch plan; that snapshot is the system of record for what "this batch" means.
 - The partition manifest lists balanced work units with status and attempts, which is what makes the run replayable and auditable.
-- Partitioning favors even processing cost rather than data locality alone, combining tenant, payload-size band, or historical latency instead of record count.
+- Partitioning favours even processing cost rather than data locality alone, combining tenant, payload-size band, or historical latency instead of record count.
 - A durable work queue hands out partition leases, so the planner never waits on any worker and a failed worker never holds the run hostage.
 - The rate-limit coordinator is where backpressure lives: workers request capacity before calling, and tightening quota slows leases rather than triggering a retry storm.
 - Autoscaled inference workers batch records, call the model, and validate output at a typed boundary before anything is stored.
@@ -62,7 +62,7 @@ flowchart LR
 - behind schedule at 4 a.m., provider quota cut, hot-partition stragglers, worker crash after the model call, result sink throttling
 - Falling behind with no plausible path to the deadline, where shipping late output can be worse for the business than shipping none.
 - A provider quota reduction mid-run, where naive retries become a stampede that makes the throttling permanent.
-- Hot partitions producing stragglers, so one pathological shard monopolizes the fleet while most workers idle.
+- Hot partitions producing stragglers, so one pathological shard monopolises the fleet while most workers idle.
 - A worker crashing after the model call but before the write, which duplicates cost and results unless the sink is idempotent.
 - Corrupted checkpoints, broken snapshot hashes, or an unknown model version, all of which must fail closed rather than proceed.
 
@@ -70,7 +70,7 @@ flowchart LR
 - Week 0-1: agree who consumes the output, whether partial results have value, and the cost ceiling.
 - Week 1-2: benchmark the representative token distribution — short records, long records, edge cases, known skew — not a toy sample.
 - Week 2-3: run a 1% load test proving parsing, auth, model invocation, sink writes, and checkpointing hold under real concurrency.
-- Week 3-4: run a 10% test proving retry behavior, throttling, and downstream capacity still fit the deadline envelope; a failed 1% gate blocks it.
+- Week 3-4: run a 10% test proving retry behaviour, throttling, and downstream capacity still fit the deadline envelope; a failed 1% gate blocks it.
 - Week 5: practice failure on purpose — crash a worker, cut quota, kill a downstream dependency, drain and restore a queue.
 - Week 6-8: confirm bounded replay, durable checkpoints, and graceful degradation rather than retry-storm oscillation.
 - After pilot: define deadline contingency modes with named owners before the job is ever late, not after the first miss.
@@ -83,7 +83,7 @@ These are thresholds I'd set for this case, not industry standards. Defend them,
 | Completion forecast vs. deadline | The run will actually land before 6 a.m. | Never crosses the deadline without a contingency activated | Progress rate against remaining work |
 | Duplicate logical result count | Replay is safe and the sink is truly idempotent | Within the tolerated replay window | Comparison on logical keys, not storage rows |
 | Records per second | Sustained throughput meets the required rate | At or above the forecast needed to finish | Worker telemetry and sink acknowledgments |
-| Straggler age | No single partition can monopolize the fleet | Oldest active partition within the recovery budget | Partition duration histograms |
+| Straggler age | No single partition can monopolise the fleet | Oldest active partition within the recovery budget | Partition duration histograms |
 | Retry rate | Failures are transient rather than systemic | Within the normal band by failure class | Retry counters and failure taxonomy |
 | Cost per million records | Unit economics hold under retries and stragglers | Inside the approved budget envelope | Cloud billing plus model usage logs |
 
@@ -104,7 +104,7 @@ I would restate the goal as a replayable, cost-controlled batch delivered by dea
 | Architecture | Queue plus workers | Adds checkpointing and scaling | Snapshot, manifest, leases, rate-limit coordinator, idempotent sink, ETA forecaster |
 | Data/integration | Mentions a results table | Names jobs and partitions | Immutable snapshot pointer, lease lifecycle, upsert on logical key, typed output validation |
 | Evaluation | "The job finished" | Tracks throughput | Completion forecast, duplicates, straggler age, retry rate, cost per million |
-| Safety/security | Not addressed | Mentions access control | Fail closed on snapshot hash, unknown model version, corrupted checkpoint, unauthorized worker |
+| Safety/security | Not addressed | Mentions access control | Fail closed on snapshot hash, unknown model version, corrupted checkpoint, unauthorised worker |
 | Rollout | Run it at full scale | Test then launch | Token-distribution benchmark, 1% and 10% ladder with gates, deliberate failure drills, contingency modes |
 | Communication | Quotes throughput | Clear but generic | Leads with the 4 a.m. decision, names owners, closes with the go/no-go gate |
 

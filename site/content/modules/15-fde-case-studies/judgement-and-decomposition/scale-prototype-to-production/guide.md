@@ -61,7 +61,7 @@ The same sheet contrasts prototype and production on six axes, verbatim in the t
 
 Add three gaps the table does not name *(own construction)*. Prompts drift, because the builder still edits the live prompt by hand. Provider quotas are sized for a pilot account. And the support model is a chat message to the one engineer who built it. At a thousand times the users, that engineer becomes the outage.
 
-The bank has a neighbouring prompt with the same shape: *"A team has a successful notebook-based AI prototype. How do you productionize it?"* Its discussion list is verbatim: reproducibility, CI/CD, evaluation gates, model and prompt versioning, secrets management, monitoring, cost controls, security, SLAs, rollback, ownership and support. Answer it with this page. The notebook variant adds one first step: turn the notebook into versioned, tested code before any of the rest applies.
+The bank has a neighbouring prompt with the same shape: *"A team has a successful notebook-based AI prototype. How do you productionise it?"* Its discussion list is verbatim: reproducibility, CI/CD, evaluation gates, model and prompt versioning, secrets management, monitoring, cost controls, security, SLAs, rollback, ownership and support. Answer it with this page. The notebook variant adds one first step: turn the notebook into versioned, tested code before any of the rest applies.
 
 ## 3. State Requirements as Testable Constraints
 
@@ -247,7 +247,7 @@ Put every model call behind one gateway, because the prototype's direct calls le
 
 **Limits and fairness are two mechanisms.** The same Handbook doc says it in one line: a rate limit answers *may this request proceed at all*; a fair queue answers *in what order do requests get served under load*. Give each user a token bucket sized in tokens, not only requests. Feed admitted work into a weighted fair queue per department, so the finance quarter-end burst waits for its share rather than starving everyone. G07 section 7 has the full argument.
 
-**Meter before the call.** The production guide's rule: *"The cap has to fire before the API call, not after — checking cost post-hoc only tells you what you already spent."* Use a real tokenizer for the estimate, since the guide shows a word-count heuristic letting expensive requests through.
+**Meter before the call.** The production guide's rule: *"The cap has to fire before the API call, not after — checking cost post-hoc only tells you what you already spent."* Use a real tokeniser for the estimate, since the guide shows a word-count heuristic letting expensive requests through.
 
 **Route by intent.** The production guide calls routing *"The single biggest cost lever in a production LLM system."* Pick the routing threshold from a labelled sample of real traffic, not intuition. The cost additions add a warning: prompt caches are scoped to a model, so a three-model cascade means three cold prefixes. Measure one strong model at lower effort before building a cascade.
 
@@ -277,9 +277,9 @@ Keep evaluating after launch. Run a sampled online evaluation on live traffic, p
 
 ## 10. Roll Out by Cohort With a Pointer-Flip Rollback
 
-Never launch to 100,000 people on one day. Roll out by cohort, so each tenfold step in section 5 happens on purpose, to a group that can be supported. Handbook Module 08 doc 1 gives the stages and their risk to a real user.
+Never launch to 100,000 people on one day. Roll out by cohort, so each tenfold step in section 5 happens on purpose, to a group that can be supported. Handbook Module 08 doc 1 gives shadow, canary and promote, and the risk each puts on a real user. I add cohort waves between canary and promote.
 
-| Stage | What happens (Module 08 doc 1) | Gate to move on *(own construction)* |
+| Stage | What happens (Module 08 doc 1; the cohort-wave row is mine) | Gate to move on *(own construction)* |
 |---|---|---|
 | Shadow | *"The new version runs alongside the live one on real traffic; both outputs are logged; compared offline"* | Eval gate passed; zero isolation failures in shadow |
 | Canary | A small slice of real users sees it; *"the same metrics are watched live"* | p95, error rate and cost per request within limits for 48 hours |
@@ -325,7 +325,7 @@ Question 17 lists seventeen things to cover. Check the answer against them, in t
 
 | Item (verbatim) | Where this page covers it |
 |---|---|
-| Traffic and capacity modeling | Section 4 |
+| Traffic and capacity modelling | Section 4 |
 | Multi-tenancy | Sections 1 and 7: departments as tenants, permission scope |
 | Rate limits | Sections 4 and 7: provider limits and per-user buckets |
 | Queuing | Section 7: fair queue per department |

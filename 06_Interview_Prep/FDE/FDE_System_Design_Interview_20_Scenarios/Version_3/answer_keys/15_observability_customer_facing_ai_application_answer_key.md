@@ -8,7 +8,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Which users and tenants are most affected, so instrumentation starts where the pain actually is?
 - What is the team allowed to capture by default, and what is contractually or legally off limits?
 - Who needs to diagnose a failure — support alone, or must engineering always be pulled in?
-- What is the acceptable telemetry overhead before instrumentation starts distorting production behavior?
+- What is the acceptable telemetry overhead before instrumentation starts distorting production behaviour?
 - What retention window applies to traces, and who may access them under which role?
 - What does the executive sponsor need to see to believe quality is improving release over release?
 
@@ -35,7 +35,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - A retention-bounded trace store holds exported traces, where the retention window doubles as both a cost control and a privacy control.
 - Two distinct consumers read that store: a cross-tenant global dashboard showing only aggregates, and tenant-scoped views for support triage.
 - A support and access gateway enforces role-based, tenant-scoped access, so diagnosing one customer's incident never exposes another's.
-- An audit and redaction pipeline enforces retention and redaction on export, giving defense in depth across code, collector, and review.
+- An audit and redaction pipeline enforces retention and redaction on export, giving defence in depth across code, collector, and review.
 - Sampling is a control rather than a compromise: preferential retention for latency-heavy, error-heavy, and anomalous traces, with always-on exemplars.
 
 ## Data model / integration assumptions
@@ -43,7 +43,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Assume classification happens before attachment, tagging content sensitive or non-sensitive before it can ever reach a trace.
 - Assume a keyed hash (HMAC-SHA256 with a secret key) preserves correlation and deduplication across requests without storing any original content.
 - Assume telemetry attributes are schema-validated at ingestion, with unknown high-cardinality fields rejected or collapsed into a bounded bucket.
-- Assume queue serialization contracts explicitly carry trace context, idempotency key, and tenant scope, or traces will silently break at async handoffs.
+- Assume queue serialisation contracts explicitly carry trace context, idempotency key, and tenant scope, or traces will silently break at async handoffs.
 
 ## Red-team risks
 - sampling drops the only bad trace, high-cardinality tenant IDs, raw prompts in logs, trace context lost at queues, misleading quality metrics
@@ -91,7 +91,7 @@ I would refuse the vague complaint and split it into latency, correctness, and d
 | Architecture | Logs plus a dashboard | Tracing with correlation IDs | Classifier before storage, bounded retention, global versus tenant views, access gateway |
 | Data/integration | Mentions log fields | Names trace attributes | Bounded structured attributes, salted hashing, schema-validated cardinality, queue contracts |
 | Evaluation | "We have dashboards" | Tracks latency and errors | Trace coverage, time to diagnose, redaction pass rate, telemetry overhead |
-| Safety/security | "We redact PII" | Redacts in code | Defense in depth across code, collector, review; audit separated from debugging traces |
+| Safety/security | "We redact PII" | Redacts in code | Defence in depth across code, collector, review; audit separated from debugging traces |
 | Rollout | Instrument everything | Instrument then dashboard | SLOs first, one path, trace-linked support workflow, sampling overrides last |
 | Communication | Shows the dashboard | Clear but generic | Leads with the dropped-trace failure, names what is not collected, closes with the support test |
 

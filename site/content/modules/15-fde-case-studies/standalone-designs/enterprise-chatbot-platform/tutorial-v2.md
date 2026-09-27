@@ -1,7 +1,7 @@
 # Chapter 21 (Condensed): Enterprise Chatbot Platform — "Our Own ChatGPT"
 
 *Bullet-form companion to `chapter-21-enterprise-chatbot-platform-tutorial.md`. Same 8 sections, same diagrams and code — prose stripped to one- and two-line points for revision and in-interview recall.*
-*Tutorial format: Interview-ready v2 (bullet-only cram format) — regenerated from the condensed tutorial's verified content; no new source material added except the clearly-labeled "My Perspective on the Gaps" subsection.*
+*Tutorial format: Interview-ready v2 (bullet-only cram format) — regenerated from the condensed tutorial's verified content; no new source material added except the clearly-labelled "My Perspective on the Gaps" subsection.*
 *Scenario: custom addition to the 20-scenario set — not from the source book.*
 
 ---
@@ -21,7 +21,7 @@
   - [The trap](#the-trap)
   - [Deep-dive questions → what each decides](#deep-dive-questions--what-each-decides)
   - [Functional requirements (must / should / could)](#functional-requirements-must--should--could)
-  - [Safety goals as measurable behavior](#safety-goals-as-measurable-behavior)
+  - [Safety goals as measurable behaviour](#safety-goals-as-measurable-behaviour)
   - [Explicit MVP exclusions](#explicit-mvp-exclusions)
   - [Question tree (walk this aloud in 2 minutes)](#question-tree-walk-this-aloud-in-2-minutes)
   - [Traceability: requirement → owner](#traceability-requirement--owner)
@@ -95,7 +95,7 @@
 - **Business result, not feature:** move AI usage from ungoverned consumer tools into a governed platform — without losing what made the consumer tools attractive.
 - **Unique constraint:** you have a free, zero-friction competitor your users already have on their phones.
 - **Two bars, always in tension:** governance (nothing leaves except under our agreement) and adoption (TTFT close to the free tool).
-- **Design center:** the context assembler — where permissions, cost, safety and quality all intersect.
+- **Design centre:** the context assembler — where permissions, cost, safety and quality all intersect.
 - **The metric that matters:** consumer-AI egress volume, already instrumented in the proxy logs before you start.
 
 > 🎯 **Interview Pointer:** Open with the two bars (governance vs. adoption) in the first breath — naming the tension up front is the single fastest way to signal you understand this isn't just "build ChatGPT."
@@ -128,7 +128,7 @@
 | Platform operators | One fleet they can run and survive vendor loss | Unrunnable at 40k |
 | Finance | Defensible cost per employee per month | Emergency budget review in month four |
 
-- **Jobs-to-be-done:** draft, summarize, explain, **find**. The first three are model capability; the fourth is where your engineering goes.
+- **Jobs-to-be-done:** draft, summarise, explain, **find**. The first three are model capability; the fourth is where your engineering goes.
 
 ### Six discovery questions that change the architecture
 
@@ -175,7 +175,7 @@
 | Model sourcing and data-processing terms | Thin orchestration (weeks) vs. also running a GPU fleet (quarters); whether a classification gate sits in the hot path |
 | Grounding scope + **are ACLs query-time resolvable?** | One index vs. federated connectors; pre-filter vs. post-filter vs. both. If ACLs aren't resolvable, that source is phase two regardless of sponsor enthusiasm |
 | Retention, legal hold, eDiscovery | Conversation store, deletion pipeline, audit schema, an admin surface that is itself audited |
-| Assistant publishing | Chat app vs. platform; introduces the harder authorization problem (scope ≤ *viewer's* permissions, not author's) |
+| Assistant publishing | Chat app vs. platform; introduces the harder authorisation problem (scope ≤ *viewer's* permissions, not author's) |
 | Identity, regions, workforce rules | Deployment topology; in several jurisdictions per-employee telemetry is a consultation matter before an engineering one |
 | Build vs. buy | Sometimes the honest answer is "buy" — and an FDE who says so has served the customer |
 
@@ -187,10 +187,10 @@
 - **Must — input and output policy enforcement** on both directions of the model call.
 - **Must — retention, legal hold, admin discovery**, with every admin read itself audited.
 - **Must — usage accounting and per-user quotas** so cost is attributable and a runaway script is contained.
-- **Should — custom assistants** with scoped instructions, tools and data; governed at publish, re-authorized at view.
+- **Should — custom assistants** with scoped instructions, tools and data; governed at publish, re-authorised at view.
 - **Could — assistant marketplace, cross-conversation memory, images, voice.**
 
-### Safety goals as measurable behavior
+### Safety goals as measurable behaviour
 
 - **Zero retrieval above caller access level** — no chunk, citation, title, snippet or cached answer from a document they can't open, *including in a shared conversation*.
 - **Zero uncontrolled egress** — allowed destinations are enumerable and enforced, not conventional.
@@ -222,8 +222,8 @@ flowchart TD
 
 - **Can prompts leave our boundary?** No → self-hosted, GPU planning, lower quality bar, longer timeline. Yes → thin orchestration, weeks. Depends → classifier in the hot path, two backends.
 - **Ground on day one?** No → ship general chat in six weeks, capture demand. Yes → which three sources, and are their ACLs query-time resolvable?
-- **Who publishes assistants?** Nobody → simpler. Anyone → publish review, view-time re-authorization, deprecation lifecycle.
-- **What's wrong with buying?** Nothing named → recommend buy. Something specific → that constraint is now the design's center.
+- **Who publishes assistants?** Nobody → simpler. Anyone → publish review, view-time re-authorisation, deprecation lifecycle.
+- **What's wrong with buying?** Nothing named → recommend buy. Something specific → that constraint is now the design's centre.
 
 ### Traceability: requirement → owner
 
@@ -269,7 +269,7 @@ flowchart TD
 - Naive full-history resend over $n$ turns: $\text{input tokens} \approx t \cdot \frac{n(n+1)}{2}$.
 - By turn 40, one turn resends ~40× the first turn's tokens, and the whole conversation has sent ~820 turns' worth of input. Meanwhile the earliest turns' value has decayed to nothing.
 - **Sliding window with pinned head** — always keep system prompt + assistant definition, keep last $k$ turns verbatim.
-- **Rolling summarization** — compact older turns; history cost becomes roughly constant.
+- **Rolling summarisation** — compact older turns; history cost becomes roughly constant.
 - **Prompt caching** — lay out system prompt, assistant instructions and retrieved docs as a stable cacheable prefix.
 - **Context layout order is a cost decision made on day one** — nearly free to design in, expensive to retrofit.
 
@@ -277,7 +277,7 @@ flowchart TD
 
 - **Per-user token quota** — caps spend, contains a compromised or scripted account.
 - **Per-user concurrency cap** — a human needs 1–2 streams; 50 is not a human.
-- **Per-department budget** — cost attributable to a cost center, runaway team visible before the invoice.
+- **Per-department budget** — cost attributable to a cost centre, runaway team visible before the invoice.
 - **Burst allowance** — a legitimate heavy session shouldn't be throttled into a bad experience.
 - **Priority classes** — interactive turns outrank background jobs when capacity is scarce.
 - **Trade-off:** too tight → artificial walls → back to the consumer tool → project defeated. Too loose → one script eats the quarter.
@@ -330,7 +330,7 @@ These are my working assumptions scaled up, not measured figures.
 
 - **The likely outage is upstream and not yours.**
 - **Failover** — secondary provider; only counts if you've tested the fallback's output quality, not discovered it live.
-- **Degrade** — smaller model with a visible label. A labeled lesser answer beats an error.
+- **Degrade** — smaller model with a visible label. A labelled lesser answer beats an error.
 - **Shed** — pause background work to preserve interactive capacity.
 - **Preserve** — never lose the user's typed message. Cheapest reliability win; often omitted.
 - **Differentiated targets I'd set:** conversation store RPO ≈ 0 (it's their work product); retrieval index RPO in hours (stale degrades quality, doesn't lose data).
@@ -347,16 +347,16 @@ These are my working assumptions scaled up, not measured figures.
 ### Dependency order
 
 1. **Identity and session** — corporate SSO, short-lived token, device binding.
-2. **Conversation authorization** — per turn, because sharing and revocation happen between turns.
+2. **Conversation authorisation** — per turn, because sharing and revocation happen between turns.
 3. **Input policy** — classify and scan message + attachments before any egress.
 4. **Context assembly** — system prompt, assistant definition, compacted history, permission-filtered retrieval, in cache-friendly order, within budget.
 5. **Model routing** — by task class, data classification, cost policy, live health.
-6. **Provider adapter** — translate to vendor API, normalize the stream.
+6. **Provider adapter** — translate to vendor API, normalise the stream.
 7. **Streaming relay + output policy** — deliver tokens while scanning a sliding buffer; able to halt mid-flight.
 8. **Persistence** — write the turn idempotently with citations, tokens, route decision.
 9. **Audit and usage** — append-only record; increment the quota ledger.
 
-- **Why this order:** authorization precedes assembly (assembly reads data); policy precedes dispatch (dispatch is egress); routing follows classification (classification can forbid a destination); audit follows the action but stays close enough to be trustworthy.
+- **Why this order:** authorisation precedes assembly (assembly reads data); policy precedes dispatch (dispatch is egress); routing follows classification (classification can forbid a destination); audit follows the action but stays close enough to be trustworthy.
 
 ### Component responsibilities
 
@@ -364,13 +364,13 @@ These are my working assumptions scaled up, not measured figures.
 |---|---|---|---|
 | Client | Render the stream, hold a draft, never hold authority | Untrusted user | Edge |
 | Gateway + session | Validate SSO token, admit and shape traffic | Corporate network → platform | Data |
-| Conversation service | Own conversation/message state; authorize per turn | Application authority | Data |
+| Conversation service | Own conversation/message state; authorise per turn | Application authority | Data |
 | Policy & DLP | Classify input, scan streamed output, block or redact | Egress control | Data + control policy |
 | **Context assembler** | Build the prompt within budget — **the highest-risk boundary** | Prompt construction | Data |
 | Retrieval + connectors | Fetch candidates filtered by the caller's **live** permissions | Source-system access | Data |
 | Assistant registry | Store, version, govern assistant definitions and scopes | Publishing / delegation | Control |
 | Model router | Choose provider/deployment/model by class, cost, health | Vendor selection | Control + data hooks |
-| Provider adapters | Normalize vendor APIs; own retries and timeouts | External vendor | Data |
+| Provider adapters | Normalise vendor APIs; own retries and timeouts | External vendor | Data |
 | Streaming relay | Hold long-lived connections; handle mid-stream abort | Connection management | Data |
 | Conversation store | Persist under a retention class | Storage and retention | Data |
 | Attachment store + scanner | Hold uploads, malware-scan, extract text | Untrusted content | Data |
@@ -381,13 +381,13 @@ These are my working assumptions scaled up, not measured figures.
 ### Happy path as a trace
 
 1. **Authenticate** via SSO; gateway attaches a verified principal.
-2. **Authorize this conversation** — now, not cached from session start.
+2. **Authorise this conversation** — now, not cached from session start.
 3. **Scan input** — a restricted classification can reroute or block.
 4. **Admit against quota** — before spending anything.
 5. **Assemble** — pin head, compact history, permission-filtered retrieval, cache-prefix-first layout.
 6. **Route** — model and deployment from class, cost, health.
 7. **Dispatch and stream** — tokens forward while the output scanner watches a sliding buffer.
-8. **Finalize** — persist with citations, tokens, route; increment usage; emit audit.
+8. **Finalise** — persist with citations, tokens, route; increment usage; emit audit.
 9. **Recover** — on mid-stream failure, mark failed, preserve the user's message, offer retry or degraded model.
 
 ### Architecture with failure overlay
@@ -484,7 +484,7 @@ sequenceDiagram
 
 ### The five differentiators
 
-- Re-authorizing **per turn**, not per session.
+- Re-authorising **per turn**, not per session.
 - The **assistant-scope intersection** rule.
 - **Fail-closed** retrieval when an ACL lookup fails.
 - **Streaming-specific** failure handling.
@@ -515,13 +515,13 @@ sequenceDiagram
 
 - **Idempotency required** — bind to `(conversation_id, client_message_id)`; a replay returns the existing turn, including a partial one.
 - **Typed events only** — `token`, `citation`, `route_change`, `blocked`, `done`, `error`. Never raw text; the client must distinguish a fallback notice from content.
-- **Errors:** `403` not authorized, `409` idempotency conflict, `413` attachment too large, `429` quota, policy block with a reason code, `503` all providers down.
+- **Errors:** `403` not authorised, `409` idempotency conflict, `413` attachment too large, `429` quota, policy block with a reason code, `503` all providers down.
 - **A `200` that dies at token 300 is not a success.** The SLI counts `done` events, not HTTP status codes.
 
 ### The riskiest component: the turn handler
 
 - Where a missing check leaks a colleague's conversation, a document, a secret to a vendor, or a card number to a screen.
-- Eight steps: **authorize → scan input → admit → assemble → route → stream with output scan → finalize idempotently → audit.**
+- Eight steps: **authorise → scan input → admit → assemble → route → stream with output scan → finalise idempotently → audit.**
 
 ```mermaid
 flowchart TD
@@ -621,12 +621,12 @@ async def handle_turn(principal, req, conversations, policy, quota,
 
 ### The lines that carry the design
 
-- **`authorize(...)` first, per turn** — candidates often authorize at session start and never again.
+- **`authorize(...)` first, per turn** — candidates often authorise at session start and never again.
 - **`assembler.build(principal, …)`** — the single most important line; permissions derive from the asking human.
 - **`quota.admit(…, ctx.input_tokens)`** after assembly — retrieval-heavy turns are exactly the expensive ones.
 - **`router.choose(classification=…)`** — classification outranks cost.
 - **`SCAN_OVERLAP`** — without it, a pattern straddling a window boundary slips through. Easy bug to ship.
-- **`finally`** — finalize, record usage, audit on every path. This is what makes it production-shaped.
+- **`finally`** — finalise, record usage, audit on every path. This is what makes it production-shaped.
 
 ### Idempotency, versioning, concurrency — three places, three reasons
 
@@ -655,7 +655,7 @@ async def handle_turn(principal, req, conversations, policy, quota,
 - **In this setting, most of your adversaries are your own employees, and almost none are malicious.**
 - Dominant risk: a well-meaning person pasting the wrong thing, or an assistant quietly over-sharing.
 - **The three review questions to have answers ready for:**
-  - GC: "Employee summarizes the pending acquisition — where does that text go, who reads it later, can you delete it?"
+  - GC: "Employee summarises the pending acquisition — where does that text go, who reads it later, can you delete it?"
   - Works council: "Can a manager read their reports' conversations?"
   - Infra: "Someone in Finance builds an assistant over the finance drive and shares it company-wide. What happens?"
 - **The third one is the failure mode unique to this product.**
@@ -665,7 +665,7 @@ async def handle_turn(principal, req, conversations, policy, quota,
 | Layer | Control | What it stops |
 |---|---|---|
 | Session identity | SSO, short-lived tokens, device binding | Unauthenticated access, stolen long-lived tokens |
-| Per-turn authorization | Re-check ownership/share every turn | Reading a colleague's conversation after a share is revoked |
+| Per-turn authorisation | Re-check ownership/share every turn | Reading a colleague's conversation after a share is revoked |
 | Query-time retrieval ACLs | Resolve caller's live permissions per chunk | Surfacing documents the employee cannot open |
 | Assistant scope intersection | Effective = assistant scope ∩ viewer permissions | One privileged author laundering access to everyone |
 | Egress classification | Classify before dispatch; approved backends only | Restricted data reaching an unapproved provider |
@@ -703,9 +703,9 @@ flowchart TD
 - **Result:** anyone can ask "Q3 margins by business unit" and get documents they could never open. **Nothing was hacked** — a helpful person used a feature as designed.
 - **Correct:** effective scope = assistant scope ∩ **viewer's live permissions**. Marketing gets "nothing found that you have access to," and the empty citation list explains why.
 - **Add:** publish review for company-wide visibility, a per-viewer indicator of reachable sources, alert on new-assistant usage spikes.
-- **The interview point:** this is an **authorization design flaw, not a bug** — the happy path hides it, because the author testing their own assistant sees an intersection equal to their own access.
+- **The interview point:** this is an **authorisation design flaw, not a bug** — the happy path hides it, because the author testing their own assistant sees an intersection equal to their own access.
 
-> 🎯 **Interview Pointer:** This walkthrough is the single most distinctive failure mode of this scenario — lead with it in Section 6 rather than a generic "prompt injection" answer, since it's the one I'd expect interviewers to use to separate candidates who understand delegated authorization from those who don't.
+> 🎯 **Interview Pointer:** This walkthrough is the single most distinctive failure mode of this scenario — lead with it in Section 6 rather than a generic "prompt injection" answer, since it's the one I'd expect interviewers to use to separate candidates who understand delegated authorisation from those who don't.
 
 ### Walkthrough — instructions hidden in an uploaded document
 
@@ -756,9 +756,9 @@ flowchart TD
 ```
 
 - **Bad:** spinners → error pages → users retry → load multiplies when capacity is scarce → within ten minutes the outage chat is happening *in the consumer tool you were replacing.*
-- **Designed:** circuit break on elevated error rate; shift to secondary or smaller model; small labeled banner instead of an error.
+- **Designed:** circuit break on elevated error rate; shift to secondary or smaller model; small labelled banner instead of an error.
 - **Shed** background work; **bound retries with jitter** so you don't amplify the provider's outage; **audit every route change** with a reason.
-- **The judgment call:** a visibly worse answer beats an error page, because the error page sends your user back to the tool you were funded to displace.
+- **The judgement call:** a visibly worse answer beats an error page, because the error page sends your user back to the tool you were funded to displace.
 
 ### The three tests that prove the boundary
 
@@ -808,7 +808,7 @@ async def test_assistant_scope_is_a_ceiling_not_a_grant(assistant_registry, ask)
 ### Three artifacts required before GA
 
 - **Evidence pack** — DPA and retention terms, data-flow diagram of every egress destination, audit schema, permission-test results against production config.
-- **Discovery runbook** — how a hold is placed, how a search is authorized and executed, how the search is recorded. Rehearse before launch, not during the first matter.
+- **Discovery runbook** — how a hold is placed, how a search is authorised and executed, how the search is recorded. Rehearse before launch, not during the first matter.
 - **Over-sharing incident runbook** — identify the assistant/doc → unpublish or quarantine → query audit for who received grounded content → assess → notify. **Step three is only possible if audit was designed in from turn one.**
 
 ---
@@ -863,7 +863,7 @@ flowchart LR
 | Cost per active user / month | Business | The number finance governs the program with |
 | Cached-prefix hit rate | Business | Main token-cost lever once compaction is in |
 
-- **The pairing that matters:** optimize block rate alone and you build a system so cautious employees route around it — reproducing the original risk behind a beautiful dashboard.
+- **The pairing that matters:** optimise block rate alone and you build a system so cautious employees route around it — reproducing the original risk behind a beautiful dashboard.
 
 ### Three audiences, same telemetry
 
@@ -955,7 +955,7 @@ flowchart LR
 
 - **Buy vs. build** — *many candidates skip this; raising it first is a strong signal.* Buy = mature product in weeks, vendor carries model ops and much compliance. Build = connectors nobody sells, deployment nobody offers, control of the data path. **Honest answer: hybrid — buy the model, build orchestration, connectors, governance.** Disqualifying: building reflexively because it's interesting.
 - **Vendor API vs. self-hosted** — API = best quality per unit effort, no GPU fleet, but external data path and per-token cost that scales with success. Self-host = hard boundary, fixed cost at volume, air-gap capable, but lower quality ceiling and an upgrade burden teams underestimate. **Start with API behind an abstraction; self-host only the data classes that require it.**
-- **Full history vs. compaction** — full = simple, perfect fidelity, quadratic cost, eventually overflows context *silently and badly*. Compaction = roughly constant cost, unbounded conversations, occasional lost detail. **Ship the sliding window day one; add summarization when telemetry says so; always pin the head.**
+- **Full history vs. compaction** — full = simple, perfect fidelity, quadratic cost, eventually overflows context *silently and badly*. Compaction = roughly constant cost, unbounded conversations, occasional lost detail. **Ship the sliding window day one; add summarisation when telemetry says so; always pin the head.**
 - **Always-on vs. tool-invoked retrieval** — always-on = reliable grounding, but "rewrite this paragraph" doesn't need a corpus search. Tool-invoked = cheaper and faster, but a decision that can be wrong both ways and a surface for injection. **Middle path: cheap intent classifier, plus a constrained retrieval tool whose results are still permission-filtered.** Anchor it: 400 ms of retrieval eats about 40% of a 1-second TTFT budget.
 - **Strict DLP vs. adoption** — every false positive teaches employees the sanctioned tool is unreliable, and a few of those reproduce the original risk at full severity. **Asymmetric answer: block hard on narrow unambiguous categories, warn-and-log on fuzzy ones, track false-positive rate with an owner.** Say: *"security controls that drive users to unsanctioned tools are net-negative security."*
 
@@ -984,7 +984,7 @@ flowchart LR
 |---|---|---|
 | Discovery | Names shadow-AI displacement; asks build-vs-buy unprompted | Accepts "build ChatGPT" at face value |
 | Estimation | Leads with concurrent streams and provider TPM | Quotes QPS and stops |
-| Architecture | Per-turn auth; principal-scoped retrieval; policy on the egress path | Boxes labeled "LLM" and "vector DB" |
+| Architecture | Per-turn auth; principal-scoped retrieval; policy on the egress path | Boxes labelled "LLM" and "vector DB" |
 | Depth | Deep on scope intersection and streaming failure semantics | Spreads evenly over low-risk detail |
 | Security | Layered, fail-closed, assumes injection sometimes wins | Relies on the system prompt; claims guarantees |
 | Delivery | Gates as measurements; one risk class per phase; works-council row | Ends at the diagram |
@@ -992,7 +992,7 @@ flowchart LR
 
 ### 90-second architecture summary (rehearse verbatim)
 
-> "A thin orchestration layer we own over a model API we don't. Every turn: authenticate through SSO, re-authorize the specific conversation, scan and classify the input, assemble a context window from compacted history plus permission-filtered retrieval plus the assistant definition, route on classification and health, then stream while scanning a sliding output buffer, and finalize with citations, usage and an audit event on every path — complete, blocked or failed. Retrieval permissions always derive from the asking employee, never the assistant's author. Providers sit behind adapters so an outage is a route change, not an incident. MVP is chat plus one grounded corpus; no write tools, no voice, no memory."
+> "A thin orchestration layer we own over a model API we don't. Every turn: authenticate through SSO, re-authorise the specific conversation, scan and classify the input, assemble a context window from compacted history plus permission-filtered retrieval plus the assistant definition, route on classification and health, then stream while scanning a sliding output buffer, and finalise with citations, usage and an audit event on every path — complete, blocked or failed. Retrieval permissions always derive from the asking employee, never the assistant's author. Providers sit behind adapters so an outage is a route change, not an incident. MVP is chat plus one grounded corpus; no write tools, no voice, no memory."
 
 ### Worksheet
 
@@ -1025,7 +1025,7 @@ One review pass was run against the fixed 20-item / 4-phase decomposition rubric
 - **Item 1 (Feature → business-outcome reframing):** Fully covered — Section 1, feature vs. business-result split (retire the invisible egress risk *and* deliver productivity).
 - **Item 2 (Stakeholder/persona mapping):** Fully covered — Section 1, five-stakeholder table + jobs-to-be-done.
 - **Item 3 (Clarifying questions that change architecture):** Fully covered — Section 1's six discovery questions + Section 2's deep-dive table.
-- **Item 4 (Requirements split + prioritization):** Fully covered — Section 2, must/should/could functional requirements.
+- **Item 4 (Requirements split + prioritisation):** Fully covered — Section 2, must/should/could functional requirements.
 - **Item 5 (Explicit non-goals/scope fence):** Fully covered — Section 2, five MVP exclusions.
 
 **Phase 2 — Estimation & Architecture**
@@ -1045,7 +1045,7 @@ One review pass was run against the fixed 20-item / 4-phase decomposition rubric
 - **Item 15 (Layered evaluation metrics/observability):** Fully covered — Section 7, metrics table + three-audiences framing.
 - **Item 16 (Phased rollout, risk register, rollback gates):** Fully covered — Section 7, four-phase rollout + risk register.
 - **Item 17 (Regulatory/governance depth):** Partial — retention, legal hold, eDiscovery, and works-council consultation are first-class, but named framework mechanics (GDPR lawful basis for employee monitoring, FINRA supervision, DPA clause detail) are not worked through.
-- **Item 18 (Responsible-AI/risk framing beyond the obvious failure mode):** Partial — safety filtering and injection are covered in depth, but bias in an employee-facing assistant (e.g. systematically different career guidance across groups) is only implicit in the eval-set discussion; multilingual and accessibility degradation (a global, non-monolingual workforce; screen-reader behavior for a streaming response) is also unaddressed and sits under this same "beyond the obvious failure mode" umbrella.
+- **Item 18 (Responsible-AI/risk framing beyond the obvious failure mode):** Partial — safety filtering and injection are covered in depth, but bias in an employee-facing assistant (e.g. systematically different career guidance across groups) is only implicit in the eval-set discussion; multilingual and accessibility degradation (a global, non-monolingual workforce; screen-reader behaviour for a streaming response) is also unaddressed and sits under this same "beyond the obvious failure mode" umbrella.
 - **Item 19 (Change-management/adoption narrative):** Fully covered — Section 7's phased rollout and three-audiences framing, and Section 1's adoption-as-safety-outcome argument, directly address change management and adoption; the source's own gap list didn't call this out separately, but the content clearly supports "fully covered" here.
 - **Item 20 (Structured communication plan + self-scoring rubric):** Fully covered — Section 8, 50-minute pacing plan + scoring rubric.
 

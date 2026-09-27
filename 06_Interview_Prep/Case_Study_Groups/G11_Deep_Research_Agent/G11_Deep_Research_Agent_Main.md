@@ -135,7 +135,7 @@ Audit **the evidence ledger and the link sanitizer**, not only the final answer.
 
 ### Related AWS research platform
 
-It uses API limits, Bedrock guardrails, Redis/RDS memory, a search–summarize–write–critic loop, and observability.
+This is my own build of the same product. It uses API limits, Bedrock guardrails, Redis/RDS memory, a search–summarize–write–critic loop, and observability.
 
 Its source **does not** give per-user ACL or deterministic release gating. Do **not** copy those defaults into this enterprise case.
 

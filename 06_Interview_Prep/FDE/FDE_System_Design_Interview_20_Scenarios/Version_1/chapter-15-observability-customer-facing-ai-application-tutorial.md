@@ -113,7 +113,7 @@ The observability path is layered rather than monolithic: a trace collector atta
 **Key Points**
 - The `Request` data model carries tenant ID, prompt, and optional user ID; the `ExportedTrace` model carries only a bounded, structured attribute dictionary — never raw prompt text by default.
 - Prompt classification (`classify_sensitive_input`) tags content as `"sensitive"` or `"non_sensitive"` before it is ever attached to a trace.
-- A stable, salted hash (`_stable_hash`, using HMAC-SHA256) is used to preserve correlation across requests without storing raw content — this hash lets you deduplicate and correlate without ever exposing the underlying prompt.
+- A stable keyed hash (`_stable_hash`, HMAC-SHA256 with a secret key) is used to preserve correlation across requests without storing raw content — this hash lets you deduplicate and correlate without ever exposing the underlying prompt.
 - `capture_trace` builds the exported trace directly from a handler's request context, attaching tenant ID, prompt classification, a stable query hash, and result status — never the raw prompt itself.
 - Tests are written as executable contracts: idempotency of trace posting, and a dedicated privacy-invariant test (`test_telemetry_redacts_sensitive_attributes`) that asserts raw PII never appears in the exported trace's JSON.
 - A separate failure-injection test class proves that a retriever timeout is still observable — sampling and redaction must never cause a failure to become invisible.
@@ -194,10 +194,10 @@ class ExportedTrace:
         return json.dumps(self.attributes, sort_keys=True)
 
 
-def _stable_hash(value: str, salt: str) -> str:
-    if not salt:
-        raise TelemetryError("Missing telemetry salt")
-    digest = hmac.new(salt.encode("utf-8"), value.encode("utf-8"), hashlib.sha256)
+def _stable_hash(value: str, key: str) -> str:
+    if not key:
+        raise TelemetryError("Missing telemetry hash key")
+    digest = hmac.new(key.encode("utf-8"), value.encode("utf-8"), hashlib.sha256)
     return digest.hexdigest()
 
 
@@ -214,7 +214,7 @@ def answer(request: Request) -> Dict[str, Any]:
 
 
 def capture_trace(handler: Callable[[], Dict[str, Any]]) -> ExportedTrace:
-    salt = os.environ.get("TELEMETRY_HASH_SALT", "")
+    hash_key = os.environ.get("TELEMETRY_HASH_KEY", "")
     request = getattr(handler, "_request", None)
     if request is None:
         raise TelemetryError("Handler must carry request context in this sketch")
@@ -225,7 +225,7 @@ def capture_trace(handler: Callable[[], Dict[str, Any]]) -> ExportedTrace:
         attributes={
             "tenant_id": request.tenant_id,
             "prompt.classification": prompt_class,
-            "query.hash": _stable_hash(request.prompt, salt),
+            "query.hash": _stable_hash(request.prompt, hash_key),
             "result.status": "ok",
         }
     )
@@ -247,7 +247,7 @@ def test_telemetry_redacts_sensitive_attributes() -> None:
         return answer(req)
 
     _handler._request = req  # type: ignore[attr-defined]
-    os.environ["TELEMETRY_HASH_SALT"] = "unit-test-salt"
+    os.environ["TELEMETRY_HASH_KEY"] = "unit-test-key"
 
     exported = capture_trace(_handler)
     assert "person@example.com" not in exported.to_json()

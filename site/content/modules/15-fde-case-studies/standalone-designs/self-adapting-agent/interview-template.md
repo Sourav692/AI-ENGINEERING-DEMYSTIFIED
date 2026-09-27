@@ -2,7 +2,7 @@
 
 ## 1. Problem Statement
 
-Build an AI agent that can improve over time when it sees new tasks, **without allowing it to randomly change production behavior**.
+Build an AI agent that can improve over time when it sees new tasks, **without allowing it to randomly change production behaviour**.
 
 The key idea is:
 
@@ -79,7 +79,7 @@ Safe Restart Skill
 5. Restore traffic
 ```
 
-### Level 4 — Prompt Optimization
+### Level 4 — Prompt Optimisation
 
 If the planner repeatedly makes the same mistake, we can test multiple prompt versions and promote the best one.
 
@@ -611,7 +611,7 @@ flowchart TD
 
 ---
 
-# 13. Prompt Optimization
+# 13. Prompt Optimisation
 
 Prompt changes should be handled like software changes.
 
@@ -678,11 +678,11 @@ Good reasons to consider it:
 
 The model must consistently produce a specific machine-readable format.
 
-### 2. Specialized domain language
+### 2. Specialised domain language
 
 The base model genuinely struggles with important terminology.
 
-### 3. Cost or latency optimization
+### 3. Cost or latency optimisation
 
 A small tuned model may replace a larger expensive model for a repetitive task.
 
@@ -928,7 +928,7 @@ Permissions remain outside the agent.
 
 # 20. Goal Drift and Metric Gaming
 
-Suppose we optimize:
+Suppose we optimise:
 
 ```text
 % tickets closed
@@ -976,7 +976,7 @@ Do not use a single easily gamed metric.
 | Self-grading | Agent teaches itself wrong lesson | External outcome signal |
 | Prompt overfit | Prompt performs well only on eval set | Hidden test + shadow |
 | Data leakage | Same examples appear in train/eval | Dedup + proper splits |
-| Metric gaming | Agent optimizes wrong metric | Multiple independent metrics |
+| Metric gaming | Agent optimises wrong metric | Multiple independent metrics |
 | Permission creep | Agent learns more authority | External policy layer |
 | Infinite retry | Agent keeps trying | Retry limit |
 | Learning cost explosion | Too many candidates evaluated | Candidate dedup + staged eval |
@@ -1087,7 +1087,7 @@ This keeps user latency predictable.
 
 ---
 
-# 24. Cost Optimization
+# 24. Cost Optimisation
 
 In this design, I'd expect most of the learning cost to come from:
 
@@ -1422,7 +1422,7 @@ Do not put everything into memory.
 
 ---
 
-## General Agent vs Specialized Skills
+## General Agent vs Specialised Skills
 
 General agent:
 
@@ -1433,7 +1433,7 @@ More expensive
 Less predictable
 ```
 
-Specialized skills:
+Specialised skills:
 
 ```text
 Fast
@@ -1502,9 +1502,9 @@ This keeps the first version safer and easier to operate.
 
 ---
 
-# 30. What I Would Prioritize as an FDE
+# 30. What I Would Prioritise as an FDE
 
-For a customer deployment, I would prioritize:
+For a customer deployment, I would prioritise:
 
 ### Phase 1
 
@@ -1614,7 +1614,7 @@ Financial limit?
 Security-sensitive actions?
 ```
 
-This determines fallback behavior.
+This determines fallback behaviour.
 
 ### 4. How fast does a new capability need to become production-ready?
 

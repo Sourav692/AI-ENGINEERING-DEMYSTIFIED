@@ -36,7 +36,7 @@ Design a GenAI FDE solution for **SRE Incident Triage Agent**. The customer has 
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Ingestion:
 - Retrieval:
 - Agent/tool use:

@@ -37,7 +37,7 @@ Design a GenAI FDE solution for an **LLM Evaluation and Release-Gating Platform*
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Artifact registry:
 - Dataset store:
 - Scheduling:

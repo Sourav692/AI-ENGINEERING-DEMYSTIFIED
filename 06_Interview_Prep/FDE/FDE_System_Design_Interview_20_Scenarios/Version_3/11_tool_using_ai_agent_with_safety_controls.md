@@ -37,7 +37,7 @@ Design a GenAI FDE solution for a **Tool-Using AI Agent with Safety Controls**: 
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Planner and proposals:
 - Tool registry:
 - Policy decision point:
@@ -54,7 +54,7 @@ Use one of the rendered diagrams as a base, then customize:
 | Human override rate | Low and falling | Rising | Review UI edits | Operations |
 
 ## 8. Failure modes
-- Prompt injection requests an unauthorized tool
+- Prompt injection requests an unauthorised tool
 - Tool succeeds but the response is lost
 - Approval becomes stale before execution
 - Agent loops on the same action

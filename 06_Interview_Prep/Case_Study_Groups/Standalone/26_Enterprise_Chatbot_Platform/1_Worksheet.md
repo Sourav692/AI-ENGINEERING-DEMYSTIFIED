@@ -37,7 +37,7 @@ Design a GenAI FDE solution for an **Enterprise Chatbot Platform** for 40,000 em
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Session and identity:
 - Context assembler:
 - Retrieval ACLs:

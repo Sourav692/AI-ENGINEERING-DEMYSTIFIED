@@ -15,7 +15,7 @@
   - [From Discovery to Requirements](#from-discovery-to-requirements)
   - [Constraints vs. Preferences](#constraints-vs-preferences)
   - [A Compact Interview Question Tree](#a-compact-interview-question-tree)
-  - [MVP Prioritization: Must, Should, Could](#mvp-prioritization-must-should-could)
+  - [MVP Prioritisation: Must, Should, Could](#mvp-prioritisation-must-should-could)
   - [What the MVP Will Not Support](#what-the-mvp-will-not-support)
   - [Requirement-to-Component Traceability](#requirement-to-component-traceability)
   - [The One Assumption to Protect First](#the-one-assumption-to-protect-first)
@@ -47,7 +47,7 @@
   - [Release Verification: The Highest-Risk Code Path](#release-verification-the-highest-risk-code-path)
   - [Verify-Bundle Flow](#verify-bundle-flow)
   - [What the Snippet Omits on Purpose](#what-the-snippet-omits-on-purpose)
-  - [Failure Behavior to State Explicitly](#failure-behavior-to-state-explicitly)
+  - [Failure Behaviour to State Explicitly](#failure-behaviour-to-state-explicitly)
   - [Contract and Failure-Injection Tests](#contract-and-failure-injection-tests)
   - [Why This Is a Strong FDE Answer](#why-this-is-a-strong-fde-answer)
 - [6. Security, Reliability, and Failure Handling](#6-security-reliability-and-failure-handling)
@@ -68,7 +68,7 @@
   - [User and Business Metrics](#user-and-business-metrics)
   - [A Dashboard That Tells One Story](#a-dashboard-that-tells-one-story)
   - [Ownership, Gates, and Rollback Triggers](#ownership-gates-and-rollback-triggers)
-  - [Standardization Strategy](#standardization-strategy)
+  - [Standardisation Strategy](#standardisation-strategy)
   - [Risk Register](#risk-register)
   - [The Delivery Story the Interviewer Wants to Hear](#the-delivery-story-the-interviewer-wants-to-hear)
 - [8. Interview Walkthrough, Trade-Offs, and Practice](#8-interview-walkthrough-trade-offs-and-practice)
@@ -94,9 +94,9 @@
 - The outcome restatement that anchors the rest of the design: **provide maintainable local AI capability without violating network, artifact, identity, or audit boundaries.**
   - Every later architecture decision gets tested against that sentence.
 - **What to carry forward:** the boundary is not a limitation layered on top of an otherwise-normal AI system — it *is* the system design.
-  - Every subsequent section (requirements, architecture, data model, security, delivery) treats the boundary as the organizing constraint, not an afterthought.
+  - Every subsequent section (requirements, architecture, data model, security, delivery) treats the boundary as the organising constraint, not an afterthought.
 
-> 🎯 **Interview Pointer:** Memorize the outcome sentence verbatim — "maintainable local AI capability without violating network, artifact, identity, or audit boundaries" — and reuse it as the closing line of your 90-second summaries in later sections; interviewers notice when a candidate ties every section back to one stated goal.
+> 🎯 **Interview Pointer:** Memorise the outcome sentence verbatim — "maintainable local AI capability without violating network, artifact, identity, or audit boundaries" — and reuse it as the closing line of your 90-second summaries in later sections; interviewers notice when a candidate ties every section back to one stated goal.
 
 ### Stakeholder Map
 - Stakeholders disagree on different axes: what they care about vs. what they fear — map both before designing anything.
@@ -110,7 +110,7 @@
 | External vendor/build team | A clean handoff process | Being blamed for issues after the network boundary is crossed |
 
 ### Six-Bucket Discovery Framework
-- Organize discovery into six buckets rather than asking scattered questions:
+- Organise discovery into six buckets rather than asking scattered questions:
   - **Workflow** — what job the user is actually trying to do.
   - **Risk** — what happens if the system is wrong, slow, or compromised.
   - **Boundary** — what exactly is inside vs. outside the enclave.
@@ -156,8 +156,8 @@ flowchart TD
   - Hardware determines whether you can run a single smaller model, a larger model with batching, or only a retrieval-heavy workflow with a lightweight model.
   - Quality/latency targets decide whether the solution is a human-assist tool, a batch analyst, or a near-interactive copilot.
   - The import process shapes how quickly the customer can patch vulnerabilities or update the model.
-  - Identity and storage define whether you can integrate with local SSO, file shares, object storage, or directory-backed authorization.
-  - Logging and recovery limits determine whether you can observe failures without exposing classified data, and whether the organization can survive a node or site outage without violating policy.
+  - Identity and storage define whether you can integrate with local SSO, file shares, object storage, or directory-backed authorisation.
+  - Logging and recovery limits determine whether you can observe failures without exposing classified data, and whether the organisation can survive a node or site outage without violating policy.
 
 ### From Discovery to Requirements
 - Once the interviewer has answered half the questions, a strong candidate stops fishing for perfection, states reasonable assumptions explicitly, and converts them into requirements — separating functional from nonfunctional requirements and from constraints.
@@ -177,10 +177,10 @@ flowchart TD
 ### Constraints vs. Preferences
 - Constraints are the walls around the design, not nice-to-haves: e.g., all compute must remain on-premises, logs retained only locally, updates enter only through a manual approval path.
 - Preferences are softer choices, such as preferring one storage engine over another.
-- A strong interview answer distinguishes the two so the team does not optimize a convenience and accidentally violate a boundary.
+- A strong interview answer distinguishes the two so the team does not optimise a convenience and accidentally violate a boundary.
 
 ### A Compact Interview Question Tree
-- A simple decision tree demonstrates how to think under ambiguity — narrowing the design around the hardest unknowns first, and signaling that you are protecting delivery, not just collecting facts.
+- A simple decision tree demonstrates how to think under ambiguity — narrowing the design around the hardest unknowns first, and signalling that you are protecting delivery, not just collecting facts.
 
 ```mermaid
 flowchart TD
@@ -196,7 +196,7 @@ flowchart TD
     E -->|No| E2["MVP may need a minimal internal<br/>service — high-risk scope expansion"]
 ```
 
-### MVP Prioritization: Must, Should, Could
+### MVP Prioritisation: Must, Should, Could
 - Must-have capabilities for the MVP:
   - Offline model and service packaging.
   - Signed versioned artifacts.
@@ -224,7 +224,7 @@ flowchart TD
 | Offline model and service packaging | Build pipeline that produces a single deployable bundle for model, service, and runtime assets |
 | Signed versioned artifacts | Signing process, artifact registry, release manifest, and promotion record |
 | Local registry and dependency mirror | On-prem registry for containers and package mirrors for language dependencies |
-| Local identity integration | Directory or SSO bridge with role mapping and authorization checks |
+| Local identity integration | Directory or SSO bridge with role mapping and authorisation checks |
 | Offline observability and backups | Local logs, metrics store, backup jobs, and restore validation |
 | Auditable update and rollback ceremony | Change approval workflow, release ledger, and rollback runbook |
 | No runtime internet dependency | Network policy, egress denial, and dependency allowlist |
@@ -240,7 +240,7 @@ flowchart TD
 > 🎯 **Interview Pointer:** When an interviewer says "assume whatever you need," anchor on the no-runtime-internet-access assumption before anything else — it's the assumption I'd expect an interviewer to check first that you protected correctly.
 
 ### Why This Is a Strong FDE Signal
-- A hiring team wants someone who can discover the constraints that matter, prioritize requirements under ambiguity, and keep the solution shippable — customer empathy, engineering judgment, and delivery discipline.
+- A hiring team wants someone who can discover the constraints that matter, prioritise requirements under ambiguity, and keep the solution shippable — customer empathy, engineering judgement, and delivery discipline.
 - It shows you can protect the highest-risk constraint instead of overfitting to the easiest feature.
 - **What to say in the interview:** clarify classification/handling rules, compute, latency/quality targets, artifact approval workflow, local identity/storage, and logging/recovery limits; convert answers into must-have capabilities (offline packaging, signed versioned artifacts, local registry/mirror, local identity integration, offline observability/backups, auditable update-and-rollback); state nonfunctional requirements explicitly (no runtime internet dependency, reproducible installs, verifiable supply chain, supportability under long update intervals); declare MVP exclusions.
 
@@ -253,7 +253,7 @@ flowchart TD
   - These numbers shape the architecture: batch vs. online interactive extraction vs. a split design with asynchronous indexing and a smaller interactive layer.
   - They determine whether the failure mode is "slow response" or "missed mission deadline."
 - State average load, peak load, growth, and headroom separately:
-  - Average load → day-to-day behavior.
+  - Average load → day-to-day behaviour.
   - Peak load → protects against queued bursts.
   - Growth → whether the design survives a year of adoption.
   - Headroom → keeps you from operating at the edge of collapse when a large document arrives.
@@ -269,15 +269,15 @@ flowchart TD
 ### Memory and Throughput per Replica
 - Estimate both memory per replica and throughput per replica.
   - Memory must cover model weights, KV cache or equivalent state, framework overhead, and batch buffers.
-  - Throughput is usually tokens per second per replica under the chosen model, quantization, and batch size.
+  - Throughput is usually tokens per second per replica under the chosen model, quantisation, and batch size.
   - A candidate who only talks GPU count without throughput misses the bottleneck; one who only talks memory without throughput misses the placement constraint.
 - Concrete interview-scale memory estimate (my own illustrative numbers, not measured on real hardware):
-  - Quantized model weights: 12 GB.
+  - Quantised model weights: 12 GB.
   - Serving stack runtime/framework overhead: 2 GB.
   - KV cache and transient activations at target context length: 6 GB.
   - Batch buffers plus fragmentation slack: 2 GB.
   - Total: roughly 22 GB of GPU memory per replica.
-  - On a 24 GB card, that leaves too little safety margin for noisy batches or longer-than-expected contexts — the design would likely move to a 32 GB GPU, a smaller model, tighter context limits, or more aggressive quantization.
+  - On a 24 GB card, that leaves too little safety margin for noisy batches or longer-than-expected contexts — the design would likely move to a 32 GB GPU, a smaller model, tighter context limits, or more aggressive quantisation.
   - This is a decision tool, not a precise promise: it tells you whether the current hardware class can host the workload at all.
 
 ### The Replica Sizing Formula
@@ -306,7 +306,7 @@ flowchart TD
 ```
 
 ### Worked Example: 1,000 Users, 20 QPS
-- The case gives us 1,000 users generating a 20 QPS peak during a surge window. The rest are my own assumptions: an average request needs 2,000 tokens of model work (retrieval augmentation + output generation), one replica sustains 120 tokens/sec at the desired batch shape, and I'd set a 70% utilization target:
+- The case gives us 1,000 users generating a 20 QPS peak during a surge window. The rest are my own assumptions: an average request needs 2,000 tokens of model work (retrieval augmentation + output generation), one replica sustains 120 tokens/sec at the desired batch shape, and I'd set a 70% utilisation target:
 
 $$
 Replicas = \left\lceil \frac{20 \times 2000}{120 \times 0.70} \right\rceil = \left\lceil \frac{40000}{84} \right\rceil = 477
@@ -423,16 +423,16 @@ flowchart LR
   - **External dependency:** none for end-user traffic — the only "outside" dependency is the controlled build pipeline feeding the offline bundle.
 - A common mistake: letting a cache behave like a source of truth. In an air-gapped environment this is more dangerous because a stale cache can survive a long time without an internet check to correct it.
   - If the registry says an image is approved, the runtime should not silently prefer a cached older copy.
-  - If the identity provider revokes a service credential, the local control plane must honor that revocation consistently.
+  - If the identity provider revokes a service credential, the local control plane must honour that revocation consistently.
 
-> 🎯 **Interview Pointer:** This system-of-record/cache/queue split is a favorite interviewer probe — be ready to name, for any component you draw, which bucket it's in and what happens if it goes stale.
+> 🎯 **Interview Pointer:** This system-of-record/cache/queue split is a favourite interviewer probe — be ready to name, for any component you draw, which bucket it's in and what happens if it goes stale.
 
 ### End-to-End Happy Path
 - The happy path narrated as a chain of explicit state changes:
   1. **Build from pinned dependencies.** Source code, model package versions, and system packages locked to known revisions in the connected build environment.
   2. **Scan, attest, sign, and export bundle.** Scanned for policy violations, attested for provenance, signed, packaged for export.
   3. **Inspect in the transfer zone.** Checked for integrity, policy conformance, chain-of-custody before crossing inward.
-  4. **Verify signatures offline.** Confirms the bundle came from an authorized signer and was not altered in transit.
+  4. **Verify signatures offline.** Confirms the bundle came from an authorised signer and was not altered in transit.
   5. **Import to local registry.** Approved images, libraries, and model files become available to the offline runtime through the local mirror.
   6. **Deploy canary.** Orchestrator brings up a limited slice of the document pipeline and model server against a safe test set.
   7. **Run acceptance tests.** Checks authentication, document ingestion, output quality, latency, logging, and rollback readiness.
@@ -496,10 +496,10 @@ flowchart LR
 | Connected build environment | Compile, package, and pin offline-ready artifacts | Source tree and build metadata | Outside runtime trust boundary |
 | Artifact signing service | Sign and attest artifacts | Signing keys and provenance records | Keys should be tightly controlled |
 | Transfer staging zone | Inspect bundles before admission | Quarantine manifests | Not a runtime serving tier |
-| Offline registry / package mirror | Serve approved images and packages | Approved artifact catalog | System of record for deployable bits |
+| Offline registry / package mirror | Serve approved images and packages | Approved artifact catalogue | System of record for deployable bits |
 | Local orchestrator | Deploy, scale, and roll back services | Desired state and rollout state | Enforces policy locally |
 | Model server | Run inference | Model runtime state, cached weights | Keep API stable and minimal |
-| Document pipeline | Ingest, analyze, redact, and assemble outputs | Document processing state | Often the main request path |
+| Document pipeline | Ingest, analyse, redact, and assemble outputs | Document processing state | Often the main request path |
 | Local identity provider | Authenticate users and services | Identities, groups, tokens | System of record for access |
 | Local telemetry stack | Store logs, metrics, traces, audit events | Observability data | Must be retained per policy |
 
@@ -507,7 +507,7 @@ flowchart LR
 - MVP should be small and opinionated: one offline registry, one orchestrator, one identity provider, one telemetry stack, one model server, and one document pipeline with a clear canary process.
 - The transfer zone, signing, and verification path are not optional — they are part of the first release because they make offline updates defensible.
 - Later evolution: smarter scheduling, multi-model routing, more advanced retrieval, background reindexing, richer policy engines — follow-on capabilities, not prerequisites.
-- Interview signal: first make the air-gapped path reliable and auditable; then optimize throughput and operator convenience.
+- Interview signal: first make the air-gapped path reliable and auditable; then optimise throughput and operator convenience.
 - **Failure overlay to describe out loud:** bundle arrives, but a transitive package is missing from the offline mirror; orchestrator cannot complete promotion so the canary stays isolated; telemetry stack records the failed rollout; registry keeps the bundle quarantined; operator fixes the package in the connected build environment before trying again.
 
 ### Control Plane vs. Data Plane
@@ -531,7 +531,7 @@ flowchart LR
   - Preferred primary key: `deployment_id`, with a unique constraint across `(model_id, version, hardware)` if the same model family can exist in multiple release states on different targets.
   - If no separate deployment identifier exists, `(model_id, version, hardware)` becomes the natural composite key — choose one explicitly.
   - Lifecycle states: `staged`, `validated`, `active`, `draining`, `retired`.
-  - Retention: preserve deployment history long enough to answer, *"What was running when this document was analyzed?"*
+  - Retention: preserve deployment history long enough to answer, *"What was running when this document was analysed?"*
 - `OfflineAuditEvent(actor, action, artifact_hash, time)` — the system's memory of who did what, to which artifact, and when.
   - Primary key: often an event ID; business key is the `(actor, action, artifact_hash, time)` tuple.
   - Lifecycle: append-only — audit rows should not be edited in place.
@@ -544,7 +544,7 @@ flowchart LR
   - Response: analysis result object with typed fields, model version reference, request identifier.
   - Authentication local to the boundary (offline identity provider or a network-minted service token) — never hand-wave with "just use OAuth."
   - Idempotency: same idempotency key + same request body arriving twice → return the same result or a stable "already processed" response.
-  - Errors distinguish malformed input, unauthorized access, unavailable model capacity, and policy rejection.
+  - Errors distinguish malformed input, unauthorised access, unavailable model capacity, and policy rejection.
 - **`GET /v1/models/status`** — operational read path.
   - Returns current model deployment state, active version, hardware target readiness.
   - Safe to call repeatedly, does not mutate state; still requires authentication because status can leak operational details.
@@ -553,7 +553,7 @@ flowchart LR
   - Accepts a bundle reference or uploaded bundle; verifies manifest signature, checks artifact hashes, confirms declared dependencies are present; returns a structured pass/fail result or validation report.
   - Idempotent with respect to the same release identifier — validating the same bundle twice should not create a second logical validation record unless content changed.
 - **`POST /v1/admin/releases/{id}/promote`** — state transition from validated to active.
-  - Guarded by authorization, policy checks, and optimistic concurrency.
+  - Guarded by authorisation, policy checks, and optimistic concurrency.
   - Fails if the release is not in a promotable state, if the target deployment changed since the client last read it, or if the current active release differs from what the client assumed.
   - Accepts versioned request/response shapes so a future manifest/validation-output change doesn't break older tooling overnight.
 - Contract versioning applies to the bundle format, manifest schema, and audit event schema too, not just public APIs — if the offline environment cannot be updated arbitrarily, every breaking change is a migration event, not a casual refactor.
@@ -668,13 +668,13 @@ def verify_bundle(bundle, trusted_public_key: bytes) -> VerifiedManifest:
 ```
 
 - Walk it line by line:
-  - `canonical_json` serializes the manifest deterministically before signature verification, so the same logical manifest doesn't hash differently.
+  - `canonical_json` serialises the manifest deterministically before signature verification, so the same logical manifest doesn't hash differently.
   - `sha256_hex` gives a stable digest for artifact comparison.
-  - `verify_signature` is intentionally labeled a sketch — real code would use a real asymmetric primitive, not an HMAC stand-in.
+  - `verify_signature` is intentionally labelled a sketch — real code would use a real asymmetric primitive, not an HMAC stand-in.
   - Three exception classes let the caller distinguish signature failure, malformed manifest, and content integrity failure — the operator response differs for each.
   - `VerifiedManifest` is immutable so a successful validation result cannot be accidentally mutated later.
   - `_require_str`/`_require_list` are typed boundary validation: reject malformed input early, before any state changes.
-  - Inside `verify_bundle`: reads manifest and signature, parses JSON safely, validates required fields, verifies signature over canonicalized content, checks every artifact hash with `hmac.compare_digest` to avoid timing leaks, returns a normalized typed result a later promote step can trust.
+  - Inside `verify_bundle`: reads manifest and signature, parses JSON safely, validates required fields, verifies signature over canonicalised content, checks every artifact hash with `hmac.compare_digest` to avoid timing leaks, returns a normalised typed result a later promote step can trust.
 
 ### Verify-Bundle Flow
 
@@ -704,7 +704,7 @@ flowchart TD
 - **Retries:** only safe read and validation operations should be retried automatically. Promotion should be retried only if idempotent by design and guarded by a write token. Document analysis requests should accept an idempotency key so a client retry doesn't create duplicate work or duplicate audit rows.
 - **Observability:** wrap with logs, counters, structured audit events. A validation pass should emit who validated what, what hash was checked, and why a bundle failed if it failed — in an air-gapped environment this is the only practical way to reconstruct incidents without an external vendor console.
 
-### Failure Behavior to State Explicitly
+### Failure Behaviour to State Explicitly
 - A duplicate request tests whether the design understands idempotency: if an operator submits the same validated bundle twice (e.g., first response timed out) and the idempotency key/bundle hash are the same, the second call should return the same validation outcome rather than advancing state twice.
 - If a promote request is repeated after a transient issue inside the boundary, the server should either return the already-promoted state or reject the repeat with a clear, stable error saying the version is no longer pending promotion.
 - The critical failure drill is the missing transitive package: if a manifest declares a dependency not available in the offline artifact store, validation should fail before installation, not during runtime — that's why `dependencies` lives in the manifest, not tribal knowledge.
@@ -771,7 +771,7 @@ def test_verify_bundle_rejects_corrupted_artifact_hash():
         assert str(exc) == "model.bin"
 ```
 
-- Test 1 (contract test): a valid manifest, valid signature, matching artifact hashes should produce a normalized `VerifiedManifest` with the intended version and dependency list.
+- Test 1 (contract test): a valid manifest, valid signature, matching artifact hashes should produce a normalised `VerifiedManifest` with the intended version and dependency list.
 - Test 2 (failure-injection test): simulates corruption via a wrong hash and tampered artifact bytes, then asserts the verifier raises `IntegrityError` on the exact failing path.
 - A third useful test in a real repo would corrupt `manifest.sig` and assert `SignatureError` (signature failure and artifact failure are operationally distinct) — but one contract test plus one failure-injection test is enough for a whiteboard-friendly sketch.
 
@@ -806,7 +806,7 @@ def test_verify_bundle_rejects_corrupted_artifact_hash():
 
 ### Five-Condition Decision Table
 
-| Condition | Policy | User-visible behavior | Recovery path |
+| Condition | Policy | User-visible behaviour | Recovery path |
 |---|---|---|---|
 | Missing transitive package | Fail closed | Block promotion, keep current release running | Restore mirrored artifact, re-run verification |
 | Artifact corrupted during transfer | Fail closed | Reject bundle before install | Re-copy from source, verify hash and signature |
@@ -861,7 +861,7 @@ flowchart TD
 
 ### Other Failure Paths
 - **Artifact corruption during transfer:** verify cryptographic hashes and signatures after every transfer hop, not just at the source; a bundle that passes source verification but fails at the enclave boundary must be treated as hostile or damaged; preserve the bad artifact separately for investigation, don't overwrite it.
-- **Model exceeds GPU memory:** a capacity/packaging problem, not a runtime surprise; route to a smaller approved model, queue until a compatible worker is available, or reject with a clear operational error — never crash the node and hope the scheduler recovers. Detect memory pressure before admission when possible; maintain an explicit compatibility map between model size, quantization format, and hardware profiles.
+- **Model exceeds GPU memory:** a capacity/packaging problem, not a runtime surprise; route to a smaller approved model, queue until a compatible worker is available, or reject with a clear operational error — never crash the node and hope the scheduler recovers. Detect memory pressure before admission when possible; maintain an explicit compatibility map between model size, quantisation format, and hardware profiles.
 - **Local certificate expiring:** an availability/administration issue that can become a security issue if the system bypasses checks to stay alive. Use a short-lived operational certificate with monitored expiry, local renewal from an offline trust anchor, and an escalation path if rotation is overdue. Read-only workflows may degrade under policy; privileged actions should stop.
 - **Update breaks stored-index compatibility:** version the index format alongside the model and reader code, promoting the new trio together only after the new reader can interpret the old index or rebuild it deterministically. If the new release cannot read the existing index, pause promotion and keep the old path serving. Human intervention is appropriate if the compatibility matrix is unclear or a rebuild would exceed the recovery objective.
 
@@ -1028,7 +1028,7 @@ def test_tampered_model_is_rejected():
 - They know when to queue, when to degrade, when to fail closed, and when to involve a human; they can articulate blast radius, preserve evidence, and write a test that proves a safety invariant.
 - **90-second interview summary:** treat the offline release pipeline as a high-trust control plane; every dependency is pinned and attested; signatures verified against offline trust roots; telemetry never assumes egress; privileged administration is separated from normal use; the riskiest failure is an incomplete or corrupted bundle, so the system must fail closed, preserve evidence, and keep the currently running release intact; runtime issues get clear failure policies (some queue, some degrade to approved fallbacks, some require human intervention); first production gate — if the bundle cannot prove integrity, completeness, and compatibility offline, it does not enter the enclave.
 
-> 🎯 **Interview Pointer:** If asked "what's your first production gate," this chapter's answer is consistently the same sentence across sections — memorize it: the bundle must prove integrity, completeness, and compatibility offline before it enters the enclave.
+> 🎯 **Interview Pointer:** If asked "what's your first production gate," this chapter's answer is consistently the same sentence across sections — memorise it: the bundle must prove integrity, completeness, and compatibility offline before it enters the enclave.
 
 ## 7. Delivery Plan, Observability, and Business Impact
 
@@ -1056,7 +1056,7 @@ flowchart LR
 
 1. **Build a hardware-identical staging environment.**
    - **Owner:** infrastructure/platform engineering, with security review from the enclave team.
-   - **Exit criteria:** staging node class, storage layout, GPU/CPU profile, OS image, and trust roots match production closely enough that install and runtime behavior are representative.
+   - **Exit criteria:** staging node class, storage layout, GPU/CPU profile, OS image, and trust roots match production closely enough that install and runtime behaviour are representative.
    - **Why it matters:** convenient staging hides the failures that matter later — package incompatibility, driver mismatch, disk layout issues, upgrade friction.
 2. **Practice signed transfer.**
    - **Owner:** release engineering, with security and operations jointly observing the drill.
@@ -1087,7 +1087,7 @@ flowchart LR
   - *Calculation:* documents/pages processed per unit time, plus request latency at the chosen percentile for user-facing paths.
   - *Source:* service telemetry and local performance counters.
   - *Owner:* platform or ML operations.
-  - *Alert threshold:* latency crosses the user-acceptable band or throughput falls below demand forecast → consider batching changes, model quantization, hardware saturation, or queue limits.
+  - *Alert threshold:* latency crosses the user-acceptable band or throughput falls below demand forecast → consider batching changes, model quantisation, hardware saturation, or queue limits.
 - **Capacity saturation**
   - *Calculation:* fraction of CPU, GPU, memory, disk I/O, queue depth, or token budget consumed relative to safe operating headroom.
   - *Source:* host metrics and service queues.
@@ -1117,7 +1117,7 @@ flowchart LR
   - Documents processed per shift.
   - Average turnaround time for a case.
   - Share of cases completed with no manual fallback.
-- **Middle row: service behavior.**
+- **Middle row: service behaviour.**
   - Offline install success rate by release.
   - Signature verification failures by transfer event.
   - Model latency and throughput by node.
@@ -1129,7 +1129,7 @@ flowchart LR
   - Last successful signed transfer.
 - This structure answers the one question that matters in a closed network: is the user problem improving because the system is healthy, or is the system merely surviving while the workflow remains painful?
 
-> 🎯 **Interview Pointer:** Interviewers often ask "how would you dashboard this?" — the strongest answer is the three-row layout (user outcome / service behavior / operational control), not a flat metrics list. It signals you think in terms of causal layers, not a wall of green.
+> 🎯 **Interview Pointer:** Interviewers often ask "how would you dashboard this?" — the strongest answer is the three-row layout (user outcome / service behaviour / operational control), not a flat metrics list. It signals you think in terms of causal layers, not a wall of green.
 
 ### Ownership, Gates, and Rollback Triggers
 - **Product or business owner:** defines the case-review workflow and success criteria.
@@ -1141,13 +1141,13 @@ flowchart LR
 - **Go/no-go gates:**
   - The bundle verifies offline.
   - The bundle is complete and compatible with the target node class.
-  - The staging run reproduces expected behavior on hardware identical enough to production.
+  - The staging run reproduces expected behaviour on hardware identical enough to production.
   - The canary node stays inside latency, throughput, and saturation thresholds.
   - The rollback bundle has been tested, not merely archived.
 - **Rollback triggers:** repeated signature failures, unexplained install failure, canary latency regression, rising error rate, or any evidence the release is compromising enclave integrity. "We'll debug it live" is not a strategy in an air-gapped setting — it's an admission the rollback path was never real.
 
-### Standardization Strategy
-- Clarifies what should be standardized across customers vs. remain local:
+### Standardisation Strategy
+- Clarifies what should be standardised across customers vs. remain local:
   - **Configuration:** document types, retention rules, approval thresholds, queue limits, model choice among approved offline options, workflow routing rules.
   - **Adapter:** importers for the customer's document sources, export connectors for case systems, translation layers mapping local formats into the analysis pipeline.
   - **Shared service:** signature verification, bundle validation, audit logging, model serving primitives, the release registry — good candidates for reuse across enclaves.
@@ -1174,7 +1174,7 @@ flowchart LR
 
 ### The Delivery Story the Interviewer Wants to Hear
 - The prototype works, but the customer asks when it can be trusted in production; the answer is not "after more model tuning."
-- It is: move from prototype to staged rollout through a hardware-identical staging environment, a practiced signed transfer, a one-node canary, and a tested rollback bundle with runbooks.
+- It is: move from prototype to staged rollout through a hardware-identical staging environment, a practised signed transfer, a one-node canary, and a tested rollback bundle with runbooks.
 - Measure offline install success rate, signature verification failures, throughput, latency, saturation, mean time to repair, and release age.
 - Keep technical health, model quality, adoption, and business outcome separate so you can see whether the product is actually improving the workflow.
 - Assign owners and gates so a bad release stops before it becomes an incident.
@@ -1208,7 +1208,7 @@ flowchart LR
 - **0–5 minutes: discovery and constraints**
   - Restate the customer outcome in one sentence.
   - Clarify the air-gap boundary, update process, and audit expectations.
-  - Ask who uses the system, what document types matter, and what "good" means (search, extraction, classification, summarization, or all).
+  - Ask who uses the system, what document types matter, and what "good" means (search, extraction, classification, summarisation, or all).
   - Confirm whether deployment must run centrally, on analyst workstations, or both.
   - Identify the riskiest assumption and say you'll return to it.
 - **5–10 minutes: scale and success criteria**
@@ -1237,17 +1237,17 @@ flowchart LR
   - Identify owners for platform, security, support, and analysts.
   - Show how release age and approval gates reduce risk while still allowing progress.
   - Explain how the product becomes reusable across similar enclaves.
-- **42–50 minutes: recap and follow-up defense**
-  - Summarize the architecture in ninety seconds.
+- **42–50 minutes: recap and follow-up defence**
+  - Summarise the architecture in ninety seconds.
   - Call out the biggest trade-off.
   - Name the first production gate.
   - Invite further questions, answering by returning to boundaries, provenance, or rollback.
 
 ### Trade-Off: Model Size vs. Hardware Fit
 - Usually the first tension the interviewer wants to see reasoned through.
-- A larger model may improve extraction/summarization quality but can exceed local GPU memory, increase latency, complicate patching, and force the customer to buy or reassign hardware.
-- A smaller model may fit the enclave cleanly and be easier to support, but can underperform on noisy documents, specialized terminology, or long-context reasoning.
-- The right answer is not "always biggest" or "always smallest" — optimize for the mission:
+- A larger model may improve extraction/summarisation quality but can exceed local GPU memory, increase latency, complicate patching, and force the customer to buy or reassign hardware.
+- A smaller model may fit the enclave cleanly and be easier to support, but can underperform on noisy documents, specialised terminology, or long-context reasoning.
+- The right answer is not "always biggest" or "always smallest" — optimise for the mission:
   - Document triage/structured extraction → a smaller, well-tuned model that runs reliably may deliver more value than a brittle, expensive-to-maintain larger model.
   - Subtle legal/technical interpretation → larger inference hardware may be justified, but only if the enclave can sustain it and the operating team can patch it safely.
 - Interview line: *"I would select the smallest model that meets the quality threshold on the customer's real documents, because every increment in model size competes with enclave hardware, latency, and accreditation effort."*
@@ -1258,7 +1258,7 @@ flowchart LR
 - The trade-off is operational complexity vs. governance simplicity:
   - Containers often win when the customer values component reuse, controlled patching, efficient scaling.
   - Virtual appliances may win when the customer values a tighter, more easily inspected deployment unit and a slower, more deliberate change process.
-- Tie it to the organization, not a technical purity debate: hardened virtualization standard already in place → virtual appliance may reduce friction; secure container platform already in place → containers may improve maintainability and reuse.
+- Tie it to the organisation, not a technical purity debate: hardened virtualisation standard already in place → virtual appliance may reduce friction; secure container platform already in place → containers may improve maintainability and reuse.
 
 ### Trade-Off: Update Frequency vs. Accreditation Cost
 - More frequent updates reduce vulnerability exposure, improve model quality, and shorten feedback loops — but each update carries nontrivial cost: packaging, signing, transfer, verification, staging, testing, approvals, possibly re-accreditation.
@@ -1267,7 +1267,7 @@ flowchart LR
   - Prebuild trusted update bundles.
   - Use a promotion ladder from dev to staging to enclave.
   - Reduce frequency of high-friction changes by making each change smaller, more predictable, more auditable.
-- Strong phrasing: *"I would favor fewer, higher-confidence releases, because in an air-gapped setting the cost of change is partly technical and partly governance-related."*
+- Strong phrasing: *"I would favour fewer, higher-confidence releases, because in an air-gapped setting the cost of change is partly technical and partly governance-related."*
 
 ### Trade-Off: Central Cluster vs. Workstation Deployment
 - A central cluster simplifies management, observability, and shared model access — often best when many analysts need the same service and the enclave allows a managed platform.
@@ -1292,8 +1292,8 @@ flowchart LR
   - Principle: you replace external observability with disciplined internal observability and strong release metadata.
 - **"What if model weights change but the index does not?"**
   - Exposes whether you understand coupled artifacts. Model and retrieval index should be versioned as a compatible pair.
-  - If weight changes affect embeddings, tokenization, or ranking behavior, the index may need rebuilding or revalidation.
-  - Treat model package, tokenizer, prompts, embedding pipeline, and index schema as a compatibility surface.
+  - If weight changes affect embeddings, tokenisation, or ranking behaviour, the index may need rebuilding or revalidation.
+  - Treat model package, tokeniser, prompts, embedding pipeline, and index schema as a compatibility surface.
   - Pure runtime improvement with the same interface → may keep the index. Representation changes → rebuild or stage a parallel index and compare outputs before switching traffic.
   - Shows you understand the hidden contract between retrieval and generation, and that you think in safe upgrade paths, not just "update the model."
 - **"How do you prove build provenance?"**
@@ -1308,18 +1308,18 @@ flowchart LR
 - **"Security can handle the rest."** → Repair: show ownership of artifact flow, identity, logs, and rollback.
 - **"We'll patch monthly."** → Repair: discuss release trains, emergency fixes, and the approval cost of each update.
 - **"We can always inspect logs later."** → Repair: specify what must be captured up front to enable offline debugging.
-- **"The index is separate from the model."** → Repair: acknowledge compatibility between embedding behavior, retrieval quality, and index freshness.
+- **"The index is separate from the model."** → Repair: acknowledge compatibility between embedding behaviour, retrieval quality, and index freshness.
 - If you want to sound senior, avoid defending a generic answer — instead say: *"That would work in many environments, but in an air-gapped enclave the real constraint is not just technical feasibility; it is safe change management."*
 
 ### Self-Scoring Rubric
 - **Discovery:** Did you identify the real customer outcome, the boundary conditions, and the riskiest unknowns?
-- **Estimation:** Did you give a reasonable sense of scale and capacity, while labeling numbers as illustrative when necessary?
+- **Estimation:** Did you give a reasonable sense of scale and capacity, while labelling numbers as illustrative when necessary?
 - **Architecture:** Did you separate data plane, control plane, trust boundaries, and update flow?
 - **Depth:** Did you go deep on the highest-risk areas instead of narrating every box equally?
 - **Security:** Did you address provenance, identity, transfer controls, logging, and rollback without pretending controls eliminate all risk?
 - **Delivery:** Did you explain how the system gets from prototype to staged rollout to production support?
 - **Communication:** Did you stay crisp, structured, and open to redirection?
-- A strong answer is not one that draws the most boxes — it shows judgment: what matters, what can wait, what must be controlled, and how the customer benefits.
+- A strong answer is not one that draws the most boxes — it shows judgement: what matters, what can wait, what must be controlled, and how the customer benefits.
 
 ### The Final 90-Second Summary
 - *"I'd deliver document analysis inside the air gap as a centrally managed enclave service, with a controlled import path for signed releases, versioned model-and-index bundles, and local observability for offline support. I'd choose the smallest model that meets the customer's document quality needs on approved hardware, because hardware fit, update cost, and accreditation friction matter as much as accuracy. I'd prefer containers if the customer already operates a secure platform, but I'd be ready to use a virtual appliance if governance simplicity is the priority. The riskiest trade-off is update frequency versus review burden, so I'd use a staged release train, signed artifacts, and rollback-ready bundles. The first production gate is a successful canary in the enclave with verified provenance, stable latency, and a tested support runbook."*
@@ -1339,7 +1339,7 @@ One self-review pass was run against the fixed 20-item/4-phase decomposition rub
 - **Item 1 (Feature → business-outcome reframing):** Fully covered — Section 1 outcome restatement and business-outcome bullets.
 - **Item 2 (Stakeholder/persona mapping):** Fully covered — Section 1 stakeholder table.
 - **Item 3 (Clarifying questions that change the architecture):** Fully covered — Section 2's six discovery questions and decision tree.
-- **Item 4 (Requirements split + prioritization):** Fully covered — Section 2 functional/nonfunctional lists and must/should/could.
+- **Item 4 (Requirements split + prioritisation):** Fully covered — Section 2 functional/nonfunctional lists and must/should/could.
 - **Item 5 (Explicit non-goals/scope fence):** Fully covered — Section 2 "What the MVP will not support."
 
 **Phase 2 — Estimation & Architecture**
@@ -1370,14 +1370,14 @@ No further review passes were run — the single pass found no additional closea
 *The following is supplementary perspective, not sourced from the original chapter — my own view on how to address these gaps live, grounded in this chapter's own architecture.*
 
 **Item 7 — Unit economics/cost-driver breakdown.**
-- I would build the unit-economics view directly from the replica formula already in Section 3, rather than inventing new numbers: cost per document = (GPU-hours consumed by the model server + storage/index amortization + telemetry/audit storage) / documents processed in the window.
+- I would build the unit-economics view directly from the replica formula already in Section 3, rather than inventing new numbers: cost per document = (GPU-hours consumed by the model server + storage/index amortisation + telemetry/audit storage) / documents processed in the window.
 - The fixed-GPU-pool constraint actually makes this easier to reason about than in a cloud system — since replicas can't elastically scale, the "cost driver" question collapses to "what fraction of the fixed pool does this workload consume," which ties straight back to the 477-replica worked example: I'd frame it as "cost per analyst-hour saved" versus "GPU-hours burned," and use the sensitivity table's baseline-vs-10x comparison as the cost-scaling argument instead of a dollar figure I can't defend.
-- In a live interview I'd say the honest thing: I don't have the customer's GPU procurement cost or analyst fully-loaded cost, so I'd sketch the formula shape (cost = fixed hardware amortization + operational/audit overhead, divided by throughput) and ask the interviewer for one real number to anchor it, rather than fabricate a cost-per-document figure.
+- In a live interview I'd say the honest thing: I don't have the customer's GPU procurement cost or analyst fully-loaded cost, so I'd sketch the formula shape (cost = fixed hardware amortisation + operational/audit overhead, divided by throughput) and ask the interviewer for one real number to anchor it, rather than fabricate a cost-per-document figure.
 
 **Item 10 — Build-vs-buy/vendor and model-selection trade-offs.**
 - Given this chapter's own component list (Section 4's nine components), I'd explicitly split buy-vs-build by component rather than treating the whole system as one build decision: the offline registry/package mirror, local identity provider integration, and telemetry stack are exactly the kind of commodity infrastructure I'd buy or adopt from an existing accredited vendor product where one exists on the approved products list, because I'd expect building a bespoke air-gapped package mirror to burn months re-solving a problem the customer's own accreditation program has likely already blessed a vendor for.
 - Conversely, I'd build in-house exactly the pieces that are unique to this program's mission: the document pipeline's redaction/extraction logic, the release-manifest schema, and the verify_bundle integrity gate from Section 5 — because no vendor can be accountable for domain-specific redaction correctness or for a manifest schema tailored to this customer's audit policy.
-- General heuristic to say out loud: buy anything that is a solved, security-commoditized problem where vendors already carry FedRAMP/DoD-style accreditation (identity brokers, package mirrors, base OS images); build only the boundary logic and mission-specific pipeline that is unique to the customer's workflow and that the chapter's own MVP list (Section 2) already marks as must-have.
+- General heuristic to say out loud: buy anything that is a solved, security-commoditised problem where vendors already carry FedRAMP/DoD-style accreditation (identity brokers, package mirrors, base OS images); build only the boundary logic and mission-specific pipeline that is unique to the customer's workflow and that the chapter's own MVP list (Section 2) already marks as must-have.
 
 **Item 17 — Regulatory/governance depth.**
 - I would name a plausible governance framework out loud even though the source stays framework-agnostic, because in a real interview silence here reads as inexperience: for a US government air-gapped enclave I'd reference NIST 800-53 control families (SC for system/communications protection, AU for audit, CM for configuration management) as the natural mapping for the chapter's own controls — the signed release manifest maps to CM-3/CM-14 (configuration change control and signed components), the offline audit event log maps to AU-2/AU-12, and the fail-closed dependency policy maps to SC-7 boundary protection.

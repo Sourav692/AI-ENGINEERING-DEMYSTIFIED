@@ -22,7 +22,7 @@ Say the framing sentence in the first two minutes, because a design that starts 
 
 > *"Anyone can wire an LLM to a tool call. The hard part is letting someone who has never seen a stack trace configure that safely — which means the system has to make the dangerous decisions itself, deterministically, and never delegate them to the model's judgement in the moment."*
 
-The prompt, as quoted in a DevRev system-design prep document: *"Design an AI agent platform for non-technical users to configure workflow automations across multiple channels."* Four phrases carry it.
+The prompt, as quoted in a company's system-design prep guide: *"Design an AI agent platform for non-technical users to configure workflow automations across multiple channels."* Four phrases carry it.
 
 | Phrase in the prompt | What it really means |
 |---|---|

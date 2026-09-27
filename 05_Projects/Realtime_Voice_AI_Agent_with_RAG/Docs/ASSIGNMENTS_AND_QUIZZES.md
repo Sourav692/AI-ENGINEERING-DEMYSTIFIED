@@ -162,7 +162,7 @@ This document provides a set of assignments and quizzes designed to deepen your 
 
 - [ ] OpenAI Whisper API
 - [ ] Google Speech-to-Text
-- [ ] Deepgram Nova-2
+- [ ] Deepgram Nova-3
 - [ ] ElevenLabs
 
 **3. What is the purpose of the `SileroVADAnalyzer` in the voice pipeline?**
@@ -293,7 +293,7 @@ This document provides a set of assignments and quizzes designed to deepen your 
 ### Quiz 2: Pipecat Voice Pipeline & Real-Time Communication
 
 1. It orchestrates the real-time voice pipeline (STT → LLM → TTS)
-2. Deepgram Nova-2
+2. Deepgram Nova-3
 3. To detect when the user stops speaking (Voice Activity Detection)
 4. The LLM decides to call the `search_knowledge_base` function tool
 5. `RTVIEvent.BotReady`

@@ -97,7 +97,7 @@ Idempotency: before retry, 1 apply; after retry, still 1 apply. Durability: cras
 
 ## Where the honest gap is
 
-The lock store, the idempotency-key store and the version store are plain in-process dicts — correct in shape, wrong in storage for anything past one process. A real deployment needs a distributed lock (Redis, or a database row with a unique constraint) and a durable idempotency-key store shared across workers and surviving restarts. The mechanism does not change, only where it is persisted — which is why the logic sits behind two thin functions, `acquire_lock`/`release_lock`, and a single `_apply_side_effect`. Doc 7 carries the full "what to say".
+The lock store, the idempotency-key store and the version store are plain in-process dicts — correct in shape, wrong in storage for anything past one process. A real deployment needs a distributed lock (a database row with a unique constraint, or a Redis lease checked with a fencing token, since a lease can expire while its holder is still writing) and a durable idempotency-key store shared across workers and surviving restarts. The mechanism does not change, only where it is persisted — which is why the logic sits behind two thin functions, `acquire_lock`/`release_lock`, and a single `_apply_side_effect`. Doc 7 carries the full "what to say".
 
 Module 03 introduced LangGraph checkpointers as the framework's version of this. Having built it by hand here, you know exactly what a checkpointer is persisting and why a checkpoint after every node is the right granularity.
 

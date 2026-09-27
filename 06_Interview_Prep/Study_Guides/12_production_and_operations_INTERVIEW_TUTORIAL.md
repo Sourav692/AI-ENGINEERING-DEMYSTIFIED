@@ -74,7 +74,7 @@ Streaming returns output as it's generated instead of waiting for the full respo
   for chunk in chatgpt.stream(chat_template.format()):
       print(chunk.content, end="")   # printed as each token arrives
   ```
-- **Say this in an interview**: "Streaming buys perceived latency, not real latency — the total generation time is unchanged, but the user sees the first token in milliseconds instead of waiting for the whole answer."
+- **Say this in an interview**: "Streaming buys perceived latency, not real latency — the total generation time is unchanged, but the user sees the first token in well under a second instead of waiting for the whole answer."
 
 ### 1.3 Cost tracking with a callback context manager
 

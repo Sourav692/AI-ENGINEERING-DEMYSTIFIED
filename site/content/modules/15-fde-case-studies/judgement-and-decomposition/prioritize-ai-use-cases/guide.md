@@ -1,4 +1,4 @@
-# Prioritize AI Use Cases for a Large Enterprise
+# Prioritise AI Use Cases for a Large Enterprise
 
 *The use case that impresses the executive is rarely the one that survives contact with the data, the regulator and the users.*
 
@@ -8,7 +8,7 @@ This is a portfolio question, not a design question. Nothing gets drawn until th
 
 | Case | Where it comes from | What the source gives |
 |---|---|---|
-| #60 Prioritize AI Use Cases for a Large Enterprise | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md`, Question 16 | The prompt, ten prioritisation criteria, six selection properties, one follow-up and its answer, all quoted in section 1 |
+| #60 Prioritise AI Use Cases for a Large Enterprise | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md`, Question 16 | The prompt, ten prioritisation criteria, six selection properties, one follow-up and its answer, all quoted in section 1 |
 
 The source is talking points, not a worked answer. Everything marked *(own construction)* was built for this page from the arguments in the repo's delivery, cost and decomposition material. The insurer, its thirty use cases and every number attached to them are assumptions, not data.
 

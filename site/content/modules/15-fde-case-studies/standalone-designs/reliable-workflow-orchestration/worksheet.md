@@ -7,7 +7,7 @@ Design a GenAI FDE solution for a **Reliable Workflow Orchestration System**: co
 - What event means the workflow actually succeeded?
 - Which failures need rollback, and which need compensation?
 - Which steps may wait minutes, hours, or days?
-- Who is authorized to resume, re-run, or override a case?
+- Who is authorised to resume, re-run, or override a case?
 - Does the payment provider support idempotency keys?
 
 ## 3. Users and workflows
@@ -37,7 +37,7 @@ Design a GenAI FDE solution for a **Reliable Workflow Orchestration System**: co
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Durable state and history:
 - Scheduling:
 - Timers and signals:

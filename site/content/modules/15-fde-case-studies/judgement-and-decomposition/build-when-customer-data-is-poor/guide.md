@@ -401,7 +401,7 @@ All paths are relative to `06_Interview_Prep/`.
 | Section | Source |
 |---|---|
 | 1, 2 (last question), 5, 14 (opening) | `OpenAI_Applied/Sample_Questions/OpenAI Applied_Engineer_Problem_Decomposition_Questions.md` — Question 18 (#62), the reusable answer template, the mistakes to avoid |
-| 10 | Same file, Question 11 and its "What if there is no labeled data?" follow-up |
+| 10 | Same file, Question 11 and its "What if there is no labelled data?" follow-up |
 | 3, 9, 10 | `FDE/Cracking_Agentic_AI_System_Design_Interviews/ch08_learning_in_agentic_systems.md` — dataset hygiene gates and the 94% → ~78% routing case |
 | 4, 10 | `FDE/Cracking_Agentic_AI_System_Design_Interviews/ch12_validation_and_measurement.md` — Cohen's kappa and the 0.60 floor, sample-size arithmetic, stratification, datasheets |
 | 3, 4, 5, 12 | `Handbook/10_FDE_Delivery_Operating_Model/03_Scoping_To_Production_In_Two_Weeks.md` and `04_Gates_Risks_Metrics.md` — data-readiness days, `data_access_granted`, "start day 1, escalate day 3", refuse at intake, shadow mode |

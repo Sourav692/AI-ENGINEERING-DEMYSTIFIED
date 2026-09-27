@@ -37,7 +37,7 @@ Design a GenAI FDE solution for a **High-Volume Batch Inference System**: classi
 |  |  |  |  |  |  |
 
 ## 6. Proposed architecture
-Use one of the rendered diagrams as a base, then customize:
+Use one of the rendered diagrams as a base, then customise:
 - Snapshot and planning:
 - Partitioning:
 - Leasing and workers:

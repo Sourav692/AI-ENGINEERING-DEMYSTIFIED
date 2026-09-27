@@ -10,10 +10,10 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - What evidence do auditors need: logs, policy snapshots, access reviews, or data lineage?
 - Which failure is most expensive: data leakage, unavailability, slow inference, or misrouted regional traffic?
 - Do customers bring their own identity provider and their own keys, and is deletion hard or best-effort?
-- What is the workload shape — steady, bursty, skewed, or mixed — and what noisy-neighbor tolerance is acceptable?
+- What is the workload shape — steady, bursty, skewed, or mixed — and what noisy-neighbour tolerance is acceptable?
 
 ## Strong functional requirements
-- Support the core workflow: a tenant user authenticates through their own IdP, the platform derives immutable tenant context, authorizes, and serves inference scoped to that tenant alone.
+- Support the core workflow: a tenant user authenticates through their own IdP, the platform derives immutable tenant context, authorises, and serves inference scoped to that tenant alone.
 - Provide a tenant-aware control plane to onboard tenants, assign policies, provision configuration, manage keys, and record admin actions.
 - Carry tenant identity and policy context through the entire data-plane call chain, never re-deriving tenancy from ad hoc metadata.
 - Enforce per-tenant policy, quotas, keys, and configuration without bespoke code paths per customer.
@@ -36,7 +36,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Tenant-aware services execute only on immutable context; partitioned stores carry the tenant key in both physical layout and query predicates.
 - The quota service applies concurrency, token, and burst limits before inference; the key manager selects tenant encryption context; the regional scheduler places work in an allowed region.
 - Seven isolation layers must agree independently — row, object, cache, queue, log, vector index, and key — so one missed check is not a full breach.
-- The audit pipeline records tenant-scoped events after the action but close to it. Caches never act as the source of truth for membership or authorization.
+- The audit pipeline records tenant-scoped events after the action but close to it. Caches never act as the source of truth for membership or authorisation.
 
 ```mermaid
 flowchart LR
@@ -62,12 +62,12 @@ flowchart LR
 - Assume model output never flows raw into the system; it is parsed into a typed schema and policy-checked before persistence, because the typed boundary is the application boundary.
 
 ## Red-team risks
-- missing tenant predicate, cache key without tenant scope, shared queue leaking payload metadata, noisy-neighbor quota exhaustion, misrouted regional traffic
+- missing tenant predicate, cache key without tenant scope, shared queue leaking payload metadata, noisy-neighbour quota exhaustion, misrouted regional traffic
 - Missing tenant predicate in a query, cache lookup, export job, or admin action; the system must fail closed, never read whatever matches.
 - Cache bleed where a shared cache replays another tenant's object even though the database stayed protected; treat as a security incident, not a performance bug.
 - Shared queue or dead-letter channel exposing metadata that reveals another customer's workload shape even when the payload is encrypted.
-- Vector-index leakage where semantic search surfaces neighboring customer content because scoping was applied at query time but not at ingestion.
-- Noisy neighbor exhausting model quota, which is a fairness and reliability failure rather than a confidentiality breach, and must degrade only that tenant.
+- Vector-index leakage where semantic search surfaces neighbouring customer content because scoping was applied at query time but not at ingestion.
+- Noisy neighbour exhausting model quota, which is a fairness and reliability failure rather than a confidentiality breach, and must degrade only that tenant.
 
 ## Rollout plan
 - Week 0-1: name stakeholders, the dangerous failure mode, measurable success, and explicit MVP exclusions.
@@ -86,15 +86,15 @@ These are thresholds I'd set for this case, not industry standards. Defend them,
 | Cross-tenant incident count | The central promise of the platform holds | Zero confirmed; any incident halts promotion | Incident reports and audit-log review |
 | Isolation-test pass rate | The boundary fails safely and visibly under attack | Full pass; any new boundary failure blocks release | Adversarial negative-test suite |
 | Per-tenant p95 latency | Shared capacity does not mean unpredictable capacity | Within SLO per tenant, not just in aggregate | Request telemetry segmented by tenant |
-| Quota rejection rate | Quotas are sized to protect neighbors without false failures | Low and explainable per tenant class | Admission and quota logs |
-| Cost per tenant | Pooled economics actually materialize | Within expected band for the tenant class | Billing mapped to tenant usage |
+| Quota rejection rate | Quotas are sized to protect neighbours without false failures | Low and explainable per tenant class | Admission and quota logs |
+| Cost per tenant | Pooled economics actually materialise | Within expected band for the tenant class | Billing mapped to tenant usage |
 | Regional failover time | Residency and recovery promises survive a real outage | Within the agreed RTO | Game-day and failover drills |
 
 ## Weak answer
 I would use microservices and Kubernetes, put a tenant_id column on every row, and add row-level security. This is weak because it is solution-first, names no customer outcome, treats one row label as the whole enforcement stack, and ignores caches, queues, vector indexes, backups, regional routing, and what happens when a predicate is simply omitted.
 
 ## Average answer
-I would build a shared platform with per-tenant authorization, quotas to stop noisy neighbors, and regional routing for residency. I would add audit logging and monitor latency per tenant. This is better, but still incomplete because it does not say where tenant context originates, does not make every isolation layer agree, and never defines when a customer should graduate to dedicated infrastructure.
+I would build a shared platform with per-tenant authorisation, quotas to stop noisy neighbours, and regional routing for residency. I would add audit logging and monitor latency per tenant. This is better, but still incomplete because it does not say where tenant context originates, does not make every isolation layer agree, and never defines when a customer should graduate to dedicated infrastructure.
 
 ## Strong answer
 I would default to a shared platform, because pooled economics are the point across 500 tenants, and make isolation defensible rather than absolute. Tenant context is derived once from verified identity, never from the request body, and becomes immutable. The control plane decides policy, region, quota, and key; the data plane enforces it at the gateway, the services, and every store. Seven layers enforce independently so one missed check is not a breach, and a missing tenant predicate fails closed. I would prove it with an adversarial isolation suite before any external tenant, then stage through internal tenants, small shared tenants, and a dedicated tier justified by policy and economics. The key is not just multi-tenancy, but proving the boundary and recovering without widening the blast radius.
@@ -107,7 +107,7 @@ I would default to a shared platform, because pooled economics are the point acr
 | Architecture | Row of generic services | Gateway, policy, partitioned storage | Control/data plane split, strict dependency order, immutable context, fail-closed enforcement |
 | Data/integration | Mentions a tenants table | Names the core records | Ownership boundaries, retention in the model, idempotency plus optimistic concurrency |
 | Evaluation | "We would test isolation" | Some negative tests | Adversarial suite as a gate, per-tenant latency, quota rejections, cost per tenant, failover drills |
-| Safety/security | "tenant_id on every query" | Adds RBAC and audit logs | Defense in depth across row, object, cache, queue, log, vector, key; blast radius as design unit |
+| Safety/security | "tenant_id on every query" | Adds RBAC and audit logs | Defence in depth across row, object, cache, queue, log, vector, key; blast radius as design unit |
 | Rollout | Launch to all tenants | Pilot then expand | Internal tenants, isolation gate, small shared tenants, dedicated tier with named owners and rollback |
 | Communication | Reads the whiteboard aloud | Clear but generic | Leads with outcome, states assumptions, invites redirection, closes with the first production gate |
 

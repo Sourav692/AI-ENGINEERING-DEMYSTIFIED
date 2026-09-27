@@ -22,7 +22,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Strong non-functional requirements
 - Latency: in this design, I'd target 3-8 seconds for normal interactive questions; longer workflows should be asynchronous with progress state.
-- Availability: design for business-critical support hours with graceful degradation if LLM, vector DB, or source system is down.
+- Availability: in this design, business hours are enough; contract review runs to deal deadlines, not in real time. If the LLM or vector DB is down, lawyers keep reviewing by hand and flagged clauses wait in the queue.
 - Security: SSO, RBAC/ABAC, source-level ACLs, encryption in transit and at rest, secrets management, and no training on customer data unless contractually allowed.
 - Compliance: immutable audit logs for queries, retrieved evidence, model version, policy decisions, approvals, and final output.
 - Reliability: fail closed on permission uncertainty, stale data, missing citations, or high-risk write actions.
@@ -31,7 +31,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Architecture explanation
 - User enters a question or workflow request through the product UI, chat surface, or embedded workflow panel.
 - Request gateway authenticates the user, loads role/tenant/context, classifies intent, sensitivity, and whether the request is read-only, draft-only, or action-taking.
-- Connectors ingest and normalize data from CLM system, contract repository, clause library, negotiation playbook, DMS, e-signature, identity provider; ingestion preserves metadata, document version, source owner, freshness, and ACLs.
+- Connectors ingest and normalise data from CLM system, contract repository, clause library, negotiation playbook, DMS, e-signature, identity provider; ingestion preserves metadata, document version, source owner, freshness, and ACLs.
 - Hybrid retrieval combines keyword search, vector search, metadata filters, and permission filters. Retrieval happens only after policy checks, not after generation.
 - A reasoning layer builds an answer from retrieved evidence, structured records, and approved playbooks. It must cite sources and expose missing evidence.
 - Tool-use layer is allowlisted. Read tools can run automatically; write tools require policy checks, idempotency keys, preview mode, and human approval for risky actions.
@@ -41,15 +41,15 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Data model / integration assumptions
 - Contract(id, counterparty, type, jurisdiction, version, confidentiality_level); Clause(id, contract_id, type, text_span, normalized_text); PlaybookRule(id, clause_type, preferred_position, fallback, escalation_level); RiskFinding(id, clause_id, risk, severity, rationale); ReviewAction(id, user_id, finding_id, decision).
 - Assume all source records have stable IDs, owner metadata, last-updated timestamps, and access-control metadata. If a source lacks ACL metadata, it is excluded from production retrieval until mapped.
-- Assume embeddings are not the authority for permissions; permissions are checked through metadata filters and, for sensitive records, source-system authorization checks.
+- Assume embeddings are not the authority for permissions; permissions are checked through metadata filters and, for sensitive records, source-system authorisation checks.
 - Assume source freshness varies by system. The answer should display stale-source warnings when documents or records are older than approved thresholds.
 - Assume user feedback is stored separately from ground truth; SME-reviewed corrections become evaluation data only after approval.
 
 ## Red-team risks
-- unauthorized legal advice, privilege leakage, wrong jurisdiction, hallucinated clause, accepting risky fallback without lawyer approval
+- unauthorised legal advice, privilege leakage, wrong jurisdiction, hallucinated clause, accepting risky fallback without lawyer approval
 - Indirect prompt injection hidden in documents, tickets, comments, transcripts, or uploaded files that instructs the model to ignore policy.
 - Permission-boundary tests where the same question is asked by users with different roles, tenants, regions, and entitlements.
-- Data exfiltration attempts such as summarizing all confidential records, exposing hidden metadata, or revealing system prompts/tool schemas.
+- Data exfiltration attempts such as summarising all confidential records, exposing hidden metadata, or revealing system prompts/tool schemas.
 - Unsafe automation attempts such as closing, approving, refunding, emailing externally, changing priority, or executing commands without approval.
 - Staleness and conflict attacks where old documents contradict new policy; system must surface conflict and prefer approved current sources.
 
@@ -71,7 +71,7 @@ These are thresholds I'd set for this case, not industry standards. Defend them,
 | Citation accuracy | Citations point to the exact source/section used | >= 95% correct citations | Source-span audit |
 | Permission safety | No answer uses sources the user cannot access | 0 violations | ACL red-team suite |
 | Task completion | User can complete the target workflow with less manual effort | >= 80% successful task completion | Workflow replay tests |
-| Escalation quality | High-risk/uncertain cases are routed to humans | >= 95% correct escalation on high-risk cases | Risk-labeled scenarios |
+| Escalation quality | High-risk/uncertain cases are routed to humans | >= 95% correct escalation on high-risk cases | Risk-labelled scenarios |
 | Latency/cost | System meets interaction budget | p95 within target; cost per workflow below budget | Load test + production telemetry |
 
 ## Weak answer
@@ -91,7 +91,7 @@ I would start by mapping the user workflow and risk boundary, then design a perm
 | Architecture | LLM + vector DB only | Reasonable RAG components | Permission-aware retrieval, tool policy, human approval, observability, rollback |
 | Data/integration | Mentions sources vaguely | Lists main sources | Defines source of truth, metadata, ACL, freshness, schema assumptions, and integration risks |
 | Evaluation | Says 'test accuracy' | Uses a small test set | Golden set, regression, red-team, offline + online metrics, SME review |
-| Safety/security | Mentions privacy generally | Adds RBAC and logging | Threat models prompt injection, leakage, stale data, unsafe actions, and fail-closed behavior |
+| Safety/security | Mentions privacy generally | Adds RBAC and logging | Threat models prompt injection, leakage, stale data, unsafe actions, and fail-closed behaviour |
 | Rollout | Deploys directly | Pilot after testing | Shadow mode, read-only pilot, gated write-back, canary, monitoring, rollback |
 | Communication | Overly technical or vague | Clear but generic | Executive-friendly, structured, practical, and production-oriented |
 

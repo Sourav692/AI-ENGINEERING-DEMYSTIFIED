@@ -22,7 +22,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Strong non-functional requirements
 - Latency: in this design, I'd target 3-8 seconds for normal interactive questions; longer workflows should be asynchronous with progress state.
-- Availability: design for business-critical support hours with graceful degradation if LLM, vector DB, or source system is down.
+- Availability: in this design, business hours plus the run-up to leadership and board meetings. If the LLM is down, the dashboard still shows the governed metrics; only the question-and-answer layer drops.
 - Security: SSO, RBAC/ABAC, source-level ACLs, encryption in transit and at rest, secrets management, and no training on customer data unless contractually allowed.
 - Compliance: immutable audit logs for queries, retrieved evidence, model version, policy decisions, approvals, and final output.
 - Reliability: fail closed on permission uncertainty, stale data, missing citations, or high-risk write actions.
@@ -31,7 +31,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Architecture explanation
 - User enters a question or workflow request through the product UI, chat surface, or embedded workflow panel.
 - Request gateway authenticates the user, loads role/tenant/context, classifies intent, sensitivity, and whether the request is read-only, draft-only, or action-taking.
-- Connectors ingest and normalize data from BI dashboards, semantic layer/metrics store, data warehouse, financial planning system, CRM/ERP, access control, data catalog; ingestion preserves metadata, document version, source owner, freshness, and ACLs.
+- Connectors ingest and normalise data from BI dashboards, semantic layer/metrics store, data warehouse, financial planning system, CRM/ERP, access control, data catalogue; ingestion preserves metadata, document version, source owner, freshness, and ACLs.
 - Hybrid retrieval combines keyword search, vector search, metadata filters, and permission filters. Retrieval happens only after policy checks, not after generation.
 - A reasoning layer builds an answer from retrieved evidence, structured records, and approved playbooks. It must cite sources and expose missing evidence.
 - Tool-use layer is allowlisted. Read tools can run automatically; write tools require policy checks, idempotency keys, preview mode, and human approval for risky actions.
@@ -41,7 +41,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Data model / integration assumptions
 - Metric(id, name, definition, owner, grain, allowed_dimensions); KPIValue(metric_id, period, dimension, value, source_table); Dashboard(id, owner, metric_ids, refresh_time); Insight(id, metric_id, explanation, supporting_queries, confidence); UserAccess(user_id, metric_id, dimension_scope); AuditLog(user, question, metrics_used, query_hash).
 - Assume all source records have stable IDs, owner metadata, last-updated timestamps, and access-control metadata. If a source lacks ACL metadata, it is excluded from production retrieval until mapped.
-- Assume embeddings are not the authority for permissions; permissions are checked through metadata filters and, for sensitive records, source-system authorization checks.
+- Assume embeddings are not the authority for permissions; permissions are checked through metadata filters and, for sensitive records, source-system authorisation checks.
 - Assume source freshness varies by system. The answer should display stale-source warnings when documents or records are older than approved thresholds.
 - Assume user feedback is stored separately from ground truth; SME-reviewed corrections become evaluation data only after approval.
 
@@ -49,7 +49,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - wrong metric definition, fabricated business reason, data leakage across regions/business units, stale dashboard refresh, overconfident board-level narrative
 - Indirect prompt injection hidden in documents, tickets, comments, transcripts, or uploaded files that instructs the model to ignore policy.
 - Permission-boundary tests where the same question is asked by users with different roles, tenants, regions, and entitlements.
-- Data exfiltration attempts such as summarizing all confidential records, exposing hidden metadata, or revealing system prompts/tool schemas.
+- Data exfiltration attempts such as summarising all confidential records, exposing hidden metadata, or revealing system prompts/tool schemas.
 - Unsafe automation attempts such as closing, approving, refunding, emailing externally, changing priority, or executing commands without approval.
 - Staleness and conflict attacks where old documents contradict new policy; system must surface conflict and prefer approved current sources.
 
@@ -71,7 +71,7 @@ These are thresholds I'd set for this case, not industry standards. Defend them,
 | Citation accuracy | Citations point to the exact source/section used | >= 95% correct citations | Source-span audit |
 | Permission safety | No answer uses sources the user cannot access | 0 violations | ACL red-team suite |
 | Task completion | User can complete the target workflow with less manual effort | >= 80% successful task completion | Workflow replay tests |
-| Escalation quality | High-risk/uncertain cases are routed to humans | >= 95% correct escalation on high-risk cases | Risk-labeled scenarios |
+| Escalation quality | High-risk/uncertain cases are routed to humans | >= 95% correct escalation on high-risk cases | Risk-labelled scenarios |
 | Latency/cost | System meets interaction budget | p95 within target; cost per workflow below budget | Load test + production telemetry |
 
 ## Weak answer
@@ -91,9 +91,9 @@ I would start by mapping the user workflow and risk boundary, then design a perm
 | Architecture | LLM + vector DB only | Reasonable RAG components | Permission-aware retrieval, tool policy, human approval, observability, rollback |
 | Data/integration | Mentions sources vaguely | Lists main sources | Defines source of truth, metadata, ACL, freshness, schema assumptions, and integration risks |
 | Evaluation | Says 'test accuracy' | Uses a small test set | Golden set, regression, red-team, offline + online metrics, SME review |
-| Safety/security | Mentions privacy generally | Adds RBAC and logging | Threat models prompt injection, leakage, stale data, unsafe actions, and fail-closed behavior |
+| Safety/security | Mentions privacy generally | Adds RBAC and logging | Threat models prompt injection, leakage, stale data, unsafe actions, and fail-closed behaviour |
 | Rollout | Deploys directly | Pilot after testing | Shadow mode, read-only pilot, gated write-back, canary, monitoring, rollback |
 | Communication | Overly technical or vague | Clear but generic | Executive-friendly, structured, practical, and production-oriented |
 
 ## Final 2-minute spoken answer
-I would not start with the model. I would start by clarifying the broken executive analytics and KPI explanation workflow, who uses the system, what decision they need to make, and what risk we cannot automate. For Executive Dashboard Copilot, I would design a permission-aware assistant around the workflow: executive asks natural-language KPI questions, copilot translates to governed metrics, retrieves dashboard/data context, explains variance, cites metric definitions, and escalates uncertain answers to analysts. The architecture would ingest approved sources from systems like BI dashboards, semantic layer/metrics store, data warehouse, financial planning system, CRM/ERP, access control, data catalog, preserve metadata, freshness, and ACLs, then use hybrid retrieval with permission filtering before generation. The LLM would produce cited answers, show uncertainty, and escalate when evidence is missing or risk is high. Tool use would be allowlisted: read-only tools can run automatically, but any write-back or externally visible action needs preview and human approval. I would evaluate with SME-approved golden cases, citation accuracy, groundedness, permission red-team tests, task completion, latency, and cost. Rollout would be staged: offline prototype, shadow mode, read-only pilot, then limited approved actions with monitoring and rollback. The production goal is not a flashy demo; it is a trusted workflow assistant that is secure, auditable, and measurably improves the business process.
+I would not start with the model. I would start by clarifying the broken executive analytics and KPI explanation workflow, who uses the system, what decision they need to make, and what risk we cannot automate. For Executive Dashboard Copilot, I would design a permission-aware assistant around the workflow: executive asks natural-language KPI questions, copilot translates to governed metrics, retrieves dashboard/data context, explains variance, cites metric definitions, and escalates uncertain answers to analysts. The architecture would ingest approved sources from systems like BI dashboards, semantic layer/metrics store, data warehouse, financial planning system, CRM/ERP, access control, data catalogue, preserve metadata, freshness, and ACLs, then use hybrid retrieval with permission filtering before generation. The LLM would produce cited answers, show uncertainty, and escalate when evidence is missing or risk is high. Tool use would be allowlisted: read-only tools can run automatically, but any write-back or externally visible action needs preview and human approval. I would evaluate with SME-approved golden cases, citation accuracy, groundedness, permission red-team tests, task completion, latency, and cost. Rollout would be staged: offline prototype, shadow mode, read-only pilot, then limited approved actions with monitoring and rollback. The production goal is not a flashy demo; it is a trusted workflow assistant that is secure, auditable, and measurably improves the business process.

@@ -101,7 +101,7 @@
   - Application team wants to avoid a brittle chain of point-to-point integrations.
   - Auditor wants evidence of who approved what, when, and under which controls.
 - First move is not technology — restate the problem in one sentence without committing to a product shape.
-- Feature-first restatement (weak): "We need an orchestrator that can call email, payment, and three APIs" — true but centers plumbing, not the customer's result.
+- Feature-first restatement (weak): "We need an orchestrator that can call email, payment, and three APIs" — true but centres plumbing, not the customer's result.
 - Outcome-first restatement (strong): "Execute long-running business processes exactly once at the business-effect level, with visible state and compensation when a step fails."
   - Immediately implies: idempotency, durable state, retries, human approval pauses, auditability, compensating actions.
   - Reveals the hidden problem: the system protects a business transaction stretched across time, not just messages in motion.
@@ -109,7 +109,7 @@
 
 ### Stakeholder Map and Jobs-to-Be-Done
 
-- Four stakeholder groups, mapped by job-to-be-done rather than role (treating them as the same optimizes the wrong part of the system):
+- Four stakeholder groups, mapped by job-to-be-done rather than role (treating them as the same optimises the wrong part of the system):
   - **Workflow participants** — job: "review and decide without losing context."
   - **Operations teams** — job: "see what is stuck, why it is stuck, and how to safely recover it."
   - **Application developers** — job: "integrate a system once without inventing custom retry logic for every edge case."
@@ -137,11 +137,11 @@
 - **Determine blast radius and ownership:**
   - Who owns each internal system integration?
   - Which team receives alerts when the workflow stalls?
-  - Who is authorized to resume, re-run, or override a case?
+  - Who is authorised to resume, re-run, or override a case?
 - **Pin down trust and compliance requirements:**
   - What evidence must be retained for audits?
   - Which actions require approval logs or signature trails?
-  - Are there residency, retention, or data-minimization constraints?
+  - Are there residency, retention, or data-minimisation constraints?
 - If the interviewer withholds information, say so explicitly and convert ambiguity into a documented assumption — e.g., "I don't know yet whether payment is the final business effect or just one step in a larger approval chain, so I'm going to assume payment can be retried safely only if the provider supports idempotency keys and we can prove a single business effect with a durable workflow record."
 
 ### The Assumption Ledger
@@ -171,7 +171,7 @@
 - Discovery is not a warm-up — it defines the system. By the end you should have four artifacts in your head or on the board:
   - **Scope**: which workflows are in and which are out
   - **Assumptions**: what you are temporarily treating as true
-  - **Risks**: where duplicates, data loss, or unauthorized actions can happen
+  - **Risks**: where duplicates, data loss, or unauthorised actions can happen
   - **Owners**: who owns each integration, approval, escalation, and support path
 - Success must be measurable in business language, not infrastructure language — not "messages processed" or "tasks retried," but completed workflows, duplicate-prevention rate, compensation success rate, mean time to detect stuck cases, and operator ability to explain any case start to finish.
 - Simple interview-sized success metric: the business effect happened once, the user can see the current state, and every exception has a defined compensation or escalation path.
@@ -188,7 +188,7 @@
 ### The Interview Signal Hiring Teams Listen For
 
 - The panel is not only testing whether you can sketch architecture — they test whether you can move from customer pain to technical leverage without getting trapped in generic platform talk.
-- Strongest candidates make the problem concrete, name the people involved, state the assumptions, and define success in terms the customer would recognize.
+- Strongest candidates make the problem concrete, name the people involved, state the assumptions, and define success in terms the customer would recognise.
 - Architecture should start only after you can say whose workflow changes and how success will be measured — otherwise you are still describing software, not designing a system that supports the business.
 
 ## 2. Clarifying Questions, Requirements, and Constraints
@@ -205,8 +205,8 @@
 - A compact question tree keeps the conversation sharp, and each question maps to a concrete design consequence:
   - What is the exact step order, and which steps can branch or be skipped? → determines whether you're building a straight-line job runner or a true state machine.
   - Which actions are reversible, and which are irreversible once they succeed? → tells you where compensation is safe vs. where retries need care.
-  - How long can a workflow remain active before it must time out, archive, or be canceled? → shapes storage and timer design (in-memory state or a short-lived queue can't support week-long waits).
-  - Where does human approval enter, and how long can that approval reasonably wait? → affects how suspended states, reminders, escalations, and abandoned cases are modeled.
+  - How long can a workflow remain active before it must time out, archive, or be cancelled? → shapes storage and timer design (in-memory state or a short-lived queue can't support week-long waits).
+  - Where does human approval enter, and how long can that approval reasonably wait? → affects how suspended states, reminders, escalations, and abandoned cases are modelled.
   - Do the external systems support idempotency keys, replay protection, or a unique business reference? → decides whether retries are safe or the orchestration layer must build its own deduplication envelope.
   - Can workflow definitions change while older instances are still running, and if so, how do we keep those instances compatible? → becomes critical the moment a new approval step is requested while 10,000 old workflows are in flight.
 - When the interviewer answers only half the questions, do not freeze — make explicit assumptions and attach them to risk.
@@ -214,7 +214,7 @@
 
 ### From Discovery to Requirements
 
-- Convert the conversation into a prioritized set of requirements, not a shopping list — must/should/could framing:
+- Convert the conversation into a prioritised set of requirements, not a shopping list — must/should/could framing:
   - **Must**: durable state machine, persisted transition history, idempotent activity execution, retry and timeout policies, human signals and timers, saga compensation, operator recovery.
   - **Should**: workflow-definition versioning that allows compatible evolution of running instances.
   - **Could**: richer analytics, custom dashboards, or user-configurable branching rules if they do not threaten correctness.
@@ -277,8 +277,8 @@
 
 ### The Assumption Discipline an FDE Needs
 
-- Best interview answer does not pretend certainty where none exists: "I am assuming payment is irreversible, approvals may wait for days, and workflow definitions will change while old instances remain active. Under those assumptions, I will optimize for durable state, explicit history, idempotent side effects, and version compatibility."
-- A strong FDE shows discovery, prioritization, and delivery discipline at the same time — translating incomplete customer input into a system that is safe enough to ship, narrow enough to reason about, and flexible enough to grow.
+- Best interview answer does not pretend certainty where none exists: "I am assuming payment is irreversible, approvals may wait for days, and workflow definitions will change while old instances remain active. Under those assumptions, I will optimise for durable state, explicit history, idempotent side effects, and version compatibility."
+- A strong FDE shows discovery, prioritisation, and delivery discipline at the same time — translating incomplete customer input into a system that is safe enough to ship, narrow enough to reason about, and flexible enough to grow.
 - Next step: requirements turn into scale estimates and SLOs, where the architecture starts to harden.
 
 ## 3. Scale Estimates, SLOs, and Capacity
@@ -338,7 +338,7 @@
   - Task enqueues: roughly proportional to activity count
   - Task leases and acknowledgments: at least one per activity, often more with retries
   - Retry traffic: additional load after transient failures or worker restarts
-- The queue subsystem must tolerate a retry storm without starving new tasks — a practical design choice is to partition queues by workflow tenant, workflow type, or priority class so one customer or one runaway workflow family cannot monopolize all dispatch capacity.
+- The queue subsystem must tolerate a retry storm without starving new tasks — a practical design choice is to partition queues by workflow tenant, workflow type, or priority class so one customer or one runaway workflow family cannot monopolise all dispatch capacity.
 
 ### Sensitivity at 10x Growth
 
@@ -359,10 +359,10 @@
   - **Latency SLI**: time to accept a new step, time to dispatch an activity, time to reflect state changes in the UI
   - **Freshness SLI**: delay between a real-world event and its visible representation in workflow state
   - **Quality SLI**: rate of duplicate side effects, missed transitions, failed compensations, or stuck workflows
-  - **Security SLI**: fraction of requests correctly authorized and audited; sensitive-data-exposure rate driven toward zero by design (not described as impossible)
+  - **Security SLI**: fraction of requests correctly authorised and audited; sensitive-data-exposure rate driven toward zero by design (not described as impossible)
   - **Cost SLI**: cost per workflow or per thousand activities, plus support burden for operator intervention
 - Translate into customer-felt objectives: the customer may not care about an 80ms vs. 120ms task lease, but does care if a payment step takes so long to appear in the UI that an operator assumes it's lost and manually retries it, or if a workflow that should be compensating sits invisible for hours.
-- Queue subsystem sizing must tolerate a retry storm without starving new tasks — partition by tenant, workflow type, or priority class so one runaway workflow family can't monopolize dispatch capacity.
+- Queue subsystem sizing must tolerate a retry storm without starving new tasks — partition by tenant, workflow type, or priority class so one runaway workflow family can't monopolise dispatch capacity.
 
 ### Retry Math Is Not Compensation
 
@@ -370,7 +370,7 @@
 
 **backoff_n = min(cap, base × 2^n) + jitter**
 
-- *n* = retry attempt number, *base* = initial delay, *cap* = maximum delay, *jitter* = randomized variation to avoid synchronized retries.
+- *n* = retry attempt number, *base* = initial delay, *cap* = maximum delay, *jitter* = randomised variation to avoid synchronised retries.
 - Exponential backoff slows repeated attempts after failure, protecting dependencies and giving transient incidents time to recover.
 - Backoff is **not** business compensation:
   - Payment succeeds, email fails → retrying email is appropriate.
@@ -389,10 +389,10 @@
   - 100 million daily activities force queue scalability and partition strategy.
   - Irreversible side effects force idempotency, unique business keys, and compensation tooling.
 - Component selection should follow the stress point, not whichever is easiest to draw:
-  - If history volume dominates → optimize storage tiering and retention policies.
-  - If dispatch rate dominates → optimize queue partitioning and worker elasticity.
-  - If external APIs dominate → optimize retries, circuit breaking, and per-integration throttles.
-  - If manual recovery dominates → optimize observability, operator UI, and audit trails.
+  - If history volume dominates → optimise storage tiering and retention policies.
+  - If dispatch rate dominates → optimise queue partitioning and worker elasticity.
+  - If external APIs dominate → optimise retries, circuit breaking, and per-integration throttles.
+  - If manual recovery dominates → optimise observability, operator UI, and audit trails.
 
 ```mermaid
 flowchart TD
@@ -487,7 +487,7 @@ flowchart TB
   OPS --> SCHED
 ```
 
-- Three trust boundaries, each needing its own authentication, authorization, and logging policy (do not blur into one generic "service layer"):
+- Three trust boundaries, each needing its own authentication, authorisation, and logging policy (do not blur into one generic "service layer"):
   - **Public/customer-facing API** — accepts the workflow start request and an idempotency key, but must not trust that the caller will retry carefully.
   - **Worker edge** — external systems can fail, time out, or partially complete.
   - **Human approval path** — slow, fallible, and auditable.
@@ -587,7 +587,7 @@ flowchart TD
 - The payment may have succeeded before the worker died, so the system must never equate "worker lost" with "business action lost."
 - The durable history store and completion receipt are what prevent a double charge on retry — the scheduler either reissues the step safely or escalates to compensation based on what history says already happened.
 
-> 🎯 **Interview Pointer:** This exact drill — worker crash after payment succeeds, before the receipt is recorded — is the follow-up I'd most expect in this chapter's interview. Memorize the resolution: durable history + completion receipt decide "redeliver" vs. "compensate," never worker memory.
+> 🎯 **Interview Pointer:** This exact drill — worker crash after payment succeeds, before the receipt is recorded — is the follow-up I'd most expect in this chapter's interview. Memorise the resolution: durable history + completion receipt decide "redeliver" vs. "compensate," never worker memory.
 
 ### End-to-End Flow, Step by Step
 
@@ -669,7 +669,7 @@ flowchart TD
     - Response: workflow instance id, initial state, stable status reference.
     - Errors: `400` invalid shape, `401/403` auth failure, `409` the same idempotency key is still being processed, `422` the key was reused with a different payload or the workflow inputs are semantically invalid (the IETF Idempotency-Key draft uses 409 and 422 this way).
   - `POST /v1/workflows/{id}/signals` — submits human or system input.
-    - Authentication: caller must be authorized to signal that workflow or tenant.
+    - Authentication: caller must be authorised to signal that workflow or tenant.
     - Idempotency: signal id plus payload hash or caller key to suppress duplicate approval clicks or repeated system callbacks.
     - Response: accepted signal, resulting state transition, or a no-op if the same signal was already applied.
   - `GET /v1/workflows/{id}/history` — returns the audit trail.
@@ -677,15 +677,15 @@ flowchart TD
     - Semantics: read-only, paginated, ordered by sequence.
     - Errors: `404` unknown workflow, `403` hidden by access policy.
   - `POST /v1/workflows/{id}/repair` — lets operators or approved automation resume, replay, or compensate.
-    - Authentication: elevated operator authorization, tightly scoped.
+    - Authentication: elevated operator authorisation, tightly scoped.
     - Idempotency: every repair action needs its own idempotency token so repeated operator clicks don't multiply side effects.
     - Semantics: must be explicit about whether it is retrying a step, compensating a completed step, or resuming from a known checkpoint.
-- Duplicate-request behavior should be predictable: if the payment step receives the same idempotency key twice, the first request charges the card and stores the receipt; the second returns the existing receipt or a "completed already" response.
+- Duplicate-request behaviour should be predictable: if the payment step receives the same idempotency key twice, the first request charges the card and stores the receipt; the second returns the existing receipt or a "completed already" response.
 
 ### The Implementation Slice That Proves the Design
 
-- The smallest code path demonstrating the important behavior: a saga step with approval wait, idempotent payment, a CRM update, and compensation on permanent downstream failure.
-- Intentionally narrow — a real system would add persistence, serialization, distributed locking, stronger typing, queue workers, and a scheduler; this sketch focuses on the state transitions that matter most in the interview.
+- The smallest code path demonstrating the important behaviour: a saga step with approval wait, idempotent payment, a CRM update, and compensation on permanent downstream failure.
+- Intentionally narrow — a real system would add persistence, serialisation, distributed locking, stronger typing, queue workers, and a scheduler; this sketch focuses on the state transitions that matter most in the interview.
 
 ```python
 from dataclasses import dataclass
@@ -775,7 +775,7 @@ flowchart TD
   - **Schema and contract versioning**: `definition_version` on the workflow instance lets old and new workflow definitions run side by side; a running instance continues on the version it started with unless an explicit migration policy exists.
   - **Idempotency at every write boundary**: not just payment — approval signals, CRM updates, email sends, and repair actions should all be replay-safe where possible.
   - **Observability**: every transition emits structured logs, trace spans, and metrics keyed by `instance_id`, step name, and outcome. History table = system of record; telemetry = fast diagnosis.
-  - **Policy checks around model output**: if a workflow step uses an LLM to classify, summarize, or route work, its output should pass through typed validation and policy checks before it is allowed to change state or trigger an external action — the model may suggest, it should not silently decide.
+  - **Policy checks around model output**: if a workflow step uses an LLM to classify, summarise, or route work, its output should pass through typed validation and policy checks before it is allowed to change state or trigger an external action — the model may suggest, it should not silently decide.
 
 ### Tests That Make the Design Believable
 
@@ -843,16 +843,16 @@ async def test_worker_crash_after_payment_does_not_double_charge(orchestrator, f
 ### Threat Model Before Failure Policy
 
 - Four security controls anchor the design:
-  - **Authorize starts, signals, and repairs at the correct strength.** Starting a workflow should require the same or stronger permission than reading the customer object it will touch. Signals (approval, rejection, resubmission, cancellation, override) should be authenticated, scoped to the correct tenant and workflow instance, and validated against the current state machine. Repair actions deserve tighter control because they can bypass the ordinary sequence and alter the business effect after the fact.
+  - **Authorise starts, signals, and repairs at the correct strength.** Starting a workflow should require the same or stronger permission than reading the customer object it will touch. Signals (approval, rejection, resubmission, cancellation, override) should be authenticated, scoped to the correct tenant and workflow instance, and validated against the current state machine. Repair actions deserve tighter control because they can bypass the ordinary sequence and alter the business effect after the fact.
   - **Keep secrets out of history.** Workflow history is the system's memory and an attack surface — any token, API key, password, or full payment artifact in history can be replayed, exported, or exposed to operators who only need state, not credentials. Safe pattern: store opaque references in history, fetch short-lived secrets from a secret manager or KMS-backed vault at execution time, with minimal scope and explicit expiration.
-  - **Restrict operator mutation paths.** Operators should pause, inspect, and resume — not rewrite arbitrary state transitions or silently mark money as collected. Manual mutation should go through a narrow repair API with validation, version checks, and approval logging. Defense in depth: authenticated admin access, role-based checks, immutable audit logs, and state-machine rules all defend the same boundary from different angles.
+  - **Restrict operator mutation paths.** Operators should pause, inspect, and resume — not rewrite arbitrary state transitions or silently mark money as collected. Manual mutation should go through a narrow repair API with validation, version checks, and approval logging. Defence in depth: authenticated admin access, role-based checks, immutable audit logs, and state-machine rules all defend the same boundary from different angles.
   - **Audit every compensation and manual override.** If a payment is reversed, a document approval is voided, or a CRM record is repaired manually, the system should preserve who initiated it, why, what instance it affected, and which state version it targeted — that evidence makes the post-incident review useful instead of speculative.
 
 ### Failure Policies Are Design Decisions, Not Afterthoughts
 
-- The interview answer should explicitly name what fails open, fails closed, degrades, queues, or requires human intervention — that vocabulary itself shows judgment.
+- The interview answer should explicitly name what fails open, fails closed, degrades, queues, or requires human intervention — that vocabulary itself shows judgement.
 - Decision table for common branches:
-  - **Fail closed**: payment authorization, approval completion, repair mutations, and anything that would create a false business effect.
+  - **Fail closed**: payment authorisation, approval completion, repair mutations, and anything that would create a false business effect.
   - **Degrade**: email sending can degrade to queued delivery or delayed notification if the customer accepts eventual delivery.
   - **Queue**: CRM sync, internal analytics updates, and noncritical enrichment can queue behind transient outages.
   - **Human intervention**: ambiguous approvals, repeated poison-message failures, and policy exceptions that cannot be resolved safely by code.
@@ -1023,7 +1023,7 @@ async def test_crash_after_payment_does_not_charge_twice():
 - If the business demands stronger correctness → fail closed more often, but increase queue depth and human workload.
 - If the platform must support many tenants → need sharper blast-radius boundaries and tighter operator permissions.
 - These are not side notes — they are the architecture.
-- Production judgment signal: an FDE owns safe rollout, support, and incident response, not merely the happy path. A strong answer protects the customer's business effect, preserves evidence for the postmortem, and still moves the workflow forward without duplicating irreversible actions.
+- Production judgement signal: an FDE owns safe rollout, support, and incident response, not merely the happy path. A strong answer protects the customer's business effect, preserves evidence for the postmortem, and still moves the workflow forward without duplicating irreversible actions.
 
 ## 7. Delivery Plan, Observability, and Business Impact
 
@@ -1049,11 +1049,11 @@ async def test_crash_after_payment_does_not_charge_twice():
 
 - Once deterministic recovery works, add operator visibility: dashboards, logs, traces, admin views that let support staff answer three questions fast — what is running, what is stuck, what needs intervention.
 - Visibility is not decoration — it's the difference between a supportable workflow platform and a system that silently accumulates broken work.
-- Practical rule: surface both workflow-level state (business status language: pending approval, payment authorized, compensation pending, completed) and activity-level telemetry (retries, queue depth, worker failures, timeout counts, downstream latency), linked so a user complaint traces to the exact failing step.
+- Practical rule: surface both workflow-level state (business status language: pending approval, payment authorised, compensation pending, completed) and activity-level telemetry (retries, queue depth, worker failures, timeout counts, downstream latency), linked so a user complaint traces to the exact failing step.
 
 ### Version Workflows Instead of Mutating Them
 
-- Migrate workflows by version rather than editing old executions in place — in-flight workflows may sit idle for days waiting on approval, human review, or an external system; mutating their logic underneath them creates inconsistent behavior between old and new instances.
+- Migrate workflows by version rather than editing old executions in place — in-flight workflows may sit idle for days waiting on approval, human review, or an external system; mutating their logic underneath them creates inconsistent behaviour between old and new instances.
 - Versioning keeps the operating model understandable: old runs continue under the rules they started with, new runs pick up new logic, and operators know which history to inspect during an incident.
 - This is where the customer starts to trust the platform, because the change process itself becomes predictable.
 
@@ -1067,7 +1067,7 @@ async def test_crash_after_payment_does_not_charge_twice():
 - **Activity retry rate**: retries divided by activity attempts; source is worker and scheduler telemetry; owner is the worker-runtime owner; alert if retries spike or stay elevated across a rolling window.
 - **Stuck workflow age**: oldest workflow in a non-terminal state beyond its expected wait time; source is durable state and queue inspection; owner is operations; alert if any workflow exceeds the maximum tolerated age.
 
-**Model quality metrics** (correctness and stability of the orchestration model itself — whether the workflow definition, replay behavior, and state transitions stay faithful to intended business logic)
+**Model quality metrics** (correctness and stability of the orchestration model itself — whether the workflow definition, replay behaviour, and state transitions stay faithful to intended business logic)
 
 - **Replay determinism pass rate**: percentage of sampled workflow histories that replay to the same decisions; source is replay test jobs and history validation; owner is workflow-runtime engineering; alert if the pass rate falls below the release gate, since nondeterminism can invalidate the model.
 - **State-transition validation failures**: count of invalid or unexpected transitions detected in tests, canaries, or runtime guards; source is workflow engine validation and canary telemetry; owner is the platform team; alert on any sustained increase, since it suggests the model or versioning rules have drifted.
@@ -1108,7 +1108,7 @@ async def test_crash_after_payment_does_not_charge_twice():
   4. **Migrate workflows by version**
      - Owner: platform owner and release manager.
      - Exit criteria: old and new versions coexist safely, migration rules are documented, and in-flight work is not rewritten.
-     - Rollback trigger: if a versioned migration produces inconsistent behavior or blocks recovery.
+     - Rollback trigger: if a versioned migration produces inconsistent behaviour or blocks recovery.
 - The shape of a real go/no-go gate is not "does it compile?" — it's "can support operate it, can rollback be executed, and can the customer tolerate the residual risk?"
 
 ```mermaid
@@ -1120,18 +1120,18 @@ flowchart LR
 
 ### Connect the Dashboard to the User Journey
 
-- A useful dashboard lets a non-expert follow the business story left to right: request arrives, approval pending, payment authorized, internal systems updated, email sent, workflow closes.
+- A useful dashboard lets a non-expert follow the business story left to right: request arrives, approval pending, payment authorised, internal systems updated, email sent, workflow closes.
 - Under each user-facing status, show relevant component telemetry: retries, latency, queue age, compensation state.
 - This shortens incident triage (support sees where the story diverged) and proves to the customer the platform is not a black box — visibility becomes part of the value proposition, not just an operational aid.
 
 ### Core Product vs Adapter vs Configuration vs Shared Service
 
 - Not everything belongs in the core orchestration engine:
-  - **Core product**: durable workflow state, retry policy, compensation orchestration, replay, versioning, and operator visibility primitives — the reusable behaviors the platform should own.
+  - **Core product**: durable workflow state, retry policy, compensation orchestration, replay, versioning, and operator visibility primitives — the reusable behaviours the platform should own.
   - **Adapters**: payment gateway calls, email providers, document systems, and the three internal systems — isolated behind interfaces because they vary by customer and environment.
   - **Configuration**: retry budgets, timeout windows, approval routing rules, escalation thresholds, per-tenant visibility settings — change more often than code and should be adjustable safely.
-  - **Shared services**: identity, audit logging, metrics export, and notification plumbing, if the organization already standardizes them — reduces duplication, but only when the team can preserve ownership boundaries and support expectations.
-- This breakdown shows product judgment: the goal is not to overbuild a custom workflow system for one customer, but to extract reusable product leverage from the pilot.
+  - **Shared services**: identity, audit logging, metrics export, and notification plumbing, if the organisation already standardises them — reduces duplication, but only when the team can preserve ownership boundaries and support expectations.
+- This breakdown shows product judgement: the goal is not to overbuild a custom workflow system for one customer, but to extract reusable product leverage from the pilot.
 
 ### Train Operators Before the First Wide Rollout
 
@@ -1166,7 +1166,7 @@ flowchart LR
   - **5–10 min: scope and scale.** Estimate active workflows, average duration, peak concurrent instances, write amplification from history and retries. Decide whether the design needs a simple queue-based engine or a more durable workflow service.
   - **10–20 min: architecture.** Draw the orchestration boundary, workflow state store, worker pool, idempotent activity executors, compensation handlers, external systems. Explain why the orchestrator owns sequencing and durable state while workers do side effects.
   - **20–28 min: failure modes.** Walk worker crash after payment, timeout during approval, duplicate webhook delivery, partial completion across internal systems. Explain how event history, retry policy, idempotency keys, and compensation/escalation prevent duplicate business effects.
-  - **28–35 min: security and controls.** Cover identity propagation, least privilege, secrets handling, audit logs, data retention, redaction/minimization. Tie each control to a failure mode or compliance need.
+  - **28–35 min: security and controls.** Cover identity propagation, least privilege, secrets handling, audit logs, data retention, redaction/minimisation. Tie each control to a failure mode or compliance need.
   - **35–42 min: product and operational leverage.** Explain observability, operator dashboards, stuck-workflow handling, versioning for in-flight workflows. Show how the platform can support multiple business processes instead of becoming a one-off script factory.
   - **42–47 min: trade-offs and alternatives.** Compare orchestrated saga vs. choreography, history size vs. debuggability, automatic compensation vs. human review, workflow code vs. declarative definitions.
   - **47–50 min: close with a concise executive summary.** Restate the customer outcome, the architecture, the biggest trade-off, and the rollout gate.
@@ -1186,7 +1186,7 @@ flowchart LR
 
 - A common failure mode: spending too long on the diagram, too little on the fragile edges.
 - Right depth is proportional to the risk profile:
-  - If approval can sit for a week → long-term state and versioning matter more than latency micro-optimizations.
+  - If approval can sit for a week → long-term state and versioning matter more than latency micro-optimisations.
   - If payment is irreversible → idempotency and compensation matter more than fancy orchestration syntax.
   - If multiple internal systems are eventually consistent → event ordering and reconciliation matter more than the exact queue choice.
 - Make assumptions and invite the interviewer to redirect, e.g.:
@@ -1204,9 +1204,9 @@ flowchart LR
 - **History size vs. debuggability.**
   - Storing every transition/input/output/retry makes debugging easier (replay the decision path, inspect the exact failure point) but costs storage growth, larger reads, and more care around redaction.
   - Trimming history lowers overhead but loses the forensic trail operators and support need.
-  - Verdict: "store enough to replay and explain decisions, compress or summarize older segments when safe, and retain the audit trail according to customer policy" — not "store everything forever."
+  - Verdict: "store enough to replay and explain decisions, compress or summarise older segments when safe, and retain the audit trail according to customer policy" — not "store everything forever."
 - **Automatic compensation vs. human review.**
-  - Automatic compensation is powerful when the reversal is deterministic and safe: cancel a reservation, void a pending authorization, mark a record as failed, send a compensating notification.
+  - Automatic compensation is powerful when the reversal is deterministic and safe: cancel a reservation, void a pending authorisation, mark a record as failed, send a compensating notification.
   - Weaker when the side effect is irreversible, ambiguous, or regulated — human review queue may be the right fallback.
   - Trade-off is speed vs. correctness: full automation reduces latency and manual work but can amplify a mistaken decision; human review slows the process but may be required across legal, financial, or high-risk operational boundaries.
 - **Workflow code vs. declarative definitions.**
@@ -1229,24 +1229,24 @@ flowchart LR
 - "The worker can keep the state in memory." → Long-running workflows need durable state because workers crash, deploy, and scale.
 - "We can always compensate later." → Not every effect is reversible; name the irreversible steps and define the fallback.
 - "Choreography is more scalable." → Scalability alone is not enough; discuss observability, recovery, and supportability.
-- "One generic retry policy is enough." → Payment, approval, and email deserve different retry and alerting behavior.
+- "One generic retry policy is enough." → Payment, approval, and email deserve different retry and alerting behaviour.
 - "We'll change the code and restart everything." → Version running workflows and preserve compatibility for in-flight instances.
 
 ### Scoring Rubric for Self-Evaluation
 
 - **Discovery**: Did they ask what "done" means, which steps are human, and which effects are irreversible?
 - **Estimation**: Did they size concurrency, duration, and retry pressure realistically, even if only with illustrative numbers?
-- **Architecture**: Did they explain control flow, durable state, worker behavior, and external integrations cleanly?
+- **Architecture**: Did they explain control flow, durable state, worker behaviour, and external integrations cleanly?
 - **Depth**: Did they spend more time on crash recovery, idempotency, and versioning than on box drawing?
-- **Security**: Did they mention least privilege, secrets, auditability, and data minimization?
+- **Security**: Did they mention least privilege, secrets, auditability, and data minimisation?
 - **Delivery**: Did they discuss rollout, operator tooling, and support handoff?
 - **Communication**: Did they structure the answer, make assumptions explicit, and end with an executive summary?
 - A strong answer is structured, quantitative where it matters, safe in how it handles side effects, explicit about trade-offs, and always tied back to the customer outcome.
 
 ### A 90-Second Architecture Summary
 
-- Closing summary you can deliver at minute 50: "The system should use a durable workflow orchestrator as the source of truth for progress, with each business effect isolated behind an idempotent step. The orchestrator persists state and event history so it can survive worker crashes, wait for long approvals, and resume without duplicating irreversible actions like payment. Human review is reserved for cases where compensation is unsafe or ambiguous. I would keep the workflow model versioned so running instances continue safely, and I'd prioritize observability and operator tooling so support can answer where each workflow is blocked. The riskiest trade-off is between orchestration and choreography: choreography is simpler across services, but orchestration is far easier to debug, recover, and support when the process is long-lived and customer-facing. My first rollout gate would be one end-to-end workflow with replay, crash recovery, and visible state proven in production-like conditions before broad adoption."
-- This is itself a reusable artifact: durable orchestrator as source of truth, idempotent steps, crash/long-wait survival without duplicating irreversible actions, human review reserved for unsafe/ambiguous compensation, versioned model, observability/operator tooling prioritized, riskiest trade-off named explicitly with the first rollout gate stated.
+- Closing summary you can deliver at minute 50: "The system should use a durable workflow orchestrator as the source of truth for progress, with each business effect isolated behind an idempotent step. The orchestrator persists state and event history so it can survive worker crashes, wait for long approvals, and resume without duplicating irreversible actions like payment. Human review is reserved for cases where compensation is unsafe or ambiguous. I would keep the workflow model versioned so running instances continue safely, and I'd prioritise observability and operator tooling so support can answer where each workflow is blocked. The riskiest trade-off is between orchestration and choreography: choreography is simpler across services, but orchestration is far easier to debug, recover, and support when the process is long-lived and customer-facing. My first rollout gate would be one end-to-end workflow with replay, crash recovery, and visible state proven in production-like conditions before broad adoption."
+- This is itself a reusable artifact: durable orchestrator as source of truth, idempotent steps, crash/long-wait survival without duplicating irreversible actions, human review reserved for unsafe/ambiguous compensation, versioned model, observability/operator tooling prioritised, riskiest trade-off named explicitly with the first rollout gate stated.
 
 ### Practice Loop: Solo, Pair, Implementation
 
@@ -1257,18 +1257,18 @@ flowchart LR
 
 ## Coverage Notes
 
-This tutorial was self-reviewed against the fixed 20-item decomposition rubric across two passes. The second pass closed gaps in unit-economics framing (cost SLI and cost-per-workflow language) and in explicit regulatory/compliance breadth.
+This tutorial was self-reviewed against the fixed 20-item decomposition rubric across two passes. The second pass narrowed, but didn't close, the gaps in unit-economics framing (cost SLI and cost-per-workflow language) and in regulatory/compliance breadth. Both are still marked Partial below.
 
 **Phase 1 — Problem Framing & Discovery**
 - **Item 1 (Feature → business-outcome reframing):** Fully covered — Section 1 outcome-first restatement.
 - **Item 2 (Stakeholder/persona mapping):** Fully covered — Section 1 stakeholder map, jobs-to-be-done.
 - **Item 3 (Clarifying questions that change architecture):** Fully covered — Section 2 question tree.
-- **Item 4 (Requirements split + prioritization):** Fully covered — Section 2 must/should/could, functional vs nonfunctional.
+- **Item 4 (Requirements split + prioritisation):** Fully covered — Section 2 must/should/could, functional vs nonfunctional.
 - **Item 5 (Explicit non-goals/scope fence):** Fully covered — Section 2 "What the MVP Will Not Support."
 
 **Phase 2 — Estimation & Architecture**
 - **Item 6 (Back-of-envelope scale & capacity math):** Fully covered — Section 3 workflow/activity/storage/throughput estimates.
-- **Item 7 (Unit economics/cost-driver breakdown):** Partial — cost treated as one of six scorecard SLIs, no worked infra cost-per-workflow calculation.
+- **Item 7 (Unit economics/cost-driver breakdown):** Partial — cost treated as one of the six SLIs in Section 3, no worked infra cost-per-workflow calculation.
 - **Item 8 (End-to-end architecture & data flow):** Fully covered — Section 4 component map, trust boundaries, sequence diagrams.
 - **Item 9 (Data model & API contracts):** Fully covered — Section 5 four core records, four API endpoints.
 - **Item 10 (Build-vs-buy/vendor & model-selection trade-offs):** Absent — only a passing aside in Section 8's follow-up drills, not developed.
@@ -1282,12 +1282,12 @@ This tutorial was self-reviewed against the fixed 20-item decomposition rubric a
 **Phase 4 — Delivery, Governance & Communication**
 - **Item 15 (Layered evaluation metrics & observability):** Fully covered — Section 7, six-layer scorecard.
 - **Item 16 (Phased rollout/risk register/rollback gates):** Fully covered — Section 7, four-phase plan with owner/exit-criteria/rollback-trigger, plus risk register.
-- **Item 17 (Regulatory/governance depth):** Partial — audit evidence, retention, residency/data-minimization covered; no named external regulatory framework (SOX, GDPR, etc.).
+- **Item 17 (Regulatory/governance depth):** Partial — audit evidence, retention, residency/data-minimisation covered; no named external regulatory framework (SOX, GDPR, etc.).
 - **Item 18 (Responsible-AI/risk framing beyond obvious failure mode):** Partial — one aside on LLM-step policy checks in Section 5, not a developed theme.
 - **Item 19 (Change-management/adoption narrative):** Fully covered — Section 7, operator training, adoption metrics, versioned migration.
 - **Item 20 (Structured communication plan + self-scoring rubric):** Fully covered — Section 8, 50-minute plan, scoring rubric, 90-second summary, practice loop.
 
-**Overall**: 16/20 items fully covered, 3 partial (unit economics, regulatory/governance depth, responsible-AI framing), 1 absent (build-vs-buy/vendor trade-offs). These gaps reflect the source chapter's own emphasis — a deep dive on durable execution, idempotency, and crash recovery for a workflow orchestrator, not a cost-modeling or compliance-framework chapter — and the tutorial does not fabricate content the source does not support.
+**Overall**: 16/20 items fully covered, 3 partial (unit economics, regulatory/governance depth, responsible-AI framing), 1 absent (build-vs-buy/vendor trade-offs). These gaps reflect the source chapter's own emphasis — a deep dive on durable execution, idempotency, and crash recovery for a workflow orchestrator, not a cost-modelling or compliance-framework chapter — and the tutorial does not fabricate content the source does not support.
 
 ### My Perspective on the Gaps
 
@@ -1305,8 +1305,8 @@ This tutorial was self-reviewed against the fixed 20-item decomposition rubric a
 
 **Item 17 — Regulatory / governance depth (Partial).**
 - I'd name concrete frameworks the interviewer is likely probing for, each tied to a component this chapter already built: PCI-DSS scope reduction if the orchestrator ever touches card data (push that to the payment gateway and keep only opaque references, consistent with Section 6's "keep secrets out of history" control).
-- SOX-style controls if approval is a financial authorization step — the `ActivityReceipt` record and audit-log fields from Section 5 already give the evidentiary trail a SOX auditor would ask for.
-- GDPR/data-minimization if any internal system touches customer PII — the retention policy on `HistoryEvent` (Section 5) is the natural enforcement point, so I'd frame governance as "policy applied to records we already have," not a separate workstream.
+- SOX-style controls if approval is a financial authorisation step — the `ActivityReceipt` record and audit-log fields from Section 5 already give the evidentiary trail a SOX auditor would ask for.
+- GDPR/data-minimisation if any internal system touches customer PII — the retention policy on `HistoryEvent` (Section 5) is the natural enforcement point, so I'd frame governance as "policy applied to records we already have," not a separate workstream.
 
 **Item 18 — Responsible-AI / risk framing beyond the obvious failure mode (Partial).**
 - The chapter's only AI-adjacent point is that LLM-driven steps need "typed validation and policy checks" before changing state (Section 5). I'd extend that concretely: an LLM misclassifying or mis-routing an approval could silently auto-approve something that should have gone to a human — an irreversible business effect exactly like the ones Section 6's failure-policy table already says to fail closed on.

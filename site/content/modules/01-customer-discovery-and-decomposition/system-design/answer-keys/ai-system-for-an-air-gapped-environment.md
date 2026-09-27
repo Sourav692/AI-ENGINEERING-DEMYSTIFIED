@@ -41,7 +41,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Data model / integration assumptions
 - ReleaseManifest(version, artifact_hashes, signatures, dependencies); ModelDeployment(model_id, version, hardware, status); OfflineAuditEvent(actor, action, artifact_hash, time).
 - Assume ownership splits cleanly: the build team owns signed release material until handoff, the offline runtime owns deployment state, security owns the audit trail.
-- Assume deployment history is retained long enough to answer "what was running when this document was analyzed?"
+- Assume deployment history is retained long enough to answer "what was running when this document was analysed?"
 - Assume OfflineAuditEvent is append-only and never edited in place, since it is the only way to reconstruct an incident without a vendor console.
 - Assume promotion uses optimistic concurrency with a revision token, so two operators cannot promote incompatible releases at once.
 
@@ -75,7 +75,7 @@ These are thresholds I'd set for this case, not industry standards. Defend them,
 | Analyst time saved per case | The workflow improved in terms the customer verifies | Measurable local reduction versus baseline | Local case-turnaround measurement |
 
 ## Weak answer
-I would deploy the model on-premises behind a firewall and serve documents locally. This is weak because it treats the air gap as a network setting rather than the organizing constraint, saying nothing about how artifacts legally enter, how dependencies are attested, or how updates roll back.
+I would deploy the model on-premises behind a firewall and serve documents locally. This is weak because it treats the air gap as a network setting rather than the organising constraint, saying nothing about how artifacts legally enter, how dependencies are attested, or how updates roll back.
 
 ## Average answer
 I would package the model and service into a container, sign it, move it across the boundary, and run it locally with a package mirror and local identity. I would keep logs on-premises. This is better, but still incomplete because it does not define what fails closed, how a bad release is reverted under approval delay, or how capacity is sized against a fixed GPU pool.

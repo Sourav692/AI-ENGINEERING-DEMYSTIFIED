@@ -8,7 +8,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Is the process fully automatic, human-in-the-loop, or mixed, and which steps may wait minutes, hours, or days?
 - Can a workflow branch, re-enter, or be cancelled midstream once it has started?
 - Who owns each internal system integration, and who receives the alert when a workflow stalls?
-- Who is authorized to resume, re-run, or override a stuck case?
+- Who is authorised to resume, re-run, or override a stuck case?
 - Does the payment provider support idempotency keys, because that decides whether any retry is safe?
 - What evidence must be retained for audit, and which actions need approval logs or signature trails?
 
@@ -23,7 +23,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 ## Strong non-functional requirements
 - Latency: budget per step, not per workflow; a process that legitimately waits seven days still needs bounded automatic steps.
 - Availability: at the scale this case assumes — 10 million active workflows and 100 million activities a day, roughly 1,200 activities per second — I'd expect the queue and history store to dominate.
-- Security: authenticate and authorize at start and at every signal, since a resume or repair is as privileged as the original request.
+- Security: authenticate and authorise at start and at every signal, since a resume or repair is as privileged as the original request.
 - Compliance: an append-only history reconstructing who approved what, when, and under which definition version.
 - Reliability: exactly once at the business-effect level, not at the message level — retries are safe only behind idempotency keys and receipts.
 - Cost: separate workflow state from payloads, because storing large documents inline makes the history store the expensive component.
@@ -86,7 +86,7 @@ These are thresholds I'd set for this case, not industry standards. Defend them,
 | Manual repair count | Operators are not the recovery mechanism | Within the agreed tolerance | Operator actions and ticket records |
 
 ## Weak answer
-I would build an orchestrator that calls email, payment, and the internal APIs in sequence, with retries on failure. This is weak because it centers plumbing rather than the customer's result — no durable state, no exactly-once business effect, no compensation, and a retry after a successful charge simply charges again.
+I would build an orchestrator that calls email, payment, and the internal APIs in sequence, with retries on failure. This is weak because it centres plumbing rather than the customer's result — no durable state, no exactly-once business effect, no compensation, and a retry after a successful charge simply charges again.
 
 ## Average answer
 I would use a workflow engine with durable state, retry each step with backoff, and store an audit log of what happened. Approvals would pause the workflow until a signal arrives. This is better, but still incomplete because it does not separate retry from compensation, does not pin the definition version per instance, and does not say how an operator safely repairs an instance that is genuinely stuck.
@@ -102,9 +102,9 @@ I would restate the outcome as executing long-running business processes exactly
 | Architecture | Chain of API calls | Engine with durable state | Control/data plane split, timer and signal services, compensation engine, ops UI |
 | Data/integration | Mentions an audit log | Names instances and events | Append-only history, receipts by idempotency key, pinned version, payload refs |
 | Evaluation | "It completed" | Tracks failures | Duplicate effects, replay determinism, stuck age, compensation and repair rates |
-| Safety/security | Not addressed | Auth at start | Authorization at every signal and repair; audit reconstructs approvals and controls |
+| Safety/security | Not addressed | Auth at start | Authorisation at every signal and repair; audit reconstructs approvals and controls |
 | Rollout | Build the platform | Pilot one process | One workflow, crash-recovery gate, operator visibility, versioning over mutation |
 | Communication | Describes the engine | Clear but generic | Leads with the double-charge case, states assumptions, closes with the first gate |
 
 ## Final 2-minute spoken answer
-I would not start with the engine. The prompt is to coordinate document approval, payment, email, and three internal systems where any step may fail or wait for days, and the weak restatement is "we need an orchestrator that calls these APIs." That centers plumbing. The outcome-first restatement is executing long-running business processes exactly once at the business-effect level, with visible state and compensation when a step fails — and saying it that way immediately implies idempotency, durable state, retries, human approval pauses, auditability, and compensating actions. The hidden problem is that we are protecting a business transaction stretched across time, not messages in motion. Architecturally, the control plane holds the definition registry, scheduler, timer service, signal gateway, compensation engine, and operations UI; the data plane is the queue and workers that actually call payment, CRM, and email. Starting a workflow is synchronous — authenticate, authorize, write the first history event, return the ID — and everything after that is asynchronous. History is append-only and records intent before execution and completion after acknowledgment, which is exactly what saves us in the drill that matters: a worker crashes after the payment succeeded. We do not reissue the charge; we replay the history, observe the charge completed, and continue from the next unfinished step. Waiting seven days for an approval is a timer state, not a polling loop. Every instance pins its definition version so a deploy cannot change the rules mid-flight. I would start with one workflow, gate it on crash recovery and no duplicate effects, and give operators visibility before broadening scope.
+I would not start with the engine. The prompt is to coordinate document approval, payment, email, and three internal systems where any step may fail or wait for days, and the weak restatement is "we need an orchestrator that calls these APIs." That centres plumbing. The outcome-first restatement is executing long-running business processes exactly once at the business-effect level, with visible state and compensation when a step fails — and saying it that way immediately implies idempotency, durable state, retries, human approval pauses, auditability, and compensating actions. The hidden problem is that we are protecting a business transaction stretched across time, not messages in motion. Architecturally, the control plane holds the definition registry, scheduler, timer service, signal gateway, compensation engine, and operations UI; the data plane is the queue and workers that actually call payment, CRM, and email. Starting a workflow is synchronous — authenticate, authorise, write the first history event, return the ID — and everything after that is asynchronous. History is append-only and records intent before execution and completion after acknowledgment, which is exactly what saves us in the drill that matters: a worker crashes after the payment succeeded. We do not reissue the charge; we replay the history, observe the charge completed, and continue from the next unfinished step. Waiting seven days for an approval is a timer state, not a polling loop. Every instance pins its definition version so a deploy cannot change the rules mid-flight. I would start with one workflow, gate it on crash recovery and no duplicate effects, and give operators visibility before broadening scope.
