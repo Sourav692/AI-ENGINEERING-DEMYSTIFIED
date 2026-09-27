@@ -20,7 +20,7 @@ The prompt, verbatim:
 
 ## 1. Ask Which Side of the Agent the Gateway Guards
 
-"In front of an agent" has two readings, and the design needs both. The **edge face** sits between the customer and the agent. It screens what comes in and what goes out. The **model face** sits between the agent and the providers. An agent turn is rarely one call; the cost playbook warns that "one user request becomes 5–20 sub-requests." A gateway that only sees the customer's message cannot meter, retry or fail over the other calls.
+"In front of an agent" has two readings, and the design needs both. The **edge face** sits between the customer and the agent. It screens what comes in and what goes out. The **model face** sits between the agent and the providers. An agent turn is rarely one call; the cost playbook's rule of thumb is that "one user request becomes 5–20 sub-requests." A gateway that only sees the customer's message cannot meter, retry or fail over the other calls.
 
 So route every model call the agent makes through the gateway's model face *(own construction)*. The deployed research platform in the Handbook does exactly this. Every agent and the evaluator call one shared gateway sidecar, naming a *function* rather than a model, and the gateway maps function to provider. Its reason carries straight over: "hard-coding a provider into every agent makes every outage, rate limit and pricing change a code change in five places."
 
@@ -81,10 +81,10 @@ The budget is an input to the design, not a line in the closing summary. Price o
 | Cache hit rate | 30% of turns, so 9,000 turns cost nothing |
 | Router split of the 21,000 misses | 70% simple, 30% complex |
 | Simple turn | One call to the small model |
-| Complex turn | An agent path of 5 calls to the large model, the low end of the playbook's 5–20 |
+| Complex turn | An agent path of 5 calls to the large model, the low end of the playbook's 5–20 rule of thumb |
 | Tokens per call | 2,000 in, 250 out |
-| Small model price | $0.15 in, $0.60 out, per million tokens |
-| Large model price | $2.50 in, $10.00 out, per million tokens |
+| Small model price | $0.15 in, $0.60 out, per million tokens *(illustrative: GPT-4o mini's list price, still listed in Sep 2026; newer small models price differently)* |
+| Large model price | $2.50 in, $10.00 out, per million tokens *(illustrative: GPT-4o's list price, still listed in Sep 2026; newer large models price differently)* |
 | Router classification | About $0.00005 per call on the small model |
 | LLM input guard | Fires on half of turns, about $0.00005 each |
 | LLM output check | Fires on 6,000 turns, about $0.0001 each |
@@ -226,7 +226,7 @@ The rule-based layer is regex, length caps, schema checks and a banned-phrase li
 
 Run both directions, because each direction sees something the other cannot. The source's sharpest line: "The model can leak something the user themselves said two turns ago — if you only guard the input, you never catch that." The same PII detector therefore runs twice. On input, it masks before anything is forwarded. On output, it catches the model repeating what it saw earlier in the conversation.
 
-Keep moderation separate from guardrails. Moderation checks a fixed, general harm taxonomy and, in the source notebook, flags only severe content, so "you are very poor ha ha" passes it cleanly. A guardrail enforces this product's policy, such as "stay on topic for support" or "never reveal the system prompt." Ship both; neither substitutes for the other.
+Keep moderation separate from guardrails. Moderation checks a fixed, general harm taxonomy: harassment, hate, self-harm, sexual content, violence and a few more. It flags a message only when a category score is high enough, so mild rudeness like "you are very poor ha ha" passed it cleanly in the source notebook. A guardrail enforces this product's policy, such as "stay on topic for support" or "never reveal the system prompt." Ship both; neither substitutes for the other.
 
 Log every block with a reason. A blocked customer needs a safe reply, and an engineer needs to know which rule fired. The reason log is also the evidence a security reviewer asks for.
 
@@ -409,7 +409,7 @@ The playbook's own case says the same: "reduce cost **by workflow**, not across 
 
 ## Check Yourself
 
-1. **Why must the gateway sit under the agent's model calls, not just in front of the customer's message?** The cost playbook puts one agent turn at 5–20 sub-requests. Metering, retry and failover that see only the first call miss the rest.
+1. **Why must the gateway sit under the agent's model calls, not just in front of the customer's message?** The cost playbook's rule of thumb puts one agent turn at 5–20 sub-requests. Metering, retry and failover that see only the first call miss the rest.
 2. **Price the day aloud.** 14,700 simple turns × $0.00045 ≈ $6.61; 6,300 complex turns × $0.0375 ≈ $236.25; router and guards ≈ $2.40. About $245, with complex turns 96% of it.
 3. **What does the naive design cost?** All 30,000 turns on the large-model agent path with no cache: $1,125, 2.25 times the budget.
 4. **Why does the input guard run before the cache?** So an injected prompt is never cached, and the cache key is the PII-masked text.
@@ -438,3 +438,8 @@ All paths are relative to `06_Interview_Prep/`.
 | Underlying notebooks | `03_Advanced/12_Production_and_Observability/`: `Reliability_and_Fallbacks/01_Exception_Handling_and_Fallback_Chains.ipynb`, `Caching_and_Performance/`, `Cost_Monitoring/`, `Production_Course_Ops/02_cost_optimization.ipynb` and `03_security_patterns.ipynb`, `Safety_and_Alignment/03_Guardrails_LLM_and_Rule_Based.ipynb` |
 | Cross-references | `Case_Study_Groups/G02_Customer_Support_Automation/G02_Customer_Support_Automation.md` section 6 (the action gateway, a different component); `G07_Secure_Multi_Tenant_AI_Platform.md` sections 5 and 8 (tenant context, regional routing); `G14_Observability_And_Production_Diagnosis.md` sections 6, 7 and 11; `G18_Consumer_Scale_Chat_Service.md` sections 7 and 11 (cascade cost, regional failover); `G20_LLM_Inference_Serving.md` (self-hosted serving); `Standalone/19_Air_Gapped_AI_System/` |
 | Everything marked *(own construction)* or *(assumption)*: traffic, prices, dollar arithmetic, the two faces, the pacer, parallel guard and router, deadline retries, warm fallback, residency pools, the failure table, the cost card | Built for this page. The source gives the rubric, the strong answer and the latency terms; treat the rest as the candidate's own reasoning, not a sourced claim |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — GPT-4o mini ($0.15/$0.60) and GPT-4o ($2.50/$10.00) are still listed at the illustrative prices used in section 3
+- [OpenAI moderation guide](https://developers.openai.com/api/docs/guides/moderation) — the fixed category taxonomy (including harassment), per-category scores and the `flagged` flag

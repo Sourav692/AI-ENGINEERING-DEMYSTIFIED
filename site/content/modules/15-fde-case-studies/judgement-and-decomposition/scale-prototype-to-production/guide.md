@@ -111,17 +111,17 @@ Say the arithmetic aloud, because it turns "scale" into three numbers the custom
 
 Little's Law is `concurrency = throughput × latency`, from the cost additions. It turns latency work into capacity work. Halving average latency halves the in-flight slots to provision.
 
-Now price it. The cost additions list current tiers: Claude Sonnet 5 at $2.00 input and $10.00 output per million tokens, and Claude Haiku 4.5 at $1.00 and $5.00. Prices change constantly, so state the mechanism and say "I'd check current pricing" for the digits.
+Now price it. The cost additions list current tiers: Claude Sonnet 5 at $2.00 input and $10.00 output per million tokens, and Claude Haiku 4.5 at $1.00 and $5.00 (checked Sep 2026 on Anthropic's pricing page). Prices change constantly, so state the mechanism and say "I'd check current pricing" for the digits.
 
 | Scenario *(own construction)* | Daily cost | Monthly |
 |---|---|---|
 | Prototype: 100 users × 8 requests, one mid-tier model | ≈ $14 | ≈ $400 |
 | Naive scale: 240,000 requests on one mid-tier model | $2,880 input + $1,200 output = $4,080 | ≈ $122,000 |
 | + route 70% of requests to the small model | ≈ $2,650 | ≈ $80,000 |
-| + cache the 1,500-token stable prefix (assumed read price ~10% of input) | ≈ $2,230 | ≈ $67,000 |
-| + cap average output at 350 tokens | ≈ $2,000 | ≈ $60,000 |
+| + cache the 1,500-token stable prefix (read price 10% of input; only the mid-tier 30% benefits, because Haiku 4.5 will not cache a prompt under 4,096 tokens) | ≈ $2,460 | ≈ $74,000 |
+| + cap average output at 350 tokens | ≈ $2,220 | ≈ $67,000 |
 
-Two points carry the table. First, the bill went up about 300 times, not 1,000 times, because only 30% of licensed users are active. Adoption is a cost variable. Second, the three cheapest levers roughly halve the naive bill without touching quality on the hard 30%. The cost additions warn that a real agent request can become 5–20 sub-requests. If the tools grow into an agent, multiply the call count before trusting any of this.
+Two points carry the table. First, the bill went up about 300 times, not 1,000 times, because only 30% of licensed users are active. Adoption is a cost variable. Second, the three cheapest levers cut the naive bill by nearly half without touching quality on the hard 30%. The cost additions' rule of thumb is that a real agent request can become 5–20 sub-requests. If the tools grow into an agent, multiply the call count before trusting any of this.
 
 Then check the provider. 7.8M tokens a minute at peak must fit the account's tokens-per-minute and requests-per-minute limits, split by model after routing. Plan for twice the peak, because retries during an incident and the Monday spike stack on each other *(own construction)*. That headroom is a procurement conversation, and it starts weeks before launch.
 
@@ -373,7 +373,7 @@ Spend the time on the gap between prototype and production. The model choice is 
 
 The two-minute spoken answer *(own construction)*:
 
-> *First I would ask what "works" meant, because a hundred volunteers prove the idea is useful and nothing about cost, the slow tail, permissions or adoption. Assuming an internal document assistant going to 100,000 employees, I would size it: about 30% daily active at eight requests each is 240,000 requests a day, around 20 a second at peak and roughly 8 million tokens a minute. On one mid-tier model that is about $120,000 a month; routing, prefix caching and an output cap roughly halve it. Then I would walk the tenfold steps. At a thousand users I need SSO, versioned prompts and traces. At ten thousand I need a gateway with per-user limits, retry inside a circuit breaker, a fallback provider and permission-filtered retrieval. At a hundred thousand I need fair queuing per department, a capacity commitment, sampled online evaluation and on-call. I would rebuild the eval set from real traffic, gate every release on slices with security at zero, and roll out by department cohort with shadow, canary and a pointer-flip rollback. Finally I would measure adoption, week-4 retention and override rate, because a system nobody uses has failed however well it scales.*
+> *First I would ask what "works" meant, because a hundred volunteers prove the idea is useful and nothing about cost, the slow tail, permissions or adoption. Assuming an internal document assistant going to 100,000 employees, I would size it: about 30% daily active at eight requests each is 240,000 requests a day, around 20 a second at peak and roughly 8 million tokens a minute. On one mid-tier model that is about $120,000 a month; routing, prefix caching and an output cap cut it by nearly half. Then I would walk the tenfold steps. At a thousand users I need SSO, versioned prompts and traces. At ten thousand I need a gateway with per-user limits, retry inside a circuit breaker, a fallback provider and permission-filtered retrieval. At a hundred thousand I need fair queuing per department, a capacity commitment, sampled online evaluation and on-call. I would rebuild the eval set from real traffic, gate every release on slices with security at zero, and roll out by department cohort with shadow, canary and a pointer-flip rollback. Finally I would measure adoption, week-4 retention and override rate, because a system nobody uses has failed however well it scales.*
 
 The lines that carry the round *(own construction unless quoted)*:
 
@@ -467,3 +467,8 @@ All paths are relative to `06_Interview_Prep/`.
 | 6, 13 | `Case_Study_Groups/G14_Observability_And_Production_Diagnosis.md` (observability design and cost cards) |
 | 4 | `Case_Study_Groups/G18_Consumer_Scale_Chat_Service.md` §3 and `Case_Study_Groups/G20_LLM_Inference_Serving.md` §3 (the same sizing method at larger scale) |
 | Every table and section marked own construction, all sizing and cost figures, the self-drill card | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Anthropic pricing](https://platform.claude.com/docs/en/about-claude/pricing) — Claude Sonnet 5 at $2/$10 and Claude Haiku 4.5 at $1/$5 per million tokens; cache reads at 0.1× input; Batch API at 50% off
+- [Anthropic prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — minimum cacheable prompt length: 1,024 tokens for Sonnet 5, 4,096 for Haiku 4.5

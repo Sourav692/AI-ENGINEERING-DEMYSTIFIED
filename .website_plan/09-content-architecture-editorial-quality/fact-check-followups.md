@@ -7,15 +7,24 @@ Round 1 covered the 20 grouped case studies and the 18 Last-Day reviews plus the
 - 128 text corrections were applied.
 - Sources were added to each group's full pack and to the Last-Day modules.
 
-## Round 2 scope (not yet checked)
+## Round 2 — done 27 Sep 2026
+Everything in the round 2 scope was checked. That's 214 claims, in `verdicts-round2.json`. The main fixes:
+- Idempotency-key reuse is `422`, and a retry still in flight is `409`. This follows the IETF Idempotency-Key draft -07, which has expired and isn't an RFC. The pages say so (cases 23, 25, 26). A stale version sent in the body stays `409`; an `If-Match` header would give `412`.
+- FedRAMP covers cloud services only. On-prem products carry Common Criteria (NIAP) and DISA STIGs (case 19).
+- Case 61's cost table: Haiku 4.5 won't cache a prefix under 4,096 tokens, so only the Sonnet share gets the caching discount. The table is recomputed (about 45% cut, not "halve").
+- Google Drive: folders with limited access block inherited permissions (G01, all three copies).
+- Microsoft 365 Copilot is the only public ~$30 seat price. ChatGPT Enterprise has no public price, and Claude Enterprise charges a seat fee plus usage (case 26).
+- Works councils in Germany and the Netherlands must agree, not just be consulted (case 26).
+- Fine-tuning "rarely", not "never", fixes missing knowledge (case 80). OAuth is authorisation only, so identity comes from SSO via OpenID Connect (case 14).
+- Behavioural answers: Vector Search is now AI Search, and Genie Spaces are now Genie Agents, where the story speaks in the present tense.
 
-CONTENT-17 labels are applied to all of this (27 Sep 2026). What's left is the CONTENT-18 source check. Start with the 29 open rows in `claims-round2-queue.csv`.
-
-- The 143 low-priority claims in `claims-round1.csv`.
-- The 13 standalone cases (`Case_Study_Groups/Standalone/`).
-- The 22 practice worksheets and model answers.
-- The Roadmap and the Rapid Revision Guide.
-- The behavioural model answers (factual claims only).
+## Unsettled after round 2 (low risk, left as is)
+- C335 (G17 "most candidates fumble"): credited to the purchased question bank, which isn't in the repo.
+- Case 14: the quote from iGrace's page can't be fetched (it only renders in a browser).
+- Case 19: ITAR/EAR access. It's standard, and already hedged with "could".
+- Decomposition Classics: the ~120-day card dispute window rests on secondary sources, because the Visa and Mastercard rule books aren't public.
+- Behavioural "20+ tools degrades selection": the candidate's own test result. Anthropic's docs put the threshold at 30–50.
+- Behavioural answers still say "Vector Search" and "Genie Space(s)" where the story is in the past tense or inside `[FILL]` markers. That's deliberate.
 
 ## Loose ends — all closed 27 Sep 2026
 - Handbook `06_Output_Guardrails.md` and both `nodes.py`: "most common over-refusal" → "a common" (C158).
@@ -34,15 +43,12 @@ CONTENT-17 labels are applied to all of this (27 Sep 2026). What's left is the C
 - **G11 Research Platform:** it's the author's own build. G11 and its Main copy now say so.
 
 ## Recheck dates (time-bombs)
-- Claude Haiku 4.5: retirement "not sooner than 15 Oct 2026". Recheck the G18 pricing example after that date.
+- Prices dated "checked Sep 2026": Claude Sonnet 5 at $2/$10 and Haiku 4.5 at $1/$5 (case 61, whose table depends on them), GPT-4o mini and GPT-4o list prices (case 100, labelled illustrative), Microsoft 365 Copilot at $30 (case 26), and S3 and gp3 storage (case 23).
+- IETF Idempotency-Key draft: if it becomes an RFC or changes its codes, update cases 23, 25 and 26.
+- Claude Haiku 4.5: retirement "not sooner than 15 Oct 2026". Recheck the G18 pricing example and the case 61 cost table (which routes 70% of traffic to Haiku 4.5) after that date.
 - Zendesk API tokens: no new tokens from 27 Oct 2026, all switched off 30 Apr 2027 (G12).
 - Groq `llama-3.1-8b-instant` was shut down for free and developer tiers on 16 Aug 2026 (G11).
 - Databricks renames of mid-2026: Vector Search → AI Search, Genie → Genie One, Genie Spaces → Genie Agents, AI Gateway → Unity Gateway. Expect more doc and name churn.
 
-## Found during CONTENT-17 (27 Sep 2026) — not fixed
-- `FDE/FDE_System_Design_Interview_20_Scenarios/Version_1` and `Version_2` chapter 15 still say "salted hash … HMAC-SHA256". The published V3 key now says "keyed hash with a secret key".
-- The 10 Discovery answer keys share one "Availability: design for business-critical support hours" line, which doesn't fit every case (retail demand, executive dashboard).
-- Standalone 23 Coverage Notes: item 17 (regulatory) is still "Partial" though the note says the second pass closed it; cost is called "one of six scorecard SLIs" but it's one of the six Section 3 SLIs.
-- Standalone 61: the rollout table's column header credits Handbook Module 08 doc 1, which doesn't contain the cohort-wave numbers (the cell now says "In this design").
-- Several standalone tutorials and practice keys still use American spelling (normalize, behavior). Deliberately left to keep the label diffs small.
-
+## Found during CONTENT-17 (27 Sep 2026)
+All fixed; see "Loose ends — all closed" above.

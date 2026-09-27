@@ -233,7 +233,7 @@ Typical source concerns:
 
 | Source | Main risk |
 |---|---|
-| Drive | Inherited sharing, personal files, external sharing |
+| Drive | Inherited sharing (limited-access folders can block it), personal files, external sharing |
 | SharePoint | Broken inheritance, stale site/library permissions |
 | Slack | Private channels/DMs, secrets, prompt injection |
 | Wiki | Page restrictions, stale policy, malicious content |

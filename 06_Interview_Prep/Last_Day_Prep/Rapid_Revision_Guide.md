@@ -703,7 +703,7 @@ Don't wait forever.
 
 ### Retry
 
-Retry transient failures.
+Retry transient failures, and only when the call is safe to repeat.
 
 ### Exponential Backoff + Jitter
 
@@ -736,6 +736,8 @@ DLQ
 ### Checkpoint
 
 Resume long-running workflows after failure.
+
+A checkpoint doesn't make an external action happen exactly once. If a write may have gone through, reconcile its status first.
 
 ### Blast Radius
 
@@ -1031,7 +1033,7 @@ This is the section to revise immediately before the interview.
 | **Duplicate event**             | Idempotent consumer                           |
 | **Repeated job failure**        | DLQ                                           |
 | **10-minute agent**             | Async + queue + durable state                 |
-| **Agent crashes halfway**       | Checkpoint                                    |
+| **Agent crashes halfway**       | Checkpoint + reconcile uncertain actions      |
 | **Approval tomorrow**           | Durable state + HITL                          |
 | **Conversation history**        | Session state                                 |
 | **Long-term preferences**       | Memory                                        |
@@ -1269,3 +1271,17 @@ Trade-off is B
 ```
 
 > **Don't demonstrate how many architecture terms you know. Demonstrate that you know exactly when and why to use them.**
+
+---
+
+## Sources (checked 27 Sep 2026)
+
+- [Google SRE Book - Service Level Objectives](https://sre.google/sre-book/service-level-objectives/) — SLI, SLO and SLA definitions
+- [Google SRE Workbook - Canarying Releases](https://sre.google/workbook/canarying-releases/) — canary as a partial, time-limited rollout that is evaluated
+- [AWS Builders' Library - Timeouts, retries and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) — backoff and jitter; retry only when safe to repeat
+- [Azure Architecture Center - Circuit Breaker pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker) — stop calling a failing dependency for a while
+- [Amazon SQS Developer Guide - Dead-letter queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html) — retry, then move to a DLQ
+- [Stripe API reference - Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — idempotency key honoured on retry
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — checkpoints don't stop duplicate side effects; idempotent consumers
+- [OWASP GenAI LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/) — apply permissions during retrieval
+- [OWASP GenAI LLM07:2025 System Prompt Leakage](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) — don't rely on the prompt to hide unauthorised data

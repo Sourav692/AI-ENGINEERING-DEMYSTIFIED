@@ -264,7 +264,7 @@ Cap episodic memory per user, because nothing else will. Every completed task is
 
 The digest keeps the gist of older activity at a fixed size. "Booked four trips to Lisbon this year" survives even after the four booking episodes are pruned *(own construction)*. The pruner runs as a background job on the write path, so pruning never costs a reply any latency.
 
-Session memory needs the same discipline in a different form. A TTL marks entries for expiry, and sliding expiry extends the session on activity. The study guide's gotcha is that, in the LangGraph store its notebooks use, expiry is enforced by a sweep, not checked on every read. An expired entry can still be returned until the sweeper runs. Schedule the sweeper, or check the entry's age if a few seconds of staleness matter.
+Session memory needs the same discipline in a different form. A TTL marks entries for expiry, and sliding expiry extends the session on activity. The study guide's gotcha is that, in the LangGraph store its notebooks use, expiry is enforced by a sweep, not checked on every read. An expired entry can still be returned until the sweeper runs. That is true of `SqliteStore` and of `PostgresStore` by default; Postgres can set `omit_expired` to hide expired rows on read, and `InMemoryStore` has no TTL at all (checked Sep 2026). Schedule the sweeper, or check the entry's age if a few seconds of staleness matter.
 
 ## 9. Search With an Index, Not a Scan
 
@@ -490,3 +490,10 @@ Paths are relative to the repository root.
 | Background for 5 to 9 | `03_Advanced/07_Advanced_Agentic_Systems/Memory_and_State/` (the 22 notebooks the study guide is built from) |
 | 16 | `06_Interview_Prep/Study_Guides/Cost_Latency_Optimization/CORE_8_DRIVERS_MEMORIZE.md` (input-token driver and fixes); `CRAM_SHEET_FULL_PLAYBOOK.md` (summarised state, small models for summarisation) |
 | Every table and line marked own construction, all sizing and latency figures, the cost-drill card | Built for this page from the sources' arguments; not source material |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [LangGraph `TTLConfig` source](https://github.com/langchain-ai/langgraph/blob/main/libs/checkpoint/langgraph/store/base/__init__.py) — `refresh_on_read` gives sliding expiry; `omit_expired` defaults to off; sweeping deletes expired items
+- [LangGraph `SqliteStore` source](https://github.com/langchain-ai/langgraph/blob/main/libs/checkpoint-sqlite/langgraph/store/sqlite/base.py) — `get` does not filter expired rows; `sweep_ttl` and `start_ttl_sweeper` delete them
+- [LangGraph `PostgresStore` source](https://github.com/langchain-ai/langgraph/blob/main/libs/checkpoint-postgres/langgraph/store/postgres/base.py) — optional `omit_expired` read filter; the sweeper must be started explicitly
+- [MemGPT: Towards LLMs as Operating Systems](https://arxiv.org/abs/2310.08560) — the model edits its own memory through function calls

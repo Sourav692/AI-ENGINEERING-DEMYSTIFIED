@@ -87,7 +87,7 @@ Same roster as the original reference, with the Gateway, Cache, and agent-owned 
 | Component                                                                                     | Purpose                                                                                                                                                                  |
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Client**                                                                              | Web / mobile surface for search, booking, and itinerary management.                                                                                                      |
-| **Authentication**                                                                      | Verifies identity via OAuth, JWT, or SSO before anything else runs.                                                                                                      |
+| **Authentication**                                                                      | Verifies identity via SSO using OpenID Connect (the identity layer on OAuth 2.0), with JWTs as tokens, before anything else runs. |
 | **Load Balancer**                                                                       | Spreads traffic across API instances for availability.                                                                                                                   |
 | **API Gateway** `rate limiting moved inside`                                          | Single entry point: routing, request validation, and throttling as one policy layer — not a separate hop.                                                               |
 | **Supervisor Agent** `renamed / refocused`                                            | Reads the query, checks the cache, and — only on a miss — decides which specialised agents to spawn.                                                                   |
@@ -145,7 +145,7 @@ The distinctions an interviewer is listening for.
 
 **Semantic cache vs. traditional cache** — Semantic caching matches near-duplicate queries, not just exact ones, which is why it can short-circuit the entire agent fan-out rather than just one downstream call.
 
-**Global vs. regional vector DBs** — Regional stores (AMER/EMEA/APJ) buy data-residency compliance and lower latency; a global store buys simpler operations and cross-region consistency.
+**Global vs. regional vector DBs** — Regional stores (AMER/EMEA/APJ) help meet data-residency requirements and lower latency; a global store buys simpler operations and cross-region consistency.
 
 ---
 

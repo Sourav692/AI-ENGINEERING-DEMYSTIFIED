@@ -66,7 +66,7 @@ flowchart LR
 - Missing tenant predicate in a query, cache lookup, export job, or admin action; the system must fail closed, never read whatever matches.
 - Cache bleed where a shared cache replays another tenant's object even though the database stayed protected; treat as a security incident, not a performance bug.
 - Shared queue or dead-letter channel exposing metadata that reveals another customer's workload shape even when the payload is encrypted.
-- Vector-index leakage where semantic search surfaces neighbouring customer content because scoping was applied at query time but not at ingestion.
+- Vector-index leakage where semantic search surfaces neighbouring customer content because vectors were written without a tenant namespace or tenant metadata at ingestion, so the query-time filter had nothing reliable to scope on.
 - Noisy neighbour exhausting model quota, which is a fairness and reliability failure rather than a confidentiality breach, and must degrade only that tenant.
 
 ## Rollout plan

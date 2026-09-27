@@ -176,7 +176,7 @@
 | Grounding scope + **are ACLs query-time resolvable?** | One index vs. federated connectors; pre-filter vs. post-filter vs. both. If ACLs aren't resolvable, that source is phase two regardless of sponsor enthusiasm |
 | Retention, legal hold, eDiscovery | Conversation store, deletion pipeline, audit schema, an admin surface that is itself audited |
 | Assistant publishing | Chat app vs. platform; introduces the harder authorisation problem (scope ≤ *viewer's* permissions, not author's) |
-| Identity, regions, workforce rules | Deployment topology; in several jurisdictions per-employee telemetry is a consultation matter before an engineering one |
+| Identity, regions, workforce rules | Deployment topology; in some jurisdictions (Germany and the Netherlands, for example) the works council must agree to per-employee telemetry before it's an engineering matter |
 | Build vs. buy | Sometimes the honest answer is "buy" — and an FDE who says so has served the customer |
 
 ### Functional requirements (must / should / could)
@@ -259,7 +259,7 @@ flowchart TD
 - REST at 40 req/sec × 50 ms = ~2 requests in flight. **Chat at 40 turns/sec × an assumed 20-second stream = 800 concurrent connections.**
 - $\text{concurrent streams} = \text{arrival rate} \times \text{hold time} = 40 \times 20 = 800$ — Little's Law, not request rate.
 - **This sizes** the relay tier, load-balancer connection limits, provider concurrency quota, and deployment strategy.
-- Long-lived streams are hostile to request-count autoscaling, naive round-robin, and any proxy with a 60-second idle timeout.
+- Long-lived streams are hostile to request-count autoscaling, naive round-robin, and any proxy with a 60-second idle timeout (the default on AWS ALB and nginx) once a stream goes quiet, say during a long tool call, unless you send heartbeats.
 - A rolling restart that drops connections is now a **visible product failure**, not a blip.
 
 > 🎯 **Interview Pointer:** Lead your sizing with the 800-concurrent-streams number, not raw QPS — it's the number that actually drives relay-tier and provider-quota decisions, and interviewers notice when a candidate reaches for Little's Law instead of naive request-rate math.
@@ -307,7 +307,7 @@ $$ C_{\text{user}} = \frac{C_{\text{fixed}}}{N} + C_{\text{tokens}} + C_{\text{r
 - $C_{tokens}$ — dominant term; compaction and prompt caching attack it directly.
 - $C_{retrieval}$ — largely fixed per corpus, not per user.
 - $C_{storage}$ — driven by retention class; 7-year retention is a legal decision with an engineering invoice.
-- **Say it out loud:** "Our estimated $22/user/month vs. a ~$30 vendor seat means the build case rests on the capability that forced us to build, not on cost."
+- **Say it out loud:** "Our estimated $22/user/month vs. a ~$30 vendor seat (Microsoft 365 Copilot's list price, checked Sep 2026) means the build case rests on the capability that forced us to build, not on cost."
 
 ### Sensitivity
 
@@ -515,7 +515,7 @@ sequenceDiagram
 
 - **Idempotency required** — bind to `(conversation_id, client_message_id)`; a replay returns the existing turn, including a partial one.
 - **Typed events only** — `token`, `citation`, `route_change`, `blocked`, `done`, `error`. Never raw text; the client must distinguish a fallback notice from content.
-- **Errors:** `403` not authorised, `409` idempotency conflict, `413` attachment too large, `429` quota, policy block with a reason code, `503` all providers down.
+- **Errors:** `403` not authorised, `409` same key still in flight (`422` if the key is reused with a different body), `413` attachment too large, `429` quota, policy block with a reason code, `503` all providers down.
 - **A `200` that dies at token 300 is not a success.** The SLI counts `done` events, not HTTP status codes.
 
 ### The riskiest component: the turn handler
@@ -898,7 +898,7 @@ The numbers in these three lines are illustrative, to show the shape — not res
 
 An example of the shape — the numbers are illustrative, not from a real rollout:
 
-> "Moved AI usage from ungoverned consumer tools into a platform where every prompt is classified, every retrieval respects existing permissions, and every turn is auditable — cutting measured consumer-AI egress ~78% in two quarters at 61% weekly active use. Employees self-report ~3 hours/week saved, which we treat as directional, not precise. ~$22/active user/month against a $30 vendor seat, with the difference justified by two connectors nobody sells."
+> "Moved AI usage from ungoverned consumer tools into a platform where every prompt is classified, every retrieval respects existing permissions, and every turn is auditable — cutting measured consumer-AI egress ~78% in two quarters at 61% weekly active use. Employees self-report ~3 hours/week saved, which we treat as directional, not precise. ~$22/active user/month against a ~$30 list-price vendor seat, with the difference justified by two connectors nobody sells."
 
 - **Structure:** risk reduction first → adoption → **honest qualifier on the soft number** → cost comparison naming *why* building was right.
 - Interviewers notice candidates who inflate self-reported time savings into hard ROI.
@@ -962,7 +962,7 @@ flowchart LR
 ### Five follow-ups, compressed
 
 - **Injection?** "I assume it sometimes succeeds and design so success is worthless — untrusted content carries no authority, orchestration decides tool execution, no write tools in the MVP, and permission filtering means the best case is retrieving what they could already see. Canaries in the eval set. I would not claim a better system prompt solves it."
-- **eDiscovery?** "Retention class on the conversation, legal hold overriding every deletion path, a privileged endpoint requiring a case reference, and audit events for the search *and* each conversation opened — because 'who read the employee's chats' is a question someone asks. Rehearsed before launch. In some jurisdictions this surface needs works-council consultation before shipping."
+- **eDiscovery?** "Retention class on the conversation, legal hold overriding every deletion path, a privileged endpoint requiring a case reference, and audit events for the search *and* each conversation opened — because 'who read the employee's chats' is a question someone asks. Rehearsed before launch. In some jurisdictions this surface needs works-council agreement before shipping."
 - **Provider down?** "Circuit break, shift to secondary or smaller model, visible label not an error page, shed background work, bounded retries with jitter, message never lost. Tested in a game day — a failover path that has never run is a hypothesis."
 - **Cost runaway?** "Per-user token and concurrency quotas, department budgets, compaction, cache-friendly context layout, task-based model tiering — and cancel the upstream stream on client disconnect, or you pay for tokens nobody reads."
 - **How do you know it's working?** "Egress in the proxy logs — instrumented before we started. Then weekly active use, because adoption is the safety metric. Then regeneration rate as implicit quality, and permission-boundary violations at zero, treated as incidents."
@@ -1054,7 +1054,7 @@ One review pass was run against the fixed 20-item / 4-phase decomposition rubric
 ### My Perspective on the Gaps
 
 - **Item 17 — Regulatory/governance depth.**
-  - This scenario's regulatory surface is almost entirely about *employee monitoring*, which is a different animal from the customer-data regulations that show up in most other chapters — the frameworks most likely to surface here are GDPR/local-equivalent employee-monitoring provisions, works-council consultation requirements (already flagged in the risk register as the row "candidates never include"), and sector rules like FINRA/SEC supervision if the workforce includes regulated employees whose communications must be retained and reviewable.
+  - This scenario's regulatory surface is almost entirely about *employee monitoring*, which is a different animal from the customer-data regulations that show up in most other chapters — the frameworks most likely to surface here are GDPR/local-equivalent employee-monitoring provisions, works-council consultation requirements (already flagged in the risk register as the row "candidates rarely include"), and sector rules like FINRA/SEC supervision if the workforce includes regulated employees whose communications must be retained and reviewable.
   - I'd map each theme back to a component already in this architecture rather than inventing a new layer: lawful basis for monitoring conversations → the `retention_class` and `legal_hold` fields on `Conversation`, plus the fact that every admin read is itself audited (this is exactly the evidence a works council or regulator asks for — "who can read an employee's chat, and is that access itself logged"); data residency → the model-router's classification-and-region logic already described for restricted data classes.
   - The one piece genuinely missing is a documented **sub-processor map for the model provider itself** — when a commercial API vendor also has its own downstream sub-processors, the platform needs a data-flow diagram showing every party that could see even zero-retention-agreement prompt text, since that's exactly what GC's "prove it's not in a third party's training set" question in Section 1 is really asking about.
   - Interview framing: don't invent framework depth you don't have — name the works-council consultation explicitly (it's already the standout row in this chapter's own risk register) and connect GDPR-style monitoring concerns to the audit-on-every-admin-read design that's already built, rather than treating regulation as a bolt-on.
@@ -1064,3 +1064,17 @@ One review pass was run against the fixed 20-item / 4-phase decomposition rubric
   - Concretely, I'd extend the existing eval-set and canary approach (already used for injection detection in Section 6) to include a **demographic-parity slice** on sampled groundedness and thumbs-down rate — cutting the existing quality metrics by department and by a coarse language/locale signal, rather than building an entirely separate fairness pipeline.
   - On multilingual/accessibility specifically: the platform's permission-filtered retrieval and output-scanning logic were designed and tested (per Section 6's test suite) against English-language corpora; a real global rollout needs the same contract tests re-run against non-English content, since a DLP or classification scanner tuned on English text can both over-block and under-block in other languages — and the streaming relay's typed-event design (token/citation/route_change/blocked/done) already gives assistive technology a clean hook to announce state changes, so accessibility here is more a testing and QA gap than an architecture gap.
   - Interview framing: connect this back to the platform's own adoption argument — a governed tool that works less well for non-English-speaking or assistive-technology-using employees quietly reproduces the exact shadow-IT risk this whole project was funded to eliminate, just for a narrower population.
+
+## Sources (checked 27 Sep 2026)
+
+- [Microsoft 365 Copilot enterprise pricing](https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/enterprise) — $30/user/month list price, paid yearly, on top of a Microsoft 365 licence
+- [Works Constitution Act (BetrVG), English translation](https://www.gesetze-im-internet.de/englisch_betrvg/englisch_betrvg.html) — section 87(1) no. 6: works-council co-determination over technical devices that monitor employee behaviour or performance
+- [Works Councils Act (WOR), article 27](https://wetten.overheid.nl/BWBR0002747/) — Dutch works-council consent right over systems that can monitor staff attendance, behaviour or performance
+- [Dutch Data Protection Authority: works council and privacy booklet](https://www.autoriteitpersoonsgegevens.nl/uploads/imported/ap_or_privacy-boekje.pdf) — the regulator's guide to that consent right
+- [AWS: Application Load Balancer attributes](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-load-balancer-attributes.html) — default connection idle timeout is 60 seconds
+- [nginx: ngx_http_proxy_module](https://nginx.org/en/docs/http/ngx_http_proxy_module.html) — `proxy_read_timeout` defaults to 60 s, measured between reads
+- [The Idempotency-Key HTTP Header Field (IETF draft -07)](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) — `409` for a request still in flight, `422` for a reused key with a different body
+- [Claude prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — caching works on a stable prompt prefix
+- [Azure OpenAI quotas and limits](https://learn.microsoft.com/en-us/azure/foundry/openai/quotas-limits) — provider capacity is set as tokens-per-minute and requests-per-minute quotas
+- [FINRA Rule 3110](https://www.finra.org/rules-guidance/rulebooks/finra-rules/3110) — supervision and review of correspondence and internal communications
+- [SEC Rule 17a-4](https://www.law.cornell.edu/cfr/text/17/240.17a-4) — broker-dealers must keep business communications for three years

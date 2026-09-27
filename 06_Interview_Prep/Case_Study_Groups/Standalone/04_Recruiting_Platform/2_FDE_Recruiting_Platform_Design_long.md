@@ -104,7 +104,7 @@ Structured extraction is the seam between "documents" and "data": everything bef
 6. **🏅 Candidate ranking** — The ranking engine weighs multiple signals and produces an explainable ranked list instead of a simple pass/fail decision.
 7. **❓ Generate interview questions** — The LLM generates role-specific questions based on JD requirements, candidate experience, missing skills, and previous projects — coding, system design, behavioural, or domain-specific.
 8. **⚖️ AI judge evaluation** — After interviews or coding assessments, the AI judge evaluates technical correctness, communication clarity, problem-solving approach, and alignment with job requirements — producing structured feedback and preliminary scores.
-9. **🧑‍💼 Human recruiter review** — A recruiter or hiring manager reviews the ranking, AI-generated scores, interview summaries, and recommendations, then makes the final hiring decision — ensuring accountability and reducing bias.
+9. **🧑‍💼 Human recruiter review** — A recruiter or hiring manager reviews the ranking, AI-generated scores, interview summaries, and recommendations, then makes the final hiring decision — adding accountability and a human check on bias. A reviewer who rubber-stamps the AI's ranking adds neither, so the review needs real authority to override.
 10. **📅 Interview scheduling** — Once shortlisted, the platform checks interviewer availability, finds suitable time slots, sends calendar invites, notifies candidates, and updates the ATS automatically.
 
 ---
@@ -269,3 +269,12 @@ Scalability comes from stateless application servers, asynchronous document proc
 ---
 
 *Source: [iGrace — AI Powered Recruiting Platform Design](https://www.igrace.in/technology/interviews-proj-delivery/proj-delivery/recruiting-platform-ai-design)*
+
+## Sources (checked 27 Sep 2026)
+
+- [GDPR Article 22 — automated individual decision-making](https://gdpr-info.eu/art-22-gdpr/) — right not to be subject to solely automated decisions with significant effects, which is why hiring stays human-assisted
+- [GDPR Article 17 — right to erasure](https://gdpr-info.eu/art-17-gdpr/) — candidates can request deletion of their data
+- [CCPA — California Attorney General](https://oag.ca.gov/privacy/ccpa) — right to delete; applicant and employee data covered since 1 Jan 2023
+- [Prohibited employment policies and practices — EEOC](https://www.eeoc.gov/prohibited-employment-policiespractices) — hiring discrimination and neutral practices with disparate impact, the basis for fairness monitoring across protected groups
+- [EU AI Act, Annex III](https://artificialintelligenceact.eu/annex/3/) — AI used to filter applications and evaluate candidates is classed as high-risk
+- [EU AI Act, Article 14 — human oversight](https://artificialintelligenceact.eu/article/14/) — overseers must guard against automation bias

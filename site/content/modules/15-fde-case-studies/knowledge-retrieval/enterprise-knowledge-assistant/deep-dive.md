@@ -65,7 +65,7 @@ The policy engine remains deterministic and auditable.
 
 ## 4. Source-specific risks
 
-**Drive:** inherited permissions, personal files, external sharing, missed deletes.
+**Drive:** inherited permissions (a limited-access folder blocks inheritance), personal files, external sharing, missed deletes.
 
 **SharePoint:** broken inheritance, stale library permissions, item-level overrides.
 

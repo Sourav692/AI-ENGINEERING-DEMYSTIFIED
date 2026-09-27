@@ -180,6 +180,8 @@ export const GLOSSARY: GlossaryEntry[] = [
     plain: 'Permissions decided by attributes — region, department, data sensitivity — not just role. Finer-grained than RBAC.' },
   { term: 'SSO', expansion: 'single sign-on', group: 'Security and compliance',
     plain: 'One company login for every app. It is also where you get the user\'s identity to enforce permissions.' },
+  { term: 'OIDC', expansion: 'OpenID Connect', group: 'Security and compliance',
+    plain: "The login layer on top of OAuth. OAuth only says what an app may do; OIDC adds who the user is, as a signed ID token." },
   { term: 'DLP', expansion: 'data loss prevention', group: 'Security and compliance',
     plain: 'Tools that stop sensitive data leaving where it should stay.' },
   { term: 'HMAC', expansion: 'hash-based message authentication code', group: 'Security and compliance',
@@ -345,6 +347,8 @@ export const NOT_ACRONYMS = new Set([
   'DRAFT', 'SCALE', 'QUALITY', 'DENIED', 'INVALID', 'TESTING', 'FAILURE', 'DO', 'TODAY', 'COST',
   'QUEUE', 'CONTEXT', 'UNIQ', 'CHANGES', 'WITH', 'ANSWER', 'NOT', 'FORWARD', 'SYSTEM', 'THAT',
   'VERIFY', 'ROUTE', 'IN', 'DATA', 'LATENCY', 'TOOL', 'SAFETY', 'MUCH', 'FAR', 'REV', 'MOD',
+  // Shouted "as", the SQL keyword, and PCAOB audit-standard numbers (AS 2201)
+  'AS',
   // Regions, well-known names and products, units, versions
   'US', 'EU', 'APAC', 'EMEA', 'AMER', 'AWS', 'SAP', 'VIP', 'OS', 'IT', 'IP', 'KB', 'GB', 'MB',
   'UI', 'UX', 'URL', 'HTTP', 'HTTPS', 'ASCII', 'SHA256', 'V1', 'V2', 'Q3', 'CD', 'CI', 'SOC',

@@ -76,7 +76,7 @@ A cache hit returns before the supervisor spawns anything. On a miss, the superv
 | Component | Purpose |
 |---|---|
 | Client | Web / mobile surface for search, booking, itinerary management |
-| Authentication | OAuth, JWT or SSO before anything else runs |
+| Authentication | SSO via OpenID Connect (the identity layer on OAuth 2.0), with JWTs as tokens, before anything else runs |
 | Load balancer | Spreads traffic across API instances |
 | **API gateway** | Routing, request validation and throttling as *one* policy layer |
 | **Supervisor agent** | Reads the query, checks the cache, and only on a miss decides which specialists to spawn |
@@ -122,7 +122,7 @@ A cache hit returns before the supervisor spawns anything. On a miss, the superv
 
 **Semantic cache vs traditional cache.** Semantic caching matches near-duplicate queries, not just exact ones, which is why it can short-circuit the entire fan-out rather than one downstream call.
 
-**Global vs regional vector DBs.** Regional stores buy data-residency compliance and lower latency; a global store buys simpler operations and cross-region consistency.
+**Global vs regional vector DBs.** Regional stores help meet data-residency requirements and lower latency; a global store buys simpler operations and cross-region consistency.
 
 ## A mental model: the international airport
 
@@ -158,3 +158,11 @@ The five fixes generalise into five questions to ask of any multi-agent diagram,
 - Draw the corrected architecture from memory.
 
 **Next →** [The 60-Minute Whiteboard Method](../../../Handbook/02_System_Design_Fundamentals/05_The_60_Minute_Whiteboard_Method.md)
+
+## Sources (checked 27 Sep 2026)
+
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) — OIDC is the identity layer on OAuth 2.0; OAuth alone does not authenticate a user
+- [MCP specification — Tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) — clients discover tools with `tools/list` and get `list_changed` notifications, which is the dynamic discovery the registry relies on
+- [Agents — CrewAI docs](https://docs.crewai.com/en/concepts/agents) — each agent carries its own `tools` list, so per-agent tool wiring is the framework default
+- [Semantic caching with Redis LangCache](https://redis.io/tutorials/semantic-caching-with-redis-langcache/) — semantic caches match similar questions by embedding similarity, not exact text
+- [GDPR Article 46 — transfers subject to appropriate safeguards](https://gdpr-info.eu/art-46-gdpr/) — GDPR allows safeguarded transfers, so regional stores help with residency requirements rather than being what compliance means

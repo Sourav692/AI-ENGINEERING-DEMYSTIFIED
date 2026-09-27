@@ -69,7 +69,7 @@ flowchart TD
 6. **Ranking** — multiple weighted signals; an explainable list, not pass/fail.
 7. **Interview questions** — role-specific, based on the JD, the candidate's experience, missing skills, past projects.
 8. **AI judge** — after interviews or assessments: technical correctness, communication, problem-solving, alignment — structured feedback and preliminary scores.
-9. **Human review** — a recruiter or hiring manager reviews ranking, scores, summaries and recommendations, and **makes the final decision** — accountability and bias reduction.
+9. **Human review** — a recruiter or hiring manager reviews ranking, scores, summaries and recommendations, and **makes the final decision** — accountability and a human check on bias, provided the reviewer can really override.
 10. **Scheduling** — availability, slots, invites, notifications, ATS update.
 
 ## Step 4 — The deep dive: explainable ranking

@@ -1217,7 +1217,7 @@ Train yourself to hear a customer/interviewer statement and automatically recogn
 | **"Message may arrive twice"**           | At-least-once + idempotent consumer                        |
 | **"Background job keeps failing"**       | Retry → DLQ                                               |
 | **"Agent runs 10 minutes"**              | Async + queue + durable state                              |
-| **"Agent crashes halfway"**              | Checkpoint + resume                                        |
+| **"Agent crashes halfway"**              | Checkpoint + resume, reconcile uncertain actions           |
 | **"Human approves tomorrow"**            | Durable state + HITL                                       |
 | **"Need conversation history"**          | Session state                                              |
 | **"Need long-term preferences"**         | Memory                                                     |
@@ -1403,3 +1403,17 @@ but more infrastructure
 # One-Line FDE Framework
 
 > **Start from the customer problem, turn discovery into measurable requirements, build the simplest happy-path architecture, and then pressure-test it across scale, latency, cost, reliability, security, AI quality and operations—adding components only when a requirement justifies them.**
+
+---
+
+## Sources (checked 27 Sep 2026)
+
+- [Google SRE Book - Service Level Objectives](https://sre.google/sre-book/service-level-objectives/) — SLI, SLO and SLA definitions
+- [Google SRE Workbook - Canarying Releases](https://sre.google/workbook/canarying-releases/) — canary as a partial, time-limited rollout that is evaluated
+- [AWS Builders' Library - Timeouts, retries and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) — retries can amplify an outage; backoff and jitter
+- [Azure Architecture Center - Circuit Breaker pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker) — stop calling a failing dependency for a while
+- [Amazon SQS Developer Guide - Dead-letter queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html) — retry, then move to a DLQ
+- [Stripe API reference - Idempotent requests](https://docs.stripe.com/api/idempotent_requests) — idempotency keys prevent a double refund on retry
+- [Temporal blog - Idempotency and durable execution](https://temporal.io/blog/idempotency-and-durable-execution) — at-least-once delivery; checkpoints don't stop duplicate side effects
+- [OWASP GenAI LLM08:2025 Vector and Embedding Weaknesses](https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/) — permission-aware retrieval
+- [OWASP GenAI LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/) — least privilege and controlled tools for agents

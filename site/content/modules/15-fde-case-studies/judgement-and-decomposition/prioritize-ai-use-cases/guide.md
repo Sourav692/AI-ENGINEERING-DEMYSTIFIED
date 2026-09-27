@@ -44,7 +44,7 @@ A ranking is only useful if it changes a decision. So the first question is whic
 | Who is the sponsor, and who owns each use case's outcome? | Whether a use case with no business owner is scored at all; the source's rule is to refuse work with no measurable metric and no SME |
 | What budget and horizon: one team for a quarter, or a programme for two years? | How many items fit in wave 1, and whether platform enablers can be funded ahead of their first user |
 | Does "prioritise" mean pick one pilot, or fund a portfolio? | One pilot optimises for learning and credibility; a portfolio also optimises for reuse and balance |
-| What is the risk appetite, and which regulator watches? | Where the risk gate sits; an insurer will rarely be allowed to let a model make an adverse decision on a customer unreviewed |
+| What is the risk appetite, and which regulator watches? | Where the risk gate sits; insurance regulators expect governance and human oversight of models that make decisions about customers, and in the EU a customer can contest a solely automated decision and ask for a human |
 | What has already been tried, and why did it stall? | Whether the real blocker is data access, adoption or trust, which moves the weights |
 | Build, buy or both? | Commodity use cases, such as a coding assistant, leave the build list entirely |
 
@@ -166,7 +166,7 @@ Read the table for what the sum hides, not only for its order.
 
 **The floor did real work.** The HR policy assistant (#20) ties the Now items at 3.85 on a value of 2. Easy, fast and reusable, it is still not worth one of five wave-1 slots. The floor moved it to Next, where it is a cheap second tenant of the retrieval enabler.
 
-**The gates did the rest.** Auto-sent denial letters (#4) fail the permissible-decision gate: an unreviewed adverse decision on a customer. The reshaped version is "draft the letter for the adjuster to approve", which folds into #1. LLM-set premiums (#14) fail the right-tool gate, because pricing belongs to the actuarial models that regulators already review.
+**The gates did the rest.** Auto-sent denial letters (#4) fail the permissible-decision gate: an unreviewed adverse decision on a customer. The reshaped version is "draft the letter for the adjuster to approve", which folds into #1. LLM-set premiums (#14) fail the right-tool gate, because pricing belongs to the actuarial models, and in most US states property and casualty rates must be filed with the insurance regulator.
 
 **The highest-value items are all Later.** Fraud triage (#3), autonomous settlement (#29) and the voice bot (#30) score 4 or 5 on value. Each fails on data, risk or evaluability. That is Question 16's follow-up in table form, and section 12 answers it.
 
@@ -433,3 +433,10 @@ All paths are relative to `06_Interview_Prep/`.
 Related packs, for cross-reference rather than repetition: [G12 Scoping to Deployed Agent](/modules/15-fde-case-studies/delivery-evaluation-operations/scoping-to-deployed-agent#full-pack) for gate mechanics; [G13 Evaluation and Release Gating](/modules/15-fde-case-studies/delivery-evaluation-operations/evaluation-and-release-gating#full-pack) for the eval harness; [#61 Scale a Prototype to Production](/modules/15-fde-case-studies/judgement-and-decomposition/scale-prototype-to-production) for what happens after a Now item's pilot succeeds; [#62 Build When Customer Data Is Poor](/modules/15-fde-case-studies/judgement-and-decomposition/build-when-customer-data-is-poor) for items blocked on data readiness; [Decomposition Classics #67–#69](/modules/15-fde-case-studies/judgement-and-decomposition/decomposition-classics-67-68-69) for decomposing a single chosen use case; [#100 Production LLM Gateway](/modules/15-fde-case-studies/standalone-designs/production-llm-gateway) for the gateway enabler.
 
 Sections 2, 3 (the card), 4 (the gates table), 5 to 13, 14 (script, spoken answer and follow-ups apart from the first) and 15 are own construction. They were built for this page from the sources' arguments and are not source material. The repo has no worked portfolio-prioritisation case.
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [NAIC Model Bulletin: Use of Artificial Intelligence Systems by Insurers (Dec 2023)](https://content.naic.org/sites/default/files/inline-files/2023-12-4%20Model%20Bulletin_Adopted_0.pdf) — insurers need a written AI programme with governance and controls that reflect how far humans are involved in decisions
+- [GDPR Article 22](https://gdpr-info.eu/art-22-gdpr/) — the right not to be subject to a solely automated decision, and the right to human intervention and to contest it
+- [EU AI Act, Annex III](https://artificialintelligenceact.eu/annex/3/) — AI for risk assessment and pricing in life and health insurance is high-risk
+- [NAIC chart: rate filing methods for property and casualty insurance](https://content.naic.org/sites/default/files/model-law-chart-pa-10-rate-filing-methods-for-property-casualty-insurance-workers-comp-title.pdf) — states use prior approval, file-and-use, use-and-file or no-file regimes, so rate review varies by state

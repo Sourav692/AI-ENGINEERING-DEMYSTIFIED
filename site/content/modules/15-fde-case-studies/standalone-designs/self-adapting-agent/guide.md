@@ -213,9 +213,9 @@ The cheapest adaptation changes nothing that outlives the request. Rung 1 covers
 
 **Dynamic example selection.** A fixed set of examples in the system prompt is chosen for the average request, so it is optimal for none. Retrieve past runs similar to this request instead. Then rank them by recorded outcome, not just similarity. A similar run that went badly teaches the model to go badly. Enforce diversity so three near-duplicates do not crowd out the useful one. The book's scoring formula is λ × relevance − (1−λ) × redundancy + 0.15 × outcome score.
 
-One cost follows. Examples sit above the user's turn, so swapping them per request breaks the prompt prefix cache. Where traffic clusters, cache one example set per cluster rather than choosing per request.
+One cost follows. Examples sit above the user's turn, so swapping them per request breaks the prompt prefix cache from that point on. Only what sits above them, such as tool definitions and the fixed system prompt, still hits the cache. Where traffic clusters, cache one example set per cluster rather than choosing per request.
 
-**Reflexion.** A failed attempt becomes a written lesson placed in context for the next attempt. The model itself does not change. It works only with three conditions: an external failure signal, a lesson specific enough to change behaviour, and a hard cap on attempts. "Expected ISO 8601 UTC, I sent local time" is a lesson. "Be more careful" is not. A model grading its own attempt without an external signal tends to produce confidently wrong lessons. Those lessons then contaminate every retry after them.
+**Reflexion.** A failed attempt becomes a written lesson placed in context for the next attempt. The model itself does not change. The book says it works reliably only with three conditions: an external failure signal, a lesson specific enough to change behaviour, and a hard cap on attempts. "Expected ISO 8601 UTC, I sent local time" is a lesson. "Be more careful" is not. A model grading its own attempt without an external signal tends to produce confidently wrong lessons. Those lessons then contaminate every retry after them.
 
 The repo's Reflexion notebook implements the pattern as actor, evaluator and self-reflection roles. For #80, one design rule sits on top: the evaluator must be external. A validator, a test or an API response counts. The same model's opinion does not.
 
@@ -255,7 +255,7 @@ The repo's DSPy course covers declared prompts, multi-step programs, evaluation 
 
 Training is the most expensive and least reversible rung, so defend it before proposing it. The learning chapter names three situations where parameter updates win. Strict format or protocol adherence at high volume, where a small tuned model matches a larger prompted one at a fraction of the cost. Domain vocabulary the base model lacks. A hard cost or latency ceiling after the cheaper rungs are exhausted, where distillation buys it back.
 
-It is equally blunt about the losing case. Knowledge gaps are a retrieval problem. Fine-tuning does not fix a model that does not know something. For #80 that rules out "train the agent on each new task". A new task is new knowledge and a new procedure, and both belong lower on the ladder.
+It is equally blunt about the losing case. Knowledge gaps are a retrieval problem. Fine-tuning rarely fixes a model that does not know something. Published studies find models learn new facts from fine-tuning slowly and unreliably, and retrieval beats it for adding knowledge. For #80 that rules out "train the agent on each new task". A new task is new knowledge and a new procedure, and both belong lower on the ladder.
 
 The book adds a cost to name. A tuned model freezes its task definition. When the business changes the definition, a prompt needs an edit and a tuned model needs retraining. So keep a prompted fallback path.
 
@@ -263,7 +263,7 @@ If training does happen, the flywheel gates decide whether the data is honest. D
 
 ## 11. Gate Every Self-Modification Like a Human Pull Request
 
-A self-modifying system without a release gate is an unreviewed deploy pipeline with a model holding the merge button. The gate is where #80 is won or lost. It is also where I'd expect the panel to probe hardest, since the question bank treats evaluation as the round's deliberate differentiator.
+A self-modifying system without a release gate is an unreviewed deploy pipeline with a model holding the merge button. The gate is where #80 is won or lost. It is also where I'd expect the panel to probe hardest. The repo's OpenAI decomposition question bank, compiled from candidate reports, calls evaluation a deliberate differentiator in that round. I'm assuming the same holds here, but no public source says so for this prompt.
 
 Apply the validation chapter's CI gate to every learned artefact, whichever rung it came from. Safety assertions gate absolutely: any failure blocks. Quality gates against the baseline with a paired significance test, per stratum, not just on the mean. Cost is reported, and a ceiling breach blocks. A gain that triples spend must be a visible decision.
 
@@ -320,7 +320,7 @@ The pattern audit applies to this page's own design. Every mechanism added needs
 
 ## 14. Deliver It in Sixty Minutes
 
-Spend the hour on the ladder and the gate, because the question bank flags evaluation as what sets strong candidates apart. The question bank's framework has six steps: clarify the mission, stakeholders and metrics, map inputs, decompose and sequence by risk, walking-skeleton MVP, then adapt live. The plan below follows it *(own construction)*.
+Spend the hour on the ladder and the gate. The repo's question bank flags evaluation as what sets strong candidates apart in the OpenAI round it covers, and I'm assuming the same here. The question bank's framework has six steps: clarify the mission, stakeholders and metrics, map inputs, decompose and sequence by risk, walking-skeleton MVP, then adapt live. The plan below follows it *(own construction)*.
 
 | Minutes | Move | What to say |
 |---|---|---|
@@ -397,7 +397,7 @@ The four verbs from the cost playbook generate the same answer. Measure, by attr
 7. **Why did the assistant keep proposing the old vendor?** Contradicting statements were stored as separate episodes rather than typed facts, so the older phrasing kept winning retrieval.
 8. **What are the book's gate numbers for skills?** Beat baseline by 5 points offline, survive 200 live shadow attempts, auto-demote at 4 points below baseline.
 9. **What keeps prompt optimisation from overfitting?** A test set the optimiser never sees, per-stratum reporting and the standard gate.
-10. **Why not fine-tune the agent on each new task?** A new task is new knowledge and procedure, which belong to retrieval and skills; fine-tuning does not fix missing knowledge.
+10. **Why not fine-tune the agent on each new task?** A new task is new knowledge and procedure, which belong to retrieval and skills; fine-tuning fixes missing knowledge slowly and unreliably.
 11. **Aggregate accuracy rose from 79% to 81%. Why block the release?** One stratum fell from 82% to 67% inside the average; the gate checks every stratum.
 12. **What may the agent never do on its own?** Grant a skill a new tool, approve an irreversible procedure, raise its own budgets or re-promote a demoted skill.
 13. **How do you notice metric gaming?** A second, independent outcome signal and trajectory-shape monitors per task type.
@@ -422,3 +422,15 @@ All paths are relative to the repository root unless stated.
 | 15 | `06_Interview_Prep/Study_Guides/Cost_Latency_Optimization/CRAM_SHEET_FULL_PLAYBOOK.md` (the four verbs) |
 | Related packs | `06_Interview_Prep/Case_Study_Groups/G03_Tool_Using_Agent_With_Safety_Controls/G03_Tool_Using_Agent_With_Safety_Controls.md` (gateway and approvals), `G13_Evaluation_And_Release_Gating.md` (release gate), `G19_Model_Development_And_Post_Training.md` (rung 5 in depth) |
 | 2, 3, 4, 5, 9, 12, 14, 15, and every item marked own construction | Built for this page; all sizing numbers are assumptions |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Prompt caching — Claude API docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — the cache is a prefix; a change invalidates that level and everything after it
+- [Prompt caching — OpenAI API docs](https://developers.openai.com/api/docs/guides/prompt-caching) — reuse needs an exact prefix match; put variable content last
+- [Reflexion: Language Agents with Verbal Reinforcement Learning (Shinn et al., 2023)](https://arxiv.org/abs/2303.11366) — lessons kept as text in an episodic buffer, no weight updates
+- [Large Language Models Cannot Self-Correct Reasoning Yet (Huang et al., 2023)](https://arxiv.org/abs/2310.01798) — self-correction without external feedback often fails or makes answers worse
+- [Voyager: An Open-Ended Embodied Agent with Large Language Models (Wang et al., 2023)](https://arxiv.org/abs/2305.16291) — skill library of executable code, refined with execution feedback and self-verification
+- [Agent Workflow Memory (Wang et al., 2024)](https://arxiv.org/abs/2409.07429) — reusable workflows induced from agent trajectories
+- [MIPROv2 — DSPy docs](https://dspy.ai/api/optimizers/MIPROv2/) — optimisers that search instructions and few-shot examples against a metric
+- [Fine-Tuning or Retrieval? Comparing Knowledge Injection in LLMs (Ovadia et al., 2023)](https://arxiv.org/abs/2312.05934) — retrieval beats unsupervised fine-tuning for new knowledge
+- [Does Fine-Tuning LLMs on New Knowledge Encourage Hallucinations? (Gekhman et al., 2024)](https://arxiv.org/abs/2405.05904) — new facts are learned slowly through fine-tuning and raise hallucination

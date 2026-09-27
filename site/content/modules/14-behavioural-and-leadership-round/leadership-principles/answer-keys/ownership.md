@@ -46,7 +46,7 @@ Spoken answers - 4 grounded, 2 partly grounded. Deliver them in your own cadence
 
 *"Two things from the insurer engagement went back to the product side. First, the supervisor gap: the managed multi-agent feature wasn't an option for this customer at the time, so I hand-built the supervisor — and that hand-built version is a concrete, working spec of what a regulated APAC customer needed from the managed feature: confidence-gated clarification, a central asset index shared across workers, prompts tunable without redeploy. `[FILL: who you shared it with — product/PM, and any outcome].`*
 
-*Second, the governance gap: a Vector Search index is a derived copy and doesn't inherit Unity Catalog's row filters. That's not an insurer-specific finding — every customer putting AI on governed data hits it. I documented the two-layer enforcement pattern and `[FILL: where it went — internal solution pattern, field enablement, product feedback].`*
+*Second, the governance gap: a Vector Search index — it's called AI Search now — is a derived copy and doesn't inherit Unity Catalog's row filters. That's not an insurer-specific finding — every customer putting AI on governed data hits it. I documented the two-layer enforcement pattern and `[FILL: where it went — internal solution pattern, field enablement, product feedback].`*
 
 *The principle: an FDE is the earliest signal the product gets about what a real customer's constraints look like. If that signal stays in the engagement, half the value is wasted."*
 

@@ -232,3 +232,19 @@ The behavioural answers and some case studies were written from real client enga
 
 **Not researched.** Unsourced external facts went to `.website_plan/09-content-architecture-editorial-quality/claims-round2-queue.csv` (44 rows). The 15 that were in-page arithmetic or clear errors were fixed in the same pass. The 29 open rows feed CONTENT-18.
 
+## Fact check, round 2 (CONTENT-18/19, done 27 Sep 2026)
+
+**Scope.** Everything round 1 left:
+- the 22 practice answer keys
+- the 13 standalone cases
+- the Roadmap and Rapid Revision Guide
+- external facts inside the behavioural answers (the stories themselves weren't touched)
+- the 89 low-priority round-1 facts
+- the 29 open rows of `claims-round2-queue.csv`
+
+**Result.** 214 claims were checked against primary sources: 168 confirmed, 28 overstated, 7 outdated, 4 incorrect, 7 unverifiable. The verdicts, each with its sources, are in `verdicts-round2.json`. Every non-confirmed claim was corrected in the spoken style.
+
+**Where the sources are.** Standalone tutorials, the Roadmap and Rapid Revision end with "Sources (checked 27 Sep 2026)", or with a "Fact-check sources" block under an existing References section. Practice answer keys are parsed section by section, and an extra section would not render. So their sources live only in `verdicts-round2.json`, and the page shows the checked date.
+
+**Dates (CONTENT-19).** `lastReviewed: 2026-09-27` is now set on the Discovery and System Design practice tracks, both standalone families, the Roadmap and the Rapid Revision Guide. The behavioural tracks stay undated. They're personal stories, and "key facts checked against official sources" would overstate what was checked. Prices that will go stale carry "(checked Sep 2026)" inline.
+

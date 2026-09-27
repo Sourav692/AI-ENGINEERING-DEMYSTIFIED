@@ -19,8 +19,8 @@
 - [ ] **CONTENT-15 P1:** Add a reusable behavioral story bank and show which questions each story can support.
 - [X] **CONTENT-16 P1:** Add a case-level source/provenance panel so every companion tab can reach references without duplicating them.
 - [x] **CONTENT-17 P0:** Distinguish scenario assumptions, own construction, measured evidence, and externally sourced facts with consistent labels.
-- [ ] **CONTENT-18 P0:** Fact-check security, vendor-specific behavior, quantitative targets, and API/product claims against current primary sources.
-- [ ] **CONTENT-19 P1:** Add “last reviewed” and product/version context to claims that can become stale.
+- [x] **CONTENT-18 P0:** Fact-check security, vendor-specific behavior, quantitative targets, and API/product claims against current primary sources.
+- [x] **CONTENT-19 P1:** Add “last reviewed” and product/version context to claims that can become stale.
 - [x] **CONTENT-20 P1:** Define acronyms on first use and add a shared glossary for cross-cutting terms.
 - [X] **CONTENT-21 P1:** Add targeted remediation links from worksheet scorecard dimensions to the relevant tutorial section.
 - [X] **CONTENT-22 P0:** Extend content validation to reject broken internal links, missing required metadata, and unresolved placeholders on public-ready pages.
@@ -54,4 +54,6 @@ Deferred to the editorial session: CONTENT-13, 15, 17 (applying labels), 18 and 
 **CONTENT-17/18/19 — round 1 done 27 Sep 2026.** The grouped case studies and the Last-Day reviews are covered: 220 high- and medium-priority claims verified and 128 corrected, with sources and review dates added. These tasks stay open until round 2 covers the standalone cases, practice pages, Roadmap, Rapid Revision Guide and low-priority claims. See `fact-check-followups.md`.
 
 **CONTENT-17 — done 27 Sep 2026 (round 2).** Labels are now in the wording across every public family that round 1 left: the 22 practice answer keys, the 13 standalone cases, the Roadmap and Rapid Revision Guide, and the 143 low-priority round-1 claims (decision recorded per row in `claims-round1.csv`). About 190 label edits over 64 files. Every practice evaluation table now opens with "These are thresholds I'd set for this case, not industry standards." Unsourced external facts were not researched; 44 went to `claims-round2-queue.csv`. 15 of those were in-page arithmetic or clear errors and are already fixed; 29 stay open for CONTENT-18.
+
+**CONTENT-18/19 — round 2 done 27 Sep 2026; both tasks closed.** Round 2 covered what round 1 left: the 22 practice answer keys, the 13 standalone cases, the Roadmap and Rapid Revision Guide, the external facts in the behavioural answers, the 89 low-priority round-1 facts, and the 29 open rows of `claims-round2-queue.csv`. 214 claims were checked against primary sources (`verdicts-round2.json`): 168 confirmed, 28 overstated, 7 outdated, 4 incorrect, 7 unverifiable. Every non-confirmed claim was fixed in the text. Standalone tutorials, Roadmap and Rapid Revision end with "Sources (checked 27 Sep 2026)". Practice, standalone, Roadmap and Rapid Revision families now carry `lastReviewed: 2026-09-27`. Behavioural tracks stay undated on purpose, because they're personal stories. Rechecks and unsettled items are in `fact-check-followups.md`.
 

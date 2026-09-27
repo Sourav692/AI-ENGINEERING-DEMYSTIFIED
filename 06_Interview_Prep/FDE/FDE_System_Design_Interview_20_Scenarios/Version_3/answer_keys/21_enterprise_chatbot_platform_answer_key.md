@@ -21,8 +21,8 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Record an append-only audit of every turn, including administrative reads of employee conversations.
 
 ## Strong non-functional requirements
-- Latency: time-to-first-token is the adoption SLO; I'd set p95 under 1.0s and p99 under 2.0s, because a four-second spinner feels broken.
-- Availability: the load this case assumes is about 576,000 turns a day, 40 turns per second at a 2.5x morning peak, and roughly 800 concurrent streams.
+- Latency: time-to-first-token is the adoption SLO; I'd set p95 under 1.0s and p99 under 2.0s, because users notice any wait past about a second, and I'd expect a four-second spinner to feel broken next to the free tool.
+- Availability: the load this case assumes is about 576,000 turns a day; over a ten-hour working day that is 40 turns per second at a 2.5x morning peak, and roughly 800 concurrent streams.
 - Security: every isolation layer fails closed, because failing open in this system means leaking.
 - Compliance: retention is a named policy class with legal hold, and audit completeness must be 100% of turns served.
 - Reliability: never lose the user's typed message; degrade to a smaller labelled model rather than returning an error page.
@@ -33,9 +33,9 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - A gateway validates the SSO token and shapes traffic; the conversation service owns conversation state and authorises the caller on every turn.
 - The context assembler is the design centre, where permissions, cost, safety, and quality all intersect — it builds context from the asking human's identity, never the client's claims.
 - Retrieval and connectors fetch candidates filtered by the caller's live permissions, and an unavailable ACL resolver drops the chunk rather than widening access.
-- Policy and DLP classify the input before dispatch and scan streamed output with a sliding window that overlaps, so a pattern straddling a boundary cannot slip through.
+- Policy and DLP classify the input before dispatch and scan streamed output with a sliding window that overlaps by at least the longest pattern's length, so a known pattern straddling a boundary cannot slip through.
 - A model router chooses provider, deployment, and model by data class, cost, and health, with classification outranking cost; provider adapters normalise vendors and own retries.
-- A streaming relay holds long-lived connections and handles mid-stream aborts, cancelling the upstream stream when a client disconnects so nobody pays for unread tokens.
+- A streaming relay holds long-lived connections and handles mid-stream aborts, cancelling the upstream stream when a client disconnects, so we stop paying for unread tokens on providers that honour cancellation; not all do.
 - An assistant registry governs definitions and scopes, usage and quota meter tokens, and an append-only audit pipeline records every turn including admin reads.
 
 ## Data model / integration assumptions

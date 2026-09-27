@@ -522,3 +522,9 @@ All paths are relative to `06_Interview_Prep/`.
 | 11 | `Study_Guides/Cost_Latency_Optimization/CORE_8_DRIVERS_MEMORIZE.md`, drivers 5 (agent steps and tool calls) and 8 (batch jobs and evaluation pipelines) |
 | 3 (added columns), 5, 6, 7, 8, 9 (answers), 10, 11 (card), and every item marked own construction | Built for this page from the sources' arguments; not source material. The repo has no worked treatment of emergency dispatch, bank fraud or medication safety. |
 | Cross-references | G12 (scoping gates), G17 (evaluation raised unprompted, the #66 sibling prompt) in `Case_Study_Groups/`; #62 (building when the customer's data is poor) overlaps #68 |
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [AHRQ PSNet: Reporting Patient Safety Events](https://psnet.ahrq.gov/primer/reporting-patient-safety-events) — incident reports capture only a fraction of events compared with record review and observation
+- [AHRQ PSNet: Culture of Safety](https://psnet.ahrq.gov/primer/culture-safety) — reporting depends on a blame-free environment; individual blame impairs safety culture
+- [AHRQ PSNet: Factors influencing the reporting of medication errors and near misses among nurses](https://psnet.ahrq.gov/issue/factors-influencing-reporting-medication-errors-and-near-misses-among-nurses-systematic-mixed) — fear of blame and consequences is a barrier to nurses reporting medication errors

@@ -114,7 +114,7 @@ Poor data rules out some designs and barely affects others. The move is to pick 
 | Weak supervision | Several cheap, noisy labelling rules vote; the votes become a training signal | A small trusted set to measure the rules against |
 | Synthetic data | Covers rare cases the history lacks | Real data to validate against; never the only evaluation |
 
-Weak supervision needs a gloss. Instead of hand-labelling every record, write several cheap labelling rules: a keyword match, a lookup table, a model's guess. Each rule is individually unreliable. Their combined votes, weighted by how often each agrees with a small trusted sample, give a usable label at scale.
+Weak supervision needs a gloss. Instead of hand-labelling every record, write several cheap labelling rules: a keyword match, a lookup table, a model's guess. Each rule is individually unreliable. Their combined votes, weighted by each rule's estimated accuracy, give a usable label at scale. Tools like Snorkel estimate those weights from where the rules agree and disagree; a small trusted sample checks the result.
 
 Synthetic data carries the sharpest caveat. The RAG study guide's advice on eval sets applies directly: "a small, real eval beats a synthetic one for customer-specific evaluation." Synthetic examples fill gaps in coverage. They cannot tell anyone how the system performs on this customer's records.
 
@@ -414,3 +414,8 @@ All paths are relative to `06_Interview_Prep/`.
 Related packs, for cross-reference rather than repetition: [G12 Scoping to Deployed Agent](../../G12_Scoping_To_Deployed_Agent/G12_Scoping_To_Deployed_Agent.md) for gates and intake refusal; [G13 Evaluation and Release Gating](../../G13_Evaluation_And_Release_Gating/G13_Evaluation_And_Release_Gating.md) for the release gate; [G01 Enterprise Knowledge Assistant](../../G01_Enterprise_Knowledge_Assistant/G01_Enterprise_Knowledge_Assistant.md) for messy enterprise documents and permission normalisation; [G06 NL Over Governed Data](../../G06_NL_Over_Governed_Data/G06_NL_Over_Governed_Data.md) for governed metric definitions; [Decomposition Classics](../Decomposition_Classics_67_68_69/) for #68, the bank-fraud case built on inconsistent labels.
 
 Sections 2 (all questions but the last), 3 (the table), 4 (procedure, scorecard, thresholds), 5 (design table, weak-supervision and not-yet rule), 6 to 9 (the warranty scenario, its numbers and architecture), 11 to 13, 14 (script, spoken answer, follow-ups) and 15 (the card) are own construction, built for this page from the sources' arguments. They are not source material.
+
+### Fact-check sources (checked 27 Sep 2026)
+
+- [Snorkel: Rapid Training Data Creation with Weak Supervision (Ratner et al., 2017)](https://arxiv.org/abs/1711.10160) — labelling functions vote, and their accuracies are estimated without ground truth
+- [Cohen (1960), A Coefficient of Agreement for Nominal Scales](https://doi.org/10.1177/001316446002000104) — kappa as agreement corrected for chance

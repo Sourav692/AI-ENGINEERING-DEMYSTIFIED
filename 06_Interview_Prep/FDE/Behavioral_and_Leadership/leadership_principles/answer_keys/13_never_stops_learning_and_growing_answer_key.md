@@ -10,7 +10,7 @@ Spoken answers - 3 grounded, 1 partly grounded. Deliver them in your own cadence
 
 *I learned it the way I learn anything: by building something that could fail. At a large Asian life insurer that meant learning the hard way that a single agent with 20-plus tools collapses, and then learning why — context bloat degrading tool selection — well enough to predict the same failure one level up and pre-empt it at a large Indian consumer lender with a triage layer before the agent ever runs.*
 
-*The second piece I deliberately learned was platform-specific governance. I rebuilt the same enterprise RAG system on a second platform specifically to find out where its guarantees didn't travel — and found that a Vector Search index is a derived copy that doesn't inherit Unity Catalog's row filters. I couldn't have led a customer's security review without having found that myself. Next on the list: AST-based code graphs for root-cause analysis, which is where my code-lookup agent needs to go."*
+*The second piece I deliberately learned was platform-specific governance. I rebuilt the same enterprise RAG system on a second platform specifically to find out where its guarantees didn't travel — and found that a Vector Search index — it's called AI Search now — is a derived copy that doesn't inherit Unity Catalog's row filters. I couldn't have led a customer's security review without having found that myself. Next on the list: AST-based code graphs for root-cause analysis, which is where my code-lookup agent needs to go."*
 
 ## 2. Feedback that changed how you lead
 

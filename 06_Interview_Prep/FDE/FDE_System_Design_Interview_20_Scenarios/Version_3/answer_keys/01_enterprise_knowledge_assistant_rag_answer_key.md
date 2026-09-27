@@ -16,7 +16,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 - Support the core workflow: employee asks a work question, assistant resolves their groups, retrieves only permitted passages, and answers with passage-level citations.
 - Ingest Drive, SharePoint, Slack, wikis, and tickets incrementally; no source change should force a full reindex.
 - Preserve document versions and ACL metadata so retrieval can answer "what was visible to this user at this time?"
-- Perform hybrid retrieval and reranking; keyword matching carries policy IDs, error codes, and ticket numbers that dense retrieval blurs.
+- Perform hybrid retrieval and reranking; keyword matching carries policy IDs, error codes, and ticket numbers that dense retrieval can blur.
 - Show citations and abstain when evidence is weak. A correct refusal beats a confident hallucination.
 - Record safe feedback signals for evaluation without indiscriminately storing raw user prompts.
 

@@ -22,7 +22,7 @@ This answer key is designed for interview preparation. It shows what a strong Ge
 
 ## Strong non-functional requirements
 - Latency: `RPS = (N_records / T_window) × (1 + h)` — assuming a 6-hour window, 100M records is about 4,630 records/sec, or 5,320 with the 15% headroom I'd add.
-- Availability: size against the tail of large or slow records, not the mean, because the last 5% of a batch is usually the hardest.
+- Availability: size against the tail of large or slow records, not the mean, because in my experience the slow, oversized records pile up at the end of a batch.
 - Security: inputs, prompts, and outputs protected per the customer's access and retention rules across every hop.
 - Compliance: an auditable record of which snapshot, model version, and partition produced every classification.
 - Reliability: no missing or duplicate logical results, with bounded replay from durable checkpoints after any crash.

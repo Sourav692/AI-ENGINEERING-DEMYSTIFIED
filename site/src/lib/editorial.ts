@@ -463,7 +463,8 @@ export const FAMILY_META: Record<string, EditorialMeta> = {
       'a rough attempt teaches more than a blank one, and you do not need to fill every cell.',
     minutes: 45,
     sourceStatus: 'original',
-    lastReviewed: null,
+    // Fact-check round 2 (CONTENT-18): external claims checked against official docs.
+    lastReviewed: '2026-09-27',
   },
   'system-design': {
     mode: 'practice',
@@ -482,7 +483,8 @@ export const FAMILY_META: Record<string, EditorialMeta> = {
       'then compare each section with the model answer and score yourself honestly.',
     minutes: 60,
     sourceStatus: 'derived',
-    lastReviewed: null,
+    // Fact-check round 2 (CONTENT-18): external claims checked against official docs.
+    lastReviewed: '2026-09-27',
   },
   'hiring-manager': {
     mode: 'behavioural',
@@ -563,6 +565,8 @@ for (const track of [
 
 FAMILY_META['standalone-designs'] = {
   ...CASE_STUDY_BASE,
+  // Fact-check round 2 (CONTENT-18).
+  lastReviewed: '2026-09-27',
   difficulty: 'Advanced',
   howToUse:
     'Read the tabs left to right; a single-document case is complete on its own. Where a ' +
@@ -576,6 +580,8 @@ FAMILY_META['standalone-designs'] = {
 
 FAMILY_META['judgement-and-decomposition'] = {
   ...CASE_STUDY_BASE,
+  // Fact-check round 2 (CONTENT-18).
+  lastReviewed: '2026-09-27',
   difficulty: 'Intermediate',
   prerequisites: ['No specific technical prerequisite — these test reasoning, not components'],
   howToUse:
@@ -619,15 +625,16 @@ export const ORIENTATION_META: EditorialMeta = {
     'review feels disconnected from the rest.',
   minutes: null,
   sourceStatus: 'original',
-  lastReviewed: null,
+  // Fact-check round 2 (CONTENT-18).
+  lastReviewed: '2026-09-27',
 }
 
 export const FINAL_REHEARSAL_META: EditorialMeta = {
   ...REVISION_META,
   prerequisites: ['The eighteen reviews, or equivalent study'],
   outcomes: ['Walk the full interview flow from memory in one pass'],
-  // Not part of fact-check round 1, so it must not inherit the reviews' date.
-  lastReviewed: null,
+  // Checked in fact-check round 2 (CONTENT-18), after the reviews in round 1.
+  lastReviewed: '2026-09-27',
   howToUse:
     'Read it the evening before or the morning of the interview. Anything that does not come ' +
     'back quickly points to the review to reopen.',

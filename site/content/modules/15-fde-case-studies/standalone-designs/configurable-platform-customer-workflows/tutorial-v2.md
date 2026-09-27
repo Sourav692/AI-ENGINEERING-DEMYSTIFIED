@@ -503,28 +503,28 @@ flowchart TD
 - `POST /v1/configurations/validate` — accepts a draft tenant config, returns validation errors and a normalised preview, never publishes state.
   - Auth: tenant-scoped bearer token/session bound to the caller's tenant; authz only allows validating configs for tenants the caller can administer.
   - Body: `template_id`, `version`, `values`, optionally `idempotency_key` (for replayable validation traces; endpoint can also be safely retried without write effects).
-  - Responses: `200 OK` successful preview; `400 Bad Request` structural issues; `403 Forbidden` tenant mismatch/missing rights; `422 Unprocessable Entity` schema/policy violations.
+  - Responses: `200 OK` successful preview; `400 Bad Request` structural issues; `403 Forbidden` tenant mismatch/missing rights; `422 Unprocessable Content` schema/policy violations.
 - `POST /v1/tenants/{id}/deployments` — creates a deployment for a tenant, typically from a validated config version; returns deployment ID + state.
   - Auth: binds caller to tenant `{id}` or a delegated ops role; server rejects cross-tenant deployment attempts.
-  - Create-style operation → requires an idempotency key; same key + identical body → same result; same key + changed body → `409 Conflict`.
-  - Errors: `401 Unauthorized` missing/expired credentials; `403 Forbidden` missing tenant permission; `404 Not Found` referenced config version doesn't exist; `409 Conflict` stale optimistic-concurrency token or idempotency-key reuse with different payload; `422 Unprocessable Entity` passes syntax but fails policy.
+  - Create-style operation → requires an idempotency key; same key + identical body → same result; same key + changed body → `422 Unprocessable Content`, which is what the IETF Idempotency-Key draft suggests; a retry that lands while the first request is still running gets `409 Conflict`.
+  - Errors: `401 Unauthorized` missing/expired credentials; `403 Forbidden` missing tenant permission; `404 Not Found` referenced config version doesn't exist; `409 Conflict` stale optimistic-concurrency token, or same key still in flight; `422 Unprocessable Content` passes syntax but fails policy, or idempotency-key reuse with a different payload.
 - `POST /v1/adapters/{name}/test` — exercises an adapter mapping against a safe test payload/sandbox endpoint.
   - Auth: scoped to integration-maintainer or tenant-admin permissions.
   - Body: adapter name, test payload, mapping, optional sandbox selector; also accepts an idempotency key to avoid duplicate test executions/audit records.
-  - Errors: `404 Not Found` unknown adapter; `403 Forbidden` lacks permission; `422 Unprocessable Entity` mapping cannot be applied; `502 Bad Gateway` (or similar) sandbox dependency fails.
+  - Errors: `404 Not Found` unknown adapter; `403 Forbidden` lacks permission; `422 Unprocessable Content` mapping cannot be applied; `502 Bad Gateway` (or similar) sandbox dependency fails.
 - `POST /v1/deployments/{id}/rollback` — creates a new rollback state for the same tenant rather than mutating the old deployment in place.
   - Auth: tenant-scoped with elevated ops permission or an explicit approval path.
   - Body: names the target deployment or prior good version; includes an idempotency key (rollback is a write op that may be retried under failure).
   - Success returns the new deployment record, never overwrites the prior one.
-  - Errors: `404 Not Found` deployment ID doesn't exist; `409 Conflict` current live state has moved on in a way that makes rollback unsafe; `422 Unprocessable Entity` target version no longer compatible with current template/adapter contract.
-- All four endpoints: require tenant-aware authentication and authorisation, reject cross-tenant writes, require an idempotency key on create-style operations, and return the same result for repeated requests with the same key and body. A changed body under a reused key is a conflict, never a silent update.
+  - Errors: `404 Not Found` deployment ID doesn't exist; `409 Conflict` current live state has moved on in a way that makes rollback unsafe; `422 Unprocessable Content` target version no longer compatible with current template/adapter contract.
+- All four endpoints: require tenant-aware authentication and authorisation, reject cross-tenant writes, require an idempotency key on create-style operations, and return the same result for repeated requests with the same key and body. A changed body under a reused key is rejected, never a silent update.
 
 ### Idempotent Deployment Creation Walkthrough
 
 - Concrete example: an ops client sends `POST /v1/tenants/acme/deployments` with idempotency key `deploy-2024-11-18-001` and body `{configVersion: 17, templateId: "tpl-9"}`.
   - Server creates deployment `dep-555`, returns `201 Created` with `deployment_id=dep-555`, `state=deployed`, and the same idempotency key recorded in the write log.
   - Retry with the same key after a timeout → must not create `dep-556`; returns the exact same result for `dep-555`.
-  - Retry with the same key but a changed body (`configVersion: 18`) → rejected as a conflict because the idempotency key no longer matches the payload.
+  - Retry with the same key but a changed body (`configVersion: 18`) → rejected with `422` because the idempotency key no longer matches the payload.
 
 ```mermaid
 sequenceDiagram
@@ -543,7 +543,7 @@ sequenceDiagram
 
   Note over Client,API: Client retries, same key, DIFFERENT body
   Client->>API: POST ... key=deploy-2024-11-18-001, configVersion=18
-  API-->>Client: 409 Conflict — key reused with changed payload
+  API-->>Client: 422 Unprocessable Content — key reused with changed payload
 ```
 
 ### The Smallest Safe Code Path: Config Publication
@@ -702,7 +702,7 @@ flowchart TD
 ### What the Whiteboard Version Omits on Purpose
 
 - A real service would add:
-  - **Optimistic concurrency** — the write boundary should carry an expected template/config version so two operators cannot race and overwrite each other's change unnoticed.
+  - **Optimistic concurrency** — the write boundary should carry an expected template/config version so two operators cannot race and overwrite each other's change unnoticed. With the version in the body, a mismatch is `409 Conflict`; if you send it as an `If-Match` header instead, HTTP says `412 Precondition Failed`.
   - **Idempotency** — a retry after a timeout should not create a second deployment or version.
   - **Bounded, safe retries** — limited to safe failure classes; never replay a rejected validation/authorisation failure as though it were transient.
   - **Observability** — tag every validation, deployment, adapter test, and rollback with tenant ID, config version, request ID, and idempotency key so support can trace exactly what happened without reading application logs line by line.
@@ -1195,10 +1195,18 @@ Given the strength of first-pass coverage (only items 7, 10, 17, and 18 fall sho
 
 **Item 17 — Regulatory / governance depth.**
 - Given the tenant-isolation architecture already in Section 4 (control plane vs. data plane, tenant-ID partitioning, per-tenant adapter scoping), the natural extension is data residency: if customers span jurisdictions, the configuration registry and workflow audit store may need region-pinned storage, and the `TenantConfig`/`ConfigDeployment` records in Section 5 would need a region field so the deployment ledger can prove where a tenant's data and execution actually lived.
-- I would also connect this to the audit control already named in Section 6 ("audit configuration publishers and versions") — that same durable trail covers a good share of what a SOC 2 or industry-specific audit regime (e.g., SOX change-control, HIPAA if the workflow touches health data) would ask for, so the gap is smaller than it looks; it mainly needs an explicit retention-period-per-regulation statement layered on top of the existing retention discussion in Section 5.
+- I would also connect this to the audit control already named in Section 6 ("audit configuration publishers and versions") — that same durable trail is much of the change-management evidence a SOC 2 audit (criterion CC8.1) or SOX IT general controls ask for: who approved, what was tested, what went live. It's a smaller piece of HIPAA if the workflow touches health data, because HIPAA's audit-control rule is about recording activity on systems that hold that data, not just config changes. So the gap is smaller than it looks; it mainly needs an explicit retention-period-per-regulation statement layered on top of the existing retention discussion in Section 5.
 - I'd raise this proactively in an interview by naming one regulatory driver relevant to the customer vertical implied by the prompt (e.g., financial-services approval workflows implying SOX-style segregation of duties) and mapping it onto the existing approval-role and audit-trail mechanics rather than introducing new infrastructure.
 
 **Item 18 — Responsible-AI / risk framing beyond the obvious failure mode.**
 - This chapter genuinely has no AI component in the described architecture — the "intelligence" is entirely deterministic validation, policy, and rule evaluation — so forcing a responsible-AI narrative would be artificial. The honest interview move is to say so explicitly rather than bolt on generic AI-safety language.
 - Where this could legitimately arise: if a future evolution added an AI-assisted config authoring tool (e.g., "suggest an approval graph from a natural-language description"), the same fail-closed philosophy from Section 6 would extend directly — treat AI-suggested configuration as untrusted input that must pass the same schema/policy/cycle-detection gates as human-authored config, never as a bypass around them.
 - I would flag this trade-off if the interviewer pushes on it: an AI-assisted authoring layer increases the risk surface at exactly the boundary (Section 4's config editor → validator path) the chapter already treats as adversarial, so it changes the *volume* of untrusted input hitting the validator, not the trust model itself.
+
+## Sources (checked 27 Sep 2026)
+
+- [The Idempotency-Key HTTP Header Field (IETF draft -07)](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) — `422` for a reused key with a different body, `409` for a retry while the first request is still running, replay returns the original result
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) — meanings of `409 Conflict`, `412 Precondition Failed` for a failed `If-Match`, and the `422 Unprocessable Content` name
+- [AICPA 2017 Trust Services Criteria (revised points of focus, 2022)](https://www.aicpa-cima.com/resources/download/2017-trust-services-criteria-with-revised-points-of-focus-2022) — SOC 2 change-management criterion CC8.1
+- [PCAOB AS 2201: An Audit of Internal Control Over Financial Reporting](https://pcaobus.org/oversight/standards/auditing-standards/details/AS2201) — SOX audits test IT controls, including program changes and segregation of duties
+- [45 CFR 164.312(b), HIPAA audit controls](https://www.law.cornell.edu/cfr/text/45/164.312) — HIPAA's audit rule covers activity on systems holding health data
