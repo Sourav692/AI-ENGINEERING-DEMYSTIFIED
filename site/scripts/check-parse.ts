@@ -26,6 +26,7 @@ import {
   REQUIRED_META_FIELDS,
   REVIEW_DOCS,
   REVIEWS,
+  STORY_BANK,
   TABS,
   TRACKS,
   TRIGGER_SHEET,
@@ -305,6 +306,7 @@ const SITE_ROOT = resolve(import.meta.dirname, '..')
 const pages = new Set<string>()
 const routes = new Set<string>(['/', '/guide', '/learning-map', '/glossary', '/fde-last-day-prep'])
 for (const g of LAST_DAY_GUIDES) routes.add(`/fde-last-day-prep/${g.id}`)
+routes.add(STORY_BANK.href)
 const tabsByPage = new Map<string, string[]>()
 
 for (const mod of manifest.modules) {
@@ -454,6 +456,7 @@ for (const mod of manifest.modules) {
   }
 }
 for (const g of LAST_DAY_GUIDES) scanFiles.push(join(CONTENT, 'last-day', `${g.id}.md`))
+scanFiles.push(join(CONTENT, 'behavioural', `${STORY_BANK.slug}.md`))
 for (const path of staticFiles) scanFiles.push(join(SITE_ROOT, 'public', path))
 for (const file of scanFiles) {
   const raw = await readFile(file, 'utf8').catch(() => '')
@@ -471,6 +474,51 @@ for (const file of scanFiles) {
 for (const [token, files] of acronymPages) {
   if (files.size >= 3 && !lowerWords.has(token.toLowerCase())) {
     failures.push(`acronym ${token} appears on ${files.size} pages but is not in the glossary (src/lib/glossary.ts) or NOT_ACRONYMS`)
+  }
+}
+
+// Story Bank (CONTENT-15). Every question link must name a real behavioural question,
+// and every behavioural question must appear on the page — under a story's
+// `**Answers:**` line or in the "need a story of your own" list — so a question added
+// to a worksheet cannot silently go unmapped.
+{
+  const raw = await readFile(join(CONTENT, 'behavioural', `${STORY_BANK.slug}.md`), 'utf8').catch(() => null)
+  if (raw === null) {
+    failures.push(`behavioural/${STORY_BANK.slug}.md: missing — run npm run sync`)
+  } else {
+    await checkDocument('story-bank', raw, false)
+    const questions = new Set<string>()
+    const mod = manifest.modules.find((m: { id: string }) => m.id === STORY_BANK.moduleId)
+    for (const track of mod?.tracks ?? []) {
+      for (const s of track.scenarios) {
+        const ws = await readFile(join(CONTENT, 'modules', mod.id, track.id, 'worksheets', `${s.slug}.md`), 'utf8')
+        for (const [, n] of ws.matchAll(/^## (\d+)\./gm)) questions.add(`${track.id}/${s.slug}#${n}`)
+      }
+    }
+    const link = new RegExp(`\\]\\(/modules/${STORY_BANK.moduleId}/([^/)]+)/([^/)#]+)#section-(\\d+)\\)`, 'g')
+    const linked = new Set<string>()
+    const withStory = new Set<string>()
+    let stories = 0
+    let fenced = false
+    for (const line of raw.split('\n')) {
+      // The blank template at the end is a code block; its field names are not a story.
+      if (line.startsWith('```')) fenced = !fenced
+      if (fenced) continue
+      const answers = line.startsWith('**Answers:**')
+      if (answers) stories++
+      for (const [, track, slug, n] of line.matchAll(link)) {
+        const key = `${track}/${slug}#${n}`
+        if (!questions.has(key)) failures.push(`story-bank: links to ${key}, which is not a behavioural question`)
+        linked.add(key)
+        if (answers) withStory.add(key)
+      }
+    }
+    const missing = [...questions].filter((q) => !linked.has(q))
+    if (missing.length) failures.push(`story-bank: ${missing.length} question(s) not on the page: ${missing.join(', ')}`)
+    rows.push(
+      `\n  story bank: ${stories} stories; ${withStory.size} of ${questions.size} behavioural questions have a story, ` +
+        `${[...linked].filter((q) => !withStory.has(q)).length} need your own`,
+    )
   }
 }
 

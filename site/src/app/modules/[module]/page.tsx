@@ -5,6 +5,7 @@ import { familyMeta, getAllScenarios, getTracks } from '@/lib/content'
 import { getModule, MODULES } from '@/lib/registry'
 import { ModuleProgress, ScenarioList } from '@/components/Progress'
 import { MetaStrip } from '@/components/PageIntro'
+import { STORY_BANK } from '@/lib/editorial'
 
 export function generateStaticParams() {
   return MODULES.filter((m) => m.status === 'live').map((m) => ({ module: m.id }))
@@ -60,6 +61,18 @@ export default async function ModulePage({
       <div className="mt-7 rounded-xl border border-border bg-surface p-5">
         <ModuleProgress scenarios={moduleScenarios} />
       </div>
+
+      {moduleId === STORY_BANK.moduleId && (
+        <Link
+          href={STORY_BANK.href}
+          className="group mt-4 block rounded-xl border border-border bg-surface p-5 transition-colors hover:border-accent"
+        >
+          <div className="text-[0.9375rem] font-semibold group-hover:text-accent">
+            {STORY_BANK.title} →
+          </div>
+          <p className="mt-1 text-[0.875rem] leading-relaxed text-muted">{STORY_BANK.blurb}</p>
+        </Link>
+      )}
 
       <div className="mt-12 space-y-12">
         {tracks.map((track) => {

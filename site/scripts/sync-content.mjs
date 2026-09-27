@@ -14,12 +14,12 @@
  * and a path change here would otherwise fail silently at build time.
  */
 
-import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { syncCaseStudies } from './case-studies.mjs'
 import { syncLastDay } from './last-day.mjs'
-import { TITLE_OVERRIDES, TRACKS } from '../src/lib/editorial.ts'
+import { STORY_BANK, TITLE_OVERRIDES, TRACKS } from '../src/lib/editorial.ts'
 
 const SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = resolve(SITE_DIR, '..')
@@ -242,6 +242,14 @@ async function main() {
     }
     modules.push({ id: mod.id, tracks })
   }
+
+  // Story Bank: one markdown page beside the behavioural tracks, rendered by the
+  // reading pipeline. Copied as-is; content.ts derives the question map from it.
+  await mkdir(join(OUT_DIR, 'behavioural'), { recursive: true })
+  await copyFile(
+    join(BEHAVIOURAL_ROOT, STORY_BANK.source),
+    join(OUT_DIR, 'behavioural', `${STORY_BANK.slug}.md`),
+  )
 
   // Reading module: the G01–G20 interview guides, one page per group with tabs.
   modules.push(await syncCaseStudies({ repoRoot: REPO_ROOT, outDir: OUT_DIR }))

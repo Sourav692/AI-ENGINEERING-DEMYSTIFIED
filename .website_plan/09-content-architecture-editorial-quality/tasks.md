@@ -16,7 +16,7 @@
 - [X] **CONTENT-12 P0:** Decide whether behavioral preparation is private/personal or public/reusable and document the decision.
 - [x] **CONTENT-13 P0:** Replace or isolate profile-specific behavioral examples before public promotion; review customer names, metrics, and internal claims for privacy.
 - [X] **CONTENT-14 P0:** Turn `[FILL: …]` markers into structured personalization fields with unresolved-field counts and a clear completion state.
-- [ ] **CONTENT-15 P1:** Add a reusable behavioral story bank and show which questions each story can support.
+- [x] **CONTENT-15 P1:** Add a reusable behavioral story bank and show which questions each story can support.
 - [X] **CONTENT-16 P1:** Add a case-level source/provenance panel so every companion tab can reach references without duplicating them.
 - [x] **CONTENT-17 P0:** Distinguish scenario assumptions, own construction, measured evidence, and externally sourced facts with consistent labels.
 - [x] **CONTENT-18 P0:** Fact-check security, vendor-specific behavior, quantitative targets, and API/product claims against current primary sources.
@@ -39,7 +39,7 @@
 
 ## Status — 2026-09-27 (branch `site/content-architecture-editorial`)
 
-Structural slice done: 27 of 34 tasks. The decisions, metadata contract, style guide and
+Structural slice done: 27 of 34 tasks (all 34 done by 28 Sep 2026; see below). The decisions, metadata contract, style guide and
 acceptance pass are in `site/specs/2026-09-27-content-architecture-and-editorial-style.md`.
 Notes on partial items:
 
@@ -56,4 +56,6 @@ Deferred to the editorial session: CONTENT-13, 15, 17 (applying labels), 18 and 
 **CONTENT-17 — done 27 Sep 2026 (round 2).** Labels are now in the wording across every public family that round 1 left: the 22 practice answer keys, the 13 standalone cases, the Roadmap and Rapid Revision Guide, and the 143 low-priority round-1 claims (decision recorded per row in `claims-round1.csv`). About 190 label edits over 64 files. Every practice evaluation table now opens with "These are thresholds I'd set for this case, not industry standards." Unsourced external facts were not researched; 44 went to `claims-round2-queue.csv`. 15 of those were in-page arithmetic or clear errors and are already fixed; 29 stay open for CONTENT-18.
 
 **CONTENT-18/19 — round 2 done 27 Sep 2026; both tasks closed.** Round 2 covered what round 1 left: the 22 practice answer keys, the 13 standalone cases, the Roadmap and Rapid Revision Guide, the external facts in the behavioural answers, the 89 low-priority round-1 facts, and the 29 open rows of `claims-round2-queue.csv`. 214 claims were checked against primary sources (`verdicts-round2.json`): 168 confirmed, 28 overstated, 7 outdated, 4 incorrect, 7 unverifiable. Every non-confirmed claim was fixed in the text. Standalone tutorials, Roadmap and Rapid Revision end with "Sources (checked 27 Sep 2026)". Practice, standalone, Roadmap and Rapid Revision families now carry `lastReviewed: 2026-09-27`. Behavioural tracks stay undated on purpose, because they're personal stories. Rechecks and unsettled items are in `fact-check-followups.md`.
+
+**CONTENT-15 — done 28 Sep 2026.** The Story Bank is at `/modules/14-behavioural-and-leadership-round/story-bank`. Its source is `06_Interview_Prep/FDE/Behavioral_and_Leadership/story_bank.md`, which has 16 anonymised stories, each cut to one moment. Every story has a one-liner, a spoken STAR (situation, task, action, result), what it proves, and an `**Answers:**` line linking each question it answers. 67 of the 87 behavioural questions have a story. The other 20 are listed under "Questions that need a story of your own", followed by a build-your-own method and a blank template. The same links drive a "Stories that fit" line on every behavioural worksheet question. `check:content` fails on a link to a question that doesn't exist, and on any behavioural question the page doesn't mention.
 

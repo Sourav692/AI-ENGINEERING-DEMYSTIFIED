@@ -165,7 +165,7 @@ work in the source text.
 ## Deferred to the editorial session
 
 - CONTENT-13, the privacy scrub (done later on 2026-09-27; see "Privacy" below).
-- CONTENT-15, the story bank.
+- CONTENT-15, the story bank (done 28 Sep 2026; see "Story Bank" below).
 - CONTENT-17, applying the claim labels in the source text (done later on 2026-09-27; see "Claim labels, round 2" below).
 - CONTENT-18/19, the primary-source fact check and review dates.
 
@@ -247,4 +247,22 @@ The behavioural answers and some case studies were written from real client enga
 **Where the sources are.** Standalone tutorials, the Roadmap and Rapid Revision end with "Sources (checked 27 Sep 2026)", or with a "Fact-check sources" block under an existing References section. Practice answer keys are parsed section by section, and an extra section would not render. So their sources live only in `verdicts-round2.json`, and the page shows the checked date.
 
 **Dates (CONTENT-19).** `lastReviewed: 2026-09-27` is now set on the Discovery and System Design practice tracks, both standalone families, the Roadmap and the Rapid Revision Guide. The behavioural tracks stay undated. They're personal stories, and "key facts checked against official sources" would overstate what was checked. Prices that will go stale carry "(checked Sep 2026)" inline.
+
+## Story Bank (CONTENT-15, done 28 Sep 2026)
+
+**Decisions.**
+- **Whose stories:** the author's anonymised stories as worked examples, plus a build-your-own method and template. This follows CONTENT-12: behavioural content is public as a personalisation template.
+- **How they're cut:** by moment, not by engagement. That gives 16 stories, grouped by engagement through their order and an "Engagement" line.
+- **Interactivity:** static. The bank links to questions, and each question links back to its stories. Nothing new is stored in the browser.
+
+**One source, two views.** `story_bank.md` is the only place the mapping lives. Each story section lists its questions on one `**Answers:**` line. `getStoryBank()` in `content.ts` reads those links into a question-to-stories map. The worksheets render that map as "Stories that fit", so the page and the worksheets can't disagree.
+
+**Guard.** `check:content` fails when:
+- a link names a question that doesn't exist;
+- a behavioural question appears nowhere on the page (under a story, or in the "need a story of your own" list);
+- the page contains a placeholder.
+
+A question added to a worksheet therefore breaks the build until it's mapped. The check ignores the code-block template when counting stories.
+
+**Honesty.** Stories use only facts already in the answer keys. Partly grounded stories say in words what the reader must supply, because `[FILL]` markers are rejected on public reading pages. Vendor product names were generalised, in the same spirit as the privacy scrub.
 

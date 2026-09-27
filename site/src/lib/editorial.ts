@@ -196,6 +196,25 @@ export const TITLE_OVERRIDES: Record<string, string> = {
 }
 export const BEHAVIOURAL_TRACKS = ['hiring-manager', 'leadership-principles']
 
+/**
+ * The behavioural Story Bank (CONTENT-15): one page of the author's anonymised stories,
+ * each cut to a single moment, with links to every question it can answer. Source is
+ * `06_Interview_Prep/FDE/Behavioral_and_Leadership/story_bank.md`. A story lists its
+ * questions on an `**Answers:**` line; those links also drive the "Stories that fit"
+ * line on each behavioural worksheet question, so the two views cannot disagree.
+ */
+export const STORY_BANK = {
+  moduleId: '14-behavioural-and-leadership-round',
+  slug: 'story-bank',
+  source: 'story_bank.md',
+  title: 'Story Bank',
+  blurb:
+    'A small set of real moments, each cut to one story you can tell in two minutes, with ' +
+    'every behavioural question it can answer. Learn the stories, then pick by what the ' +
+    'question tests.',
+  href: '/modules/14-behavioural-and-leadership-round/story-bank',
+} as const
+
 // ---------------------------------------------------------------- reading-page tabs
 
 /**
@@ -627,6 +646,25 @@ export const ORIENTATION_META: EditorialMeta = {
   sourceStatus: 'original',
   // Fact-check round 2 (CONTENT-18).
   lastReviewed: '2026-09-27',
+}
+
+export const STORY_BANK_META: EditorialMeta = {
+  mode: 'behavioural',
+  audience: 'Candidates preparing hiring-manager and leadership-principle rounds',
+  difficulty: 'Intermediate',
+  prerequisites: ['Try a few behavioural worksheets first, so you know what the questions test'],
+  outcomes: [
+    'Tell each story in one line, then in two minutes',
+    'Pick the right story for a question by what it tests',
+    'Build the same bank from your own experience',
+  ],
+  howToUse:
+    'Learn the one-liners first. Then take a worksheet question, choose a story from ' +
+    '"Stories that fit" and say it out loud. Replace the examples with your own stories ' +
+    'before the interview.',
+  minutes: null,
+  sourceStatus: 'personal',
+  lastReviewed: null,
 }
 
 export const FINAL_REHEARSAL_META: EditorialMeta = {

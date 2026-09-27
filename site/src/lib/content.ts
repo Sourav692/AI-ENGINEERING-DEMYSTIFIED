@@ -15,6 +15,7 @@ import {
   REVIEWS,
   RELATED_CASE,
   RELATED_PRACTICE,
+  STORY_BANK,
   TABS,
   TRIGGER_SHEET,
   WORDS_PER_MINUTE,
@@ -33,6 +34,7 @@ import type {
   ScenarioRef,
   ScenarioSection,
   SearchEntry,
+  StoryLink,
   TrackMeta,
 } from './scenario'
 
@@ -199,6 +201,44 @@ function markFillDocument(doc: ParsedDocument): ParsedDocument {
   }
 }
 
+export type StoryBank = {
+  doc: ReadingDocument
+  minutes: number
+  /** `trackId/slug#index` -> the stories that can answer that question. */
+  byQuestion: Map<string, StoryLink[]>
+}
+
+/** The `**Answers:**` paragraph of a story section, as rendered by marked. */
+const ANSWERS_LINE = /<p><strong>Answers:<\/strong>([\s\S]*?)<\/p>/
+const QUESTION_HREF = new RegExp(`href="/modules/${STORY_BANK.moduleId}/([^/"]+)/([^/"#]+)#section-(\\d+)"`, 'g')
+
+/**
+ * The Story Bank page, plus the reverse map the behavioural worksheets use. Only links on
+ * a story's `**Answers:**` line count; the "need a story of your own" list does not.
+ */
+export const getStoryBank = cache(async (): Promise<StoryBank | null> => {
+  const raw = await readFile(join(CONTENT_DIR, 'behavioural', `${STORY_BANK.slug}.md`), 'utf8').catch(
+    () => null,
+  )
+  if (raw === null) return null
+  const parsed = parseReading(raw, STORY_BANK.slug)
+  const byQuestion = new Map<string, StoryLink[]>()
+  for (const section of parsed.sections) {
+    if (!section.title) continue
+    const html = section.chunks.map((c) => (c.kind === 'html' ? c.html : '')).join('\n')
+    const answers = html.match(ANSWERS_LINE)?.[1]
+    if (!answers) continue
+    const story = { title: toPlainText(section.title), href: `${STORY_BANK.href}#${section.id}` }
+    for (const [, track, slug, index] of answers.matchAll(QUESTION_HREF)) {
+      const key = `${track}/${slug}#${index}`
+      const list = byQuestion.get(key) ?? []
+      if (!list.some((l) => l.href === story.href)) list.push(story)
+      byQuestion.set(key, list)
+    }
+  }
+  return { doc: glossReading(parsed), minutes: readingMinutes(raw), byQuestion }
+})
+
 export const getScenario = cache(
   async (
     moduleId: string,
@@ -219,6 +259,7 @@ export const getScenario = cache(
     ])
 
     const personal = Boolean(familyMeta(trackId).personalisation)
+    const storyBank = personal ? await getStoryBank() : null
     const prepare = (raw: string) => {
       const doc = glossDocument(parseDocument(raw))
       return personal ? markFillDocument(doc) : doc
@@ -238,6 +279,7 @@ export const getScenario = cache(
       answerKey: (ANSWER_KEY_MAP[section.key] ?? [section.key])
         .map((key) => keyByKey.get(key))
         .filter((s): s is Section => Boolean(s)),
+      stories: storyBank?.byQuestion.get(`${trackId}/${slug}#${section.index}`) ?? [],
     }))
 
     return {
@@ -391,6 +433,17 @@ export const getSearchIndex = cache(async (): Promise<SearchEntry[]> => {
         text: `${toPlainText(section.title)} ${readingText(section)}`.slice(0, SEARCH_TEXT_CAP),
       })
     }
+  }
+  const storyBank = await getStoryBank()
+  for (const section of storyBank?.doc.sections ?? []) {
+    if (!section.title) continue
+    entries.push({
+      title: STORY_BANK.title,
+      section: toPlainText(section.title),
+      kind: 'Behavioural',
+      href: `${STORY_BANK.href}#${section.id}`,
+      text: `${toPlainText(section.title)} ${readingText(section)}`.slice(0, SEARCH_TEXT_CAP),
+    })
   }
   for (const r of REVIEWS) {
     entries.push({

@@ -203,6 +203,20 @@ export function ScenarioView({
               <h2 className="text-xl font-semibold tracking-[-0.011em]">{section.title}</h2>
             </div>
 
+            {section.stories && section.stories.length > 0 && (
+              <p className="no-print -mt-2 mb-4 text-[0.8125rem] leading-relaxed text-muted">
+                <span className="font-semibold text-subtle">Stories that fit: </span>
+                {section.stories.map((story, i) => (
+                  <span key={story.href}>
+                    {i > 0 && ' · '}
+                    <Link href={story.href} className="text-accent hover:text-accent-hover">
+                      {story.title}
+                    </Link>
+                  </span>
+                ))}
+              </p>
+            )}
+
             <Blocks
               blocks={section.blocks}
               answers={answers}

@@ -63,9 +63,14 @@ export function qualifiedTitle(ref: { title: string; qualifier?: string }): stri
   return ref.qualifier ? `${ref.title} · ${ref.qualifier}` : ref.title
 }
 
+/** A Story Bank story that can answer a behavioural question. */
+export type StoryLink = { title: string; href: string }
+
 export type ScenarioSection = Section & {
   /** Answer-key sections that correspond to this worksheet section, if any. */
   answerKey: Section[]
+  /** Behavioural pages: the Story Bank stories that can answer this question. */
+  stories?: StoryLink[]
 }
 
 export type Scenario = {
