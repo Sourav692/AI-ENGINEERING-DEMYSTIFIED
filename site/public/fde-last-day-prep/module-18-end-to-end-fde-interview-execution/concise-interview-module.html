@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 18 — End-to-End FDE Interview Execution.">
+  <title>Module 18 — End-to-End FDE Interview Execution — Concise Interview Module</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f5f5; --surface: #ffffff; --surface-2: #fafafa;
+      --text: #111827; --text-2: rgba(0,0,0,.65); --border: #f0f0f0; --border-strong: #d9d9d9;
+      --primary: #1677ff; --primary-soft: #e6f4ff; --primary-border: #91caff;
+      --secondary: #8b5cf6; --secondary-soft: #f5f0ff;
+      --success: #16a34a; --success-soft: #f0fdf4;
+      --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591;
+      --danger: #dc2626;
+      --code-bg: #1f1f1f; --code-text: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px rgba(0,0,0,.02);
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000; --surface: #141414; --surface-2: #1f1f1f;
+        --text: rgba(255,255,255,.88); --text-2: rgba(255,255,255,.55); --border: #303030; --border-strong: #424242;
+        --primary: #1668dc; --primary-soft: #111a2c; --primary-border: #15325b;
+        --secondary: #9f7aea; --secondary-soft: #1f1430;
+        --success: #49aa19; --success-soft: #162312;
+        --warning: #d89614; --warning-soft: #2b2111; --warning-border: #594214;
+        --danger: #dc4446;
+        --code-bg: #000000; --code-text: #e5e7eb;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 14px/1.5714286 var(--sans); -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); }
+    h1, h2, h3, h4 { line-height: 1.25; font-weight: 600; color: var(--text); scroll-margin-top: 24px; }
+    h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    h2 {
+      font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: .6rem;
+      border-bottom: 1px solid var(--border-strong); font-weight: 700;
+    }
+    h3 {
+      font-size: 1.25rem; margin: 2rem 0 .75rem; padding-left: .65rem;
+      border-left: 3px solid var(--primary); font-weight: 600;
+    }
+    h4 { font-size: 1rem; margin: 1.5rem 0 .5rem; font-weight: 600; }
+    p { margin: .75rem 0; max-width: 72ch; color: var(--text); }
+    ul, ol { padding-left: 1.35rem; max-width: 72ch; }
+    li + li { margin-top: .3rem; }
+    strong { color: var(--text); font-weight: 600; }
+    hr { height: 1px; border: 0; background: var(--border); margin: 2.4rem 0; }
+
+    blockquote {
+      position: relative; margin: 1rem 0; padding: .8rem 1rem .8rem 2.5rem;
+      border: 1px solid var(--primary-border); border-radius: 8px; background: var(--primary-soft);
+    }
+    blockquote::before {
+      content: "i"; position: absolute; left: .85rem; top: .8rem; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--primary); color: var(--surface);
+      font: 700 11px/16px Georgia, serif; text-align: center; font-style: italic;
+    }
+    blockquote p { margin: 0; max-width: none; color: var(--text); }
+
+    /* Gotchas / Important Distinctions: warning-toned alert */
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li {
+      background: var(--warning-soft); border: 1px solid var(--warning-border);
+      border-radius: 8px; padding: .7rem .9rem; margin-bottom: .55rem; list-style: none;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol { padding-left: 0; }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li::before {
+      content: "⚠ "; color: var(--warning); font-weight: 700;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li pre { margin-top: .6rem; }
+
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 14px 18px; border-radius: 8px;
+      background: var(--code-bg); color: var(--code-text);
+      font: 13px/1.6 var(--mono); white-space: pre;
+    }
+    code {
+      padding: .1em .4em; border-radius: 4px; background: var(--surface-2);
+      border: 1px solid var(--border); font: .87em var(--mono); color: var(--text);
+    }
+    pre code { padding: 0; background: transparent; border: 0; font: inherit; color: inherit; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { padding: 11px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th {
+      background: var(--surface-2); color: var(--text); font-weight: 600; font-size: .8rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface-2); }
+
+    .anchor { margin-left: .5em; text-decoration: none; opacity: 0; font-weight: 500; color: var(--text-2); }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+
+    .topbar {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+      margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--border-strong);
+    }
+    .doc-id {
+      font-family: var(--mono); font-size: .72rem; font-weight: 600; letter-spacing: .02em;
+      color: var(--primary); background: var(--primary-soft); border: 1px solid var(--primary-border);
+      padding: 2px 9px; border-radius: 4px; white-space: nowrap;
+    }
+    .eyebrow { color: var(--text-2); font-size: .82rem; font-weight: 500; }
+    .switch {
+      flex: 0 0 auto; padding: 6px 15px; border: 1px solid var(--primary); border-radius: 6px;
+      background: var(--primary); text-decoration: none; font-size: .84rem; font-weight: 600;
+      color: #fff; white-space: nowrap; transition: background .15s ease, border-color .15s ease;
+    }
+    .switch:hover { background: #0958d9; border-color: #0958d9; }
+    .source-note { margin-top: 2.2rem; padding-top: .9rem; border-top: 1px solid var(--border); color: var(--text-2); font-size: .78rem; font-family: var(--mono); }
+
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 860px); gap: 24px; width: min(1180px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav {
+      position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow: auto;
+      padding: 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    nav h2 {
+      margin: 0 16px 8px; padding: 0 0 8px; border-bottom: 1px solid var(--border);
+      color: var(--text-2); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    nav ul { margin: 0; padding: 0 8px; list-style: none; }
+    nav li + li { margin-top: 2px; }
+    nav a {
+      display: block; padding: 7px 10px; border-radius: 6px;
+      color: var(--text-2); font-size: .85rem; line-height: 1.4; text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+    nav a:hover { color: var(--primary); background: var(--primary-soft); }
+
+    main { min-width: 0; padding: clamp(24px, 4vw, 44px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); }
+
+    @media (max-width: 900px) {
+      .layout { display: block; width: min(100% - 20px, 860px); margin: 12px auto; }
+      nav { position: static; max-height: none; margin-bottom: 14px; }
+    }
+    @media (max-width: 640px) {
+      .topbar { grid-template-columns: 1fr; align-items: flex-start; }
+      pre { font-size: .78rem; }
+    }
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      :root { color-scheme: light; }
+      body { background: #fff; color: #111; font-size: 10pt; }
+      .layout { display: block; width: 100%; margin: 0; }
+      nav, .switch, .anchor, .source-note, .doc-id { display: none; }
+      main { padding: 0; border: 0; box-shadow: none; }
+      pre, blockquote, table { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions-full-cases">8. Practice Questions — Full Cases</a></li><li><a href="#final-self-check">Final Self-Check</a></li></ul></nav>
+  <main><div class="topbar"><span class="doc-id">MOD·18</span><div class="eyebrow">Concise Interview Module — FDE Discovery Protocol</div><a class="switch" href="one-page-memory-card.html">Memory card →</a></div>
+    <h1 id="module-18-end-to-end-fde-interview-execution">Module 18 — End-to-End FDE Interview Execution<a class="anchor" href="#module-18-end-to-end-fde-interview-execution" aria-label="Link to Module 18 — End-to-End FDE Interview Execution">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you lead a customer problem from discovery to a justified design?</li>
+<li>Can you connect requirements, data, tools, actions, and operating constraints?</li>
+<li>Can you adapt when scale, risk, or customer priorities change?</li>
+<li>Can you explain how the system is evaluated, released, and operated?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<pre><code class="language-text">DISCOVER → REQUIRE → DESIGN → STRESS-TEST → SHIP / OPERATE
+</code></pre>
+<p>Keep the full interview flow available:</p>
+<pre><code class="language-text">Business + current workflow + discovery
+                   ↓
+Functional requirements + NFRs
+                   ↓
+Happy path + data/RAG + agents/tools
+                   ↓
+Policy/HITL + security boundaries
+                   ↓
+Scale + latency + cost + reliability
+                   ↓
+Evaluation + release + observability
+                   ↓
+Trade-offs + open assumptions + next validation
+</code></pre>
+<p>NFRs are non-functional requirements. RAG is retrieval-augmented generation. HITL is human-in-the-loop. Cover these areas according to relevance; do not force an agent or an action workflow into an answer-only use case.</p>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-open-with-discovery-start-above-the-architecture">1. Open With Discovery — Start Above the Architecture<a class="anchor" href="#1-open-with-discovery-start-above-the-architecture" aria-label="Link to 1. Open With Discovery — Start Above the Architecture">#</a></h4>
+<p>Clarify the business outcome and current workflow. Let customer answers guide questions about users, scale, data, autonomy, success, failures, and constraints.</p>
+<blockquote>
+<p>“What problem matters most, and how is this handled today?”</p>
+</blockquote>
+<pre><code class="language-text">“Need support AI” → Repetitive policy work?
+                 → Live order questions?
+                 → Refund actions?
+</code></pre>
+<h4 id="2-summarize-requirements-confirm-before-designing">2. Summarize Requirements — Confirm Before Designing<a class="anchor" href="#2-summarize-requirements-confirm-before-designing" aria-label="Link to 2. Summarize Requirements — Confirm Before Designing">#</a></h4>
+<p>State capabilities and measurable operating limits separately. Include access boundaries, permitted writes, approvals, and safe failure behavior.</p>
+<blockquote>
+<p>“Let me summarize what the system must do, the operating limits, and the assumptions we still need to confirm.”</p>
+</blockquote>
+<pre><code class="language-text">Must do: Policy answers + order reads + approved refunds
+Must meet: Agreed quality, latency, availability, cost, security
+</code></pre>
+<p>Do not invent targets as customer facts. Label provisional assumptions explicitly.</p>
+<h4 id="3-draw-the-small-happy-path-assign-responsibilities">3. Draw the Small Happy Path — Assign Responsibilities<a class="anchor" href="#3-draw-the-small-happy-path-assign-responsibilities" aria-label="Link to 3. Draw the Small Happy Path — Assign Responsibilities">#</a></h4>
+<p>Start with the minimum components that satisfy confirmed needs. Explain each box through its requirement.</p>
+<pre><code class="language-text">User → API Gateway → Router / workflow
+                        ├→ Authorized policy retrieval
+                        ├→ Live order tool
+                        └→ Refund recommendation
+                                  ↓
+                         Policy / approval → Executor
+</code></pre>
+<blockquote>
+<p>“This component exists because the customer needs ___.”</p>
+</blockquote>
+<p>API Gateway = User → Application control. Model Gateway = Application → Model control. Add centralized model-call control when provider routing, limits, fallback, or tracking requires it.</p>
+<h4 id="4-walk-one-real-request-make-the-diagram-concrete">4. Walk One Real Request — Make the Diagram Concrete<a class="anchor" href="#4-walk-one-real-request-make-the-diagram-concrete" aria-label="Link to 4. Walk One Real Request — Make the Diagram Concrete">#</a></h4>
+<p>Follow inputs, trusted identity, evidence, live reads, model calls, policy, action, and actual outcome. Identify context and durable state where needed.</p>
+<blockquote>
+<p>“For a refund request, I’d retrieve the applicable policy and read live order facts before recommending an action.”</p>
+</blockquote>
+<pre><code class="language-text">Facts + policy → Recommend → Authorize/policy check
+                                  ↓
+                       Approval if required → Execute
+                                  ↓
+                           Confirm and audit
+</code></pre>
+<h4 id="5-choose-autonomy-deliberately-workflow-before-unneeded-complexity">5. Choose Autonomy Deliberately — Workflow Before Unneeded Complexity<a class="anchor" href="#5-choose-autonomy-deliberately-workflow-before-unneeded-complexity" aria-label="Link to 5. Choose Autonomy Deliberately — Workflow Before Unneeded Complexity">#</a></h4>
+<p>Use defined workflows for known steps and rules. Add bounded reasoning where observations need to guide the next step. Justify multi-agent coordination with a concrete benefit.</p>
+<blockquote>
+<p>“Which part requires flexible reasoning, and which part can stay deterministic?”</p>
+</blockquote>
+<p>Bound tools, steps, retries, tokens, time, and cost. A model&#39;s confidence is not authority to perform a business write.</p>
+<h4 id="6-stress-test-the-design-scale-latency-cost">6. Stress-Test the Design — Scale, Latency, Cost<a class="anchor" href="#6-stress-test-the-design-scale-latency-cost" aria-label="Link to 6. Stress-Test the Design — Scale, Latency, Cost">#</a></h4>
+<p>Translate user count into peak requests, concurrent tasks, and model/tool demand. Identify the bottleneck, protect capacity, and keep tenants fair and isolated.</p>
+<pre><code class="language-text">Scale   → Rates/concurrency → Limits/admission/fair queues
+Latency → Trace critical path → Independent parallel work
+Cost    → Attribute usage → Cost per successful task
+</code></pre>
+<blockquote>
+<p>“I’d optimize the measured bottleneck while preserving the agreed quality and safety floor.”</p>
+</blockquote>
+<h4 id="7-explain-failure-and-recovery-include-unknown-writes">7. Explain Failure and Recovery — Include Unknown Writes<a class="anchor" href="#7-explain-failure-and-recovery-include-unknown-writes" aria-label="Link to 7. Explain Failure and Recovery — Include Unknown Writes">#</a></h4>
+<p>Classify failures; set deadlines, bounded safe retries, fallback, and escalation. Persist long tasks and approval state. Reconcile writes that may have completed remotely.</p>
+<pre><code class="language-text">Refund timeout → Unknown outcome → Status reconciliation
+Worker crash   → Durable state → Safe resume
+Policy down    → Sensitive action blocked/deferred
+</code></pre>
+<blockquote>
+<p>“A timeout does not prove a refund failed; recovery must not issue it twice.”</p>
+</blockquote>
+<h4 id="8-evaluate-release-operate-close-the-production-loop">8. Evaluate, Release, Operate — Close the Production Loop<a class="anchor" href="#8-evaluate-release-operate-close-the-production-loop" aria-label="Link to 8. Evaluate, Release, Operate — Close the Production Loop">#</a></h4>
+<p>Evaluate retrieval, supported answers, tool arguments, policy compliance, and confirmed task outcomes. Version behavior, gate candidates, and limit exposure with appropriate rollout controls.</p>
+<pre><code class="language-text">Offline evaluation → Gate → Shadow and/or canary
+                                     ↓
+                  Monitor → Expand / rollback / disable
+</code></pre>
+<p>Observe latency, cost, errors, usage, and outcomes; audit business actions. Shadow candidates must not duplicate real writes.</p>
+<h4 id="9-close-with-trade-offs-and-next-evidence">9. Close With Trade-Offs and Next Evidence<a class="anchor" href="#9-close-with-trade-offs-and-next-evidence" aria-label="Link to 9. Close With Trade-Offs and Next Evidence">#</a></h4>
+<p>Summarize how the design meets the problem, why it is appropriately simple, and which assumptions require validation.</p>
+<blockquote>
+<p>“I’m choosing X because of requirement Y. The trade-off is Z, and I’d verify it using W.”</p>
+</blockquote>
+<p>Name what would change the design: new workload, stricter residency, failed quality targets, approval delays, or rising cost.</p>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Discovery answer</th>
+<th>Requirement</th>
+<th>Design consequence</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Policies are reference material</td>
+<td>Supported policy answers</td>
+<td>Permission-aware RAG</td>
+<td>Freshness and retrieval quality</td>
+</tr>
+<tr>
+<td>Order state changes frequently</td>
+<td>Current facts</td>
+<td>Live order API</td>
+<td>Dependency latency/failure</td>
+</tr>
+<tr>
+<td>Refunds affect payments</td>
+<td>Controlled writes</td>
+<td>Policy + executor + idempotency</td>
+<td>State and reconciliation</td>
+</tr>
+<tr>
+<td>Managers approve some cases</td>
+<td>Durable human review</td>
+<td>Approval state + resume path</td>
+<td>Delay and reviewer load</td>
+</tr>
+<tr>
+<td>Tasks run for minutes</td>
+<td>Deferred completion</td>
+<td>Queue + durable jobs + status</td>
+<td>Result-delivery complexity</td>
+</tr>
+<tr>
+<td>Several tenants share capacity</td>
+<td>Isolation and fair service</td>
+<td>Scoped data + quotas/scheduling</td>
+<td>Operational complexity</td>
+</tr>
+<tr>
+<td>Multiple providers needed</td>
+<td>Controlled model calls</td>
+<td>Model Gateway if justified</td>
+<td>Fallback compatibility</td>
+</tr>
+</tbody></table>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><strong>Discovery flow vs script:</strong> use the customer&#39;s answer to select the next question; check coverage afterward.</li>
+<li><strong>Logical responsibility vs separate service:</strong> a small architecture can combine responsibilities without losing the boundary.</li>
+<li><strong>Checklist vs mandatory pipeline:</strong> skip irrelevant capabilities; permissions and failure handling apply throughout.</li>
+<li><strong>Response vs task result:</strong> “Refund completed” must match confirmed payment state.</li>
+<li><strong>Completeness vs depth:</strong> give a coherent end-to-end design, then deepen the areas the customer or interviewer makes important.</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+<th>Next move</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Design an AI system”</td>
+<td>Discovery</td>
+<td>Outcome and current workflow</td>
+</tr>
+<tr>
+<td>“What must it do?”</td>
+<td>FRs</td>
+<td>Summarize capabilities and permitted actions</td>
+</tr>
+<tr>
+<td>“Now 100K users”</td>
+<td>Workload/scale</td>
+<td>Rates, concurrency, bottleneck</td>
+</tr>
+<tr>
+<td>“Too slow / expensive”</td>
+<td>Measurement</td>
+<td>Critical path / total cost per success</td>
+</tr>
+<tr>
+<td>“Can it act automatically?”</td>
+<td>Autonomy/policy</td>
+<td>Permission, rule, review, executor</td>
+</tr>
+<tr>
+<td>“What if it fails?”</td>
+<td>Recovery</td>
+<td>Dependency-specific behavior and unknown writes</td>
+</tr>
+<tr>
+<td>“How would you ship it?”</td>
+<td>Evaluation/release</td>
+<td>Gate, cohort, monitor, rollback</td>
+</tr>
+<tr>
+<td>“Why this design?”</td>
+<td>Trade-offs</td>
+<td>Requirement, simpler option, evidence</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“Before choosing architecture, I’d understand the outcome and current workflow.”</p>
+</blockquote>
+<blockquote>
+<p>“I’ll confirm the requirements and assumptions, then walk through one representative request.”</p>
+</blockquote>
+<blockquote>
+<p>“I’ll keep known business rules deterministic and use bounded reasoning where it adds value.”</p>
+</blockquote>
+<blockquote>
+<p>“Next I’d stress-test this for load, slow dependencies, and uncertain actions.”</p>
+</blockquote>
+<blockquote>
+<p>“I’ll close with evaluation, rollout, operating visibility, and the main trade-offs.”</p>
+</blockquote>
+<h3 id="8-practice-questions-full-cases">8. Practice Questions — Full Cases<a class="anchor" href="#8-practice-questions-full-cases" aria-label="Link to 8. Practice Questions — Full Cases">#</a></h3>
+<p>Solve without opening earlier modules. Use the five-stage flow and explain one request, one failure, and one trade-off.</p>
+<ol>
+<li><strong>Customer support:</strong> answer policies, check orders, issue permitted refunds. Cover discovery, requirements, RAG/tools, approval, duplicate prevention, scale, and confirmed outcomes.</li>
+<li><strong>Enterprise knowledge:</strong> millions of documents with employee-specific permissions. Cover ingestion, authorized retrieval, freshness, latency, and answer evaluation.</li>
+<li><strong>Logistics or SRE operations:</strong> investigate exceptions/incidents and perform allowed remediation. Cover events, tools, scoped access, bounded reasoning, policy/HITL, recovery, kill switch, and audit.</li>
+<li><strong>Deep research:</strong> work lasts 10–20 minutes across several sources. Cover async status, durable progress, evidence quality, task budgets, cost, and recovery.</li>
+<li><strong>Multi-tenant platform:</strong> enterprise customers share multiple model providers. Cover the two gateways, isolation, fairness, quotas, attribution, provider compatibility, and rollout.</li>
+</ol>
+<h3 id="final-self-check">Final Self-Check<a class="anchor" href="#final-self-check" aria-label="Link to Final Self-Check">#</a></h3>
+<pre><code class="language-text">Can I explain:
+Why this problem matters?
+What the system must do and within which limits?
+Why each box exists?
+Where data, state, authority, and side effects live?
+What happens during failure and overload?
+How we prove success and operate the release?
+</code></pre>
+<hr>
+
+    <div class="source-note">Generated from module-18-end-to-end-fde-interview-execution.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

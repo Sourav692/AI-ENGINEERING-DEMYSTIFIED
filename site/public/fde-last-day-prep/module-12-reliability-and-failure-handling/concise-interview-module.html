@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 12 — Reliability &amp; Failure Handling.">
+  <title>Module 12 — Reliability &amp; Failure Handling — Concise Interview Module</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f5f5; --surface: #ffffff; --surface-2: #fafafa;
+      --text: #111827; --text-2: rgba(0,0,0,.65); --border: #f0f0f0; --border-strong: #d9d9d9;
+      --primary: #1677ff; --primary-soft: #e6f4ff; --primary-border: #91caff;
+      --secondary: #8b5cf6; --secondary-soft: #f5f0ff;
+      --success: #16a34a; --success-soft: #f0fdf4;
+      --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591;
+      --danger: #dc2626;
+      --code-bg: #1f1f1f; --code-text: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px rgba(0,0,0,.02);
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000; --surface: #141414; --surface-2: #1f1f1f;
+        --text: rgba(255,255,255,.88); --text-2: rgba(255,255,255,.55); --border: #303030; --border-strong: #424242;
+        --primary: #1668dc; --primary-soft: #111a2c; --primary-border: #15325b;
+        --secondary: #9f7aea; --secondary-soft: #1f1430;
+        --success: #49aa19; --success-soft: #162312;
+        --warning: #d89614; --warning-soft: #2b2111; --warning-border: #594214;
+        --danger: #dc4446;
+        --code-bg: #000000; --code-text: #e5e7eb;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 14px/1.5714286 var(--sans); -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); }
+    h1, h2, h3, h4 { line-height: 1.25; font-weight: 600; color: var(--text); scroll-margin-top: 24px; }
+    h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    h2 {
+      font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: .6rem;
+      border-bottom: 1px solid var(--border-strong); font-weight: 700;
+    }
+    h3 {
+      font-size: 1.25rem; margin: 2rem 0 .75rem; padding-left: .65rem;
+      border-left: 3px solid var(--primary); font-weight: 600;
+    }
+    h4 { font-size: 1rem; margin: 1.5rem 0 .5rem; font-weight: 600; }
+    p { margin: .75rem 0; max-width: 72ch; color: var(--text); }
+    ul, ol { padding-left: 1.35rem; max-width: 72ch; }
+    li + li { margin-top: .3rem; }
+    strong { color: var(--text); font-weight: 600; }
+    hr { height: 1px; border: 0; background: var(--border); margin: 2.4rem 0; }
+
+    blockquote {
+      position: relative; margin: 1rem 0; padding: .8rem 1rem .8rem 2.5rem;
+      border: 1px solid var(--primary-border); border-radius: 8px; background: var(--primary-soft);
+    }
+    blockquote::before {
+      content: "i"; position: absolute; left: .85rem; top: .8rem; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--primary); color: var(--surface);
+      font: 700 11px/16px Georgia, serif; text-align: center; font-style: italic;
+    }
+    blockquote p { margin: 0; max-width: none; color: var(--text); }
+
+    /* Gotchas / Important Distinctions: warning-toned alert */
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li {
+      background: var(--warning-soft); border: 1px solid var(--warning-border);
+      border-radius: 8px; padding: .7rem .9rem; margin-bottom: .55rem; list-style: none;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol { padding-left: 0; }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li::before {
+      content: "⚠ "; color: var(--warning); font-weight: 700;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li pre { margin-top: .6rem; }
+
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 14px 18px; border-radius: 8px;
+      background: var(--code-bg); color: var(--code-text);
+      font: 13px/1.6 var(--mono); white-space: pre;
+    }
+    code {
+      padding: .1em .4em; border-radius: 4px; background: var(--surface-2);
+      border: 1px solid var(--border); font: .87em var(--mono); color: var(--text);
+    }
+    pre code { padding: 0; background: transparent; border: 0; font: inherit; color: inherit; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { padding: 11px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th {
+      background: var(--surface-2); color: var(--text); font-weight: 600; font-size: .8rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface-2); }
+
+    .anchor { margin-left: .5em; text-decoration: none; opacity: 0; font-weight: 500; color: var(--text-2); }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+
+    .topbar {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+      margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--border-strong);
+    }
+    .doc-id {
+      font-family: var(--mono); font-size: .72rem; font-weight: 600; letter-spacing: .02em;
+      color: var(--primary); background: var(--primary-soft); border: 1px solid var(--primary-border);
+      padding: 2px 9px; border-radius: 4px; white-space: nowrap;
+    }
+    .eyebrow { color: var(--text-2); font-size: .82rem; font-weight: 500; }
+    .switch {
+      flex: 0 0 auto; padding: 6px 15px; border: 1px solid var(--primary); border-radius: 6px;
+      background: var(--primary); text-decoration: none; font-size: .84rem; font-weight: 600;
+      color: #fff; white-space: nowrap; transition: background .15s ease, border-color .15s ease;
+    }
+    .switch:hover { background: #0958d9; border-color: #0958d9; }
+    .source-note { margin-top: 2.2rem; padding-top: .9rem; border-top: 1px solid var(--border); color: var(--text-2); font-size: .78rem; font-family: var(--mono); }
+
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 860px); gap: 24px; width: min(1180px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav {
+      position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow: auto;
+      padding: 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    nav h2 {
+      margin: 0 16px 8px; padding: 0 0 8px; border-bottom: 1px solid var(--border);
+      color: var(--text-2); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    nav ul { margin: 0; padding: 0 8px; list-style: none; }
+    nav li + li { margin-top: 2px; }
+    nav a {
+      display: block; padding: 7px 10px; border-radius: 6px;
+      color: var(--text-2); font-size: .85rem; line-height: 1.4; text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+    nav a:hover { color: var(--primary); background: var(--primary-soft); }
+
+    main { min-width: 0; padding: clamp(24px, 4vw, 44px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); }
+
+    @media (max-width: 900px) {
+      .layout { display: block; width: min(100% - 20px, 860px); margin: 12px auto; }
+      nav { position: static; max-height: none; margin-bottom: 14px; }
+    }
+    @media (max-width: 640px) {
+      .topbar { grid-template-columns: 1fr; align-items: flex-start; }
+      pre { font-size: .78rem; }
+    }
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      :root { color-scheme: light; }
+      body { background: #fff; color: #111; font-size: 10pt; }
+      .layout { display: block; width: 100%; margin: 0; }
+      nav, .switch, .anchor, .source-note, .doc-id { display: none; }
+      main { padding: 0; border: 0; box-shadow: none; }
+      pre, blockquote, table { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><span class="doc-id">MOD·12</span><div class="eyebrow">Concise Interview Module — FDE Discovery Protocol</div><a class="switch" href="one-page-memory-card.html">Memory card →</a></div>
+    <h1 id="module-12-reliability-amp-failure-handling">Module 12 — Reliability &amp; Failure Handling<a class="anchor" href="#module-12-reliability-amp-failure-handling" aria-label="Link to Module 12 — Reliability &amp;amp; Failure Handling">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you describe failures at each dependency rather than only a happy path?</li>
+<li>Can you recover without duplicate business actions?</li>
+<li>Can you prevent retries from amplifying an outage?</li>
+<li>Can you keep safe, unaffected capabilities available?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<pre><code class="language-text">Failure → Classify → Deadline / retry safety
+                           ↓
+              Fallback / degrade / recover
+                           ↓
+              Escalate + record actual status
+</code></pre>
+<p>For every dependency ask: <strong>What fails, what does the user see, and how does the task recover?</strong></p>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-timeouts-bound-waiting">1. Timeouts — Bound Waiting<a class="anchor" href="#1-timeouts-bound-waiting" aria-label="Link to 1. Timeouts — Bound Waiting">#</a></h4>
+<p>Set dependency deadlines inside the task&#39;s total time budget. A timeout ends the caller&#39;s wait; it does not establish the remote outcome.</p>
+<blockquote>
+<p>“For a timed-out write, I’d reconcile status rather than assume failure.”</p>
+</blockquote>
+<pre><code class="language-text">Read timeout → Safe retry / fallback
+Write timeout → Unknown outcome → Status check
+</code></pre>
+<h4 id="2-retry-classification-separate-transient-and-permanent-errors">2. Retry Classification — Separate Transient and Permanent Errors<a class="anchor" href="#2-retry-classification-separate-transient-and-permanent-errors" aria-label="Link to 2. Retry Classification — Separate Transient and Permanent Errors">#</a></h4>
+<p>Retry eligible transient failures within a shared task budget. Invalid input, denied access, and policy rejection need correction or a stop, not repeated calls.</p>
+<blockquote>
+<p>“I’d retry only when the failure is transient and another attempt is safe.”</p>
+</blockquote>
+<h4 id="3-backoff-and-jitter-avoid-retry-storms">3. Backoff and Jitter — Avoid Retry Storms<a class="anchor" href="#3-backoff-and-jitter-avoid-retry-storms" aria-label="Link to 3. Backoff and Jitter — Avoid Retry Storms">#</a></h4>
+<p>Increase delays between retries and randomize them so clients do not retry together. Honor server guidance where applicable and stop at the attempt/deadline limit.</p>
+<pre><code class="language-text">Failure → Wait → Retry → Longer randomized wait → Retry / stop
+</code></pre>
+<blockquote>
+<p>“I’d bound retries across layers so the tool and orchestrator do not multiply attempts.”</p>
+</blockquote>
+<h4 id="4-circuit-breaker-stop-hammering-a-failing-dependency">4. Circuit Breaker — Stop Hammering a Failing Dependency<a class="anchor" href="#4-circuit-breaker-stop-hammering-a-failing-dependency" aria-label="Link to 4. Circuit Breaker — Stop Hammering a Failing Dependency">#</a></h4>
+<p>Temporarily stop normal calls after repeated failures; later allow recovery probes. Provide a defined unavailable, deferred, or fallback response.</p>
+<pre><code class="language-text">Repeated failure → Open breaker → Fast fail / defer
+                                    ↓
+                              Recovery probe
+</code></pre>
+<blockquote>
+<p>“The breaker protects the dependency and our capacity; it does not repair the service.”</p>
+</blockquote>
+<h4 id="5-idempotency-preserve-correct-side-effects">5. Idempotency — Preserve Correct Side Effects<a class="anchor" href="#5-idempotency-preserve-correct-side-effects" aria-label="Link to 5. Idempotency — Preserve Correct Side Effects">#</a></h4>
+<p>Reuse the same logical action identifier across retries. Coordinate local action records and downstream idempotency support, and reconcile uncertain outcomes.</p>
+<pre><code class="language-text">Refund key X → First submission
+Refund key X → Retry of same operation, not new refund
+</code></pre>
+<blockquote>
+<p>“Recovery must not convert one refund request into two refunds.”</p>
+</blockquote>
+<h4 id="6-fallback-and-graceful-degradation-preserve-safe-functionality">6. Fallback and Graceful Degradation — Preserve Safe Functionality<a class="anchor" href="#6-fallback-and-graceful-degradation-preserve-safe-functionality" aria-label="Link to 6. Fallback and Graceful Degradation — Preserve Safe Functionality">#</a></h4>
+<p>Use a compatible model fallback when it meets capability, quality, data, and policy requirements. If a noncritical capability fails, preserve independent safe functionality.</p>
+<pre><code class="language-text">Recommendation unavailable → Policy answers may continue
+Payment API unavailable    → Do not claim refund completion
+</code></pre>
+<blockquote>
+<p>“I’d define which capability can degrade and which action must stop.”</p>
+</blockquote>
+<h4 id="7-checkpoints-resume-known-progress">7. Checkpoints — Resume Known Progress<a class="anchor" href="#7-checkpoints-resume-known-progress" aria-label="Link to 7. Checkpoints — Resume Known Progress">#</a></h4>
+<p>Persist task context, completed steps, approval state, and action status. Resume from durable state rather than rerun every step.</p>
+<pre><code class="language-text">Step complete → Save state → Crash → Load → Resume
+</code></pre>
+<p>Checkpoints alone do not guarantee safe external replay. Reconcile writes that may have completed before a checkpoint was saved.</p>
+<h4 id="8-dead-letter-queue-isolate-work-that-cannot-complete">8. Dead-Letter Queue — Isolate Work That Cannot Complete<a class="anchor" href="#8-dead-letter-queue-isolate-work-that-cannot-complete" aria-label="Link to 8. Dead-Letter Queue — Isolate Work That Cannot Complete">#</a></h4>
+<p>After bounded unsuccessful processing, route eligible background messages to a dead-letter queue (DLQ) or equivalent failure store. Preserve context for diagnosis and controlled replay.</p>
+<pre><code class="language-text">Message → Bounded attempts → DLQ → Inspect / fix → Safe replay
+</code></pre>
+<blockquote>
+<p>“A DLQ needs an owner and recovery process; it is not a successful outcome.”</p>
+</blockquote>
+<h4 id="9-blast-radius-limit-what-a-failure-can-affect">9. Blast Radius — Limit What a Failure Can Affect<a class="anchor" href="#9-blast-radius-limit-what-a-failure-can-affect" aria-label="Link to 9. Blast Radius — Limit What a Failure Can Affect">#</a></h4>
+<p>Separate capacity, permissions, and execution paths where justified. Tenant limits and dependency-specific controls can prevent one failure from affecting everyone.</p>
+<blockquote>
+<p>“If this dependency or tenant fails, what unrelated work can continue?”</p>
+</blockquote>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Pattern</th>
+<th>Why</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bounded waiting</td>
+<td>Deadlines/timeouts</td>
+<td>Protect task time budget</td>
+<td>Some work stops early</td>
+</tr>
+<tr>
+<td>Recover transient failures</td>
+<td>Bounded backoff + jitter</td>
+<td>Allow recovery without storms</td>
+<td>Extra waiting</td>
+</tr>
+<tr>
+<td>Protect failing service</td>
+<td>Circuit breaker</td>
+<td>Avoid repeated load</td>
+<td>Temporary fast rejection</td>
+</tr>
+<tr>
+<td>No duplicate refunds</td>
+<td>Idempotency + reconciliation</td>
+<td>Preserve business correctness</td>
+<td>State and API support</td>
+</tr>
+<tr>
+<td>Resume long tasks</td>
+<td>Durable checkpoints</td>
+<td>Recover progress</td>
+<td>State consistency</td>
+</tr>
+<tr>
+<td>Contain failed messages</td>
+<td>DLQ + recovery owner</td>
+<td>Separate diagnosis from normal processing</td>
+<td>Operational backlog</td>
+</tr>
+<tr>
+<td>Keep safe features running</td>
+<td>Capability-specific degradation</td>
+<td>Reduce blast radius</td>
+<td>More explicit behavior paths</td>
+</tr>
+</tbody></table>
+<pre><code class="language-text">API Gateway   = User → Application control
+Model Gateway = Application → Model control
+</code></pre>
+<p>Model fallback belongs at the model-call boundary when appropriate. Tool failures need their own operation-specific recovery.</p>
+<p><strong>Support example:</strong> policy answers may continue during a payment outage, while refunds remain pending or unavailable. A timed-out refund becomes “status unknown” until reconciled, not “failed, retry with a new identifier.”</p>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><strong>Timeout vs failed operation:</strong> remote side effects may already exist.</li>
+<li><strong>Retry vs idempotency:</strong> another attempt vs safe repeated business effect.</li>
+<li><strong>Fallback vs pretending success:</strong> unavailable evidence or actions must be disclosed.</li>
+<li><strong>Checkpoint vs exactly-once effect:</strong> saved progress does not prevent duplicate external writes by itself.</li>
+<li><strong>DLQ vs completion:</strong> failed work still needs ownership, diagnosis, and recovery.</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+<th>Discuss…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Provider unavailable”</td>
+<td>Compatible fallback</td>
+<td>Capability, quality, data restrictions</td>
+</tr>
+<tr>
+<td>“Intermittent service errors”</td>
+<td>Bounded retry</td>
+<td>Backoff, jitter, deadline</td>
+</tr>
+<tr>
+<td>“Retries worsen outage”</td>
+<td>Retry amplification</td>
+<td>Shared budgets, breaker</td>
+</tr>
+<tr>
+<td>“Refund call timed out”</td>
+<td>Unknown write</td>
+<td>Status reconciliation</td>
+</tr>
+<tr>
+<td>“Worker crashed”</td>
+<td>Checkpoint</td>
+<td>Resume and uncertain effects</td>
+</tr>
+<tr>
+<td>“Message always fails”</td>
+<td>DLQ</td>
+<td>Owner, diagnosis, safe replay</td>
+</tr>
+<tr>
+<td>“One failure breaks everything”</td>
+<td>Blast radius</td>
+<td>Isolation and degradation</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“I’d define the failure behavior for each dependency, not just draw a fallback arrow.”</p>
+</blockquote>
+<blockquote>
+<p>“Retries must be bounded, transient-error aware, and safe for side effects.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d preserve safe independent functionality while blocking unconfirmed actions.”</p>
+</blockquote>
+<blockquote>
+<p>“Recovery starts from known state and reconciles unknown external outcomes.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>The primary model fails. What conditions must a fallback model satisfy?</li>
+<li>A tool returns intermittent service errors. How do deadlines, backoff, and retry budgets interact?</li>
+<li>A payment succeeds remotely but the worker crashes before recording it. How do you recover safely?</li>
+<li>Recommendation generation fails. Which support capabilities may remain available?</li>
+<li>A background event reaches the DLQ. Who owns recovery, and what makes replay safe?</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-12-reliability-and-failure-handling.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

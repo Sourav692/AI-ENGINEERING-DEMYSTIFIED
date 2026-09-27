@@ -72,6 +72,29 @@ export default async function HomePage() {
         </section>
       )}
 
+      <section className="mt-6">
+        <Link
+          href="/fde-last-day-prep"
+          className="group flex flex-col gap-4 rounded-xl border border-accent/30 bg-accent-soft/40 p-5 transition-colors hover:border-accent sm:flex-row sm:items-center"
+        >
+          <div className="flex-1">
+            <span className="text-[0.8125rem] font-semibold uppercase tracking-[0.1em] text-accent">
+              Night-before cram pass
+            </span>
+            <h2 className="mt-1 text-[1.25rem] font-semibold tracking-[-0.014em] group-hover:text-accent">
+              FDE Last-Day Prep
+            </h2>
+            <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-muted">
+              Eighteen condensed modules, each with a concise walkthrough and a
+              one-page memory card, plus a searchable trigger-to-concept cheat sheet.
+            </p>
+          </div>
+          <span className="shrink-0 text-[0.9375rem] font-semibold text-accent">
+            Open the 18 modules →
+          </span>
+        </Link>
+      </section>
+
       <section className="mt-16">
         <div className="mb-5 flex items-baseline justify-between gap-4">
           <h2 className="text-[1.375rem] font-semibold tracking-[-0.014em]">

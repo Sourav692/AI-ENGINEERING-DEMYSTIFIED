@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Concise interview guide for Module 15 — Observability &amp; Production Operations.">
+  <title>Module 15 — Observability &amp; Production Operations — Concise Interview Module</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f5f5; --surface: #ffffff; --surface-2: #fafafa;
+      --text: #111827; --text-2: rgba(0,0,0,.65); --border: #f0f0f0; --border-strong: #d9d9d9;
+      --primary: #1677ff; --primary-soft: #e6f4ff; --primary-border: #91caff;
+      --secondary: #8b5cf6; --secondary-soft: #f5f0ff;
+      --success: #16a34a; --success-soft: #f0fdf4;
+      --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591;
+      --danger: #dc2626;
+      --code-bg: #1f1f1f; --code-text: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px rgba(0,0,0,.02);
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000; --surface: #141414; --surface-2: #1f1f1f;
+        --text: rgba(255,255,255,.88); --text-2: rgba(255,255,255,.55); --border: #303030; --border-strong: #424242;
+        --primary: #1668dc; --primary-soft: #111a2c; --primary-border: #15325b;
+        --secondary: #9f7aea; --secondary-soft: #1f1430;
+        --success: #49aa19; --success-soft: #162312;
+        --warning: #d89614; --warning-soft: #2b2111; --warning-border: #594214;
+        --danger: #dc4446;
+        --code-bg: #000000; --code-text: #e5e7eb;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 14px/1.5714286 var(--sans); -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); }
+    h1, h2, h3, h4 { line-height: 1.25; font-weight: 600; color: var(--text); scroll-margin-top: 24px; }
+    h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    h2 {
+      font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: .6rem;
+      border-bottom: 1px solid var(--border-strong); font-weight: 700;
+    }
+    h3 {
+      font-size: 1.25rem; margin: 2rem 0 .75rem; padding-left: .65rem;
+      border-left: 3px solid var(--primary); font-weight: 600;
+    }
+    h4 { font-size: 1rem; margin: 1.5rem 0 .5rem; font-weight: 600; }
+    p { margin: .75rem 0; max-width: 72ch; color: var(--text); }
+    ul, ol { padding-left: 1.35rem; max-width: 72ch; }
+    li + li { margin-top: .3rem; }
+    strong { color: var(--text); font-weight: 600; }
+    hr { height: 1px; border: 0; background: var(--border); margin: 2.4rem 0; }
+
+    blockquote {
+      position: relative; margin: 1rem 0; padding: .8rem 1rem .8rem 2.5rem;
+      border: 1px solid var(--primary-border); border-radius: 8px; background: var(--primary-soft);
+    }
+    blockquote::before {
+      content: "i"; position: absolute; left: .85rem; top: .8rem; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--primary); color: var(--surface);
+      font: 700 11px/16px Georgia, serif; text-align: center; font-style: italic;
+    }
+    blockquote p { margin: 0; max-width: none; color: var(--text); }
+
+    /* Gotchas / Important Distinctions: warning-toned alert */
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li {
+      background: var(--warning-soft); border: 1px solid var(--warning-border);
+      border-radius: 8px; padding: .7rem .9rem; margin-bottom: .55rem; list-style: none;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol { padding-left: 0; }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li::before {
+      content: "⚠ "; color: var(--warning); font-weight: 700;
+    }
+    h3[id="5-important-distinctions-and-gotchas"] + ol > li pre { margin-top: .6rem; }
+
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 14px 18px; border-radius: 8px;
+      background: var(--code-bg); color: var(--code-text);
+      font: 13px/1.6 var(--mono); white-space: pre;
+    }
+    code {
+      padding: .1em .4em; border-radius: 4px; background: var(--surface-2);
+      border: 1px solid var(--border); font: .87em var(--mono); color: var(--text);
+    }
+    pre code { padding: 0; background: transparent; border: 0; font: inherit; color: inherit; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { padding: 11px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th {
+      background: var(--surface-2); color: var(--text); font-weight: 600; font-size: .8rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface-2); }
+
+    .anchor { margin-left: .5em; text-decoration: none; opacity: 0; font-weight: 500; color: var(--text-2); }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor, .anchor:focus { opacity: 1; }
+
+    .topbar {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+      margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--border-strong);
+    }
+    .doc-id {
+      font-family: var(--mono); font-size: .72rem; font-weight: 600; letter-spacing: .02em;
+      color: var(--primary); background: var(--primary-soft); border: 1px solid var(--primary-border);
+      padding: 2px 9px; border-radius: 4px; white-space: nowrap;
+    }
+    .eyebrow { color: var(--text-2); font-size: .82rem; font-weight: 500; }
+    .switch {
+      flex: 0 0 auto; padding: 6px 15px; border: 1px solid var(--primary); border-radius: 6px;
+      background: var(--primary); text-decoration: none; font-size: .84rem; font-weight: 600;
+      color: #fff; white-space: nowrap; transition: background .15s ease, border-color .15s ease;
+    }
+    .switch:hover { background: #0958d9; border-color: #0958d9; }
+    .source-note { margin-top: 2.2rem; padding-top: .9rem; border-top: 1px solid var(--border); color: var(--text-2); font-size: .78rem; font-family: var(--mono); }
+
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 860px); gap: 24px; width: min(1180px, calc(100% - 36px)); margin: 28px auto; align-items: start; }
+    nav {
+      position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow: auto;
+      padding: 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    nav h2 {
+      margin: 0 16px 8px; padding: 0 0 8px; border-bottom: 1px solid var(--border);
+      color: var(--text-2); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    nav ul { margin: 0; padding: 0 8px; list-style: none; }
+    nav li + li { margin-top: 2px; }
+    nav a {
+      display: block; padding: 7px 10px; border-radius: 6px;
+      color: var(--text-2); font-size: .85rem; line-height: 1.4; text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+    nav a:hover { color: var(--primary); background: var(--primary-soft); }
+
+    main { min-width: 0; padding: clamp(24px, 4vw, 44px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); }
+
+    @media (max-width: 900px) {
+      .layout { display: block; width: min(100% - 20px, 860px); margin: 12px auto; }
+      nav { position: static; max-height: none; margin-bottom: 14px; }
+    }
+    @media (max-width: 640px) {
+      .topbar { grid-template-columns: 1fr; align-items: flex-start; }
+      pre { font-size: .78rem; }
+    }
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      :root { color-scheme: light; }
+      body { background: #fff; color: #111; font-size: 10pt; }
+      .layout { display: block; width: 100%; margin: 0; }
+      nav, .switch, .anchor, .source-note, .doc-id { display: none; }
+      main { padding: 0; border: 0; box-shadow: none; }
+      pre, blockquote, table { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body><div class="layout">
+  <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
+  <main><div class="topbar"><span class="doc-id">MOD·15</span><div class="eyebrow">Concise Interview Module — FDE Discovery Protocol</div><a class="switch" href="one-page-memory-card.html">Memory card →</a></div>
+    <h1 id="module-15-observability-amp-production-operations">Module 15 — Observability &amp; Production Operations<a class="anchor" href="#module-15-observability-amp-production-operations" aria-label="Link to Module 15 — Observability &amp;amp; Production Operations">#</a></h1>
+<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+<h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
+<ul>
+<li>Can you explain a slow, failed, expensive, or incorrect request from evidence?</li>
+<li>Can you distinguish logs, metrics, traces, and business audit?</li>
+<li>Can you connect operating targets to measurements and incident response?</li>
+<li>Can you collect useful AI telemetry without unrestricted sensitive-data logging?</li>
+</ul>
+<h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
+<pre><code class="language-text">Instrument → Correlate → Measure → Detect
+                                      ↓
+                 Diagnose → Mitigate → Verify → Learn
+</code></pre>
+<pre><code class="language-text">Request → Router → Workflow/agent
+                      ├→ Retrieval
+                      ├→ Model calls
+                      └→ Enterprise tools
+                              ↓
+                         Actual outcome
+</code></pre>
+<p>Actual order and branching depend on the task. Correlate the whole path, including queue wait, retries, and asynchronous continuation.</p>
+<h3 id="3-essential-concepts">3. Essential Concepts<a class="anchor" href="#3-essential-concepts" aria-label="Link to 3. Essential Concepts">#</a></h3>
+<h4 id="1-logs-record-specific-events">1. Logs — Record Specific Events<a class="anchor" href="#1-logs-record-specific-events" aria-label="Link to 1. Logs — Record Specific Events">#</a></h4>
+<p>Use structured events for errors, state transitions, policy outcomes, and dependency responses with task/request identifiers.</p>
+<blockquote>
+<p>“Logs tell me what happened at a specific step, with enough context to investigate.”</p>
+</blockquote>
+<pre><code class="language-text">task_id + timestamp + stage + version + status/error
+</code></pre>
+<p>Avoid indiscriminate prompt, credential, or document dumps. Access and retention must match data sensitivity.</p>
+<h4 id="2-metrics-measure-patterns-over-time">2. Metrics — Measure Patterns Over Time<a class="anchor" href="#2-metrics-measure-patterns-over-time" aria-label="Link to 2. Metrics — Measure Patterns Over Time">#</a></h4>
+<p>Track request/task rates, latency distributions, failures, queue age, active work, tokens, cost, escalations, and task outcomes.</p>
+<blockquote>
+<p>“Metrics show whether the problem is widespread and which workload is affected.”</p>
+</blockquote>
+<pre><code class="language-text">Latency ↑ + queue age ↑ → Capacity issue candidate
+Tool errors ↑          → Dependency issue candidate
+</code></pre>
+<p>Segment by important workload, tenant cohort, and release version. Keep metric dimensions bounded; individual request IDs belong in logs/traces, not unrestricted metric labels.</p>
+<h4 id="3-distributed-traces-follow-one-task-across-boundaries">3. Distributed Traces — Follow One Task Across Boundaries<a class="anchor" href="#3-distributed-traces-follow-one-task-across-boundaries" aria-label="Link to 3. Distributed Traces — Follow One Task Across Boundaries">#</a></h4>
+<p>Use correlated spans for queue, retrieval, model calls, tools, and orchestration. Carry identifiers across async jobs and retries where possible.</p>
+<blockquote>
+<p>“For the eighteen-second request, I’d inspect the trace&#39;s critical path and slow spans.”</p>
+</blockquote>
+<pre><code class="language-text">Trace ID → Queue span → Retrieval/model/tool spans → Outcome
+</code></pre>
+<p>Parallel spans overlap; nested spans must not be double-counted. Trace sampling affects which requests remain inspectable.</p>
+<h4 id="4-ai-telemetry-capture-more-than-server-health">4. AI Telemetry — Capture More Than Server Health<a class="anchor" href="#4-ai-telemetry-capture-more-than-server-health" aria-label="Link to 4. AI Telemetry — Capture More Than Server Health">#</a></h4>
+<p>Record model/provider/configuration, token usage, call count, retrieval source identifiers, tool names/arguments in controlled form, retries, agent steps, and outcome signals.</p>
+<blockquote>
+<p>“I’d connect model and tool usage to the task outcome, not just monitor CPU and HTTP status.”</p>
+</blockquote>
+<p>Capture evidence references and decision summaries, not private model chain-of-thought. Apply minimization or redaction to sensitive fields.</p>
+<h4 id="5-audit-reconstruct-business-decisions">5. Audit — Reconstruct Business Decisions<a class="anchor" href="#5-audit-reconstruct-business-decisions" aria-label="Link to 5. Audit — Reconstruct Business Decisions">#</a></h4>
+<p>Record who requested and approved an action, applicable evidence/policy, exact action, and confirmed result. Protect audit records according to customer access and retention requirements.</p>
+<pre><code class="language-text">Request + identity → Evidence + policy → Approval → Action/result
+</code></pre>
+<blockquote>
+<p>“For a disputed refund, I need the business decision trail, not only a latency trace.”</p>
+</blockquote>
+<h4 id="6-sli-slo-sla-measurement-target-commitment">6. SLI / SLO / SLA — Measurement, Target, Commitment<a class="anchor" href="#6-sli-slo-sla-measurement-target-commitment" aria-label="Link to 6. SLI / SLO / SLA — Measurement, Target, Commitment">#</a></h4>
+<p>A service-level indicator (SLI) is the measured service behavior. An SLO is its target. A service-level agreement (SLA) is an agreed service commitment, often including consequences.</p>
+<pre><code class="language-text">SLI: Measured share of eligible tasks completed within X
+SLO: Target share over an agreed window
+SLA: Customer agreement about the promised service
+</code></pre>
+<blockquote>
+<p>“I’d define the measurement boundary and eligible requests before setting the target.”</p>
+</blockquote>
+<p>Targets and exclusions must be explicit. Do not imply universal numbers or invent contractual terms.</p>
+<h4 id="7-alerts-and-runbooks-make-detection-actionable">7. Alerts and Runbooks — Make Detection Actionable<a class="anchor" href="#7-alerts-and-runbooks-make-detection-actionable" aria-label="Link to 7. Alerts and Runbooks — Make Detection Actionable">#</a></h4>
+<p>Alert on customer impact, meaningful target breaches, dangerous actions, or actionable dependency/queue conditions. Define owner, investigation steps, and permitted mitigation.</p>
+<blockquote>
+<p>“An alert should tell the responder what is affected and what to do next.”</p>
+</blockquote>
+<pre><code class="language-text">Detect → Identify scope/version → Mitigate → Verify recovery
+</code></pre>
+<p>Avoid alerting on every harmless fluctuation. Latency and uptime alerts do not replace quality or confirmed-action checks.</p>
+<h4 id="8-production-learning-turn-incidents-into-better-coverage">8. Production Learning — Turn Incidents Into Better Coverage<a class="anchor" href="#8-production-learning-turn-incidents-into-better-coverage" aria-label="Link to 8. Production Learning — Turn Incidents Into Better Coverage">#</a></h4>
+<p>Correlate delayed task outcomes, reopened tickets, human overrides, and version changes. Add validated failure cases to evaluation and improve instrumentation gaps.</p>
+<blockquote>
+<p>“After mitigation, I’d verify recovery and turn the incident into a regression case.”</p>
+</blockquote>
+<h3 id="4-requirement-component-reasoning">4. Requirement → Component Reasoning<a class="anchor" href="#4-requirement-component-reasoning" aria-label="Link to 4. Requirement → Component Reasoning">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Pattern / component</th>
+<th>Why</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Explain one slow task</td>
+<td>Correlated distributed trace</td>
+<td>Locate critical path</td>
+<td>Instrumentation and sampling</td>
+</tr>
+<tr>
+<td>Detect broad degradation</td>
+<td>Metrics + workload/version views</td>
+<td>Observe patterns</td>
+<td>Aggregation can hide segments</td>
+</tr>
+<tr>
+<td>Diagnose specific failures</td>
+<td>Structured logs</td>
+<td>Inspect exact events</td>
+<td>Sensitive-data and retention limits</td>
+</tr>
+<tr>
+<td>Attribute AI cost/behavior</td>
+<td>Model/tool/retrieval telemetry</td>
+<td>Link usage and outcome</td>
+<td>Collection/label effort</td>
+</tr>
+<tr>
+<td>Explain business action</td>
+<td>Controlled audit records</td>
+<td>Reconstruct authorization and result</td>
+<td>Storage and privacy</td>
+</tr>
+<tr>
+<td>Respond consistently</td>
+<td>Alerts + owned runbooks</td>
+<td>Connect detection to mitigation</td>
+<td>Maintenance and alert fatigue</td>
+</tr>
+</tbody></table>
+<p><strong>Support example:</strong> an eighteen-second case may show twelve seconds of queue wait and a tool retry. A disputed refund separately needs policy, approval, action identifier, and payment result. A reopened case links delayed failure to its release version and original task.</p>
+<h3 id="5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas<a class="anchor" href="#5-important-distinctions-and-gotchas" aria-label="Link to 5. Important Distinctions and Gotchas">#</a></h3>
+<ol>
+<li><strong>Logs vs metrics vs traces:</strong> specific events vs aggregate behavior vs one correlated path.</li>
+<li><strong>Observability vs audit:</strong> system diagnosis vs explanation of a business decision/action.</li>
+<li><strong>SLI vs SLO vs SLA:</strong> measurement vs internal target vs agreed commitment.</li>
+<li><strong>Response success vs task success:</strong> a successful HTTP response can contain a failed or unconfirmed business operation.</li>
+<li><strong>More data vs useful evidence:</strong> sensitive dumps and uncontrolled dimensions can harm operations without improving diagnosis.</li>
+</ol>
+<h3 id="6-trigger-concept-table">6. Trigger → Concept Table<a class="anchor" href="#6-trigger-concept-table" aria-label="Link to 6. Trigger → Concept Table">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+<th>Inspect…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Slow request yesterday”</td>
+<td>Trace</td>
+<td>IDs, queue, critical spans</td>
+</tr>
+<tr>
+<td>“All tenants slower”</td>
+<td>Metrics</td>
+<td>Rate, saturation, versions, dependency patterns</td>
+</tr>
+<tr>
+<td>“Exact error?”</td>
+<td>Structured logs</td>
+<td>Stage and error category</td>
+</tr>
+<tr>
+<td>“Tokens and cost rose”</td>
+<td>AI telemetry</td>
+<td>Calls, models, retries, workload mix</td>
+</tr>
+<tr>
+<td>“Why did it refund?”</td>
+<td>Audit</td>
+<td>Evidence, rule, approver, actual result</td>
+</tr>
+<tr>
+<td>“Did we meet the promise?”</td>
+<td>SLI/SLO/SLA</td>
+<td>Defined window and service commitment</td>
+</tr>
+<tr>
+<td>“Alert but no owner”</td>
+<td>Operations gap</td>
+<td>Runbook and response responsibility</td>
+</tr>
+</tbody></table>
+<h3 id="7-interview-phrases">7. Interview Phrases<a class="anchor" href="#7-interview-phrases" aria-label="Link to 7. Interview Phrases">#</a></h3>
+<blockquote>
+<p>“I’d use metrics to locate the scope, traces to locate the slow path, and logs to inspect specific failures.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d correlate usage and operations with actual task outcomes.”</p>
+</blockquote>
+<blockquote>
+<p>“Observability explains system behavior; audit explains the business action.”</p>
+</blockquote>
+<blockquote>
+<p>“I’d define measurement boundaries, owners, and mitigation steps alongside the targets.”</p>
+</blockquote>
+<h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
+<ol>
+<li>A request took eighteen seconds yesterday. What identifiers and spans would you need?</li>
+<li>Explain logs, metrics, and traces using one refund workflow.</li>
+<li>Which AI-specific signals reveal an agent loop or model-cost regression?</li>
+<li>A customer disputes a refund. What audit facts differ from operational telemetry?</li>
+<li>Define an SLI and SLO for interactive response latency, and explain how an SLA differs.</li>
+</ol>
+<hr>
+
+    <div class="source-note">Generated from module-15-observability-and-production-operations.md</div>
+  </main>
+</div><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>

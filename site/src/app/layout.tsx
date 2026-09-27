@@ -68,6 +68,7 @@ export default async function RootLayout({
             </Link>
             <nav className="ml-2 hidden gap-1 sm:flex">
               <HeaderLink href="/">Modules</HeaderLink>
+              <HeaderLink href="/fde-last-day-prep">Last-Day Prep</HeaderLink>
               <HeaderLink href="/guide">How to use</HeaderLink>
             </nav>
             <div className="ml-auto flex items-center gap-1.5">

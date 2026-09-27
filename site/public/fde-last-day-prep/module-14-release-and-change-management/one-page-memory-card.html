@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="One-page memory card for Module 14 — Release &amp; Change Management.">
+  <title>Module 14 — Release &amp; Change Management — One-Page Memory Card</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f5f5; --surface: #ffffff; --surface-2: #fafafa;
+      --text: #111827; --text-2: rgba(0,0,0,.65); --border: #f0f0f0; --border-strong: #d9d9d9;
+      --primary: #1677ff; --primary-soft: #e6f4ff; --primary-border: #91caff;
+      --secondary: #8b5cf6; --secondary-soft: #f5f0ff;
+      --success: #16a34a; --success-soft: #f0fdf4;
+      --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591;
+      --danger: #dc2626;
+      --code-bg: #1f1f1f; --code-text: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px rgba(0,0,0,.02);
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000; --surface: #141414; --surface-2: #1f1f1f;
+        --text: rgba(255,255,255,.88); --text-2: rgba(255,255,255,.55); --border: #303030; --border-strong: #424242;
+        --primary: #1668dc; --primary-soft: #111a2c; --primary-border: #15325b;
+        --secondary: #9f7aea; --secondary-soft: #1f1430;
+        --success: #49aa19; --success-soft: #162312;
+        --warning: #d89614; --warning-soft: #2b2111; --warning-border: #594214;
+        --danger: #dc4446;
+        --code-bg: #000000; --code-text: #e5e7eb;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 13.5px/1.55 var(--sans); -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); }
+    h1, h2, h3, h4 { line-height: 1.25; font-weight: 600; color: var(--text); scroll-margin-top: 20px; }
+    h1 { font-size: 1.5rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    h2 {
+      font-size: 1.1rem; margin: 0 0 1rem; padding-bottom: .55rem;
+      border-bottom: 1px solid var(--border-strong); font-weight: 700;
+    }
+    h3 {
+      font-size: 1.05rem; margin: 1.4rem 0 .6rem; padding-left: .6rem;
+      border-left: 3px solid var(--primary); font-weight: 600;
+    }
+    p { margin: .6rem 0; color: var(--text); }
+    ul, ol { padding-left: 1.2rem; margin: .6rem 0; }
+    li + li { margin-top: .22rem; }
+    strong { color: var(--text); font-weight: 600; }
+
+    blockquote {
+      position: relative; margin: .8rem 0; padding: .65rem .85rem .65rem 2.1rem;
+      border: 1px solid var(--primary-border); border-radius: 8px; background: var(--primary-soft);
+      font-size: .9rem;
+    }
+    blockquote::before {
+      content: "i"; position: absolute; left: .7rem; top: .62rem; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--primary); color: var(--surface);
+      font: 700 10px/14px Georgia, serif; text-align: center; font-style: italic;
+    }
+    blockquote p { margin: 0; }
+
+    h3#do-not-confuse ~ ol { padding-left: 0; }
+    h3#do-not-confuse ~ ol > li {
+      background: var(--warning-soft); border: 1px solid var(--warning-border);
+      border-radius: 8px; padding: .55rem .75rem; margin-bottom: .4rem; list-style: none;
+    }
+    h3#do-not-confuse ~ ol > li::before { content: "⚠ "; color: var(--warning); font-weight: 700; }
+
+    pre {
+      max-width: 100%; overflow-x: auto; padding: 11px 14px; border-radius: 8px;
+      background: var(--code-bg); color: var(--code-text);
+      font: 11.5px/1.5 var(--mono); white-space: pre; margin: .65rem 0;
+    }
+    code {
+      padding: .08em .35em; border-radius: 4px; background: var(--surface-2);
+      border: 1px solid var(--border); font: .87em var(--mono); color: var(--text);
+    }
+    pre code { padding: 0; background: transparent; border: 0; font: inherit; color: inherit; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin: .65rem 0; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    th, td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background: var(--surface-2); color: var(--text); font-weight: 600; font-size: .76rem; }
+    tr:last-child td { border-bottom: none; }
+
+    .anchor { margin-left: .45em; text-decoration: none; opacity: 0; font-weight: 500; color: var(--text-2); }
+    h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, .anchor:focus { opacity: 1; }
+
+    .topbar {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+      margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border-strong);
+    }
+    .doc-id {
+      font-family: var(--mono); font-size: .68rem; font-weight: 600; letter-spacing: .02em;
+      color: var(--primary); background: var(--primary-soft); border: 1px solid var(--primary-border);
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .eyebrow { color: var(--text-2); font-size: .78rem; font-weight: 500; }
+    .switch {
+      flex: 0 0 auto; padding: 5px 13px; border: 1px solid var(--primary); border-radius: 6px;
+      background: var(--primary); text-decoration: none; font-size: .8rem; font-weight: 600;
+      color: #fff; white-space: nowrap; transition: background .15s ease, border-color .15s ease;
+    }
+    .switch:hover { background: #0958d9; border-color: #0958d9; }
+    .source-note { margin-top: 1.5rem; padding-top: .85rem; border-top: 1px solid var(--border); color: var(--text-2); font-size: .72rem; font-family: var(--mono); }
+
+    body { padding: 20px; }
+    .card {
+      width: min(1180px, 100%); margin: 0 auto; padding: clamp(20px, 3.5vw, 36px);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow);
+    }
+    .memory-content { columns: 2 420px; column-gap: 28px; column-rule: 1px solid var(--border); }
+    .memory-content > h1, .memory-content > h2 { column-span: all; }
+    .memory-content h2 { margin-top: 0; }
+    .memory-content h3 { break-after: avoid; }
+    .memory-content pre, .memory-content blockquote, .memory-content table, .memory-content ul, .memory-content ol { break-inside: avoid; }
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .card { padding: 20px; }
+      .memory-content { columns: 1; }
+    }
+    @media print {
+      @page { size: A4 landscape; margin: 6mm; }
+      :root { color-scheme: light; --bg: #fff; --surface: #fff; --surface-2: #f5f5f5; --text: #111; --text-2: #555; --border: #ccc; --border-strong: #999; --primary: #1677ff; --primary-soft: #eaf3ff; --primary-border: #91caff; --warning: #d97706; --warning-soft: #fff7e6; --warning-border: #ffd591; --code-bg: #f6f7f9; --code-text: #111; }
+      html, body { width: 100%; margin: 0; padding: 0; background: #fff; font-size: 7.7pt; line-height: 1.25; }
+      .card { width: 100%; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; }
+      .topbar { margin-bottom: 2mm; padding-bottom: 1.5mm; }
+      .switch, .anchor, .source-note, .doc-id { display: none; }
+      h1 { font-size: 16pt; }
+      h2 { margin: 1.5mm 0 1mm; padding-bottom: .7mm; font-size: 10.5pt; }
+      h3 { margin: 1.8mm 0 .7mm; font-size: 9pt; }
+      p { margin: .8mm 0; }
+      ul, ol { margin: .8mm 0; padding-left: 4mm; }
+      li + li { margin-top: .3mm; }
+      pre { margin: 1mm 0; padding: 1.6mm 2mm; border: 1px solid #ccc; font-size: 6.6pt; line-height: 1.15; white-space: pre-wrap; }
+      blockquote { margin: 1mm 0; padding: 1.2mm 2mm 1.2mm 4mm; }
+      .memory-content { columns: 3; column-gap: 5mm; column-rule: .3mm solid #ccc; }
+      .table-wrap { margin: 1mm 0; overflow: visible; border-color: #ccc; }
+      table { font-size: 6.4pt; line-height: 1.13; }
+      th, td { padding: .8mm 1mm; border-color: #ccc; }
+    }
+  </style>
+</head>
+<body><main class="card">
+  <div class="topbar"><span class="doc-id">MOD·14</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
+  <article class="memory-content"><h1 id="module-14-release-amp-change-management">Module 14 — Release &amp; Change Management<a class="anchor" href="#module-14-release-amp-change-management" aria-label="Link to Module 14 — Release &amp;amp; Change Management">#</a></h1>
+<h2 id="one-page-memory-card-release-amp-change-management">ONE-PAGE MEMORY CARD — Release &amp; Change Management<a class="anchor" href="#one-page-memory-card-release-amp-change-management" aria-label="Link to ONE-PAGE MEMORY CARD — Release &amp;amp; Change Management">#</a></h2>
+<p><strong>Core question:</strong> How do we expose a candidate gradually, detect regressions, and retain control over behavior and actions?</p>
+<h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
+<pre><code class="language-text">VERSION → EVALUATE → GATE
+                       ↓
+          SHADOW and/or CANARY
+                       ↓
+           MONITOR → EXPAND / STOP / ROLLBACK
+</code></pre>
+<h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Remember</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Versioning</td>
+<td>Prompt, model/config, tools/schema, routing, retrieval, policy, eval artifacts</td>
+</tr>
+<tr>
+<td>Compatibility</td>
+<td>Active workflow state and pending approval/action semantics</td>
+</tr>
+<tr>
+<td>Offline gate</td>
+<td>Held-out coverage, task success, policy, quality, latency, cost</td>
+</tr>
+<tr>
+<td>Shadow</td>
+<td>Current serves users; candidate evaluated without production writes</td>
+</tr>
+<tr>
+<td>Canary</td>
+<td>Limited real cohort with baseline comparison and defined stop rules</td>
+</tr>
+<tr>
+<td>Flags</td>
+<td>Scope by tenant/cohort/capability; cover workers and execution too</td>
+</tr>
+<tr>
+<td>Rollback</td>
+<td>Known compatible baseline; handle active tasks explicitly</td>
+</tr>
+<tr>
+<td>Kill switch</td>
+<td>Stop affected capability at trusted execution boundary</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Versions, segments, delayed outcomes, failures, escalations, cost/latency</td>
+</tr>
+</tbody></table>
+<h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hear…</th>
+<th>Think…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Twenty better examples”</td>
+<td>Broader held-out evidence and gates</td>
+</tr>
+<tr>
+<td>“Compare invisibly”</td>
+<td>Shadow with isolated/sandboxed writes</td>
+</tr>
+<tr>
+<td>“Two pilot tenants”</td>
+<td>Scoped flag/canary</td>
+</tr>
+<tr>
+<td>“Regression after rollout”</td>
+<td>Stop expansion, compare versions, rollback</td>
+</tr>
+<tr>
+<td>“Unsafe action”</td>
+<td>Disable execution with kill switch</td>
+</tr>
+<tr>
+<td>“Long tasks from old version”</td>
+<td>State/behavior compatibility</td>
+</tr>
+</tbody></table>
+<h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
+<ol>
+<li><strong>Shadow vs canary:</strong> evaluation-only vs real candidate exposure.</li>
+<li><strong>Deployment vs release:</strong> code present vs behavior enabled.</li>
+<li><strong>Rollback vs undo:</strong> software routing changes do not reverse payments.</li>
+<li><strong>Feature flag vs boundary enforcement:</strong> UI flags alone cannot stop a worker&#39;s write.</li>
+</ol>
+<h3 id="rollout-rules">Rollout Rules<a class="anchor" href="#rollout-rules" aria-label="Link to Rollout Rules">#</a></h3>
+<p>Define cohort, metrics, observation window, stop/expand criteria, and owner before exposure. Monitor critical segments, not only averages. Candidate shadow execution must not duplicate business actions; it can still add model/tool load and data exposure. Keep budgets and access restrictions in place.</p>
+<p>Prefer stable cohort assignment when conversations or workflows need continuity. A small cohort cannot prove all rare cases safe; combine offline coverage with production evidence. Keep versions attached to tasks so pending approvals do not change meaning unexpectedly.</p>
+<p>On regression, stop expansion, disable dangerous execution where needed, and restore a compatible baseline for new work. Reconcile already submitted actions and decide how active tasks resume. Feed discovered failures into regression cases.</p>
+<h3 id="30-second-answer">30-Second Answer<a class="anchor" href="#30-second-answer" aria-label="Link to 30-Second Answer">#</a></h3>
+<blockquote>
+<p>“I’d version all behavior-changing artifacts, evaluate against the baseline, and apply agreed quality, policy, latency, and cost gates. I’d use shadow where comparison must avoid real actions and canary for controlled live exposure. Flags would scope the rollout, versioned telemetry would guide expansion, and tested rollback and execution switches would control regressions and in-flight work.”</p>
+</blockquote>
+</article>
+  <div class="source-note">Generated from module-14-release-and-change-management.md · Print layout: A4 landscape</div>
+</main><script>document.querySelectorAll('table').forEach((table) => { const box = document.createElement('div'); box.className = 'table-wrap'; table.parentNode.insertBefore(box, table); box.appendChild(table); });</script></body></html>
