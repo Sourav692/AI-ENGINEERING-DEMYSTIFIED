@@ -10,6 +10,7 @@ export function ScenarioToolbar({
   onStatus,
   answered,
   total,
+  masteredLocked = false,
   savedAt,
   storageAvailable,
   revealAll,
@@ -21,6 +22,7 @@ export function ScenarioToolbar({
   onStatus: (s: Status) => void
   answered: number
   total: number
+  masteredLocked?: boolean
   savedAt: number | null
   storageAvailable: boolean
   revealAll: boolean
@@ -53,21 +55,31 @@ export function ScenarioToolbar({
         <div className="h-4 w-px bg-border" aria-hidden />
 
         <div className="flex gap-0.5 rounded-md bg-surface-2 p-0.5" role="group" aria-label="Scenario status">
-          {STATUSES.map((s) => (
-            <button
-              key={s}
-              type="button"
-              aria-pressed={status === s}
-              onClick={() => onStatus(s)}
-              className={`rounded px-2 py-1 text-[0.75rem] font-medium transition-colors ${
-                status === s
-                  ? 'bg-surface text-text shadow-[var(--shadow)]'
-                  : 'text-muted hover:text-text'
-              }`}
-            >
-              {STATUS_LABELS[s]}
-            </button>
-          ))}
+          {STATUSES.map((s) => {
+            // A status already saved stays selectable, so the lock never strands a reader.
+            const locked = s === 'mastered' && masteredLocked && status !== 'mastered'
+            return (
+              <button
+                key={s}
+                type="button"
+                aria-pressed={status === s}
+                disabled={locked}
+                title={
+                  locked
+                    ? `Fill in every field with your own evidence first (${answered} of ${total} done)`
+                    : undefined
+                }
+                onClick={() => onStatus(s)}
+                className={`rounded px-2 py-1 text-[0.75rem] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  status === s
+                    ? 'bg-surface text-text shadow-[var(--shadow)]'
+                    : 'text-muted hover:text-text disabled:hover:text-muted'
+                }`}
+              >
+                {STATUS_LABELS[s]}
+              </button>
+            )
+          })}
         </div>
 
         <Timer />

@@ -18,6 +18,8 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { syncCaseStudies } from './case-studies.mjs'
+import { syncLastDay } from './last-day.mjs'
+import { TRACKS } from '../src/lib/editorial.ts'
 
 const SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = resolve(SITE_DIR, '..')
@@ -37,10 +39,6 @@ const MODULES = [
     tracks: [
       {
         id: 'core',
-        title: 'Core Scenarios',
-        blurb:
-          'Ten generic GenAI FDE case studies. Start here — they cover the discovery ' +
-          'and decomposition moves that every scenario builds on.',
         worksheetDir: join(
           SOURCE_ROOT,
           'Complete GEN AI FDE Interview System — Core + GenAI',
@@ -58,10 +56,6 @@ const MODULES = [
       },
       {
         id: 'system-design',
-        title: 'System Design Scenarios',
-        blurb:
-          'Twelve harder scenarios, each built around one dangerous constraint — ' +
-          'permission fidelity, tenant isolation, air-gapped deployment, release gating.',
         worksheetDir: join(
           SOURCE_ROOT,
           'FDE_System_Design_Interview_20_Scenarios',
@@ -81,21 +75,11 @@ const MODULES = [
     tracks: [
       {
         id: 'hiring-manager',
-        title: 'Hiring Manager Round',
-        blurb:
-          'Five customer-facing competencies, four questions each. The round that ' +
-          'decides whether you can be put in front of a customer — not whether you ' +
-          'can design a system.',
         worksheetDir: join(BEHAVIOURAL_ROOT, 'hiring_manager_round'),
         answerKeyDir: join(BEHAVIOURAL_ROOT, 'hiring_manager_round', 'answer_keys'),
       },
       {
         id: 'leadership-principles',
-        title: 'Leadership Principles',
-        blurb:
-          'Thirteen principles plus the staff-level cross-cutting set, each with the ' +
-          'spoken answers your own engagements already support — and an honest mark ' +
-          'on the ones they do not.',
         worksheetDir: join(BEHAVIOURAL_ROOT, 'leadership_principles'),
         answerKeyDir: join(BEHAVIOURAL_ROOT, 'leadership_principles', 'answer_keys'),
       },
@@ -192,8 +176,10 @@ async function syncTrack(moduleId, track) {
     )
   }
 
+  const names = TRACKS[track.id]
+  if (!names) throw new Error(`Track "${track.id}" has no entry in TRACKS (src/lib/editorial.ts)`)
   return {
-    manifest: { id: track.id, title: track.title, blurb: track.blurb, scenarios },
+    manifest: { id: track.id, ...names, scenarios },
     warnings,
   }
 }
@@ -259,6 +245,21 @@ async function main() {
 
   // Reading module: the G01–G20 interview guides, one page per group with tabs.
   modules.push(await syncCaseStudies({ repoRoot: REPO_ROOT, outDir: OUT_DIR }))
+
+  // Last-Day Review: its cross-links point at the pages above, so it syncs last and
+  // is handed the list of what was actually published.
+  const pages = new Map()
+  for (const mod of modules) {
+    for (const track of mod.tracks) {
+      for (const s of track.scenarios) {
+        pages.set(`${track.id}/${s.slug}`, {
+          title: s.title,
+          href: `/modules/${mod.id}/${track.id}/${s.slug}`,
+        })
+      }
+    }
+  }
+  await syncLastDay({ repoRoot: REPO_ROOT, siteDir: SITE_DIR, outDir: OUT_DIR, pages })
 
   const manifest = { generatedAt: new Date().toISOString(), modules }
   await writeFile(join(OUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))

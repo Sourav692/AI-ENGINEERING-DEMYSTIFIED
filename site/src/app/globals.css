@@ -270,6 +270,31 @@ body {
 }
 
 /* Print: drop all chrome, keep the worksheet and whatever the reader has written. */
+/*
+ * Behavioural model answers: a detail only the reader can supply. Styled as a gap,
+ * never as text, so it cannot be mistaken for part of an answer to recite.
+ */
+.fill-slot {
+  display: inline;
+  padding: 0.05em 0.35em;
+  border: 1px dashed var(--warning);
+  border-radius: 0.3em;
+  background: color-mix(in oklch, var(--warning) 10%, transparent);
+  color: var(--text);
+  font-style: normal;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.fill-slot-label {
+  margin-right: 0.1em;
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  /* Mixed towards the body text so the small label keeps AA contrast in both themes. */
+  color: color-mix(in oklch, var(--warning) 55%, var(--text));
+}
+
 @media print {
   .no-print {
     display: none !important;

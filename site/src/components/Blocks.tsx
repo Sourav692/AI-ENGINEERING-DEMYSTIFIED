@@ -2,6 +2,7 @@
 
 import type { Block, Cell } from '@/lib/parse'
 import { AutoTextarea } from './AutoTextarea'
+import { REVIEWS, SCORECARD_REMEDIATION, reviewHref, reviewLabel } from '@/lib/editorial'
 import { Diagram } from './Diagram'
 
 /**
@@ -188,6 +189,30 @@ function TableView({ block, ...p }: { block: Extract<Block, { kind: 'table' }> }
   )
 }
 
+/**
+ * Where to work on a scorecard row. Quiet until the reader scores the row below the
+ * top level, then it becomes the obvious next step.
+ */
+function Remediation({ area, weak }: { area: string; weak: boolean }) {
+  const reviews = (SCORECARD_REMEDIATION[area] ?? [])
+    .map((n) => REVIEWS.find((r) => r.number === n))
+    .filter((r) => r !== undefined)
+  if (!reviews.length) return null
+  return (
+    <div className={`no-print text-[0.75rem] ${weak ? 'text-text' : 'text-subtle'}`}>
+      {weak ? 'Work on this: ' : 'Revise: '}
+      {reviews.map((r, i) => (
+        <span key={r.number}>
+          {i > 0 && ', '}
+          <a href={reviewHref(r)} title={r.title} className="font-medium text-accent hover:text-accent-hover">
+            {reviewLabel(r.number)}
+          </a>
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function ScorecardView({
   block,
   scores,
@@ -199,7 +224,10 @@ function ScorecardView({
         const selected = scores?.[row.id]
         return (
           <div key={row.id} className="rounded-lg border border-border bg-surface p-3">
-            <div className="mb-2.5 text-[0.9375rem] font-semibold">{row.area}</div>
+            <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <div className="text-[0.9375rem] font-semibold">{row.area}</div>
+              <Remediation area={row.area} weak={selected !== undefined && selected < 5} />
+            </div>
             <div className="grid gap-2 sm:grid-cols-3">
               {row.levels.map((level) => {
                 const active = selected === level.value

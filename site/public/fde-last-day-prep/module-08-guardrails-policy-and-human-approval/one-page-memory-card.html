@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-page memory card for Module 8 — Guardrails, Policy &amp; Human Approval.">
-  <title>Module 8 — Guardrails, Policy &amp; Human Approval — One-Page Memory Card</title>
+  <meta name="description" content="Review 08 — Guardrails, Policy, and Human Approval: Recommend versus act, durable human-in-the-loop workflows, approval binding, and fail-closed sensitive writes.">
+  <title>Review 08 — Guardrails, Policy, and Human Approval — One-Page Recall Card · Forward Deployed</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -149,11 +149,25 @@
       th, td { padding: .8mm 1mm; border-color: #ccc; }
     }
   </style>
+
+<style>
+  .fd-sitebar { font: 500 0.8125rem/1.5 var(--sans, system-ui, sans-serif); color: var(--text-2, #555);
+    background: var(--surface, #fff); border-bottom: 1px solid var(--border-strong, #ddd);
+    padding: 0.625rem 1rem; display: grid; gap: 0.25rem; }
+  .fd-sitebar .fd-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.875rem;
+    max-width: 72rem; margin: 0 auto; width: 100%; }
+  .fd-sitebar a { color: var(--primary, #2952cc); text-decoration: none; font-weight: 600; }
+  .fd-sitebar a:hover { text-decoration: underline; }
+  .fd-sitebar .fd-label { font-weight: 700; color: var(--text, #111); }
+  .fd-sitebar .fd-mode { font-size: 0.75rem; }
+  .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
+  @media print { .fd-sitebar { display: none; } }
+</style>
 </head>
-<body><main class="card">
-  <div class="topbar"><span class="doc-id">MOD·08</span><div class="eyebrow">One-Page Memory Card — FDE Discovery Protocol</div><a class="switch" href="concise-interview-module.html">← Concise module</a></div>
-  <article class="memory-content"><h1 id="module-8-guardrails-policy-amp-human-approval">Module 8 — Guardrails, Policy &amp; Human Approval<a class="anchor" href="#module-8-guardrails-policy-amp-human-approval" aria-label="Link to Module 8 — Guardrails, Policy &amp;amp; Human Approval">#</a></h1>
-<h2 id="one-page-memory-card-guardrails-policy-amp-human-approval">ONE-PAGE MEMORY CARD — Guardrails, Policy &amp; Human Approval<a class="anchor" href="#one-page-memory-card-guardrails-policy-amp-human-approval" aria-label="Link to ONE-PAGE MEMORY CARD — Guardrails, Policy &amp;amp; Human Approval">#</a></h2>
+<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 08 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/one-page-memory-card.html">← Review 07</a><a href="/fde-last-day-prep/module-09-scaling-ai-systems/one-page-memory-card.html">Review 09 →</a></span></div></div><main class="card">
+  <div class="topbar"><span class="doc-id">REV·08</span><div class="eyebrow">One-Page Recall Card — Last-Day Review</div><a class="switch" href="concise-interview-module.html">← Interview review</a></div>
+  <article class="memory-content"><h1 id="module-8-guardrails-policy-amp-human-approval">Review 08 — Guardrails, Policy, and Human Approval<a class="anchor" href="#module-8-guardrails-policy-amp-human-approval" aria-label="Link to Review 08 — Guardrails, Policy, and Human Approval">#</a></h1>
+<h2 id="one-page-memory-card-guardrails-policy-amp-human-approval">One-Page Recall Card — Guardrails, Policy, and Human Approval<a class="anchor" href="#one-page-memory-card-guardrails-policy-amp-human-approval" aria-label="Link to ONE-PAGE MEMORY CARD — Guardrails, Policy &amp;amp; Human Approval">#</a></h2>
 <p><strong>Core question:</strong> Who has authority to permit an action, and what happens when that authority or its checks are unavailable?</p>
 <h3 id="recall-flow">Recall Flow<a class="anchor" href="#recall-flow" aria-label="Link to Recall Flow">#</a></h3>
 <pre><code class="language-text">Agent proposes → Authorization + policy

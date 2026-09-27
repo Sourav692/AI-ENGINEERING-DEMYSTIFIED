@@ -19,6 +19,18 @@ import { parseDocument } from '../src/lib/parse.ts'
 import type { Block } from '../src/lib/parse.ts'
 import { ANSWER_KEY_MAP } from '../src/lib/mapping.ts'
 import { parseReading } from '../src/lib/reading.ts'
+import {
+  FAMILY_META,
+  LAST_DAY_GUIDES,
+  RELATED_CASE,
+  REQUIRED_META_FIELDS,
+  REVIEW_DOCS,
+  REVIEWS,
+  TABS,
+  TRACKS,
+  TRIGGER_SHEET,
+} from '../src/lib/editorial.ts'
+import { existsSync } from 'node:fs'
 
 const CONTENT = resolve(import.meta.dirname, '..', 'content')
 
@@ -280,6 +292,149 @@ for (const mod of manifest.modules) {
     }
   }
 }
+
+// ------------------------------------------------------------------ editorial contract
+//
+// Every published page must be able to say what it is, who it is for, what it assumes
+// and teaches, how to use it, and where to go next. Those answers live in
+// src/lib/editorial.ts; these checks make a missing one a build failure rather than a
+// page that silently renders without it.
+
+const SITE_ROOT = resolve(import.meta.dirname, '..')
+const pages = new Set<string>()
+const routes = new Set<string>(['/', '/guide', '/learning-map', '/fde-last-day-prep'])
+for (const g of LAST_DAY_GUIDES) routes.add(`/fde-last-day-prep/${g.id}`)
+const tabsByPage = new Map<string, string[]>()
+
+for (const mod of manifest.modules) {
+  routes.add(`/modules/${mod.id}`)
+  for (const track of mod.tracks) {
+    if (!TRACKS[track.id]) failures.push(`${track.id}: no display name in TRACKS`)
+    else if (track.title !== TRACKS[track.id].title) {
+      failures.push(`${track.id}: manifest title "${track.title}" has drifted from TRACKS — re-run npm run sync`)
+    }
+    const meta = FAMILY_META[track.id]
+    if (!meta) {
+      failures.push(`${track.id}: no FAMILY_META entry, so its pages have no audience, prerequisites or outcomes`)
+    } else {
+      for (const field of REQUIRED_META_FIELDS) {
+        const value = meta[field]
+        if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {
+          failures.push(`${track.id}: required metadata "${field}" is empty`)
+        }
+      }
+    }
+    for (const s of track.scenarios) {
+      const key = `${track.id}/${s.slug}`
+      pages.add(key)
+      routes.add(`/modules/${mod.id}/${key}`)
+      tabsByPage.set(`/modules/${mod.id}/${key}`, (s.tabs ?? []).map((t: { id: string }) => t.id))
+      for (const tab of s.tabs ?? []) {
+        if (!TABS[tab.id]) failures.push(`${key}: tab "${tab.id}" has no label or purpose in TABS`)
+        else if (tab.label !== TABS[tab.id].label) failures.push(`${key}: tab label "${tab.label}" has drifted from TABS`)
+      }
+    }
+  }
+}
+
+// Every cross-link names a page that exists, and every practice or case page is reachable
+// from at least one review — a page no review points to is missing from the learning map.
+const cited = new Set<string>()
+for (const r of REVIEWS) {
+  for (const ref of [...r.learnFirst, ...r.goDeeper]) {
+    cited.add(ref)
+    if (!pages.has(ref)) failures.push(`Review ${r.number}: links to "${ref}", which is not a published page`)
+  }
+}
+for (const [practice, study] of Object.entries(RELATED_CASE)) {
+  for (const ref of [practice, study]) {
+    if (!pages.has(ref)) failures.push(`RELATED_CASE: "${ref}" is not a published page`)
+  }
+}
+for (const mod of manifest.modules) {
+  for (const track of mod.tracks) {
+    if (FAMILY_META[track.id]?.personalisation) continue
+    for (const s of track.scenarios) {
+      const key = `${track.id}/${s.slug}`
+      if (!cited.has(key)) failures.push(`${key}: not linked from any review in REVIEWS, so it is missing from the learning map`)
+    }
+  }
+}
+
+/** A site-internal href resolves to a route, a tab of a route, or a public file. */
+function resolvesInternally(href: string): boolean {
+  const [path, hash = ''] = href.split('#')
+  if (path.endsWith('.html')) return existsSync(join(SITE_ROOT, 'public', decodeURIComponent(path)))
+  const clean = path.replace(/\/$/, '') || '/'
+  if (!routes.has(clean)) return false
+  const tabs = tabsByPage.get(clean)
+  // A hash on a reading page must open one of its tabs (or a section within one).
+  if (tabs?.length && hash) return tabs.some((t) => hash === t || hash.startsWith(`${t}-`))
+  return true
+}
+
+// Case-sensitive on purpose: "the agent's todo list" is prose; "TODO" is an author's note.
+const PLACEHOLDER = /\[FILL\b|\bTODO\b|\bTBD\b|\bXXX\b|[Ll]orem ipsum/
+let linksChecked = 0
+
+async function checkDocument(label: string, raw: string, allowPlaceholders: boolean) {
+  if (!allowPlaceholders && PLACEHOLDER.test(raw)) {
+    failures.push(`${label}: unresolved placeholder (${raw.match(PLACEHOLDER)![0]}) on a public page`)
+  }
+  for (const [, href] of raw.matchAll(/\]\((\/[^)\s]*)\)/g)) {
+    linksChecked++
+    if (!resolvesInternally(href)) failures.push(`${label}: broken internal link ${href}`)
+  }
+}
+
+for (const mod of manifest.modules) {
+  for (const track of mod.tracks) {
+    const personal = Boolean(FAMILY_META[track.id]?.personalisation)
+    for (const s of track.scenarios) {
+      const base = join(CONTENT, 'modules', mod.id, track.id)
+      const files =
+        mod.kind === 'reading'
+          ? (s.tabs ?? []).map((t: { id: string }) => join(base, s.slug, `${t.id}.md`))
+          : [join(base, 'worksheets', `${s.slug}.md`), join(base, 'answer-keys', `${s.slug}.md`)]
+      for (const file of files) {
+        const raw = await readFile(file, 'utf8').catch(() => null)
+        if (raw !== null) await checkDocument(`${track.id}/${s.slug}`, raw, personal)
+      }
+    }
+  }
+}
+for (const g of LAST_DAY_GUIDES) {
+  const raw = await readFile(join(CONTENT, 'last-day', `${g.id}.md`), 'utf8').catch(() => null)
+  if (raw === null) failures.push(`last-day/${g.id}.md: missing — run npm run sync`)
+  else await checkDocument(`last-day/${g.id}`, raw, false)
+}
+
+// The static reviews: every internal link, including the ones sync added, must resolve.
+const staticFiles = [
+  ...REVIEWS.flatMap((r) => Object.values(REVIEW_DOCS).map((d) => `/fde-last-day-prep/${r.dir}/${d.file}`)),
+  `/fde-last-day-prep/${TRIGGER_SHEET.dir}/${TRIGGER_SHEET.file}`,
+]
+for (const path of staticFiles) {
+  const raw = await readFile(join(SITE_ROOT, 'public', path), 'utf8').catch(() => null)
+  if (raw === null) {
+    failures.push(`${path}: missing from public/`)
+    continue
+  }
+  if (/\bModule\s+\d+\b/.test(raw.replace(/<[^>]+>/g, ' ').replace(/id="[^"]*"/g, ''))) {
+    failures.push(`${path}: still says "Module N" — the Last-Day sequence is Review 01–18`)
+  }
+  for (const [, href] of raw.matchAll(/href="(\/[^"]*)"/g)) {
+    linksChecked++
+    if (!resolvesInternally(href)) failures.push(`${path}: broken internal link ${href}`)
+  }
+  for (const [, href] of raw.matchAll(/href="((?!https?:|#|\/|mailto:)[^"]+)"/g)) {
+    linksChecked++
+    const target = join(SITE_ROOT, 'public', path, '..', href.split('#')[0])
+    if (!existsSync(target)) failures.push(`${path}: broken relative link ${href}`)
+  }
+}
+
+rows.push(`\n  editorial: ${pages.size} pages with metadata, ${cited.size} cited by reviews, ${linksChecked} internal links resolved`)
 
 console.log(rows.join('\n'))
 console.log(`\n  ${diagramTotal} mermaid diagram(s) parsed across answer keys and case studies`)

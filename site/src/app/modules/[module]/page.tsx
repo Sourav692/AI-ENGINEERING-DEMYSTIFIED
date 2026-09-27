@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getAllScenarios, getTracks } from '@/lib/content'
+import { familyMeta, getAllScenarios, getTracks } from '@/lib/content'
 import { getModule, MODULES } from '@/lib/registry'
 import { ModuleProgress, ScenarioList } from '@/components/Progress'
+import { MetaStrip } from '@/components/PageIntro'
 
 export function generateStaticParams() {
   return MODULES.filter((m) => m.status === 'live').map((m) => ({ module: m.id }))
@@ -38,15 +39,17 @@ export default async function ModulePage({
   return (
     <div className="py-12">
       <Link
-        href="/"
+        href={meta.kind === 'reading' ? '/' : '/#practice'}
         className="mb-6 inline-flex items-center gap-1.5 text-[0.8125rem] text-subtle transition-colors hover:text-text"
       >
-        ← All modules
+        ← {meta.kind === 'reading' ? 'Home' : 'All practice'}
       </Link>
 
       <header className="max-w-2xl">
+        {/* The roadmap number stays out of the eyebrow: with twelve parts still planned,
+            "Module 14" reads as if 2–13 were missing. The learning mode says more. */}
         <div className="mb-2 text-[0.8125rem] font-semibold uppercase tracking-[0.1em] text-accent">
-          Module {String(meta.number).padStart(2, '0')}
+          {meta.kind === 'reading' ? 'Case studies' : 'Practice'}
         </div>
         <h1 className="text-[2rem] font-bold leading-tight tracking-[-0.02em]">
           {meta.title}
@@ -62,7 +65,7 @@ export default async function ModulePage({
         {tracks.map((track) => {
           const refs = moduleScenarios.filter((s) => s.trackId === track.id)
           return (
-            <section key={track.id}>
+            <section key={track.id} id={track.id} className="scroll-mt-20">
               <div className="mb-4 max-w-2xl">
                 <h2 className="text-[1.25rem] font-semibold tracking-[-0.014em]">
                   {track.title}
@@ -70,6 +73,9 @@ export default async function ModulePage({
                 <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-muted">
                   {track.blurb}
                 </p>
+                <div className="mt-2">
+                  <MetaStrip meta={familyMeta(track.id)} minutes={null} />
+                </div>
               </div>
               <ScenarioList scenarios={refs} />
             </section>

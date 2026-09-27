@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Block, Section } from '@/lib/parse'
 import type { Scenario } from '@/lib/scenario'
-import { scenarioHref } from '@/lib/scenario'
+import { qualifiedTitle, scenarioHref } from '@/lib/scenario'
 import {
   clearScenario,
   loadAnswers,
@@ -27,7 +27,18 @@ import { ScenarioToolbar } from './ScenarioToolbar'
 
 const SAVE_DEBOUNCE_MS = 400
 
-export function ScenarioView({ scenario }: { scenario: Scenario }) {
+/**
+ * `requireComplete` holds back "Mastered" until every field has an answer. Behavioural
+ * pages use it: their model answers are one candidate's template, so mastery means
+ * having written your own evidence into every field — not having read theirs.
+ */
+export function ScenarioView({
+  scenario,
+  requireComplete = false,
+}: {
+  scenario: Scenario
+  requireComplete?: boolean
+}) {
   const id = `${scenario.ref.trackId}/${scenario.ref.slug}`
 
   // State starts empty on both server and client so the first client render matches
@@ -167,6 +178,7 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
         onStatus={handleStatus}
         answered={answered}
         total={totalFields}
+        masteredLocked={requireComplete && answered < totalFields}
         savedAt={savedAt}
         storageAvailable={storageAvailable && hydrated}
         revealAll={revealAll}
@@ -220,7 +232,7 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
           >
             <div className="mb-1 text-[0.75rem] text-subtle">← Previous</div>
             <div className="text-[0.9375rem] font-medium group-hover:text-accent">
-              {scenario.prev.title}
+              {qualifiedTitle(scenario.prev)}
             </div>
           </Link>
         ) : (
@@ -233,7 +245,7 @@ export function ScenarioView({ scenario }: { scenario: Scenario }) {
           >
             <div className="mb-1 text-[0.75rem] text-subtle">Next →</div>
             <div className="text-[0.9375rem] font-medium group-hover:text-accent">
-              {scenario.next.title}
+              {qualifiedTitle(scenario.next)}
             </div>
           </Link>
         )}

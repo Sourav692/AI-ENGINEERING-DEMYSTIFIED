@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Concise interview guide for Module 17 — Trade-Off Thinking.">
-  <title>Module 17 — Trade-Off Thinking — Concise Interview Module</title>
+  <meta name="description" content="Review 17 — Architecture Trade-Offs: Justifying complexity against a requirement, and stating the trade-off out loud instead of hiding it.">
+  <title>Review 17 — Architecture Trade-Offs — Interview Review · Forward Deployed</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -161,12 +161,26 @@
       pre, blockquote, table { break-inside: avoid; }
     }
   </style>
+
+<style>
+  .fd-sitebar { font: 500 0.8125rem/1.5 var(--sans, system-ui, sans-serif); color: var(--text-2, #555);
+    background: var(--surface, #fff); border-bottom: 1px solid var(--border-strong, #ddd);
+    padding: 0.625rem 1rem; display: grid; gap: 0.25rem; }
+  .fd-sitebar .fd-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.875rem;
+    max-width: 72rem; margin: 0 auto; width: 100%; }
+  .fd-sitebar a { color: var(--primary, #2952cc); text-decoration: none; font-weight: 600; }
+  .fd-sitebar a:hover { text-decoration: underline; }
+  .fd-sitebar .fd-label { font-weight: 700; color: var(--text, #111); }
+  .fd-sitebar .fd-mode { font-size: 0.75rem; }
+  .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
+  @media print { .fd-sitebar { display: none; } }
+</style>
 </head>
-<body><div class="layout">
+<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 17 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html">← Review 16</a><a href="/fde-last-day-prep/module-18-end-to-end-fde-interview-execution/concise-interview-module.html">Review 18 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/system-design/enterprise-chatbot-platform">Enterprise Chatbot Platform</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/retail-demand-explainer">Retail Demand Forecast Explanation Assistant</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/judgement-and-decomposition/scale-prototype-to-production">Scale a Prototype from 100 to 100,000 Users</a> · <a href="/modules/15-fde-case-studies/judgement-and-decomposition/build-when-customer-data-is-poor">Build When the Customer’s Data Is Poor</a> · <a href="/modules/15-fde-case-studies/platforms-and-scale/agent-platform-for-non-technical-users">Agent Platform for Non-Technical Users</a></div></div><div class="layout">
   <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
-  <main><div class="topbar"><span class="doc-id">MOD·17</span><div class="eyebrow">Concise Interview Module — FDE Discovery Protocol</div><a class="switch" href="one-page-memory-card.html">Memory card →</a></div>
-    <h1 id="module-17-trade-off-thinking">Module 17 — Trade-Off Thinking<a class="anchor" href="#module-17-trade-off-thinking" aria-label="Link to Module 17 — Trade-Off Thinking">#</a></h1>
-<h2 id="concise-interview-module">CONCISE INTERVIEW MODULE<a class="anchor" href="#concise-interview-module" aria-label="Link to CONCISE INTERVIEW MODULE">#</a></h2>
+  <main><div class="topbar"><span class="doc-id">REV·17</span><div class="eyebrow">Interview Review — Last-Day Review</div><a class="switch" href="one-page-memory-card.html">Recall card →</a></div>
+    <h1 id="module-17-trade-off-thinking">Review 17 — Architecture Trade-Offs<a class="anchor" href="#module-17-trade-off-thinking" aria-label="Link to Review 17 — Architecture Trade-Offs">#</a></h1>
+<h2 id="concise-interview-module">Interview Review<a class="anchor" href="#concise-interview-module" aria-label="Link to Interview Review">#</a></h2>
 <h3 id="1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing<a class="anchor" href="#1-what-the-interviewer-is-testing" aria-label="Link to 1. What the Interviewer Is Testing">#</a></h3>
 <ul>
 <li>Can you justify a choice using the customer&#39;s requirements?</li>

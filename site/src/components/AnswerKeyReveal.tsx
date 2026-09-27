@@ -42,7 +42,7 @@ export function AnswerKeyReveal({
           <path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <span className="text-[0.875rem] font-semibold text-text">
-          {open ? 'Hide the answer key' : 'Compare with the answer key'}
+          {open ? 'Hide the model answer' : 'Compare with the model answer'}
         </span>
         {!open && (
           <span className="ml-auto text-[0.75rem] text-subtle">

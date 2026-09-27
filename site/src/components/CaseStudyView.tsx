@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CaseStudy } from '@/lib/scenario'
-import { scenarioHref } from '@/lib/scenario'
+import { qualifiedTitle, scenarioHref } from '@/lib/scenario'
 import type { ReadingDocument } from '@/lib/reading'
 import { loadRead, notifyProgress, saveRead } from '@/lib/storage'
 import { Diagram } from './Diagram'
@@ -53,7 +53,13 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
   // mount; the prerendered HTML always shows the first tab with nothing marked.
   /* eslint-disable react-hooks/set-state-in-effect -- hydration-safe by design */
   useEffect(() => {
-    setRead(loadRead(progressId))
+    // Only tabs that still exist count: a tutorial moved to the archive can leave its
+    // id in saved progress, and counting it would mark the case read too early.
+    const current = tabKey.split('|')
+    const saved = loadRead(progressId)
+    const live = saved.filter((t) => current.includes(t))
+    if (live.length !== saved.length) saveRead(progressId, live, current.length)
+    setRead(live)
     setHydrated(true)
 
     const apply = () => {
@@ -136,7 +142,7 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
       </div>
       )}
 
-      {study.docs.map(({ tab, label, doc }, i) => {
+      {study.docs.map(({ tab, label, purpose, minutes, doc }, i) => {
         const nextTab = study.docs[i + 1]
         const done = read.includes(tab)
         return (
@@ -147,7 +153,14 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
             aria-labelledby={`tab-${tab}`}
             hidden={active !== tab}
           >
-            <Panel doc={doc} drawDiagrams={visited.has(tab)} />
+            {/* What this tab is for, so a reader landing on it from search knows where
+                it sits in the case — the tab row alone does not say. */}
+            {purpose && (
+              <p className="no-print mb-6 max-w-3xl rounded-lg bg-surface-2/60 px-4 py-2.5 text-[0.875rem] leading-relaxed text-muted">
+                <span className="font-semibold text-text">{label}</span> · {minutes} min — {purpose}
+              </p>
+            )}
+            <ReadingPanel doc={doc} drawDiagrams={visited.has(tab)} />
 
             <div className="no-print mt-12 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-4">
               <button
@@ -185,7 +198,7 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
           >
             <div className="mb-1 text-[0.75rem] text-subtle">← Previous · {study.prev.tag}</div>
             <div className="text-[0.9375rem] font-medium group-hover:text-accent">
-              {study.prev.title}
+              {qualifiedTitle(study.prev)}
             </div>
           </Link>
         ) : (
@@ -198,7 +211,7 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
           >
             <div className="mb-1 text-[0.75rem] text-subtle">Next · {study.next.tag} →</div>
             <div className="text-[0.9375rem] font-medium group-hover:text-accent">
-              {study.next.title}
+              {qualifiedTitle(study.next)}
             </div>
           </Link>
         )}
@@ -207,7 +220,8 @@ export function CaseStudyView({ study }: { study: CaseStudy }) {
   )
 }
 
-function Panel({ doc, drawDiagrams }: { doc: ReadingDocument; drawDiagrams: boolean }) {
+/** One reading document with its contents list. Also used by the Last-Day guides. */
+export function ReadingPanel({ doc, drawDiagrams }: { doc: ReadingDocument; drawDiagrams: boolean }) {
   const toc = doc.sections.filter((s) => s.title)
   return (
     <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10">

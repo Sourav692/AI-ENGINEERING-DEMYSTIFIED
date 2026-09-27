@@ -74,7 +74,7 @@ export function ModuleProgress({ scenarios }: { scenarios: ScenarioRef[] }) {
                   : 'mastered'
               : reading
                 ? 'to read'
-                : 'with answer keys'}
+                : 'with model answers'}
           </div>
         </div>
       </div>

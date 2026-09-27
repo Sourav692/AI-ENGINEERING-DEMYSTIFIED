@@ -26,6 +26,7 @@
 import { existsSync, statSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, relative, resolve } from 'node:path'
+import { TABS, TRACKS } from '../src/lib/editorial.ts'
 
 export const CASE_STUDY_MODULE_ID = '15-fde-case-studies'
 
@@ -39,108 +40,80 @@ const GITHUB_TREE = 'https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/tre
  */
 const PUBLISHED = null
 
-/** A group's tabs. Order is display order; the first tab opens by default. */
+/**
+ * A group's tabs. Order is display order; the first tab opens by default.
+ *
+ * `id` is what URLs (`#deep-dive`) and saved read-state use, so it never changes.
+ * The visible label comes from `TABS` in `src/lib/editorial.ts`; renaming a tab there
+ * must not — and cannot — touch its id.
+ */
 export const DOC_TABS = [
-  { id: 'main', label: 'Main', suffix: '_Main' },
-  { id: 'deep-dive', label: 'Deep Dive', suffix: '_Deep_Dive' },
-  { id: 'cheat-sheet', label: 'Cheat Sheet', suffix: '_Cheat_Sheet' },
-  { id: 'full-pack', label: 'Full Pack', suffix: '' },
+  { id: 'main', suffix: '_Main' },
+  { id: 'deep-dive', suffix: '_Deep_Dive' },
+  { id: 'cheat-sheet', suffix: '_Cheat_Sheet' },
+  { id: 'full-pack', suffix: '' },
 ]
+
+function labelOf(id) {
+  const tab = TABS[id]
+  if (!tab) throw new Error(`Tab id "${id}" has no entry in TABS (src/lib/editorial.ts)`)
+  return tab.label
+}
 
 /**
  * Themes, in display order. Track ids must stay unique across the whole site —
- * saved progress is keyed `trackId/slug`. A future "standalone" theme slots in as
- * one more entry here.
+ * saved progress is keyed `trackId/slug`. Titles and descriptions live in `TRACKS`
+ * (src/lib/editorial.ts); this list only says which groups each theme holds.
  */
-const THEMES = [
-  {
-    id: 'knowledge-retrieval',
-    title: 'Knowledge & Retrieval',
-    blurb:
-      'Systems that answer from an organisation’s own documents and data, where the ' +
-      'hard part is who may see what, and proving where each answer came from.',
-    groups: ['G01', 'G06', 'G08', 'G11'],
-  },
-  {
-    id: 'agents-that-act',
-    title: 'Agents That Act',
-    blurb:
-      'Agents that change things in real systems — tickets, deploys, CRMs, shipments. ' +
-      'The design is mostly about what the agent may do alone and what needs a human.',
-    groups: ['G02', 'G03', 'G04', 'G05', 'G09', 'G16', 'G17'],
-  },
-  {
-    id: 'platforms-and-scale',
-    title: 'Platforms & Scale',
-    blurb:
-      'Shared platforms and high-volume services: tenant isolation, batch throughput, ' +
-      'consumer-scale chat and the serving layer underneath them.',
-    groups: ['G07', 'G10', 'G15', 'G18', 'G20'],
-  },
-  {
-    id: 'delivery-evaluation-operations',
-    title: 'Delivery, Evaluation & Operations',
-    blurb:
-      'Getting from a scoping doc to a system in production, deciding when it is safe ' +
-      'to release, and diagnosing it once it is live.',
-    groups: ['G12', 'G13', 'G14'],
-  },
-  {
-    id: 'model-development',
-    title: 'Model Development',
-    blurb: 'Building and adapting the model itself: data, fine-tuning, post-training and evaluation.',
-    groups: ['G19'],
-  },
-  {
-    id: 'standalone-designs',
-    title: 'Standalone Designs',
-    blurb:
-      'Full system designs with no sibling in the groups above \u2014 each is its own ' +
-      'problem, from an air-gapped deployment to a gateway in front of every model call.',
-    groups: [],
-  },
-  {
-    id: 'judgement-and-decomposition',
-    title: 'Judgement & Decomposition',
-    blurb:
-      'Questions that test how you think rather than what you draw: which use cases to ' +
-      'fund, how to scale a prototype, what to do with poor data, and how to break an ' +
-      'open-ended problem down in sixty minutes.',
-    groups: [],
-  },
+const THEME_GROUPS = [
+  ['knowledge-retrieval', ['G01', 'G06', 'G08', 'G11']],
+  ['agents-that-act', ['G02', 'G03', 'G04', 'G05', 'G09', 'G16', 'G17']],
+  ['platforms-and-scale', ['G07', 'G10', 'G15', 'G18', 'G20']],
+  ['delivery-evaluation-operations', ['G12', 'G13', 'G14']],
+  ['model-development', ['G19']],
+  ['standalone-designs', []],
+  ['judgement-and-decomposition', []],
 ]
+
+const THEMES = THEME_GROUPS.map(([id, groups]) => {
+  if (!TRACKS[id]) throw new Error(`Theme "${id}" has no entry in TRACKS (src/lib/editorial.ts)`)
+  return { id, ...TRACKS[id], groups }
+})
 
 /**
  * Standalone cases, keyed by folder under `Case_Study_Groups/Standalone/`. `number`
  * orders them and is the case number from CASE_STUDY_INDEX.xlsx; `tag` is the badge.
- * Every `.md` in the folder must be listed, so a new file cannot silently go unpublished.
+ * `files` are `[file, tabId]`, published as tabs; `archived` are `[file, label]`,
+ * superseded versions that stay in the repo and are linked on GitHub from the page but
+ * are not tabs, not searched, and not counted towards read progress. Every `.md` in the
+ * folder must be in one list or the other, so a new file cannot silently go unpublished.
  * `practice` names the same case's interactive worksheet in Module 01 (`track/slug`),
  * which the page links to — the Worksheet tab here is read-only.
  */
 const WORKSHEET_SET = [
-  ['1_Worksheet.md', 'Worksheet'],
-  ['2_Answer_Key.md', 'Answer Key'],
-  ['3_Tutorial_V2.md', 'Tutorial V2'],
-  ['4_Tutorial_V1.md', 'Tutorial V1'],
+  ['1_Worksheet.md', 'worksheet'],
+  ['2_Answer_Key.md', 'answer-key'],
+  ['3_Tutorial_V2.md', 'tutorial-v2'],
 ]
-const guide = (file) => [[file, 'Guide']]
+const V1_ARCHIVE = [['4_Tutorial_V1.md', 'Tutorial V1 (superseded)']]
+const guide = (file) => [[file, 'guide']]
 
 const STANDALONE = [
   { folder: '04_Recruiting_Platform', theme: 'standalone-designs', number: 4, title: 'AI-Powered Recruiting Platform',
-    files: [['1_Handbook_Casebook_Recruiting_Platform.md', 'Casebook'], ['2_FDE_Recruiting_Platform_Design_long.md', 'Full Design']] },
+    files: [['1_Handbook_Casebook_Recruiting_Platform.md', 'casebook'], ['2_FDE_Recruiting_Platform_Design_long.md', 'full-design']] },
   { folder: '14_Travel_Agent_Worked_Example', theme: 'standalone-designs', number: 14, title: 'Travel Agent: the 12-Part Framework Worked Through',
-    files: [['1_Handbook_Worked_Example_Travel_Agent.md', 'Worked Example'], ['2_FDE_System_Design_Overview_source.md', 'Framework Overview']] },
+    files: [['1_Handbook_Worked_Example_Travel_Agent.md', 'worked-example'], ['2_FDE_System_Design_Overview_source.md', 'framework-overview']] },
   { folder: '19_Air_Gapped_AI_System', theme: 'standalone-designs', number: 19, title: 'AI System for an Air-Gapped Environment', files: WORKSHEET_SET,
-    practice: 'system-design/ai-system-for-an-air-gapped-environment' },
+    archived: V1_ARCHIVE, practice: 'system-design/ai-system-for-an-air-gapped-environment' },
   { folder: '23_Reliable_Workflow_Orchestration', theme: 'standalone-designs', number: 23, title: 'Reliable Workflow Orchestration System', files: WORKSHEET_SET,
-    practice: 'system-design/reliable-workflow-orchestration-system' },
+    archived: V1_ARCHIVE, practice: 'system-design/reliable-workflow-orchestration-system' },
   { folder: '25_Configurable_Platform_Customer_Workflows', theme: 'standalone-designs', number: 25, title: 'Configurable Platform for Customer-Specific Workflows', files: WORKSHEET_SET,
-    practice: 'system-design/configurable-platform-customer-specific-workflows' },
-  { folder: '26_Enterprise_Chatbot_Platform', theme: 'standalone-designs', number: 26, title: 'Enterprise Chatbot Platform',
-    files: [...WORKSHEET_SET, ['5_Tutorial_V1_uncondensed.md', 'Tutorial V1 (Uncondensed)']],
+    archived: V1_ARCHIVE, practice: 'system-design/configurable-platform-customer-specific-workflows' },
+  { folder: '26_Enterprise_Chatbot_Platform', theme: 'standalone-designs', number: 26, title: 'Enterprise Chatbot Platform', files: WORKSHEET_SET,
+    archived: [...V1_ARCHIVE, ['5_Tutorial_V1_uncondensed.md', 'Original uncondensed tutorial']],
     practice: 'system-design/enterprise-chatbot-platform' },
   { folder: '80_Self_Adapting_Agent', theme: 'standalone-designs', number: 80, title: 'Agent That Adapts to New Tasks',
-    files: [['80_Self_Adapting_Agent.md', 'Guide'], ['self_adapting_agent_fde_interview_template.md', 'Interview Template']] },
+    files: [['80_Self_Adapting_Agent.md', 'guide'], ['self_adapting_agent_fde_interview_template.md', 'interview-template']] },
   { folder: '98_Personal_Assistant_With_Memory', theme: 'standalone-designs', number: 98, title: 'Personal Assistant That Remembers You', files: guide('98_Personal_Assistant_With_Memory.md') },
   { folder: '100_Production_LLM_Gateway', theme: 'standalone-designs', number: 100, title: 'Production LLM Gateway', files: guide('100_Production_LLM_Gateway.md') },
   { folder: '60_Prioritize_AI_Use_Cases', theme: 'judgement-and-decomposition', number: 60, title: 'Prioritise AI Use Cases for a Large Enterprise', files: guide('60_Prioritize_AI_Use_Cases.md') },
@@ -151,6 +124,9 @@ const STANDALONE = [
 ]
 
 const isPublished = (group) => PUBLISHED === null || PUBLISHED.includes(group)
+
+/** `…/06_Interview_Prep/Case_Study_Groups` -> the repository root. */
+const repoRootOf = (caseStudyRoot) => resolve(caseStudyRoot, '..', '..')
 
 /** `G01_Enterprise_Knowledge_Assistant` -> `enterprise-knowledge-assistant` */
 const slugOf = (folder) => folder.replace(/^G\d+_/, '').replace(/_/g, '-').toLowerCase()
@@ -172,8 +148,6 @@ async function listGroups(root) {
   return groups
 }
 
-const tabId = (label) => label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-
 /**
  * Resolves one markdown link target found in `sourceFile`.
  * Returns the rewritten href, or null to leave the link untouched.
@@ -193,8 +167,10 @@ function rewriteHref(href, sourceFile, ctx) {
   }
 
   const isDir = existsSync(abs) && statSync(abs).isDirectory()
+  // A file in a published folder that is not one of its tabs — an archived tutorial —
+  // has no place on the site, so it falls through to GitHub like any other repo file.
   const page = ctx.pages.get(isDir ? abs : dirname(abs))
-  if (page) {
+  if (page && (isDir || page.tabsByFile.has(basename(abs)))) {
     const tab = isDir ? null : page.tabsByFile.get(basename(abs))
     return `${page.url}${tab ? `#${tab}` : ''}`
   }
@@ -228,7 +204,7 @@ async function collectCases(root) {
       if (!groups.has(g) || !isPublished(g)) continue
       const folder = groups.get(g)
       const dir = join(root, folder)
-      const tabs = DOC_TABS.map((t) => ({ id: t.id, label: t.label, file: `${folder}${t.suffix}.md` }))
+      const tabs = DOC_TABS.map((t) => ({ id: t.id, label: labelOf(t.id), file: `${folder}${t.suffix}.md` }))
       const main = await readFile(join(dir, tabs[0].file), 'utf8')
       cases.push({ theme: theme.id, dir, slug: slugOf(folder), tag: g, order: Number(g.slice(1)), title: nameFrom(main, folder), tabs })
     }
@@ -244,8 +220,9 @@ async function collectCases(root) {
     if (!THEMES.some((t) => t.id === c.theme)) throw new Error(`${c.folder}: unknown theme ${c.theme}`)
     const dir = join(standaloneRoot, c.folder)
     const files = (await readdir(dir)).filter((f) => f.endsWith('.md'))
-    const missing = c.files.map(([f]) => f).filter((f) => !files.includes(f))
-    const extra = files.filter((f) => !c.files.some(([d]) => d === f))
+    const declaredFiles = [...c.files, ...(c.archived ?? [])].map(([f]) => f)
+    const missing = declaredFiles.filter((f) => !files.includes(f))
+    const extra = files.filter((f) => !declaredFiles.includes(f))
     if (missing.length || extra.length) {
       throw new Error(`${c.folder}: declared files do not match disk (missing: ${missing.join(', ') || '—'}; undeclared: ${extra.join(', ') || '—'})`)
     }
@@ -256,7 +233,11 @@ async function collectCases(root) {
       tag: c.tag ?? `#${c.number}`,
       order: c.number,
       title: c.title,
-      tabs: c.files.map(([file, label]) => ({ id: tabId(label), label, file })),
+      tabs: c.files.map(([file, id]) => ({ id, label: labelOf(id), file })),
+      archived: (c.archived ?? []).map(([file, label]) => ({
+        label,
+        href: `${GITHUB_BLOB}${relative(repoRootOf(root), join(dir, file)).split(/[\\/]/).map(encodeURIComponent).join('/')}`,
+      })),
       practice: c.practice,
     })
   }
@@ -296,6 +277,7 @@ export async function syncCaseStudies({ repoRoot, outDir }) {
         title: c.title,
         tag: c.tag,
         tabs: c.tabs.map(({ id, label }) => ({ id, label })),
+        ...(c.archived?.length && { archived: c.archived }),
         ...(c.practice && { practice: c.practice }),
       })
     }

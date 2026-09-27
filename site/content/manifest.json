@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-27T01:19:14.857Z",
+  "generatedAt": "2026-09-27T03:45:12.242Z",
   "modules": [
     {
       "id": "01-customer-discovery-and-decomposition",
       "tracks": [
         {
           "id": "core",
-          "title": "Core Scenarios",
-          "blurb": "Ten generic GenAI FDE case studies. Start here — they cover the discovery and decomposition moves that every scenario builds on.",
+          "title": "Discovery Foundations",
+          "blurb": "Ten GenAI customer problems. Start here: they practise the discovery and decomposition moves every later scenario builds on.",
           "scenarios": [
             {
               "slug": "internal-knowledge-assistant",
@@ -63,7 +63,7 @@
         },
         {
           "id": "system-design",
-          "title": "System Design Scenarios",
+          "title": "System Design Practice",
           "blurb": "Twelve harder scenarios, each built around one dangerous constraint — permission fidelity, tenant isolation, air-gapped deployment, release gating.",
           "scenarios": [
             {
@@ -135,8 +135,8 @@
       "tracks": [
         {
           "id": "hiring-manager",
-          "title": "Hiring Manager Round",
-          "blurb": "Five customer-facing competencies, four questions each. The round that decides whether you can be put in front of a customer — not whether you can design a system.",
+          "title": "Hiring Manager Questions",
+          "blurb": "Five customer-facing competencies, four questions each: whether you can be put in front of a customer, not whether you can design a system.",
           "scenarios": [
             {
               "slug": "ambiguity-and-discovery",
@@ -167,8 +167,8 @@
         },
         {
           "id": "leadership-principles",
-          "title": "Leadership Principles",
-          "blurb": "Thirteen principles plus the staff-level cross-cutting set, each with the spoken answers your own engagements already support — and an honest mark on the ones they do not.",
+          "title": "Leadership Principle Questions",
+          "blurb": "Thirteen principles plus a staff-level cross-cutting set. Each model answer shows the shape of a strong story and marks the details you must supply yourself.",
           "scenarios": [
             {
               "slug": "customer-obsession",
@@ -250,7 +250,7 @@
       "tracks": [
         {
           "id": "knowledge-retrieval",
-          "title": "Knowledge & Retrieval",
+          "title": "Knowledge and Retrieval",
           "blurb": "Systems that answer from an organisation’s own documents and data, where the hard part is who may see what, and proving where each answer came from.",
           "scenarios": [
             {
@@ -261,19 +261,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -285,19 +285,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -309,19 +309,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -333,19 +333,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             }
@@ -353,7 +353,7 @@
         },
         {
           "id": "agents-that-act",
-          "title": "Agents That Act",
+          "title": "Tool-Using and Action-Taking Agents",
           "blurb": "Agents that change things in real systems — tickets, deploys, CRMs, shipments. The design is mostly about what the agent may do alone and what needs a human.",
           "scenarios": [
             {
@@ -364,19 +364,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -388,19 +388,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -412,19 +412,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -436,19 +436,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -460,19 +460,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -484,19 +484,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -508,19 +508,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             }
@@ -528,7 +528,7 @@
         },
         {
           "id": "platforms-and-scale",
-          "title": "Platforms & Scale",
+          "title": "AI Platforms and Scale",
           "blurb": "Shared platforms and high-volume services: tenant isolation, batch throughput, consumer-scale chat and the serving layer underneath them.",
           "scenarios": [
             {
@@ -539,19 +539,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -563,19 +563,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -587,19 +587,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -611,19 +611,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -635,19 +635,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             }
@@ -655,8 +655,8 @@
         },
         {
           "id": "delivery-evaluation-operations",
-          "title": "Delivery, Evaluation & Operations",
-          "blurb": "Getting from a scoping doc to a system in production, deciding when it is safe to release, and diagnosing it once it is live.",
+          "title": "Delivery, Evaluation, and Operations",
+          "blurb": "Getting from a scoping document to a system in production, deciding when it is safe to release, and diagnosing it once it is live.",
           "scenarios": [
             {
               "slug": "scoping-to-deployed-agent",
@@ -666,19 +666,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -690,19 +690,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             },
@@ -714,19 +714,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             }
@@ -734,7 +734,7 @@
         },
         {
           "id": "model-development",
-          "title": "Model Development",
+          "title": "Model Development and Post-Training",
           "blurb": "Building and adapting the model itself: data, fine-tuning, post-training and evaluation.",
           "scenarios": [
             {
@@ -745,19 +745,19 @@
               "tabs": [
                 {
                   "id": "main",
-                  "label": "Main"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "deep-dive",
-                  "label": "Deep Dive"
+                  "label": "Technical Deep Dive"
                 },
                 {
                   "id": "cheat-sheet",
-                  "label": "Cheat Sheet"
+                  "label": "Quick Review"
                 },
                 {
                   "id": "full-pack",
-                  "label": "Full Pack"
+                  "label": "Sources and Full Design"
                 }
               ]
             }
@@ -765,8 +765,8 @@
         },
         {
           "id": "standalone-designs",
-          "title": "Standalone Designs",
-          "blurb": "Full system designs with no sibling in the groups above — each is its own problem, from an air-gapped deployment to a gateway in front of every model call.",
+          "title": "Additional System Designs",
+          "blurb": "Complete designs that do not belong to one of the themes above, from an air-gapped deployment to a gateway in front of every model call.",
           "scenarios": [
             {
               "slug": "recruiting-platform",
@@ -776,11 +776,11 @@
               "tabs": [
                 {
                   "id": "casebook",
-                  "label": "Casebook"
+                  "label": "Interview Casebook"
                 },
                 {
                   "id": "full-design",
-                  "label": "Full Design"
+                  "label": "Reference Design"
                 }
               ]
             },
@@ -796,7 +796,7 @@
                 },
                 {
                   "id": "framework-overview",
-                  "label": "Framework Overview"
+                  "label": "12-Part Framework"
                 }
               ]
             },
@@ -808,19 +808,21 @@
               "tabs": [
                 {
                   "id": "worksheet",
-                  "label": "Worksheet"
+                  "label": "Practice Worksheet"
                 },
                 {
                   "id": "answer-key",
-                  "label": "Answer Key"
+                  "label": "Model Answer"
                 },
                 {
                   "id": "tutorial-v2",
-                  "label": "Tutorial V2"
-                },
+                  "label": "Tutorial"
+                }
+              ],
+              "archived": [
                 {
-                  "id": "tutorial-v1",
-                  "label": "Tutorial V1"
+                  "label": "Tutorial V1 (superseded)",
+                  "href": "https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Case_Study_Groups/Standalone/19_Air_Gapped_AI_System/4_Tutorial_V1.md"
                 }
               ],
               "practice": "system-design/ai-system-for-an-air-gapped-environment"
@@ -833,19 +835,21 @@
               "tabs": [
                 {
                   "id": "worksheet",
-                  "label": "Worksheet"
+                  "label": "Practice Worksheet"
                 },
                 {
                   "id": "answer-key",
-                  "label": "Answer Key"
+                  "label": "Model Answer"
                 },
                 {
                   "id": "tutorial-v2",
-                  "label": "Tutorial V2"
-                },
+                  "label": "Tutorial"
+                }
+              ],
+              "archived": [
                 {
-                  "id": "tutorial-v1",
-                  "label": "Tutorial V1"
+                  "label": "Tutorial V1 (superseded)",
+                  "href": "https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Case_Study_Groups/Standalone/23_Reliable_Workflow_Orchestration/4_Tutorial_V1.md"
                 }
               ],
               "practice": "system-design/reliable-workflow-orchestration-system"
@@ -858,19 +862,21 @@
               "tabs": [
                 {
                   "id": "worksheet",
-                  "label": "Worksheet"
+                  "label": "Practice Worksheet"
                 },
                 {
                   "id": "answer-key",
-                  "label": "Answer Key"
+                  "label": "Model Answer"
                 },
                 {
                   "id": "tutorial-v2",
-                  "label": "Tutorial V2"
-                },
+                  "label": "Tutorial"
+                }
+              ],
+              "archived": [
                 {
-                  "id": "tutorial-v1",
-                  "label": "Tutorial V1"
+                  "label": "Tutorial V1 (superseded)",
+                  "href": "https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Case_Study_Groups/Standalone/25_Configurable_Platform_Customer_Workflows/4_Tutorial_V1.md"
                 }
               ],
               "practice": "system-design/configurable-platform-customer-specific-workflows"
@@ -883,23 +889,25 @@
               "tabs": [
                 {
                   "id": "worksheet",
-                  "label": "Worksheet"
+                  "label": "Practice Worksheet"
                 },
                 {
                   "id": "answer-key",
-                  "label": "Answer Key"
+                  "label": "Model Answer"
                 },
                 {
                   "id": "tutorial-v2",
-                  "label": "Tutorial V2"
+                  "label": "Tutorial"
+                }
+              ],
+              "archived": [
+                {
+                  "label": "Tutorial V1 (superseded)",
+                  "href": "https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Case_Study_Groups/Standalone/26_Enterprise_Chatbot_Platform/4_Tutorial_V1.md"
                 },
                 {
-                  "id": "tutorial-v1",
-                  "label": "Tutorial V1"
-                },
-                {
-                  "id": "tutorial-v1-uncondensed",
-                  "label": "Tutorial V1 (Uncondensed)"
+                  "label": "Original uncondensed tutorial",
+                  "href": "https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/main/06_Interview_Prep/Case_Study_Groups/Standalone/26_Enterprise_Chatbot_Platform/5_Tutorial_V1_uncondensed.md"
                 }
               ],
               "practice": "system-design/enterprise-chatbot-platform"
@@ -912,11 +920,11 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 },
                 {
                   "id": "interview-template",
-                  "label": "Interview Template"
+                  "label": "Answer Template"
                 }
               ]
             },
@@ -928,7 +936,7 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 }
               ]
             },
@@ -940,7 +948,7 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 }
               ]
             }
@@ -948,7 +956,7 @@
         },
         {
           "id": "judgement-and-decomposition",
-          "title": "Judgement & Decomposition",
+          "title": "Product Judgement and Problem Decomposition",
           "blurb": "Questions that test how you think rather than what you draw: which use cases to fund, how to scale a prototype, what to do with poor data, and how to break an open-ended problem down in sixty minutes.",
           "scenarios": [
             {
@@ -959,7 +967,7 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 }
               ]
             },
@@ -971,7 +979,7 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 }
               ]
             },
@@ -983,7 +991,7 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 }
               ]
             },
@@ -995,7 +1003,7 @@
               "tabs": [
                 {
                   "id": "guide",
-                  "label": "Guide"
+                  "label": "Interview Guide"
                 }
               ]
             }

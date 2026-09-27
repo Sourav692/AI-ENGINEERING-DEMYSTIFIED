@@ -19,7 +19,11 @@ export type ScenarioMeta = {
   tabs?: ReadingTab[]
   /** Reading pages only: `track/slug` of the same case's interactive worksheet in Module 01. */
   practice?: string
+  /** Reading pages only: superseded versions, linked on GitHub rather than shown as tabs. */
+  archived?: ArchivedDoc[]
 }
+
+export type ArchivedDoc = { label: string; href: string }
 
 export type TrackMeta = {
   id: string
@@ -46,6 +50,17 @@ export type ScenarioRef = {
   reading?: boolean
   tabs?: ReadingTab[]
   practice?: string
+  archived?: ArchivedDoc[]
+  /**
+   * 'Practice Worksheet' or 'Case Study' when another page on the site has the same
+   * title. Shown beside the title in search, breadcrumbs, browser titles and prev/next.
+   */
+  qualifier?: string
+}
+
+/** A title with its content-type qualifier, where it needs one. */
+export function qualifiedTitle(ref: { title: string; qualifier?: string }): string {
+  return ref.qualifier ? `${ref.title} · ${ref.qualifier}` : ref.title
 }
 
 export type ScenarioSection = Section & {
@@ -62,6 +77,8 @@ export type Scenario = {
   sections: ScenarioSection[]
   /** The "Final 2-minute spoken answer" section, shown as the closing card. */
   closing: Section | null
+  /** Behavioural pages: `[FILL: …]` slots in the model answers the reader must replace. */
+  fillSlots: number
   /** Every answer-key section, for readers who want the document whole. */
   answerKeyDocument: ParsedDocument
   prev: ScenarioRef | null
@@ -95,7 +112,9 @@ export type ReadingTab = { id: string; label: string }
 export type CaseStudy = {
   ref: ScenarioRef
   title: string
-  docs: { tab: string; label: string; doc: ReadingDocument }[]
+  docs: { tab: string; label: string; purpose: string; minutes: number; doc: ReadingDocument }[]
+  /** The section holding the case's references, so every tab can link to it. */
+  sources: { tab: string; label: string; anchor: string; title: string } | null
   prev: ScenarioRef | null
   next: ScenarioRef | null
 }

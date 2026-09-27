@@ -13,8 +13,8 @@ npm run dev        # runs `sync` first, then next dev
 
 | Script | What it does |
 | --- | --- |
-| `npm run sync` | Copies the markdown out of `../06_Interview_Prep/FDE/` into `content/` and writes `content/manifest.json`. Runs automatically before `dev` and `build`. |
-| `npm run check:content` | Parses every worksheet and answer key and asserts the structural invariants the UI depends on. Run this after editing any source markdown. |
+| `npm run sync` | Copies the markdown out of `../06_Interview_Prep/` into `content/`, regenerates `public/fde-last-day-prep/`, and writes `content/manifest.json`. Runs automatically before `dev` and `build`. |
+| `npm run check:content` | Parses every worksheet, answer key and reading page, asserts the structural invariants the UI depends on, and enforces the editorial contract: metadata, names, cross-links, internal links and placeholders. Run this after editing any source markdown. |
 | `npm run build` | Production build. |
 | `npm run lint` | ESLint. |
 
@@ -32,6 +32,19 @@ table cell, a bare `-` bullet, a `Label:` line with nothing after the colon — 
 from a scenario's name. That is why a new module becomes interactive with no code
 change, and also why `check:content` exists: a stray formatting change can silently
 turn an input into static text, which looks fine and is wrong.
+
+**Names and page metadata live in `src/lib/editorial.ts`** — track and tab labels,
+content modes, audience/prerequisites/outcomes per family, the Last-Day review list and
+its cross-links. The sync scripts import it too, so change a visible name there, never in
+a component or the manifest. Tab and track *ids* are separate from their labels and must
+not change: URLs and saved progress use them. See
+`specs/2026-09-27-content-architecture-and-editorial-style.md`.
+
+**Last-Day Review is generated as well.** `scripts/last-day.mjs` copies
+`../06_Interview_Prep/Last_Day_Prep/html/` into `public/fde-last-day-prep/`, renaming
+"Module N" to "Review NN" and adding cross-links, and copies the Roadmap and Rapid
+Revision Guide into `content/last-day/`. Edit the sources; hand edits under
+`public/fde-last-day-prep/` are overwritten by the next sync.
 
 Fenced blocks are parsed as their own blocks — ` ```mermaid ` renders as a diagram,
 anything else as a code block.

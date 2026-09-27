@@ -92,7 +92,10 @@ export function SearchDialog() {
   const go = useCallback(
     (href: string) => {
       setOpen(false)
-      router.push(href)
+      // The Last-Day reviews are static HTML files, not app routes, so they need a
+      // full navigation; the client router would look for a page that does not exist.
+      if (/\.html(#|$)/.test(href)) window.location.assign(href)
+      else router.push(href)
     },
     [router],
   )
@@ -163,7 +166,7 @@ export function SearchDialog() {
                 value={query}
                 onChange={(e) => handleQueryChange(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder="Search scenarios, sections and answer keys…"
+                placeholder="Search practice, case studies and reviews…"
                 aria-label="Search"
                 className="w-full bg-transparent py-3.5 text-[0.9375rem] text-text outline-none placeholder:text-subtle"
               />
@@ -182,7 +185,7 @@ export function SearchDialog() {
               )}
               {query.trim() === '' && !loadFailed && (
                 <li className="px-4 py-6 text-center text-[0.875rem] text-subtle">
-                  Search every worksheet, answer key and case study.
+                  Search every worksheet, model answer, case study and review.
                 </li>
               )}
               {entries && query.trim() !== '' && results.length === 0 && (
@@ -206,7 +209,7 @@ export function SearchDialog() {
                       </span>
                       <span
                         className={`shrink-0 rounded px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide ${
-                          entry.kind === 'answer key'
+                          entry.kind === 'Model Answer'
                             ? 'bg-accent/15 text-accent'
                             : 'bg-surface-2 text-subtle'
                         }`}

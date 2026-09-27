@@ -3,10 +3,27 @@ import 'server-only'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { cache } from 'react'
-import { parseDocument, type Section } from './parse'
-import { parseReading, readingText, toPlainText } from './reading'
+import { parseDocument, type Block, type ParsedDocument, type Section } from './parse'
+import { parseReading, readingText, toPlainText, type ReadingDocument } from './reading'
 import { ANSWER_KEY_MAP, CLOSING_SECTION_KEY } from './mapping'
-import { scenarioHref } from './scenario'
+import { qualifiedTitle, scenarioHref } from './scenario'
+import {
+  FAMILY_META,
+  LAST_DAY_GUIDES,
+  REVIEWS,
+  RELATED_CASE,
+  RELATED_PRACTICE,
+  TABS,
+  TRIGGER_SHEET,
+  WORDS_PER_MINUTE,
+  normaliseTitle,
+  qualifierFor,
+  reviewHref,
+  reviewLabel,
+  reviewsFor,
+  type EditorialMeta,
+  type Review,
+} from './editorial'
 import type {
   CaseStudy,
   Manifest,
@@ -42,10 +59,16 @@ export async function getTracks(moduleId: string): Promise<TrackMeta[]> {
   return manifest.modules.find((m) => m.id === moduleId)?.tracks ?? []
 }
 
-/** Flat, ordered list across all tracks — drives prev/next, search and progress. */
+/**
+ * Flat, ordered list across all tracks — drives prev/next, search and progress.
+ *
+ * Titles shared by two pages (the same scenario as a worksheet and as a case study)
+ * get a content-type qualifier here, from the manifest itself, so a new duplicate is
+ * qualified without anyone remembering to list it.
+ */
 export const getAllScenarios = cache(async (): Promise<ScenarioRef[]> => {
   const manifest = await getManifest()
-  return manifest.modules.flatMap((module) =>
+  const refs: ScenarioRef[] = manifest.modules.flatMap((module) =>
     module.tracks.flatMap((track) =>
       track.scenarios.map((scenario) => ({
         moduleId: module.id,
@@ -57,11 +80,83 @@ export const getAllScenarios = cache(async (): Promise<ScenarioRef[]> => {
         tag: scenario.tag,
         tabs: scenario.tabs,
         practice: scenario.practice,
+        archived: scenario.archived,
         reading: module.kind === 'reading',
       })),
     ),
   )
+  const seen = new Map<string, number>()
+  for (const r of refs) seen.set(normaliseTitle(r.title), (seen.get(normaliseTitle(r.title)) ?? 0) + 1)
+  return refs.map((r) =>
+    (seen.get(normaliseTitle(r.title)) ?? 0) > 1
+      ? { ...r, qualifier: qualifierFor(familyMeta(r.trackId).mode) }
+      : r,
+  )
 })
+
+/** Family metadata for a track. Throws rather than rendering a page with none. */
+export function familyMeta(trackId: string): EditorialMeta {
+  const meta = FAMILY_META[trackId]
+  if (!meta) throw new Error(`Track "${trackId}" has no FAMILY_META entry in src/lib/editorial.ts`)
+  return meta
+}
+
+export type Related = {
+  reviews: Review[]
+  /** The same or a closely related scenario in the other format. */
+  counterpart: ScenarioRef | null
+}
+
+/** Cross-links for a page: the reviews that cite it, and its practice/case counterpart. */
+export async function getRelated(ref: ScenarioRef): Promise<Related> {
+  const key = `${ref.trackId}/${ref.slug}`
+  const other = RELATED_CASE[key] ?? RELATED_PRACTICE[key]
+  const all = await getAllScenarios()
+  return {
+    reviews: reviewsFor(key),
+    counterpart: other ? (all.find((s) => `${s.trackId}/${s.slug}` === other) ?? null) : null,
+  }
+}
+
+export async function pageRef(key: string): Promise<ScenarioRef | null> {
+  return (await getAllScenarios()).find((s) => `${s.trackId}/${s.slug}` === key) ?? null
+}
+
+/**
+ * Behavioural model answers mark the details only the reader can supply as
+ * `[FILL: …]`. They are rendered as highlighted slots so they read as gaps to fill,
+ * never as a finished answer to recite.
+ */
+const FILL = /(?:<code>)?\[FILL(?:[:\s]\s*([^\]]*?))?\s*\](?:<\/code>)?/g
+
+function markFill(html: string): string {
+  return html.replace(
+    FILL,
+    (_, detail: string | undefined) =>
+      `<mark class="fill-slot"><span class="fill-slot-label">Your detail</span>${detail && detail !== '...' ? ` ${detail}` : ''}</mark>`,
+  )
+}
+
+function markFillBlocks(blocks: Block[]): Block[] {
+  return blocks.map((b) => {
+    if (b.kind === 'prose') return { ...b, html: markFill(b.html) }
+    if (b.kind === 'list') {
+      return { ...b, items: b.items.map((i) => (i.kind === 'text' ? { ...i, html: markFill(i.html) } : i)) }
+    }
+    if (b.kind === 'table') {
+      return { ...b, rows: b.rows.map((row) => row.map((c) => ({ ...c, text: markFill(c.text) }))) }
+    }
+    return b
+  })
+}
+
+function markFillDocument(doc: ParsedDocument): ParsedDocument {
+  return {
+    ...doc,
+    intro: markFillBlocks(doc.intro),
+    sections: doc.sections.map((s) => ({ ...s, blocks: markFillBlocks(s.blocks) })),
+  }
+}
 
 export const getScenario = cache(
   async (
@@ -82,8 +177,9 @@ export const getScenario = cache(
       readFile(join(base, 'answer-keys', `${slug}.md`), 'utf8'),
     ])
 
-    const worksheet = parseDocument(worksheetRaw)
-    const answerKey = parseDocument(answerKeyRaw)
+    const personal = Boolean(familyMeta(trackId).personalisation)
+    const worksheet = personal ? markFillDocument(parseDocument(worksheetRaw)) : parseDocument(worksheetRaw)
+    const answerKey = personal ? markFillDocument(parseDocument(answerKeyRaw)) : parseDocument(answerKeyRaw)
     const keyByKey = new Map(answerKey.sections.map((s) => [s.key, s]))
 
     const sections: ScenarioSection[] = worksheet.sections.map((section) => ({
@@ -108,6 +204,7 @@ export const getScenario = cache(
       intro: worksheet.intro,
       sections,
       closing: keyByKey.get(CLOSING_SECTION_KEY) ?? null,
+      fillSlots: personal ? (answerKeyRaw.match(/\[FILL\b/g) ?? []).length : 0,
       answerKeyDocument: answerKey,
       prev: index > 0 ? all[index - 1] : null,
       next: index < all.length - 1 ? all[index + 1] : null,
@@ -116,6 +213,37 @@ export const getScenario = cache(
 )
 
 const SEARCH_TEXT_CAP = 500
+
+/** Whole minutes to read a markdown document, rounded up; never zero. */
+export function readingMinutes(markdown: string): number {
+  const words = markdown
+    .replace(/```[\s\S]*?```/g, ' ')
+    .split(/\s+/)
+    .filter((w) => /[A-Za-z0-9]/.test(w)).length
+  return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE))
+}
+
+/**
+ * The section that holds a case's references. Searched last tab first, because the
+ * Sources and Full Design tab is where grouped cases keep them.
+ */
+function findSources(docs: { tab: string; label: string; doc: ReadingDocument }[]) {
+  for (const { tab, label, doc } of [...docs].reverse()) {
+    const section = doc.sections.find(
+      (s) => s.title && /^(\d+\.\s*)?(references|sources|further reading|bibliography)\b/i.test(toPlainText(s.title)),
+    )
+    if (section) return { tab, label, anchor: section.id, title: toPlainText(section.title!) }
+  }
+  return null
+}
+
+/** One of the two Last-Day markdown guides, parsed for display. */
+export const getLastDayGuide = cache(async (id: string) => {
+  const guide = LAST_DAY_GUIDES.find((g) => g.id === id)
+  if (!guide) return null
+  const raw = await readFile(join(CONTENT_DIR, 'last-day', `${id}.md`), 'utf8')
+  return { guide, minutes: readingMinutes(raw), doc: parseReading(raw, id) }
+})
 
 /**
  * A reading page: one group's four documents, each parsed for display. prev/next stay
@@ -130,17 +258,23 @@ export const getCaseStudy = cache(
 
     const base = join(CONTENT_DIR, 'modules', moduleId, trackId, slug)
     const docs = await Promise.all(
-      (ref.tabs ?? []).map(async (tab) => ({
-        tab: tab.id,
-        label: tab.label,
-        doc: parseReading(await readFile(join(base, `${tab.id}.md`), 'utf8'), tab.id),
-      })),
+      (ref.tabs ?? []).map(async (tab) => {
+        const raw = await readFile(join(base, `${tab.id}.md`), 'utf8')
+        return {
+          tab: tab.id,
+          label: tab.label,
+          purpose: TABS[tab.id]?.purpose ?? '',
+          minutes: readingMinutes(raw),
+          doc: parseReading(raw, tab.id),
+        }
+      }),
     )
 
     return {
       ref,
       title: ref.title,
       docs,
+      sources: findSources(docs),
       prev: index > 0 ? siblings[index - 1] : null,
       next: index < siblings.length - 1 ? siblings[index + 1] : null,
     }
@@ -161,7 +295,7 @@ export const getSearchIndex = cache(async (): Promise<SearchEntry[]> => {
         for (const section of doc.sections) {
           if (!section.title) continue
           entries.push({
-            title: `${ref.tag} · ${study.title}`,
+            title: `${ref.tag} · ${qualifiedTitle(ref)}`,
             section: toPlainText(section.title),
             kind: label,
             href: `${href}#${section.id}`,
@@ -177,25 +311,59 @@ export const getSearchIndex = cache(async (): Promise<SearchEntry[]> => {
     if (!scenario) continue
     const href = scenarioHref(ref)
 
+    const title = qualifiedTitle({ title: scenario.title, qualifier: ref.qualifier })
+    const personal = Boolean(familyMeta(ref.trackId).personalisation)
     for (const section of scenario.sections) {
       entries.push({
-        title: scenario.title,
+        title,
         section: section.title,
-        kind: 'worksheet',
+        kind: personal ? 'Behavioural' : 'Practice',
         href: `${href}#section-${section.index}`,
         text: plainText(section),
       })
     }
     for (const section of scenario.answerKeyDocument.sections) {
       entries.push({
-        title: scenario.title,
+        title,
         section: section.title,
-        kind: 'answer key',
+        kind: 'Model Answer',
         href: `${href}#section-${section.index}`,
         text: plainText(section),
       })
     }
   }
+
+  // Last-Day Review: the two markdown guides by section, and each static review by title.
+  for (const guide of LAST_DAY_GUIDES) {
+    const loaded = await getLastDayGuide(guide.id)
+    if (!loaded) continue
+    for (const section of loaded.doc.sections) {
+      if (!section.title) continue
+      entries.push({
+        title: guide.title,
+        section: toPlainText(section.title),
+        kind: 'Revision',
+        href: `/fde-last-day-prep/${guide.id}#${section.id}`,
+        text: `${toPlainText(section.title)} ${readingText(section)}`.slice(0, SEARCH_TEXT_CAP),
+      })
+    }
+  }
+  for (const r of REVIEWS) {
+    entries.push({
+      title: 'Last-Day Review',
+      section: `${reviewLabel(r.number)} — ${r.title}`,
+      kind: 'Revision',
+      href: reviewHref(r),
+      text: `${r.title} ${r.blurb}`,
+    })
+  }
+  entries.push({
+    title: 'Last-Day Review',
+    section: TRIGGER_SHEET.title,
+    kind: 'Revision',
+    href: `/fde-last-day-prep/${TRIGGER_SHEET.dir}/${TRIGGER_SHEET.file}`,
+    text: TRIGGER_SHEET.blurb,
+  })
 
   return entries
 })

@@ -1,3 +1,5 @@
+import { SITE_NAME, SITE_TAGLINE } from './editorial'
+
 /**
  * The full FDE preparation path. Modules are listed here whether or not they have
  * content yet, so the roadmap is visible from the first visit and each future module
@@ -20,49 +22,49 @@ export type ModuleMeta = {
 }
 
 export const SITE = {
-  name: 'Forward Deployed',
-  tagline: 'The end-to-end FDE interview prep system',
+  name: SITE_NAME,
+  tagline: SITE_TAGLINE,
   description:
-    'Practice worksheets and answer keys for Forward Deployed Engineer interviews. ' +
-    'Work a real customer scenario end to end — discovery, requirements, architecture, ' +
-    'evaluation, rollout — then check yourself against what a strong answer covers.',
+    'Practice worksheets, case studies and a last-day review for Forward Deployed Engineer ' +
+    'interviews. Work a real customer scenario end to end — discovery, requirements, ' +
+    'architecture, evaluation, rollout — then check yourself against what a strong answer covers.',
 } as const
 
 export const MODULES: ModuleMeta[] = [
   {
     id: '01-customer-discovery-and-decomposition',
     number: 1,
-    title: 'Customer Discovery & Decomposition',
+    title: 'Customer Discovery and Problem Decomposition',
     blurb:
       'Turn an ambiguous customer problem into users, workflows, requirements and a ' +
-      'defensible architecture. 22 case studies with answer keys.',
+      'defensible architecture. 22 practice scenarios with model answers.',
     status: 'live',
   },
   {
     id: '02-architecture-and-system-design',
     number: 2,
-    title: 'Architecture & System Design',
+    title: 'Architecture and System Design',
     blurb: 'Control plane vs data plane, integration patterns, and designing for the constraint that actually bites.',
     status: 'planned',
   },
   {
     id: '03-enterprise-data-rag-and-agents',
     number: 3,
-    title: 'Enterprise Data, RAG & Agents',
+    title: 'Enterprise Data, RAG, and Agents',
     blurb: 'Permission-aware retrieval, connectors and freshness, tool-using agents inside real enterprise boundaries.',
     status: 'planned',
   },
   {
     id: '04-evaluation-security-and-red-team',
     number: 4,
-    title: 'Evaluation, Security & Red Team',
+    title: 'Evaluation, Security, and Red Teaming',
     blurb: 'Golden sets, leakage suites, prompt injection, and the gates that decide whether a system ships.',
     status: 'planned',
   },
   {
     id: '05-production-debugging-observability-and-optimization',
     number: 5,
-    title: 'Production Debugging & Observability',
+    title: 'Production Debugging and Observability',
     blurb: 'Tracing a bad answer back to its cause, SLOs for probabilistic systems, latency and cost tuning.',
     status: 'planned',
   },
@@ -76,7 +78,7 @@ export const MODULES: ModuleMeta[] = [
   {
     id: '07-mock-interviews-and-scorecards',
     number: 7,
-    title: 'Mock Interviews & Scorecards',
+    title: 'Mock Interviews and Scorecards',
     blurb: 'Full-length mocks with the interviewer rubric, so you can score your own performance honestly.',
     status: 'planned',
   },
@@ -90,7 +92,7 @@ export const MODULES: ModuleMeta[] = [
   {
     id: '09-mcp-a2a-and-llmops',
     number: 9,
-    title: 'MCP, A2A & LLMOps',
+    title: 'MCP, A2A, and LLMOps',
     blurb: 'Agent protocols and the operational layer underneath them: deployment, versioning, rollback.',
     status: 'planned',
   },
@@ -111,35 +113,35 @@ export const MODULES: ModuleMeta[] = [
   {
     id: '12-answer-language-and-interview-day',
     number: 12,
-    title: 'Answer Language & Interview Day',
+    title: 'Answer Language and Interview Day',
     blurb: 'The phrasing that separates a strong answer from a correct one, plus interview-day logistics.',
     status: 'planned',
   },
   {
     id: '13-career-and-portfolio-assets',
     number: 13,
-    title: 'Career & Portfolio Assets',
+    title: 'Career and Portfolio Assets',
     blurb: 'Résumé framing, portfolio projects and STAR stories that hold up to an FDE panel.',
     status: 'planned',
   },
   {
     id: '14-behavioural-and-leadership-round',
     number: 14,
-    title: 'Behavioural & Leadership Round',
+    title: 'Behavioural and Leadership Practice',
     blurb:
-      'The non-technical half of the loop. Customer-facing competencies for the hiring ' +
-      'manager round, and leadership-principle answers grounded in engagements you ' +
-      'actually ran — including an honest mark on the ones they do not cover.',
+      'The non-technical half of the loop: customer-facing competencies for the hiring ' +
+      'manager, and leadership-principle answers. The model answers are a personal ' +
+      'template — every one needs your own evidence before it is yours.',
     status: 'live',
   },
   {
     id: '15-fde-case-studies',
     number: 15,
-    title: 'FDE Case Studies',
+    title: 'Case Studies',
     blurb:
-      'Twenty grouped system-design case studies, each read at three depths — interview ' +
-      'guide, deep dive and cheat sheet, plus the full sourced pack — and thirteen ' +
-      'standalone cases, from one-off designs to judgement and decomposition questions.',
+      'Twenty grouped system designs, each read at three depths — Interview Guide, ' +
+      'Technical Deep Dive and Quick Review, backed by Sources and Full Design — plus ' +
+      'thirteen further cases, from complete designs to product-judgement questions.',
     status: 'live',
     kind: 'reading',
   },

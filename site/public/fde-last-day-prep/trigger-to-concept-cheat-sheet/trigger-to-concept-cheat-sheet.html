@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A searchable FDE interview reference mapping common prompts to concepts, questions, and modules.">
-  <title>FDE Interview - Trigger → Concept Cheat Sheet</title>
+  <meta name="description" content="A searchable FDE interview reference mapping common prompts to concepts, questions, and reviews.">
+  <title>Trigger-to-Concept Quick Reference · Forward Deployed</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -265,161 +265,175 @@
       th, td { padding: 1mm 1.4mm; }
     }
   </style>
+
+<style>
+  .fd-sitebar { font: 500 0.8125rem/1.5 var(--sans, system-ui, sans-serif); color: var(--text-2, #555);
+    background: var(--surface, #fff); border-bottom: 1px solid var(--border-strong, #ddd);
+    padding: 0.625rem 1rem; display: grid; gap: 0.25rem; }
+  .fd-sitebar .fd-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.875rem;
+    max-width: 72rem; margin: 0 auto; width: 100%; }
+  .fd-sitebar a { color: var(--primary, #2952cc); text-decoration: none; font-weight: 600; }
+  .fd-sitebar a:hover { text-decoration: underline; }
+  .fd-sitebar .fd-label { font-weight: 700; color: var(--text, #111); }
+  .fd-sitebar .fd-mode { font-size: 0.75rem; }
+  .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
+  @media print { .fd-sitebar { display: none; } }
+</style>
 </head>
-<body>
+<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Trigger-to-Concept Quick Reference</span><span class="fd-mode">Revision — searchable index of all eighteen reviews</span></div></div>
   <div class="shell">
     <nav class="rail" aria-label="Cheat sheet sections">
       <p class="rail-label">Sections</p>
-      <ul><li><a href="#1-discovery-and-requirements-modules-1-3">Discovery and Requirements - Modules 1-3</a></li>
-<li><a href="#2-architecture-responsibilities-module-4">Architecture Responsibilities - Module 4</a></li>
-<li><a href="#3-rag-and-enterprise-data-module-5">RAG and Enterprise Data - Module 5</a></li>
-<li><a href="#4-agents-tools-actions-and-approval-modules-6-8">Agents, Tools, Actions, and Approval - Modules 6-8</a></li>
-<li><a href="#5-scale-latency-and-cost-modules-9-11">Scale, Latency, and Cost - Modules 9-11</a></li>
-<li><a href="#6-failure-and-recovery-module-12">Failure and Recovery - Module 12</a></li>
-<li><a href="#7-evaluate-release-and-operate-modules-13-15">Evaluate, Release, and Operate - Modules 13-15</a></li>
-<li><a href="#8-enterprise-security-module-16">Enterprise Security - Module 16</a></li>
-<li><a href="#9-trade-offs-and-interview-execution-modules-17-18">Trade-Offs and Interview Execution - Modules 17-18</a></li>
+      <ul><li><a href="#1-discovery-and-requirements-modules-1-3">Discovery and Requirements - Reviews 01–03</a></li>
+<li><a href="#2-architecture-responsibilities-module-4">Architecture Responsibilities - Review 04</a></li>
+<li><a href="#3-rag-and-enterprise-data-module-5">RAG and Enterprise Data - Review 05</a></li>
+<li><a href="#4-agents-tools-actions-and-approval-modules-6-8">Agents, Tools, Actions, and Approval - Reviews 06–08</a></li>
+<li><a href="#5-scale-latency-and-cost-modules-9-11">Scale, Latency, and Cost - Reviews 09–11</a></li>
+<li><a href="#6-failure-and-recovery-module-12">Failure and Recovery - Review 12</a></li>
+<li><a href="#7-evaluate-release-and-operate-modules-13-15">Evaluate, Release, and Operate - Reviews 13–15</a></li>
+<li><a href="#8-enterprise-security-module-16">Enterprise Security - Review 16</a></li>
+<li><a href="#9-trade-offs-and-interview-execution-modules-17-18">Trade-Offs and Interview Execution - Reviews 17–18</a></li>
 <li><a href="#10-final-60-second-recall">Final 60-Second Recall</a></li></ul>
     </nav>
     <main>
       <div class="toolbar" role="search">
         <div class="search-wrap">
           <label for="concept-search" hidden>Search triggers and concepts</label>
-          <input id="concept-search" class="search" type="search" placeholder="Search triggers, concepts, questions, or modules" autocomplete="off">
+          <input id="concept-search" class="search" type="search" placeholder="Search triggers, concepts, questions, or reviews" autocomplete="off">
           <button class="clear" type="button" aria-label="Clear search" title="Clear search">×</button>
         </div>
         <output class="result-count" for="concept-search" aria-live="polite">All trigger rows</output>
       </div>
-      <article><h1 id="fde-interview-trigger-concept-cheat-sheet">FDE Interview - Trigger → Concept Cheat Sheet<a class="anchor" href="#fde-interview-trigger-concept-cheat-sheet" aria-label="Link to FDE Interview - Trigger → Concept Cheat Sheet">#</a></h1>
+      <article><h1 id="fde-interview-trigger-concept-cheat-sheet">Trigger-to-Concept Quick Reference<a class="anchor" href="#fde-interview-trigger-concept-cheat-sheet" aria-label="Link to Trigger-to-Concept Quick Reference">#</a></h1>
 <p>Use this to recognize what an interviewer is testing and decide your next move. A trigger suggests a question or requirement; it does not automatically justify a component.</p>
 <pre><code class="language-text">HEAR THE TRIGGER → RECALL THE CONCEPT
                            ↓
         CLARIFY → REQUIREMENT → CHOICE → TRADE-OFF
 </code></pre>
 <p><strong>Answer pattern:</strong> “That suggests ___. I’d clarify ___ before choosing ___. The main trade-off is ___.”</p>
-<h2 id="1-discovery-and-requirements-modules-1-3">1. Discovery and Requirements - Modules 1-3<a class="anchor" href="#1-discovery-and-requirements-modules-1-3" aria-label="Link to 1. Discovery and Requirements - Modules 1-3">#</a></h2>
+<h2 id="1-discovery-and-requirements-modules-1-3">1. Discovery and Requirements - Reviews 01–03<a class="anchor" href="#1-discovery-and-requirements-modules-1-3" aria-label="Link to 1. Discovery and Requirements - Reviews 01–03">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“We need an AI agent”</td>
 <td>Proposed solution vs business problem</td>
 <td>“What outcome matters, and what is painful today?”</td>
-<td>1</td>
+<td><a href="/fde-last-day-prep/module-01-fde-problem-decomposition/concise-interview-module.html" title="Problem Framing and Decomposition">01</a></td>
 </tr>
 <tr>
 <td>“People waste time on this”</td>
 <td>Current workflow and bottleneck</td>
 <td>“Walk me through the steps and where time is spent.”</td>
-<td>1</td>
+<td><a href="/fde-last-day-prep/module-01-fde-problem-decomposition/concise-interview-module.html" title="Problem Framing and Decomposition">01</a></td>
 </tr>
 <tr>
 <td>“What should the system do?”</td>
 <td>Functional requirements</td>
 <td>Summarize capabilities, actions, approvals, and failures</td>
-<td>2</td>
+<td><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html" title="Functional Requirements">02</a></td>
 </tr>
 <tr>
 <td>“Follow-up questions”</td>
 <td>Relevant context</td>
 <td>What must persist across turns or tasks?</td>
-<td>2</td>
+<td><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html" title="Functional Requirements">02</a></td>
 </tr>
 <tr>
 <td>“Recommend the next action”</td>
 <td>Reason, not necessarily act</td>
 <td>Who decides and who executes?</td>
-<td>2</td>
+<td><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html" title="Functional Requirements">02</a></td>
 </tr>
 <tr>
 <td>“Fast, reliable, cheap”</td>
 <td>Measurable NFRs</td>
 <td>Workload, metric, target, window, quality floor</td>
-<td>3</td>
+<td><a href="/fde-last-day-prep/module-03-non-functional-requirements/concise-interview-module.html" title="Quality Attributes and Non-Functional Requirements">03</a></td>
 </tr>
 <tr>
 <td>“100K users”</td>
 <td>Workload discovery</td>
 <td>Active users, peak rates, concurrency, task duration</td>
-<td>1, 3, 9</td>
+<td><a href="/fde-last-day-prep/module-01-fde-problem-decomposition/concise-interview-module.html" title="Problem Framing and Decomposition">01</a>, <a href="/fde-last-day-prep/module-03-non-functional-requirements/concise-interview-module.html" title="Quality Attributes and Non-Functional Requirements">03</a>, <a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html" title="Scaling AI Systems">09</a></td>
 </tr>
 <tr>
 <td>“Reduce support cost”</td>
 <td>Business outcome</td>
 <td>Baseline, resolved cases, quality and customer experience</td>
-<td>1, 3, 11</td>
+<td><a href="/fde-last-day-prep/module-01-fde-problem-decomposition/concise-interview-module.html" title="Problem Framing and Decomposition">01</a>, <a href="/fde-last-day-prep/module-03-non-functional-requirements/concise-interview-module.html" title="Quality Attributes and Non-Functional Requirements">03</a>, <a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Trustworthy answers”</td>
 <td>AI quality</td>
 <td>Correctness, claim support, relevant evaluation cases</td>
-<td>3, 13</td>
+<td><a href="/fde-last-day-prep/module-03-non-functional-requirements/concise-interview-module.html" title="Quality Attributes and Non-Functional Requirements">03</a>, <a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 </tbody></table>
 <p><strong>Recall discovery:</strong> WHY → TODAY → WHO/HOW MUCH → WHAT → HOW FAR → BOUNDARIES.</p>
-<h2 id="2-architecture-responsibilities-module-4">2. Architecture Responsibilities - Module 4<a class="anchor" href="#2-architecture-responsibilities-module-4" aria-label="Link to 2. Architecture Responsibilities - Module 4">#</a></h2>
+<h2 id="2-architecture-responsibilities-module-4">2. Architecture Responsibilities - Review 04<a class="anchor" href="#2-architecture-responsibilities-module-4" aria-label="Link to 2. Architecture Responsibilities - Review 04">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“User identity, tenant quotas, request validation”</td>
 <td>API Gateway</td>
 <td>Application-entry controls; downstream access still checked</td>
-<td>4</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a></td>
 </tr>
 <tr>
 <td>“Several model providers, fallback, token tracking”</td>
 <td>Model Gateway</td>
 <td>Compatible model-call controls and provider limits</td>
-<td>4</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a></td>
 </tr>
 <tr>
 <td>“Several request categories”</td>
 <td>Router</td>
 <td>Choose capability; separate agents are not implied</td>
-<td>2, 4</td>
+<td><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html" title="Functional Requirements">02</a>, <a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a></td>
 </tr>
 <tr>
 <td>“Branches, tools, retries, approvals”</td>
 <td>Orchestrator</td>
 <td>Coordinate steps and state transitions</td>
-<td>4</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a></td>
 </tr>
 <tr>
 <td>“Resume tomorrow / after a crash”</td>
 <td>Durable state</td>
 <td>Persist progress, approval, and action status</td>
-<td>4, 6, 12</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a>, <a href="/fde-last-day-prep/module-06-agentic-architecture/concise-interview-module.html" title="Agent Architecture and Orchestration">06</a>, <a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Repeated eligible lookup”</td>
 <td>Cache</td>
 <td>Freshness, tenant/access scope, invalidation</td>
-<td>4, 11</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a>, <a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Long task / temporary burst”</td>
 <td>Queue</td>
 <td>Bounded wait, job status, processing capacity</td>
-<td>4, 9, 10</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a>, <a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html" title="Scaling AI Systems">09</a>, <a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a></td>
 </tr>
 <tr>
 <td>“Several consumers react to a refund”</td>
 <td>Event distribution</td>
 <td>Delivery, duplicate handling, independent consumers</td>
-<td>4</td>
+<td><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html" title="Core Architecture Components">04</a></td>
 </tr>
 </tbody></table>
 <pre><code class="language-text">API Gateway   = User → Application control
@@ -429,69 +443,69 @@ Router: Which capability?
 Orchestrator: Which step / transition next?
 State store: Where did the task stop?
 </code></pre>
-<h2 id="3-rag-and-enterprise-data-module-5">3. RAG and Enterprise Data - Module 5<a class="anchor" href="#3-rag-and-enterprise-data-module-5" aria-label="Link to 3. RAG and Enterprise Data - Module 5">#</a></h2>
+<h2 id="3-rag-and-enterprise-data-module-5">3. RAG and Enterprise Data - Review 05<a class="anchor" href="#3-rag-and-enterprise-data-module-5" aria-label="Link to 3. RAG and Enterprise Data - Review 05">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“Company policies / manuals”</td>
 <td>RAG knowledge</td>
 <td>Approved sources, ingestion, freshness, access</td>
-<td>5</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a></td>
 </tr>
 <tr>
 <td>“Current order or refund status”</td>
 <td>Live API/tool</td>
 <td>Query the system of record within authorized scope</td>
-<td>5, 7</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a>, <a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/concise-interview-module.html" title="Tools, Actions, and Enterprise Integrations">07</a></td>
 </tr>
 <tr>
 <td>“Correct document never appears”</td>
 <td>Recall / ingestion</td>
 <td>Does it exist, parse correctly, pass filters, and get retrieved?</td>
-<td>5</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a></td>
 </tr>
 <tr>
 <td>“Too many unrelated chunks”</td>
 <td>Precision / ranking</td>
 <td>Search signals, chunking, reranking, final context</td>
-<td>5</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a></td>
 </tr>
 <tr>
 <td>“Exact product code”</td>
 <td>Keyword / hybrid matching</td>
 <td>Compare exact-term and meaning-based retrieval</td>
-<td>5</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a></td>
 </tr>
 <tr>
 <td>“Old policy answer”</td>
 <td>Freshness and version</td>
 <td>Update pipeline, metadata, applicability</td>
-<td>5</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a></td>
 </tr>
 <tr>
 <td>“Right evidence, wrong answer”</td>
 <td>Context use / generation</td>
 <td>Was evidence retained, and do claims follow it?</td>
-<td>5, 13</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a>, <a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 <tr>
 <td>“Includes citations”</td>
 <td>Evidence support</td>
 <td>Do sources actually support the important claims?</td>
-<td>5, 13</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a>, <a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 <tr>
 <td>“Different document permissions”</td>
 <td>Authorized retrieval</td>
 <td>Enforce before context; update permissions and cache scope</td>
-<td>5, 16</td>
+<td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a>, <a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 </tbody></table>
 <pre><code class="language-text">Debug RAG:
@@ -499,87 +513,87 @@ Source → Parse/index → Access/version filters
        → Retrieve/rank → Final context → Supported answer
 </code></pre>
 <p>RAG = retrieval-augmented generation. Recall concerns finding relevant evidence; precision concerns how much retrieved evidence is relevant. Groundedness concerns support, not whether the source is current and correct for the case.</p>
-<h2 id="4-agents-tools-actions-and-approval-modules-6-8">4. Agents, Tools, Actions, and Approval - Modules 6-8<a class="anchor" href="#4-agents-tools-actions-and-approval-modules-6-8" aria-label="Link to 4. Agents, Tools, Actions, and Approval - Modules 6-8">#</a></h2>
+<h2 id="4-agents-tools-actions-and-approval-modules-6-8">4. Agents, Tools, Actions, and Approval - Reviews 06–08<a class="anchor" href="#4-agents-tools-actions-and-approval-modules-6-8" aria-label="Link to 4. Agents, Tools, Actions, and Approval - Reviews 06–08">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“Same steps every time”</td>
 <td>Workflow/code</td>
 <td>Keep defined rules and branches deterministic</td>
-<td>6</td>
+<td><a href="/fde-last-day-prep/module-06-agentic-architecture/concise-interview-module.html" title="Agent Architecture and Orchestration">06</a></td>
 </tr>
 <tr>
 <td>“Next steps depend on findings”</td>
 <td>Bounded agent</td>
 <td>Which decisions need flexible reasoning?</td>
-<td>6</td>
+<td><a href="/fde-last-day-prep/module-06-agentic-architecture/concise-interview-module.html" title="Agent Architecture and Orchestration">06</a></td>
 </tr>
 <tr>
 <td>“Separate agent for every feature”</td>
 <td>Complexity justification</td>
 <td>What specialization/parallel benefit exceeds coordination cost?</td>
-<td>6, 17</td>
+<td><a href="/fde-last-day-prep/module-06-agentic-architecture/concise-interview-module.html" title="Agent Architecture and Orchestration">06</a>, <a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html" title="Architecture Trade-Offs">17</a></td>
 </tr>
 <tr>
 <td>“Twenty calls for a simple task”</td>
 <td>Bounds / no progress</td>
 <td>Shared step/tool/token/time/cost/retry budget</td>
-<td>6, 11</td>
+<td><a href="/fde-last-day-prep/module-06-agentic-architecture/concise-interview-module.html" title="Agent Architecture and Orchestration">06</a>, <a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Access production CRM/ERP”</td>
 <td>Controlled tool layer</td>
 <td>Specific operations, validated inputs, scoped credentials</td>
-<td>7</td>
+<td><a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/concise-interview-module.html" title="Tools, Actions, and Enterprise Integrations">07</a></td>
 </tr>
 <tr>
 <td>“Issue refund / cancel order”</td>
 <td>Write action</td>
 <td>Authorization, policy, safe execution, confirmation</td>
-<td>7, 8</td>
+<td><a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/concise-interview-module.html" title="Tools, Actions, and Enterprise Integrations">07</a>, <a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
 <tr>
 <td>“Amount threshold”</td>
 <td>Deterministic policy</td>
 <td>Exact boundaries, trusted facts, rule ownership/version</td>
-<td>8</td>
+<td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
 <tr>
 <td>“Manager must approve”</td>
 <td>HITL</td>
 <td>Action/evidence packet, authorized reviewer, durable state</td>
-<td>8</td>
+<td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
 <tr>
 <td>“Approval takes hours”</td>
 <td>Durable approval workflow</td>
 <td>Persist, expire/reject, resume and revalidate</td>
-<td>8</td>
+<td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
 <tr>
 <td>“Action changes after approval”</td>
 <td>Approval binding</td>
 <td>Check policy and obtain fresh approval where required</td>
-<td>8</td>
+<td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
 <tr>
 <td>“Policy service unavailable”</td>
 <td>Fail-closed sensitive writes</td>
 <td>Stop/defer action; safe unaffected assistance may continue</td>
-<td>8</td>
+<td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
 <tr>
 <td>“Disable refunds now”</td>
 <td>Kill switch</td>
 <td>Execution boundary, queued/in-flight work, actual outcomes</td>
-<td>8, 14</td>
+<td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a>, <a href="/fde-last-day-prep/module-14-release-and-change-management/concise-interview-module.html" title="Release and Change Management">14</a></td>
 </tr>
 </tbody></table>
 <pre><code class="language-text">Agent recommends → Policy decides → Executor acts
@@ -587,105 +601,105 @@ Source → Parse/index → Access/version filters
                  Approval if required
 </code></pre>
 <p>HITL = human-in-the-loop. High model confidence is not permission to act. Approval does not grant unrelated access or reverse completed transactions.</p>
-<h2 id="5-scale-latency-and-cost-modules-9-11">5. Scale, Latency, and Cost - Modules 9-11<a class="anchor" href="#5-scale-latency-and-cost-modules-9-11" aria-label="Link to 5. Scale, Latency, and Cost - Modules 9-11">#</a></h2>
+<h2 id="5-scale-latency-and-cost-modules-9-11">5. Scale, Latency, and Cost - Reviews 09–11<a class="anchor" href="#5-scale-latency-and-cost-modules-9-11" aria-label="Link to 5. Scale, Latency, and Cost - Reviews 09–11">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“One tenant hurts everyone”</td>
 <td>Noisy neighbor / fairness</td>
 <td>Tenant concurrency, quotas, weighted scheduling</td>
-<td>9</td>
+<td><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html" title="Scaling AI Systems">09</a></td>
 </tr>
 <tr>
 <td>“Within quota, but system full”</td>
 <td>Admission control</td>
 <td>Can this task be accepted within capacity now?</td>
-<td>9</td>
+<td><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html" title="Scaling AI Systems">09</a></td>
 </tr>
 <tr>
 <td>“Queue grows continuously”</td>
 <td>Sustained overload</td>
 <td>Arrival vs completion rate; capacity or reduced intake</td>
-<td>9</td>
+<td><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html" title="Scaling AI Systems">09</a></td>
 </tr>
 <tr>
 <td>“More workers did not help”</td>
 <td>Shared/external bottleneck</td>
 <td>Model quota, tool API, retrieval, state-store saturation</td>
-<td>9</td>
+<td><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html" title="Scaling AI Systems">09</a></td>
 </tr>
 <tr>
 <td>“Average 3s, P99 25s”</td>
 <td>Tail latency</td>
 <td>Slow traces by workload, tenant, and release</td>
-<td>10</td>
+<td><a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a></td>
 </tr>
 <tr>
 <td>“Model fast, task slow”</td>
 <td>Critical path</td>
 <td>Queue, retrieval, tools, repeated hops, network</td>
-<td>10</td>
+<td><a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a></td>
 </tr>
 <tr>
 <td>“Independent reads are sequential”</td>
 <td>Parallelism</td>
 <td>Overlap only when inputs, limits, and correctness allow</td>
-<td>10</td>
+<td><a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a></td>
 </tr>
 <tr>
 <td>“Long silence before output”</td>
 <td>First useful output / streaming</td>
 <td>Separate first output from final completion</td>
-<td>10</td>
+<td><a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a></td>
 </tr>
 <tr>
 <td>“Five-minute research”</td>
 <td>Async interaction</td>
 <td>Task ID, durable state, progress, results</td>
-<td>10</td>
+<td><a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a></td>
 </tr>
 <tr>
 <td>“Bill doubled”</td>
 <td>Attribution</td>
 <td>Volume, task mix, model/tokens, calls, retries, rework</td>
-<td>11</td>
+<td><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“History grows forever”</td>
 <td>Context optimization</td>
 <td>Relevant turns/evidence, summaries, authoritative state</td>
-<td>11</td>
+<td><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Five model calls every time”</td>
 <td>Call reduction</td>
 <td>What reasoning does each call add?</td>
-<td>10, 11</td>
+<td><a href="/fde-last-day-prep/module-10-latency-optimization/concise-interview-module.html" title="Latency and Performance">10</a>, <a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Same strong model for all tasks”</td>
 <td>Evaluated model routing</td>
 <td>Cheapest capable path at required quality</td>
-<td>11</td>
+<td><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Background work can wait”</td>
 <td>Batch eligibility</td>
 <td>Deadline and measured billing/processing benefit</td>
-<td>11</td>
+<td><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 <tr>
 <td>“Cheap requests, many failed tasks”</td>
 <td>Cost per successful task</td>
 <td>Include retries, escalation, and relevant rework</td>
-<td>11</td>
+<td><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html" title="Cost and Efficiency">11</a></td>
 </tr>
 </tbody></table>
 <pre><code class="language-text">Rate limit: May this tenant send this much work?
@@ -696,159 +710,159 @@ Latency: Trace → Critical path → Optimize → Recheck quality
 Cost: Total cost across attempts ÷ successful tasks
 </code></pre>
 <p>Streaming does not necessarily reduce computation. Async does not automatically shorten completion. A queue does not create capacity. TTFT means time to first token; useful user output and confirmed action completion are separate measurements.</p>
-<h2 id="6-failure-and-recovery-module-12">6. Failure and Recovery - Module 12<a class="anchor" href="#6-failure-and-recovery-module-12" aria-label="Link to 6. Failure and Recovery - Module 12">#</a></h2>
+<h2 id="6-failure-and-recovery-module-12">6. Failure and Recovery - Review 12<a class="anchor" href="#6-failure-and-recovery-module-12" aria-label="Link to 6. Failure and Recovery - Review 12">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“Write timed out”</td>
 <td>Unknown outcome</td>
 <td>Query status/reconcile before another write</td>
-<td>7, 12</td>
+<td><a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/concise-interview-module.html" title="Tools, Actions, and Enterprise Integrations">07</a>, <a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Repeated request / message”</td>
 <td>Idempotency</td>
 <td>Stable identifier for the same logical action</td>
-<td>7, 12</td>
+<td><a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/concise-interview-module.html" title="Tools, Actions, and Enterprise Integrations">07</a>, <a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Intermittent service errors”</td>
 <td>Bounded retry</td>
 <td>Transient/safe? Backoff, jitter, deadline</td>
-<td>12</td>
+<td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Retries worsen outage”</td>
 <td>Retry amplification</td>
 <td>Shared budgets, circuit breaker, capacity protection</td>
-<td>12</td>
+<td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Provider unavailable”</td>
 <td>Compatible fallback</td>
 <td>Capability, quality, permissions, residency</td>
-<td>12</td>
+<td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Crash after some steps”</td>
 <td>Durable recovery</td>
 <td>Known checkpoints plus uncertain-action reconciliation</td>
-<td>12</td>
+<td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Message fails repeatedly”</td>
 <td>DLQ</td>
 <td>Dead-letter queue owner, diagnosis, safe replay</td>
-<td>12</td>
+<td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 <tr>
 <td>“Optional feature breaks everything”</td>
 <td>Blast radius / degradation</td>
 <td>Keep safe independent capabilities available</td>
-<td>12</td>
+<td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
 </tbody></table>
 <p><strong>Rule:</strong> timeout ≠ confirmed failure; checkpoint ≠ exactly-once external effect; DLQ ≠ completion. Never generate a fresh logical action key simply because the previous attempt timed out.</p>
-<h2 id="7-evaluate-release-and-operate-modules-13-15">7. Evaluate, Release, and Operate - Modules 13-15<a class="anchor" href="#7-evaluate-release-and-operate-modules-13-15" aria-label="Link to 7. Evaluate, Release, and Operate - Modules 13-15">#</a></h2>
+<h2 id="7-evaluate-release-and-operate-modules-13-15">7. Evaluate, Release, and Operate - Reviews 13–15<a class="anchor" href="#7-evaluate-release-and-operate-modules-13-15" aria-label="Link to 7. Evaluate, Release, and Operate - Reviews 13–15">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“Says cancelled, order still active”</td>
 <td>Task success</td>
 <td>Verify confirmed downstream state</td>
-<td>13</td>
+<td><a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 <tr>
 <td>“Wrong tool arguments”</td>
 <td>Deterministic assertions</td>
 <td>Schema, permitted values, intended resource/action</td>
-<td>13</td>
+<td><a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 <tr>
 <td>“Helpful / complete / grounded?”</td>
 <td>Semantic rubric</td>
 <td>Calibrate human/model judges against expert cases</td>
-<td>13</td>
+<td><a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 <tr>
 <td>“Ratings high, tickets reopen”</td>
 <td>Online outcomes</td>
 <td>Delayed results and actual resolution</td>
-<td>13</td>
+<td><a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a></td>
 </tr>
 <tr>
 <td>“New prompt better on 20 cases”</td>
 <td>Coverage and release evidence</td>
 <td>Held-out segments, failures, baseline, gates</td>
-<td>13, 14</td>
+<td><a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html" title="Evaluating AI Systems">13</a>, <a href="/fde-last-day-prep/module-14-release-and-change-management/concise-interview-module.html" title="Release and Change Management">14</a></td>
 </tr>
 <tr>
 <td>“Compare without affecting users”</td>
 <td>Shadow</td>
 <td>Candidate isolated from production writes</td>
-<td>14</td>
+<td><a href="/fde-last-day-prep/module-14-release-and-change-management/concise-interview-module.html" title="Release and Change Management">14</a></td>
 </tr>
 <tr>
 <td>“Only two tenants first”</td>
 <td>Scoped canary/flag</td>
 <td>Cohort, stable assignment, stop criteria</td>
-<td>14</td>
+<td><a href="/fde-last-day-prep/module-14-release-and-change-management/concise-interview-module.html" title="Release and Change Management">14</a></td>
 </tr>
 <tr>
 <td>“Regression after release”</td>
 <td>Rollback / kill switch</td>
 <td>Known compatible baseline, active tasks/actions</td>
-<td>14</td>
+<td><a href="/fde-last-day-prep/module-14-release-and-change-management/concise-interview-module.html" title="Release and Change Management">14</a></td>
 </tr>
 <tr>
 <td>“Old tasks remain pending”</td>
 <td>Version compatibility</td>
 <td>State schema, policy, approval/action meaning</td>
-<td>14</td>
+<td><a href="/fde-last-day-prep/module-14-release-and-change-management/concise-interview-module.html" title="Release and Change Management">14</a></td>
 </tr>
 <tr>
 <td>“Slow request yesterday”</td>
 <td>Distributed trace</td>
 <td>Task/trace ID, critical spans, queue, retries</td>
-<td>15</td>
+<td><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html" title="Observability and Production Operations">15</a></td>
 </tr>
 <tr>
 <td>“Widespread slowdown”</td>
 <td>Metrics</td>
 <td>Scope, saturation, workload/version patterns</td>
-<td>15</td>
+<td><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html" title="Observability and Production Operations">15</a></td>
 </tr>
 <tr>
 <td>“Exact error?”</td>
 <td>Structured logs</td>
 <td>Correlated event and error category</td>
-<td>15</td>
+<td><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html" title="Observability and Production Operations">15</a></td>
 </tr>
 <tr>
 <td>“Why was this refund issued?”</td>
 <td>Business audit</td>
 <td>Identity, evidence, policy, approval, action result</td>
-<td>15</td>
+<td><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html" title="Observability and Production Operations">15</a></td>
 </tr>
 <tr>
 <td>“Did we meet the promised service?”</td>
 <td>SLI / SLO / SLA</td>
 <td>Measured indicator / target / agreed commitment</td>
-<td>15</td>
+<td><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html" title="Observability and Production Operations">15</a></td>
 </tr>
 </tbody></table>
 <pre><code class="language-text">Good wording ≠ completed task
@@ -862,117 +876,117 @@ Traces: Correlated path
 Audit: Business decision/action trail
 </code></pre>
 <p>Observe tool operations, state transitions, decision summaries, and evidence; private model chain-of-thought is not required. Shadow candidates must not duplicate real actions. Keep telemetry access and retention appropriate to sensitive data.</p>
-<h2 id="8-enterprise-security-module-16">8. Enterprise Security - Module 16<a class="anchor" href="#8-enterprise-security-module-16" aria-label="Link to 8. Enterprise Security - Module 16">#</a></h2>
+<h2 id="8-enterprise-security-module-16">8. Enterprise Security - Review 16<a class="anchor" href="#8-enterprise-security-module-16" aria-label="Link to 8. Enterprise Security - Review 16">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“Logged-in user”</td>
 <td>Authentication, then authorization</td>
 <td>Which resource/operation is permitted?</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 <tr>
 <td>“Roles differ”</td>
 <td>RBAC + resource scope</td>
 <td>Role-based access plus ownership and tenant checks</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 <tr>
 <td>“Filter secrets after generation”</td>
 <td>Weak boundary</td>
 <td>Restricted evidence must stay out of context</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 <tr>
 <td>“Agent needs credentials”</td>
 <td>Least privilege / secrets</td>
 <td>Trusted executor uses scoped secrets outside model context</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 <tr>
 <td>“Shared enterprise platform”</td>
 <td>End-to-end tenant isolation</td>
 <td>Data, index, cache, state, jobs, logs, tools, results</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 <tr>
 <td>“Data cannot leave this region”</td>
 <td>Residency</td>
 <td>Models, telemetry, backups, failover, tools</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 <tr>
 <td>“Document/tool says ignore checks”</td>
 <td>Untrusted data</td>
 <td>Text cannot change authority</td>
-<td>16</td>
+<td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>
 </tbody></table>
 <p><strong>Distinguish:</strong> authentication = who; authorization = allowed resource/operation; business policy = whether this action meets the rule; tenant fairness = shared-capacity allocation.</p>
-<h2 id="9-trade-offs-and-interview-execution-modules-17-18">9. Trade-Offs and Interview Execution - Modules 17-18<a class="anchor" href="#9-trade-offs-and-interview-execution-modules-17-18" aria-label="Link to 9. Trade-Offs and Interview Execution - Modules 17-18">#</a></h2>
+<h2 id="9-trade-offs-and-interview-execution-modules-17-18">9. Trade-Offs and Interview Execution - Reviews 17–18<a class="anchor" href="#9-trade-offs-and-interview-execution-modules-17-18" aria-label="Link to 9. Trade-Offs and Interview Execution - Reviews 17–18">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>Hear…</th>
 <th>Think…</th>
 <th>Ask / say next</th>
-<th>Module</th>
+<th>Review</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>“Critic adds latency and cost”</td>
 <td>Marginal benefit</td>
 <td>Critical-case improvement vs targets and simpler baseline</td>
-<td>17</td>
+<td><a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html" title="Architecture Trade-Offs">17</a></td>
 </tr>
 <tr>
 <td>“Maximum recall, minimum latency”</td>
 <td>Evidence/processing trade-off</td>
 <td>Required quality, search/rerank, candidate budget</td>
-<td>17</td>
+<td><a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html" title="Architecture Trade-Offs">17</a></td>
 </tr>
 <tr>
 <td>“Remove approvals for speed”</td>
 <td>Hard constraint</td>
 <td>Confirm customer policy; do not silently drop controls</td>
-<td>17</td>
+<td><a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html" title="Architecture Trade-Offs">17</a></td>
 </tr>
 <tr>
 <td>“Why not something simpler?”</td>
 <td>Requirement-based justification</td>
 <td>Which gap needs this complexity, and what evidence supports it?</td>
-<td>17</td>
+<td><a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html" title="Architecture Trade-Offs">17</a></td>
 </tr>
 <tr>
 <td>“Customer priority changed”</td>
 <td>Revisit decision</td>
 <td>New constraint, options, validation</td>
-<td>17</td>
+<td><a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html" title="Architecture Trade-Offs">17</a></td>
 </tr>
 <tr>
 <td>“Design the whole system”</td>
 <td>End-to-end execution</td>
 <td>Discover → require → design → stress-test → ship/operate</td>
-<td>18</td>
+<td><a href="/fde-last-day-prep/module-18-end-to-end-fde-interview-execution/concise-interview-module.html" title="End-to-End Interview Walkthrough">18</a></td>
 </tr>
 <tr>
 <td>“Walk one request”</td>
 <td>Concrete flow</td>
 <td>Identity, evidence, live data, state, authority, outcome</td>
-<td>18</td>
+<td><a href="/fde-last-day-prep/module-18-end-to-end-fde-interview-execution/concise-interview-module.html" title="End-to-End Interview Walkthrough">18</a></td>
 </tr>
 <tr>
 <td>“What next?”</td>
 <td>Validation plan</td>
 <td>Open assumptions, success evidence, next measurement</td>
-<td>18</td>
+<td><a href="/fde-last-day-prep/module-18-end-to-end-fde-interview-execution/concise-interview-module.html" title="End-to-End Interview Walkthrough">18</a></td>
 </tr>
 </tbody></table>
 <blockquote>

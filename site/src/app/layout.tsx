@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import { SITE } from '@/lib/registry'
+import { NAV } from '@/lib/editorial'
 import { SearchDialog } from '@/components/SearchDialog'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import './globals.css'
@@ -66,10 +67,12 @@ export default async function RootLayout({
               <Logo />
               <span>{SITE.name}</span>
             </Link>
-            <nav className="ml-2 hidden gap-1 sm:flex">
-              <HeaderLink href="/">Modules</HeaderLink>
-              <HeaderLink href="/fde-last-day-prep">Last-Day Prep</HeaderLink>
-              <HeaderLink href="/guide">How to use</HeaderLink>
+            <nav aria-label="Primary" className="ml-2 hidden gap-1 sm:flex">
+              {NAV.map((item) => (
+                <HeaderLink key={item.href} href={item.href}>
+                  {item.label}
+                </HeaderLink>
+              ))}
             </nav>
             <div className="ml-auto flex items-center gap-1.5">
               <SearchDialog />
