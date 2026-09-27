@@ -174,6 +174,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 16 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html">← Review 15</a><a href="/fde-last-day-prep/module-17-trade-off-thinking/concise-interview-module.html">Review 17 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/system-design/secure-multi-tenant-ai-platform">Secure Multi-Tenant AI Platform</a> · <a href="/modules/01-customer-discovery-and-decomposition/system-design/ai-system-for-an-air-gapped-environment">AI System for an Air-Gapped Environment</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/multi-tenant-saas-support">Multi-Tenant SaaS Support Assistant</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/platforms-and-scale/secure-multi-tenant-ai-platform">Secure Multi-Tenant AI Platform</a> · <a href="/modules/15-fde-case-studies/standalone-designs/air-gapped-ai-system">AI System for an Air-Gapped Environment</a></div></div><div class="layout">
@@ -207,7 +209,7 @@
 <pre><code class="language-text">Verified identity → Trusted tenant membership → Request context
 </code></pre>
 <h4 id="2-authorization-and-rbac-decide-permitted-operations">2. Authorization and RBAC — Decide Permitted Operations<a class="anchor" href="#2-authorization-and-rbac-decide-permitted-operations" aria-label="Link to 2. Authorization and RBAC — Decide Permitted Operations">#</a></h4>
-<p>Authorization asks what that identity may do. Role-based access control (RBAC) assigns permissions through roles; resource ownership and tenant scope may require additional checks.</p>
+<p>Authorization asks what that identity may do. Role-based access control (<abbr class="gloss" title="role-based access control: Permissions given by role: managers can do this, agents can do that.">RBAC</abbr>) assigns permissions through roles; resource ownership and tenant scope may require additional checks.</p>
 <blockquote>
 <p>“An authenticated support user is not automatically authorized to read every account or issue every refund.”</p>
 </blockquote>
@@ -215,7 +217,7 @@
 </code></pre>
 <p>Check resource-level access, not only whether a tool name is permitted.</p>
 <h4 id="3-permission-aware-rag-keep-restricted-evidence-out">3. Permission-Aware RAG — Keep Restricted Evidence Out<a class="anchor" href="#3-permission-aware-rag-keep-restricted-evidence-out" aria-label="Link to 3. Permission-Aware RAG — Keep Restricted Evidence Out">#</a></h4>
-<p>Retrieval-augmented generation (RAG) must enforce current access before restricted content enters model context. Preserve source permissions through ingestion and query execution.</p>
+<p>Retrieval-augmented generation (<abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr>) must enforce current access before restricted content enters model context. Preserve source permissions through ingestion and query execution.</p>
 <pre><code class="language-text">Employee identity → Allowed document scope
                           ↓
                 Authorized retrieval → Context
@@ -227,7 +229,7 @@
 <h4 id="4-least-privilege-tools-limit-enterprise-reach">4. Least-Privilege Tools — Limit Enterprise Reach<a class="anchor" href="#4-least-privilege-tools-limit-enterprise-reach" aria-label="Link to 4. Least-Privilege Tools — Limit Enterprise Reach">#</a></h4>
 <p>Expose only necessary operations and use scoped credentials outside model context. Separate reads from writes and enforce access again at execution.</p>
 <blockquote>
-<p>“A refund task needs permitted order/payment operations, not unrestricted CRM or database administration.”</p>
+<p>“A refund task needs permitted order/payment operations, not unrestricted <abbr class="gloss" title="customer relationship management: The sales and customer system of record — Salesforce is the usual example.">CRM</abbr> <span class="gloss-exp">(customer relationship management)</span> or database administration.”</p>
 </blockquote>
 <pre><code class="language-text">Model proposes → Validate inputs → Authorize resource/action
                                      ↓
@@ -302,7 +304,7 @@
 <td>Restricted document access</td>
 <td>Permission-aware retrieval</td>
 <td>Keep unauthorized context out</td>
-<td>Source ACL integration</td>
+<td>Source <abbr class="gloss" title="access control list: The list of who is allowed to see or change a thing.">ACL</abbr> integration</td>
 </tr>
 <tr>
 <td>Scoped enterprise writes</td>

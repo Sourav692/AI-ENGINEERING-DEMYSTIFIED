@@ -139,10 +139,11 @@ export const TRACKS: Record<string, { title: string; blurb: string }> = {
       'part is who may see what, and proving where each answer came from.',
   },
   'agents-that-act': {
-    title: 'Tool-Using and Action-Taking Agents',
+    title: 'Agents and Copilots in Real Workflows',
     blurb:
-      'Agents that change things in real systems — tickets, deploys, CRMs, shipments. The ' +
-      'design is mostly about what the agent may do alone and what needs a human.',
+      'Systems that work inside real tools — tickets, deploys, CRMs, shipments. Some act on ' +
+      'their own within limits; others draft and a person commits. The design is mostly ' +
+      'about deciding which is which.',
   },
   'platforms-and-scale': {
     title: 'AI Platforms and Scale',
@@ -176,6 +177,23 @@ export const TRACKS: Record<string, { title: string; blurb: string }> = {
 }
 
 export const PRACTICE_TRACKS = ['core', 'system-design']
+
+/**
+ * Visible titles that differ from the source document's own heading, keyed `track/slug`.
+ * Used where a source title's noun does not match what the system actually does — see
+ * the autonomy rule in the style guide: an assistant answers or recommends, a copilot
+ * drafts inside someone's workflow for them to commit, an agent picks and runs actions
+ * within limits, an automation follows a fixed workflow. Sources keep their headings.
+ */
+export const TITLE_OVERRIDES: Record<string, string> = {
+  // Only answers questions over governed metrics; it never drafts or acts.
+  'core/executive-dashboard-copilot': 'Executive Dashboard Assistant',
+  // "Automation Agent" named it twice; it proposes and performs actions within policy.
+  'core/service-now-ticket-agent': 'ServiceNow Ticket Agent',
+  // Drafts remediation notes for a human to approve — the same shape as G08 and the
+  // legal contract copilot, so the same noun.
+  'core/financial-compliance-reviewer': 'Financial Compliance Review Copilot',
+}
 export const BEHAVIOURAL_TRACKS = ['hiring-manager', 'leadership-principles']
 
 // ---------------------------------------------------------------- reading-page tabs

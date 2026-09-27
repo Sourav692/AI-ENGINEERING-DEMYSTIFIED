@@ -174,6 +174,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 08 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-07-tools-actions-and-enterprise-integration/concise-interview-module.html">← Review 07</a><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html">Review 09 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/system-design/tool-using-ai-agent-with-safety-controls">Tool-Using AI Agent with Safety Controls</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/healthcare-prior-auth-assistant">Healthcare Prior Authorization Assistant</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/agents-that-act/tool-using-agent-with-safety-controls">Tool-Using Agent with Safety Controls</a> · <a href="/modules/15-fde-case-studies/agents-that-act/sre-incident-response-agent">SRE Incident Response Agent</a></div></div><div class="layout">
@@ -231,7 +233,7 @@ Prohibited action         → Deny
 </code></pre>
 <p>Enforce checks in execution and data access, not merely in the model&#39;s instructions.</p>
 <h4 id="4-human-in-the-loop-give-the-reviewer-a-real-decision">4. Human-in-the-Loop — Give the Reviewer a Real Decision<a class="anchor" href="#4-human-in-the-loop-give-the-reviewer-a-real-decision" aria-label="Link to 4. Human-in-the-Loop — Give the Reviewer a Real Decision">#</a></h4>
-<p>Human-in-the-loop (HITL) should include the requested action, evidence, recommendation, policy reason, and approve/reject choices.</p>
+<p>Human-in-the-loop (<abbr class="gloss" title="human in the loop: A person approves or corrects the AI before anything risky happens.">HITL</abbr> <span class="gloss-exp">(human in the loop)</span>) should include the requested action, evidence, recommendation, policy reason, and approve/reject choices.</p>
 <blockquote>
 <p>“The reviewer should see what will change and why approval is required.”</p>
 </blockquote>

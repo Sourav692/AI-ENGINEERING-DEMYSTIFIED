@@ -162,6 +162,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 05 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/one-page-memory-card.html">← Review 04</a><a href="/fde-last-day-prep/module-06-agentic-architecture/one-page-memory-card.html">Review 06 →</a></span></div></div><main class="card">
@@ -177,7 +179,7 @@ QUERY: Identity + question → Authorized search
           → Retrieve → Optional rerank
           → Select context → Answer + supporting citations
 </code></pre>
-<p>RAG means retrieval-augmented generation. It supplies evidence for generation; it does not grant permission or execute business actions.</p>
+<p><abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr> means retrieval-augmented generation. It supplies evidence for generation; it does not grant permission or execute business actions.</p>
 <h3 id="checklist">Checklist<a class="anchor" href="#checklist" aria-label="Link to Checklist">#</a></h3>
 <table>
 <thead>

@@ -34,6 +34,8 @@ import {
   TRIGGER_SHEET,
   reviewLabel,
 } from '../src/lib/editorial.ts'
+import { GLOSSARY } from '../src/lib/glossary.ts'
+import { expandAcronyms } from '../src/lib/acronyms.ts'
 
 const byNumber = new Map(REVIEWS.map((r) => [r.number, r]))
 
@@ -143,6 +145,8 @@ const SITEBAR_CSS = `
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>`
 
 function sitebar({ label, mode, prev, next, rows = [] }) {
@@ -225,6 +229,9 @@ async function transformReview(html, r, doc, oldTitle, pages) {
           ]
         : [],
   })
+  // Spell out each acronym once per page. The recall card is one printed page, so there
+  // the definition goes in the hover text only.
+  html = expandAcronyms(html, new Set(), GLOSSARY, { inline: doc === 'concise' })
   return injectSitebar(html, bar, what)
 }
 
@@ -266,6 +273,7 @@ function transformTriggerSheet(html) {
   })
   if (tables === 0) throw new Error(`${what}: found no trigger tables with a Module column`)
 
+  html = expandAcronyms(html, new Set(), GLOSSARY)
   return injectSitebar(
     html,
     sitebar({ label: TRIGGER_SHEET.title, mode: 'Revision — searchable index of all eighteen reviews' }),

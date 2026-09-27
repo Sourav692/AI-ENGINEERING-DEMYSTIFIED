@@ -162,6 +162,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 12 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-11-cost-optimization/one-page-memory-card.html">← Review 11</a><a href="/fde-last-day-prep/module-13-ai-evaluation/one-page-memory-card.html">Review 13 →</a></span></div></div><main class="card">
@@ -221,7 +223,7 @@ FALLBACK / DEGRADE → RECOVER → ESCALATE
 <td>Durable context/progress/approval/action state</td>
 </tr>
 <tr>
-<td>DLQ</td>
+<td><abbr class="gloss" title="dead-letter queue: Where messages go after they keep failing, so they stop blocking everything else and someone can look at them.">DLQ</abbr></td>
 <td>Dead-letter queue for failed messages with owner and recovery plan</td>
 </tr>
 <tr>

@@ -278,6 +278,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Trigger-to-Concept Quick Reference</span><span class="fd-mode">Revision — searchable index of all eighteen reviews</span></div></div>
@@ -353,7 +355,7 @@
 </tr>
 <tr>
 <td>“Fast, reliable, cheap”</td>
-<td>Measurable NFRs</td>
+<td>Measurable <abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFRs</abbr></td>
 <td>Workload, metric, target, window, quality floor</td>
 <td><a href="/fde-last-day-prep/module-03-non-functional-requirements/concise-interview-module.html" title="Quality Attributes and Non-Functional Requirements">03</a></td>
 </tr>
@@ -455,7 +457,7 @@ State store: Where did the task stop?
 </thead>
 <tbody><tr>
 <td>“Company policies / manuals”</td>
-<td>RAG knowledge</td>
+<td><abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr> knowledge</td>
 <td>Approved sources, ingestion, freshness, access</td>
 <td><a href="/fde-last-day-prep/module-05-rag-and-enterprise-data/concise-interview-module.html" title="Retrieval-Augmented Generation and Enterprise Data">05</a></td>
 </tr>
@@ -567,7 +569,7 @@ Source → Parse/index → Access/version filters
 </tr>
 <tr>
 <td>“Manager must approve”</td>
-<td>HITL</td>
+<td><abbr class="gloss" title="human in the loop: A person approves or corrects the AI before anything risky happens.">HITL</abbr></td>
 <td>Action/evidence packet, authorized reviewer, durable state</td>
 <td><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/concise-interview-module.html" title="Guardrails, Policy, and Human Approval">08</a></td>
 </tr>
@@ -709,7 +711,7 @@ Queue:      Where can accepted work wait within limits?
 Latency: Trace → Critical path → Optimize → Recheck quality
 Cost: Total cost across attempts ÷ successful tasks
 </code></pre>
-<p>Streaming does not necessarily reduce computation. Async does not automatically shorten completion. A queue does not create capacity. TTFT means time to first token; useful user output and confirmed action completion are separate measurements.</p>
+<p>Streaming does not necessarily reduce computation. Async does not automatically shorten completion. A queue does not create capacity. <abbr class="gloss" title="time to first token: How long until the first word of the answer appears. With streaming, this is what feels fast or slow.">TTFT</abbr> <span class="gloss-exp">(time to first token)</span> means time to first token; useful user output and confirmed action completion are separate measurements.</p>
 <h2 id="6-failure-and-recovery-module-12">6. Failure and Recovery - Review 12<a class="anchor" href="#6-failure-and-recovery-module-12" aria-label="Link to 6. Failure and Recovery - Review 12">#</a></h2>
 <table>
 <thead>
@@ -758,7 +760,7 @@ Cost: Total cost across attempts ÷ successful tasks
 </tr>
 <tr>
 <td>“Message fails repeatedly”</td>
-<td>DLQ</td>
+<td><abbr class="gloss" title="dead-letter queue: Where messages go after they keep failing, so they stop blocking everything else and someone can look at them.">DLQ</abbr></td>
 <td>Dead-letter queue owner, diagnosis, safe replay</td>
 <td><a href="/fde-last-day-prep/module-12-reliability-and-failure-handling/concise-interview-module.html" title="Reliability and Failure Recovery">12</a></td>
 </tr>
@@ -860,7 +862,7 @@ Cost: Total cost across attempts ÷ successful tasks
 </tr>
 <tr>
 <td>“Did we meet the promised service?”</td>
-<td>SLI / SLO / SLA</td>
+<td><abbr class="gloss" title="service level indicator: The actual measurement behind an SLO — latency, error rate, answer success rate.">SLI</abbr> / <abbr class="gloss" title="service level objective: The target you commit to internally: &quot;95% of answers in under 3 seconds&quot;.">SLO</abbr> / <abbr class="gloss" title="service level agreement: The promise to the customer, usually with penalties. Looser than the SLO, so you have room.">SLA</abbr></td>
 <td>Measured indicator / target / agreed commitment</td>
 <td><a href="/fde-last-day-prep/module-15-observability-and-production-operations/concise-interview-module.html" title="Observability and Production Operations">15</a></td>
 </tr>
@@ -894,7 +896,7 @@ Audit: Business decision/action trail
 </tr>
 <tr>
 <td>“Roles differ”</td>
-<td>RBAC + resource scope</td>
+<td><abbr class="gloss" title="role-based access control: Permissions given by role: managers can do this, agents can do that.">RBAC</abbr> + resource scope</td>
 <td>Role-based access plus ownership and tenant checks</td>
 <td><a href="/fde-last-day-prep/module-16-security-and-enterprise-multi-tenancy/concise-interview-module.html" title="Security, Tenant Isolation, and Multi-Tenancy">16</a></td>
 </tr>

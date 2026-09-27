@@ -162,6 +162,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 03 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-02-functional-requirements/one-page-memory-card.html">← Review 02</a><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/one-page-memory-card.html">Review 04 →</a></span></div></div><main class="card">
@@ -222,7 +224,7 @@ SECURITY / SAFETY / COST / OBSERVABILITY / AUDIT
 <td>Evidence, policy, approval, action result, versions, controlled retention</td>
 </tr>
 </tbody></table>
-<p>An SLO is a service-level objective. Specify the workload, metric, target, and measurement window. P95 means 95% of measured requests meet that latency.</p>
+<p>An <abbr class="gloss" title="service level objective: The target you commit to internally: &quot;95% of answers in under 3 seconds&quot;.">SLO</abbr> is a service-level objective. Specify the workload, metric, target, and measurement window. P95 means 95% of measured requests meet that latency.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
@@ -272,7 +274,7 @@ Sensitive acts → Authorization + policy + approval
 Model Gateway = Application → Model control.</p>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>FR vs NFR:</strong> capability vs performance and operating limits.</li>
+<li><strong><abbr class="gloss" title="functional requirement: Something the system must do: answer this question, draft that email, update that ticket.">FR</abbr> vs <abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFR</abbr>:</strong> capability vs performance and operating limits.</li>
 <li><strong>Available vs successful:</strong> responding does not prove correct task completion.</li>
 <li><strong>Observability vs audit:</strong> system behavior vs business decision and action.</li>
 <li><strong>Average vs tail:</strong> acceptable averages can hide slow requests. Use relevant percentiles and define what is measured.</li>

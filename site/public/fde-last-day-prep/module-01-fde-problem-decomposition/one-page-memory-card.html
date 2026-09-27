@@ -163,6 +163,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 01 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-02-functional-requirements/one-page-memory-card.html">Review 02 →</a></span></div></div><main class="card">
@@ -223,7 +225,7 @@
 <td>Which APIs/systems? Read or write? Reliable or slow?</td>
 </tr>
 <tr>
-<td>10. NFRs</td>
+<td>10. <abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFRs</abbr></td>
 <td>What latency, availability, throughput, and cost limits by workload?</td>
 </tr>
 </tbody></table>
@@ -242,7 +244,7 @@
 </tr>
 <tr>
 <td>“Policy documents”</td>
-<td>RAG; sources, freshness, permissions</td>
+<td><abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr>; sources, freshness, permissions</td>
 </tr>
 <tr>
 <td>“Current order status”</td>

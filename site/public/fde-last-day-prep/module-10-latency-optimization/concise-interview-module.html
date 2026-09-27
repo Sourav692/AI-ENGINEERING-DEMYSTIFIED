@@ -174,9 +174,11 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
-<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 10 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html">← Review 09</a><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html">Review 11 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/system-design/natural-language-to-sql-analytics-assistant">Natural-Language-to-SQL Analytics Assistant</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/executive-dashboard-copilot">Executive Dashboard Copilot</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/agents-that-act/real-time-call-assistant">Real-Time Call Assistant</a> · <a href="/modules/15-fde-case-studies/platforms-and-scale/llm-inference-serving">LLM Inference Serving</a></div></div><div class="layout">
+<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 10 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-09-scaling-ai-systems/concise-interview-module.html">← Review 09</a><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html">Review 11 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/system-design/natural-language-to-sql-analytics-assistant">Natural-Language-to-SQL Analytics Assistant</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/executive-dashboard-copilot">Executive Dashboard Assistant</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/agents-that-act/real-time-call-assistant">Real-Time Call Assistant</a> · <a href="/modules/15-fde-case-studies/platforms-and-scale/llm-inference-serving">LLM Inference Serving</a></div></div><div class="layout">
   <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
   <main><div class="topbar"><span class="doc-id">REV·10</span><div class="eyebrow">Interview Review — Last-Day Review</div><a class="switch" href="one-page-memory-card.html">Recall card →</a></div>
     <h1 id="module-10-latency-optimization">Review 10 — Latency and Performance<a class="anchor" href="#module-10-latency-optimization" aria-label="Link to Review 10 — Latency and Performance">#</a></h1>
@@ -197,7 +199,7 @@ RETRIEVAL / TOOLS / QUEUE / ASYNC
                               ↓
            Recheck quality + latency + cost
 </code></pre>
-<p>A service-level objective (SLO) is an agreed target for a defined workload and measurement window.</p>
+<p>A service-level objective (<abbr class="gloss" title="service level objective: The target you commit to internally: &quot;95% of answers in under 3 seconds&quot;.">SLO</abbr> <span class="gloss-exp">(service level objective)</span>) is an agreed target for a defined workload and measurement window.</p>
 <pre><code class="language-text">End-to-end latency includes:
 Queue wait + network + retrieval + model calls
            + orchestration overhead + tools
@@ -223,7 +225,7 @@ P99 very slow → Some users still wait too long
 </code></pre>
 <p>These times are illustrative. Identify which stages are sequential and which overlap.</p>
 <h4 id="3-time-to-first-token-and-streaming-improve-perceived-waiting">3. Time to First Token and Streaming — Improve Perceived Waiting<a class="anchor" href="#3-time-to-first-token-and-streaming-improve-perceived-waiting" aria-label="Link to 3. Time to First Token and Streaming — Improve Perceived Waiting">#</a></h4>
-<p>Time to first token (TTFT) measures when model output begins; user-visible first useful output may occur later. Streaming displays partial output while generation continues.</p>
+<p>Time to first token (<abbr class="gloss" title="time to first token: How long until the first word of the answer appears. With streaming, this is what feels fast or slow.">TTFT</abbr>) measures when model output begins; user-visible first useful output may occur later. Streaming displays partial output while generation continues.</p>
 <blockquote>
 <p>“I’d track both first useful output and final completion; streaming improves waiting experience without necessarily reducing total work.”</p>
 </blockquote>
@@ -262,7 +264,7 @@ Parallel:   Read A ─┐
 <h4 id="7-tools-control-slow-dependencies">7. Tools — Control Slow Dependencies<a class="anchor" href="#7-tools-control-slow-dependencies" aria-label="Link to 7. Tools — Control Slow Dependencies">#</a></h4>
 <p>Measure enterprise API latency, set deadlines, reuse results only within freshness limits, and use fallback or async completion where the use case allows it.</p>
 <blockquote>
-<p>“A slow ERP will not become fast just because I choose a faster model.”</p>
+<p>“A slow <abbr class="gloss" title="enterprise resource planning: The system that runs finance, orders and inventory — SAP is the usual example.">ERP</abbr> <span class="gloss-exp">(enterprise resource planning)</span> will not become fast just because I choose a faster model.”</p>
 </blockquote>
 <pre><code class="language-text">Slow tool → Deadline → Safe fallback / defer / escalate
 </code></pre>
@@ -409,7 +411,7 @@ Peak load: Long wait  + similar processing
 <h3 id="8-practice-questions">8. Practice Questions<a class="anchor" href="#8-practice-questions" aria-label="Link to 8. Practice Questions">#</a></h3>
 <ol>
 <li>Average latency is three seconds but P99 is 25 seconds. What traces and segments do you inspect?</li>
-<li>CRM, order, and ticket reads are sequential. When can you parallelize them, and when can you not?</li>
+<li><abbr class="gloss" title="customer relationship management: The sales and customer system of record — Salesforce is the usual example.">CRM</abbr> <span class="gloss-exp">(customer relationship management)</span>, order, and ticket reads are sequential. When can you parallelize them, and when can you not?</li>
 <li>Model time is two seconds but total time is twelve. How do you locate the bottleneck?</li>
 <li>Streaming starts quickly but completion remains slow. Which experience improved, and what remains unresolved?</li>
 <li>A five-minute task has useful progress updates. Design its request, state, status, and result interaction.</li>

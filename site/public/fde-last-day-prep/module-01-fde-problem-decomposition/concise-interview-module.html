@@ -175,6 +175,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 01 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html">Review 02 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/core/internal-knowledge-assistant">Internal Knowledge Assistant for Enterprise Support</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/sales-copilot">Sales Copilot for Account Executives</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/judgement-and-decomposition/decomposition-classics-67-68-69">Decomposition Classics: 911, Bank Fraud, Medication Errors</a> · <a href="/modules/15-fde-case-studies/delivery-evaluation-operations/scoping-to-deployed-agent">Scoping to Deployed Agent</a> · <a href="/modules/15-fde-case-studies/judgement-and-decomposition/prioritize-ai-use-cases">Prioritise AI Use Cases for a Large Enterprise</a></div></div><div class="layout">
@@ -248,7 +250,7 @@ Users ≠ requests/second ≠ concurrent workflows
 <pre><code class="language-text">Refund policy         → Approved knowledge → RAG
 Current refund status → System of record   → API/tool
 </code></pre>
-<p>RAG means retrieval-augmented generation: retrieve relevant knowledge to support the model&#39;s answer.</p>
+<p><abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr> <span class="gloss-exp">(retrieval-augmented generation)</span> means retrieval-augmented generation: retrieve relevant knowledge to support the model&#39;s answer.</p>
 <h4 id="5-autonomy-what-is-the-ai-allowed-to-do">5. Autonomy — What is the AI allowed to do?<a class="anchor" href="#5-autonomy-what-is-the-ai-allowed-to-do" aria-label="Link to 5. Autonomy — What is the AI allowed to do?">#</a></h4>
 <p>Answering, recommending, and executing create different requirements. Clarify permitted actions and approval rules before designing an agent.</p>
 <blockquote>
@@ -260,7 +262,7 @@ Current refund status → System of record   → API/tool
                      ↓
           Human approval where required
 </code></pre>
-<p>Human-in-the-loop (HITL) means a human participates in the decision or approval workflow. Risk depends on the actual action and customer policy.</p>
+<p>Human-in-the-loop (<abbr class="gloss" title="human in the loop: A person approves or corrects the AI before anything risky happens.">HITL</abbr> <span class="gloss-exp">(human in the loop)</span>) means a human participates in the decision or approval workflow. Risk depends on the actual action and customer policy.</p>
 <h4 id="6-success-what-measurable-result-matters">6. Success — What measurable result matters?<a class="anchor" href="#6-success-what-measurable-result-matters" aria-label="Link to 6. Success — What measurable result matters?">#</a></h4>
 <p>Agree on a baseline and target across business outcome, AI quality, system performance, and cost. Confirm the customer&#39;s numbers; examples are not universal targets.</p>
 <blockquote>
@@ -284,7 +286,7 @@ Risky action      → Stop or request approval
 </code></pre>
 <p>A timeout after an action does not prove the action failed. Check its status before retrying; duplicate refunds must be prevented.</p>
 <h4 id="8-security-what-boundaries-must-the-system-respect">8. Security — What boundaries must the system respect?<a class="anchor" href="#8-security-what-boundaries-must-the-system-respect" aria-label="Link to 8. Security — What boundaries must the system respect?">#</a></h4>
-<p>Clarify access control, tenant isolation, personally identifiable information (PII), retention, approved providers, and data residency where relevant.</p>
+<p>Clarify access control, tenant isolation, personally identifiable information (<abbr class="gloss" title="personally identifiable information: Anything that identifies a person — name, email, phone, account number. It needs masking, access control and care in logs.">PII</abbr>), retention, approved providers, and data residency where relevant.</p>
 <blockquote>
 <p>“Who can access which data and actions, and are there restrictions on where data and models can run?”</p>
 </blockquote>
@@ -303,7 +305,7 @@ Issue refund      → Controlled write tool
 </code></pre>
 <p>Enterprise integration may be the hardest part even when the AI reasoning is simple.</p>
 <h4 id="10-operating-envelope-how-well-must-it-work">10. Operating Envelope — How well must it work?<a class="anchor" href="#10-operating-envelope-how-well-must-it-work" aria-label="Link to 10. Operating Envelope — How well must it work?">#</a></h4>
-<p>Non-functional requirements (NFRs) describe how well the system must work. Clarify latency, availability, throughput, and cost by workload.</p>
+<p>Non-functional requirements (<abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFRs</abbr>) describe how well the system must work. Clarify latency, availability, throughput, and cost by workload.</p>
 <blockquote>
 <p>“What latency, availability, and cost limits matter, and do different workloads need different targets?”</p>
 </blockquote>
@@ -311,7 +313,7 @@ Issue refund      → Controlled write tool
 Long research task  → Longer completion may be acceptable
                       + progress / async delivery
 </code></pre>
-<p>Agree on service-level objectives (SLOs), such as a percentile latency target, after understanding the user experience.</p>
+<p>Agree on service-level objectives (<abbr class="gloss" title="service level objective: The target you commit to internally: &quot;95% of answers in under 3 seconds&quot;.">SLOs</abbr> <span class="gloss-exp">(service level objectives)</span>), such as a percentile latency target, after understanding the user experience.</p>
 <h4 id="how-to-ask-these-naturally">How to Ask These Naturally<a class="anchor" href="#how-to-ask-these-naturally" aria-label="Link to How to Ask These Naturally">#</a></h4>
 <pre><code class="language-text">You:      What outcome matters most?
 Customer: Less time on repetitive support tickets.

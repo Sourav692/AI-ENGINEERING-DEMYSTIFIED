@@ -84,7 +84,11 @@ export default function GuidePage() {
           <Link href="/learning-map" className="text-accent underline underline-offset-2">
             learning map
           </Link>{' '}
-          shows which material covers which topic.
+          shows which material covers which topic, and the{' '}
+          <Link href="/glossary" className="text-accent underline underline-offset-2">
+            glossary
+          </Link>{' '}
+          explains every acronym in plain words.
         </p>
       </header>
 

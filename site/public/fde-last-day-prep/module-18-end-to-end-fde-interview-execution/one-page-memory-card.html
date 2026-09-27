@@ -162,6 +162,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 18 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-17-trade-off-thinking/one-page-memory-card.html">← Review 17</a></span></div></div><main class="card">
@@ -230,7 +232,7 @@ Problem/current workflow → FRs + NFRs → Happy path
 <td>Requirement → choice → trade-off → verification; open assumptions</td>
 </tr>
 </tbody></table>
-<p>FR = functional requirement. NFR = non-functional requirement. RAG = retrieval-augmented generation. HITL = human-in-the-loop.</p>
+<p><abbr class="gloss" title="functional requirement: Something the system must do: answer this question, draft that email, update that ticket.">FR</abbr> = functional requirement. <abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFR</abbr> = non-functional requirement. <abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr> = retrieval-augmented generation. <abbr class="gloss" title="human in the loop: A person approves or corrects the AI before anything risky happens.">HITL</abbr> = human-in-the-loop.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>

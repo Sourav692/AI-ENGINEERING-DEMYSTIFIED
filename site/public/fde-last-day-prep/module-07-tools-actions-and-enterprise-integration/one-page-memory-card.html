@@ -162,6 +162,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 07 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-06-agentic-architecture/one-page-memory-card.html">← Review 06</a><a href="/fde-last-day-prep/module-08-guardrails-policy-and-human-approval/one-page-memory-card.html">Review 08 →</a></span></div></div><main class="card">
@@ -223,7 +225,7 @@ Timeout after write → Reconcile → Safe recovery
 <td>Temporarily stop normal calls after repeated failures; probe recovery</td>
 </tr>
 </tbody></table>
-<p>CRM = customer relationship management. ERP = enterprise resource planning.</p>
+<p><abbr class="gloss" title="customer relationship management: The sales and customer system of record — Salesforce is the usual example.">CRM</abbr> = customer relationship management. <abbr class="gloss" title="enterprise resource planning: The system that runs finance, orders and inventory — SAP is the usual example.">ERP</abbr> = enterprise resource planning.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>

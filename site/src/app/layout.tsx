@@ -95,6 +95,10 @@ export default async function RootLayout({
               <Link href="/guide" className="text-muted underline underline-offset-2 hover:text-text">
                 How this works
               </Link>
+              {' · '}
+              <Link href="/glossary" className="text-muted underline underline-offset-2 hover:text-text">
+                Glossary
+              </Link>
             </p>
           </div>
         </footer>

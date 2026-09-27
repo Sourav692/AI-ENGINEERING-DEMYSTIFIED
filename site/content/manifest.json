@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T03:45:12.242Z",
+  "generatedAt": "2026-09-27T09:46:04.538Z",
   "modules": [
     {
       "id": "01-customer-discovery-and-decomposition",
@@ -22,7 +22,7 @@
             {
               "slug": "financial-compliance-reviewer",
               "order": 3,
-              "title": "Financial Compliance Document Reviewer"
+              "title": "Financial Compliance Review Copilot"
             },
             {
               "slug": "healthcare-prior-auth-assistant",
@@ -52,12 +52,12 @@
             {
               "slug": "service-now-ticket-agent",
               "order": 9,
-              "title": "ServiceNow Ticket Automation Agent"
+              "title": "ServiceNow Ticket Agent"
             },
             {
               "slug": "executive-dashboard-copilot",
               "order": 10,
-              "title": "Executive Dashboard Copilot"
+              "title": "Executive Dashboard Assistant"
             }
           ]
         },
@@ -353,8 +353,8 @@
         },
         {
           "id": "agents-that-act",
-          "title": "Tool-Using and Action-Taking Agents",
-          "blurb": "Agents that change things in real systems — tickets, deploys, CRMs, shipments. The design is mostly about what the agent may do alone and what needs a human.",
+          "title": "Agents and Copilots in Real Workflows",
+          "blurb": "Systems that work inside real tools — tickets, deploys, CRMs, shipments. Some act on their own within limits; others draft and a person commits. The design is mostly about deciding which is which.",
           "scenarios": [
             {
               "slug": "customer-support-automation",

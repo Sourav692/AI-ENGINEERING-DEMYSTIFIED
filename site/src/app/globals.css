@@ -295,6 +295,17 @@ body {
   color: color-mix(in oklch, var(--warning) 55%, var(--text));
 }
 
+/* First use of an acronym on a page: spelled out once, full definition on hover. */
+abbr.gloss {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--text-subtle);
+  text-underline-offset: 0.2em;
+  cursor: help;
+}
+.gloss-exp {
+  color: var(--text-muted);
+}
+
 @media print {
   .no-print {
     display: none !important;

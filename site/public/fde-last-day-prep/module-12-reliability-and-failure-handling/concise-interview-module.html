@@ -174,6 +174,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 12 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-11-cost-optimization/concise-interview-module.html">← Review 11</a><a href="/fde-last-day-prep/module-13-ai-evaluation/concise-interview-module.html">Review 13 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/system-design/reliable-workflow-orchestration-system">Reliable Workflow Orchestration System</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/standalone-designs/reliable-workflow-orchestration">Reliable Workflow Orchestration System</a> · <a href="/modules/15-fde-case-studies/agents-that-act/logistics-exception-handling">Logistics Exception Handling</a></div></div><div class="layout">
@@ -248,7 +250,7 @@ Payment API unavailable    → Do not claim refund completion
 </code></pre>
 <p>Checkpoints alone do not guarantee safe external replay. Reconcile writes that may have completed before a checkpoint was saved.</p>
 <h4 id="8-dead-letter-queue-isolate-work-that-cannot-complete">8. Dead-Letter Queue — Isolate Work That Cannot Complete<a class="anchor" href="#8-dead-letter-queue-isolate-work-that-cannot-complete" aria-label="Link to 8. Dead-Letter Queue — Isolate Work That Cannot Complete">#</a></h4>
-<p>After bounded unsuccessful processing, route eligible background messages to a dead-letter queue (DLQ) or equivalent failure store. Preserve context for diagnosis and controlled replay.</p>
+<p>After bounded unsuccessful processing, route eligible background messages to a dead-letter queue (<abbr class="gloss" title="dead-letter queue: Where messages go after they keep failing, so they stop blocking everything else and someone can look at them.">DLQ</abbr>) or equivalent failure store. Preserve context for diagnosis and controlled replay.</p>
 <pre><code class="language-text">Message → Bounded attempts → DLQ → Inspect / fix → Safe replay
 </code></pre>
 <blockquote>

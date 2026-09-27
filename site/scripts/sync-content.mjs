@@ -19,7 +19,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { syncCaseStudies } from './case-studies.mjs'
 import { syncLastDay } from './last-day.mjs'
-import { TRACKS } from '../src/lib/editorial.ts'
+import { TITLE_OVERRIDES, TRACKS } from '../src/lib/editorial.ts'
 
 const SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = resolve(SITE_DIR, '..')
@@ -162,7 +162,7 @@ async function syncTrack(moduleId, track) {
       // book's chapter numbers, which have gaps (1,2,3,4,7,9,...); renumbering here
       // keeps the site's list free of holes that would read as missing content.
       order: index + 1,
-      title: extractTitle(worksheet, slug),
+      title: TITLE_OVERRIDES[`${track.id}/${slug}`] ?? extractTitle(worksheet, slug),
     })
   }
 

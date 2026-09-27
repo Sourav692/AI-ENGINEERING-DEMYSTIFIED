@@ -6,6 +6,8 @@ import { cache } from 'react'
 import { parseDocument, type Block, type ParsedDocument, type Section } from './parse'
 import { parseReading, readingText, toPlainText, type ReadingDocument } from './reading'
 import { ANSWER_KEY_MAP, CLOSING_SECTION_KEY } from './mapping'
+import { expandAcronyms } from './acronyms'
+import { GLOSSARY, glossaryAnchor } from './glossary'
 import { qualifiedTitle, scenarioHref } from './scenario'
 import {
   FAMILY_META,
@@ -150,6 +152,45 @@ function markFillBlocks(blocks: Block[]): Block[] {
   })
 }
 
+/**
+ * Spells out each acronym at its first use in a document. One `seen` set per document:
+ * the worksheet and the model answer are read separately, so each defines its own.
+ * Table cells get the definition as hover text only, so narrow columns do not grow.
+ */
+function glossBlocks(blocks: Block[], seen: Set<string>): Block[] {
+  const gloss = (html: string, inline = true) => expandAcronyms(html, seen, GLOSSARY, { inline })
+  return blocks.map((b) => {
+    if (b.kind === 'prose') return { ...b, html: gloss(b.html) }
+    if (b.kind === 'list') {
+      return { ...b, items: b.items.map((i) => (i.kind === 'text' ? { ...i, html: gloss(i.html) } : i)) }
+    }
+    if (b.kind === 'table') {
+      return { ...b, rows: b.rows.map((row) => row.map((c) => (c.editable ? c : { ...c, text: gloss(c.text, false) }))) }
+    }
+    return b
+  })
+}
+
+function glossDocument(doc: ParsedDocument): ParsedDocument {
+  const seen = new Set<string>()
+  return {
+    ...doc,
+    intro: glossBlocks(doc.intro, seen),
+    sections: doc.sections.map((s) => ({ ...s, blocks: glossBlocks(s.blocks, seen) })),
+  }
+}
+
+function glossReading(doc: ReadingDocument): ReadingDocument {
+  const seen = new Set<string>()
+  return {
+    ...doc,
+    sections: doc.sections.map((s) => ({
+      ...s,
+      chunks: s.chunks.map((c) => (c.kind === 'html' ? { ...c, html: expandAcronyms(c.html, seen, GLOSSARY) } : c)),
+    })),
+  }
+}
+
 function markFillDocument(doc: ParsedDocument): ParsedDocument {
   return {
     ...doc,
@@ -178,8 +219,12 @@ export const getScenario = cache(
     ])
 
     const personal = Boolean(familyMeta(trackId).personalisation)
-    const worksheet = personal ? markFillDocument(parseDocument(worksheetRaw)) : parseDocument(worksheetRaw)
-    const answerKey = personal ? markFillDocument(parseDocument(answerKeyRaw)) : parseDocument(answerKeyRaw)
+    const prepare = (raw: string) => {
+      const doc = glossDocument(parseDocument(raw))
+      return personal ? markFillDocument(doc) : doc
+    }
+    const worksheet = prepare(worksheetRaw)
+    const answerKey = prepare(answerKeyRaw)
     const keyByKey = new Map(answerKey.sections.map((s) => [s.key, s]))
 
     const sections: ScenarioSection[] = worksheet.sections.map((section) => ({
@@ -197,10 +242,9 @@ export const getScenario = cache(
 
     return {
       ref,
-      title: worksheet.title.replace(
-        /\s*[-–—]\s*(Case Study|Practice) Worksheet\s*$/i,
-        '',
-      ),
+      // The manifest title, not the worksheet heading: it carries any editorial
+      // override (TITLE_OVERRIDES) and is what search and navigation already show.
+      title: ref.title,
       intro: worksheet.intro,
       sections,
       closing: keyByKey.get(CLOSING_SECTION_KEY) ?? null,
@@ -242,7 +286,7 @@ export const getLastDayGuide = cache(async (id: string) => {
   const guide = LAST_DAY_GUIDES.find((g) => g.id === id)
   if (!guide) return null
   const raw = await readFile(join(CONTENT_DIR, 'last-day', `${id}.md`), 'utf8')
-  return { guide, minutes: readingMinutes(raw), doc: parseReading(raw, id) }
+  return { guide, minutes: readingMinutes(raw), doc: glossReading(parseReading(raw, id)) }
 })
 
 /**
@@ -265,7 +309,7 @@ export const getCaseStudy = cache(
           label: tab.label,
           purpose: TABS[tab.id]?.purpose ?? '',
           minutes: readingMinutes(raw),
-          doc: parseReading(raw, tab.id),
+          doc: glossReading(parseReading(raw, tab.id)),
         }
       }),
     )
@@ -355,6 +399,15 @@ export const getSearchIndex = cache(async (): Promise<SearchEntry[]> => {
       kind: 'Revision',
       href: reviewHref(r),
       text: `${r.title} ${r.blurb}`,
+    })
+  }
+  for (const g of GLOSSARY) {
+    entries.push({
+      title: 'Glossary',
+      section: g.expansion ? `${g.term} — ${g.expansion}` : g.term,
+      kind: 'Glossary',
+      href: `/glossary#${glossaryAnchor(g.term)}`,
+      text: `${g.term} ${g.expansion ?? ''} ${g.plain} ${g.sayIt ?? ''}`,
     })
   }
   entries.push({

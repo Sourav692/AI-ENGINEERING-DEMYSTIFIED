@@ -26,7 +26,7 @@
 import { existsSync, statSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, relative, resolve } from 'node:path'
-import { TABS, TRACKS } from '../src/lib/editorial.ts'
+import { TABS, TITLE_OVERRIDES, TRACKS } from '../src/lib/editorial.ts'
 
 export const CASE_STUDY_MODULE_ID = '15-fde-case-studies'
 
@@ -274,7 +274,7 @@ export async function syncCaseStudies({ repoRoot, outDir }) {
       scenarios.push({
         slug: c.slug,
         order: c.order,
-        title: c.title,
+        title: TITLE_OVERRIDES[`${theme.id}/${c.slug}`] ?? c.title,
         tag: c.tag,
         tabs: c.tabs.map(({ id, label }) => ({ id, label })),
         ...(c.archived?.length && { archived: c.archived }),

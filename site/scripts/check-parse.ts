@@ -31,6 +31,7 @@ import {
   TRIGGER_SHEET,
 } from '../src/lib/editorial.ts'
 import { existsSync } from 'node:fs'
+import { GLOSSARY, NOT_ACRONYMS } from '../src/lib/glossary.ts'
 
 const CONTENT = resolve(import.meta.dirname, '..', 'content')
 
@@ -302,7 +303,7 @@ for (const mod of manifest.modules) {
 
 const SITE_ROOT = resolve(import.meta.dirname, '..')
 const pages = new Set<string>()
-const routes = new Set<string>(['/', '/guide', '/learning-map', '/fde-last-day-prep'])
+const routes = new Set<string>(['/', '/guide', '/learning-map', '/glossary', '/fde-last-day-prep'])
 for (const g of LAST_DAY_GUIDES) routes.add(`/fde-last-day-prep/${g.id}`)
 const tabsByPage = new Map<string, string[]>()
 
@@ -431,6 +432,45 @@ for (const path of staticFiles) {
     linksChecked++
     const target = join(SITE_ROOT, 'public', path, '..', href.split('#')[0])
     if (!existsSync(target)) failures.push(`${path}: broken relative link ${href}`)
+  }
+}
+
+// Acronyms: anything in capitals that shows up on three or more pages must either be in
+// the glossary or be listed as not-an-acronym. A new term then gets a plain definition
+// the day it spreads, instead of the reader having to guess.
+const defined = new Set(GLOSSARY.map((g) => g.term))
+const acronymPages = new Map<string, Set<string>>()
+// A capitalised token that also appears as an ordinary lower-case word ("MODEL", "CACHE")
+// is emphasis, not an acronym.
+const lowerWords = new Set<string>()
+const scanFiles: string[] = []
+for (const mod of manifest.modules) {
+  for (const track of mod.tracks) {
+    for (const s of track.scenarios) {
+      const base = join(CONTENT, 'modules', mod.id, track.id)
+      if (mod.kind === 'reading') for (const t of s.tabs ?? []) scanFiles.push(join(base, s.slug, `${t.id}.md`))
+      else scanFiles.push(join(base, 'worksheets', `${s.slug}.md`), join(base, 'answer-keys', `${s.slug}.md`))
+    }
+  }
+}
+for (const g of LAST_DAY_GUIDES) scanFiles.push(join(CONTENT, 'last-day', `${g.id}.md`))
+for (const path of staticFiles) scanFiles.push(join(SITE_ROOT, 'public', path))
+for (const file of scanFiles) {
+  const raw = await readFile(file, 'utf8').catch(() => '')
+  const text = raw
+    .replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/```[\s\S]*?```/g, ' ')
+  for (const [word] of text.matchAll(/\b[a-z]{4,}\b/g)) lowerWords.add(word)
+  for (const [token] of text.matchAll(/\b[A-Z][A-Z0-9]{1,6}\b/g)) {
+    if (defined.has(token) || NOT_ACRONYMS.has(token) || /^(G\d{2}|[A-Z]\d{1,3})$/.test(token)) continue
+    if (!acronymPages.has(token)) acronymPages.set(token, new Set())
+    acronymPages.get(token)!.add(file)
+  }
+}
+for (const [token, files] of acronymPages) {
+  if (files.size >= 3 && !lowerWords.has(token.toLowerCase())) {
+    failures.push(`acronym ${token} appears on ${files.size} pages but is not in the glossary (src/lib/glossary.ts) or NOT_ACRONYMS`)
   }
 }
 

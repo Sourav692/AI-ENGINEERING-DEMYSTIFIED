@@ -174,9 +174,11 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
-<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 03 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html">← Review 02</a><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html">Review 04 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/core/healthcare-prior-auth-assistant">Healthcare Prior Authorization Assistant</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/financial-compliance-reviewer">Financial Compliance Document Reviewer</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/platforms-and-scale/consumer-scale-chat-service">Consumer-Scale Chat Service</a> · <a href="/modules/15-fde-case-studies/judgement-and-decomposition/scale-prototype-to-production">Scale a Prototype from 100 to 100,000 Users</a></div></div><div class="layout">
+<body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 03 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-02-functional-requirements/concise-interview-module.html">← Review 02</a><a href="/fde-last-day-prep/module-04-core-architecture-building-blocks/concise-interview-module.html">Review 04 →</a></span></div><div class="fd-row"><span class="fd-label">New to this? Learn first:</span><a href="/modules/01-customer-discovery-and-decomposition/core/healthcare-prior-auth-assistant">Healthcare Prior Authorization Assistant</a> · <a href="/modules/01-customer-discovery-and-decomposition/core/financial-compliance-reviewer">Financial Compliance Review Copilot</a></div><div class="fd-row"><span class="fd-label">Go deeper:</span><a href="/modules/15-fde-case-studies/platforms-and-scale/consumer-scale-chat-service">Consumer-Scale Chat Service</a> · <a href="/modules/15-fde-case-studies/judgement-and-decomposition/scale-prototype-to-production">Scale a Prototype from 100 to 100,000 Users</a></div></div><div class="layout">
   <nav aria-label="Contents"><h2>Contents</h2><ul><li><a href="#1-what-the-interviewer-is-testing">1. What the Interviewer Is Testing</a></li><li><a href="#2-core-mental-model">2. Core Mental Model</a></li><li><a href="#3-essential-concepts">3. Essential Concepts</a></li><li><a href="#4-requirement-component-reasoning">4. Requirement → Component Reasoning</a></li><li><a href="#5-important-distinctions-and-gotchas">5. Important Distinctions and Gotchas</a></li><li><a href="#6-trigger-concept-table">6. Trigger → Concept Table</a></li><li><a href="#7-interview-phrases">7. Interview Phrases</a></li><li><a href="#8-practice-questions">8. Practice Questions</a></li></ul></nav>
   <main><div class="topbar"><span class="doc-id">REV·03</span><div class="eyebrow">Interview Review — Last-Day Review</div><a class="switch" href="one-page-memory-card.html">Recall card →</a></div>
     <h1 id="module-3-non-functional-requirements">Review 03 — Quality Attributes and Non-Functional Requirements<a class="anchor" href="#module-3-non-functional-requirements" aria-label="Link to Review 03 — Quality Attributes and Non-Functional Requirements">#</a></h1>
@@ -190,7 +192,7 @@
 </ul>
 <h3 id="2-core-mental-model">2. Core Mental Model<a class="anchor" href="#2-core-mental-model" aria-label="Link to 2. Core Mental Model">#</a></h3>
 <p><strong>Functional requirement: What must it DO?</strong></p>
-<p><strong>Non-functional requirement (NFR): How WELL must it work, and within what limits?</strong></p>
+<p><strong>Non-functional requirement (<abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFR</abbr>): How WELL must it work, and within what limits?</strong></p>
 <pre><code class="language-text">Customer expectation
         ↓
 Workload + user experience
@@ -227,7 +229,7 @@ Verify under realistic conditions
 <pre><code class="language-text">Chat:      First output → Complete response
 Research:  Acknowledge  → Progress → Completed task
 </code></pre>
-<p>A service-level objective (SLO) is an agreed target. Example format: “P95 completion latency ≤ X seconds for workload Y over window Z.” P95 means 95% of measured requests meet that latency. Confirm X, Y, and Z with the customer.</p>
+<p>A service-level objective (<abbr class="gloss" title="service level objective: The target you commit to internally: &quot;95% of answers in under 3 seconds&quot;.">SLO</abbr> <span class="gloss-exp">(service level objective)</span>) is an agreed target. Example format: “P95 completion latency ≤ X seconds for workload Y over window Z.” P95 means 95% of measured requests meet that latency. Confirm X, Y, and Z with the customer.</p>
 <h4 id="3-reliability-finish-correctly-including-during-failures">3. Reliability — Finish Correctly, Including During Failures<a class="anchor" href="#3-reliability-finish-correctly-including-during-failures" aria-label="Link to 3. Reliability — Finish Correctly, Including During Failures">#</a></h4>
 <p>Availability asks whether the service is usable; reliability also includes correct completion, recovery, and safe side effects.</p>
 <blockquote>

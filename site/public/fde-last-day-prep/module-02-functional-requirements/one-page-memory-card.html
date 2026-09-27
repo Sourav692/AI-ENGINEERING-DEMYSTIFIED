@@ -162,6 +162,8 @@
   .fd-sitebar .fd-mode { font-size: 0.75rem; }
   .fd-sitebar .fd-pn { margin-left: auto; display: flex; gap: 0.875rem; }
   @media print { .fd-sitebar { display: none; } }
+  abbr.gloss { text-decoration: underline dotted; text-underline-offset: 0.2em; cursor: help; }
+  .gloss-exp { color: var(--text-2, #555); }
 </style>
 </head>
 <body><div class="fd-sitebar" role="navigation" aria-label="Last-Day Review"><div class="fd-row"><a href="/fde-last-day-prep">← Last-Day Review</a><span class="fd-label">Review 02 of 18</span><span class="fd-mode">Revision — assumes you have already studied this topic</span><span class="fd-pn"><a href="/fde-last-day-prep/module-01-fde-problem-decomposition/one-page-memory-card.html">← Review 01</a><a href="/fde-last-day-prep/module-03-non-functional-requirements/one-page-memory-card.html">Review 03 →</a></span></div></div><main class="card">
@@ -183,7 +185,7 @@ UNDERSTAND → CONTEXT → RETRIEVE → PERMISSIONS
 <table>
 <thead>
 <tr>
-<th>FR</th>
+<th><abbr class="gloss" title="functional requirement: Something the system must do: answer this question, draft that email, update that ticket.">FR</abbr></th>
 <th>Recall question</th>
 </tr>
 </thead>
@@ -220,7 +222,7 @@ UNDERSTAND → CONTEXT → RETRIEVE → PERMISSIONS
 <td>What permitted business changes can we execute?</td>
 </tr>
 <tr>
-<td>9. HITL</td>
+<td>9. <abbr class="gloss" title="human in the loop: A person approves or corrects the AI before anything risky happens.">HITL</abbr></td>
 <td>When must a human review or approve?</td>
 </tr>
 <tr>
@@ -236,7 +238,7 @@ UNDERSTAND → CONTEXT → RETRIEVE → PERMISSIONS
 <td>Was the task resolved, reopened, or overridden?</td>
 </tr>
 </tbody></table>
-<p>RAG = retrieval-augmented generation. HITL = human-in-the-loop.</p>
+<p><abbr class="gloss" title="retrieval-augmented generation: Fetch the relevant documents first, then have the model answer only from them.">RAG</abbr> = retrieval-augmented generation. HITL = human-in-the-loop.</p>
 <h3 id="trigger-concept">Trigger → Concept<a class="anchor" href="#trigger-concept" aria-label="Link to Trigger → Concept">#</a></h3>
 <table>
 <thead>
@@ -280,7 +282,7 @@ UNDERSTAND → CONTEXT → RETRIEVE → PERMISSIONS
 </tbody></table>
 <h3 id="do-not-confuse">Do Not Confuse<a class="anchor" href="#do-not-confuse" aria-label="Link to Do Not Confuse">#</a></h3>
 <ol>
-<li><strong>FR vs NFR:</strong> capability vs how well it must work. “Read order status” vs an agreed latency target.</li>
+<li><strong>FR vs <abbr class="gloss" title="non-functional requirement: How well the system must work — speed, safety, uptime, cost — as opposed to what it does.">NFR</abbr>:</strong> capability vs how well it must work. “Read order status” vs an agreed latency target.</li>
 <li><strong>RAG vs live tool:</strong> maintained policy knowledge vs current transactional state.</li>
 <li><strong>Recommend vs act:</strong> agent recommends → policy decides → executor acts. Human approval applies where required.</li>
 <li><strong>Audit vs observability:</strong> business decision/action trace vs system behavior. Response quality is also not proof of task success.</li>
