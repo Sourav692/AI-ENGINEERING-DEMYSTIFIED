@@ -20,17 +20,17 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 ## Overview: Which Strategy, When
 
-| Strategy | Solves | Cost | Complexity |
-|---|---|---|---|
-| Similarity Search | Baseline retrieval | 1 embed call | Trivial |
-| MMR | Redundant/near-duplicate chunks | 1 embed call | Trivial |
-| Multi-Query | Vocabulary mismatch, low recall | +N LLM calls | Low |
-| Self-Query | "Filter by date/author/type" queries | +1 LLM call | Medium |
-| Contextual Compression | Context window bloat, noisy chunks | +1 LLM call per doc | Medium |
-| Hybrid (BM25 + Semantic) | Exact keyword/code/ID matches | Cheap (no LLM) | Medium |
-| Parent-Document | Small-chunk precision vs. large-chunk context | 1 embed call | Medium |
-| HyDE | Sparse/short queries, domain jargon gap | +1 LLM call | Low |
-| Reranking (Cross-Encoder) | Imprecise top-k ordering | +1 local/API call | Medium |
+| Strategy                  | Solves                                        | Cost                | Complexity |
+| ------------------------- | --------------------------------------------- | ------------------- | ---------- |
+| Similarity Search         | Baseline retrieval                            | 1 embed call        | Trivial    |
+| MMR                       | Redundant/near-duplicate chunks               | 1 embed call        | Trivial    |
+| Multi-Query               | Vocabulary mismatch, low recall               | +N LLM calls        | Low        |
+| Self-Query                | "Filter by date/author/type" queries          | +1 LLM call         | Medium     |
+| Contextual Compression    | Context window bloat, noisy chunks            | +1 LLM call per doc | Medium     |
+| Hybrid (BM25 + Semantic)  | Exact keyword/code/ID matches                 | Cheap (no LLM)      | Medium     |
+| Parent-Document           | Small-chunk precision vs. large-chunk context | 1 embed call        | Medium     |
+| HyDE                      | Sparse/short queries, domain jargon gap       | +1 LLM call         | Low        |
+| Reranking (Cross-Encoder) | Imprecise top-k ordering                      | +1 local/API call   | Medium     |
 
 ```mermaid
 flowchart TD
