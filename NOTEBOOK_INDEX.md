@@ -184,11 +184,11 @@ Foundational RAG only. Agentic/advanced RAG lives in Phase 8.
 
 | Notebook | Topic |
 |---|---|
-| `1_rag_overview.ipynb` | RAG overview |
-| `Basics of RAG.ipynb` | RAG basics |
 | `Indexing.ipynb` | Indexing |
 | `Langchain+Rag.ipynb` | RAG with LangChain |
 | `Retrieval Strategies.ipynb` | Retrieval strategies |
+
+`1_rag_overview.ipynb`, `Basics of RAG.ipynb`, `Naive_RAG.ipynb` and `Naive_RAG_Alt.ipynb` were retired to `archive/04_Retrieval_and_RAG/01_Introduction_to_RAG/` on 2026-09-28. Their content lives on in `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb` (see below).
 
 ## `Embeddings_and_Vector_Databases/`
 
@@ -217,7 +217,6 @@ Foundational RAG only. Agentic/advanced RAG lives in Phase 8.
 
 | Notebook | Topic |
 |---|---|
-| `Naive_RAG.ipynb` / `Naive_RAG_Alt.ipynb` | Baseline naive RAG |
 | `Multi_Query.ipynb`, `RAG_Fusion.ipynb`, `Decomposition.ipynb`, `Step_Back_Prompting.ipynb`, `HyDE.ipynb` | Query transformation techniques |
 | `Self_Querying_Retrieval.ipynb` | Self-querying retrieval |
 | `Routing_LLM_Classifier.ipynb`, `Semantic_Routing.ipynb` | Query routing |
@@ -259,12 +258,10 @@ Also `shared_data/` at the phase root — supporting PDFs/data referenced by sev
 
 | # | Notebook | Topic |
 |---|---|---|
-| 1 | `7.0_RAG_Essentials.ipynb` | RAG essentials |
-| 2 | `7.1_RAG_Comprehensive.ipynb` | Comprehensive RAG |
-| 3 | `7.2_Filtered_Search.ipynb` | Filtered search |
-| 4 | `7.3_Indexing_API.ipynb` | Indexing API |
+| 1 | `7.2_Filtered_Search.ipynb` | Filtered search |
+| 2 | `7.3_Indexing_API.ipynb` | Indexing API |
 
-Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets.
+Plus supporting `api.py`, `docker-compose.yaml`, FAISS/Postgres assets. `7.0_RAG_Essentials.ipynb` and `7.1_RAG_Comprehensive.ipynb` were retired to `archive/04_Retrieval_and_RAG/09_RAG_with_LangChain/` on 2026-09-28; `7.1` is the structural source of `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`.
 
 ## `RAG_with_LlamaIndex/`
 
@@ -272,7 +269,7 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 ## `RAG_Production_Course/` (added 2026-09-08)
 
-7 notebooks from the same merged-in "production-course" as `02_Core/03_LangGraph_Fundamentals/03_Production_Course/`.
+6 notebooks from the same merged-in "production-course" as `02_Core/03_LangGraph_Fundamentals/03_Production_Course/`.
 
 | Notebook | Topic |
 |---|---|
@@ -280,11 +277,28 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 | `02_text_splitters.ipynb` | Text splitters |
 | `04_embeddings_deep.ipynb` | `embed_query`/`embed_documents`, cosine similarity, `CacheBackedEmbeddings` |
 | `05_vector_stores.ipynb` | Vector stores |
-| `06_rag_pipeline.ipynb` | RAG pipeline (execution counts out of order — FMT-002, deferred, needs a top-to-bottom re-run) |
 | `07_advanced_rag.ipynb` | Advanced RAG |
 | `08_research_assistant.ipynb` (+ `08_research_assistant.py`) | Research-assistant app |
 
-`03_embeddings.ipynb` (an abandoned 3-cell first draft superseded by `04_embeddings_deep.ipynb`) was retired to `archive/02_Core/04_Retrieval_and_RAG/RAG_Production_Course/` — see `archive/RETIRED_MANIFEST.md`. Also has its own `docs/` folder.
+`03_embeddings.ipynb` (an abandoned 3-cell first draft superseded by `04_embeddings_deep.ipynb`) was retired to `archive/04_Retrieval_and_RAG/RAG_Production_Course/` — see `archive/RETIRED_MANIFEST.md`. Also has its own `docs/` folder. `06_rag_pipeline.ipynb` was retired to `archive/04_Retrieval_and_RAG/RAG_Production_Course/` on 2026-09-28 — a donor to the curriculum's first lesson.
+
+## `RAG_Curriculum/` (ported 2026-09-28)
+
+A concept-first route through foundational RAG — one teaching notebook per concept, built on the `RAG_Curriculum` branch in September 2026 and ported here as a sibling track. 9 of 70 planned lessons built; the plan's evaluation and agentic sections are out of scope for Phase 4 (see the track's `README.md`). Lessons resolve assets through `_support/helpers/rag_paths.py`, never `../../` paths.
+
+| Folder | Lesson | Concept |
+|---|---|---|
+| `01_Foundations/` | `01_RAG_Lifecycle_and_Baseline.ipynb` | The whole pipeline at baseline depth |
+| | `02_Document_Loading_and_Metadata.ipynb` | Loaders, `Document` metadata, custom loaders |
+| | `03_Embeddings_and_Model_Selection.ipynb` | Embedding models and choosing between them |
+| | `04_Vector_Stores_and_Index_Operations.ipynb` | Vector stores and index CRUD |
+| | `05_Structured_Data_RAG.ipynb` | RAG over tables and CSVs |
+| `02_Chunking_and_Indexing/` | `01_Document_Splitting_and_Chunking.ipynb` | Splitters and chunk boundaries |
+| | `02_Semantic_Chunking.ipynb` | Embedding-driven chunk boundaries |
+| | `03_Proposition_Chunking.ipynb` | LLM-extracted propositions as chunks |
+| | `04_Choosing_Chunk_Size.ipynb` | Measuring chunk size against retrieval quality |
+
+**Support, not lessons:** `_support/helpers/rag_paths.py` (asset resolver), `_support/lesson_sources/` (each lesson's `.src.md` plus `build_lesson.py`), `_support/environment_and_path_manifest.md`, and the track's `RAG_CURRICULUM.md` (plan) + `RAG_MIGRATION_MANIFEST.md` (execution record).
 
 # Phase 5 — AI Agent Fundamentals (`02_Core/05_AI_Agent_Fundamentals/`)
 
@@ -292,7 +306,7 @@ Chainlit + LlamaIndex ReAct RAG over Wikipedia (`chat_agent.py`, `index_wikipage
 
 | # | Section | Topic |
 |---|---|---|
-| 1 | `01_Tools_and_Functions/` | Tool calling, tool-calling agents, OpenAI tool calling (4 nb) |
+| 1 | `01_Tools_and_Functions/` | Tool calling, tool-calling agents, OpenAI tool calling (3 nb — `6.0_Tools_Functions_Essentials.ipynb` retired to `archive/` 2026-09-28) |
 | 2 | `02_Agents/` | Agents (1 nb) |
 | 3 | `03_Applied_Projects/` | 16 applied projects — see `03_Applied_Projects/README.md` for the full list (research assistant, multi-user conversational research, text-to-SQL, financial analyst, travel assistant, and 11 short exercises) |
 
@@ -386,6 +400,9 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 | `01_Agent_Patterns/` | `01_Agent_Patterns.ipynb`, `02_Supervisor_Multi_Agent_Alt.ipynb`, `03_Multi_Agent_Overview_Alt.ipynb` | Supervisor pattern + alternates |
 | `02_Multi_Agent_Swarm/` | `01_Multi_Agent_Swarm.ipynb` | Peer-to-peer/swarm multi-agent architecture |
 | `Production_Course_Multi_Agent/` (added 2026-09-08) | `01_multi_agent.ipynb`, `02_supervisor_agent.ipynb`, `03_agent_handoffs.ipynb`, `04_agent_communication.ipynb`, `05_parallel_agents.ipynb`, `06_hierarchical_agents.ipynb`, `07_multi_agent_research_system.ipynb` | 7 notebooks from the same merged-in "production-course" as the Phase 3/4 additions above |
+| `07_Async_and_Streaming/` (added 2026-09-28) | `01_Async_Multi_Agent.ipynb` | Async multi-agent execution |
+
+`Supervisor_to_Swarm_Study_Route/` (added 2026-09-28) is a five-session study guide — `README.md` + `SUPERVISOR_TO_SWARM.html` — over notebooks listed above. It holds no notebooks.
 
 ## `Deep_Agents_and_Harness_Engineering/`
 
@@ -410,6 +427,8 @@ Verified by content hash across both repos before deletion: 147 files removed he
 
 Depends on Phases 5 & 7 — sequenced after both.
 
+`AGENTIC_RAG_ARCHITECTURES.md` (added 2026-09-28) maps every agentic-RAG architecture in the repo to the notebook or app that implements it.
+
 ## `RAG_with_LangGraph_Advanced/`
 
 | # | Notebook | Topic |
@@ -422,7 +441,7 @@ Depends on Phases 5 & 7 — sequenced after both.
 
 ## `Comprehensive_RAG_Techniques/`
 
-The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-notebook — its ~35 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths). Ranges basic → advanced: simple RAG, CSV RAG, reliable RAG, proposition chunking, query transformations, HyDE, context enrichment, contextual compression, contextual chunk headers, CRAG, Self-RAG, RAPTOR, fusion retrieval, hierarchical indices, GraphRAG (incl. Microsoft GraphRAG, Milvus variant), adaptive retrieval, multimodal RAG (captioning, ColPali), reranking, explainable retrieval, relevant segment extraction, dartboard, document augmentation, retrieval with feedback loop — plus LlamaIndex variants of several. See `README_ROADMAP.md` for the full breakdown and why it wasn't split.
+The NirDiamant `RAG_Techniques` collection, merged whole (not split notebook-by-notebook — its 42 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths). Ranges basic → advanced: simple RAG, CSV RAG, reliable RAG, proposition chunking, query transformations, HyDE, context enrichment, contextual compression, contextual chunk headers, CRAG, Self-RAG, RAPTOR, fusion retrieval, hierarchical indices, GraphRAG (incl. Microsoft GraphRAG, Milvus variant), adaptive retrieval, multimodal RAG (captioning, ColPali), reranking, explainable retrieval, relevant segment extraction, dartboard, document augmentation, retrieval with feedback loop — plus LlamaIndex variants of several. See `README_ROADMAP.md` for the full breakdown and why it wasn't split.
 
 ## `RAG_Ecosystem/`
 
@@ -598,7 +617,7 @@ Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` 
   2. Replaced entirely: rebuilt around **learning phase** instead of framework, after comparing against a reference tracker (`aie-learning-tracker.vercel.app`) — `01_Theory_and_Foundations/` … `12_Projects/`, LangGraph's content split across several phase tracks.
   3. **Final restructuring (this one):** `LangChain_Demystified-main/` and `Prompt-Engineering-Demystified-main/` were merged in, which exposed real duplication in restructuring #2 (RAG, agents, memory, and observability each had 2–3 different homes across phases). Rebuilt around a stricter rule — **each topic owns exactly one phase**, framework implementations sit as sibling tracks inside it — and split into 13 phases: Theory & Foundations (1), LangChain Fundamentals & Prompting (2, trimmed to true fundamentals), LangGraph Fundamentals (3, mechanics only), Retrieval & RAG (4, foundational only), AI Agent Fundamentals (5, both frameworks' agent-building consolidated), Agent SDKs First-Party (6, promoted to its own phase), Advanced Agentic Systems (7), Advanced RAG (8, new — agentic/self-correcting RAG + CacheRAG/GraphRAG, deliberately sequenced *after* Phases 5 & 7 since it depends on knowing agents), Agent Protocols (9), Alternative Agent Frameworks (10), Claude Code & AI Coding Tools (11), Production & Observability (12, absorbed LangChain's LangSmith/advanced-features/moderation content), Projects (13, absorbed LangChain's microservices module as a second capstone). `LangChain_Demystified`'s `_Archive/` and root scaffolding were discarded per established precedent; its two `.claude/skills/` were preserved at `.claude/skills-candidates/` for separate review. Updated everywhere a path was hardcoded: `pyproject.toml` (ruff excludes — now 3 JS frontends), `README.md`, this file, `CLAUDE.md`, `docs/*.html`, and the `ai-roadmap-organizer` skill's `roadmap-map.md`/`SKILL.md`. The same Windows directory-lock issue hit `Deep_Agents_and_Harness_Engineering` and its `app/` subfolder twice more during this pass — same drain-contents-then-remove-shell workaround each time, no data lost (verified via notebook counts before/after: 132 total).
 
-- **2026-08-17 — `RAG_Demystified-main` merged in**, filling every remaining Phase 4/7/8 placeholder that used to be empty. Split across 3 phases by the same one-topic-one-phase rule: `1. Introduction/` → Phase 4's `Introduction_to_RAG/`; `2. Concepts/4. Embedding...` → Phase 4's `Embeddings_and_Vector_Databases/` (filled the placeholder); `2. Concepts/{2,3,5,6,7,8,9}` (loading/chunking/hybrid-search/query-enhancement/parent-doc-retrieval/postprocessing/building-RAG-systems) → Phase 4's `RAG_Naive_to_Production/` (filled); `2. Concepts/10. Multi-Modal RAG` → Phase 4's `Multimodal_and_Document_Intelligence/` (filled); `2. Concepts/11. Evaluating RAG Systems` → Phase 7's `Evaluation_and_Eval_Harnesses/RAG_Evaluation/` (filled); `6. Graph_RAG` → Phase 8's `GraphRAG/` (filled); `7. Agentic_RAG/Agentic RAG Systems with LangGraph` → extended Phase 8's existing `RAG_with_LangGraph_Advanced/`; `5. Projects` → Phase 13's new `RAG_Systems_Projects/`. Two judgment calls made with the user: `4. Advanced RAG` (despite its name) is query-transformation content requiring no agent knowledge, so it went to Phase 4 as `Query_Transformation_Techniques/` rather than Phase 8; and `3. rag_technniques` (the well-known NirDiamant `RAG_Techniques` collection) was kept whole as Phase 8's `Comprehensive_RAG_Techniques/` rather than split, since its ~35 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths that splitting would have broken. Two standalone apps from `7. Agentic_RAG` (`building-adaptive-rag/`, `mcp_a2a_agentic_rag/` — the latter using MCP+A2A protocols) stayed in Phase 8 rather than moving to Phase 9 or 13, per user decision. A shared root `data/` folder (referenced by several notebooks via relative paths) was brought along as `02_Core/04_Retrieval_and_RAG/shared_data/` — exact relative-path depth wasn't reconstructed after the move, since fixing that would mean editing notebook content, out of scope for a reorganization. During the move, a Windows/Git-Bash `mv` quirk briefly renamed the existing `RAG_with_LangGraph_Advanced/` folder to `AgenticRAG` mid-operation (no data lost, caught immediately via notebook-count verification and fixed). Total notebook count went from 132 to 249 (117 added), verified exactly matching before executing docs updates.
+- **2026-08-17 — `RAG_Demystified-main` merged in**, filling every remaining Phase 4/7/8 placeholder that used to be empty. Split across 3 phases by the same one-topic-one-phase rule: `1. Introduction/` → Phase 4's `Introduction_to_RAG/`; `2. Concepts/4. Embedding...` → Phase 4's `Embeddings_and_Vector_Databases/` (filled the placeholder); `2. Concepts/{2,3,5,6,7,8,9}` (loading/chunking/hybrid-search/query-enhancement/parent-doc-retrieval/postprocessing/building-RAG-systems) → Phase 4's `RAG_Naive_to_Production/` (filled); `2. Concepts/10. Multi-Modal RAG` → Phase 4's `Multimodal_and_Document_Intelligence/` (filled); `2. Concepts/11. Evaluating RAG Systems` → Phase 7's `Evaluation_and_Eval_Harnesses/RAG_Evaluation/` (filled); `6. Graph_RAG` → Phase 8's `GraphRAG/` (filled); `7. Agentic_RAG/Agentic RAG Systems with LangGraph` → extended Phase 8's existing `RAG_with_LangGraph_Advanced/`; `5. Projects` → Phase 13's new `RAG_Systems_Projects/`. Two judgment calls made with the user: `4. Advanced RAG` (despite its name) is query-transformation content requiring no agent knowledge, so it went to Phase 4 as `Query_Transformation_Techniques/` rather than Phase 8; and `3. rag_technniques` (the well-known NirDiamant `RAG_Techniques` collection) was kept whole as Phase 8's `Comprehensive_RAG_Techniques/` rather than split, since its 42 notebooks share `helper_functions.py`/`data/`/`images/` via relative paths that splitting would have broken. Two standalone apps from `7. Agentic_RAG` (`building-adaptive-rag/`, `mcp_a2a_agentic_rag/` — the latter using MCP+A2A protocols) stayed in Phase 8 rather than moving to Phase 9 or 13, per user decision. A shared root `data/` folder (referenced by several notebooks via relative paths) was brought along as `02_Core/04_Retrieval_and_RAG/shared_data/` — exact relative-path depth wasn't reconstructed after the move, since fixing that would mean editing notebook content, out of scope for a reorganization. During the move, a Windows/Git-Bash `mv` quirk briefly renamed the existing `RAG_with_LangGraph_Advanced/` folder to `AgenticRAG` mid-operation (no data lost, caught immediately via notebook-count verification and fixed). Total notebook count went from 132 to 249 (117 added), verified exactly matching before executing docs updates.
 
 - **2026-08-17 — `Vector_Database_and_Embedding_Demystified-main` merged in** (4 notebooks + a PDF) — added directly into Phase 4's existing `Embeddings_and_Vector_Databases/` track, no new sections needed. Two notebooks overlapped conceptually with existing content and were suffixed `_Alt`; two were genuinely new (embedding-model comparison, hybrid search + reranking). Root scaffolding (`README.md`, `.gitignore`) discarded per established precedent.
 

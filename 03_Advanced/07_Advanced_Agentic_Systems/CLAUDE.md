@@ -7,7 +7,7 @@
 | Track | Content |
 |---|---|
 | `Memory_and_State/` | `LangGraph/` (memory & threads, long-term PostgreSQL memory, memory-layers tutorial series) + `LangChain/` (chat/conversation memory, multi-user SQL persistence) — both frameworks consolidated here, not left in their fundamentals phases |
-| `Multi_Agent_Orchestration/` | Supervisor pattern, swarm architecture, production-course multi-agent |
+| `Multi_Agent_Orchestration/` | Supervisor pattern, swarm architecture, production-course multi-agent, `07_Async_and_Streaming/` (async multi-agent). `Supervisor_to_Swarm_Study_Route/` is a study guide (README + HTML) over five of these notebooks — it deliberately holds **no notebook copies**; don't add any |
 | `Deep_Agents_and_Harness_Engineering/` | The `deepagents` framework — **has its own `CLAUDE.md`, read it** |
 
 ## Conventions here

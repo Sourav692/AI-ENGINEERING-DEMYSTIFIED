@@ -29,7 +29,7 @@ This is the criterion that splits RAG across two phases, and it is the reference
 
 - **CrewAI cannot share an environment with the root spine** — hard-pins `chromadb<1.2` against `langchain-chroma` 1.1. Separate venv from its own `requirements.txt`. Documented in `requirements.txt`'s header; don't "fix" it by bumping pins.
 - **`07_.../Deep_Agents_and_Harness_Engineering/app/` has hit a file lock during 3 separate restructurings.** On a failed move, drain contents one level at a time rather than moving the directory.
-- **Don't split `08_.../Comprehensive_RAG_Techniques/`** — its ~35 notebooks share `helper_functions.py`, `data/` and `images/` via relative paths.
+- **Don't split `08_.../Comprehensive_RAG_Techniques/`** — its 42 notebooks share `helper_functions.py`, `data/` and `images/` via relative paths.
 - `09_Agent_Protocols/` has 9 dependency manifests; most MCP sub-projects run in their own environment, not the root one.
 
 ## Numbering

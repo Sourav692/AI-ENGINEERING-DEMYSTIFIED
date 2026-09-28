@@ -29,7 +29,7 @@ part of the similarity search that fetches context for generation:
 
 | Stage | What happens | Where it shows up here |
 |---|---|---|
-| **Indexing** (build-time, before any query exists) | Chunk documents, embed them, write them to a vector store | `Naive_RAG.ipynb` / `Naive_RAG_Alt.ipynb` set up the baseline index everything else in this folder compares against — this is indexing, not query transformation, but it's the starting point the rest builds on. |
+| **Indexing** (build-time, before any query exists) | Chunk documents, embed them, write them to a vector store | The baseline index everything here compares against is built in [`02_Core/04_Retrieval_and_RAG/RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`](../RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb) — this is indexing, not query transformation, but it's the starting point the rest builds on. |
 | **Retrieval** (query-time, before generation) | Transform the incoming query, then search the index with the transformed version(s) | `Multi_Query`, `RAG_Fusion`, `Decomposition`, `Step_Back_Prompting`, `HyDE`, `Self_Querying_Retrieval`, `Routing_LLM_Classifier`, `Semantic_Routing` — all of them operate on the **query**, before or as part of the similarity search. |
 | **Generation** (LLM synthesizes the answer) | Not this folder's concern | Query transformation's whole job is to hand generation better context — it doesn't touch generation itself. |
 
@@ -37,15 +37,21 @@ part of the similarity search that fetches context for generation:
 > `Parent_Document_Retrieval`) and one post-retrieval refinement technique
 > (`CrossEncoder_Reranking`) used to live in this folder despite not actually transforming the
 > query. They've been split out to
-> [`../Indexing_Techniques/`](../Indexing_Techniques/) and
-> [`../Post_Retrieval_Techniques/`](../Post_Retrieval_Techniques/) respectively, each with its
+> [`../Indexing_Techniques/`](../03_Indexing_Techniques/) and
+> [`../Post_Retrieval_Techniques/`](../05_Post_Retrieval_Techniques/) respectively, each with its
 > own stage breakdown for exactly why it doesn't belong here.
 
 ## Notebooks
 
+> **Baseline notebooks moved.** This folder's README previously listed `Naive_RAG.ipynb` /
+> `Naive_RAG_Alt.ipynb` as living here. They had already been relocated to
+> `01_Introduction_to_RAG/`, and as of 2026-09-10 they are consolidated into
+> [`02_Core/04_Retrieval_and_RAG/RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`](../RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb)
+> and retired to `archive/`. Read that lesson first — it is the baseline the
+> techniques below transform, and unlike the originals it actually runs.
+
 | Notebook | Topic |
 |---|---|
-| `Naive_RAG.ipynb` / `Naive_RAG_Alt.ipynb` | Baseline naive RAG (two variants from the source repo) |
 | `Multi_Query.ipynb` | Multi-query retrieval |
 | `RAG_Fusion.ipynb` | RAG-Fusion |
 | `Decomposition.ipynb` | Query decomposition |
@@ -54,6 +60,6 @@ part of the similarity search that fetches context for generation:
 | `Self_Querying_Retrieval.ipynb` | Self-querying retrieval |
 | `Routing_LLM_Classifier.ipynb`, `Semantic_Routing.ipynb` | Query routing |
 
-See also: [`../Indexing_Techniques/`](../Indexing_Techniques/) for multi-representation
+See also: [`../Indexing_Techniques/`](../03_Indexing_Techniques/) for multi-representation
 indexing and parent-document retrieval, and
-[`../Post_Retrieval_Techniques/`](../Post_Retrieval_Techniques/) for cross-encoder reranking.
+[`../Post_Retrieval_Techniques/`](../05_Post_Retrieval_Techniques/) for cross-encoder reranking.

@@ -12,7 +12,7 @@
 
 | Concept | Source notebook | Interview weight |
 |---|---|---|
-| Naive RAG pipeline (load → split → embed → store → retrieve → generate) | `01_Introduction_to_RAG/Naive_RAG.ipynb`, `1_rag_overview.ipynb` | High |
+| Naive RAG pipeline (load → split → embed → store → retrieve → generate) | `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb` (replaces the retired `Naive_RAG.ipynb` and `1_rag_overview.ipynb`) | High |
 | Embeddings & cosine similarity | `02_Embeddings_and_Vector_Databases/1. Embedding_Models.ipynb`, `1.1. Embedding.ipynb` | High |
 | Vector stores (Chroma, FAISS, Pinecone, Astra) | `02_Embeddings_and_Vector_Databases/2.1–2.5*.ipynb` | High |
 | Retriever types (similarity, MMR, ensemble, contextual compression) | `02_Embeddings_and_Vector_Databases/3. Retrievers.ipynb` | High |
@@ -47,7 +47,7 @@ generic 10-topic checklist:
 Retrieval-augmented generation (RAG) answers questions by fetching relevant text at query time and handing it to an LLM as context, instead of relying only on what the model memorized during training.
 
 - **How it works**: split documents into chunks -> embed each chunk into a vector -> store vectors in a database -> at query time, embed the question and pull the nearest chunks -> stuff them into a prompt for the LLM.
-- **Code** (`01_Introduction_to_RAG/Naive_RAG.ipynb`):
+- **Code** (from `Naive_RAG.ipynb`, retired to `archive/04_Retrieval_and_RAG/01_Introduction_to_RAG/`; the live version of this pipeline is `RAG_Curriculum/01_Foundations/01_RAG_Lifecycle_and_Baseline.ipynb`):
   ```python
   splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
   chunks = splitter.split_documents(PyPDFLoader(path).load())

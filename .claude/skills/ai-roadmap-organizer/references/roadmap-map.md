@@ -64,7 +64,8 @@ Owns: **foundational** RAG — theory + straightforward framework implementation
 | `RAG_with_LangGraph/` | ✅ Built | 2 nb — basic agentic RAG (simple + Databricks variant) |
 | `RAG_with_LangChain/` | ✅ Built | 4 nb — essentials, comprehensive, filtered search, indexing API |
 | `RAG_with_LlamaIndex/` | ✅ Built | Chainlit ReAct RAG over Wikipedia — from `LlamaIndex_Demystified`; not the Phase 8 NirDiamant LlamaIndex notebooks |
-| `RAG_Production_Course/` | ✅ Built | 7 nb (+ retired `03_embeddings.ipynb`) from the same merged-in "production-course" as the Phase 2/3/7/12 additions (added 2026-09-08, History §18) — document loaders through a research-assistant app |
+| `RAG_Production_Course/` | ✅ Built | 6 nb (+ retired `03_embeddings.ipynb`, `06_rag_pipeline.ipynb`) from the same merged-in "production-course" as the Phase 2/3/7/12 additions (added 2026-09-08, History §18) — document loaders through a research-assistant app |
+| `RAG_Curriculum/` | 🔨 In progress | Concept-first lesson route, one teaching notebook per concept — 9 of 70 planned lessons (`01_Foundations/` 5/5, `02_Chunking_and_Indexing/` 4/9). Built on the `RAG_Curriculum` branch as a top-level folder (Sept 2026), ported 2026-09-28 as a **sibling track in this phase**, not a 14th phase and not a second RAG home. Owns foundational stages only; the plan's evaluation/agentic/advanced sections route to `Agent_Evaluation_Demystified` and Phase 8. Its 7 retired sources are in `archive/04_Retrieval_and_RAG/`. **Route new foundational-RAG lessons here only when they follow `RAG_CURRICULUM.md`; everything else still goes to the existing Phase 4 tracks.** |
 
 Also `shared_data/` at this phase's root — a copy of `RAG_Demystified`'s shared `data/` folder, since several `RAG_Naive_to_Production/` notebooks reference it via relative paths. Path depth wasn't reconstructed exactly after the move (would require editing notebook content) — flag this if a notebook can't find its data file.
 
@@ -104,7 +105,7 @@ Owns: composing agents into systems — memory, orchestration, harnesses, evalua
 | Track | Status | Content |
 |---|---|---|
 | `RAG_with_LangGraph_Advanced/` | ✅ Built | Self-correcting retrieval + RAG-as-tool (agentic RAG), extended with `RAG_Demystified`'s corrective/adaptive/healthcare-router agentic RAG notebooks |
-| `Comprehensive_RAG_Techniques/` | ✅ Built | The NirDiamant `RAG_Techniques` collection (~35 nb) — kept whole rather than split by notebook, since it shares `helper_functions.py`/`data/`/`images/` across the collection via relative paths. Placed here (not Phase 4) because its own identity is an *advanced*-techniques anthology even though some individual notebooks are basic. |
+| `Comprehensive_RAG_Techniques/` | ✅ Built | The NirDiamant `RAG_Techniques` collection (42 technique notebooks) — kept whole rather than split by notebook, since it shares `helper_functions.py`/`data/`/`images/` across the collection via relative paths. The former nested upstream checkout was merged into this track on 2026-09-09; the track also has 5 evaluation notebooks, 21 runnable scripts, tests, data, images, and provenance/support files. Placed here (not Phase 4) because its own identity is an *advanced*-techniques anthology even though some individual notebooks are basic. |
 | `RAG_Ecosystem/` | ✅ Built | Fareed Khan single-notebook RAG stack (from `rag-ecosystem`). Kept whole; includes CRAG pointers + eval so it is not split into Phase 4/7. Distinct from NirDiamant. |
 | `GraphRAG/` | ✅ Built | Knowledge-graph + RAG course (from `RAG_Demystified`) |
 | `CacheRAG/` | 🚧 Planned | |

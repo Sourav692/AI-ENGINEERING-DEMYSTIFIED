@@ -7,6 +7,6 @@ Compose agents into systems: memory, multi-agent orchestration, the deep-agent h
 | Track | Status | Scope |
 |---|---|---|
 | `Memory_and_State/` | ✅ Built | Agent memory, threads, long-term memory — LangGraph and LangChain |
-| `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern, swarm/peer-to-peer multi-agent architecture |
+| `Multi_Agent_Orchestration/` | ✅ Built | Supervisor pattern, swarm/peer-to-peer multi-agent architecture, async multi-agent (`07_Async_and_Streaming/`), and a five-session [Supervisor to Swarm study route](Multi_Agent_Orchestration/Supervisor_to_Swarm_Study_Route/) |
 | `Deep_Agents_and_Harness_Engineering/` | ✅ Built | `deepagents`-based multi-agent orchestration |
 | ~~`Evaluation_and_Eval_Harnesses/`~~ | ❌ Removed 2026-09-19 | Moved wholesale to the sibling repo `Agent_Evaluation_Demystified` — see this phase's `CLAUDE.md`. Don't recreate an evaluation track here |
