@@ -1,0 +1,102 @@
+name_prefix: ai-engineering-demystified
+sequence:
+  - number: 1
+    slug: foundations
+    prerequisite: null
+    sources:
+      - 01_Foundations/00_Theory_and_Foundations
+  - number: 2
+    slug: prompt-context-engineering
+    prerequisite: 1
+    sources:
+      - 01_Foundations/02_Prompt_and_Context_Engineering
+  - number: 3
+    slug: langchain-fundamentals
+    prerequisite: 2
+    sources:
+      - 02_Core/01_LangChain_Fundamentals
+  - number: 4
+    slug: langgraph-fundamentals
+    prerequisite: 3
+    sources:
+      - 02_Core/03_LangGraph_Fundamentals
+  - number: 5
+    slug: retrieval-rag
+    prerequisite: 3
+    recommended_after: 4
+    sources:
+      - 02_Core/04_Retrieval_and_RAG
+  - number: 6
+    slug: agent-fundamentals
+    prerequisite: 4
+    recommended_after: 5
+    sources:
+      - 02_Core/05_AI_Agent_Fundamentals
+  - number: 7
+    slug: first-party-agent-sdks
+    prerequisite: 6
+    sources:
+      - 03_Advanced/06_Agent_SDKs_First_Party
+  - number: 8
+    slug: advanced-agent-systems
+    prerequisite: 7
+    sources:
+      - 03_Advanced/07_Advanced_Agentic_Systems
+  - number: 9
+    slug: advanced-rag
+    prerequisite: 8
+    also_requires: 5
+    sources:
+      - 03_Advanced/08_Advanced_RAG
+  - number: 10
+    slug: agent-protocols
+    prerequisite: 9
+    sources:
+      - 03_Advanced/09_Agent_Protocols
+  - number: 11
+    slug: alternative-agent-frameworks
+    prerequisite: 10
+    sources:
+      - 03_Advanced/10_Alternative_Agent_Frameworks
+  - number: 12
+    slug: ai-coding-tools
+    prerequisite: 8
+    recommended_after: 11
+    sources:
+      - 04_AI_Coding_Tools
+  - number: 13
+    slug: production-observability
+    prerequisite: 12
+    sources:
+      - 03_Advanced/12_Production_and_Observability
+  - number: 14
+    slug: projects
+    prerequisite: 13
+    groups:
+      - number: 1
+        slug: foundational-projects
+        sources:
+          - 05_Projects/Agent_Tool_Calling_Foundations
+          - 05_Projects/Automated_Candidate_Interview_Evaluation_System
+          - 05_Projects/Personalized_Holiday_Management_Agent
+          - 05_Projects/Resume_Genie
+          - 05_Projects/RAG_Systems_Projects
+      - number: 2
+        slug: retrieval-agent-projects
+        sources:
+          - 05_Projects/Building_Adaptive_RAG
+          - 05_Projects/ShopUNow_Agentic_RAG_Capstone
+          - 05_Projects/End_to_End_Medical_Chatbot
+          - 05_Projects/Realtime_Source_Code_Analyzer
+          - 05_Projects/AI_Powered_Customer_Support
+          - 05_Projects/LangGraph_Fullstack_Capstone
+          - 05_Projects/LangChain_Microservices_Capstone
+      - number: 3
+        slug: enterprise-realtime-capstones
+        sources:
+          - 05_Projects/Enterprise_RAG_Platform
+          - 05_Projects/Enterprise_Agentic_Workflow_Automation_Platform
+          - 05_Projects/Enterprise_Multi_Agent_AI_Research_Platform
+          - 05_Projects/FDE_Delivery_Framework
+          - 05_Projects/Realtime_Voice_AI_Agent_with_RAG
+          - 05_Projects/Pipecat_QuickStart

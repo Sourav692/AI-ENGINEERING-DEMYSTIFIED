@@ -6,6 +6,23 @@
 
 ---
 
+## 🔀 The course is being split into separate repositories
+
+This roadmap is moving into a sequence of self-contained repositories, one topic each. The first seven exist (private for now); the rest of the material stays here until its repository is created. Plan: [`.repo_structure/`](.repo_structure/README.md).
+
+| # | Repository | Topic |
+|---|---|---|
+| 01 | [ai-engineering-demystified-01-foundations](https://github.com/Sourav692/ai-engineering-demystified-01-foundations) | Foundations |
+| 02 | [ai-engineering-demystified-02-prompt-context-engineering](https://github.com/Sourav692/ai-engineering-demystified-02-prompt-context-engineering) | Prompt and context engineering |
+| 03 | [ai-engineering-demystified-03-langchain-fundamentals](https://github.com/Sourav692/ai-engineering-demystified-03-langchain-fundamentals) | LangChain fundamentals |
+| 04 | [ai-engineering-demystified-04-langgraph-fundamentals](https://github.com/Sourav692/ai-engineering-demystified-04-langgraph-fundamentals) | LangGraph fundamentals |
+| 05 | [ai-engineering-demystified-05-retrieval-rag](https://github.com/Sourav692/ai-engineering-demystified-05-retrieval-rag) | Retrieval and RAG |
+| 06 | [ai-engineering-demystified-06-agent-fundamentals](https://github.com/Sourav692/ai-engineering-demystified-06-agent-fundamentals) | Agent fundamentals |
+| 07 | [ai-engineering-demystified-07-first-party-agent-sdks](https://github.com/Sourav692/ai-engineering-demystified-07-first-party-agent-sdks) | First-party agent SDKs |
+| 08–14 | 🚧 not yet created | Advanced agent systems, advanced RAG, protocols, alternative frameworks, AI coding tools, production, projects |
+
+Source state for the split: tag `pre-multirepo-split-2026-09`. Nothing has been removed from this repository yet.
+
 ## Who Is This For?
 
 | Level                                  | Start At                                                                 |
