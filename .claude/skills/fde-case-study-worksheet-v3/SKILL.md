@@ -3,6 +3,8 @@ name: fde-case-study-worksheet-v3
 description: Converts a long-form FDE system-design tutorial (a `_v2` chapter in `06_Interview_Prep/FDE/FDE_System_Design_Interview_20_Scenarios/Version_2/`) into a Version_3 case-study PAIR — a short blank practice worksheet plus a filled answer key — matching the format and ~100-line length of the Phase-01 CASE_STUDY_WORKSHEET reference docs. Use when the user asks to "make version 3", "convert Version_2 into the worksheet/answer-key format", "turn chapter N into a case study worksheet", "generate the answer keys for the 20 scenarios", or otherwise asks for the short worksheet+answer-key form of a scenario tutorial. Do NOT use to produce the long bullet-cram tutorials — that is `fde-tutorial-interview-format`.
 ---
 
+> ⚠ **Target moved (2026-09-29).** `06_Interview_Prep/` was extracted to the separate `Forward-Deployed-Engineer-Interview-Prep` repo and is gitignored here, so anything this skill writes under that path in *this* repo is never versioned. Run it from a clone of that repo (paths inside it drop the `06_Interview_Prep/` prefix), or confirm the output location with the user first.
+
 # FDE Case Study Worksheet + Answer Key (v3)
 
 Compresses a ~1,400-line `_v2` chapter tutorial into the two-file case-study format the

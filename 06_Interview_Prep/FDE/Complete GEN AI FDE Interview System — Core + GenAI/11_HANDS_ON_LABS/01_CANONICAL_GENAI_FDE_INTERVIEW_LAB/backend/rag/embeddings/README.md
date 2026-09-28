@@ -1,1 +1,0 @@
-Lightweight local lexical-vector scoring used to demonstrate the retrieval contract without downloading a neural model.

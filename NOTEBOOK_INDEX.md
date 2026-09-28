@@ -2,7 +2,7 @@
 
 A single, accurate table of every notebook in this repo, in the order they're meant to be worked through. This reflects the **actual files on disk**. `README.md` and `CLAUDE.md` have since been reconciled to match (see [Known Discrepancies](#known-discrepancies) below for what was fixed and what's still open).
 
-> **Reconciled with disk 2026-09-19.** Phase headings carry their full repo-relative path under the stage structure (`01_Foundations/`, `02_Core/`, `03_Advanced/`, `04_AI_Coding_Tools/`, `05_Projects/`, `06_Interview_Prep/`). The `Phase N` labels are the original roadmap numbers and were deliberately **not** renumbered, so every "Phase 7" reference across the other docs stays true. The one split: the old Phase 2 ("LangChain Fundamentals & Prompting") owned two topics, which the restructure separated into different stages — they appear below as **Phase 2a** (prompting, Foundations) and **Phase 2b** (LangChain, Core).
+> **Reconciled with disk 2026-09-19.** Phase headings carry their full repo-relative path under the stage structure (`01_Foundations/`, `02_Core/`, `03_Advanced/`, `04_AI_Coding_Tools/`, `05_Projects/`; `06_Interview_Prep/` was extracted to its own repo on 2026-09-29). The `Phase N` labels are the original roadmap numbers and were deliberately **not** renumbered, so every "Phase 7" reference across the other docs stays true. The one split: the old Phase 2 ("LangChain Fundamentals & Prompting") owned two topics, which the restructure separated into different stages — they appear below as **Phase 2a** (prompting, Foundations) and **Phase 2b** (LangChain, Core).
 
 This repo is organized as a sequence of **phases**, each owning exactly one topic — no duplication, framework-specific implementations sit as sibling tracks inside the phase that owns their topic. The phases are grouped into stages by *prerequisite*, not difficulty. **Built so far: Phases 2a, 2b, 3, 4, 5, 7, 8, 13, 14 (fully); Phases 1, 9, 10, 12 (partially).** Phases 6 and 11 are scaffolded placeholders with no content yet.
 
@@ -592,19 +592,9 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 ---
 
 
-# Phase 14 — Interview Preparation (`06_Interview_Prep/`)
+## Interview preparation — moved out (2026-09-29)
 
-Added 2026-09-19 by collapsing four separate top-level phases plus `tutorials/` into one phase with five tracks — interview prep is one topic, and four top-level homes for it was the same duplication the one-topic-one-phase rule exists to prevent.
-
-| Track | Was | Content |
-|---|---|---|
-| `Handbook/` | `14_AI_Engineering_Handbook/` | 12-chapter written handbook (LLM systems → system design → robust agents → enterprise RAG → agentic workflow platforms → multi-agent → AgentOps → casebook → FDE delivery → telling the story). Kept whole: it re-covers topics Phases 4/5/7/12 own, but it is prose, not notebooks — same "kept whole" precedent as `Comprehensive_RAG_Techniques/`. |
-| `FDE/` | `15_FDE_Related_Preparation/` | Purchased GenAI FDE interview system, system-design scenarios, behavioural/leadership, STAR stories. ⚠ Third-party commercial material — `.gitignore` lines 160–162 keep everything except `.md` out of git. |
-| `AI_Engineer/` | `16_AI_Engineer_Interview_Preparation/` | Cross-cutting prep + delivery framework. Its three enterprise platform builds moved to Phase 13 (they were applications, not prep). |
-| `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Coverage/gap analysis + sample questions. Its Databricks eval tutorial and evaluation question banks went to `Agent_Evaluation_Demystified`. |
-| `Study_Guides/` | `tutorials/` | Per-phase `*_INTERVIEW_TUTORIAL.md` study guides (01/03/04/07/08/12), the Cost & Latency playbook cram sheets + drill deck, chunking and retrieval-strategy notes, drill hub. |
-
-**Client stories are private (2026-09-27):** the raw client engagement stories that used to sit in `FDE/Star_Stories/` and `Handbook/11_Telling_The_Story/stories/` were moved to the gitignored `06_Interview_Prep/_private/` and the tracked material was anonymised. Only the Meridian Assist reference-build stories remain in `Handbook/11_Telling_The_Story/stories/`.
+Phase 14 (`06_Interview_Prep/`) and the Forward Deployed website (`site/`, `.website_plan/`) now live in the separate repo [`Sourav692/Forward-Deployed-Engineer-Interview-Prep`](https://github.com/Sourav692/Forward-Deployed-Engineer-Interview-Prep), which is also what Vercel deploys. That repo pins this one at commit `d3cd0e5` for the runnable implementations its lessons cite, so paths from before the extraction stay readable there. Four small pieces were not carried over and remain only in this repo's git history: `OpenAI_Applied/` (coverage/gap analysis, sample questions), `Study_Guides/callbacks/LangGraph_Agent_Callbacks_OpenAI.ipynb`, and the Handbook chapter 01/10 `project/` labs that the pinned revision serves.
 
 ## Known Discrepancies
 

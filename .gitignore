@@ -152,19 +152,11 @@ cell_*.txt
 
 # MCP server local data (Chroma persistent store)
 .mcp_data/
-# FDE prep source folder. The markdown is the source of truth for the Forward
-# Deployed site (site/), so it is tracked; the PDFs and .docx exports alongside it
-# are large binaries and were the original reason this folder was ignored.
-# Paths are spelled out in full: a pattern with a slash in the middle is anchored to
-# this file's directory, so the bare folder name would match nothing here.
-# Git will not descend into an excluded directory, so directories must be
-# re-included before a negation on the files inside them can apply.
-06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/**
-!06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/**/
-!06_Interview_Prep/FDE/Complete GEN AI FDE Interview System — Core + GenAI/**/*.md
 sarathi.md
 
-# Private interview-prep material: real client engagement stories and the unredacted
-# originals of files that were anonymised for the public repo/site (2026-09-27).
-# Kept locally, never committed.
-06_Interview_Prep/_private/
+# Interview prep and its website moved to the separate Forward-Deployed-Engineer-
+# Interview-Prep repo (2026-09-29). Ignored here so a stray local copy - which may hold
+# purchased vendor material or real client stories - cannot be committed back.
+/06_Interview_Prep/
+/site/
+/.website_plan/

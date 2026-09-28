@@ -6,9 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is a growing, multi-phase **AI Engineering end-to-end roadmap**. It is organized into 15 numbered phases (`00_`–`14_`, 0-indexed on disk), each owning exactly one topic — never split the same topic across two phases, and never create a second home for a topic that already has one (see [Roadmap Structure](#roadmap-structure)). Where a topic has framework-specific implementations, they sit as sibling tracks *inside* the one phase that owns that topic (e.g. Phase 4 has both `RAG_with_LangGraph/` and `RAG_with_LangChain/`).
 
-**Built so far (disk numbering):** 00, 01, 02, 03, 04, 05, 07, 08, 13, 14 (fully); 09, 10, 12 (partially). 06 and 11 are scaffolded placeholders with no content yet.
+**Built so far (disk numbering):** 00, 01, 02, 03, 04, 05, 07, 08, 13 (fully); 09, 10, 12 (partially). 06 and 11 are scaffolded placeholders with no content yet. 14 (interview prep) was extracted to its own repo — see below.
 
 **Evaluation is not in this repo.** It lives in the sibling repo `Agent_Evaluation_Demystified` (removed here 2026-09-19 after a content-hash comparison found 147 duplicated files and none unique). Don't recreate an evaluation track here.
+
+**Interview prep is not in this repo either.** `06_Interview_Prep/`, the Forward Deployed website (`site/`) and its planning docs (`.website_plan/`) moved to the private repo `Sourav692/Forward-Deployed-Engineer-Interview-Prep` on 2026-09-29; Vercel deploys the site from there. That repo pins this one at commit `d3cd0e5` for the runnable code its lessons cite. All three paths are gitignored here and `check_repo_invariants.py` fails if anything is tracked under them — don't recreate them.
 
 For the full, current notebook-by-notebook listing of the built content, see `@NOTEBOOK_INDEX.md` — it is the source of truth for what actually exists, since `README.md`'s tables have historically drifted from it.
 
@@ -35,10 +37,9 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
 
 04_AI_Coding_Tools/                          🚧 Planned — Claude Code, Codex, Cursor, Agent Skills, Claude API & Agent SDK
 05_Projects/                                 ✅ Built — 16 projects: capstones + standalone apps + 3 enterprise platforms
-06_Interview_Prep/                           ✅ Built — Handbook · FDE ⚠purchased · AI_Engineer · OpenAI_Applied · Study_Guides
 
 archive/                                     Retired notebooks, frozen — never reorganize
-docs/  helpers/  plugins/  site/             Support: microsite, LLM factory, plugin, Next.js site
+docs/  helpers/  plugins/                    Support: microsite, LLM factory, plugin
 ```
 
 **Stage folders group phases by prerequisite, not by difficulty** (added 2026-09-19). "Advanced" means *requires agents knowledge*, which is objective and stable — it is the same criterion that keeps foundational RAG in `02_Core/04_` and agentic RAG in `03_Advanced/08_`. Phase numbers inside the stages are the original ones and were deliberately not renumbered: every "Phase 7" reference across the docs stays true, and the gap (no `11_` under `03_Advanced/`) is the cost of that.
@@ -83,18 +84,15 @@ Every phase carries its own `CLAUDE.md`. Claude Code loads the root file always,
 | `03_Advanced/12_Production_and_Observability/CLAUDE.md` | LLMOps, safety; the observability-vs-evaluation line |
 | `04_AI_Coding_Tools/CLAUDE.md` | Claude Code, Codex, Cursor, Agent Skills |
 | `05_Projects/CLAUDE.md` | 16 projects, one venv each, the ruff-exclude rule |
-| `06_Interview_Prep/CLAUDE.md` | ⚠ purchased material and the path-anchored `.gitignore` that protects it |
 
-Files compose rather than override: root → stage → phase → any deeper file. Two deeper files also exist and take precedence inside their trees: `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/CLAUDE.md` and `site/CLAUDE.md`.
+Files compose rather than override: root → stage → phase → any deeper file. One deeper file also exists and takes precedence inside its tree: `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/CLAUDE.md`.
 
 ## Path-anchored config — repoint these whenever a folder moves
 
-Three places hard-code repository paths. All three broke silently during the 2026-09-19 restructure and were caught only by explicit checking. **If you move a folder, fix these in the same commit:**
+Config that hard-codes repository paths breaks silently when a folder moves — three such places did during the 2026-09-19 restructure and were caught only by explicit checking. Two of them (`.gitignore`'s FDE anchor and `site/scripts/sync-content.mjs`) left with the interview-prep extraction; one remains. **If you move a folder, fix it in the same commit:**
 
 | File | What it anchors | Failure mode |
 |---|---|---|
-| `.gitignore` lines ~160–162 | keeps purchased FDE material out of git except `.md` | ~107 vendor PDFs silently become committable |
-| `site/scripts/sync-content.mjs` `SOURCE_ROOT` | the public site builds from `06_Interview_Prep/FDE` | site build reads a dead path |
 | `pyproject.toml` `[tool.ruff] extend-exclude` | 5 JS frontend paths | frontends get linted as Python |
 
 Verification after any move — **this is now automated**, run it directly or let the
@@ -104,10 +102,10 @@ python3 scripts/check_repo_invariants.py
 ```
 It asserts, repo-wide: every notebook is valid JSON and non-empty; every relative
 `data/` reference in a code cell resolves; every path named in `NOTEBOOK_INDEX.md`'s
-phase headings, `THEORY_DOCS_INDEX.md`'s headings and `Study_Guides/TOPIC_DOCS_MAP.md`'s
-links exists; all three path-anchored configs above still point at real folders; and no
-vendor `.pdf`/`.docx`/`.pptx` is tracked under `06_Interview_Prep/FDE`. Takes ~0.6s over
-526 notebooks and is wired into `.pre-commit-config.yaml`, so a commit that breaks any of
+phase headings and `THEORY_DOCS_INDEX.md`'s headings exists; the path-anchored config above
+still points at real folders; nothing is tracked under the extracted interview-prep paths;
+and no client name listed in `PRIVATE_TERM_HASHES` appears in a tracked file. Takes ~0.6s over
+514 notebooks and is wired into `.pre-commit-config.yaml`, so a commit that breaks any of
 them fails.
 
 **Each check exists because that thing actually broke silently**, most of them during the

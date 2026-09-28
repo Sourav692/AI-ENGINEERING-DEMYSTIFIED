@@ -11,8 +11,8 @@ Excluded as non-theoretical: `.venv`/site-packages library docs, Claude Code too
 (task boards, plans, decision logs, progress checklists, gap analyses).
 
 **Note:** section headings below are full repo-relative paths under the stage structure
-(`01_Foundations/`, `02_Core/`, `03_Advanced/`, `05_Projects/`, `06_Interview_Prep/`) and were
-verified against disk on 2026-09-19 — all 18 resolve. The earlier `00_`–`17_` flat numbering this
+(`01_Foundations/`, `02_Core/`, `03_Advanced/`, `05_Projects/`) and were
+verified against disk on 2026-09-19. The earlier `00_`–`17_` flat numbering this
 note used to warn about no longer exists; phase numbers inside each stage are the original ones and
 were deliberately not renumbered, which is why there is no `11_` under `03_Advanced/`.
 
@@ -110,105 +110,6 @@ were deliberately not renumbered, which is why there is no `11_` under `03_Advan
 | `ShopUNow_Agentic_RAG_Capstone/WALKTHROUGH.md` | md | Multi-user conversational agentic RAG: LangGraph nodes, memory, routing |
 | `Realtime_Voice_AI_Agent_with_RAG/Docs/PROJECT_REPORT.md` | md | Real-time voice AI assistant + RAG architecture |
 
-## 06_Interview_Prep/Handbook
-
-Handbook is structured as a full curriculum — every numbered chapter file within each module is a
-theory chapter (125 files total; excluded only `project/data/corpus/*.md` synthetic ticket/policy
-data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/validation READMEs).
-
-| Path | Type | Topics Covered |
-|---|---|---|
-| `00_Orientation/*` (3 chapters + README) | md | Handbook usage, 3 AI-engineering roles, first-10-minutes interview framing |
-| `01_LLM_Systems_Foundations/*` (5 chapters + README) | md | What RAG is, chunking/retrieval/fusion, tool-calling loop from scratch and in LangGraph |
-| `02_System_Design_Fundamentals/*` (5 chapters + README) | md | 12-part system design framework, 15 design principles, monolith vs microservices, worked example, whiteboard method |
-| `03_Robust_Agents/*` (5 chapters + README) | md | Retry/fallback/memoization/confirm, state/memory/sessions, parallel vs sequential execution, tool-call observability, guard checks |
-| `04_Enterprise_RAG/01–10_*.md` + README | md | ABAC access control, ingestion pipeline, hybrid retrieval + rerank, query graph, output guardrails, eval, observability |
-| `05_Agentic_Workflow_Platforms/01–07_*.md` + README | md | Canonical events/channels, determinism over free text, durability/idempotency, approvals/spend caps/staged rollout |
-| `06_Cross_Cutting_Concerns/01–07_*.md` + README | md | Identity/secrets/tenant fairness, observability standards, caching/streaming/CI-CD, prompt injection/egress/tenancy, structured data routers, scaling to 20M docs |
-| `07_Multi_Agent_Systems/01–05_*.md` + README | md | When multi-agent is justified, handoff reference architecture, failure isolation & evaluation, case studies |
-| `07_Multi_Agent_Systems/diagrams/architecture.html, platform-architecture.html` | html | Multi-agent system architecture diagrams |
-| `08_AgentOps_And_Platform/01–06_*.md` + README | md | Prompt versioning/rollout/rollback, AgentOps on Databricks, enterprise RAG on Databricks, multi-channel/HITL escalation, red teaming, infra/CI-CD |
-| `09_AI_System_Design_Casebook/01–06_*.md` + README | md | Worked AI system designs: enterprise assistant, customer support, coding assistant, recruiting platform, logistics exception handling |
-| `09_AI_System_Design_Casebook/whiteboard_scripts/*.md` | md | Whiteboard-style scripts for enterprise RAG w/ access control, RAG on Databricks, agent platform for non-technical users, scoping-to-deployed-agent |
-| `10_FDE_Delivery_Operating_Model/01–07_*.md` + README | md | FDE delivery model: day-in-the-life, six-stage delivery process, scoping-to-production in 2 weeks, gates/risks/metrics, cross-team collaboration |
-| `11_Telling_The_Story/01–02_*.md` + README | md | Deep-dive vs conversational technical-story formats, proof vs cheat-sheet honesty |
-| `11_Telling_The_Story/stories/*.md` (2 files) | md | Technical narrative write-ups of the Meridian Assist enterprise RAG build (client-engagement stories are kept privately) |
-| `11_Telling_The_Story/stories/STAR_Stories_Technical_Build_Projects.html` | html | STAR-format technical story narratives |
-| `99_Appendices/A_Glossary.md` | md | Glossary of AI-engineering/agent terminology |
-| `99_Appendices/C_Interview_QA_Log.md` | md | Logged interview Q&A covering handbook concepts |
-| `04_Enterprise_RAG/project/README.md` | md | Meridian Assist: enterprise RAG with attribute-based access control — architecture explanation |
-| `05_Agentic_Workflow_Platforms/project/README.md` | md | Deterministic guardrail/orchestration engine for non-technical-user agent platforms |
-| `07_Multi_Agent_Systems/reference_code/README.md` | md | Autonomous research agent: multi-agent pipeline, red teaming, LLM eval architecture |
-| `10_FDE_Delivery_Operating_Model/project/README.md` | md | Gate-enforcing state machine for scoping-to-deployed-agent delivery framework |
-
-## 06_Interview_Prep/FDE
-
-| Path | Type | Topics Covered |
-|---|---|---|
-| `Cracking_Agentic_AI_System_Design_Interviews/ch05_tool_use_agent_computer_interface.md` (+html) | md/html | Tool use & agent-computer interface design |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch06_orchestration_context_engineering.md` (+html) | md/html | Orchestration and context engineering |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch07_knowledge_memory_retrieval.md` (+html) | md/html | Knowledge, memory, and retrieval systems |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch08_learning_in_agentic_systems.md` (+html) | md/html | Learning mechanisms in agentic systems |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch12_validation_and_measurement.md` (+html) | md/html | Validation and measurement of agentic systems |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch23_system_design_patterns.md` (+html) | md/html | Agentic system design patterns |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch27_technical_interview.md` (+html) | md/html | Technical interview format/approach for agentic AI system design |
-| `Cracking_Agentic_AI_System_Design_Interviews/ch28_system_design_interview.md` (+html) | md/html | System design interview format/approach |
-| `Delivery Framework from Scoping to Delivery/docs/01-theory.md` | md | Delivery-framework theory: scoping to deployed agent |
-| `Delivery Framework from Scoping to Delivery/docs/02-architecture-end-to-end.md` | md | End-to-end architecture of the delivery framework |
-| `Delivery Framework from Scoping to Delivery/docs/03-src-modules-reference.md` | md | Module-by-module reference of the delivery framework's implementation |
-| `Delivery Framework from Scoping to Delivery/docs/04-system-design-coverage-map.md` | md | Mapping of system-design concepts covered by the project |
-| `Delivery Framework from Scoping to Delivery/docs/05-security-gate-depth-and-tenant-scale.md` | md | Security gates and multi-tenant scaling concepts |
-| `Senior_FDE_Day_to_Day.md` | md | Senior Forward Deployed Engineer role/responsibilities |
-| `System_Design and Delivery/1. System Design Overview.md` (+html) | md/html | System design overview |
-| `System_Design and Delivery/2. System Design Components.md` (+html) | md/html | System design components |
-| `System_Design and Delivery/3. System Design Principles.md` (+html) | md/html | System design principles |
-| `System_Design and Delivery/4. Monolith vs Microservice Architecture.md` (+html) | md/html | Monolith vs microservice architecture |
-| `System_Design and Delivery/5. Enterprise AI Assistant Design.md` (+html) | md/html | Enterprise AI assistant system design |
-| `System_Design and Delivery/6. Customer Support AI Assistant Design.md` (+html) | md/html | Customer support AI assistant system design |
-| `System_Design and Delivery/7. AI Powered Coding Assistant Design.md` (+html) | md/html | AI-powered coding assistant system design |
-| `System_Design and Delivery/8. AI Powered Recruiting Platform Design.md` (+html) | md/html | AI-powered recruiting platform system design |
-| `System_Design and Delivery/9. Proj Delivery.md` (+html) | md/html | Project delivery methodology for AI systems |
-| `System_Design and Delivery/10. Cross Team Collaboration.md` (+html) | md/html | Cross-team collaboration in AI delivery |
-| `System_Design and Delivery/AI Logistics Exception-Handling Assistant Design.md` (+html) | md/html | AI logistics exception-handling assistant design |
-| `System_Design and Delivery/Agentic Coverage Map.html` | html | Coverage map of agentic system design topics |
-| `System_Design and Delivery/Mock - AI Exception-Handling Assistant.md` | md | Mock interview design walkthrough for exception-handling assistant |
-
-## 06_Interview_Prep/AI_Engineer
-
-| Path | Type | Topics Covered |
-|---|---|---|
-| `Cross Cutting Preparation/00-first-ten-minutes.html` | html | First-ten-minutes interview framing for system design |
-| `Cross Cutting Preparation/01-identity-secrets-and-tenant-fairness.md` | md | Identity, secrets management, tenant fairness |
-| `Cross Cutting Preparation/02-observability-standards-and-failure-patterns.md` | md | Observability standards and failure patterns |
-| `Cross Cutting Preparation/03-cost-latency-cicd-rigor-and-build-vs-buy.md` | md | Cost/latency, CI/CD rigor, build-vs-buy decisions |
-| `Cross Cutting Preparation/04-agentops-on-databricks.md` | md | AgentOps concepts on Databricks |
-| `Cross Cutting Preparation/05-guarding-tool-calls.md` | md | Guardrails for agent tool calls |
-| `Cross Cutting Preparation/Cross_Cutting_System_Design_Quick_Reference_v2.md` | md | Quick-reference summary of cross-cutting system design concerns |
-| `Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/LAYERS_EXPLAINED.md` | md | Layered architecture explanation for a multi-agent research platform |
-| `Enteprise Multi-Agent AI Research Platform/ARCHITECTURE DIAGRAMS/architecture.html, architecture_mermaid.html, platform-architecture.html` | html | Multi-agent research platform architecture diagrams |
-| `Enterprise Agentic Workflow Automation Platform/docs/01-theory.md` | md | Theory of enterprise agentic workflow automation |
-| `Enterprise Agentic Workflow Automation Platform/docs/02-architecture-end-to-end.md` | md | End-to-end architecture for the workflow automation platform |
-| `Enterprise Agentic Workflow Automation Platform/docs/03-src-modules-reference.md` | md | Module reference for the workflow automation platform |
-| `Enterprise Agentic Workflow Automation Platform/docs/04-system-design-coverage-map.md` | md | System design coverage map for the platform |
-| `Enterprise Agentic Workflow Automation Platform/docs/05-security-tenancy-and-observability-gaps.md` | md | Security, tenancy, and observability gap analysis concepts |
-| `Enterprise Agentic Workflow Automation Platform/INTERVIEW_SCRIPT.md` | md | Interview walkthrough script covering the platform's architecture/concepts |
-| `Enterprise RAG Platform/docs/01-theory.md` | md | Enterprise RAG theory |
-| `Enterprise RAG Platform/docs/03-theory-databricks.md` | md | Enterprise RAG theory specific to Databricks |
-| `Enterprise RAG Platform/docs/04-security-checks-reference.md` | md | Security checks reference for enterprise RAG |
-| `Enterprise RAG Platform/docs/05-src-modules-reference.md` | md | Source module reference |
-| `Enterprise RAG Platform/docs/06-architecture-end-to-end.md` | md | End-to-end architecture |
-| `Enterprise RAG Platform/docs/07-system-design-coverage-map.md` | md | System design coverage map |
-| `Enterprise RAG Platform/docs/08-structured-data-and-connectors.md` | md | Structured data and connector integration concepts |
-| `Enterprise RAG Platform/docs/09-multi-agent-orchestration.md` | md | Multi-agent orchestration within enterprise RAG |
-| `Enterprise RAG Platform/docs/10-agent-ops-and-channels.md` | md | AgentOps and multi-channel concepts |
-| `Enterprise RAG Platform/docs/QA.md` | md | Q&A covering enterprise RAG platform concepts |
-| `Enterprise RAG Platform/docs/Scale_Optimization.md` | md | Scale optimization strategies for enterprise RAG |
-| `Enterprise RAG Platform/INTERVIEW_SCRIPT.md, INTERVIEW_SCRIPT_DATABRICKS.md` | md | Interview walkthrough scripts covering the RAG platform's architecture/concepts |
-
-## 06_Interview_Prep/OpenAI_Applied
-
-*(the one file here, `OpenAI_Applied_AI_Engineer_Coverage_Gap_Analysis.md`, is a personal gap-analysis/planning doc rather than a concept explainer — excluded)*
-
 ## docs/ (static HTML tutorial microsite)
 
 | Path | Type | Topics Covered |
@@ -223,22 +124,6 @@ data, `Progress_Checklist.md`, `Source_Map.md`, and process-only project setup/v
 | `docs/chapter-7.html` | html | LangGraph fundamentals chapter 7 |
 | `docs/tutorial_chapters.excalidraw` | excalidraw | Chapter map of the seven microsite chapters (moved here from the repo root 2026-09-19 — it diagrams exactly these files) |
 
-## 06_Interview_Prep/Study_Guides/ (top-level, standalone interview/tutorial content)
-
-| Path | Type | Topics Covered |
-|---|---|---|
-| _(evaluation guides)_ | — | **Moved 2026-09-19** to the sibling repo `Agent_Evaluation_Demystified` → `docs/interactive-labs/` (html + md companions) |
-| `06_Interview_Prep/Study_Guides/TOPIC_DOCS_MAP.md` | md | **Index, not content** — links the 23 standalone concept explainers that live out in the phases (agent/workflow patterns, RAG indexing & query transformation, memory layers, LangChain 0.x→1.x). Narrower cut of this file; added 2026-09-19 |
-| `06_Interview_Prep/Study_Guides/01_langchain_foundations_INTERVIEW_TUTORIAL.md` | md | LangChain foundations interview tutorial |
-| `06_Interview_Prep/Study_Guides/04_rag_and_retrieval_INTERVIEW_TUTORIAL.md` | md | RAG and retrieval interview tutorial |
-| `06_Interview_Prep/Study_Guides/03_langgraph_fundamentals_INTERVIEW_TUTORIAL.md` | md | LangGraph fundamentals interview tutorial |
-| `06_Interview_Prep/Study_Guides/07_multi_agent_systems_INTERVIEW_TUTORIAL.md` | md | Multi-agent systems interview tutorial |
-| `06_Interview_Prep/Study_Guides/12_production_and_operations_INTERVIEW_TUTORIAL.md` | md | Production/operations (LLMOps) interview tutorial |
-| `06_Interview_Prep/Study_Guides/agent_fundamentals_and_advanced_agentic_systems_INTERVIEW_TUTORIAL.md` (+html) | md/html | Agent fundamentals & advanced agentic systems interview tutorial |
-| `06_Interview_Prep/Study_Guides/INTERVIEW_DRILL_HUB.html` | html | Hub linking/organizing all interview drill tutorials |
-| `06_Interview_Prep/Study_Guides/chunking/chunking-lab-and-drills.md` (+html) | md/html | Chunking lab writeup + 5 interview drills |
-| `06_Interview_Prep/Study_Guides/chunking/chunking-reference-by-doc-type.md` (+html) | md/html | Chunking reference by document type — per-type breakdown, comparison table, decision framework (companion to the lab above; complementary, not a duplicate — version) |
-| `06_Interview_Prep/Study_Guides/multi_agent/multi_agent_coordination_patterns.md` (+html) | md/html | Multi-agent coordination patterns |
-| `06_Interview_Prep/Study_Guides/multi_agent/multi_agent_systems_qa_reference.html` | html | Q&A reference on multi-agent systems |
-| `06_Interview_Prep/Study_Guides/parent_document_retrieval_INTERVIEW_TUTORIAL.md` (+html) | md/html | Parent-document retrieval technique |
-| `06_Interview_Prep/Study_Guides/retrieval_strategies/rag_retrieval_strategies.md` (+html) | md/html | RAG retrieval strategies overview |
+**Interview prep moved out (2026-09-29).** The `06_Interview_Prep/` sections this index used to carry
+(Handbook, FDE, AI_Engineer, OpenAI_Applied, Study_Guides) left with that folder for the separate
+`Sourav692/Forward-Deployed-Engineer-Interview-Prep` repo.

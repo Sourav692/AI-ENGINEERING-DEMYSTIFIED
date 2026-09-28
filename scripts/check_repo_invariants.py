@@ -17,11 +17,10 @@ import json
 import re
 import subprocess
 import sys
-import urllib.parse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = (".git/", "node_modules/", ".venv/", ".ipynb_checkpoints", "archive/", "site/")
+SKIP_DIRS = (".git/", "node_modules/", ".venv/", ".ipynb_checkpoints", "archive/")
 
 failures: list[str] = []
 notes: list[str] = []
@@ -159,45 +158,12 @@ def check_doc_paths() -> None:
                 fail("doc-paths", f"THEORY_DOCS_INDEX.md heading -> {h} missing")
         notes.append(f"doc-paths           {len(heads)} theory headings checked")
 
-    tmap = ROOT / "06_Interview_Prep/Study_Guides/TOPIC_DOCS_MAP.md"
-    if tmap.exists():
-        links = re.findall(r"\]\((\.\./\.\./[^)]+)\)", tmap.read_text())
-        for link in links:
-            target = (tmap.parent / urllib.parse.unquote(link)).resolve()
-            if not target.exists():
-                fail("doc-paths", f"TOPIC_DOCS_MAP.md link -> {link} missing")
-        notes.append(f"doc-paths           {len(links)} topic-map links checked")
-
 
 # --------------------------------------------------------------------------
-# 4. The three path-anchored configs root CLAUDE.md warns about. All three
-#    broke silently during the 2026-09-19 restructure and were caught only by
-#    hand. A .gitignore rule whose path no longer exists is not an error —
-#    it just quietly stops protecting anything.
+# 4. The path-anchored config root CLAUDE.md warns about. It broke silently
+#    during the 2026-09-19 restructure and was caught only by hand.
 # --------------------------------------------------------------------------
 def check_path_anchors() -> None:
-    gi = ROOT / ".gitignore"
-    if gi.exists():
-        for line in gi.read_text().splitlines():
-            s = line.strip().lstrip("!")
-            if not s or s.startswith("#"):
-                continue
-            if "06_Interview_Prep/FDE/" not in s:
-                continue
-            folder = s.split("/**")[0]
-            if not (ROOT / folder).exists():
-                fail(".gitignore", f"FDE anchor points at a missing folder: {folder}")
-
-    sync = ROOT / "site/scripts/sync-content.mjs"
-    if sync.exists():
-        text = sync.read_text()
-        m = re.search(r"join\(REPO_ROOT,\s*'([^']+)'\)", text)
-        if m and not (ROOT / m.group(1)).exists():
-            fail("sync-content.mjs", f"SOURCE_ROOT -> {m.group(1)} does not exist")
-        for frag in re.findall(r"^\s*'([^']*Complete GEN AI FDE[^']*)',", text, re.M):
-            if not (ROOT / "06_Interview_Prep/FDE" / frag).exists():
-                fail("sync-content.mjs", f"hardcoded folder missing: {frag}")
-
     pyproject = ROOT / "pyproject.toml"
     if pyproject.exists():
         block = re.search(
@@ -209,36 +175,39 @@ def check_path_anchors() -> None:
                     continue
                 if not (ROOT / p).exists():
                     fail("pyproject.toml", f"ruff extend-exclude -> {p} does not exist")
-        notes.append("path-anchors        .gitignore / sync-content.mjs / pyproject.toml")
+        notes.append("path-anchors        pyproject.toml")
 
 
 # --------------------------------------------------------------------------
-# 5. Purchased third-party material stays out of git. The .gitignore anchor
-#    that protects it broke once already; when it does, nothing complains —
-#    the files simply become committable.
+# 5. Interview prep and its website have one home: the separate
+#    Forward-Deployed-Engineer-Interview-Prep repo (extracted 2026-09-29). That
+#    folder held purchased vendor material and client stories behind .gitignore
+#    rules, so a copy creeping back here is both a second home and a leak risk.
 # --------------------------------------------------------------------------
-def check_purchased_material() -> None:
+EXTRACTED_PATHS = ("06_Interview_Prep", "site", ".website_plan")
+
+
+def check_extracted_paths() -> None:
     try:
         tracked = subprocess.run(
-            ["git", "ls-files", "06_Interview_Prep/FDE"],
+            ["git", "ls-files", "--", *EXTRACTED_PATHS],
             cwd=ROOT, capture_output=True, text=True, check=True,
         ).stdout.splitlines()
     except Exception:  # noqa: BLE001
         return
-    binaries = [f for f in tracked if f.lower().endswith((".pdf", ".docx", ".pptx"))]
-    if binaries:
+    if tracked:
         fail(
-            "purchased-material",
-            f"{len(binaries)} vendor binaries are tracked under 06_Interview_Prep/FDE "
-            f"(first: {binaries[0]}) — the .gitignore anchor is not protecting them",
+            "extracted-paths",
+            f"{len(tracked)} files tracked under an extracted path (first: {tracked[0]}) "
+            "— interview prep lives in Forward-Deployed-Engineer-Interview-Prep",
         )
-    notes.append(f"purchased-material  {len(tracked)} FDE files tracked, 0 binaries expected")
+    notes.append(f"extracted-paths     {', '.join(EXTRACTED_PATHS)} hold no tracked files")
 
 
 # --------------------------------------------------------------------------
 # 6. Client names stay out of the public repo. Interview stories were written
-#    from real engagements; on 2026-09-27 the raw stories moved to the gitignored
-#    06_Interview_Prep/_private/ and every tracked copy was anonymised. This keeps
+#    from real engagements; on 2026-09-27 the raw stories were moved out of git
+#    and every tracked copy was anonymised. This keeps
 #    a name from creeping back. The names are stored as truncated SHA-256 hashes
 #    so the check itself does not publish them. To add one:
 #      python3 -c "import hashlib;print(hashlib.sha256(b'name').hexdigest()[:16])"
@@ -299,7 +268,7 @@ def main() -> int:
     check_data_refs(nbs)
     check_doc_paths()
     check_path_anchors()
-    check_purchased_material()
+    check_extracted_paths()
     check_private_terms()
 
     for n in notes:

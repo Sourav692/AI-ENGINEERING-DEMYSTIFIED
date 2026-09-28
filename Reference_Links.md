@@ -148,7 +148,7 @@ LLMOps, tracing, cost, guardrails, security.
 
 ---
 
-## Phase 13/14 — Projects and Interview Prep (`05_Projects/`, `06_Interview_Prep/`)
+## Phase 13 — Projects (`05_Projects/`)
 
 | Course | Also covers |
 | --- | --- |

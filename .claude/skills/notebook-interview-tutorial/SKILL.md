@@ -18,6 +18,8 @@ description: >-
   One tutorial per input folder — not one per notebook.
 ---
 
+> ⚠ **Target moved (2026-09-29).** `06_Interview_Prep/` was extracted to the separate `Forward-Deployed-Engineer-Interview-Prep` repo and is gitignored here, so anything this skill writes under that path in *this* repo is never versioned. Run it from a clone of that repo (paths inside it drop the `06_Interview_Prep/` prefix), or confirm the output location with the user first.
+
 # Interview-Prep Tutorial Builder
 
 Input: a folder of notebooks, or one or more individual notebook paths.

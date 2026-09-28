@@ -15,15 +15,13 @@ Phases are no longer top-level. They sit inside six stage folders grouped **by p
 | `03_Advanced/` | `06_`, `07_`, `08_`, `09_`, `10_`, `12_` | **requires agents knowledge** — the same criterion that splits RAG across `02_Core/04_` and `03_Advanced/08_` |
 | `04_AI_Coding_Tools/` | was `11_` | tools you use, not topics you study |
 | `05_Projects/` | was `13_` | applications, not a topic |
-| `06_Interview_Prep/` | was `14_` (itself the collapse of old 14–17 + `tutorials/`) | derived prep material |
+| ~~`06_Interview_Prep/`~~ | was `14_` | **extracted 2026-09-29** to the separate `Forward-Deployed-Engineer-Interview-Prep` repo — see Phase 14 below |
 
 **Difficulty was rejected as the boundary** — it is subjective and drifts as the learner improves, which would mean moving folders between stages forever. Prerequisite is objective and checkable.
 
 **Phase numbers inside stages were deliberately NOT renumbered.** Every "Phase 7" reference across the docs stays true, and the visible gap (no `11_` inside `03_Advanced/`) is the accepted cost. When placing new content, find the phase that owns the topic first, then the stage follows from it — never pick a stage by how hard the content feels.
 
-**Path-anchored config that must be repointed whenever a folder moves** (both were silently broken by the 2026-09-19 moves and caught only by checking):
-- `.gitignore` lines ~160–162 — keeps the purchased FDE material out of git except `.md`. If it stops matching, ~107 vendor PDFs become committable.
-- `site/scripts/sync-content.mjs` `SOURCE_ROOT` — the site build reads from `06_Interview_Prep/FDE`.
+**Path-anchored config that must be repointed whenever a folder moves** (silently broken by the 2026-09-19 moves and caught only by checking; the `.gitignore` FDE anchor and `site/scripts/sync-content.mjs` that used to be listed here left with the interview-prep extraction):
 - `pyproject.toml` `[tool.ruff] extend-exclude` — 5 hardcoded JS frontend paths.
 
 ## Phase 2 — `02_LangChain_Fundamentals_and_Prompting/` — ✅ Built
@@ -167,19 +165,9 @@ Owns: deployment, LLMOps, observability, security, safety.
 
 Capstone/integration projects, kept flat (one folder per project, no grouping parent — explicit user decision even as the count grew past 10). `LangGraph_Fullstack_Capstone/` + `LangChain_Microservices_Capstone/` (from `LangChain_Demystified`'s module 12) + `RAG_Systems_Projects/` (7 nb, from `RAG_Demystified`'s Projects module) + `ShopUNow_Agentic_RAG_Capstone/` + 6 apps from `AgenticAI_Projects_Demystified` + `Personalized_Holiday_Management_Agent/` (FastAPI + AutoGen AgentChat) + `Resume_Genie/` (Streamlit + LangGraph career suite). More capstones get added here as new phases produce content worth integrating. **2026-09-19:** three enterprise platform builds (`Enterprise_Multi_Agent_AI_Research_Platform/`, `Enterprise_Agentic_Workflow_Automation_Platform/`, `Enterprise_RAG_Platform/`) moved in from what was Phase 16 — they had CODE/ trees and dependency manifests, so they were applications misfiled under interview prep. A vestigial `4. FDE_Related_Preparation/` husk (one orphaned `.gitignore`) was deleted at the same time.
 
-## Phase 14 — `06_Interview_Prep/` — ✅ Built (added 2026-09-19)
+## Phase 14 — interview prep — ⛔ Extracted (2026-09-29)
 
-Owns: interview preparation. Created by collapsing four top-level phases plus `tutorials/` into one phase with five tracks — the same one-topic-one-phase fix applied at the top level.
-
-| Track | Was | Notes |
-|---|---|---|
-| `Handbook/` | `14_AI_Engineering_Handbook/` | 12-chapter prose handbook. **Kept whole deliberately** — it re-covers Phase 4/5/7/12 topics, so it looks like duplication, but it is prose not notebooks and splitting it across five phases would destroy the book. Same precedent as `Comprehensive_RAG_Techniques/` and the DSPy course. |
-| `FDE/` | `15_FDE_Related_Preparation/` | ⚠ Purchased third-party material. `.gitignore` lines 160–162 ignore everything under `Complete GEN AI FDE Interview System — Core + GenAI/` except `.md`. **Those patterns are path-anchored — if this folder ever moves again, repoint them in the same commit or the vendor PDFs silently become committable.** |
-| `AI_Engineer/` | `16_AI_Engineer_Interview_Preparation/` | Three enterprise platform builds were extracted to Phase 13 — they were applications, not prep. |
-| `OpenAI_Applied/` | `17_OpenAI_Applied_Engineer_Preparation/` | Eval tutorial + question banks went to `Agent_Evaluation_Demystified`. |
-| `Study_Guides/` | `tutorials/` | Per-phase interview study guides, Cost & Latency cram sheets + drill deck, chunking/retrieval notes. Ambiguous placement: the per-phase guides could arguably sit beside the phases they summarise. |
-
-Client engagement stories are private: they live in the gitignored `06_Interview_Prep/_private/` (moved 2026-09-27) — never re-add them to a tracked folder. Only the Meridian Assist reference-build stories remain in `Handbook/11_Telling_The_Story/stories/`.
+`06_Interview_Prep/`, the Forward Deployed website (`site/`) and `.website_plan/` moved to the private repo `Sourav692/Forward-Deployed-Engineer-Interview-Prep`, which Vercel now deploys from. That repo pins this one at commit `d3cd0e5` for the runnable code its lessons cite. All three paths are gitignored here, and `scripts/check_repo_invariants.py` fails if anything gets tracked under them. **Route new interview-prep material to that repo, never back into this one.** Client engagement stories were never committed there either — they are kept outside both repos.
 
 ## `archive/`, `docs/`, root scaffolding
 
