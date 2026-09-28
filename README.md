@@ -45,7 +45,7 @@ The course is a sequence of **phases** — each owns exactly one topic, so there
 
 ### 🧭 New here? Start with the guided tutorial
 
-**[Building Agents — A Plain-English Tutorial](https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/d3cd0e5ea2c5f3c7609bc6d9b767bdff5bd19071/06_Interview_Prep/OpenAI_Applied/OPENAI_BUILDING_AGENTS_TUTORIAL.md)**
+**[Building Agents — A Plain-English Tutorial](03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/OPENAI_BUILDING_AGENTS_TUTORIAL.md)**
 walks OpenAI's [Building Agents track](https://developers.openai.com/tracks/building-agents)
 end to end in simple language — **3–4 lines per concept, no jargon**, with the notebook in
 this repo that teaches each one, and Mermaid diagrams for the agent loop, the
@@ -56,11 +56,9 @@ produce something small — a number you measured, a failure you reproduced — 
 box means you actually did it. 24 in total. There's a weekend-length shortlist near the end
 if you can't do all of it.
 
-Its companion, [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](https://github.com/Sourav692/AI-ENGINEERING-DEMYSTIFIED/blob/d3cd0e5ea2c5f3c7609bc6d9b767bdff5bd19071/06_Interview_Prep/OpenAI_Applied/OPENAI_BUILDING_AGENTS_COVERAGE.md),
+Its companion, [`OPENAI_BUILDING_AGENTS_COVERAGE.md`](03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/OPENAI_BUILDING_AGENTS_COVERAGE.md),
 is the audit behind it: every track topic mapped to where this repo teaches it —
 **22 covered, 0 gaps, 4 deliberately skipped with the reason recorded for each.**
-Both are linked at a pinned commit: they left the working tree with `06_Interview_Prep/` on
-2026-09-29, but their notebook links still resolve there.
 
 **Why RAG is split across two phases, not duplicated:** Phase 4 covers *foundational* RAG (chunking, basic retrieval, embeddings theory, each framework's straightforward implementation) — nothing there requires knowing agents. Phase 8, "Advanced RAG," covers agentic/self-correcting RAG, CacheRAG, and GraphRAG — patterns that genuinely depend on understanding agents (Phase 5) and advanced agentic systems (Phase 7) first, so it's deliberately sequenced after both rather than bundled into Phase 4.
 

@@ -376,6 +376,8 @@ From `AI-Agents-Essentials`. Raw OpenAI API + `agentic_patterns` package — not
 
 `Google_ADK/`, `OpenAI_Agents_SDK/`, `Google_AI_SDK/`, `Anthropic_Agent_SDK/`
 
+`OpenAI_Agents_SDK/` also holds `OPENAI_BUILDING_AGENTS_TUTORIAL.md` (a plain-English walk through OpenAI's Building Agents track, mapping each concept to a notebook in this repo, with 24 TODOs) and `OPENAI_BUILDING_AGENTS_COVERAGE.md` (the audit behind it) — moved here 2026-09-29 from the extracted `06_Interview_Prep/OpenAI_Applied/`.
+
 `Anthropic_Agent_SDK/` was added 2026-09-19 to hold `claude-agent-sdk`. The raw Anthropic Messages API stays in Phase 11's `04_AI_Coding_Tools/Claude_API_Primitives/` — this phase owns vendor agent *frameworks*, not provider APIs.
 
 # Phase 7 — Advanced Agentic Systems (`03_Advanced/07_Advanced_Agentic_Systems/`)
@@ -518,6 +520,7 @@ None — this phase is notebooks only. `building-adaptive-rag/` moved to `05_Pro
 | `Tracing_and_Observability/LangSmith/` | `01_LangSmith_Basics.ipynb` | LangSmith basics |
 | `Tracing_and_Observability/LangFuse/` | — | 🚧 Planned |
 | `Tracing_and_Observability/` | `02_Callbacks.ipynb` | LangChain callback mechanism |
+| `Tracing_and_Observability/` | `03_LangGraph_Agent_Callbacks_OpenAI.ipynb` | Custom `BaseCallbackHandler` on a LangGraph tool-calling agent: lifecycle events, token usage, structured event log, streaming (moved from interview prep 2026-09-29) |
 | `Caching_and_Performance/` | `01_Caching.ipynb`, `02_Streaming.ipynb` | Caching, streaming |
 | `Cost_Monitoring/` | `01_LLM_Cost_Monitoring.ipynb` | Tracking LLM API costs |
 
@@ -594,7 +597,7 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 
 ## Interview preparation — moved out (2026-09-29)
 
-Phase 14 (`06_Interview_Prep/`) and the Forward Deployed website (`site/`, `.website_plan/`) now live in the separate repo [`Sourav692/Forward-Deployed-Engineer-Interview-Prep`](https://github.com/Sourav692/Forward-Deployed-Engineer-Interview-Prep), which is also what Vercel deploys. That repo pins this one at commit `d3cd0e5` for the runnable implementations its lessons cite, so paths from before the extraction stay readable there. Four small pieces were not carried over and remain only in this repo's git history: `OpenAI_Applied/` (coverage/gap analysis, sample questions), `Study_Guides/callbacks/LangGraph_Agent_Callbacks_OpenAI.ipynb`, and the Handbook chapter 01/10 `project/` labs that the pinned revision serves.
+Phase 14 (`06_Interview_Prep/`) and the Forward Deployed website (`site/`, `.website_plan/`) now live in the separate repo [`Sourav692/Forward-Deployed-Engineer-Interview-Prep`](https://github.com/Sourav692/Forward-Deployed-Engineer-Interview-Prep), which is also what Vercel deploys. That repo pins this one at commit `d3cd0e5` for the runnable implementations its lessons cite, so paths from before the extraction stay readable there. Three pieces were rehomed by topic instead: the OpenAI Building Agents tutorial and its coverage audit went to Phase 6 (`03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`), the callbacks notebook to Phase 12 (`Tracing_and_Observability/03_LangGraph_Agent_Callbacks_OpenAI.ipynb`), and the OpenAI Applied gap analysis + sample questions to the interview-prep repo's `OpenAI_Applied/`. The Handbook chapter 01/10 `project/` labs remain only in this repo's history, served to that repo by the pinned revision.
 
 ## Known Discrepancies
 
