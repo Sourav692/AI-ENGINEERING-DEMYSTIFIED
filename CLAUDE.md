@@ -36,7 +36,7 @@ For the full, current notebook-by-notebook listing of the built content, see `@N
   12_Production_and_Observability/           ✅ Partially built — LLMOps (LangSmith/caching/cost), safety (moderation); DevOps/security planned
 
 04_AI_Coding_Tools/                          🚧 Planned — Claude Code, Codex, Cursor, Agent Skills, Claude API & Agent SDK
-05_Projects/                                 ✅ Built — 16 projects: capstones + standalone apps + 3 enterprise platforms
+05_Projects/                                 ✅ Built — 18 projects: capstones + standalone apps + 3 enterprise platforms
 
 archive/                                     Retired notebooks, frozen — never reorganize
 docs/  helpers/  plugins/                    Support: microsite, LLM factory, plugin
@@ -83,7 +83,7 @@ Every phase carries its own `CLAUDE.md`. Claude Code loads the root file always,
 | `03_Advanced/10_Alternative_Agent_Frameworks/CLAUDE.md` | CrewAI/AutoGen/DSPy; the CrewAI `chromadb<1.2` conflict |
 | `03_Advanced/12_Production_and_Observability/CLAUDE.md` | LLMOps, safety; the observability-vs-evaluation line |
 | `04_AI_Coding_Tools/CLAUDE.md` | Claude Code, Codex, Cursor, Agent Skills |
-| `05_Projects/CLAUDE.md` | 16 projects, one venv each, the ruff-exclude rule |
+| `05_Projects/CLAUDE.md` | 18 projects, one venv each, the ruff-exclude rule |
 
 Files compose rather than override: root → stage → phase → any deeper file. One deeper file also exists and takes precedence inside its tree: `03_Advanced/07_Advanced_Agentic_Systems/Deep_Agents_and_Harness_Engineering/CLAUDE.md`.
 

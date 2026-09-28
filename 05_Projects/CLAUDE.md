@@ -4,15 +4,16 @@
 
 **Owns:** capstone and integration builds. A top-level stage folder: projects are *applications* of many topics, not a topic.
 
-16 projects, flat — one folder per project, no grouping parent. That flatness is an explicit decision that survived the count passing 10.
+18 projects, flat — one folder per project, no grouping parent. That flatness is an explicit decision that survived the count passing 10.
 
 Full-stack capstones: `LangGraph_Fullstack_Capstone/` (FastAPI + Angular + Postgres + unit tests + Streamlit apps), `LangChain_Microservices_Capstone/` (Docker, k8s-style manifests, frontend).
 Enterprise platforms (moved here from interview prep on 2026-09-19 — they had CODE trees and dependency manifests, so they were applications misfiled as prep): `Enterprise_Multi_Agent_AI_Research_Platform/`, `Enterprise_Agentic_Workflow_Automation_Platform/`, `Enterprise_RAG_Platform/`.
 `Building_Adaptive_RAG/` arrived the same day from `03_Advanced/08_Advanced_RAG/building-adaptive-rag/` by the same test — 25 `.py` files, `src/`, `tests/`, `main.py`, `requirements.txt`, zero notebooks. It is the only project here with no notebook, which is expected: it is a CLI app.
+`Agent_Tool_Calling_Foundations/` and `FDE_Delivery_Framework/` arrived 2026-09-29 by the same test: they were the runnable `project/` labs of Handbook chapters 01 and 10, and the Handbook left for the separate interview-prep repo, which keeps prose only.
 
 ## Conventions here
 
-- **One venv per project.** 16 dependency manifests live here and some genuinely conflict (CrewAI's `chromadb<1.2` vs `langchain-chroma` 1.1). There is deliberately no root manifest for this phase.
+- **One venv per project.** 18 dependency manifests live here and some genuinely conflict (CrewAI's `chromadb<1.2` vs `langchain-chroma` 1.1). There is deliberately no root manifest for this phase.
 - No `helpers` usage — projects instantiate their own clients, as deployable apps should.
 - Every project should carry a `README.md` with Problem → Architecture → Stack → Run → Demo, plus a `.env.example`.
 - `pyproject.toml`'s ruff `extend-exclude` hardcodes JS frontend paths under this phase. **Add a new entry if you add another JS app.**

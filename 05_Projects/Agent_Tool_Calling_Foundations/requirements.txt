@@ -1,0 +1,19 @@
+# --- Core: the agent framework (the from-scratch agent needs NONE of these) ---
+langgraph>=0.2.60
+langchain-core>=0.3.0
+
+# --- Optional: only needed to swap in a REAL LLM brain (make_llm_brain) ---
+# langchain>=0.3.0
+# langchain-openai>=0.3.0     # requires OPENAI_API_KEY in the environment
+
+# --- notebooks/agent_tool_calling_demo_openai.ipynb: single-notebook, real-LLM demo ---
+openai>=1.0                   # requires OPENAI_API_KEY in the environment
+
+# --- notebooks/langgraph_react_agent.ipynb: production-shaped LangGraph + Claude demo ---
+langchain>=1.0                # for build_prebuilt()'s langchain.agents.create_agent
+langchain-anthropic>=0.3.0    # requires ANTHROPIC_API_KEY in the environment
+grandalf>=0.8                 # only for app.get_graph().draw_ascii()
+
+# --- Dev / demo ---
+pytest>=8.0
+jupyter>=1.0                  # to open the notebook (ipykernel is enough to execute cells)

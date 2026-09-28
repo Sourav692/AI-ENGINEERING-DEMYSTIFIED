@@ -559,6 +559,21 @@ Not notebooks — LangChain deployed as microservices: Docker, k8s-style manifes
 
 Not notebooks — a deployable adaptive-RAG CLI app: `src/{cli,models,workflow}/`, `main.py`, `tests/test_chains.py`, own `requirements.txt`, 25 `.py` files. Moved from `03_Advanced/08_Advanced_RAG/building-adaptive-rag/`; Phase 8 keeps the adaptive-RAG topic in `Agentic_RAG/`'s notebooks.
 
+## `Agent_Tool_Calling_Foundations/` (moved here 2026-09-29)
+
+Handbook chapter 01's runnable lab: `src/` (from-scratch agent, LangGraph agent, tools, robustness, observability), `tests/test_agent.py` (12 tests, no API key needed), own `requirements.txt`.
+
+| Notebook | Topic |
+|---|---|
+| `notebooks/agent_tool_calling_demo.ipynb` | The tool-calling loop from scratch, deterministic brain |
+| `notebooks/agent_tool_calling_demo_openai.ipynb` | Same loop with a real OpenAI model |
+| `notebooks/langgraph_react_agent.ipynb` | Production-shaped LangGraph ReAct agent (Claude) |
+| `notebooks/robust_langgraph_tool_calling_agent.ipynb` | Confirmation gates, fallbacks, disambiguation |
+
+## `FDE_Delivery_Framework/` (moved here 2026-09-29)
+
+Handbook chapter 10's runnable lab: `src/delivery_framework/` (gate engine, accelerators, metrics), `scripts/run_engagement_demo.py` + `demo_gate_failure.py`, `tests/test_gates.py` (17 tests), `docs/03-src-modules-reference.md`. Deterministic — no LLM. Notebook: `notebooks/02-hands-on.ipynb`.
+
 ## `RAG_Systems_Projects/`
 
 | Notebook | Topic |
@@ -597,7 +612,7 @@ Retired notebooks, kept for reference but not part of the learning path: `04_Ref
 
 ## Interview preparation — moved out (2026-09-29)
 
-Phase 14 (`06_Interview_Prep/`) and the Forward Deployed website (`site/`, `.website_plan/`) now live in the separate repo [`Sourav692/Forward-Deployed-Engineer-Interview-Prep`](https://github.com/Sourav692/Forward-Deployed-Engineer-Interview-Prep), which is also what Vercel deploys. That repo pins this one at commit `d3cd0e5` for the runnable implementations its lessons cite, so paths from before the extraction stay readable there. Three pieces were rehomed by topic instead: the OpenAI Building Agents tutorial and its coverage audit went to Phase 6 (`03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`), the callbacks notebook to Phase 12 (`Tracing_and_Observability/03_LangGraph_Agent_Callbacks_OpenAI.ipynb`), and the OpenAI Applied gap analysis + sample questions to the interview-prep repo's `OpenAI_Applied/`. The Handbook chapter 01/10 `project/` labs remain only in this repo's history, served to that repo by the pinned revision.
+Phase 14 (`06_Interview_Prep/`) and the Forward Deployed website (`site/`, `.website_plan/`) now live in the separate repo [`Sourav692/Forward-Deployed-Engineer-Interview-Prep`](https://github.com/Sourav692/Forward-Deployed-Engineer-Interview-Prep), which is also what Vercel deploys. That repo pins this one at commit `d3cd0e5` for the runnable implementations its lessons cite, so paths from before the extraction stay readable there. Three pieces were rehomed by topic instead: the OpenAI Building Agents tutorial and its coverage audit went to Phase 6 (`03_Advanced/06_Agent_SDKs_First_Party/OpenAI_Agents_SDK/`), the callbacks notebook to Phase 12 (`Tracing_and_Observability/03_LangGraph_Agent_Callbacks_OpenAI.ipynb`), and the OpenAI Applied gap analysis + sample questions to the interview-prep repo's `OpenAI_Applied/`. The Handbook chapter 01/10 `project/` labs went to Phase 13 as `05_Projects/Agent_Tool_Calling_Foundations/` and `05_Projects/FDE_Delivery_Framework/`.
 
 ## Known Discrepancies
 

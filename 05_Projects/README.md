@@ -1,6 +1,6 @@
 # 05 — Projects
 
-**Status:** ✅ Built — 16 projects, 32 notebooks.
+**Status:** ✅ Built — 18 projects, 35 notebooks.
 
 Capstone/integration projects combining multiple frameworks and competencies from earlier groups. A top-level group because projects are *applications* of many topics, not a topic themselves.
 
@@ -33,6 +33,18 @@ Flat by design: one folder per project, no grouping parent, even as the count pa
 
 **`Enterprise_Agentic_Workflow_Automation_Platform/`** ✅
 - Agentic workflow automation reference build
+
+## Agent labs
+
+**`Agent_Tool_Calling_Foundations/`** ✅
+- A tool-calling agent built from scratch, then the same loop in LangGraph
+- Robustness (confirmation gates, fallbacks, disambiguation) and tool-call logging
+- 4 notebooks, pytest suite (12 tests)
+
+**`FDE_Delivery_Framework/`** ✅
+- Gate-enforcing state machine taking an engagement from scoping doc to deployed agent in 14 days
+- Deterministic, no LLM; reusable-accelerator vs custom-work ratio measured
+- 1 notebook, 2 demo scripts, pytest suite (17 tests)
 
 ## Applied builds
 
@@ -92,6 +104,7 @@ Flat by design: one folder per project, no grouping parent, even as the count pa
 - `Personalized_Holiday_Management_Agent/` and `Resume_Genie/` came from their own GitHub repos
 - The three `Enterprise_*` platforms moved here on 2026-09-19 from what was Phase 16 — they had code trees and dependency manifests, so they were applications misfiled under interview prep
 - `Building_Adaptive_RAG/` moved here the same day from `03_Advanced/08_Advanced_RAG/building-adaptive-rag/` (originally from `RAG_Demystified`) by the same test — Phase 8 keeps the adaptive-RAG *topic* in `Agentic_RAG/`'s notebooks; this is its deployable form
+- `Agent_Tool_Calling_Foundations/` and `FDE_Delivery_Framework/` moved here on 2026-09-29: they were the runnable labs of Handbook chapters 01 and 10, and the Handbook left for the separate `Forward-Deployed-Engineer-Interview-Prep` repo, which keeps prose only
 - See also `README_Full_Stack_Projects.md` — the source repo's own overview of the earlier full-stack set
 
 ## Running a project
