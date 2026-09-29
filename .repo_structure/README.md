@@ -47,15 +47,15 @@ The proposed path is:
 | 05 | [ai-engineering-demystified-05-retrieval-rag](https://github.com/Sourav692/ai-engineering-demystified-05-retrieval-rag) | Retrieval and RAG | ✅ Created (private), migrated 2026-09-29 |
 | 06 | [ai-engineering-demystified-06-agent-fundamentals](https://github.com/Sourav692/ai-engineering-demystified-06-agent-fundamentals) | Agent fundamentals | ✅ Created (private), migrated 2026-09-29 |
 | 07 | [ai-engineering-demystified-07-first-party-agent-sdks](https://github.com/Sourav692/ai-engineering-demystified-07-first-party-agent-sdks) | First-party agent SDKs | ✅ Created (private), migrated 2026-09-29 |
-| 08 | `ai-engineering-demystified-08-advanced-agent-systems` | Advanced agent systems | 🚧 Not yet created |
-| 09 | `ai-engineering-demystified-09-advanced-rag` | Advanced RAG | 🚧 Not yet created |
+| 08 | [ai-engineering-demystified-08-advanced-agent-systems](https://github.com/Sourav692/ai-engineering-demystified-08-advanced-agent-systems) | Advanced agent systems | ✅ Created (private), migrated 2026-09-29 |
+| 09 | [ai-engineering-demystified-09-advanced-rag](https://github.com/Sourav692/ai-engineering-demystified-09-advanced-rag) | Advanced RAG | ✅ Created (private), migrated 2026-09-29 |
 | 10 | `ai-engineering-demystified-10-agent-protocols` | Agent protocols | 🚧 Not yet created |
 | 11 | `ai-engineering-demystified-11-alternative-agent-frameworks` | Alternative agent frameworks | 🚧 Not yet created |
 | 12 | `ai-engineering-demystified-12-ai-coding-tools` | AI coding tools | 🚧 Not yet created |
 | 13 | `ai-engineering-demystified-13-production-observability` | Production and observability | 🚧 Not yet created |
 | 14 | `ai-engineering-demystified-14-projects` | Projects | 🚧 Not yet created |
 
-Repositories 01–07 were extracted from tag `pre-multirepo-split-2026-09` of this monorepo. Content they deferred to 08–14 stays here until those repositories are created; each repository's `docs/content-inventory.csv` lists it with `status=deferred`.
+Repositories 01–09 were extracted from tag `pre-multirepo-split-2026-09` of this monorepo. Content they deferred to 10–14 stays here until those repositories are created; each repository's `docs/content-inventory.csv` lists it with `status=deferred`.
 
 See:
 

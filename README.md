@@ -8,7 +8,7 @@
 
 ## 🔀 The course is being split into separate repositories
 
-This roadmap is moving into a sequence of self-contained repositories, one topic each. The first seven exist (private for now); the rest of the material stays here until its repository is created. Plan: [`.repo_structure/`](.repo_structure/README.md).
+This roadmap is moving into a sequence of self-contained repositories, one topic each. The first nine exist (private for now); the rest of the material stays here until its repository is created. Plan: [`.repo_structure/`](.repo_structure/README.md).
 
 | # | Repository | Topic |
 |---|---|---|
@@ -19,7 +19,9 @@ This roadmap is moving into a sequence of self-contained repositories, one topic
 | 05 | [ai-engineering-demystified-05-retrieval-rag](https://github.com/Sourav692/ai-engineering-demystified-05-retrieval-rag) | Retrieval and RAG |
 | 06 | [ai-engineering-demystified-06-agent-fundamentals](https://github.com/Sourav692/ai-engineering-demystified-06-agent-fundamentals) | Agent fundamentals |
 | 07 | [ai-engineering-demystified-07-first-party-agent-sdks](https://github.com/Sourav692/ai-engineering-demystified-07-first-party-agent-sdks) | First-party agent SDKs |
-| 08–14 | 🚧 not yet created | Advanced agent systems, advanced RAG, protocols, alternative frameworks, AI coding tools, production, projects |
+| 08 | [ai-engineering-demystified-08-advanced-agent-systems](https://github.com/Sourav692/ai-engineering-demystified-08-advanced-agent-systems) | Advanced agent systems |
+| 09 | [ai-engineering-demystified-09-advanced-rag](https://github.com/Sourav692/ai-engineering-demystified-09-advanced-rag) | Advanced RAG |
+| 10–14 | 🚧 not yet created | Protocols, alternative frameworks, AI coding tools, production, projects |
 
 Source state for the split: tag `pre-multirepo-split-2026-09`. Nothing has been removed from this repository yet.
 

@@ -140,6 +140,8 @@ modules/
 
 ## 08 — `ai-engineering-demystified-08-advanced-agent-systems`
 
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-08-advanced-agent-systems](https://github.com/Sourav692/ai-engineering-demystified-08-advanced-agent-systems) — ✅ created and migrated 2026-09-29 (private).
+
 **Owns:** short- and long-term memory, persistent state, multi-agent architectures, supervisors, swarms, handoffs, communication, hierarchical/parallel agents, deep agents, agent harnesses, and safe code/computer execution patterns.
 
 **Primary source:** `03_Advanced/07_Advanced_Agentic_Systems/` plus advanced/multi-agent material removed from repositories 04, 06, and 07.
@@ -149,6 +151,8 @@ modules/
 **Must not contain:** corrective/adaptive/self/graph RAG, MCP/A2A/ACP protocol instruction, or production deployment/observability curricula.
 
 ## 09 — `ai-engineering-demystified-09-advanced-rag`
+
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-09-advanced-rag](https://github.com/Sourav692/ai-engineering-demystified-09-advanced-rag) — ✅ created and migrated 2026-09-29 (private).
 
 **Owns:** RAG as an agent tool, retrieval grading and rewriting, corrective RAG, adaptive RAG, self-RAG, RAPTOR, GraphRAG/knowledge graphs, CacheRAG, retrieval feedback loops, and other agentic retrieval architectures.
 
