@@ -196,6 +196,8 @@ modules/
 
 ## 13 — `ai-engineering-demystified-13-production-observability`
 
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-13-production-observability](https://github.com/Sourav692/ai-engineering-demystified-13-production-observability) — ✅ created and migrated 2026-09-29 (private).
+
 **Owns:** tracing, callbacks, monitoring, token/cost controls, caching/performance, reliability/fallbacks, testing, evaluation integration, safety, guardrails, red teaming, security, compliance, CI/CD, deployment, and operational infrastructure.
 
 **Primary source:** `03_Advanced/12_Production_and_Observability/`, plus production material removed from earlier repositories.
@@ -205,6 +207,8 @@ modules/
 **Must not contain:** a new application domain or capstone whose primary purpose is feature building; those belong in repository 14.
 
 ## 14 — `ai-engineering-demystified-14-projects`
+
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-14-projects](https://github.com/Sourav692/ai-engineering-demystified-14-projects) — ✅ created and migrated 2026-09-29 (private).
 
 **Owns:** all 18 applications and capstones, organized by prerequisite level and system complexity.
 

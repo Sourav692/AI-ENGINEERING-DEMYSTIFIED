@@ -52,10 +52,10 @@ The proposed path is:
 | 10 | [ai-engineering-demystified-10-agent-protocols](https://github.com/Sourav692/ai-engineering-demystified-10-agent-protocols) | Agent protocols | ✅ Created (private), migrated 2026-09-29 |
 | 11 | [ai-engineering-demystified-11-alternative-agent-frameworks](https://github.com/Sourav692/ai-engineering-demystified-11-alternative-agent-frameworks) | Alternative agent frameworks | ✅ Created (private), migrated 2026-09-29 |
 | 12 | `ai-engineering-demystified-12-ai-coding-tools` | AI coding tools | 🚧 Not yet created |
-| 13 | `ai-engineering-demystified-13-production-observability` | Production and observability | 🚧 Not yet created |
-| 14 | `ai-engineering-demystified-14-projects` | Projects | 🚧 Not yet created |
+| 13 | [ai-engineering-demystified-13-production-observability](https://github.com/Sourav692/ai-engineering-demystified-13-production-observability) | Production and observability | ✅ Created (private), migrated 2026-09-29 |
+| 14 | [ai-engineering-demystified-14-projects](https://github.com/Sourav692/ai-engineering-demystified-14-projects) | Projects | ✅ Created (private), migrated 2026-09-29 |
 
-Repositories 01–11 were extracted from tag `pre-multirepo-split-2026-09` of this monorepo. Content they deferred to 12–14 stays here until those repositories are created; each repository's `docs/content-inventory.csv` lists it with `status=deferred`.
+Repositories 01–11, 13 and 14 were extracted from tag `pre-multirepo-split-2026-09` of this monorepo. Repository 12 (AI coding tools) is not created yet; its material and anything deferred to it stays here until it is; each repository's `docs/content-inventory.csv` lists it with `status=deferred`.
 
 See:
 
