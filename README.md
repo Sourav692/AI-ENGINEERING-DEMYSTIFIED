@@ -8,7 +8,7 @@
 
 ## 🔀 The course is being split into separate repositories
 
-This roadmap is moving into a sequence of self-contained repositories, one topic each. Thirteen of the fourteen exist (private for now); the rest of the material stays here until its repository is created. Plan: [`.repo_structure/`](.repo_structure/README.md).
+This roadmap is moving into a sequence of self-contained repositories, one topic each. All fourteen exist (private for now). This repository stays whole as the source archive. Plan: [`.repo_structure/`](.repo_structure/README.md).
 
 | # | Repository | Topic |
 |---|---|---|
@@ -23,11 +23,11 @@ This roadmap is moving into a sequence of self-contained repositories, one topic
 | 09 | [ai-engineering-demystified-09-advanced-rag](https://github.com/Sourav692/ai-engineering-demystified-09-advanced-rag) | Advanced RAG |
 | 10 | [ai-engineering-demystified-10-agent-protocols](https://github.com/Sourav692/ai-engineering-demystified-10-agent-protocols) | Agent protocols |
 | 11 | [ai-engineering-demystified-11-alternative-agent-frameworks](https://github.com/Sourav692/ai-engineering-demystified-11-alternative-agent-frameworks) | Alternative agent frameworks |
-| 12 | 🚧 not yet created | AI coding tools |
+| 12 | [ai-engineering-demystified-12-ai-coding-tools](https://github.com/Sourav692/ai-engineering-demystified-12-ai-coding-tools) | AI coding tools |
 | 13 | [ai-engineering-demystified-13-production-observability](https://github.com/Sourav692/ai-engineering-demystified-13-production-observability) | Production and observability |
 | 14 | [ai-engineering-demystified-14-projects](https://github.com/Sourav692/ai-engineering-demystified-14-projects) | Projects |
 
-Source state for the split: tag `pre-multirepo-split-2026-09`. Nothing has been removed from this repository yet.
+Source state for the split: tag `pre-multirepo-split-2026-09`. Nothing has been removed from this repository.
 
 ## Who Is This For?
 

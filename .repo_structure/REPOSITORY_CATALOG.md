@@ -188,6 +188,8 @@ modules/
 
 ## 12 — `ai-engineering-demystified-12-ai-coding-tools`
 
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-12-ai-coding-tools](https://github.com/Sourav692/ai-engineering-demystified-12-ai-coding-tools) — ✅ created and migrated 2026-09-29 (private).
+
 **Owns:** the coding-agent tool landscape, Claude Code, coding-agent CLI usage, agent skills, repository instructions, and building a small coding agent with provider APIs.
 
 **Source:** `04_AI_Coding_Tools/`.
