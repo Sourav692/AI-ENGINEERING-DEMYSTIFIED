@@ -164,6 +164,8 @@ modules/
 
 ## 10 — `ai-engineering-demystified-10-agent-protocols`
 
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-10-agent-protocols](https://github.com/Sourav692/ai-engineering-demystified-10-agent-protocols) — ✅ created and migrated 2026-09-29 (private).
+
 **Owns:** MCP foundations, servers, clients, resources/prompts/tools, transports, authentication considerations, A2A, and ACP.
 
 **Source:** `03_Advanced/09_Agent_Protocols/`.
@@ -173,6 +175,8 @@ modules/
 **Must not contain:** general alternative-framework tutorials, coding-assistant usage, or production monitoring.
 
 ## 11 — `ai-engineering-demystified-11-alternative-agent-frameworks`
+
+**Repository:** [https://github.com/Sourav692/ai-engineering-demystified-11-alternative-agent-frameworks](https://github.com/Sourav692/ai-engineering-demystified-11-alternative-agent-frameworks) — ✅ created and migrated 2026-09-29 (private).
 
 **Owns:** CrewAI, AutoGen/AG2, DSPy, PydanticAI, and a comparison of orchestration frameworks.
 
