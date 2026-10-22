@@ -1,0 +1,27 @@
+# Activate once per clone:
+#   uv run pre-commit install
+# Notebooks are committed WITH their outputs, from one clean top-to-bottom run. The
+# nbstripout hook runs with --keep-output --keep-count: it keeps outputs and execution
+# counts and only drops metadata noise (kernel/widget state, timings) — shared by every
+# clone through this file, unlike a git filter whose flags live in .git/config.
+# check-notebook-outputs then blocks partial runs, error outputs, API-key-like strings,
+# workstation paths and oversized outputs in the staged notebooks.
+repos:
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.9.1
+    hooks:
+      - id: nbstripout
+        args: [--keep-output, --keep-count]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.2
+    hooks:
+      - id: ruff
+        args: [--fix]
+  - repo: local
+    hooks:
+      - id: check-notebook-outputs
+        name: staged notebook outputs come from a clean run and are safe to publish
+        # `uv run python`, not bare `python`: macOS has no `python` outside a venv
+        entry: uv run python scripts/check_notebook_outputs.py
+        language: system
+        pass_filenames: false

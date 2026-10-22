@@ -1,8 +1,8 @@
 ---
 name: notebook-interview-tutorial
 description: >-
-  Turns a folder of notebooks (or individual notebooks) in this AI ENGINEERING repo
-  into an interview-prep tutorial for Generative AI and Agentic AI roles — a markdown
+  Turns a folder of notebooks (or individual notebooks) in any notebook repo
+  (e.g. the AIE_DEMYSTIFIED course repos) into an interview-prep tutorial for Generative AI and Agentic AI roles — a markdown
   study guide plus a published interactive HTML artifact with click-to-reveal question
   cards, role filtering and self-scoring. Grounds every concept in what the source
   notebooks actually demonstrate, teaching each one with plain-English prose, a mermaid
@@ -18,21 +18,24 @@ description: >-
   One tutorial per input folder — not one per notebook.
 ---
 
-> ⚠ **Target moved (2026-09-29).** `06_Interview_Prep/` was extracted to the separate `Forward-Deployed-Engineer-Interview-Prep` repo and is gitignored here, so anything this skill writes under that path in *this* repo is never versioned. Run it from a clone of that repo (paths inside it drop the `06_Interview_Prep/` prefix), or confirm the output location with the user first.
+> **Paths:** `<skills-root>` means the folder that holds this skill — the parent of its base directory (e.g. `~/.claude/skills`, or a repo's `.claude/skills`). Sibling skills referenced below live there too.
+
+> **Output location:** `Study_Guides/` at the root of the repo you run it in, unless the user names a
+> path. For the interview-prep collection, run it in `Forward-Deployed-Engineer-Interview-Prep`.
 
 # Interview-Prep Tutorial Builder
 
 Input: a folder of notebooks, or one or more individual notebook paths.
 Output: **two files in the repo, plus a published page** —
 
-1. `06_Interview_Prep/Study_Guides/<slug>_INTERVIEW_TUTORIAL.md` — the canonical study guide
-2. `06_Interview_Prep/Study_Guides/<slug>_INTERVIEW_TUTORIAL.html` — the artifact's source, versioned in git
+1. `Study_Guides/<slug>_INTERVIEW_TUTORIAL.md` — the canonical study guide
+2. `Study_Guides/<slug>_INTERVIEW_TUTORIAL.html` — the artifact's source, versioned in git
 3. A **published interactive artifact** rendered from that HTML
 
 The user studies from the artifact and greps the markdown. Both must say the same
 thing, so write the markdown first and build the HTML from it.
 
-**Write the HTML into `06_Interview_Prep/Study_Guides/`, never into a scratchpad.** Publishing from a temp
+**Write the HTML into `Study_Guides/`, never into a scratchpad.** Publishing from a temp
 directory leaves the page unversioned and unmaintainable once the session ends: the
 markdown lives in git, the rendered page does not, and the two drift with no diff to
 show it. Passing the repo path to the Artifact tool fixes that at no cost.
@@ -60,7 +63,7 @@ defend. So:
 ### 1. Resolve the input and inventory it
 
 ```bash
-python .claude/skills/notebook-interview-tutorial/scripts/extract_concepts.py <path> [<path> ...]
+python <skills-root>/notebook-interview-tutorial/scripts/extract_concepts.py <path> [<path> ...]
 ```
 
 Accepts folders (crawled recursively) and individual `.ipynb` paths, mixed. It is
@@ -125,7 +128,7 @@ as web-sourced.
 ### 4. Write the markdown study guide
 
 Follow `references/tutorial-blueprint.md` exactly. Write to
-`06_Interview_Prep/Study_Guides/<slug>_INTERVIEW_TUTORIAL.md`, creating `06_Interview_Prep/Study_Guides/` at the repo root if
+`Study_Guides/<slug>_INTERVIEW_TUTORIAL.md`, creating `Study_Guides/` at the repo root if
 needed. `<slug>` is the input folder name lowercased with underscores; for a single
 notebook, its filename stem.
 
@@ -140,7 +143,7 @@ by `references/role-competency-map.md`.
 survive across devices, load `artifact-capabilities` first and check what this user
 actually has; otherwise `localStorage` is the floor.
 
-Write the page to `06_Interview_Prep/Study_Guides/<slug>_INTERVIEW_TUTORIAL.html` and publish **that path**,
+Write the page to `Study_Guides/<slug>_INTERVIEW_TUTORIAL.html` and publish **that path**,
 so the source is versioned next to the markdown.
 
 Build it from the finished markdown. The blueprint lists the required interactions in
